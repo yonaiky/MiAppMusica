@@ -73,6 +73,7 @@ import it.vfsfitvnm.kugou.KuGou
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.ColorPaletteName
 import it.vfsfitvnm.vimusic.models.Lyrics
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.query
@@ -89,12 +90,14 @@ import it.vfsfitvnm.vimusic.ui.styling.DefaultDarkColorPalette
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.PureBlackColorPalette
+import it.vfsfitvnm.vimusic.ui.styling.collapsedPlayerProgressBar
 import it.vfsfitvnm.vimusic.ui.styling.onOverlayShimmer
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.SynchronizedLyrics
 import it.vfsfitvnm.vimusic.utils.TextCopyToClipboard
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.color
+import it.vfsfitvnm.vimusic.utils.colorPaletteNameKey
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getHttpClient
@@ -149,6 +152,8 @@ fun FullLyricsSheet(
     var mediaId by remember {
         mutableStateOf(binder?.player?.currentMediaItem?.mediaId ?: "")
     }
+
+    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
 
     BottomSheet(
         state = layoutState,
@@ -250,7 +255,7 @@ fun FullLyricsSheet(
 
                                         IconButton(
                                             icon = R.drawable.play_skip_back,
-                                            color = colorPalette.background2,
+                                            color = colorPalette.collapsedPlayerProgressBar,
                                             onClick = {
                                                 binder.player.forceSeekToPrevious()
                                                 onRefresh()
@@ -277,13 +282,16 @@ fun FullLyricsSheet(
                                                     }
 
                                                 }
-                                                .background(colorPalette.background2)
+                                                .background(when (colorPaletteName) {
+                                                    ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
+                                                    else -> colorPalette.background2
+                                                })
                                                 .size(42.dp)
                                         ) {
                                             Image(
                                                 painter = painterResource(if (shouldBePlaying == true) R.drawable.pause else R.drawable.play),
                                                 contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette.iconButtonPlayer),
+                                                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                                                 modifier = Modifier
 
                                                     .align(Alignment.Center)
@@ -293,7 +301,7 @@ fun FullLyricsSheet(
 
                                         IconButton(
                                             icon = R.drawable.play_skip_forward,
-                                            color = colorPalette.background2,
+                                            color = colorPalette.collapsedPlayerProgressBar,
                                             onClick = {
                                                 binder.player.forceSeekToNext()
                                                 onRefresh()
