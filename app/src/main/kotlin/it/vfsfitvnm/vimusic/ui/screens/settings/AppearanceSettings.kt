@@ -80,11 +80,7 @@ import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import it.vfsfitvnm.vimusic.utils.thumbnailTapEnabledKey
-import it.vfsfitvnm.vimusic.utils.useSystemFontKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.plus
+
 
 @ExperimentalAnimationApi
 @UnstableApi

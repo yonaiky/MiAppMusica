@@ -447,7 +447,14 @@ fun  UiSettings() {
         EnumValueSelectorSettingsEntry(
             title = stringResource(R.string.theme),
             selectedValue = colorPaletteName,
-            onValueSelected = { colorPaletteName = it },
+            onValueSelected = {
+                colorPaletteName = it
+               when (it) {
+                   ColorPaletteName.PureBlack,
+                   ColorPaletteName.ModernBlack -> colorPaletteMode = ColorPaletteMode.System
+                   else -> {}
+               }
+            },
             valueText = {
                 when (it) {
                     ColorPaletteName.Default -> stringResource(R.string._default)
