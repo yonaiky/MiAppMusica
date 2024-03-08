@@ -473,12 +473,16 @@ fun  UiSettings() {
                 ColorPaletteName.ModernBlack -> false
                 else -> { true }
             },
-            onValueSelected = { colorPaletteMode = it },
+            onValueSelected = {
+                colorPaletteMode = it
+                if (it == ColorPaletteMode.PitchBlack) colorPaletteName = ColorPaletteName.ModernBlack
+            },
             valueText = {
                 when (it) {
                     ColorPaletteMode.Dark -> stringResource(R.string.dark)
                     ColorPaletteMode.Light -> stringResource(R.string._light)
                     ColorPaletteMode.System -> stringResource(R.string.system)
+                    ColorPaletteMode.PitchBlack -> "Pitch Black"
                 }
             }
         )

@@ -10,6 +10,8 @@ import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
 import it.vfsfitvnm.vimusic.enums.ColorPaletteMode
 import it.vfsfitvnm.vimusic.enums.ColorPaletteName
+import it.vfsfitvnm.vimusic.utils.colorPaletteModeKey
+
 
 @Immutable
 data class ColorPalette(
@@ -36,6 +38,7 @@ data class ColorPalette(
             3 -> ModernBlackColorPalette
             else -> dynamicColorPaletteOf(
                 FloatArray(3).apply { ColorUtils.colorToHSL(accent, this) },
+                value[1] as Boolean,
                 value[1] as Boolean
             )
         }
@@ -110,7 +113,7 @@ fun colorPaletteOf(
     return when (colorPaletteName) {
         ColorPaletteName.Default, ColorPaletteName.Dynamic -> when (colorPaletteMode) {
             ColorPaletteMode.Light -> DefaultLightColorPalette
-            ColorPaletteMode.Dark -> DefaultDarkColorPalette
+            ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack -> DefaultDarkColorPalette
             ColorPaletteMode.System -> when (isSystemInDarkMode) {
                 true -> DefaultDarkColorPalette
                 false -> DefaultLightColorPalette
@@ -121,7 +124,7 @@ fun colorPaletteOf(
     }
 }
 
-fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean): ColorPalette? {
+fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean, isPitchBlack: Boolean): ColorPalette? {
     val palette = Palette
         .from(bitmap)
         .maximumColorCount(8)
@@ -145,17 +148,22 @@ fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean): ColorPalette? {
             .find { it[1] != 0f }
             ?: hsl
 
-        dynamicColorPaletteOf(newHsl, isDark)
+        dynamicColorPaletteOf(newHsl, isDark, isPitchBlack)
     } else {
-        dynamicColorPaletteOf(hsl, isDark)
+        dynamicColorPaletteOf(hsl, isDark, isPitchBlack)
     }
 }
 
-fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean): ColorPalette {
+fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean, isPitchBlack: Boolean): ColorPalette {
     return colorPaletteOf(ColorPaletteName.Dynamic, if (isDark) ColorPaletteMode.Dark else ColorPaletteMode.Light, false).copy(
-        background0 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0f else 0.925f),
-        background1 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0f else 0.90f),
-        background2 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0f else 0.85f),
+
+
+        background0 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0f else 0.925f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.10f else 0.925f),
+        background1 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0f else 0.90f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0.15f else 0.90f),
+        background2 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0f else 0.85f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0.2f else 0.85f),
         /*
         background0 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.10f else 0.925f),
         background1 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0.15f else 0.90f),

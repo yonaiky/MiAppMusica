@@ -329,6 +329,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 fun setDynamicPalette(colorPaletteMode: ColorPaletteMode) {
                     val isDark =
                         colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                    val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
 
                     binder?.setBitmapListener { bitmap: Bitmap? ->
                         if (bitmap == null) {
@@ -350,7 +351,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                         }
 
                         bitmapListenerJob = coroutineScope.launch(Dispatchers.IO) {
-                            dynamicColorPaletteOf(bitmap, isDark)?.let {
+                            dynamicColorPaletteOf(bitmap, isDark, isPicthBlack)?.let {
                                 withContext(Dispatchers.Main) {
                                     setSystemBarAppearance(it.isDark)
                                 }
