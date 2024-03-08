@@ -117,10 +117,12 @@ import it.vfsfitvnm.vimusic.utils.asMediaItem
 import it.vfsfitvnm.vimusic.utils.disableClosingPlayerSwipingDownKey
 import it.vfsfitvnm.vimusic.utils.disablePlayerHorizontalSwipeKey
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
+import it.vfsfitvnm.vimusic.utils.durationTextToMillis
 import it.vfsfitvnm.vimusic.utils.effectRotationKey
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.formatAsDuration
+import it.vfsfitvnm.vimusic.utils.formatAsTime
 import it.vfsfitvnm.vimusic.utils.getDownloadState
 import it.vfsfitvnm.vimusic.utils.isLandscape
 import it.vfsfitvnm.vimusic.utils.manageDownload
@@ -144,6 +146,7 @@ import it.vfsfitvnm.vimusic.utils.thumbnail
 import it.vfsfitvnm.vimusic.utils.thumbnailTapEnabledKey
 import it.vfsfitvnm.vimusic.utils.toast
 import it.vfsfitvnm.vimusic.utils.trackLoopEnabledKey
+import it.vfsfitvnm.vimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
@@ -728,6 +731,29 @@ fun Player(
             }
         }
     ) {
+
+
+        var windows by remember {
+            mutableStateOf(binder.player.currentTimeline.windows)
+        }
+        var queuedSongs by remember {
+            mutableStateOf<List<Song>>(emptyList())
+        }
+        LaunchedEffect(mediaItem.mediaId, windows) {
+            Database.getSongsList(
+                windows.map {
+                    it.mediaItem.mediaId
+                }
+            ).collect{ queuedSongs = it}
+        }
+
+        var totalPlayTimes = 0L
+        queuedSongs.forEach {
+            totalPlayTimes += it.durationText?.let { it1 ->
+                durationTextToMillis(it1)
+            }?.toLong() ?: 0
+        }
+
         var isShowingLyrics by rememberSaveable {
             mutableStateOf(false)
         }
@@ -1092,10 +1118,33 @@ fun Player(
                     )
                 }
 
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.time),
+                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(horizontal = 5.dp),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.Fit
+                    )
+                    BasicText(
+                        text = " ${formatAsTime(totalPlayTimes)}",
+                        style = typography.xxs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                /*
                 Spacer(
                     modifier = Modifier
                         .height(20.dp)
                 )
+                 */
 
                 controlsContent(
                     modifier = Modifier
