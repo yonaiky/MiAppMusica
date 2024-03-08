@@ -456,7 +456,7 @@ fun HomePlaylists(
                     contentType = 0,
                     span = { GridItemSpan(maxLineSpan) }) {
                     BasicText(
-                        text = stringResource(R.string.playlists),
+                        text = stringResource(R.string.pinned_playlists),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -482,7 +482,7 @@ fun HomePlaylists(
                     contentType = 0,
                     span = { GridItemSpan(maxLineSpan) }) {
                     BasicText(
-                        text = stringResource(R.string.pinned_playlists),
+                        text = stringResource(R.string.playlists),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )

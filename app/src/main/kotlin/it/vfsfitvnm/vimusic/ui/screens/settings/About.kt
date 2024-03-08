@@ -142,6 +142,7 @@ fun About() {
                     "Crayz310 \n"+
                     "CUMOON \n"+
                     "DanielSevillano \n"+
+                    "Dženan \n" +
                     "EMC_Translator \n"+
                     "Fabian Urra \n"+
                     "fast4x \n"+
