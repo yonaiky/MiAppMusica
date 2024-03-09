@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -514,181 +515,121 @@ fun Lyrics(
                     .size(24.dp)
             )
 
-
-            IconButton(
-                icon = R.drawable.translate,
-                color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
-                enabled = true,
-                onClick = {
-                    translateEnabled = !translateEnabled
-                    if (!translateEnabled) showPlaceholder = false else showPlaceholder = true
-                },
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 50.dp)
-                    .padding(bottom = 10.dp)
                     .align(Alignment.BottomEnd)
-                    .size(24.dp)
-            )
+                    .fillMaxWidth(0.2f)
+            ) {
 
-            /*
-            BasicText(
-                text = "Language",
-                style = typography.l.bold.copy(color = colorPalette.text),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .clickable {
-                        menuState.display{
-                            Menu {
-                                enumValues<Languages>().toList().forEach {
-                                    MenuEntry(
-                                        icon = R.drawable.translate,
-                                        onClick = {
-                                            languageDestination = languageDestination(it)
-                                            menuState.hide()
-                                        },
-                                        text = when (it) {
-                                            Languages.System -> stringResource(R.string.system_language)
-                                            Languages.Arabic -> stringResource(R.string.arabic)
-                                            Languages.Bashkir -> stringResource(R.string.bashkir)
-                                            Languages.Catalan -> stringResource(R.string.catalan)
-                                            Languages.ChineseSimplified -> stringResource(R.string.chinese_simplified)
-                                            Languages.ChineseTraditional -> stringResource(R.string.chinese_traditional)
-                                            Languages.Czech -> stringResource(R.string.czech)
-                                            Languages.Dutch -> stringResource(R.string.lang_dutch)
-                                            Languages.English -> stringResource(R.string.english)
-                                            Languages.Esperanto -> stringResource(R.string.esperanto)
-                                            Languages.Finnish -> stringResource(R.string.lang_finnish)
-                                            Languages.French -> stringResource(R.string.french)
-                                            Languages.German -> stringResource(R.string.german)
-                                            Languages.Greek -> stringResource(R.string.greek)
-                                            Languages.Hebrew -> stringResource(R.string.lang_hebrew)
-                                            Languages.Hindi -> stringResource(R.string.lang_hindi)
-                                            Languages.Hungarian -> stringResource(R.string.hungarian)
-                                            Languages.Indonesian -> stringResource(R.string.indonesian)
-                                            Languages.Japanese -> stringResource(R.string.lang_japanese)
-                                            Languages.Korean -> stringResource(R.string.korean)
-                                            Languages.Italian -> stringResource(R.string.italian)
-                                            Languages.Odia -> stringResource(R.string.odia)
-                                            Languages.Persian -> stringResource(R.string.persian)
-                                            Languages.Polish -> stringResource(R.string.polish)
-                                            Languages.PortugueseBrazilian -> stringResource(R.string.portuguese_brazilian)
-                                            Languages.Portuguese -> stringResource(R.string.portuguese)
-                                            Languages.Romanian -> stringResource(R.string.romanian)
-                                            //Languages.RomanianEmo -> stringResource(R.string.romanian_emoticons_rom_n)
-                                            Languages.Russian -> stringResource(R.string.russian)
-                                            Languages.Sinhala -> stringResource(R.string.lang_sinhala)
-                                            Languages.Spanish -> stringResource(R.string.spanish)
-                                            Languages.Turkish -> stringResource(R.string.turkish)
-                                            Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
-                                            Languages.Vietnamese -> "Vietnamese"
-                                        }
-                                    )
-                                }
-
-                            }
-                        }
-                    }
-            )
-             */
-
-
-
-            Image(
-                painter = painterResource(R.drawable.ellipsis_vertical),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
-                modifier = Modifier
-                    .padding(all = 4.dp)
-                    .clickable(
-                        indication = rememberRipple(bounded = false),
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = {
-                            menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.time,
-                                        text = stringResource(R.string.show) + " ${
-                                            if (isShowingSynchronizedLyrics) stringResource(
-                                                R.string.unsynchronized_lyrics
-                                            ) else stringResource(R.string.synchronized_lyrics)
-                                        }",
-                                        secondaryText = if (isShowingSynchronizedLyrics) null else stringResource(
-                                            R.string.provided_by
-                                        ) + " kugou.com",
-                                        onClick = {
-                                            menuState.hide()
-                                            isShowingSynchronizedLyrics =
-                                                !isShowingSynchronizedLyrics
-                                        }
-                                    )
-
-                                    MenuEntry(
-                                        icon = R.drawable.pencil,
-                                        text = stringResource(R.string.edit_lyrics),
-                                        onClick = {
-                                            menuState.hide()
-                                            isEditing = true
-                                        }
-                                    )
-
-                                    MenuEntry(
-                                        icon = R.drawable.copy,
-                                        text = stringResource(R.string.copy_lyrics),
-                                        onClick = {
-                                            menuState.hide()
-                                            copyToClipboard = true
-                                        }
-                                    )
-
-                                    MenuEntry(
-                                        icon = R.drawable.search,
-                                        text = stringResource(R.string.search_lyrics_online),
-                                        onClick = {
-                                            menuState.hide()
-                                            val mediaMetadata = mediaMetadataProvider()
-
-                                            try {
-                                                context.startActivity(
-                                                    Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                                        putExtra(
-                                                            SearchManager.QUERY,
-                                                            "${mediaMetadata.title} ${mediaMetadata.artist} lyrics"
-                                                        )
-                                                    }
-                                                )
-                                            } catch (e: ActivityNotFoundException) {
-                                                context.toast("Couldn't find an application to browse the Internet")
+                IconButton(
+                    icon = R.drawable.translate,
+                    color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
+                    enabled = true,
+                    onClick = {
+                        translateEnabled = !translateEnabled
+                        if (!translateEnabled) showPlaceholder = false else showPlaceholder = true
+                    },
+                    modifier = Modifier
+                        //.padding(horizontal = 8.dp)
+                        .padding(bottom = 10.dp)
+                        .align(Alignment.BottomStart)
+                        .size(24.dp)
+                )
+                Image(
+                    painter = painterResource(R.drawable.ellipsis_vertical),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
+                    modifier = Modifier
+                        .padding(all = 4.dp)
+                        .clickable(
+                            indication = rememberRipple(bounded = false),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                menuState.display {
+                                    Menu {
+                                        MenuEntry(
+                                            icon = R.drawable.time,
+                                            text = stringResource(R.string.show) + " ${
+                                                if (isShowingSynchronizedLyrics) stringResource(
+                                                    R.string.unsynchronized_lyrics
+                                                ) else stringResource(R.string.synchronized_lyrics)
+                                            }",
+                                            secondaryText = if (isShowingSynchronizedLyrics) null else stringResource(
+                                                R.string.provided_by
+                                            ) + " kugou.com",
+                                            onClick = {
+                                                menuState.hide()
+                                                isShowingSynchronizedLyrics =
+                                                    !isShowingSynchronizedLyrics
                                             }
-                                        }
-                                    )
+                                        )
 
-                                    MenuEntry(
-                                        icon = R.drawable.download,
-                                        text = stringResource(R.string.fetch_lyrics_again),
-                                        enabled = lyrics != null,
-                                        onClick = {
-                                            menuState.hide()
-                                            query {
-                                                Database.upsert(
-                                                    Lyrics(
-                                                        songId = mediaId,
-                                                        fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
-                                                        synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
+                                        MenuEntry(
+                                            icon = R.drawable.pencil,
+                                            text = stringResource(R.string.edit_lyrics),
+                                            onClick = {
+                                                menuState.hide()
+                                                isEditing = true
+                                            }
+                                        )
+
+                                        MenuEntry(
+                                            icon = R.drawable.copy,
+                                            text = stringResource(R.string.copy_lyrics),
+                                            onClick = {
+                                                menuState.hide()
+                                                copyToClipboard = true
+                                            }
+                                        )
+
+                                        MenuEntry(
+                                            icon = R.drawable.search,
+                                            text = stringResource(R.string.search_lyrics_online),
+                                            onClick = {
+                                                menuState.hide()
+                                                val mediaMetadata = mediaMetadataProvider()
+
+                                                try {
+                                                    context.startActivity(
+                                                        Intent(Intent.ACTION_WEB_SEARCH).apply {
+                                                            putExtra(
+                                                                SearchManager.QUERY,
+                                                                "${mediaMetadata.title} ${mediaMetadata.artist} lyrics"
+                                                            )
+                                                        }
                                                     )
-                                                )
+                                                } catch (e: ActivityNotFoundException) {
+                                                    context.toast("Couldn't find an application to browse the Internet")
+                                                }
                                             }
-                                        }
-                                    )
+                                        )
+
+                                        MenuEntry(
+                                            icon = R.drawable.download,
+                                            text = stringResource(R.string.fetch_lyrics_again),
+                                            enabled = lyrics != null,
+                                            onClick = {
+                                                menuState.hide()
+                                                query {
+                                                    Database.upsert(
+                                                        Lyrics(
+                                                            songId = mediaId,
+                                                            fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
+                                                            synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    )
-                    .padding(all = 8.dp)
-                    .size(20.dp)
-                    .align(Alignment.BottomEnd)
-            )
+                        )
+                        .padding(all = 8.dp)
+                        .size(20.dp)
+                        .align(Alignment.BottomEnd)
+                )
+            }
         }
     }
 }
