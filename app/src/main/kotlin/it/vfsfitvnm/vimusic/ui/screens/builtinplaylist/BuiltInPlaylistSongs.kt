@@ -1158,7 +1158,9 @@ fun BuiltInPlaylistSongs(
                             )
 
 
-                    })
+                    },
+                    onHorizontalSwipeWhenActionDisabled = {}
+                )
             }
 
             }

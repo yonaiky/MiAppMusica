@@ -22,18 +22,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.ui.items.DragAnchors
 import it.vfsfitvnm.vimusic.ui.items.DraggableItem
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 
 
+@UnstableApi
 @ExperimentalFoundationApi
 @Composable
 fun BehindMotionSwipe(
     content: @Composable () -> Unit,
     leftActionsContent: @Composable () -> Unit,
-    rightActionsContent: @Composable () -> Unit
+    rightActionsContent: @Composable () -> Unit,
+    onHorizontalSwipeWhenActionDisabled: () -> Unit
 ) {
 
     val density = LocalDensity.current
@@ -62,6 +65,7 @@ fun BehindMotionSwipe(
 
     DraggableItem(
         draggableActive = isSwipeToActionEnabled,
+        onHorizontalSwipeWhenActionDisabled = onHorizontalSwipeWhenActionDisabled,
         state = state,
         content = {
             content()

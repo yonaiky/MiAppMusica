@@ -1480,7 +1480,8 @@ fun LocalPlaylistSongs(
                         )
 
                     }
-                }
+                },
+                    onHorizontalSwipeWhenActionDisabled = {}
                 )
 
             }

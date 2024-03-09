@@ -118,6 +118,7 @@ import it.vfsfitvnm.vimusic.utils.asMediaItem
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
 import it.vfsfitvnm.vimusic.utils.enqueue
 import it.vfsfitvnm.vimusic.utils.getDownloadState
+import it.vfsfitvnm.vimusic.utils.isSwipeToActionEnabledKey
 import it.vfsfitvnm.vimusic.utils.manageDownload
 import it.vfsfitvnm.vimusic.utils.medium
 import it.vfsfitvnm.vimusic.utils.queueLoopEnabledKey
@@ -356,6 +357,7 @@ fun Queue(
             )
         }
 
+        val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
 
 
         Column {
@@ -377,7 +379,7 @@ fun Queue(
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorPalette.text),
                             modifier = Modifier
-                                .absoluteOffset(0.dp,-10.dp)
+                                .absoluteOffset(0.dp, -10.dp)
                                 .align(Alignment.TopCenter)
                                 .size(30.dp)
                         )
@@ -399,7 +401,7 @@ fun Queue(
                     ) { window ->
                         BehindMotionSwipe(
                             content = {
-                                //var deltaX by remember { mutableStateOf(0f) }
+                                var deltaX by remember { mutableStateOf(0f) }
                                 val isPlayingThisMediaItem =
                                     mediaItemIndex == window.firstPeriodIndex
                                 //val currentItem by rememberUpdatedState(window)
@@ -538,8 +540,8 @@ fun Queue(
                                                 },
 
                                                 onDragEnd = {
-                                                    if (!isReorderDisabled)
-                                                        player.removeMediaItem(currentItem.firstPeriodIndex)
+                                                    if (!isReorderDisabled && !isSwipeToActionEnabled)
+                                                        player.removeMediaItem(window.firstPeriodIndex)
                                                 }
 
                                             )
@@ -605,6 +607,11 @@ fun Queue(
                                     )
 
                                 }
+                            },
+                            onHorizontalSwipeWhenActionDisabled = {
+                                if (!isReorderDisabled && !isSwipeToActionEnabled)
+                                    player.removeMediaItem(window.firstPeriodIndex)
+                                else context.toast(context.resources.getString(R.string.locked))
                             }
                         )
                     }
@@ -665,7 +672,7 @@ fun Queue(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(colorPalette.text),
                         modifier = Modifier
-                            .absoluteOffset(0.dp,-10.dp)
+                            .absoluteOffset(0.dp, -10.dp)
                             .align(Alignment.TopCenter)
                             .size(30.dp)
                     )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import kotlin.math.roundToInt
 
@@ -27,6 +31,7 @@ enum class DragAnchors {
     End,
 }
 
+@UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DraggableItem(
@@ -34,7 +39,8 @@ fun DraggableItem(
     content: @Composable BoxScope.() -> Unit,
     startAction: @Composable (BoxScope.() -> Unit)? = {},
     endAction: @Composable (BoxScope.() -> Unit)? = {},
-    draggableActive: Boolean = true
+    draggableActive: Boolean = true,
+    onHorizontalSwipeWhenActionDisabled: () -> Unit
 ) {
     //val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Box(
@@ -69,6 +75,24 @@ fun DraggableItem(
                     .anchoredDraggable(state, Orientation.Horizontal, reverseDirection = true),
                 content = content
             )
-        else content()
+        else {
+            //content()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                //deltaX = dragAmount
+                            },
+
+                            onDragEnd = {
+                                onHorizontalSwipeWhenActionDisabled()
+                            }
+                        )
+                    },
+                content = content
+            )
+        }
     }
 }
