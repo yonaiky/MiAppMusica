@@ -1523,6 +1523,41 @@ class PlayerService : InvincibleService(),
             startRadio(endpoint = endpoint, justAdd = false)
 
         @UnstableApi
+        fun setRadioMediaItems(endpoint: NavigationEndpoint.Endpoint.Watch?) {
+            radioJob?.cancel()
+            radio = null
+            YouTubeRadio(
+                endpoint?.videoId,
+                endpoint?.playlistId,
+                endpoint?.playlistSetVideoId,
+                endpoint?.params
+            ).let {
+                isLoadingRadio = true
+                coroutineScope.launch(Dispatchers.Main) {
+                    player.clearMediaItems()
+                    player.addMediaItems(it.process())
+                    //Log.d("mediaItem", "binder ${it.process()}")
+                }
+                radio = it
+                isLoadingRadio = false
+                //Log.d("mediaItem", "binder $mediaItems")
+                //return mediaItems
+                /*
+                isLoadingRadio = true
+                radioJob = coroutineScope.launch(Dispatchers.Main) {
+                    if (justAdd) {
+                        player.addMediaItems(it.process().drop(1))
+                    } else {
+                        player.forcePlayFromBeginning(it.process())
+                    }
+                    radio = it
+                    isLoadingRadio = false
+                }
+                 */
+            }
+        }
+
+        @UnstableApi
         private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
             radioJob?.cancel()
             radio = null

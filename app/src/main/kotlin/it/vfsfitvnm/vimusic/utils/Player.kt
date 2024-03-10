@@ -6,6 +6,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 
 
@@ -39,6 +40,21 @@ fun Player.shuffleQueue() {
     if (currentMediaItemIndex > 0) removeMediaItems(0, currentMediaItemIndex)
     if (currentMediaItemIndex < mediaItemCount - 1) removeMediaItems(currentMediaItemIndex + 1, mediaItemCount)
     addMediaItems(mediaItems.shuffled())
+}
+
+@SuppressLint("Range")
+@UnstableApi
+fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
+    if (mediaItems.isEmpty()) return
+
+    var mediaItemIndex = -1
+    mediaItems.forEachIndexed{ i, mediaItem ->
+        if (mediaItem.mediaId == mediaId) mediaItemIndex = i
+    }
+   Log.d("mediaItem-playAtIndex",mediaItemIndex.toString())
+    setMediaItems(mediaItems, mediaItemIndex, C.TIME_UNSET)
+    playWhenReady = true
+    prepare()
 }
 
 fun Player.forcePlay(mediaItem: MediaItem) {
