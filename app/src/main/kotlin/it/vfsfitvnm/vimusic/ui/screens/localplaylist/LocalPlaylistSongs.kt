@@ -917,52 +917,19 @@ fun LocalPlaylistSongs(
 
                 /*        */
                 Row (
-                    horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
                         .fillMaxWidth()
                 ) {
 
-                    Row (
-                        horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                    HeaderIconButton(
+                        icon = R.drawable.arrow_up,
+                        color = colorPalette.text,
+                        onClick = { sortOrder = !sortOrder },
                         modifier = Modifier
-                            .fillMaxWidth(0.50f)
-                    ) {
-                        HeaderIconButton(
-                            onClick = { searching = !searching },
-                            icon = R.drawable.search_circle,
-                            color = colorPalette.text,
-                            iconSize = 24.dp
-                        )
-                        HeaderIconButton(
-                            icon = R.drawable.locate,
-                            enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                nowPlayingItem = -1
-                                scrollToNowPlaying = false
-                                playlistSongs
-                                    .forEachIndexed { index, song ->
-                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                            nowPlayingItem = index
-                                    }
-
-                                if (nowPlayingItem > -1)
-                                    scrollToNowPlaying = true
-                            }
-                        )
-                        LaunchedEffect(scrollToNowPlaying) {
-                            if (scrollToNowPlaying)
-                                lazyListState.scrollToItem(nowPlayingItem, 1)
-                            scrollToNowPlaying = false
-                        }
-                    }
-
-                    Spacer(
-                        modifier = Modifier
-                            .width(30.dp)
+                            .graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
 
                     BasicText(
@@ -995,15 +962,43 @@ fun LocalPlaylistSongs(
                             }
                     )
 
-
-
-                    HeaderIconButton(
-                        icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
-                        onClick = { sortOrder = !sortOrder },
+                    Row (
+                        horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
-                    )
+                            .fillMaxWidth()
+                    ) {
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            icon = R.drawable.locate,
+                            enabled = playlistSongs.isNotEmpty(),
+                            color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                nowPlayingItem = -1
+                                scrollToNowPlaying = false
+                                playlistSongs
+                                    .forEachIndexed { index, song ->
+                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                            nowPlayingItem = index
+                                    }
+
+                                if (nowPlayingItem > -1)
+                                    scrollToNowPlaying = true
+                            }
+                        )
+                        LaunchedEffect(scrollToNowPlaying) {
+                            if (scrollToNowPlaying)
+                                lazyListState.scrollToItem(nowPlayingItem, 1)
+                            scrollToNowPlaying = false
+                        }
+                    }
 
                 }
 

@@ -391,6 +391,43 @@ fun DeviceListSongs(
                     ){
 
                     HeaderIconButton(
+                        icon = R.drawable.arrow_up,
+                        color = colorPalette.text,
+                        onClick = { sortOrder = !sortOrder },
+                        modifier = Modifier
+                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                    )
+
+                    BasicText(
+                        text = when (sortBy) {
+                            OnDeviceSongSortBy.Title -> stringResource(R.string.sort_title)
+                            OnDeviceSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
+                            OnDeviceSongSortBy.Artist -> stringResource(R.string.sort_artist)
+                        },
+                        style = typography.xs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .clickable {
+                                menuState.display{
+                                    SortMenu(
+                                        title = stringResource(R.string.sorting_order),
+                                        onDismiss = menuState::hide,
+                                        onTitle = { sortBy = OnDeviceSongSortBy.Title },
+                                        onDateAdded = { sortBy = OnDeviceSongSortBy.DateAdded },
+                                        onArtist = { sortBy = OnDeviceSongSortBy.Artist },
+                                    )
+                                }
+
+                            }
+                    )
+
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
+                    HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
                         color = colorPalette.text,
@@ -510,44 +547,6 @@ fun DeviceListSongs(
                             }
                         }
                     )
-
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
-
-                    BasicText(
-                        text = when (sortBy) {
-                            OnDeviceSongSortBy.Title -> stringResource(R.string.sort_title)
-                            OnDeviceSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                            OnDeviceSongSortBy.Artist -> stringResource(R.string.sort_artist)
-                        },
-                        style = typography.xs.semiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .clickable {
-                                menuState.display{
-                                    SortMenu(
-                                        title = stringResource(R.string.sorting_order),
-                                        onDismiss = menuState::hide,
-                                        onTitle = { sortBy = OnDeviceSongSortBy.Title },
-                                        onDateAdded = { sortBy = OnDeviceSongSortBy.DateAdded },
-                                        onArtist = { sortBy = OnDeviceSongSortBy.Artist },
-                                    )
-                                }
-
-                            }
-                    )
-
-
-                            HeaderIconButton(
-                                icon = R.drawable.arrow_up,
-                                color = colorPalette.text,
-                                onClick = { sortOrder = !sortOrder },
-                                modifier = Modifier
-                                    .graphicsLayer { rotationZ = sortOrderIconRotation }
-                            )
 
                 }
 

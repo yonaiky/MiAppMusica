@@ -778,56 +778,23 @@ fun BuiltInPlaylistSongs(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row (
-                    horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
                         .fillMaxWidth()
                 ) {
 
-                    Row (
-                        horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth(0.30f)
-                    ) {
-                        HeaderIconButton(
-                            onClick = { searching = !searching },
-                            icon = R.drawable.search_circle,
-                            color = colorPalette.text,
-                            iconSize = 24.dp
-                        )
-                        HeaderIconButton(
-                            icon = R.drawable.locate,
-                            enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                nowPlayingItem = -1
-                                scrollToNowPlaying = false
-                                songs
-                                    .forEachIndexed { index, song ->
-                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                            nowPlayingItem = index
-                                    }
-
-                                if (nowPlayingItem > -1)
-                                    scrollToNowPlaying = true
-                            }
-                        )
-                        LaunchedEffect(scrollToNowPlaying) {
-                            if (scrollToNowPlaying)
-                                lazyListState.scrollToItem(nowPlayingItem, 1)
-                            scrollToNowPlaying = false
-                        }
-                    }
-
-                    Spacer(
-                        modifier = Modifier
-                            .width(30.dp)
-                    )
-
                     if ( builtInPlaylist == BuiltInPlaylist.Favorites ||
-                         builtInPlaylist == BuiltInPlaylist.Offline )  {
+                        builtInPlaylist == BuiltInPlaylist.Offline )  {
+                        HeaderIconButton(
+                            icon = R.drawable.arrow_up,
+                            color = colorPalette.text,
+                            onClick = { sortOrder = !sortOrder },
+                            modifier = Modifier
+                                .graphicsLayer { rotationZ = sortOrderIconRotation }
+                        )
+
                         BasicText(
                             text = when (sortBy) {
                                 SongSortBy.Title -> stringResource(R.string.sort_title)
@@ -857,15 +824,52 @@ fun BuiltInPlaylistSongs(
                                 }
                         )
 
-                        HeaderIconButton(
-                            icon = R.drawable.arrow_up,
-                            color = colorPalette.text,
-                            onClick = { sortOrder = !sortOrder },
-                            modifier = Modifier
-                                .graphicsLayer { rotationZ = sortOrderIconRotation }
-                        )
-
                     }
+
+                    Row (
+                        horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            icon = R.drawable.locate,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                nowPlayingItem = -1
+                                scrollToNowPlaying = false
+                                songs
+                                    .forEachIndexed { index, song ->
+                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                            nowPlayingItem = index
+                                    }
+
+                                if (nowPlayingItem > -1)
+                                    scrollToNowPlaying = true
+                            }
+                        )
+                        LaunchedEffect(scrollToNowPlaying) {
+                            if (scrollToNowPlaying)
+                                lazyListState.scrollToItem(nowPlayingItem, 1)
+                            scrollToNowPlaying = false
+                        }
+                    }
+
+                    Spacer(
+                        modifier = Modifier
+                            .width(30.dp)
+                    )
+
+
                 }
 
                 Row (
