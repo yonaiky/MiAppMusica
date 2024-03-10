@@ -589,9 +589,7 @@ fun MediaItemMenu(
 
                 Box(
                     modifier = Modifier
-                        //.drawBehind { drawRect(backgroundColorProvider()) }
                         .fillMaxSize()
-                    //.padding(horizontalBottomPaddingValues)
 
                 ) {
                     Image(
