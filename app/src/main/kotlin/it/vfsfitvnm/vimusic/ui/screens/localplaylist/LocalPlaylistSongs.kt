@@ -970,13 +970,6 @@ fun LocalPlaylistSongs(
                     ) {
                         HeaderIconButton(
                             modifier = Modifier.padding(horizontal = 5.dp),
-                            onClick = { searching = !searching },
-                            icon = R.drawable.search_circle,
-                            color = colorPalette.text,
-                            iconSize = 24.dp
-                        )
-                        HeaderIconButton(
-                            modifier = Modifier.padding(horizontal = 5.dp),
                             icon = R.drawable.locate,
                             enabled = playlistSongs.isNotEmpty(),
                             color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
@@ -998,6 +991,13 @@ fun LocalPlaylistSongs(
                                 lazyListState.scrollToItem(nowPlayingItem, 1)
                             scrollToNowPlaying = false
                         }
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
                     }
 
                 }
