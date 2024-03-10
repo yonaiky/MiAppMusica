@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import com.valentinilk.shimmer.shimmer
@@ -55,7 +54,6 @@ import it.vfsfitvnm.vimusic.ui.items.SongItem
 import it.vfsfitvnm.vimusic.ui.items.SongItemPlaceholder
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.globalRoutes
-import it.vfsfitvnm.vimusic.ui.screens.searchRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchresult.ItemsPage
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
@@ -63,7 +61,7 @@ import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.artistScreenTabIndexKey
 import it.vfsfitvnm.vimusic.utils.asMediaItem
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
-import it.vfsfitvnm.vimusic.utils.findNextMediaItemById
+import it.vfsfitvnm.vimusic.utils.findMediaItemIndexById
 import it.vfsfitvnm.vimusic.utils.forcePlay
 import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
 import it.vfsfitvnm.vimusic.utils.getDownloadState
@@ -71,8 +69,6 @@ import it.vfsfitvnm.vimusic.utils.manageDownload
 import it.vfsfitvnm.vimusic.utils.mediaItems
 import it.vfsfitvnm.vimusic.utils.playAtMedia
 import it.vfsfitvnm.vimusic.utils.rememberPreference
-import it.vfsfitvnm.vimusic.utils.showSearchTabKey
-import it.vfsfitvnm.vimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -330,6 +326,12 @@ fun ArtistScreen(browseId: String) {
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
+                                                    /*
+                                                    binder?.player?.playAtMedia(
+                                                        binder.player.currentTimeline.mediaItems,
+                                                        song.asMediaItem.mediaId
+                                                    )
+                                                     */
                                                 }
                                             )
                                     )

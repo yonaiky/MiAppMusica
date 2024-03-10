@@ -45,14 +45,18 @@ fun Player.shuffleQueue() {
 @SuppressLint("Range")
 @UnstableApi
 fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
+    Log.d("mediaItem-playAtMedia","${mediaItems.size}")
     if (mediaItems.isEmpty()) return
-
-    var mediaItemIndex = -1
-    mediaItems.forEachIndexed{ i, mediaItem ->
-        if (mediaItem.mediaId == mediaId) mediaItemIndex = i
+    var index = -1
+    for (i in mediaItems.indices) {
+        Log.d("mediaItem-playAtMedia","${i}")
+        if (mediaItems[i].mediaId == mediaId) {
+            Log.d("mediaItem-playAtMedia","found ${i}")
+            index = i
+        }
     }
-   Log.d("mediaItem-playAtIndex",mediaItemIndex.toString())
-    setMediaItems(mediaItems, mediaItemIndex, C.TIME_UNSET)
+    Log.d("mediaItem-playAtMedia",index.toString())
+    setMediaItems(mediaItems, index, C.TIME_UNSET)
     playWhenReady = true
     prepare()
 }
@@ -120,4 +124,13 @@ fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
         }
     }
     return null
+}
+
+fun Player.findMediaItemIndexById(mediaId: String): Int {
+    for (i in currentMediaItemIndex until mediaItemCount) {
+        if (getMediaItemAt(i).mediaId == mediaId) {
+            return i
+        }
+    }
+    return -1
 }
