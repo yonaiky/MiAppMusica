@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,6 +47,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -583,12 +587,30 @@ fun MediaItemMenu(
                 val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
                 val thumbnailArtistSizePx = thumbnailArtistSizeDp.px
 
+                Box(
+                    modifier = Modifier
+                        //.drawBehind { drawRect(backgroundColorProvider()) }
+                        .fillMaxSize()
+                    //.padding(horizontalBottomPaddingValues)
+
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.chevron_down),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette.text),
+                        modifier = Modifier
+                            .absoluteOffset(0.dp, -10.dp)
+                            .align(Alignment.TopCenter)
+                            .size(30.dp)
+                            .clickable { onDismiss() }
+                    )
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(end = 12.dp)
                 ) {
-
                     SongItem(
                         thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)
                             ?.toString(),
