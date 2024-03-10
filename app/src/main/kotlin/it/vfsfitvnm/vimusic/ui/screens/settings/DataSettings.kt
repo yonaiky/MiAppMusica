@@ -170,8 +170,8 @@ fun DataSettings() {
                             inputStream.copyTo(outputStream)
                         }
                     }
-                //context.stopService(context.intent<PlayerService>())
-                //context.stopService(context.intent<MyDownloadService>())
+                context.stopService(context.intent<PlayerService>())
+                context.stopService(context.intent<MyDownloadService>())
 
                 exitAfterRestore = true
             }
