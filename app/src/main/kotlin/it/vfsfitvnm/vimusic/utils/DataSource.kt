@@ -39,8 +39,12 @@ class ConditionalCacheDataSourceFactory(
         override fun open(dataSpec: DataSpec): Long {
             selectedFactory =
                 if (shouldCache(dataSpec)) cacheDataSourceFactory else upstreamDataSourceFactory
-
-            return source.open(dataSpec)
+            return try {
+                source.open(dataSpec)
+            } catch (e: Exception) {
+                source.close()
+                0
+            }
         }
 
         override fun getUri() = source.uri
