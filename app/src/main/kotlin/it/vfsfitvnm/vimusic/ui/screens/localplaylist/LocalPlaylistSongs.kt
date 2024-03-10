@@ -646,6 +646,19 @@ fun LocalPlaylistSongs(
                     )
 
                     HeaderIconButton(
+                        icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
+                        enabled = playlistSongs.isNotEmpty() == true,
+                        color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {
+                            if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                isReorderDisabled = !isReorderDisabled
+                            } else {
+                                context.toast("Playlist sorting only possible for ascending position")
+                            }
+                        }
+                    )
+
+                    HeaderIconButton(
                         icon = R.drawable.downloaded,
                         enabled = playlistSongs.isNotEmpty(),
                         color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
@@ -753,20 +766,6 @@ fun LocalPlaylistSongs(
                                         songs.shuffled().map(Song::asMediaItem)
                                     )
                                 }
-                            }
-                        }
-                    )
-
-
-                    HeaderIconButton(
-                        icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
-                        enabled = playlistSongs.isNotEmpty() == true,
-                        color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                                isReorderDisabled = !isReorderDisabled
-                            } else {
-                                context.toast("Playlist sorting only possible for ascending position")
                             }
                         }
                     )
