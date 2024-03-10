@@ -30,9 +30,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -69,11 +71,15 @@ import it.vfsfitvnm.vimusic.utils.albumSortByKey
 import it.vfsfitvnm.vimusic.utils.albumSortOrderKey
 import it.vfsfitvnm.vimusic.utils.asMediaItem
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
+import it.vfsfitvnm.vimusic.utils.effectRotationKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @ExperimentalTextApi
 @UnstableApi
@@ -120,6 +126,12 @@ fun HomeAlbums(
     val lazyListState = rememberLazyListState()
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    //val effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    var isRotated by rememberSaveable { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (isRotated) 360F else 0f,
+        animationSpec = tween(durationMillis = 300), label = ""
+    )
 
     Box (
         modifier = Modifier
@@ -164,10 +176,12 @@ fun HomeAlbums(
                     )
 
                     HeaderIconButton(
-                        icon = R.drawable.shuffle,
+                        modifier = Modifier.rotate(rotationAngle),
+                        icon = R.drawable.dice,
                         enabled = items.isNotEmpty() ,
                         color = colorPalette.text,
                         onClick = {
+                            isRotated = !isRotated
                             onAlbumClick(items.get((0..<items.size).random()))
                         }
                     )
