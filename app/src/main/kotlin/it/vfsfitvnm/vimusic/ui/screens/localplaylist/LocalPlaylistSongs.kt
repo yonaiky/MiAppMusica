@@ -599,7 +599,7 @@ fun LocalPlaylistSongs(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
-                            title = playlistPreview?.songCount.toString(),
+                            title = playlistSongs.size.toString(),
                             icon = painterResource(R.drawable.musical_notes)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
