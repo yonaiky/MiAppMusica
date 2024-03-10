@@ -87,6 +87,7 @@ import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.AlbumSortBy
 import it.vfsfitvnm.vimusic.enums.BuiltInPlaylist
 import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
+import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.PlaylistSongSortBy
 import it.vfsfitvnm.vimusic.enums.RecommendationsNumber
 import it.vfsfitvnm.vimusic.enums.SongSortBy
@@ -149,6 +150,9 @@ import it.vfsfitvnm.vimusic.utils.BehindMotionSwipe
 import it.vfsfitvnm.vimusic.utils.LeftAction
 import it.vfsfitvnm.vimusic.utils.MaxTopPlaylistItemsKey
 import it.vfsfitvnm.vimusic.utils.RightActions
+import it.vfsfitvnm.vimusic.utils.contentWidthKey
+import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
+import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.toast
 import kotlinx.coroutines.flow.asFlow
 import java.text.SimpleDateFormat
@@ -431,7 +435,16 @@ fun BuiltInPlaylistSongs(
         )
     }
 
-    Box {
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+
+    Box (
+        modifier = Modifier
+            .background(colorPalette.background0)
+            //.fillMaxSize()
+            .fillMaxHeight()
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+    ) {
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
