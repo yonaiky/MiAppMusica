@@ -1105,11 +1105,13 @@ fun BuiltInPlaylistSongs(
                                         }
                                     },
                                     onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            songs.map(Song::asMediaItem),
-                                            index
-                                        )
+                                        if (!selectItems) {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                songs.map(Song::asMediaItem),
+                                                index
+                                            )
+                                        }
                                     }
                                 )
                                 .background(color = colorPalette.background0)

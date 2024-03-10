@@ -904,126 +904,7 @@ fun LocalPlaylistSongs(
                                         */
                                     )
                                 }
-                                /*
-                                Menu {
-                                    playlistPreview?.playlist?.browseId?.let { browseId ->
-                                        MenuEntry(
-                                            icon = R.drawable.sync,
-                                            text = stringResource(R.string.sync),
-                                            onClick = {
-                                                menuState.hide()
-                                                transaction {
-                                                    runBlocking(Dispatchers.IO) {
-                                                        withContext(Dispatchers.IO) {
-                                                            Innertube.playlistPage(
-                                                                BrowseBody(
-                                                                    browseId = browseId
-                                                                )
-                                                            )
-                                                                ?.completed()
-                                                        }
-                                                    }?.getOrNull()?.let { remotePlaylist ->
-                                                        Database.clearPlaylist(playlistId)
 
-                                                        remotePlaylist.songsPage
-                                                            ?.items
-                                                            ?.map(Innertube.SongItem::asMediaItem)
-                                                            ?.onEach(Database::insert)
-                                                            ?.mapIndexed { position, mediaItem ->
-                                                                SongPlaylistMap(
-                                                                    songId = mediaItem.mediaId,
-                                                                    playlistId = playlistId,
-                                                                    position = position
-                                                                )
-                                                            }?.let(Database::insertSongPlaylistMaps)
-                                                    }
-                                                }
-                                            }
-                                        )
-                                    }
-
-                                    MenuEntry(
-                                        icon = R.drawable.pencil,
-                                        text = stringResource(R.string.rename),
-                                        onClick = {
-                                            menuState.hide()
-                                            isRenaming = true
-                                        }
-                                    )
-
-
-
-                                    MenuEntry(
-                                        icon = R.drawable.add_in_playlist,
-                                        text = stringResource(R.string.add_to_playlist),
-                                        onClick = {
-                                            menuState.hide()
-                                            if (!selectItems)
-                                                showAddPlaylistSelectDialog = true  else
-                                                showPlaylistSelectDialog = true
-                                        }
-                                    )
-
-
-                                    MenuEntry(
-                                        icon = R.drawable.position,
-                                        text = stringResource(R.string.renumber_songs_positions),
-                                        onClick = {
-                                            menuState.hide()
-                                            isRenumbering = true
-                                        }
-                                    )
-
-                                    MenuEntry(
-                                        icon = R.drawable.trash,
-                                        text = stringResource(R.string.delete),
-                                        onClick = {
-                                            menuState.hide()
-                                            isDeleting = true
-                                        }
-                                    )
-
-                                    if (!playlistPreview?.playlist?.browseId.isNullOrBlank())
-                                    MenuEntry(
-                                        icon = R.drawable.play,
-                                        text = stringResource(R.string.listen_on_youtube),
-                                        onClick = {
-                                            menuState.hide()
-                                            binder?.player?.pause()
-                                            uriHandler.openUri(
-                                                "https://youtube.com/playlist?list=${
-                                                    playlistPreview?.playlist?.browseId?.removePrefix(
-                                                        "VL"
-                                                    )
-                                                }"
-                                            )
-                                        }
-                                    )
-
-                                    val ytNonInstalled =
-                                        stringResource(R.string.it_seems_that_youtube_music_is_not_installed)
-                                    if (!playlistPreview?.playlist?.browseId.isNullOrBlank())
-                                    MenuEntry(
-                                        icon = R.drawable.musical_notes,
-                                        text = stringResource(R.string.listen_on_youtube_music),
-                                        onClick = {
-                                            menuState.hide()
-                                            binder?.player?.pause()
-                                            if (!launchYouTubeMusic(
-                                                    context,
-                                                    "playlist?list=${
-                                                        playlistPreview?.playlist?.browseId?.removePrefix(
-                                                            "VL"
-                                                        )
-                                                    }"
-                                                )
-                                            )
-                                                context.toast(ytNonInstalled)
-                                        }
-                                    )
-
-                                }
-                                */
                             }
                         }
                     )
@@ -1110,69 +991,11 @@ fun LocalPlaylistSongs(
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
                                     )
                                 }
-                                //showSortTypeSelectDialog = true
+
                             }
                     )
 
-                    /*
-                    if (showSortTypeSelectDialog)
-                        ValueSelectorDialog(
-                            onDismiss = { showSortTypeSelectDialog = false },
-                            title = stringResource(R.string.sorting_order),
-                            selectedValue = sortBy,
-                            values = enumValues<PlaylistSongSortBy>().toList(),
-                            onValueSelected = { sortBy = it },
-                            valueText = {
-                                when (it) {
-                                    PlaylistSongSortBy.AlbumYear -> stringResource(R.string.sort_album_year)
-                                    PlaylistSongSortBy.Position -> stringResource(R.string.sort_position)
-                                    PlaylistSongSortBy.Title -> stringResource(R.string.sort_title)
-                                    PlaylistSongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
-                                    PlaylistSongSortBy.Artist -> stringResource(R.string.sort_artist)
-                                    PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
-                                }
-                            }
-                        )
 
-                     */
-
-                    /*
-                    HeaderIconButton(
-                        icon = R.drawable.calendar,
-                        color = if (sortBy == PlaylistSongSortBy.AlbumYear) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.AlbumYear }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.up_right_arrow,
-                        color = if (sortBy == PlaylistSongSortBy.DatePlayed) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.DatePlayed }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.position,
-                        color = if (sortBy == PlaylistSongSortBy.Position) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.Position }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.trending,
-                        color = if (sortBy == PlaylistSongSortBy.PlayTime) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.PlayTime }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.text,
-                        color = if (sortBy == PlaylistSongSortBy.Title) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.Title }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.person,
-                        color = if (sortBy == PlaylistSongSortBy.Artist) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = PlaylistSongSortBy.Artist }
-                    )
-                     */
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
@@ -1417,12 +1240,13 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onClick = {
-                                        playlistSongs
-                                            .map(Song::asMediaItem)
-                                            .let { mediaItems ->
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(mediaItems, index)
-                                            }
+                                        if (!selectItems)
+                                            playlistSongs
+                                                .map(Song::asMediaItem)
+                                                .let { mediaItems ->
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayAtIndex(mediaItems, index)
+                                                }
                                     }
                                 )
                                 //.animateItemPlacement(reorderingState)
