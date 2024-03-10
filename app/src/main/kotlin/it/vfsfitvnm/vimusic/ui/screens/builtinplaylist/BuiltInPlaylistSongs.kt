@@ -153,6 +153,7 @@ import it.vfsfitvnm.vimusic.utils.RightActions
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
+import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 import it.vfsfitvnm.vimusic.utils.toast
 import kotlinx.coroutines.flow.asFlow
 import java.text.SimpleDateFormat
@@ -437,6 +438,7 @@ fun BuiltInPlaylistSongs(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     Box (
         modifier = Modifier
@@ -467,7 +469,7 @@ fun BuiltInPlaylistSongs(
                     },
                     iconId = R.drawable.search,
                     enabled = true,
-                    showIcon = true,
+                    showIcon = !showSearchTab,
                     modifier = Modifier,
                     onClick = onSearchClick
                 )
