@@ -92,7 +92,12 @@ fun Player.forceSeekToPrevious() {
 fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
+@UnstableApi
 fun Player.addNext(mediaItem: MediaItem) {
+    val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
+    if (itemIndex == 0) return
+    if (itemIndex > -1) removeMediaItem(itemIndex)
+
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
         forcePlay(mediaItem)
     } else {
