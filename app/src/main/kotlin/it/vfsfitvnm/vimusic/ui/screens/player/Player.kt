@@ -1143,12 +1143,12 @@ fun Player(
                     )
                 }
 
-                /*
+
                 Spacer(
                     modifier = Modifier
-                        .height(20.dp)
+                        .height(10.dp)
                 )
-                 */
+
 
 
                 controlsContent(
