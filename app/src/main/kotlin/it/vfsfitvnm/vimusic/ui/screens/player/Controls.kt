@@ -227,6 +227,7 @@ fun Controls(
 
     var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
 
+    /*
     var windows by remember {
         mutableStateOf(binder.player.currentTimeline.windows)
     }
@@ -247,6 +248,7 @@ fun Controls(
             durationTextToMillis(it1)
         }?.toLong() ?: 0
     }
+     */
 
     /*
     var showLyrics by rememberSaveable {
@@ -614,16 +616,17 @@ fun Controls(
                     }
 
                     if (!paused) {
-                        /*
+
                         BasicText(
-                            text = formatAsDuration(timeRemaining.toLong()),
+                            text = "-${formatAsDuration(timeRemaining.toLong())}",
                             style = typography.xxs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
                         )
-                         */
+
+                        /*
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
@@ -645,6 +648,7 @@ fun Controls(
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }
+                         */
 
                     } else {
                         Image(
@@ -657,20 +661,22 @@ fun Controls(
                         )
                     }
 
+                /*
                 BasicText(
                     text = "-${formatAsDuration(timeRemaining.toLong())} / ${formatAsDuration(duration)}",
                     style = typography.xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                /*
+                 */
+
                 BasicText(
                     text = formatAsDuration(duration),
                     style = typography.xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                 */
+
             }
         }
 

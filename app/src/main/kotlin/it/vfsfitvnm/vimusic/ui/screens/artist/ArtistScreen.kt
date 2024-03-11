@@ -323,9 +323,30 @@ fun ArtistScreen(browseId: String) {
                                                     }
                                                 },
                                                 onClick = {
+
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
+
+                                                    /*
+                                                    binder?.setRadioMediaItems(song.info?.endpoint)
+                                                    binder?.player?.currentTimeline?.mediaItems
+                                                        //.map(Song::asMediaItem)
+                                                        .let { mediaItems ->
+                                                            var i = -1
+                                                            mediaItems?.forEachIndexed{index, mediaItem ->
+                                                                if (mediaItem.mediaId == song.asMediaItem.mediaId)
+                                                                    i = index
+                                                            }
+                                                            binder?.stopRadio()
+                                                            if (mediaItems != null) {
+                                                                binder?.player?.forcePlayAtIndex(
+                                                                    mediaItems,
+                                                                    i
+                                                                )
+                                                            }
+                                                        }
+                                                     */
                                                     /*
                                                     binder?.player?.playAtMedia(
                                                         binder.player.currentTimeline.mediaItems,

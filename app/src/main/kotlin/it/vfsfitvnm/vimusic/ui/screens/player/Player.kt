@@ -732,7 +732,7 @@ fun Player(
         }
     ) {
 
-        /*
+
         var windows by remember {
             mutableStateOf(binder.player.currentTimeline.windows)
         }
@@ -753,7 +753,7 @@ fun Player(
                 durationTextToMillis(it1)
             }?.toLong() ?: 0
         }
-         */
+
 
         var isShowingLyrics by rememberSaveable {
             mutableStateOf(false)
@@ -1056,25 +1056,26 @@ fun Player(
                         )
                          */
 
-                        Image(
-                            painter = painterResource(R.drawable.ellipsis_vertical),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
-                            modifier = Modifier
-                                .clickable {
-                                    menuState.display {
-                                        PlayerMenu(
-                                            onDismiss = menuState::hide,
-                                            mediaItem = mediaItem,
-                                            binder = binder
-                                        )
+                        if(!showButtonPlayerMenu)
+                            Image(
+                                painter = painterResource(R.drawable.ellipsis_vertical),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                                modifier = Modifier
+                                    .clickable {
+                                        menuState.display {
+                                            PlayerMenu(
+                                                onDismiss = menuState::hide,
+                                                mediaItem = mediaItem,
+                                                binder = binder
+                                            )
+                                        }
                                     }
-                                }
-                                .rotate(rotationAngle)
-                                //.padding(10.dp)
-                                .size(24.dp)
+                                    .rotate(rotationAngle)
+                                    //.padding(10.dp)
+                                    .size(24.dp)
 
-                        )
+                            )
                         /*
                         IconButton(
                             icon = R.drawable.ellipsis_vertical,
@@ -1119,7 +1120,7 @@ fun Player(
                     )
                 }
 
-                /*
+
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
@@ -1141,12 +1142,13 @@ fun Player(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                 */
 
+                /*
                 Spacer(
                     modifier = Modifier
                         .height(20.dp)
                 )
+                 */
 
 
                 controlsContent(

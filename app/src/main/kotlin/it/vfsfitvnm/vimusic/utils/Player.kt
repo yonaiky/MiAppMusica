@@ -47,16 +47,10 @@ fun Player.shuffleQueue() {
 fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
     Log.d("mediaItem-playAtMedia","${mediaItems.size}")
     if (mediaItems.isEmpty()) return
-    var index = -1
-    for (i in mediaItems.indices) {
-        Log.d("mediaItem-playAtMedia","${i}")
-        if (mediaItems[i].mediaId == mediaId) {
-            Log.d("mediaItem-playAtMedia","found ${i}")
-            index = i
-        }
-    }
-    Log.d("mediaItem-playAtMedia",index.toString())
-    setMediaItems(mediaItems, index, C.TIME_UNSET)
+    val itemIndex = findMediaItemIndexById(mediaId)
+
+    Log.d("mediaItem-playAtMedia",itemIndex.toString())
+    setMediaItems(mediaItems, itemIndex, C.TIME_UNSET)
     playWhenReady = true
     prepare()
 }
