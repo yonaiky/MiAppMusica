@@ -9,6 +9,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -67,8 +68,10 @@ import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
+import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 import it.vfsfitvnm.vimusic.utils.align
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
@@ -90,7 +93,11 @@ fun OnlineSearch(
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
     onSearch: (String) -> Unit,
     onViewPlaylist: (String) -> Unit,
-    decorationBox: @Composable (@Composable () -> Unit) -> Unit
+    decorationBox: @Composable (@Composable () -> Unit) -> Unit,
+    onAction1: () -> Unit,
+    onAction2: () -> Unit,
+    onAction3: () -> Unit,
+    onAction4: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -147,15 +154,16 @@ fun OnlineSearch(
 
     val lazyListState = rememberLazyListState()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth()
     ) {
         LazyColumn(
             state = lazyListState,
@@ -217,6 +225,42 @@ fun OnlineSearch(
                         )
                     },
                     actionsContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(horizontal = 40.dp)
+                                .fillMaxWidth()
+                        ) {
+                            IconButton(
+                                onClick = onAction1,
+                                icon = R.drawable.globe,
+                                color = colorPalette.favoritesIcon,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            IconButton(
+                                onClick = onAction2,
+                                icon = R.drawable.library,
+                                color = colorPalette.favoritesIcon,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            IconButton(
+                                onClick = onAction3,
+                                icon = R.drawable.link,
+                                color = colorPalette.favoritesIcon,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            IconButton(
+                                onClick = onAction4,
+                                icon = R.drawable.chevron_back,
+                                color = colorPalette.favoritesIcon,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                        }
                         /*
                         if (playlistId != null) {
                             val isAlbum = playlistId.startsWith("OLAK5uy_")
@@ -233,13 +277,14 @@ fun OnlineSearch(
                         )
 
                          */
-
+                        /*
                         if (textFieldValue.text.isNotEmpty()) {
                             SecondaryTextButton(
                                 text = stringResource(R.string.clear),
                                 onClick = { onTextFieldValueChanged(TextFieldValue()) }
                             )
                         }
+                         */
                     },
                     /*
                     modifier = Modifier

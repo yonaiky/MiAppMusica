@@ -168,19 +168,31 @@ fun SearchTypeScreen(
                                     }
                             },
                             onViewPlaylist = {}, //onViewPlaylist,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
 
                         1 -> LocalSongSearch(
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
 
                         2 -> GoToLink(
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
                     }
                 }

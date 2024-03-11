@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -79,6 +80,7 @@ import it.vfsfitvnm.vimusic.ui.screens.artistRoute
 import it.vfsfitvnm.vimusic.ui.screens.playlistRoute
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.align
 import it.vfsfitvnm.vimusic.utils.asMediaItem
@@ -112,7 +114,11 @@ import kotlinx.coroutines.withContext
 fun GoToLink(
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
-    decorationBox: @Composable (@Composable () -> Unit) -> Unit
+    decorationBox: @Composable (@Composable () -> Unit) -> Unit,
+    onAction1: () -> Unit,
+    onAction2: () -> Unit,
+    onAction3: () -> Unit,
+    onAction4: () -> Unit,
 ) {
 
     val (colorPalette, typography) = LocalAppearance.current
@@ -126,15 +132,16 @@ fun GoToLink(
     }
 
     val context = LocalContext.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth()
     ) {
 
         LazyColumn(
@@ -165,6 +172,43 @@ fun GoToLink(
                         onClick = {}
                     )
 
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 40.dp)
+                        .fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = onAction1,
+                        icon = R.drawable.globe,
+                        color = colorPalette.favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                    IconButton(
+                        onClick = onAction2,
+                        icon = R.drawable.library,
+                        color = colorPalette.favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                    IconButton(
+                        onClick = onAction3,
+                        icon = R.drawable.link,
+                        color = colorPalette.favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                    IconButton(
+                        onClick = onAction4,
+                        icon = R.drawable.chevron_back,
+                        color = colorPalette.favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
                 }
 
                 InputTextField(

@@ -18,6 +18,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -76,6 +77,10 @@ fun SearchScreen(
 
     val applyFontPadding by rememberPreference(applyFontPaddingKey, false)
 
+    var clearClick by remember {
+        mutableStateOf(false)
+    }
+
     PersistMapCleanup(tagPrefix = "search/")
 
     RouteHandler(listenToGlobalEmitter = true) {
@@ -106,7 +111,9 @@ fun SearchScreen(
                         )
                     }
 
+
                 }
+
                 Box(
                     contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
@@ -130,6 +137,29 @@ fun SearchScreen(
 
                     innerTextField()
                 }
+                Box(
+                    contentAlignment = Alignment.CenterEnd,
+                    modifier = Modifier
+                        // .weight(1f)
+                        .padding(horizontal = 10.dp)
+                ) {
+                    Column (
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Spacer(modifier = Modifier.padding(top = 5.dp))
+
+                        IconButton(
+                            onClick = { onTextFieldValueChanged(TextFieldValue("")) },
+                            icon = R.drawable.close,
+                            color = colorPalette.favoritesIcon,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
+
+
+                }
             }
 
             Scaffold(
@@ -138,6 +168,7 @@ fun SearchScreen(
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
+                hideTabs = true,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
                 tabColumnContent = { Item ->
@@ -153,19 +184,31 @@ fun SearchScreen(
                             onTextFieldValueChanged = onTextFieldValueChanged,
                             onSearch = onSearch,
                             onViewPlaylist = onViewPlaylist,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
 
                         1 -> LocalSongSearch(
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
 
                         2 -> GoToLink(
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
-                            decorationBox = decorationBox
+                            decorationBox = decorationBox,
+                            onAction1 = { onTabChanged(0) },
+                            onAction2 = { onTabChanged(1) },
+                            onAction3 = { onTabChanged(2) },
+                            onAction4 = { onGoToHome() },
                         )
                     }
                 }

@@ -35,6 +35,7 @@ fun Scaffold(
     bottomIconButtonId: Int? = R.drawable.search,
     onBottomIconButtonClick: (() -> Unit)? = {},
     showBottomButton: Boolean? = false,
+    hideTabs: Boolean? = false,
     tabIndex: Int,
     onTabChanged: (Int) -> Unit,
     tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
@@ -62,7 +63,8 @@ fun Scaffold(
                 showBottomButton = showBottomButton,
                 tabIndex = tabIndex,
                 onTabIndexChanged = onTabChanged,
-                content = tabColumnContent
+                content = tabColumnContent,
+                hideTabs = hideTabs
             )
         }
 
