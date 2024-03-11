@@ -631,11 +631,12 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                }
 */
 
-        val uri = intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
+        //val uri = intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
+        val uri = intent.data ?: intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
         //val uri = intent?.data ?: return
 
-        //intent.data = null
-        //this.intent = null
+        intent.data = null
+        this.intent = null
 
         Toast.makeText(this, "${"RiMusic "}${getString(R.string.opening_url)}", Toast.LENGTH_LONG).show()
 
