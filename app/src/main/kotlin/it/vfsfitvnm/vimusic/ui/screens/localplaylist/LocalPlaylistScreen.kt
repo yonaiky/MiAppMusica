@@ -41,7 +41,7 @@ fun LocalPlaylistScreen(playlistId: Long) {
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
-                showBottomButton = showSearchTab,
+                //showBottomButton = showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = 0,
                 onTabChanged = { },
