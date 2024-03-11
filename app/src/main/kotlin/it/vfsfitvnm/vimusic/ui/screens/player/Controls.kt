@@ -227,6 +227,27 @@ fun Controls(
 
     var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
 
+    var windows by remember {
+        mutableStateOf(binder.player.currentTimeline.windows)
+    }
+    var queuedSongs by remember {
+        mutableStateOf<List<Song>>(emptyList())
+    }
+    LaunchedEffect(mediaId, windows) {
+        Database.getSongsList(
+            windows.map {
+                it.mediaItem.mediaId
+            }
+        ).collect{ queuedSongs = it}
+    }
+
+    var totalPlayTimes = 0L
+    queuedSongs.forEach {
+        totalPlayTimes += it.durationText?.let { it1 ->
+            durationTextToMillis(it1)
+        }?.toLong() ?: 0
+    }
+
     /*
     var showLyrics by rememberSaveable {
         mutableStateOf(false)
@@ -593,6 +614,7 @@ fun Controls(
                     }
 
                     if (!paused) {
+                        /*
                         BasicText(
                             text = formatAsDuration(timeRemaining.toLong()),
                             style = typography.xxs.semiBold,
@@ -601,6 +623,29 @@ fun Controls(
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
                         )
+                         */
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.time),
+                                colorFilter = ColorFilter.tint(colorPalette.accent),
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .padding(horizontal = 5.dp),
+                                contentDescription = "Background Image",
+                                contentScale = ContentScale.Fit
+                            )
+                            BasicText(
+                                text = " ${formatAsTime(totalPlayTimes)}",
+                                style = typography.xxs.semiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+
                     } else {
                         Image(
                             painter = painterResource(R.drawable.pause),
@@ -613,11 +658,19 @@ fun Controls(
                     }
 
                 BasicText(
+                    text = "-${formatAsDuration(timeRemaining.toLong())} / ${formatAsDuration(duration)}",
+                    style = typography.xxs.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                /*
+                BasicText(
                     text = formatAsDuration(duration),
                     style = typography.xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+                 */
             }
         }
 
