@@ -154,6 +154,7 @@ import it.vfsfitvnm.vimusic.utils.contentWidthKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
+import it.vfsfitvnm.vimusic.utils.songToggleLike
 import it.vfsfitvnm.vimusic.utils.toast
 import kotlinx.coroutines.flow.asFlow
 import java.text.SimpleDateFormat
@@ -1144,21 +1145,7 @@ fun BuiltInPlaylistSongs(
                                 iconAction1 = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
                                 backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
                                 onClickAction1 = {
-                                    query {
-                                        if (Database.songExist(song.asMediaItem.mediaId) == 0)
-                                            Database.insert(song.asMediaItem, Song::toggleLike)
-                                        else {
-                                            if (Database.songliked(song.asMediaItem.mediaId) == 0)
-                                                Database.like(
-                                                    song.asMediaItem.mediaId,
-                                                    System.currentTimeMillis()
-                                                )
-                                            else Database.like(
-                                                song.asMediaItem.mediaId,
-                                                null
-                                            )
-                                        }
-                                    }
+                                    songToggleLike(song)
                                 },
                                 iconAction2 = R.drawable.trash,
                                 backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,

@@ -25,7 +25,9 @@ import it.vfsfitvnm.innertube.requests.playlistPage
 import it.vfsfitvnm.innertube.utils.ProxyPreferences
 import it.vfsfitvnm.innertube.utils.plus
 import it.vfsfitvnm.vimusic.BuildConfig
+import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.models.Song
+import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.service.isLocal
 import it.vfsfitvnm.vimusic.ui.components.themed.NewVersionDialog
@@ -47,6 +49,24 @@ import kotlin.concurrent.timerTask
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+
+fun songToggleLike( song: Song ) {
+    query {
+        if (Database.songExist(song.asMediaItem.mediaId) == 0)
+            Database.insert(song.asMediaItem, Song::toggleLike)
+        else {
+            if (Database.songliked(song.asMediaItem.mediaId) == 0)
+                Database.like(
+                    song.asMediaItem.mediaId,
+                    System.currentTimeMillis()
+                )
+            else Database.like(
+                song.asMediaItem.mediaId,
+                null
+            )
+        }
+    }
+}
 
 val Innertube.SongItem.asMediaItem: MediaItem
     @UnstableApi
