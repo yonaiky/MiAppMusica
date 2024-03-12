@@ -1158,20 +1158,6 @@ fun BuiltInPlaylistSongs(
                                                 null
                                             )
                                         }
-                                        /*
-                                        if (Database.songExist(song.asMediaItem.mediaId) == 0) {
-                                            Database.insert(song.asMediaItem, Song::toggleLike)
-                                            Database.like( song.asMediaItem.mediaId,
-                                                System.currentTimeMillis() )
-                                        }
-                                        if (Database.like(
-                                                song.asMediaItem.mediaId,
-                                                if (likedAt == null) System.currentTimeMillis() else null
-                                            ) == 0
-                                        ) {
-                                            Database.insert(song.asMediaItem, Song::toggleLike)
-                                        }
-                                        */
                                     }
                                 },
                                 iconAction2 = R.drawable.trash,
