@@ -1145,6 +1145,25 @@ fun BuiltInPlaylistSongs(
                                 backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
                                 onClickAction1 = {
                                     query {
+                                        if (Database.songExist(song.asMediaItem.mediaId) == 0)
+                                            Database.insert(song.asMediaItem, Song::toggleLike)
+                                        else {
+                                            if (Database.songliked(song.asMediaItem.mediaId) == 0)
+                                                Database.like(
+                                                    song.asMediaItem.mediaId,
+                                                    System.currentTimeMillis()
+                                                )
+                                            else Database.like(
+                                                song.asMediaItem.mediaId,
+                                                null
+                                            )
+                                        }
+                                        /*
+                                        if (Database.songExist(song.asMediaItem.mediaId) == 0) {
+                                            Database.insert(song.asMediaItem, Song::toggleLike)
+                                            Database.like( song.asMediaItem.mediaId,
+                                                System.currentTimeMillis() )
+                                        }
                                         if (Database.like(
                                                 song.asMediaItem.mediaId,
                                                 if (likedAt == null) System.currentTimeMillis() else null
@@ -1152,6 +1171,7 @@ fun BuiltInPlaylistSongs(
                                         ) {
                                             Database.insert(song.asMediaItem, Song::toggleLike)
                                         }
+                                        */
                                     }
                                 },
                                 iconAction2 = R.drawable.trash,
