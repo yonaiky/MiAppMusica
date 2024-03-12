@@ -99,9 +99,12 @@ import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.shouldBePlaying
 import it.vfsfitvnm.vimusic.utils.toast
 import it.vfsfitvnm.vimusic.utils.verticalFadingEdge
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -154,15 +157,6 @@ fun Lyrics(
         }
 
         val languageDestination = languageDestination()
-
-        var copyToClipboard by remember {
-            mutableStateOf(false)
-        }
-
-        if (copyToClipboard) text?.let {
-            copyToClipboard = false
-            TextCopyToClipboard(it)
-        }
 
         /*
         val languageApp  by rememberPreference(languageAppKey, Languages.English)
@@ -230,6 +224,41 @@ fun Lyrics(
 
         val translator = Translator(getHttpClient())
 
+        var copyToClipboard by remember {
+            mutableStateOf(false)
+        }
+
+        if (copyToClipboard) text?.let {
+                TextCopyToClipboard(it)
+        }
+
+        /*
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        if (copyToClipboard) text?.let {
+            if (!translateEnabled)
+                TextCopyToClipboard(it)
+            else {
+                var transText by remember { mutableStateOf("") }
+                    coroutineScope.launch {
+                        val result = withContext(Dispatchers.IO) {
+                            try {
+                                translator.translate(
+                                    it,
+                                    languageDestination,
+                                    Language.AUTO
+                                ).translatedText
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                        transText =
+                            if (result.toString() == "kotlin.Unit") "" else result.toString()
+                    }
+                if (transText != "") TextCopyToClipboard(transText)
+            }
+            copyToClipboard = false
+        }
+        */
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics) {
             withContext(Dispatchers.IO) {
 
