@@ -6,6 +6,7 @@ enum class Languages {
     Arabic,
     Bashkir,
     Catalan,
+    Danish,
     English,
     Esperanto,
     ChineseSimplified,
@@ -47,6 +48,7 @@ enum class Languages {
             Catalan -> "ca"
             ChineseSimplified -> "zh-CN"
             ChineseTraditional -> "zh-TW"
+            Danish -> "da"
             Dutch -> "nl"
             English -> "en"
             Esperanto -> "eo"

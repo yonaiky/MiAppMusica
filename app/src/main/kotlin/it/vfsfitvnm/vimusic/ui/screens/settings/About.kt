@@ -140,6 +140,7 @@ fun About() {
                     "Conk \n"+
                     "Corotyest \n" +
                     "Crayz310 \n"+
+                    "cultcats \n"+
                     "CUMOON \n"+
                     "DanielSevillano \n"+
                     "Dženan \n" +
@@ -150,6 +151,7 @@ fun About() {
                     "Get100percent \n"+
                     "HelloZebra1133 \n"+
                     "Ikanakova \n"+
+                    "iOSStarWorld \n"+
                     "JZITNIK-github \n"+
                     "Kjev666 \n"+
                     "Kptmx \n"+
@@ -161,6 +163,7 @@ fun About() {
                     "Ndvok \n"+
                     "Nebula-Mechanica \n"+
                     "NEVARLeVrai \n"+
+                    "NiXT0y \n"+
                     "OlimitLolli \n"+
                     "OrangeZXZ \n"+
                     "RegularWater \n"+
@@ -178,6 +181,7 @@ fun About() {
                     "TsyQax \n"+
                     "VINULA2007 \n" +
                     "Vladimir \n" +
+                    "xSyntheticWave \n"+
                     "Zan1456 \n" +
                     "ZeroZero00 \n"
         )

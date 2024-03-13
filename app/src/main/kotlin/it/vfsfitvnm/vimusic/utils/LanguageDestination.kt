@@ -22,6 +22,7 @@ fun languageDestination (
         Languages.ChineseSimplified -> Language.CHINESE_SIMPLIFIED
         Languages.ChineseTraditional -> Language.CHINESE_TRADITIONAL
         Languages.Czech -> Language.CZECH
+        Languages.Danish -> Language.DANISH
         Languages.Dutch -> Language.DUTCH
         Languages.English -> Language.ENGLISH
         Languages.Esperanto -> Language.ESPERANTO
