@@ -22,6 +22,7 @@ import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.MediaDescriptionCompat
@@ -30,6 +31,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -1788,6 +1790,7 @@ class PlayerService : InvincibleService(),
         }.let {  }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalCoroutinesApi
     @FlowPreview
     private fun toggleDownloadAction() = mediaDownloadedItemState.value?.let { mediaItem ->
