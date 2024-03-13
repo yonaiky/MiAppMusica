@@ -1130,7 +1130,6 @@ class PlayerService : InvincibleService(),
         super.onIsPlayingChanged(isPlaying)
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
-        // TODO future implementation
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
     }
 
