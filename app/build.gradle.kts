@@ -14,7 +14,7 @@ android {
         targetSdk = 34
         versionCode = 21
         versionName = "0.6.25"
-        buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
+        //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 
     splits {

@@ -275,7 +275,9 @@ fun isAvailableUpdate(): String {
         //Log.d("updatedVersion","${file.readText().length.toString()} ${file.readText().substring(0,file.readText().length-1)}")
         //Log.d("updatedVersion","${file.readText().length} ${newVersion.length}")
     } else newVersion = ""
-    return if (newVersion == BuildConfig.VERSION_NAME || newVersion == "") "" else newVersion
+
+    return if (newVersion == getVersionName() || newVersion == "") "" else newVersion
+    //return if (newVersion == BuildConfig.VERSION_NAME || newVersion == "") "" else newVersion
 }
 
 @Composable
