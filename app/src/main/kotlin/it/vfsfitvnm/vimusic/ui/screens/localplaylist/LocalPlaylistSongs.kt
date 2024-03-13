@@ -2,8 +2,10 @@ package it.vfsfitvnm.vimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -164,6 +166,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.M)
 @KotlinCsvExperimental
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -939,6 +942,7 @@ fun LocalPlaylistSongs(
                             PlaylistSongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
                             PlaylistSongSortBy.Artist -> stringResource(R.string.sort_artist)
                             PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
+                            PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -955,6 +959,7 @@ fun LocalPlaylistSongs(
                                         onPosition = { sortBy = PlaylistSongSortBy.Position },
                                         onArtist = { sortBy = PlaylistSongSortBy.Artist },
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
+                                        onDuration = { sortBy = PlaylistSongSortBy.Duration }
                                     )
                                 }
 

@@ -6,7 +6,8 @@ enum class PlaylistSongSortBy {
     DatePlayed,
     PlayTime,
     Position,
-    Title;
+    Title,
+    Duration;
 
     val index: Int
         get() = when (this) {
@@ -16,6 +17,7 @@ enum class PlaylistSongSortBy {
             PlayTime -> 3
             Position -> 4
             Title -> 5
+            Duration -> 6
     }
 
 

@@ -6,5 +6,6 @@ enum class SongSortBy {
     DateAdded,
     DatePlayed,
     DateLiked,
-    Artist
+    Artist,
+    Duration
 }

@@ -212,6 +212,16 @@ interface Database {
             "ORDER BY E.timestamp")
     fun songsFavoritesByDatePlayedAsc(): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY durationText")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsFavoritesByDurationAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY durationText DESC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsFavoritesByDurationDesc(): Flow<List<Song>>
+
     fun songsFavorites(sortBy: SongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             SongSortBy.PlayTime -> when (sortOrder) {
@@ -237,6 +247,10 @@ interface Database {
             SongSortBy.Artist -> when (sortOrder) {
                 SortOrder.Ascending -> songsFavoritesByArtistAsc()
                 SortOrder.Descending -> songsFavoritesByArtistDesc()
+            }
+            SongSortBy.Duration -> when (sortOrder) {
+                SortOrder.Ascending -> songsFavoritesByDurationAsc()
+                SortOrder.Descending -> songsFavoritesByDurationDesc()
             }
         }
     }
@@ -289,6 +303,14 @@ interface Database {
     @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.artistsText DESC")
     fun songsOfflineByArtistDesc(): Flow<List<SongWithContentLength>>
 
+    @Transaction
+    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText")
+    fun songsOfflineByDurationAsc(): Flow<List<SongWithContentLength>>
+
+    @Transaction
+    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText DESC")
+    fun songsOfflineByDurationDesc(): Flow<List<SongWithContentLength>>
+
     fun songsOffline(sortBy: SongSortBy, sortOrder: SortOrder): Flow<List<SongWithContentLength>> {
         return when (sortBy) {
             SongSortBy.PlayTime, SongSortBy.DatePlayed -> when (sortOrder) {
@@ -310,6 +332,10 @@ interface Database {
             SongSortBy.Artist -> when (sortOrder) {
                 SortOrder.Ascending -> songsOfflineByArtistAsc()
                 SortOrder.Descending -> songsOfflineByArtistDesc()
+            }
+            SongSortBy.Duration -> when (sortOrder) {
+                SortOrder.Ascending -> songsOfflineByDurationAsc()
+                SortOrder.Descending -> songsOfflineByDurationDesc()
             }
         }
     }
@@ -390,6 +416,16 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun songsByArtistDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT * FROM Song WHERE totalPlayTimeMs > :showHiddenSongs AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY durationText ASC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByDurationAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM Song WHERE totalPlayTimeMs > :showHiddenSongs AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY durationText DESC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByDurationDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+
     fun songs(sortBy: SongSortBy, sortOrder: SortOrder, showHiddenSongs: Int): Flow<List<Song>> {
         return when (sortBy) {
             SongSortBy.PlayTime -> when (sortOrder) {
@@ -415,6 +451,10 @@ interface Database {
             SongSortBy.Artist -> when (sortOrder) {
                 SortOrder.Ascending -> songsByArtistAsc(showHiddenSongs)
                 SortOrder.Descending -> songsByArtistDesc(showHiddenSongs)
+            }
+            SongSortBy.Duration -> when (sortOrder) {
+                SortOrder.Ascending -> songsByDurationAsc(showHiddenSongs)
+                SortOrder.Descending -> songsByDurationDesc(showHiddenSongs)
             }
         }
     }
@@ -629,6 +669,14 @@ interface Database {
             "ORDER BY CAST(A.year AS INTEGER)")
     fun songsPlaylistByAlbumYearAsc(id: Long): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.durationText")
+    fun songsPlaylistByDurationAsc(id: Long): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.durationText DESC")
+    fun songsPlaylistByDurationDesc(id: Long): Flow<List<Song>>
+
     fun songsPlaylist(id: Long, sortBy: PlaylistSongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             PlaylistSongSortBy.PlayTime -> when (sortOrder) {
@@ -654,6 +702,10 @@ interface Database {
             PlaylistSongSortBy.AlbumYear -> when (sortOrder) {
                 SortOrder.Ascending -> songsPlaylistByAlbumYearAsc(id)
                 SortOrder.Descending -> songsPlaylistByAlbumYearDesc(id)
+            }
+            PlaylistSongSortBy.Duration -> when (sortOrder) {
+                SortOrder.Ascending -> songsPlaylistByDurationAsc(id)
+                SortOrder.Descending -> songsPlaylistByDurationDesc(id)
             }
 
         }

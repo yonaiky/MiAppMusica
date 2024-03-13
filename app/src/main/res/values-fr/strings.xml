@@ -402,4 +402,5 @@
     <string name="pinned_playlists">Playlists épinglées</string>
     <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
     <string name="locked">Locked</string>
+    <string name="sort_duration">Duration</string>
 </resources>

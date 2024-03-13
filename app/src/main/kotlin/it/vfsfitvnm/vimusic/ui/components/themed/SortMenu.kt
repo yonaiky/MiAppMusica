@@ -37,6 +37,7 @@ fun SortMenu (
     onYear: (() -> Unit)? = null,
     onDateAdded: (() -> Unit)? = null,
     onDateLiked: (() -> Unit)? = null,
+    onDuration: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var height by remember {
@@ -178,6 +179,16 @@ fun SortMenu (
                 onClick = {
                     onDismiss()
                     onDateLiked()
+                }
+            )
+        }
+        onDuration?.let {
+            MenuEntry(
+                icon = R.drawable.time,
+                text = stringResource(R.string.sort_duration),
+                onClick = {
+                    onDismiss()
+                    onDuration()
                 }
             )
         }

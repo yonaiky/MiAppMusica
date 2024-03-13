@@ -254,6 +254,7 @@ fun HomeSongs(
                             SongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             SongSortBy.DateLiked -> stringResource(R.string.sort_date_liked)
                             SongSortBy.Artist -> stringResource(R.string.sort_artist)
+                            SongSortBy.Duration -> stringResource(R.string.sort_duration)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -269,7 +270,8 @@ fun HomeSongs(
                                         onDateAdded = { sortBy = SongSortBy.DateAdded },
                                         onPlayTime = { sortBy = SongSortBy.PlayTime },
                                         onDateLiked = { sortBy = SongSortBy.DateLiked },
-                                        onArtist = { sortBy = SongSortBy.Artist }
+                                        onArtist = { sortBy = SongSortBy.Artist },
+                                        onDuration = { sortBy = SongSortBy.Duration }
                                     )
                                 }
 
