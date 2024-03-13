@@ -1,6 +1,7 @@
 package it.vfsfitvnm.vimusic.utils
 
 import android.content.ContentUris
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -366,6 +367,17 @@ fun getHttpClient() = HttpClient() {
     }
 }
 
+@Composable
+fun getVersionName(): String {
+    val context = LocalContext.current
+    try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        return pInfo.versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+    return ""
+}
 
 inline val isAtLeastAndroid6
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M

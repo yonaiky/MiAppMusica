@@ -1,8 +1,9 @@
 package it.vfsfitvnm.vimusic.ui.screens.settings
 
 //import it.vfsfitvnm.vimusic.BuildConfig
+
+import android.content.pm.PackageManager
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,36 +15,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import it.vfsfitvnm.vimusic.BuildConfig
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
-import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
-import it.vfsfitvnm.vimusic.ui.styling.shimmer
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
-import it.vfsfitvnm.vimusic.utils.isAvailableUpdate
+import it.vfsfitvnm.vimusic.utils.getVersionName
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.secondary
-import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 
 
 @ExperimentalAnimationApi
@@ -83,7 +75,7 @@ fun About() {
                 .fillMaxSize()
         ) {
             BasicText(
-                text = "RiMusic v${BuildConfig.VERSION_NAME} by fast4x",
+                text = "RiMusic v${getVersionName()} by fast4x",
                 style = typography.s.secondary,
 
                 )
