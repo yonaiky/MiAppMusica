@@ -1815,6 +1815,7 @@ class PlayerService : InvincibleService(),
             runCatching { player.seekToDefaultPosition(id.toInt()) }.let { }
 
 
+        @RequiresApi(Build.VERSION_CODES.M)
         @ExperimentalCoroutinesApi
         @FlowPreview
         override fun onCustomAction(action: String, extras: Bundle?) {
@@ -1834,6 +1835,7 @@ class PlayerService : InvincibleService(),
 
     inner class NotificationActionReceiver(private val player: Player) : BroadcastReceiver() {
 
+        @RequiresApi(Build.VERSION_CODES.M)
         @ExperimentalCoroutinesApi
         @FlowPreview
         // Prior Android 11
