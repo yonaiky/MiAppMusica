@@ -128,7 +128,7 @@
     <string name="custom_cache_from_android_10_may_not_be_available">Începând cu Android 10, această funcție poate să nu fie disponibilă</string>
     <string name="reset_cache_location_folder">Resetează folderul cache</string>
     <string name="used">" utilizat"</string>
-    <string name="close_background_player">Închideți playerul de fundal</string>
+    <string name="close_background_player">Închideți player-ul de fundal</string>
     <string name="when_app_swipe_out_from_task_manager">Când aplicația este închisă din fundal</string>
     <string name="opening_url">se încarcă...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">A apărut o problemă la preluarea versurilor</string>
@@ -216,7 +216,7 @@
     <string name="vt_full">Plin</string>
     <string name="new_albums_of_your_artists">Albume noi ale artiștilor tăi</string>
     <string name="timeline">Bara de navigare</string>
-    <string name="song_cache_by_player">CACHE Muzici (Automatic)</string>
+    <string name="song_cache_by_player">CACHE MUZICI (Automatic)</string>
     <string name="song_cache_by_download">CACHE Muzici (Instalate)</string>
     <string name="visualizer">Visualizator</string>
     <string name="visualizer_require_mic_permission">Visualizatorul necesită permisiunea microfonului!</string>
@@ -243,15 +243,15 @@
     <string name="rectangular">Dreptunghi</string>
     <string name="square">Pătrat</string>
     <string name="circular_ribbed">Cerc ondulat</string>
-    <string name="play_button">Buton de redare</string>
+    <string name="play_button">Butonul play</string>
     <string name="portuguese_brazilian">Portugues Brasil</string>
     <string name="portuguese">Portugues</string>
     <string name="indonesian">Indonesia</string>
     <string name="odia">ଓଡିଆ</string>
     <string name="bashkir">Euskara</string>
     <string name="esperanto">Esperanto</string>
-    <string name="close_app_with_back_button">Închide aplicația cu gestul înapoi</string>
-    <string name="when_you_use_the_back_button_from_the_home_page">Când utilizați gestul/butonul înapoi pe pagina principală</string>
+    <string name="close_app_with_back_button">Închide aplicația cu gestul / butonul înapoi</string>
+    <string name="when_you_use_the_back_button_from_the_home_page">Când utilizați gestul / butonul înapoi pe pagina principală</string>
     <string name="audio_quality_format_high">Înaltă</string>
     <string name="audio_quality_format_medium">Mediu</string>
     <string name="audio_quality_format_low">Scăzut</string>
@@ -271,10 +271,10 @@
     <string name="hungarian">Magyar</string>
     <string name="korean">한국인</string>
     <string name="background_player">"PLAYER DE FUNDAL "</string>
-    <string name="show_favorite_button">Arată butonul Like</string>
-    <string name="show_favorite_button_in_lock_screen_and_notification_area">Arată butonul Like pe ecranul de blocare și zona de notificare</string>
-    <string name="show_download_button">Arată butonul de Descărcare</string>
-    <string name="show_download_button_in_lock_screen_and_notification_area">Arată butonul Descărcare pe ecranul de blocare și zona de notificare</string>
+    <string name="show_favorite_button">Arată butonul \"Like\"</string>
+    <string name="show_favorite_button_in_lock_screen_and_notification_area">Arată butonul \"Like\" pe ecranul de blocare și zona de notificare</string>
+    <string name="show_download_button">Arată butonul \"Descărcare\"</string>
+    <string name="show_download_button_in_lock_screen_and_notification_area">Arată butonul \"Descărcare\" pe ecranul de blocare și zona de notificare</string>
     <string name="by_most_played_song">Cea mai ascultată melodie</string>
     <string name="by_last_played_song">Ultima melodie ascultată</string>
     <string name="audio_quality_automatic">Automatic</string>
@@ -312,7 +312,7 @@
     <string name="action_bar_show_loop_button">Arată butonul \"Buclă\"</string>
     <string name="action_bar_show_shuffle_button">Arată butonul \"Amestecă\"</string>
     <string name="action_bar_show_lyrics_button">Arată butonul \"Versuri\"</string>
-    <string name="action_bar_show_arrow_button">Arată butonul \"Săgeată\"</string>
+    <string name="action_bar_show_arrow_button">Arată butonul \"Coadă\"</string>
     <string name="lang_finnish">Finlandeză</string>
     <string name="listening_time">Timp de ascultare</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Arată numărul de muzici ascultate și timpul lor de ascultare</string>
@@ -345,7 +345,7 @@
     <string name="default_page">Pagină implicită</string>
     <string name="keep_screen_on">Păstrează ecranul pornit</string>
     <string name="prevents_screen_timeout">Previne expirarea ecranului</string>
-    <string name="action_bar_show_sleep_timer_button">Arată butonul Minutar de repaus</string>
+    <string name="action_bar_show_sleep_timer_button">Arată butonul \"Minutar de repaus\"</string>
     <string name="sort_album_year">Anul Albumului</string>
     <string name="sort_position">Poziție</string>
     <string name="sort_title">Titlu</string>
@@ -374,7 +374,7 @@
     <string name="add_folder">Adaugă un dosar</string>
     <string name="this_folder_already_exists">Acest dosar există deja.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Sunteți sigur că doriți să ștergeți acest dosar din lista neagră?</string>
-    <string name="player_appearance">Aspectul Playerului</string>
+    <string name="player_appearance">Aspectul player-ului</string>
     <string name="player_action_bar">BARA DE ACȚIUNE PLAYER</string>
     <string name="tab_data">Date</string>
     <string name="image_cache_max_size">Dimensiunea maximă cache ale imaginilor</string>
@@ -387,7 +387,7 @@
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activează meniul de acțiuni prin glisarea la stânga/dreapta</string>
     <string name="smart_recommendations">RECOMANDĂRI INTELIGENTE</string>
     <string name="player_collapsed_disable_swiping_down">Dezactivează glisarea în jos</string>
-    <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Evită închiderea jucătorului minimizat și ștergerea cozii prin glisarea în jos</string>
+    <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Evită închiderea player-ului minimizat și ștergerea cozii prin glisarea în jos</string>
     <string name="sort_date_liked">Data Likerii</string>
     <string name="export_playlist">Exportă playlist-ul</string>
     <string name="lang_afrikaans">Afrikaans</string>
