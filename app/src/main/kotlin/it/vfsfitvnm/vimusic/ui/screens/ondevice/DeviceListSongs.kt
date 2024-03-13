@@ -404,6 +404,7 @@ fun DeviceListSongs(
                             OnDeviceSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             OnDeviceSongSortBy.Artist -> stringResource(R.string.sort_artist)
                             OnDeviceSongSortBy.Duration -> stringResource(R.string.sort_duration)
+
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
