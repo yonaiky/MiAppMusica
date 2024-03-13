@@ -1,5 +1,6 @@
 package it.vfsfitvnm.vimusic.service
 
+//import androidx.media3.exoplayer.audio.SonicAudioProcessor
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -17,12 +18,9 @@ import android.graphics.Color
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.media.MediaDescription
-import android.media.MediaMetadata
+import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
-import android.media.session.MediaSession
-import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -36,25 +34,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
-import androidx.media.app.NotificationCompat as NotificatiomCompatMediaStyle
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.core.text.isDigitsOnly
+import androidx.media.AudioManagerCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -68,16 +65,14 @@ import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
 import androidx.media3.exoplayer.audio.AudioRendererEventListener
+import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioOffloadSupportProvider
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink.DefaultAudioProcessorChain
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
-//import androidx.media3.exoplayer.audio.SonicAudioProcessor
-import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.DefaultExtractorsFactory
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.NavigationEndpoint
@@ -116,6 +111,7 @@ import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getEnum
 import it.vfsfitvnm.vimusic.utils.intent
+import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid10
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid6
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid8
@@ -134,7 +130,6 @@ import it.vfsfitvnm.vimusic.utils.skipSilenceKey
 import it.vfsfitvnm.vimusic.utils.timer
 import it.vfsfitvnm.vimusic.utils.trackLoopEnabledKey
 import it.vfsfitvnm.vimusic.utils.volumeNormalizationKey
-import it.vfsfitvnm.vimusic.utils.windows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -484,6 +479,7 @@ class PlayerService : InvincibleService(),
 
 
 
+
         mediaSession = MediaSessionCompat(baseContext, "PlayerService")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
         mediaSession.setCallback(SessionCallback(player))
@@ -598,14 +594,18 @@ class PlayerService : InvincibleService(),
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
+
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
+            //if (!player.shouldBePlaying) {
+                broadCastPendingIntent<NotificationDismissReceiver>().send()
+            //}
+            this.stopService(this.intent<MyDownloadService>())
             this.stopService(this.intent<PlayerService>())
-            stopSelf()
+            //stopSelf()
             onDestroy()
         }
-
+        super.onTaskRemoved(rootIntent)
     }
 
     @UnstableApi
@@ -1075,7 +1075,8 @@ class PlayerService : InvincibleService(),
                 Player.EVENT_PLAYBACK_STATE_CHANGED,
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 Player.EVENT_IS_PLAYING_CHANGED,
-                Player.EVENT_POSITION_DISCONTINUITY
+                Player.EVENT_POSITION_DISCONTINUITY,
+                Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED
             )
         ) {
             val notification = notification()
@@ -1107,14 +1108,30 @@ class PlayerService : InvincibleService(),
         }
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        this.stopService(this.intent<MyDownloadService>())
+        this.stopService(this.intent<PlayerService>())
+        Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
+    }
+    override fun onPlayerErrorChanged(error: PlaybackException?) {
+        super.onPlayerErrorChanged(error)
+        this.stopService(this.intent<MyDownloadService>())
+        this.stopService(this.intent<PlayerService>())
+        Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
+    }
+    override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
+        super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
+        Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
+    }
+
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         // TODO future implementation
-        //Log.d("plservicemediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs+" audioSession "+player.audioSessionId.toString())
+        //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
     }
 
     @UnstableApi
@@ -1189,7 +1206,7 @@ class PlayerService : InvincibleService(),
             ) {
                 putExtra("expandPlayerBottomSheet", true)
             })
-            //.setDeleteIntent(broadCastPendingIntent<NotificationDismissReceiver>())
+            .setDeleteIntent(broadCastPendingIntent<NotificationDismissReceiver>())
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
             .setStyle(
@@ -1299,6 +1316,212 @@ class PlayerService : InvincibleService(),
             .connectTimeout(Duration.ofSeconds(16))
             .readTimeout(Duration.ofSeconds(8))
             .build()
+    }
+
+
+    /** NEW METHOD **/
+    private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
+        createDataSourceResolverFactory(
+            findMediaItem = { videoId ->
+                runBlocking(Dispatchers.Main) {
+                    player.findNextMediaItemById(videoId)
+                }
+            },
+            context = applicationContext,
+            cache = cache
+        ),
+        DefaultExtractorsFactory()
+    )
+
+    private fun createRendersFactory(): RenderersFactory {
+        //val minimumSilenceDuration = PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
+        val audioSink = DefaultAudioSink.Builder(applicationContext)
+            .setEnableFloatOutput(false)
+            .setEnableAudioTrackPlaybackParams(false)
+            .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
+            .setAudioProcessorChain(
+                DefaultAudioProcessorChain(
+                    arrayOf(),
+                    SilenceSkippingAudioProcessor(
+                        2_000_000, //minimumSilenceDuration,
+                        20_000, //minimumSilenceDuration / 100L,
+                         256
+                    ),
+                    SonicAudioProcessor()
+                )
+            )
+            .build()
+            .apply {
+                if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
+            }
+
+        return RenderersFactory { handler: Handler?, _, audioListener: AudioRendererEventListener?, _, _ ->
+            arrayOf(
+                MediaCodecAudioRenderer(
+                    this,
+                    MediaCodecSelector.DEFAULT,
+                    handler,
+                    audioListener,
+                    audioSink
+                )
+            )
+        }
+    }
+
+    //@Suppress("CyclomaticComplexMethod")
+    private fun createDataSourceResolverFactory(
+        findMediaItem: (videoId: String) -> MediaItem?,
+        context: Context,
+        cache: Cache,
+        chunkLength: Long? = 512 * 1024L
+    ): ResolvingDataSource.Factory {
+        val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+
+        return ResolvingDataSource.Factory(
+            ConditionalCacheDataSourceFactory(
+                cacheDataSourceFactory = CacheDataSource.Factory().setCache(downloadCache)
+                    .setCacheWriteDataSinkFactory(null),
+                upstreamDataSourceFactory = CacheDataSource.Factory()
+                    .setCache(cache)
+                    .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+                    .setUpstreamDataSourceFactory(
+                        DefaultDataSource.Factory(
+                            this,
+                            OkHttpDataSource.Factory(okHttpClient())
+                                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
+                        )
+                    )
+            ) { !it.isLocal }
+        ) { dataSpec ->
+            val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
+                ?: error("A key must be set")
+
+            when {
+                dataSpec.isLocal ||
+                        cache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L)) ||
+                        downloadCache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L)) -> dataSpec
+
+                videoId == ringBuffer.getOrNull(0)?.first ->
+                    dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
+
+                videoId == ringBuffer.getOrNull(1)?.first ->
+                    dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
+
+                else -> {
+                    val body = runBlocking(Dispatchers.IO) {
+                        Innertube.player(PlayerBody(videoId = videoId))
+                    }?.getOrThrow()
+
+                    if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
+
+                    val format = body.streamingData?.highestQualityFormat
+                    val url = when (val status = body.playabilityStatus?.status) {
+                        "OK" -> when (audioQualityFormat) {
+                            AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
+                            AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
+                            AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
+                            AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
+                        }?.let { format ->
+
+                            val mediaItem = findMediaItem(videoId)
+
+                            if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
+                                format.approxDurationMs?.div(1000)
+                                    ?.let(DateUtils::formatElapsedTime)?.removePrefix("0")
+                                    ?.let { durationText ->
+                                        mediaItem?.mediaMetadata?.extras?.putString(
+                                            "durationText",
+                                            durationText
+                                        )
+                                        Database.updateDurationText(videoId, durationText)
+                                    }
+
+                            query {
+                                mediaItem?.let(Database::insert)
+
+                                Database.insert(
+                                    it.vfsfitvnm.vimusic.models.Format(
+                                        songId = videoId,
+                                        itag = format.itag,
+                                        mimeType = format.mimeType,
+                                        bitrate = format.bitrate,
+                                        loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
+                                        contentLength = format.contentLength,
+                                        lastModified = format.lastModified
+                                    )
+                                )
+                            }
+
+                            format.url
+                        } ?: throw PlayableFormatNotFoundException()
+
+                        "UNPLAYABLE" -> throw UnplayableException()
+                        "LOGIN_REQUIRED" -> throw LoginRequiredException()
+
+                        else -> throw PlaybackException(
+                            status,
+                            null,
+                            PlaybackException.ERROR_CODE_REMOTE_ERROR
+                        )
+                    }
+                    ringBuffer.append(videoId to url.toUri())
+                    //ringBuffer += videoId to url.toUri()
+                    dataSpec.buildUpon()
+                        .setKey(videoId)
+                        .setUri(url.toUri())
+                        .build()
+                        .let { spec ->
+                            (chunkLength ?: format?.contentLength)?.let {
+                                spec.subrange(dataSpec.uriPositionOffset, it)
+                            } ?: spec
+                        }
+                }
+            }
+        }
+    }
+
+    /** NEW METHOD **/
+
+
+    /** ORIGINAL START **/
+    /*
+    @UnstableApi
+    private fun createMediaSourceFactory(): MediaSource.Factory {
+        return DefaultMediaSourceFactory(createDataSourceFactory(), createExtractorsFactory())
+    }
+
+    @UnstableApi
+    private fun createExtractorsFactory() = DefaultExtractorsFactory()
+
+    @UnstableApi
+    private fun createRendersFactory(): RenderersFactory {
+        val audioSink = DefaultAudioSink.Builder(applicationContext)
+            .setEnableFloatOutput(false)
+            .setEnableAudioTrackPlaybackParams(false)
+            .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
+            .setAudioProcessorChain(
+                DefaultAudioProcessorChain(
+                    emptyArray(),
+                    SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
+                    SonicAudioProcessor()
+                )
+            )
+            .build()
+            .apply {
+                if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
+            }
+
+        return RenderersFactory { handler: Handler?, _, audioListener: AudioRendererEventListener?, _, _ ->
+            arrayOf(
+                MediaCodecAudioRenderer(
+                    this,
+                    MediaCodecSelector.DEFAULT,
+                    handler,
+                    audioListener,
+                    audioSink
+                )
+            )
+        }
     }
 
 
@@ -1425,41 +1648,8 @@ class PlayerService : InvincibleService(),
         }
     }
 
-    @UnstableApi
-    private fun createMediaSourceFactory(): MediaSource.Factory {
-        return DefaultMediaSourceFactory(createDataSourceFactory(), createExtractorsFactory())
-    }
-
-    @UnstableApi
-    private fun createExtractorsFactory() = DefaultExtractorsFactory()
-
-    @UnstableApi
-    private fun createRendersFactory(): RenderersFactory {
-        val audioSink = DefaultAudioSink.Builder()
-            .setEnableFloatOutput(false)
-            .setEnableAudioTrackPlaybackParams(false)
-            .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
-            .setAudioProcessorChain(
-                DefaultAudioProcessorChain(
-                    emptyArray(),
-                    SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
-                    SonicAudioProcessor()
-                )
-            )
-            .build()
-
-        return RenderersFactory { handler: Handler?, _, audioListener: AudioRendererEventListener?, _, _ ->
-            arrayOf(
-                MediaCodecAudioRenderer(
-                    this,
-                    MediaCodecSelector.DEFAULT,
-                    handler,
-                    audioListener,
-                    audioSink
-                )
-            )
-        }
-    }
+     */
+    /** ORIGINAL END **/
 
     inner class Binder : AndroidBinder() {
         val player: ExoPlayer
@@ -1674,13 +1864,14 @@ class PlayerService : InvincibleService(),
         }
     }
 
-    /*
+
     class NotificationDismissReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            //context.stopService(context.intent<PlayerService>())
+            context.stopService(context.intent<MyDownloadService>())
+            context.stopService(context.intent<PlayerService>())
         }
     }
-     */
+
 
     @JvmInline
     private value class Action(val value: String) {
@@ -1719,7 +1910,10 @@ class PlayerService : InvincibleService(),
 
         const val SleepTimerNotificationId = 1002
         const val SleepTimerNotificationChannelId = "sleep_timer_channel_id"
+
+
     }
+
 
 }
 
