@@ -1,6 +1,8 @@
 package it.vfsfitvnm.vimusic.utils
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.core.net.toUri
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -66,16 +69,31 @@ fun InitDownloader () {
 }
 
 
+//@RequiresApi(Build.VERSION_CODES.M)
 @UnstableApi
 @Composable
 fun downloadedStateMedia ( mediaId: String ): Boolean {
+    val context = LocalContext.current
+   // if (!checkInternetConnection()) return false
+    /*
+    if (!isNetworkAvailableComposable()) {
+        //context.toast("No connection")
+        return false
+    }
+     */
 
     val binder = LocalPlayerServiceBinder.current
     //val downloader = LocalDownloader.current
 
-    val context = LocalContext.current
 
-    val downloadCache = DownloadUtil.getDownloadSimpleCache(context) as SimpleCache
+    val downloadCache: SimpleCache
+    try {
+        downloadCache = DownloadUtil.getDownloadSimpleCache(context) as SimpleCache
+    } catch (e: Exception) {
+        //context.toast(e.toString())
+        return false
+    }
+
 
     val cachedBytes by remember(mediaId) {
         mutableStateOf(binder?.cache?.getCachedBytes(mediaId, 0, -1))
@@ -116,6 +134,7 @@ fun downloadedStateMedia ( mediaId: String ): Boolean {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @UnstableApi
 fun manageDownload (
     context: android.content.Context,
@@ -123,38 +142,51 @@ fun manageDownload (
     songTitle: String,
     downloadState: Boolean = false
 ) {
-    if (downloadState)
-        DownloadService.sendRemoveDownload(
-            context,
-            MyDownloadService::class.java,
-            songId,
-            false
-        )
-     else {
-        val contentUri =
-            "https://www.youtube.com/watch?v=${songId}".toUri()
-        val downloadRequest = DownloadRequest
-            .Builder(
-                songId,
-                contentUri
-            )
-            .setCustomCacheKey(songId)
-            .setData(songTitle.toByteArray())
-            .build()
+//Log.d("mediaItem","managedownload checkinternet ${isNetworkAvailable(context)}")
 
-        DownloadService.sendAddDownload(
-            context,
-            MyDownloadService::class.java,
-            downloadRequest,
-            false
-        )
-    }
+    //if (isNetworkAvailable(context)) {
+        //try {
+            if (downloadState)
+                DownloadService.sendRemoveDownload(
+                    context,
+                    MyDownloadService::class.java,
+                    songId,
+                    false
+                )
+            else {
+                if (isNetworkAvailable(context)) {
+                    val contentUri =
+                        "https://www.youtube.com/watch?v=${songId}".toUri()
+                    val downloadRequest = DownloadRequest
+                        .Builder(
+                            songId,
+                            contentUri
+                        )
+                        .setCustomCacheKey(songId)
+                        .setData(songTitle.toByteArray())
+                        .build()
 
+                    DownloadService.sendAddDownload(
+                        context,
+                        MyDownloadService::class.java,
+                        downloadRequest,
+                        false
+                    )
+                }
+            }
+        //} catch (e: Exception) {
+        //    e.printStackTrace()
+        //}
+    //}
 }
+
+
 @UnstableApi
 @Composable
 fun getDownloadState(mediaId: String): Int {
     val downloader = LocalDownloader.current
+    if (!checkInternetConnection()) return 3
+
     return downloader.getDownload(mediaId).collectAsState(initial = null).value?.state
         ?: 3
 }

@@ -1076,7 +1076,7 @@ class PlayerService : InvincibleService(),
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 Player.EVENT_IS_PLAYING_CHANGED,
                 Player.EVENT_POSITION_DISCONTINUITY,
-                Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED
+                //Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED
             )
         ) {
             val notification = notification()
@@ -1110,19 +1110,19 @@ class PlayerService : InvincibleService(),
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        this.stopService(this.intent<MyDownloadService>())
-        this.stopService(this.intent<PlayerService>())
-        Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
+        //this.stopService(this.intent<MyDownloadService>())
+        //this.stopService(this.intent<PlayerService>())
+        //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
     }
     override fun onPlayerErrorChanged(error: PlaybackException?) {
         super.onPlayerErrorChanged(error)
-        this.stopService(this.intent<MyDownloadService>())
-        this.stopService(this.intent<PlayerService>())
-        Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
+        //this.stopService(this.intent<MyDownloadService>())
+        //this.stopService(this.intent<PlayerService>())
+        //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
     }
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
         super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
-        Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
+        //Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
     }
 
     @UnstableApi

@@ -174,7 +174,7 @@ object DownloadUtil {
                             }
                         }
 
-                        urlResult?.getOrThrow()?.let { url ->
+                        urlResult?.getOrNull()?.let { url ->
                             ringBuffer.append(videoId to url.toUri())
                             dataSpec.withUri(url.toUri())
                                 .subrange(dataSpec.uriPositionOffset, chunkLength)

@@ -1,12 +1,15 @@
 package it.vfsfitvnm.vimusic.utils
 
 import android.content.ContentUris
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.text.format.DateUtils
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +50,8 @@ import java.time.Duration
 import java.time.LocalTime
 import java.util.Timer
 import kotlin.concurrent.timerTask
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+
 
 fun songToggleLike( song: Song ) {
     query {
@@ -281,36 +283,11 @@ fun isAvailableUpdate(): String {
 }
 
 @Composable
-fun checkInternetConnectionWithTimer(): Boolean {
-    var checkInternetConnection by remember {
-        mutableStateOf(false)
-    }
-    var checkIt by remember {
-        mutableStateOf(false)
-    }
-
-    val funtimer = Timer()
-    funtimer.scheduleAtFixedRate(
-        timerTask()
-        {
-            checkIt = true
-        }, 20000, 20000
-    )
-
-    if (checkIt) {
-        checkInternetConnection = CheckInternetConnection()
-        Log.d("CheckInternetDelayed", checkInternetConnection.toString())
-        //checkIt = false
-    }
-    return checkInternetConnection
-}
-
-@Composable
-fun CheckInternetConnection(): Boolean {
+fun checkInternetConnection(): Boolean {
     val client = OkHttpClient()
     val request = OkHttpRequest(client)
     val coroutineScope = CoroutineScope(Dispatchers.Main)
-    val url = "https://www.google.com/"
+    val url = "https://raw.githubusercontent.com/fast4x/RiMusic/master/updatedVersion/updatedVersionCode.ver"
 
     var check by remember {
         mutableStateOf("")
@@ -336,6 +313,28 @@ fun CheckInternetConnection(): Boolean {
 
     //Log.d("CheckInternetRet",check)
     return check.isNotEmpty()
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun isNetworkAvailable(context: Context): Boolean {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        ?: return false
+    val networkInfo = cm.activeNetwork
+    // if no network is available networkInfo will be null
+    // otherwise check if we are connected
+    return networkInfo != null
+}
+
+@Composable
+@RequiresApi(Build.VERSION_CODES.M)
+fun isNetworkAvailableComposable(): Boolean {
+    val context = LocalContext.current
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        ?: return false
+    val networkInfo = cm.activeNetwork
+    // if no network is available networkInfo will be null
+    // otherwise check if we are connected
+    return networkInfo != null
 }
 
 /*
@@ -380,6 +379,10 @@ fun getVersionName(): String {
     }
     return ""
 }
+
+
+
+
 
 inline val isAtLeastAndroid6
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
