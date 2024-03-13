@@ -2,8 +2,10 @@ package it.vfsfitvnm.vimusic.ui.screens.builtinplaylist
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -160,6 +162,7 @@ import kotlinx.coroutines.flow.asFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "StateFlowValueCalledInComposition")
 @ExperimentalFoundationApi
@@ -803,6 +806,7 @@ fun BuiltInPlaylistSongs(
                                 SongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                                 SongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                                 SongSortBy.DateLiked -> stringResource(R.string.sort_date_liked)
+                                SongSortBy.Artist -> stringResource(R.string.sort_artist)
                             },
                             style = typography.xs.semiBold,
                             maxLines = 1,
@@ -818,7 +822,8 @@ fun BuiltInPlaylistSongs(
                                             onDatePlayed = { sortBy = SongSortBy.DatePlayed },
                                             onDateAdded = { sortBy = SongSortBy.DateAdded },
                                             onPlayTime = { sortBy = SongSortBy.PlayTime },
-                                            onDateLiked = { sortBy = SongSortBy.DateLiked }
+                                            onDateLiked = { sortBy = SongSortBy.DateLiked },
+                                            onArtist = { sortBy = SongSortBy.Artist },
                                         )
                                     }
                                     //showSortTypeSelectDialog = true

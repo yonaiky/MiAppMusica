@@ -181,7 +181,7 @@ fun adaptiveThumbnailContent(
                     .fillMaxWidth(0.2f)
             ) {
                 HeaderIconButton(
-                    icon = R.drawable.disc,
+                    icon = R.drawable.image_download,
                     color = colorPalette.text,
                     onClick = {
                         //isExporting = true
