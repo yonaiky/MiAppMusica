@@ -32,13 +32,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.size.Dimension
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.NavigationBarType
+import it.vfsfitvnm.vimusic.enums.UiType
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.utils.bold
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.color
 import it.vfsfitvnm.vimusic.utils.isLandscape
@@ -149,7 +153,14 @@ inline fun NavigationRail(
                         } else {
                             BasicText(
                                 text = text,
-                                style = typography.xs.semiBold.center.color(textColor),
+                                //style = typography.xs.semiBold.center.color(textColor),
+                                style = TextStyle(
+                                    fontSize = typography.xs.semiBold.fontSize,
+                                    fontWeight = typography.xs.semiBold.fontWeight,
+                                    color = colorPalette.text,
+                                    //textAlign = if(uiType != UiType.ViMusic) TextAlign.Center else TextAlign.End
+
+                                ),
                                 modifier = Modifier
                                     .vertical(enabled = !isLandscape)
                                     .rotate(if (isLandscape) 0f else -90f)
@@ -393,7 +404,14 @@ inline fun NavigationRail3(
                 val textContent: @Composable () -> Unit = {
                     BasicText(
                         text = text,
-                        style = typography.xs.semiBold.center.color(textColor),
+                        //style = typography.xs.semiBold.center.color(textColor),
+                        style = TextStyle(
+                            fontSize = typography.xs.semiBold.fontSize,
+                            fontWeight = typography.xs.semiBold.fontWeight,
+                            color = colorPalette.text,
+                            //textAlign = if(uiType != UiType.ViMusic) TextAlign.Center else TextAlign.End
+
+                        ),
                         modifier = Modifier
                             .vertical(enabled = !isLandscape)
                             .rotate(if (isLandscape) 0f else -90f)
