@@ -163,6 +163,7 @@
 
 ###  **Developer / Designer:**
 - [25huizengek1](https://github.com/25huizengek1)
+- [821938089](https://github.com/821938089)
 - [Craeckie](https://github.com/Craeckie)
 - [DanielSevillano](https://github.com/DanielSevillano)
 - [fast4x](https://github.com/fast4x)

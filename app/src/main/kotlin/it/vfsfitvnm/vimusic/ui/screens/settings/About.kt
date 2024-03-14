@@ -122,6 +122,7 @@ fun About() {
         SettingsTopDescription( text ="Translator:")
         SettingsTopDescription( text =
             "2010furs \n"+
+                    "821938089 \n"+
                     "abfreeman \n"+
                     "ABS zarzis \n"+
                     "Adam Kop \n"+
