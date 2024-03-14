@@ -4,8 +4,10 @@ package it.vfsfitvnm.vimusic.ui.screens.player
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -134,6 +136,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -213,14 +216,14 @@ fun Queue(
         player.DisposableListener {
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                    mediaItemIndex =
-                        if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
+                    mediaItemIndex = player.currentMediaItemIndex
+                        //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     windows = timeline.windows
-                    mediaItemIndex =
-                        if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
+                    mediaItemIndex = player.currentMediaItemIndex
+                        //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {

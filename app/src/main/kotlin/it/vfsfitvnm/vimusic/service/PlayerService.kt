@@ -625,7 +625,7 @@ class PlayerService : InvincibleService(),
         mediaSession.isActive = false
         mediaSession.release()
         cache.release()
-        downloadCache.release()
+        //downloadCache.release()
 
         loudnessEnhancer?.release()
 
