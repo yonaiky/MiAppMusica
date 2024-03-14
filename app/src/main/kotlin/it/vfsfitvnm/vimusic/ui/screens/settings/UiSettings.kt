@@ -244,6 +244,7 @@ fun  UiSettings() {
                     Languages.Romanian -> stringResource(R.string.romanian)
                     //Languages.RomanianEmo -> stringResource(R.string.romanian_emoticons_rom_n)
                     Languages.Russian -> stringResource(R.string.russian)
+                    Languages.SerbianCyrillic -> stringResource(R.string.lang_serbian_cyrillic)
                     Languages.Sinhala -> stringResource(R.string.lang_sinhala)
                     Languages.Spanish -> stringResource(R.string.spanish)
                     Languages.Swedish -> stringResource(R.string.lang_swedish)

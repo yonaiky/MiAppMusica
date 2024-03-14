@@ -404,4 +404,5 @@ CC-BY-SA 3.0</string>
     <string name="pinned_playlists">Pinned Playlists</string>
     <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
+    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
 </resources>
