@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cancel">Cancel</string>
-    <string name="done">Done</string>
-    <string name="hidesong">Do you really want to hide this song? Its playback time and cache will be wiped.\nThis action is irreversible.</string>
-    <string name="new_playlist">New playlist</string>
-    <string name="start_radio">Start radio</string>
-    <string name="equalizer">Equalizer</string>
+    <string name="cancel">Откажи</string>
+    <string name="done">Готово</string>
+    <string name="hidesong">Sakrij pesmu.</string>
+    <string name="new_playlist">Нова плејлиста</string>
+    <string name="start_radio">Pokreni radio</string>
+    <string name="equalizer">Еквилајзер</string>
     <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
     <string name="set_sleep_timer">Set sleep timer</string>
     <string name="add_to_playlist">Add to playlist</string>
