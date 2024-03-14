@@ -52,7 +52,7 @@ suspend fun <T : Innertube.Item> Innertube.itemsPage(
 ) = runCatchingNonCancellable {
     val response = client.post(browse) {
         setBody(body)
-//        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicPlaylistShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),gridRenderer(continuations,items.$musicTwoRowItemRendererMask))")
+        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicPlaylistShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),gridRenderer(continuations,items.$musicTwoRowItemRendererMask))")
     }.body<ContinuationResponse>()
 
     itemsPageFromMusicShelRendererOrGridRenderer(

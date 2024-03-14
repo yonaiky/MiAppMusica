@@ -6,6 +6,27 @@ import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.innertube.models.Runs
 
 fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem? {
+    val albumId = renderer
+        .flexColumns
+        .getOrNull(2)
+        ?.musicResponsiveListItemFlexColumnRenderer
+        ?.text
+        ?.runs
+        ?.firstOrNull()
+        ?.navigationEndpoint?.browseEndpoint?.browseId
+    /*
+    // Album row is variable from 2 to 3
+    val albumId1 = renderer
+        .flexColumns
+        .getOrNull(3)
+        ?.musicResponsiveListItemFlexColumnRenderer
+        ?.text
+        ?.runs
+        ?.firstOrNull()
+        ?.navigationEndpoint?.browseEndpoint?.browseId
+     */
+    val albumRow = if (albumId == null) 3 else 2
+
     return Innertube.SongItem(
         info = renderer
             .flexColumns
@@ -43,7 +64,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.text,
         album = renderer
             .flexColumns
-            .getOrNull(2)
+            .getOrNull(albumRow)
             ?.musicResponsiveListItemFlexColumnRenderer
             ?.text
             ?.runs

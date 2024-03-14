@@ -1,6 +1,8 @@
 package it.vfsfitvnm.vimusic.utils
 
+import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 import it.vfsfitvnm.innertube.models.bodies.NextBody
@@ -16,7 +18,7 @@ data class YouTubeRadio(
 ) {
     private var nextContinuation: String? = null
 
-    suspend fun process(): List<MediaItem> {
+    @OptIn(UnstableApi::class) suspend fun process(): List<MediaItem> {
         var mediaItems: List<MediaItem>? = null
 
         nextContinuation = withContext(Dispatchers.IO) {

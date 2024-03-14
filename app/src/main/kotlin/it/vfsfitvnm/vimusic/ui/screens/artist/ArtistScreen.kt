@@ -1,6 +1,8 @@
 package it.vfsfitvnm.vimusic.ui.screens.artist
 
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -74,6 +76,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
