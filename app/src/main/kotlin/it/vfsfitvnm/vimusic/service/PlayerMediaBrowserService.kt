@@ -26,6 +26,7 @@ import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.ExoPlayerMinTimeForEvent
 import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
 import it.vfsfitvnm.vimusic.models.Album
+import it.vfsfitvnm.vimusic.models.Artist
 import it.vfsfitvnm.vimusic.models.PlaylistPreview
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.SongWithContentLength
@@ -91,7 +92,13 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         bindService(intent<PlayerService>(), this, Context.BIND_AUTO_CREATE)
         return BrowserRoot(
             MediaId.root,
-            bundleOf("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT" to 1)
+            //bundleOf("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT" to 1)
+            Bundle().apply {
+                //putBoolean(MEDIA_SEARCH_SUPPORTED, true)
+                putBoolean(CONTENT_STYLE_SUPPORTED, true)
+                putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID)
+                putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST)
+            }
         )
         /*
         return if (clientUid == Process.myUid()
@@ -109,6 +116,48 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
          */
     }
 
+    @OptIn(UnstableApi::class)
+    override fun onSearch(
+        query: String,
+        extras: Bundle?,
+        result: Result<List<MediaItem>>
+    ) {
+        println("RiMusicMediaBrowse ${extras}")
+        runBlocking(Dispatchers.IO) {
+            val resultsList =
+                Database
+                    .favorites()
+                    .first()
+                    //.map { Song::asMediaItem }
+                    .map {
+                        MediaItem(
+                            MediaDescriptionCompat.Builder()
+                                .setMediaId(it.id)
+                                .setTitle(it.title)
+                                .setIconUri(uriFor(R.drawable.musical_notes))
+                                .build(),
+                            MediaItem.FLAG_BROWSABLE
+                        )
+                    }
+                    .shuffled()
+
+            /*
+        val resultsSent = mediaSource.whenReady { successfullyInitialized ->
+            if (successfullyInitialized) {
+                val resultsList = mediaSource.search(query, extras ?: Bundle.EMPTY)
+                    .map { mediaMetadata ->
+                        MediaItem(mediaMetadata.description, mediaMetadata.flag)
+                    }
+                result.sendResult(resultsList)
+            }
+        }
+ */
+            if (resultsList.isEmpty()) {
+                result.detach()
+            } else result.sendResult(resultsList)
+        }
+    }
+
      override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
         runBlocking(Dispatchers.IO) {
             result.sendResult(
@@ -116,7 +165,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.root -> mutableListOf(
                         songsBrowserMediaItem,
                         playlistsBrowserMediaItem,
-                        albumsBrowserMediaItem
+                        albumsBrowserMediaItem,
+                        //artistsBrowserMediaItem
                     )
 
                     MediaId.songs -> Database
@@ -145,6 +195,12 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
 
                     MediaId.albums -> Database
                         .albumsByRowIdDesc()
+                        .first()
+                        .map { it.asBrowserMediaItem }
+                        .toMutableList()
+
+                    MediaId.artists -> Database
+                        .artistsByRowIdDesc()
                         .first()
                         .map { it.asBrowserMediaItem }
                         .toMutableList()
@@ -200,6 +256,16 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 .setMediaId(MediaId.albums)
                 .setTitle((this as Context).resources.getString(R.string.albums))
                 .setIconUri(uriFor(R.drawable.disc))
+                .build(),
+            MediaItem.FLAG_BROWSABLE
+        )
+
+    private val artistsBrowserMediaItem
+        inline get() = MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(MediaId.artists)
+                .setTitle((this as Context).resources.getString(R.string.artists))
+                .setIconUri(uriFor(R.drawable.person))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -290,6 +356,17 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaItem.FLAG_PLAYABLE
         )
 
+    private val Artist.asBrowserMediaItem
+        inline get() = MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(MediaId.forArtistByName(name ?: ""))
+                .setTitle(name)
+                //.setSubtitle()
+                .setIconUri(thumbnailUrl?.toUri())
+                .build(),
+            MediaItem.FLAG_PLAYABLE
+        )
+
     private inner class SessionCallback(
        // private val player: Player,
         private val binder: PlayerService.Binder,
@@ -321,6 +398,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             val data = mediaId?.split('/') ?: return
             var index = 0
+
+            println("RiMusicMediaBrowser data $data ")
 
             coroutineScope.launch {
                 val mediaItems = when (data.getOrNull(0)) {
@@ -381,6 +460,11 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.let(Database::albumSongs)
                         ?.first()
 
+                    MediaId.artists -> data
+                        .getOrNull(1)
+                        ?.let(Database::artistSongsByname)
+                        ?.first()
+
                     else -> emptyList()
                 }?.map(Song::asMediaItem) ?: return@launch
 
@@ -396,6 +480,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         const val songs = "songs"
         const val playlists = "playlists"
         const val albums = "albums"
+        const val artists = "srtists"
 
         const val favorites = "favorites"
         const val offline = "offline"
@@ -407,5 +492,13 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         fun forSong(id: String) = "songs/$id"
         fun forPlaylist(id: Long) = "playlists/$id"
         fun forAlbum(id: String) = "albums/$id"
+        fun forArtistByName(name: String) = "artists/$name"
     }
 }
+
+const val MEDIA_SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED"
+private const val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
+private const val CONTENT_STYLE_PLAYABLE_HINT = "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
+private const val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
+private const val CONTENT_STYLE_LIST = 1
+private const val CONTENT_STYLE_GRID = 2

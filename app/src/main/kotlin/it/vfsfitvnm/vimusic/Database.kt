@@ -70,6 +70,10 @@ interface Database {
     fun listAllSongs(): List<Song>
 
     @Transaction
+    @Query("SELECT * FROM Song WHERE artistsText = :name ")
+    fun artistSongsByname(name: String): Flow<List<Song>>
+
+    @Transaction
     @Query("SELECT * FROM Song")
     fun flowListAllSongs(): Flow<List<Song>>
 
