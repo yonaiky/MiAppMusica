@@ -321,7 +321,7 @@
     <string name="if_possible_allows_discovery_content_language">Ако је могуће, омогућава примање Дисцовери садржаја на вашем језику.</string>
     <string name="set_to">Постави на</string>
     <string name="end_of_song">крај песме</string>
-    <string name="restore_completed">Restore completed!</string>
+    <string name="restore_completed">Враћање је завршено!</string>
     <string name="click_to_close">Click to close</string>
     <string name="lang_dutch">Dutch</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Do you really want to renumbering positions in this playlist?</string>
