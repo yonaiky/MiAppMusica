@@ -398,9 +398,9 @@
     <string name="direction_right">Jobbra</string>
     <string name="copy_lyrics">Dalszöveg másolása</string>
     <string name="value_copied">Másolva</string>
-    <string name="do_you_really_want_to_delete_cache">Do you really want to delete cache?</string>
-    <string name="lang_swedish">Swedish</string>
-    <string name="pinned_playlists">Pinned Playlists</string>
+    <string name="do_you_really_want_to_delete_cache">Tényleg törölni szeretnéd a gyorsítótárat?</string>
+    <string name="lang_swedish">Svéd</string>
+    <string name="pinned_playlists">Rögzített lejátszási listák</string>
     <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
     <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
