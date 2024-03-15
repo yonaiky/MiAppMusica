@@ -316,6 +316,7 @@
     <string name="lang_finnish">Fiński</string>
     <string name="listening_time">Czas słuchania</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Pokazuje liczbę utworów i czas ich słuchania</string>
+    <string name="app_update_dialog_new">Nowa wersja %s może zostać pobrana!</string>
     <string name="enable_language_in_discovery">Włącz język w Odkrywaniu</string>
     <string name="if_possible_allows_discovery_content_language">Treści w zakładce \"Odkrywanie\" będą wyświetlane w twoim języku, jeśli to możliwe.</string>
     <string name="set_to">Wyłącz za</string>
@@ -400,7 +401,6 @@
     <string name="do_you_really_want_to_delete_cache">Czy na pewno chcesz wymazać pamięć podręczną?</string>
     <string name="lang_swedish">Szwedzki</string>
     <string name="pinned_playlists">Przypięte playlisty</string>
-    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
     <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
     <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
