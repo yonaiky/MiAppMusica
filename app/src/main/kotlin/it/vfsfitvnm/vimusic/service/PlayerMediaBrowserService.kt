@@ -22,17 +22,23 @@ import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.offline.Download
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.ExoPlayerMinTimeForEvent
+import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
 import it.vfsfitvnm.vimusic.models.Album
 import it.vfsfitvnm.vimusic.models.PlaylistPreview
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.SongWithContentLength
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.transaction
+import it.vfsfitvnm.vimusic.utils.MaxTopPlaylistItemsKey
 import it.vfsfitvnm.vimusic.utils.asMediaItem
+import it.vfsfitvnm.vimusic.utils.exoPlayerMinTimeForEventKey
 import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
+import it.vfsfitvnm.vimusic.utils.getEnum
 import it.vfsfitvnm.vimusic.utils.intent
+import it.vfsfitvnm.vimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,6 +63,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
 
     private var bound = false
 
+
     override fun onDestroy() {
         if (bound) {
             unbindService(this)
@@ -69,7 +76,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         if (service is PlayerService.Binder) {
             bound = true
             sessionToken = service.mediaSession.sessionToken
-            service.mediaSession.setCallback(SessionCallback(service.player, service.cache))
+            service.mediaSession.setCallback(SessionCallback(service, service.cache))
         }
     }
 
@@ -131,6 +138,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                             add(0, favoritesBrowserMediaItem)
                             add(1, offlineBrowserMediaItem)
                             add(2, downloadedBrowserMediaItem)
+                            add(3, ondeviceBrowserMediaItem)
+                            add(4, topBrowserMediaItem)
                         }
 
                     MediaId.albums -> Database
@@ -178,8 +187,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.playlists)
-                .setTitle((this as Context).resources.getString(R.string.playlists))
-                .setIconUri(uriFor(R.drawable.playlist))
+                .setTitle((this as Context).resources.getString(R.string.library))
+                .setIconUri(uriFor(R.drawable.library))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -224,6 +233,29 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaItem.FLAG_PLAYABLE
         )
 
+    private val ondeviceBrowserMediaItem
+        inline get() = MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(MediaId.ondevice)
+                .setTitle((this as Context).resources.getString(R.string.on_device))
+                .setIconUri(uriFor(R.drawable.musical_notes))
+                .build(),
+            MediaItem.FLAG_PLAYABLE
+        )
+
+    private val topBrowserMediaItem
+        inline get() = MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(MediaId.top)
+                .setTitle(
+                    (this as Context).resources.getString(R.string.my_playlist_top) +
+                    " 30"
+                )
+                .setIconUri(uriFor(R.drawable.trending))
+                .build(),
+            MediaItem.FLAG_PLAYABLE
+        )
+
     private val Song.asBrowserMediaItem
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
@@ -257,14 +289,23 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaItem.FLAG_PLAYABLE
         )
 
-    private inner class SessionCallback(private val player: Player, private val cache: Cache) :
+    private inner class SessionCallback(
+       // private val player: Player,
+        private val binder: PlayerService.Binder,
+        private val cache: Cache
+    ) :
         MediaSessionCompat.Callback() {
-        override fun onPlay() = player.play()
-        override fun onPause() = player.pause()
-        override fun onSkipToPrevious() = player.forceSeekToPrevious()
-        override fun onSkipToNext() = player.forceSeekToNext()
-        override fun onSeekTo(pos: Long) = player.seekTo(pos)
-        override fun onSkipToQueueItem(id: Long) = player.seekToDefaultPosition(id.toInt())
+        override fun onPlay() = binder.player.play()
+        override fun onPause() = binder.player.pause()
+        override fun onSkipToPrevious() = binder.player.forceSeekToPrevious()
+        override fun onSkipToNext() = binder.player.forceSeekToNext()
+        override fun onSeekTo(pos: Long) = binder.player.seekTo(pos)
+        override fun onSkipToQueueItem(id: Long) = binder.player.seekToDefaultPosition(id.toInt())
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            if (query.isNullOrBlank()) return
+            binder.playFromSearch(query)
+        }
+
 
         @FlowPreview
         @ExperimentalCoroutinesApi
@@ -307,12 +348,23 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .map(SongWithContentLength::song)
                         .shuffled()
 
+                    MediaId.ondevice -> Database
+                        .songsOnDevice()
+                        .first()
+                        .shuffled()
+
                     MediaId.downloaded -> {
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongs()
                              .filter {
                                     downloads[it.id]?.state == Download.STATE_COMPLETED
                              }
+                    }
+
+                    MediaId.top -> {
+                        Database.trending(30)
+                            .first()
+                            //.shuffled()
                     }
 
                     MediaId.playlists -> data
@@ -332,7 +384,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 }?.map(Song::asMediaItem) ?: return@launch
 
                 withContext(Dispatchers.Main) {
-                    player.forcePlayAtIndex(mediaItems, index.coerceIn(0, mediaItems.size))
+                    binder.player.forcePlayAtIndex(mediaItems, index.coerceIn(0, mediaItems.size))
                 }
             }
         }
@@ -348,6 +400,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         const val offline = "offline"
         const val shuffle = "shuffle"
         const val downloaded = "downloaded"
+        const val ondevice = "ondevice"
+        const val top = "top"
 
         fun forSong(id: String) = "songs/$id"
         fun forPlaylist(id: Long) = "playlists/$id"

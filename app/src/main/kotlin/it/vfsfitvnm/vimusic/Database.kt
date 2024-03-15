@@ -151,6 +151,11 @@ interface Database {
     fun songsMostPlayedByPeriod(from: Long, to: Long, limit:Long = Long.MAX_VALUE): Flow<List<Song>>
 
     @Transaction
+    @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsOnDevice(): Flow<List<Song>>
+
+    @Transaction
     @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY artistsText")
     @RewriteQueriesToDropUnusedColumns
     fun songsFavoritesByArtistAsc(): Flow<List<Song>>

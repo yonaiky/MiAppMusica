@@ -68,7 +68,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -128,6 +128,11 @@
             android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
             android:stopWithTask="false">
+
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </service>
 
         <service android:name=".service.PlayerMediaBrowserService"
@@ -135,7 +140,11 @@
             android:enabled="false"
             tools:ignore="ExportedService">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
             </intent-filter>
         </service>
 

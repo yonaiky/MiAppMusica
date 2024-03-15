@@ -21,6 +21,7 @@ import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
+import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -79,8 +80,11 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.innertube.models.bodies.PlayerBody
+import it.vfsfitvnm.innertube.models.bodies.SearchBody
 import it.vfsfitvnm.innertube.requests.player
+import it.vfsfitvnm.innertube.requests.searchPage
 import it.vfsfitvnm.innertube.utils.ProxyPreferences
+import it.vfsfitvnm.innertube.utils.from
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.MainActivity
 import it.vfsfitvnm.vimusic.R
@@ -202,7 +206,8 @@ class PlayerService : InvincibleService(),
                     PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                     PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                     PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND
+                    PlaybackStateCompat.ACTION_REWIND or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
         )
 
     @ExperimentalCoroutinesApi
@@ -217,7 +222,8 @@ class PlayerService : InvincibleService(),
                     PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                     PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                     PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND
+                    PlaybackStateCompat.ACTION_REWIND or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
         ).addCustomAction(
             /* action = */ "DOWNLOAD",
             /* name   = */
@@ -243,7 +249,8 @@ class PlayerService : InvincibleService(),
                     PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                     PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                     PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND
+                    PlaybackStateCompat.ACTION_REWIND or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
         ).addCustomAction(
             /* action = */ "DOWNLOAD",
             /* name   = */
@@ -265,7 +272,8 @@ class PlayerService : InvincibleService(),
                     PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                     PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                     PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND
+                    PlaybackStateCompat.ACTION_REWIND or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
         ).addCustomAction(
             /* action = */ "LIKE",
             /* name   = */ "Like",
@@ -1776,6 +1784,18 @@ class PlayerService : InvincibleService(),
             radioJob?.cancel()
             radio = null
         }
+
+        fun playFromSearch(query: String) {
+            coroutineScope.launch {
+                Innertube.searchPage(
+                    body = SearchBody(
+                        query = query,
+                        params = Innertube.SearchFilter.Song.value
+                    ),
+                    fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+                )?.getOrNull()?.items?.firstOrNull()?.info?.endpoint?.let { playRadio(it) }
+            }
+        }
     }
 
     @ExperimentalCoroutinesApi
@@ -1829,6 +1849,11 @@ class PlayerService : InvincibleService(),
                 toggleDownloadAction()
                 refreshPlayer()
             }
+        }
+
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            if (query.isNullOrBlank()) return
+            binder.playFromSearch(query)
         }
 
     }
