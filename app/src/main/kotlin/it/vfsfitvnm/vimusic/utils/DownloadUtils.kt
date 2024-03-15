@@ -181,11 +181,13 @@ fun manageDownload (
 }
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 @UnstableApi
 @Composable
 fun getDownloadState(mediaId: String): Int {
     val downloader = LocalDownloader.current
-    if (!checkInternetConnection()) return 3
+    //if (!checkInternetConnection()) return 3
+    if (!isNetworkAvailableComposable()) return 3
 
     return downloader.getDownload(mediaId).collectAsState(initial = null).value?.state
         ?: 3

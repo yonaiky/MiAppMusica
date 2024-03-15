@@ -204,6 +204,7 @@ fun durationTextToMillis(duration: String): Long {
 
 
 fun formatAsTime(millis: Long): String {
+    if (millis == 0L) return ""
     val timePart1 = Duration.ofMillis(millis / 60).toMinutes().minutes
     val timePart2 = Duration.ofMillis(millis / 60).seconds % 60
 
