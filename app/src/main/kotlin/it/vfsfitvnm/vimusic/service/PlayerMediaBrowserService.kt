@@ -12,6 +12,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.OptIn
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
@@ -301,7 +302,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         override fun onSkipToNext() = binder.player.forceSeekToNext()
         override fun onSeekTo(pos: Long) = binder.player.seekTo(pos)
         override fun onSkipToQueueItem(id: Long) = binder.player.seekToDefaultPosition(id.toInt())
-        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+        @OptIn(UnstableApi::class) override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             if (query.isNullOrBlank()) return
             binder.playFromSearch(query)
         }
