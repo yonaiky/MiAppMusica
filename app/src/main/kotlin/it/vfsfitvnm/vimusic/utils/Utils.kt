@@ -28,7 +28,7 @@ import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 import it.vfsfitvnm.innertube.requests.playlistPage
 import it.vfsfitvnm.innertube.utils.ProxyPreferences
 import it.vfsfitvnm.innertube.utils.plus
-import it.vfsfitvnm.vimusic.BuildConfig
+//import it.vfsfitvnm.vimusic.BuildConfig
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.query
@@ -204,7 +204,7 @@ fun durationTextToMillis(duration: String): Long {
 
 
 fun formatAsTime(millis: Long): String {
-    if (millis == 0L) return ""
+    //if (millis == 0L) return ""
     val timePart1 = Duration.ofMillis(millis / 60).toMinutes().minutes
     val timePart2 = Duration.ofMillis(millis / 60).seconds % 60
 
@@ -240,6 +240,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     return Result.success(playlistPage)
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun CheckAvailableNewVersion(
     onDismiss: () -> Unit
@@ -260,7 +261,7 @@ fun CheckAvailableNewVersion(
         updatedProductName =  if(dataText.size == 3) dataText[2] else ""
     }
 
-    if (updatedVersionCode > BuildConfig.VERSION_CODE)
+    if (updatedVersionCode > getVersionCode().toInt())//BuildConfig.VERSION_CODE)
         NewVersionDialog(
             updatedVersionName = updatedVersionName,
             updatedVersionCode = updatedVersionCode,
@@ -380,7 +381,18 @@ fun getVersionName(): String {
     }
     return ""
 }
-
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+fun getVersionCode(): Long {
+    val context = LocalContext.current
+    try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        return pInfo.longVersionCode
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+    return 0L
+}
 
 
 
