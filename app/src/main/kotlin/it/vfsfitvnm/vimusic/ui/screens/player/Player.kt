@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -58,6 +60,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.consumeAllChanges
@@ -124,6 +128,7 @@ import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.formatAsDuration
 import it.vfsfitvnm.vimusic.utils.formatAsTime
 import it.vfsfitvnm.vimusic.utils.getDownloadState
+import it.vfsfitvnm.vimusic.utils.isGradientBackgroundEnabledKey
 import it.vfsfitvnm.vimusic.utils.isLandscape
 import it.vfsfitvnm.vimusic.utils.manageDownload
 import it.vfsfitvnm.vimusic.utils.playerThumbnailSizeKey
@@ -155,6 +160,7 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "RememberReturnType")
 @ExperimentalFoundationApi
@@ -169,9 +175,9 @@ fun Player(
 
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
-    var effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    val effectRotationEnabled by rememberPreference(effectRotationKey, true)
 
-    var playerThumbnailSize by rememberPreference(
+    val playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Medium
     )
@@ -779,14 +785,33 @@ fun Player(
             layoutState.expandedBound
         )
 
-        val containerModifier = Modifier
-            .background(colorPalette.background1)
-            .padding(
-                windowInsets
-                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                    .asPaddingValues()
-            )
-            .padding(bottom = playerBottomSheetState.collapsedBound)
+        val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+        val containerModifier =
+            if (!isGradientBackgroundEnabled)
+                Modifier
+                    .background(colorPalette.background1)
+                    .padding(
+                        windowInsets
+                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    )
+                    .padding(bottom = playerBottomSheetState.collapsedBound)
+            else
+                Modifier
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to colorPalette.textSecondary,
+                            1.0f to colorPalette.background2,
+                            startY = 0.0f,
+                            endY = 1500.0f
+                        )
+                    )
+                    .padding(
+                        windowInsets
+                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    )
+                    .padding(bottom = playerBottomSheetState.collapsedBound)
 
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }

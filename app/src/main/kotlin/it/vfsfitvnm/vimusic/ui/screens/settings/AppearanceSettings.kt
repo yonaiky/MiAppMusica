@@ -77,6 +77,7 @@ import it.vfsfitvnm.vimusic.utils.effectRotationKey
 import it.vfsfitvnm.vimusic.utils.fontTypeKey
 import it.vfsfitvnm.vimusic.utils.indexNavigationTabKey
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
+import it.vfsfitvnm.vimusic.utils.isGradientBackgroundEnabledKey
 import it.vfsfitvnm.vimusic.utils.isShowingThumbnailInLockscreenKey
 import it.vfsfitvnm.vimusic.utils.lastPlayerPlayButtonTypeKey
 import it.vfsfitvnm.vimusic.utils.lastPlayerThumbnailSizeKey
@@ -158,6 +159,7 @@ fun AppearanceSettings() {
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
+    var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -330,6 +332,14 @@ fun AppearanceSettings() {
                         ThumbnailRoundness.Medium -> stringResource(R.string.medium)
                     }
                 }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "Use gradient background",
+                text = "",
+                isChecked = isGradientBackgroundEnabled,
+                onCheckedChange = { isGradientBackgroundEnabled = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(filterCharSequence,true))
