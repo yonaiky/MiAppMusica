@@ -316,6 +316,7 @@
     <string name="lang_finnish">Finlandeză</string>
     <string name="listening_time">Timp de ascultare</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Arată numărul de muzici ascultate și timpul lor de ascultare</string>
+    <string name="app_update_dialog_new">Noua versiune %s poate fi descărcată!</string>
     <string name="enable_language_in_discovery">Activează limba în Descoperiri</string>
     <string name="if_possible_allows_discovery_content_language">Dacă este posibil, acesta permite să primiți conținut din Discovery în limba dvs.</string>
     <string name="set_to">Setează pe</string>
@@ -400,8 +401,7 @@
     <string name="do_you_really_want_to_delete_cache">Sigur dorești să ștergi memoria cache?</string>
     <string name="lang_swedish">Svenska</string>
     <string name="pinned_playlists">Playlist-uri fixate</string>
-    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
-     <string name="locked">Locked</string>
+    <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
     <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
     <string name="pause_between_songs">Pause between songs</string>
