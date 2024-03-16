@@ -256,7 +256,7 @@
     <string name="audio_quality_format_medium">Moyen</string>
     <string name="audio_quality_format_low">Bas</string>
     <string name="audio_quality_format_unknown">Inconnu</string>
-    <string name="do_you_really_want_to_delete_download">Vous voulez vraiment supprimer les téléchargements ?</string>
+    <string name="do_you_really_want_to_delete_download">Voulez-vous vraiment supprimer le téléchargement ?</string>
     <string name="remove_all">Tout supprimer</string>
     <string name="remove_selected">Supprimer la sélection</string>
     <string name="clear_queue">Effacer la file d’attente</string>
