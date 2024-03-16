@@ -401,13 +401,13 @@
     <string name="do_you_really_want_to_delete_cache">Sei sicuro di voler eliminare la cache?</string>
     <string name="lang_swedish">Svedese</string>
     <string name="pinned_playlists">Playlist in evidenza</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
-    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
-    <string name="pause_between_songs">Pause between songs</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
+    <string name="locked">Bloccato</string>
+    <string name="sort_duration">Durata</string>
+    <string name="lang_serbian_cyrillic">Serbo (Cirillico)</string>
+    <string name="pause_between_songs">Pausa tra i brani</string>
+    <string name="navigation_bar_type">Stile barra di navigazione</string>
+    <string name="icon_and_text">Icone e testo</string>
+    <string name="only_icon">Solo icone</string>
+    <string name="show_search_tab_in_home">Mostra la scheda di ricerca nella Home</string>
     <string name="action_bar_show_menu_button">Mostra pulsante menu</string>
 </resources>
