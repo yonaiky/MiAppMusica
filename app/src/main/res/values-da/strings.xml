@@ -65,10 +65,10 @@
     <string name="thumbnail_roundness">Rundhed af miniaturebilleder</string>
     <string name="use_system_font">Brug systemskrifttype</string>
     <string name="use_font_by_the_system">Brug skrifttypen anvendt af systemet</string>
-    <string name="apply_font_padding">Apply font padding</string>
+    <string name="apply_font_padding">Anvend skrifttype-padding</string>
     <string name="add_spacing_around_texts">Tilføj afstand omkring tekster</string>
     <string name="lockscreen">LÅSESKÆRM</string>
-    <string name="show_song_cover">Show song cover</string>
+    <string name="show_song_cover">Vis sangcover</string>
     <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">Når cachen løber tør for plads, ryddes de ressourcer, der ikke er blevet tilgået i længst tid</string>
