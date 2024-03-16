@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Avbryt</string>
     <string name="done">Klar</string>
-    <string name="hidesong">Do you really want to hide this song? Its playback time and cache will be wiped.\nThis action is irreversible.</string>
+    <string name="hidesong">Vill du verkligen dölja denna låt? Dess uppspelningstid och cache kommer att raderas.\nDenna åtgärd går inte att ångra.</string>
     <string name="new_playlist">Ny spellista</string>
     <string name="start_radio">Start radio</string>
     <string name="equalizer">Equalizer</string>
