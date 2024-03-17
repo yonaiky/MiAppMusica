@@ -635,7 +635,7 @@ fun LocalPlaylistSongs(
                 ) {
 
                     HeaderIconButton(
-                        icon = R.drawable.star,
+                        icon = R.drawable.pin,
                         enabled = playlistSongs.isNotEmpty(),
                         color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
                             colorPalette.text else colorPalette.textDisabled,

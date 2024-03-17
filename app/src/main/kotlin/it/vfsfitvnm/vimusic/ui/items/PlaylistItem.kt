@@ -220,7 +220,7 @@ fun PlaylistItem(
             name?.let {
                 if (it.startsWith(PINNED_PREFIX,0,true)) {
                     Image(
-                        painter = painterResource(R.drawable.star),
+                        painter = painterResource(R.drawable.pin),
                         colorFilter = ColorFilter.tint(colorPalette.accent),
                         modifier = Modifier
                             .size(40.dp)

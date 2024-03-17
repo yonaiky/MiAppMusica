@@ -9,8 +9,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -41,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -74,6 +78,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderInfo
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
+import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.InputTextDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.SortMenu
 import it.vfsfitvnm.vimusic.ui.components.themed.TextFieldDialog
@@ -306,11 +311,14 @@ fun HomePlaylists(
                             .padding(top = 50.dp)
                             .fillMaxSize()
                     ) {
+                        /*
                         HeaderInfo(
                             title = "${items.size}",
                             icon = painterResource(R.drawable.playlist),
                             spacer = 0
                         )
+
+                         */
 
                         Spacer(
                             modifier = Modifier
@@ -451,12 +459,17 @@ fun HomePlaylists(
             /*    */
 
             if (showPlaylists) {
+                if (items.filter {
+                        it.playlist.name.startsWith(PINNED_PREFIX,0,true)
+                    }.isNotEmpty())
                 item(
                     key = "headerPinnedPlaylist",
                     contentType = 0,
                     span = { GridItemSpan(maxLineSpan) }) {
                     BasicText(
-                        text = stringResource(R.string.pinned_playlists),
+                        text = "${stringResource(R.string.pinned_playlists)} (${items.filter {
+                            it.playlist.name.startsWith(PINNED_PREFIX,0,true)
+                        }.size})",
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -481,40 +494,41 @@ fun HomePlaylists(
                     key = "headerplaylist",
                     contentType = 0,
                     span = { GridItemSpan(maxLineSpan) }) {
-                    BasicText(
-                        text = stringResource(R.string.playlists),
-                        style = typography.m.semiBold,
-                        modifier = sectionTextModifier
-                    )
-                }
-
-                item(key = "newPlaylist") {
-                    PlaylistItem(
-                        icon = R.drawable.add_in_playlist,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.new_playlist),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
+                    Row (
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { isCreatingANewPlaylist = true })
-                            .animateItemPlacement()
+                            .fillMaxWidth()
+                    ) {
+                        BasicText(
+                            text = "${stringResource(R.string.playlists)} (${
+                                items.filter {
+                                    !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                                }.size
+                            })",
+                            style = typography.m.semiBold,
+                            //modifier = sectionTextModifier
+                            modifier = Modifier
+                                .padding(15.dp)
+                        )
 
-                    )
-                }
+                        Spacer(
+                            modifier = Modifier
+                                .weight(1f)
+                        )
 
-                item(key = "importPlaylist") {
-                    PlaylistItem(
-                        icon = R.drawable.resource_import,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.import_playlist),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = {
+                        IconButton(
+                            icon = R.drawable.add_in_playlist,
+                            color = colorPalette.text,
+                            onClick = { isCreatingANewPlaylist = true },
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .size(20.dp)
+                        )
+                        IconButton(
+                            icon = R.drawable.resource_import,
+                            color = colorPalette.text,
+                            onClick = {
                                 try {
                                     importLauncher.launch(
                                         arrayOf(
@@ -524,16 +538,18 @@ fun HomePlaylists(
                                 } catch (e: ActivityNotFoundException) {
                                     context.toast("Couldn't find an application to open documents")
                                 }
-                            })
-                            .animateItemPlacement()
+                            },
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .size(20.dp)
+                        )
 
-                    )
+                    }
+
                 }
 
-
-
                 items(items = items.filter {
-                    it.playlist.name.startsWith(PINNED_PREFIX,0,true) == false
+                    !it.playlist.name.startsWith(PINNED_PREFIX,0,true)
                 }, key = { it.playlist.id }) { playlistPreview ->
                     PlaylistItem(
                         playlist = playlistPreview,
