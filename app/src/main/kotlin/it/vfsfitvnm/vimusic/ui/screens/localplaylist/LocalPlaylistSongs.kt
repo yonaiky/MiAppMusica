@@ -941,6 +941,7 @@ fun LocalPlaylistSongs(
                             PlaylistSongSortBy.Title -> stringResource(R.string.sort_title)
                             PlaylistSongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
                             PlaylistSongSortBy.Artist -> stringResource(R.string.sort_artist)
+                            PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}"
                             PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                         },
@@ -958,6 +959,7 @@ fun LocalPlaylistSongs(
                                         onDatePlayed = { sortBy = PlaylistSongSortBy.DatePlayed },
                                         onPosition = { sortBy = PlaylistSongSortBy.Position },
                                         onArtist = { sortBy = PlaylistSongSortBy.Artist },
+                                        onArtistAndAlbum = { sortBy = PlaylistSongSortBy.ArtistAndAlbum },
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration }
                                     )

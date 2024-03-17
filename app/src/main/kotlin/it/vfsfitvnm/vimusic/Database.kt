@@ -686,6 +686,22 @@ interface Database {
     @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.durationText DESC")
     fun songsPlaylistByDurationDesc(id: Long): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId " +
+            "LEFT JOIN songalbummap SA ON SA.songId=SP.songId " +
+            "LEFT JOIN Album A ON A.Id=SA.albumId " +
+            "WHERE SP.playlistId=:id " +
+            "ORDER BY S.artistsText COLLATE NOCASE ASC, A.title COLLATE NOCASE ASC")
+    fun songsPlaylistByArtistAndAlbumAsc(id: Long): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId " +
+            "LEFT JOIN songalbummap SA ON SA.songId=SP.songId " +
+            "LEFT JOIN Album A ON A.Id=SA.albumId " +
+            "WHERE SP.playlistId=:id " +
+            "ORDER BY S.artistsText COLLATE NOCASE DESC, A.title COLLATE NOCASE DESC")
+    fun songsPlaylistByArtistAndAlbumDesc(id: Long): Flow<List<Song>>
+
     fun songsPlaylist(id: Long, sortBy: PlaylistSongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             PlaylistSongSortBy.PlayTime -> when (sortOrder) {
@@ -715,6 +731,10 @@ interface Database {
             PlaylistSongSortBy.Duration -> when (sortOrder) {
                 SortOrder.Ascending -> songsPlaylistByDurationAsc(id)
                 SortOrder.Descending -> songsPlaylistByDurationDesc(id)
+            }
+            PlaylistSongSortBy.ArtistAndAlbum -> when (sortOrder) {
+                SortOrder.Ascending -> songsPlaylistByArtistAndAlbumAsc(id)
+                SortOrder.Descending -> songsPlaylistByArtistAndAlbumDesc(id)
             }
 
         }
