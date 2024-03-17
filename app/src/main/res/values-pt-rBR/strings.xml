@@ -400,14 +400,14 @@
     <string name="value_copied">Copiado</string>
     <string name="do_you_really_want_to_delete_cache">Você realmente deseja limpar o cache?</string>
     <string name="lang_swedish">Suíço</string>
-    <string name="pinned_playlists">Pinned Playlists</string>
+    <string name="pinned_playlists">Playlists Fixadas</string>
     <string name="locked">Bloqueado</string>
     <string name="sort_duration">Duração</string>
     <string name="lang_serbian_cyrillic">Sérvio (Cirílico)</string>
     <string name="pause_between_songs">Pausar entre músicas</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="navigation_bar_type">Tipo de barra de navegação</string>
+    <string name="icon_and_text">Ícone e texto</string>
+    <string name="only_icon">Somente ícones</string>
+    <string name="show_search_tab_in_home">Exibir Aba de Busca na Tela Inicial</string>
+    <string name="action_bar_show_menu_button">Mostrar botão de menu</string>
 </resources>
