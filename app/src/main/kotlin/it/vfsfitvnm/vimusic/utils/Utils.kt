@@ -71,6 +71,24 @@ fun songToggleLike( song: Song ) {
     }
 }
 
+fun mediaItemToggleLike( mediaItem: MediaItem ) {
+    query {
+        if (Database.songExist(mediaItem.mediaId) == 0)
+            Database.insert(mediaItem, Song::toggleLike)
+        else {
+            if (Database.songliked(mediaItem.mediaId) == 0)
+                Database.like(
+                    mediaItem.mediaId,
+                    System.currentTimeMillis()
+                )
+            else Database.like(
+                mediaItem.mediaId,
+                null
+            )
+        }
+    }
+}
+
 val Innertube.SongItem.asMediaItem: MediaItem
     @UnstableApi
     get() = MediaItem.Builder()

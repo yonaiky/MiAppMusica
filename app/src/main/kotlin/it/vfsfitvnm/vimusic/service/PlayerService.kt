@@ -75,6 +75,7 @@ import androidx.media3.exoplayer.audio.DefaultAudioSink.DefaultAudioProcessorCha
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
+import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
 import it.vfsfitvnm.innertube.Innertube
@@ -124,6 +125,7 @@ import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid8
 import it.vfsfitvnm.vimusic.utils.isInvincibilityEnabledKey
 import it.vfsfitvnm.vimusic.utils.isShowingThumbnailInLockscreenKey
 import it.vfsfitvnm.vimusic.utils.manageDownload
+import it.vfsfitvnm.vimusic.utils.mediaItemToggleLike
 import it.vfsfitvnm.vimusic.utils.mediaItems
 import it.vfsfitvnm.vimusic.utils.persistentQueueKey
 import it.vfsfitvnm.vimusic.utils.preferences
@@ -620,23 +622,24 @@ class PlayerService : InvincibleService(),
 
     @UnstableApi
     override fun onDestroy() {
-        maybeSavePlayerQueue()
+        runCatching {
+            maybeSavePlayerQueue()
 
-        preferences.unregisterOnSharedPreferenceChangeListener(this)
+            preferences.unregisterOnSharedPreferenceChangeListener(this)
 
-        player.removeListener(this)
-        player.stop()
-        player.release()
+            player.removeListener(this)
+            player.stop()
+            player.release()
 
-        unregisterReceiver(notificationActionReceiver)
+            unregisterReceiver(notificationActionReceiver)
 
-        mediaSession.isActive = false
-        mediaSession.release()
-        cache.release()
-        //downloadCache.release()
+            mediaSession.isActive = false
+            mediaSession.release()
+            cache.release()
+            //downloadCache.release()
 
-        loudnessEnhancer?.release()
-
+            loudnessEnhancer?.release()
+        }
         super.onDestroy()
     }
 
@@ -1796,8 +1799,39 @@ class PlayerService : InvincibleService(),
                 )?.getOrNull()?.items?.firstOrNull()?.info?.endpoint?.let { playRadio(it) }
             }
         }
+
+        @ExperimentalCoroutinesApi
+        @FlowPreview
+        fun toggleLike() = mediaItemState.value?.let { mediaItem ->
+            mediaItemToggleLike(mediaItem)
+            /*
+            transaction {
+                Database.like(
+                    mediaItem.mediaId,
+                    if (isLikedState.value) null else System.currentTimeMillis()
+                )
+            }
+             */
+        }.let {  }
+
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        @ExperimentalCoroutinesApi
+        @FlowPreview
+        fun toggleDownload() = mediaDownloadedItemState.value?.let { mediaItem ->
+            runCatching {
+                val downloads = DownloadUtil.downloads.value
+                manageDownload(
+                    context = this@PlayerService,
+                    songId = mediaItem.mediaId,
+                    songTitle = mediaItem.mediaMetadata.title.toString(),
+                    downloadState = downloads[mediaItem.mediaId]?.state == Download.STATE_COMPLETED //isDownloadedState.value
+                )
+            }
+        }.let { }
     }
 
+    /*
     @ExperimentalCoroutinesApi
     @FlowPreview
     private fun toggleLikeAction() = mediaItemState.value?.let { mediaItem ->
@@ -1823,6 +1857,8 @@ class PlayerService : InvincibleService(),
 
     }.let { }
 
+     */
+
     private inner class SessionCallback(private val player: Player) : MediaSessionCompat.Callback() {
         override fun onPlay() = player.play()
         override fun onPause() = player.pause()
@@ -1842,11 +1878,11 @@ class PlayerService : InvincibleService(),
             super.onCustomAction(action, extras)
             //From Android 11
             if (action == "LIKE") {
-                toggleLikeAction()
+                binder.toggleLike()
                 refreshPlayer()
             }
             if (action == "DOWNLOAD") {
-                toggleDownloadAction()
+                binder.toggleDownload()
                 refreshPlayer()
             }
         }
@@ -1856,6 +1892,27 @@ class PlayerService : InvincibleService(),
             binder.playFromSearch(query)
         }
 
+        fun refreshPlayer() {
+            if (player.isPlaying) {
+                player.pause()
+                player.play()
+            } else {
+                player.play()
+                player.pause()
+            }
+        }
+
+    }
+
+
+    private fun refreshPlayer() {
+        if (player.isPlaying) {
+            player.pause()
+            player.play()
+        } else {
+            player.play()
+            player.pause()
+        }
     }
 
     inner class NotificationActionReceiver(private val player: Player) : BroadcastReceiver() {
@@ -1871,27 +1928,20 @@ class PlayerService : InvincibleService(),
                 Action.next.value -> player.forceSeekToNext()
                 Action.previous.value -> player.forceSeekToPrevious()
                 Action.like.value -> {
-                    toggleLikeAction()
+                    binder.toggleLike()
                     refreshPlayer()
                 }
 
                 Action.download.value -> {
-                    toggleDownloadAction()
+                    binder.toggleDownload()
                     refreshPlayer()
                 }
             }
         }
+
     }
 
-    private fun refreshPlayer() {
-        if (player.shouldBePlaying) {
-            player.pause()
-            player.play()
-        } else {
-            player.play()
-            player.pause()
-        }
-    }
+
 
 
     class NotificationDismissReceiver : BroadcastReceiver() {

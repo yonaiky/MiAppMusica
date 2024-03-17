@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.ServiceConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat.MediaItem
@@ -13,6 +14,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
@@ -60,7 +62,6 @@ import kotlinx.coroutines.withContext
 
 class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val coroutineScopeDb = CoroutineScope(Dispatchers.Main)
     private var lastSongs = emptyList<Song>()
 
     private var bound = false
@@ -314,10 +315,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.top)
-                .setTitle(
-                    (this as Context).resources.getString(R.string.my_playlist_top) +
-                    " 30"
-                )
+                .setTitle((this as Context).resources.getString(R.string.my_playlist_top))
                 .setIconUri(uriFor(R.drawable.trending))
                 .build(),
             MediaItem.FLAG_PLAYABLE
@@ -379,19 +377,24 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         override fun onSkipToNext() = binder.player.forceSeekToNext()
         override fun onSeekTo(pos: Long) = binder.player.seekTo(pos)
         override fun onSkipToQueueItem(id: Long) = binder.player.seekToDefaultPosition(id.toInt())
-        @OptIn(UnstableApi::class) override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+        @OptIn(UnstableApi::class)
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             if (query.isNullOrBlank()) return
             binder.playFromSearch(query)
         }
 
 
+        @RequiresApi(Build.VERSION_CODES.M)
         @FlowPreview
         @ExperimentalCoroutinesApi
         @UnstableApi
         override fun onCustomAction(action: String?, extras: Bundle?) {
+            if (action == "LIKE") {
+                binder.toggleLike()
+                binder.player
+            }
+            if (action == "DOWNLOAD") binder.toggleDownload()
             super.onCustomAction(action, extras)
-            //if (action == "LIKE") {}
-            //if (action == "DOWNLOAD") {}
         }
 
         @UnstableApi
@@ -442,7 +445,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     }
 
                     MediaId.top -> {
-                        Database.trending(30)
+                        Database.trending(200)
                             .first()
                             //.shuffled()
                     }
