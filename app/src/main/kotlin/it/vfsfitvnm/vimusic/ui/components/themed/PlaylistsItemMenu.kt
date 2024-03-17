@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +46,7 @@ import it.vfsfitvnm.vimusic.models.PlaylistPreview
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.items.PlaylistItem
+import it.vfsfitvnm.vimusic.ui.screens.home.PINNED_PREFIX
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
@@ -52,6 +54,7 @@ import it.vfsfitvnm.vimusic.utils.addNext
 import it.vfsfitvnm.vimusic.utils.playlistSortByKey
 import it.vfsfitvnm.vimusic.utils.playlistSortOrderKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
+import it.vfsfitvnm.vimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 
 @ExperimentalTextApi
@@ -78,7 +81,7 @@ fun PlaylistsItemMenu(
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null
     ) {
-    val (colorPalette) = LocalAppearance.current
+    val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
 
     var isViewingPlaylists by remember {
@@ -109,6 +112,14 @@ fun PlaylistsItemMenu(
             val playlistPreviews by remember {
                 Database.playlistPreviews(sortBy, sortOrder)
             }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+
+            val pinnedPlaylists = playlistPreviews.filter {
+                it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+            }
+
+            val unpinnedPlaylists = playlistPreviews.filter {
+                !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+            }
 
             var isCreatingNewPlaylist by rememberSaveable {
                 mutableStateOf(false)
@@ -164,17 +175,47 @@ fun PlaylistsItemMenu(
                     }
                 }
 
-                onAddToPlaylist?.let { onAddToPlaylist ->
-                    playlistPreviews.forEach { playlistPreview ->
-                        MenuEntry(
-                            icon = R.drawable.add_in_playlist,
-                            text = playlistPreview.playlist.name,
-                            secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
-                            onClick = {
-                                onDismiss()
-                                onAddToPlaylist(PlaylistPreview(playlistPreview.playlist, playlistPreview.songCount))
-                            }
-                        )
+                if (pinnedPlaylists.isNotEmpty()) {
+                    BasicText(
+                        text = stringResource(R.string.pinned_playlists),
+                        style = typography.m.semiBold,
+                        modifier = modifier.padding(start = 20.dp, top = 5.dp)
+                    )
+
+                    onAddToPlaylist?.let { onAddToPlaylist ->
+                        pinnedPlaylists.forEach { playlistPreview ->
+                            MenuEntry(
+                                icon = R.drawable.add_in_playlist,
+                                text = playlistPreview.playlist.name.substringAfter(PINNED_PREFIX),
+                                secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPlaylist(PlaylistPreview(playlistPreview.playlist, playlistPreview.songCount))
+                                }
+                            )
+                        }
+                    }
+                }
+
+                if (unpinnedPlaylists.isNotEmpty()) {
+                    BasicText(
+                        text = stringResource(R.string.playlists),
+                        style = typography.m.semiBold,
+                        modifier = modifier.padding(start = 20.dp, top = 5.dp)
+                    )
+
+                    onAddToPlaylist?.let { onAddToPlaylist ->
+                        unpinnedPlaylists.forEach { playlistPreview ->
+                            MenuEntry(
+                                icon = R.drawable.add_in_playlist,
+                                text = playlistPreview.playlist.name,
+                                secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPlaylist(PlaylistPreview(playlistPreview.playlist, playlistPreview.songCount))
+                                }
+                            )
+                        }
                     }
                 }
             }
