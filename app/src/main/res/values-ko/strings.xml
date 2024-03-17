@@ -401,8 +401,8 @@
     <string name="do_you_really_want_to_delete_cache">정말로 캐시를 삭제하실건가요?</string>
     <string name="lang_swedish">스웨덴어</string>
     <string name="pinned_playlists">고정된 재생목록</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
+    <string name="locked">잠김</string>
+    <string name="sort_duration">기간</string>
     <string name="lang_serbian_cyrillic">세르비아어 (키릴어)</string>
     <string name="pause_between_songs">곡 전환 시 일시중지</string>
     <string name="navigation_bar_type">내비게이션 바 유형</string>
