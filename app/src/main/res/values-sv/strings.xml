@@ -331,10 +331,10 @@
     <string name="update_available">Uppdatering tillgänglig</string>
     <string name="actions_you_can_do">Actions you can do:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Öppna webbsidan Github releases och ladda ned den senaste versionen</string>
-    <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Download latest version from Github, you will find the file in the notification area and you can install by clicking on it</string>
-    <string name="f_droid_users_can_wait_for_the_update_info">F-Droid users can wait for the update from F-Droid, which usually arrives within a few hours with the IzzyOnDroid repo, and a few days with F-Droid.org\'s repo.</string>
-    <string name="check_update">Check Update</string>
-    <string name="enable_check_for_update">Enable check for update</string>
+    <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Ladda ned den senaste versionen från Github, du hittar filen i meddelandefältet och kan installera genom att klicka på den</string>
+    <string name="f_droid_users_can_wait_for_the_update_info">F-Droid användare kan vänta på uppdateringen från F-Droid, som vanligtvis anländer inom några timmar med IzzyOnDroid repo, och några dagar med F-Droid.org\'s repo.</string>
+    <string name="check_update">Sök efter uppdateringar</string>
+    <string name="enable_check_for_update">Aktivera för att automatiskt leta efter uppdateringar</string>
     <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">When enabled, a new version is checked and notified during startup.</string>
     <string name="check_at_github_for_updates">Check at Github for updates?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">When an update is available, you will be asked if you want to install it. There won\'t be automated installs, behind your back.</string>
@@ -408,6 +408,6 @@
     <string name="navigation_bar_type">Navigation bar type</string>
     <string name="icon_and_text">Icon and text</string>
     <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="show_search_tab_in_home">Visa sökfliken på startsidan</string>
+    <string name="action_bar_show_menu_button">Visa menyknapp</string>
 </resources>
