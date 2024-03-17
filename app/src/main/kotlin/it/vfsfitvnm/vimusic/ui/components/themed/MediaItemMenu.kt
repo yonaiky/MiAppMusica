@@ -81,6 +81,7 @@ import it.vfsfitvnm.vimusic.ui.items.ArtistItem
 import it.vfsfitvnm.vimusic.ui.items.SongItem
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.artistRoute
+import it.vfsfitvnm.vimusic.ui.screens.home.PINNED_PREFIX
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
@@ -381,7 +382,7 @@ fun MediaItemMenu(
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onShare: () -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
+    val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -503,6 +504,14 @@ fun MediaItemMenu(
                 Database.playlistPreviews(sortBy, sortOrder)
             }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
+            val pinnedPlaylists = playlistPreviews.filter {
+                it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+            }
+
+            val unpinnedPlaylists = playlistPreviews.filter {
+                !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+            }
+
             var isCreatingNewPlaylist by rememberSaveable {
                 mutableStateOf(false)
             }
@@ -563,17 +572,47 @@ fun MediaItemMenu(
                     }
                 }
 
-                onAddToPlaylist?.let { onAddToPlaylist ->
-                    playlistPreviews.forEach { playlistPreview ->
-                        MenuEntry(
-                            icon = R.drawable.add_in_playlist,
-                            text = playlistPreview.playlist.name,
-                            secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
-                            onClick = {
-                                onDismiss()
-                                onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
-                            }
-                        )
+                if (pinnedPlaylists.isNotEmpty()) {
+                    BasicText(
+                        text = stringResource(R.string.pinned_playlists),
+                        style = typography.m.semiBold,
+                        modifier = modifier.padding(start = 20.dp, top = 5.dp)
+                    )
+
+                    onAddToPlaylist?.let { onAddToPlaylist ->
+                        pinnedPlaylists.forEach { playlistPreview ->
+                            MenuEntry(
+                                icon = R.drawable.add_in_playlist,
+                                text = playlistPreview.playlist.name.substringAfter(PINNED_PREFIX),
+                                secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                if (unpinnedPlaylists.isNotEmpty()) {
+                    BasicText(
+                        text = stringResource(R.string.playlists),
+                        style = typography.m.semiBold,
+                        modifier = modifier.padding(start = 20.dp, top = 5.dp)
+                    )
+
+                    onAddToPlaylist?.let { onAddToPlaylist ->
+                        unpinnedPlaylists.forEach { playlistPreview ->
+                            MenuEntry(
+                                icon = R.drawable.add_in_playlist,
+                                text = playlistPreview.playlist.name,
+                                secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
+                                }
+                            )
+                        }
                     }
                 }
             }
