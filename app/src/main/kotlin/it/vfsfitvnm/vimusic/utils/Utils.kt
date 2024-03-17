@@ -28,7 +28,7 @@ import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 import it.vfsfitvnm.innertube.requests.playlistPage
 import it.vfsfitvnm.innertube.utils.ProxyPreferences
 import it.vfsfitvnm.innertube.utils.plus
-//import it.vfsfitvnm.vimusic.BuildConfig
+import it.vfsfitvnm.vimusic.BuildConfig
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.query
@@ -240,7 +240,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     return Result.success(playlistPage)
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
+
 @Composable
 fun CheckAvailableNewVersion(
     onDismiss: () -> Unit
@@ -261,7 +261,8 @@ fun CheckAvailableNewVersion(
         updatedProductName =  if(dataText.size == 3) dataText[2] else ""
     }
 
-    if (updatedVersionCode > getVersionCode().toInt())//BuildConfig.VERSION_CODE)
+    //if (updatedVersionCode > getVersionCode().toInt()))
+    if (updatedVersionCode > BuildConfig.VERSION_CODE)
         NewVersionDialog(
             updatedVersionName = updatedVersionName,
             updatedVersionCode = updatedVersionCode,
@@ -383,7 +384,7 @@ fun getVersionName(): String {
 }
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun getVersionCode(): Long {
+fun getLongVersionCode(): Long {
     val context = LocalContext.current
     try {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
