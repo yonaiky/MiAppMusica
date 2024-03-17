@@ -401,14 +401,14 @@
     <string name="do_you_really_want_to_delete_cache">정말로 캐시를 삭제하실건가요?</string>
     <string name="lang_swedish">스웨덴어</string>
     <string name="pinned_playlists">고정된 재생목록</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
-    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
-    <string name="pause_between_songs">Pause between songs</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="locked">잠김</string>
+    <string name="sort_duration">기간</string>
+    <string name="lang_serbian_cyrillic">세르비아어 (키릴어)</string>
+    <string name="pause_between_songs">곡 전환 시 일시중지</string>
+    <string name="navigation_bar_type">내비게이션 바 유형</string>
+    <string name="icon_and_text">아이콘&amp;텍스트</string>
+    <string name="only_icon">아이콘만</string>
+    <string name="show_search_tab_in_home">사이드바에 검색 탭 표시</string>
+    <string name="action_bar_show_menu_button">메뉴 버튼 표시</string>
     <string name="sort_album">Album</string>
 </resources>

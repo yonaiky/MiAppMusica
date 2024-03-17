@@ -401,14 +401,14 @@
     <string name="do_you_really_want_to_delete_cache">本当にキャッシュを削除しますか？</string>
     <string name="lang_swedish">スウェーデン語</string>
     <string name="pinned_playlists">ピン留め済みプレイリスト</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
-    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
-    <string name="pause_between_songs">Pause between songs</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="locked">ロック中</string>
+    <string name="sort_duration">長さ</string>
+    <string name="lang_serbian_cyrillic">セルビア語 キリル</string>
+    <string name="pause_between_songs">楽曲間で一時停止</string>
+    <string name="navigation_bar_type">ナビゲーションバータイプ</string>
+    <string name="icon_and_text">アイコンとテキスト</string>
+    <string name="only_icon">アイコンのみ</string>
+    <string name="show_search_tab_in_home">ホームに検索タブを表示</string>
+    <string name="action_bar_show_menu_button">メニューボタンを表示</string>
     <string name="sort_album">Album</string>
 </resources>

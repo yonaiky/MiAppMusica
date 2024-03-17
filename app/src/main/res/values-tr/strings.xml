@@ -401,14 +401,14 @@
     <string name="do_you_really_want_to_delete_cache">Önbelleği gerçekten silmek istiyor musunuz?</string>
     <string name="lang_swedish">Swedish</string>
     <string name="pinned_playlists">Sabitlenmiş Oynatma Listeleri</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
+    <string name="locked">Kilitlendi</string>
+    <string name="sort_duration">Süre</string>
     <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
-    <string name="pause_between_songs">Pause between songs</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="pause_between_songs">Şarkılar arası bekleme süresi</string>
+    <string name="navigation_bar_type">Gezinme çubuğu tipi</string>
+    <string name="icon_and_text">Simge ve metin</string>
+    <string name="only_icon">Sadece simge</string>
+    <string name="show_search_tab_in_home">Ana Sayfada Arama Sekmesini Göster</string>
+    <string name="action_bar_show_menu_button">Menü düğmesini göster</string>
     <string name="sort_album">Album</string>
 </resources>
