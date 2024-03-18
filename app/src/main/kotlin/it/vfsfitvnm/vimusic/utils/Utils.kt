@@ -336,26 +336,50 @@ fun checkInternetConnection(): Boolean {
     return check.isNotEmpty()
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 fun isNetworkAvailable(context: Context): Boolean {
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         ?: return false
-    val networkInfo = cm.activeNetwork
-    // if no network is available networkInfo will be null
-    // otherwise check if we are connected
-    return networkInfo != null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkInfo = cm.activeNetwork
+        // if no network is available networkInfo will be null
+        // otherwise check if we are connected
+        return networkInfo != null
+    } else {
+        return try {
+            if (cm.activeNetworkInfo == null) {
+                false
+            } else {
+                cm.activeNetworkInfo?.isConnected!!
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }
 
 @Composable
-@RequiresApi(Build.VERSION_CODES.M)
 fun isNetworkAvailableComposable(): Boolean {
     val context = LocalContext.current
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         ?: return false
-    val networkInfo = cm.activeNetwork
-    // if no network is available networkInfo will be null
-    // otherwise check if we are connected
-    return networkInfo != null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkInfo = cm.activeNetwork
+        // if no network is available networkInfo will be null
+        // otherwise check if we are connected
+        return networkInfo != null
+    } else {
+        return try {
+            if (cm.activeNetworkInfo == null) {
+                false
+            } else {
+                cm.activeNetworkInfo?.isConnected!!
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
 
 /*

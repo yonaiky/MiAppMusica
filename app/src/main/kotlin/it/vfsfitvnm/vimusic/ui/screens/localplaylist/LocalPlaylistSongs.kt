@@ -166,7 +166,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 @KotlinCsvExperimental
 @ExperimentalMaterialApi
 @ExperimentalTextApi

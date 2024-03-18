@@ -69,7 +69,6 @@ fun InitDownloader () {
 }
 
 
-//@RequiresApi(Build.VERSION_CODES.M)
 @UnstableApi
 @Composable
 fun downloadedStateMedia ( mediaId: String ): Boolean {
@@ -134,7 +133,7 @@ fun downloadedStateMedia ( mediaId: String ): Boolean {
 
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 @UnstableApi
 fun manageDownload (
     context: android.content.Context,
@@ -181,7 +180,7 @@ fun manageDownload (
 }
 
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 @UnstableApi
 @Composable
 fun getDownloadState(mediaId: String): Int {

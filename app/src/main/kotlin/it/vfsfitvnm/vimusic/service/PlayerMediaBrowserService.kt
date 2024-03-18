@@ -384,7 +384,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         }
 
 
-        @RequiresApi(Build.VERSION_CODES.M)
+
         @FlowPreview
         @ExperimentalCoroutinesApi
         @UnstableApi

@@ -160,7 +160,7 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "RememberReturnType")
 @ExperimentalFoundationApi
