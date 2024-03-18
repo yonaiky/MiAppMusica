@@ -103,6 +103,7 @@ import it.vfsfitvnm.vimusic.utils.formatAsDuration
 import it.vfsfitvnm.vimusic.utils.formatAsTime
 import it.vfsfitvnm.vimusic.utils.formatTimelineSongDurationToTime
 import it.vfsfitvnm.vimusic.utils.isCompositionLaunched
+import it.vfsfitvnm.vimusic.utils.isGradientBackgroundEnabledKey
 import it.vfsfitvnm.vimusic.utils.pauseBetweenSongsKey
 import it.vfsfitvnm.vimusic.utils.playerPlayButtonTypeKey
 import it.vfsfitvnm.vimusic.utils.playerThumbnailSizeKey
@@ -225,7 +226,8 @@ fun Controls(
 
     var showSelectDialog by remember { mutableStateOf(false) }
 
-    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    val playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
 
     /*
     var windows by remember {
@@ -757,11 +759,22 @@ fun Controls(
                     //.background(if (uiType != UiType.RiMusic) colorPalette.background3 else colorPalette.background0)
                     .background(
                         when (colorPaletteName) {
-                            ColorPaletteName.Dynamic, ColorPaletteName.Default ->
+                            ColorPaletteName.Dynamic, ColorPaletteName.Default -> {
+                                when (playerPlayButtonType) {
+                                    PlayerPlayButtonType.CircularRibbed,
+                                    PlayerPlayButtonType.Disabled -> colorPalette.background1
+                                    else -> {
+                                        if (isGradientBackgroundEnabled) colorPalette.background1
+                                        else colorPalette.background2
+                                    }
+                                }
+                            }
+                                /*
                                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
                                     colorPalette.background1 else
                                     if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
                                         colorPalette.background2 else colorPalette.background1
+                                 */
 
                             ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
                                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
