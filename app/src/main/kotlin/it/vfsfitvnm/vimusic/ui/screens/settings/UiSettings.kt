@@ -244,16 +244,23 @@ fun  UiSettings() {
             modifier = Modifier,
             onClick = {}
         )
+
+        HeaderIconButton(
+            modifier = Modifier.padding(horizontal = 5.dp),
+            onClick = { searching = !searching },
+            icon = R.drawable.search_circle,
+            color = colorPalette.text,
+            iconSize = 24.dp
+        )
         /*   Search   */
         Row (
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier
-                //.requiredHeight(30.dp)
                 .padding(all = 10.dp)
                 .fillMaxWidth()
         ) {
-
+            AnimatedVisibility(visible = searching) {
                 val focusRequester = remember { FocusRequester() }
                 val focusManager = LocalFocusManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
@@ -305,7 +312,7 @@ fun  UiSettings() {
                                     text = stringResource(R.string.search),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
                                 )
                             }
 
@@ -330,7 +337,7 @@ fun  UiSettings() {
                             }
                         }
                 )
-
+            }
         }
         /*  Search  */
 
