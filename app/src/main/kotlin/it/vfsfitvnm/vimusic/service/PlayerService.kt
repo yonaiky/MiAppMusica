@@ -723,11 +723,7 @@ class PlayerService : InvincibleService(),
         }
 
 
-        val minTimeForEvent = when (val minTime =
-            preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)) {
-            ExoPlayerMinTimeForEvent.`20s` -> minTime
-            else -> minTime
-        }
+        val minTimeForEvent = preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
         if (totalPlayTimeMs > minTimeForEvent.ms) {
             query {
