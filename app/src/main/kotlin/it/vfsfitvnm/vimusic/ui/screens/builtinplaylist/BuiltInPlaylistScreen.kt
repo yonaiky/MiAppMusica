@@ -55,8 +55,8 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
     val (tabIndex, onTabIndexChanged) = rememberSaveable {
         mutableStateOf(when (builtInPlaylist) {
             BuiltInPlaylist.Favorites -> 0
-            BuiltInPlaylist.Downloaded -> 1
-            BuiltInPlaylist.Offline -> 2
+            BuiltInPlaylist.Offline -> 1
+            BuiltInPlaylist.Downloaded -> 2
             BuiltInPlaylist.Top -> 3
         })
     }
@@ -122,10 +122,10 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
                 onTabChanged = onTabIndexChanged,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.favorites), R.drawable.heart)
-                    if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled)
-                    Item(1, stringResource(R.string.downloaded), R.drawable.downloaded)
                     if(exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled)
-                    Item(2, stringResource(R.string.cached), R.drawable.sync)
+                        Item(1, stringResource(R.string.cached), R.drawable.sync)
+                    if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled)
+                        Item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
                     Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
                     Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
                 }
@@ -137,12 +137,11 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
                             onSearchClick = { searchRoute("") }
                         )
                         1 -> BuiltInPlaylistSongs(
-                            builtInPlaylist = BuiltInPlaylist.Downloaded,
+                            builtInPlaylist = BuiltInPlaylist.Offline,
                             onSearchClick = { searchRoute("") }
                         )
-
                         2 -> BuiltInPlaylistSongs(
-                            builtInPlaylist = BuiltInPlaylist.Offline,
+                            builtInPlaylist = BuiltInPlaylist.Downloaded,
                             onSearchClick = { searchRoute("") }
                         )
                         3 -> BuiltInPlaylistSongs(

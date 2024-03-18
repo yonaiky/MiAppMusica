@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -17,15 +18,23 @@ import it.vfsfitvnm.compose.persist.PersistMapCleanup
 import it.vfsfitvnm.compose.routing.RouteHandler
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.BuiltInPlaylist
 import it.vfsfitvnm.vimusic.enums.DeviceLists
+import it.vfsfitvnm.vimusic.enums.ExoPlayerDiskCacheMaxSize
+import it.vfsfitvnm.vimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
+import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
 import it.vfsfitvnm.vimusic.models.SearchQuery
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.themed.Scaffold
+import it.vfsfitvnm.vimusic.ui.screens.builtinplaylist.BuiltInPlaylistSongs
 import it.vfsfitvnm.vimusic.ui.screens.globalRoutes
 import it.vfsfitvnm.vimusic.ui.screens.search.SearchScreen
 import it.vfsfitvnm.vimusic.ui.screens.searchResultRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchresult.SearchResultScreen
+import it.vfsfitvnm.vimusic.utils.MaxTopPlaylistItemsKey
+import it.vfsfitvnm.vimusic.utils.exoPlayerDiskCacheMaxSizeKey
+import it.vfsfitvnm.vimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.vfsfitvnm.vimusic.utils.pauseSearchHistoryKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
@@ -47,6 +56,21 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
         })
     }
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+
+    var exoPlayerDiskCacheMaxSize by rememberPreference(
+        exoPlayerDiskCacheMaxSizeKey,
+        ExoPlayerDiskCacheMaxSize.`32MB`
+    )
+
+    var exoPlayerDiskDownloadCacheMaxSize by rememberPreference(
+        exoPlayerDiskDownloadCacheMaxSizeKey,
+        ExoPlayerDiskDownloadCacheMaxSize.`2GB`
+    )
+
+    val maxTopPlaylistItems by rememberPreference(
+        MaxTopPlaylistItemsKey,
+        MaxTopPlaylistItems.`10`
+    )
 
     PersistMapCleanup(tagPrefix = "${deviceLists.name}/")
 
@@ -92,13 +116,35 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.on_device), R.drawable.musical_notes)
+                    Item(0, stringResource(R.string.favorites), R.drawable.heart)
+                    if(exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled)
+                        Item(1, stringResource(R.string.cached), R.drawable.sync)
+                    if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled)
+                        Item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
+                    Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
+                    Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> DeviceListSongs(
-                            deviceLists = deviceLists,
+                        0 -> BuiltInPlaylistSongs(
+                            builtInPlaylist = BuiltInPlaylist.Favorites,
+                            onSearchClick = { searchRoute("") }
+                        )
+                        1 -> BuiltInPlaylistSongs(
+                            builtInPlaylist = BuiltInPlaylist.Offline,
+                            onSearchClick = { searchRoute("") }
+                        )
+                        2 -> BuiltInPlaylistSongs(
+                            builtInPlaylist = BuiltInPlaylist.Downloaded,
+                            onSearchClick = { searchRoute("") }
+                        )
+                        3 -> BuiltInPlaylistSongs(
+                            builtInPlaylist = BuiltInPlaylist.Top,
+                            onSearchClick = { searchRoute("") }
+                        )
+                        4 -> DeviceListSongs(
+                            deviceLists = DeviceLists.LocalSongs,
                             onSearchClick = { searchRoute("") }
                         )
 
