@@ -402,6 +402,7 @@ fun Queue(
                         items = windows,
                         key = { it.uid.hashCode() }
                     ) { window ->
+                        val currentItem by rememberUpdatedState(window)
                         BehindMotionSwipe(
                             content = {
                                 var deltaX by remember { mutableStateOf(0f) }
@@ -580,7 +581,7 @@ fun Queue(
                             },
                             rightActionsContent = {
                                 if (!reorderingState.isDragging) {
-                                    val currentItem by rememberUpdatedState(window)
+                                    //val currentItem by rememberUpdatedState(window)
                                     var likedAt by remember {
                                         mutableStateOf<Long?>(null)
                                     }
@@ -613,7 +614,7 @@ fun Queue(
                             },
                             onHorizontalSwipeWhenActionDisabled = {
                                 if (!isReorderDisabled && !isSwipeToActionEnabled)
-                                    player.removeMediaItem(window.firstPeriodIndex)
+                                    player.removeMediaItem(currentItem.firstPeriodIndex)
                                 else context.toast(context.resources.getString(R.string.locked))
                             }
                         )
