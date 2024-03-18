@@ -338,7 +338,7 @@
     <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Kun tämä on käytössä, uusi versio tarkistetaan ja siitä ilmoitetaan käynnistyksen yhteydessä.</string>
     <string name="check_at_github_for_updates">Tarkistetaanko päivitykset Githubista?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Jos päivitys on saatavilla, sinulta kysytään, haluatko asentaa sen. Taustalla ei tehdä automaattisia päivityksiä.</string>
-    <string name="you_can_still_turn_it_on_or_off_from_the_settings">Voit aina ottaa sen käyttöön tai poistaa käytöstä asetuksista.</string>
+    <string name="you_can_still_turn_it_on_or_off_from_the_settings">Voit aina ottaa sen käyttöön, tai poistaa käytöstä, tekemällä muutokset asetuksissa.</string>
     <string name="enable">Ota käyttöön</string>
     <string name="don_t_enable">Älä ota käyttöön</string>
     <string name="lang_hindi">hindi</string>
