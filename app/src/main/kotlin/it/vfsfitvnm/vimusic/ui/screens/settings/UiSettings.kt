@@ -341,7 +341,7 @@ fun  UiSettings() {
         }
         /*  Search  */
 
-        SettingsGroupSpacer()
+        //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.languages))
 
         SettingsDescription(text = stringResource(R.string.system_language)+": $systemLocale")

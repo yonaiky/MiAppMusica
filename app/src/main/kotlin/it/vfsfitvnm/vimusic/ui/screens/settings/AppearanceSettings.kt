@@ -293,7 +293,7 @@ fun AppearanceSettings() {
         //SettingsGroupSpacer()
         //SettingsEntryGroupText(stringResource(R.string.user_interface))
 
-        SettingsGroupSpacer()
+        //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player))
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(filterCharSequence,true))
