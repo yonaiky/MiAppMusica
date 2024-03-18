@@ -18,16 +18,15 @@ import android.graphics.Color
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
-import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
@@ -42,7 +41,6 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.core.text.isDigitsOnly
-import androidx.media.AudioManagerCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -99,7 +97,6 @@ import it.vfsfitvnm.vimusic.models.QueuedMediaItem
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.asMediaItem
 import it.vfsfitvnm.vimusic.query
-import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.utils.ConditionalCacheDataSourceFactory
 import it.vfsfitvnm.vimusic.utils.InvincibleService
 import it.vfsfitvnm.vimusic.utils.RingBuffer
@@ -151,7 +148,6 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -219,26 +215,22 @@ class PlayerService : InvincibleService(),
     private val stateBuilder
         get() = PlaybackStateCompat.Builder().setActions(actions)
         .addCustomAction(
-            /* action = */ "DOWNLOAD",
-            /* name   = */
+            "DOWNLOAD",
             "Download",
-            /* icon   = */
             if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to
 
         ).addCustomAction(
-            /* action = */ "LIKE",
-            /* name   = */ "Like",
-            /* icon   = */ if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
+            "LIKE",
+            "Like",
+            if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
         )
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithDownloadOnly
         get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
-            /* action = */ "DOWNLOAD",
-            /* name   = */
+            "DOWNLOAD",
             "Download",
-            /* icon   = */
             if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to
 
         )
@@ -247,9 +239,9 @@ class PlayerService : InvincibleService(),
     @FlowPreview
     private val stateBuilderWithLikeOnly
         get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
-            /* action = */ "LIKE",
-            /* name   = */ "Like",
-            /* icon   = */ if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
+            "LIKE",
+            "Like",
+            if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
         )
 
     private val playbackStateMutex = Mutex()
@@ -319,26 +311,26 @@ class PlayerService : InvincibleService(),
         .map { it != null }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val mediaDownloadedItemState = MutableStateFlow<MediaItem?>(null)
+    //private val mediaDownloadedItemState = MutableStateFlow<MediaItem?>(null)
 
     @ExperimentalCoroutinesApi
     @FlowPreview
-    private val isDownloadedState = mediaDownloadedItemState
+    private val isDownloadedState = mediaItemState
         .flatMapMerge { item ->
             item?.mediaId?.let {
-                flowOf(
-                    downloadCache.isCached(it, 0, Database.formatContentLength(it))
-                )
+                val downloads = DownloadUtil.downloads.value
+                flowOf(downloads[item.mediaId]?.state == Download.STATE_COMPLETED)
+                //flowOf(downloadCache.isCached(it, 0, Database.formatContentLength(it)))
             } ?: flowOf(false)
         }
         .map { it }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val mediaCachedItemState = MutableStateFlow<MediaItem?>(null)
+    //private val mediaCachedItemState = MutableStateFlow<MediaItem?>(null)
 
     @ExperimentalCoroutinesApi
     @FlowPreview
-    private val isCachedState = mediaCachedItemState
+    private val isCachedState = mediaItemState
         .flatMapMerge { item ->
             item?.mediaId?.let {
                 flowOf(
@@ -480,6 +472,8 @@ class PlayerService : InvincibleService(),
         mediaSession = MediaSessionCompat(baseContext, "PlayerService")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
         mediaSession.setCallback(SessionCallback(player))
+        mediaSession.setRatingType(RatingCompat.RATING_HEART)
+
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())
         if (showLikeButton && !showDownloadButton)
@@ -508,6 +502,7 @@ class PlayerService : InvincibleService(),
         }.stateIn(coroutineScope, SharingStarted.Lazily, false)
          */
 
+        updatePlaybackState()
 
         coroutineScope.launch {
             var first = true
@@ -531,7 +526,7 @@ class PlayerService : InvincibleService(),
 
         coroutineScope.launch {
             var first = true
-            mediaDownloadedItemState.zip(isDownloadedState) { mediaItem, _ ->
+            mediaItemState.zip(isDownloadedState) { mediaItem, _ ->
                 if (first) {
                     first = false
                     return@zip
@@ -551,7 +546,7 @@ class PlayerService : InvincibleService(),
 
         coroutineScope.launch {
             var first = true
-            mediaCachedItemState.zip(isCachedState) { mediaItem, _ ->
+            mediaItemState.zip(isCachedState) { mediaItem, _ ->
                 if (first) {
                     first = false
                     return@zip
@@ -755,8 +750,8 @@ class PlayerService : InvincibleService(),
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
 
         mediaItemState.update { mediaItem }
-        mediaDownloadedItemState.update { mediaItem }
-        mediaCachedItemState.update { mediaItem }
+        //mediaDownloadedItemState.update { mediaItem }
+        //mediaCachedItemState.update { mediaItem }
 
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
@@ -1135,9 +1130,6 @@ class PlayerService : InvincibleService(),
                 .build()
         )
 
-        //updateNotification()
-        updatePlaybackState()
-
 
         if (events.containsAny(
                 Player.EVENT_PLAYBACK_STATE_CHANGED,
@@ -1174,6 +1166,8 @@ class PlayerService : InvincibleService(),
                 notificationManager?.notify(NotificationId, notification)
             }
         }
+        //updateNotification()
+        updatePlaybackState()
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -1327,6 +1321,7 @@ class PlayerService : InvincibleService(),
             maybeShowSongCoverInLockScreen()
             notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
         }
+
 
         return builder.build()
     }
@@ -1876,7 +1871,7 @@ class PlayerService : InvincibleService(),
         @RequiresApi(Build.VERSION_CODES.M)
         @ExperimentalCoroutinesApi
         @FlowPreview
-        fun toggleDownload() = mediaDownloadedItemState.value?.let { mediaItem ->
+        fun toggleDownload() = mediaItemState.value?.let { mediaItem ->
             runCatching {
                 val downloads = DownloadUtil.downloads.value
                 manageDownload(
@@ -1887,6 +1882,20 @@ class PlayerService : InvincibleService(),
                 )
             }
         }.let { }
+
+        fun refreshPlayer() {
+            coroutineScope.launch {
+                withContext(Dispatchers.Main) {
+                    if (player.isPlaying) {
+                        player.pause()
+                        player.play()
+                    } else {
+                        player.play()
+                        player.pause()
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -1934,7 +1943,6 @@ class PlayerService : InvincibleService(),
         @FlowPreview
         override fun onCustomAction(action: String, extras: Bundle?) {
             super.onCustomAction(action, extras)
-            //From Android 11
             if (action == "LIKE") {
                 binder.toggleLike()
                 refreshPlayer()
@@ -1943,6 +1951,7 @@ class PlayerService : InvincibleService(),
                 binder.toggleDownload()
                 refreshPlayer()
             }
+            updatePlaybackState()
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
@@ -1950,26 +1959,20 @@ class PlayerService : InvincibleService(),
             binder.playFromSearch(query)
         }
 
-        fun refreshPlayer() {
-            if (player.isPlaying) {
-                player.pause()
-                player.play()
-            } else {
-                player.play()
-                player.pause()
-            }
-        }
-
     }
 
 
     private fun refreshPlayer() {
-        if (player.isPlaying) {
-            player.pause()
-            player.play()
-        } else {
-            player.play()
-            player.pause()
+        coroutineScope.launch {
+            withContext(Dispatchers.Main) {
+                if (player.isPlaying) {
+                    player.pause()
+                    player.play()
+                } else {
+                    player.play()
+                    player.pause()
+                }
+            }
         }
     }
 
@@ -1995,6 +1998,8 @@ class PlayerService : InvincibleService(),
                     refreshPlayer()
                 }
             }
+
+            updatePlaybackState()
         }
 
     }
@@ -2022,14 +2027,6 @@ class PlayerService : InvincibleService(),
             )
 
         companion object {
-            /*
-            val pause = Action("it.vfsfitvnm.vimusic.pause")
-            val play = Action("it.vfsfitvnm.vimusic.play")
-            val next = Action("it.vfsfitvnm.vimusic.next")
-            val previous = Action("it.vfsfitvnm.vimusic.previous")
-            val like = Action("it.vfsfitvnm.vimusic.like")
-            val download = Action("it.vfsfitvnm.vimusic.download")
-             */
 
             val pause = Action("it.fast4x.rimusic.pause")
             val play = Action("it.fast4x.rimusic.play")

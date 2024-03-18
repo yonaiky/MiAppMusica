@@ -173,7 +173,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.songs -> Database
                         .songsByPlayTimeDesc()
                         .first()
-                        .take(30)
+                        //.take(30)
                         .also { lastSongs = it }
                         .map { it.asBrowserMediaItem }
                         .toMutableList()
@@ -391,9 +391,13 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         override fun onCustomAction(action: String?, extras: Bundle?) {
             if (action == "LIKE") {
                 binder.toggleLike()
-                binder.player
+                binder.refreshPlayer()
             }
-            if (action == "DOWNLOAD") binder.toggleDownload()
+            if (action == "DOWNLOAD") {
+                binder.toggleDownload()
+                binder.refreshPlayer()
+            }
+
             super.onCustomAction(action, extras)
         }
 
