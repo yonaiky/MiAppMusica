@@ -636,7 +636,7 @@ fun  UiSettings() {
                 },
                 onValueSelected = {
                     colorPaletteMode = it
-                    if (it == ColorPaletteMode.PitchBlack) colorPaletteName = ColorPaletteName.ModernBlack
+                    //if (it == ColorPaletteMode.PitchBlack) colorPaletteName = ColorPaletteName.ModernBlack
                 },
                 valueText = {
                     when (it) {
