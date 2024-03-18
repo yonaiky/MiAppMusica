@@ -60,7 +60,7 @@ fun StatisticsScreen(
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
-                showBottomButton = showSearchTab,
+                showBottomButton = false, //showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,

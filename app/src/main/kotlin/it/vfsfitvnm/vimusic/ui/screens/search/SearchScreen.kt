@@ -98,8 +98,8 @@ fun SearchScreen(
                     Column (
                         verticalArrangement = Arrangement.Center
                     ) {
-                        if (applyFontPadding)
-                            Spacer(modifier = Modifier.padding(top = 5.dp))
+                       // if (applyFontPadding)
+                           Spacer(modifier = Modifier.padding(top = 5.dp))
                             
                         IconButton(
                             onClick = {},
@@ -107,7 +107,7 @@ fun SearchScreen(
                             color = colorPalette.favoritesIcon,
                             modifier = Modifier
                                 //.align(Alignment.CenterStart)
-                                .size(24.dp)
+                                .size(20.dp)
                         )
                     }
 
