@@ -151,6 +151,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -196,37 +197,28 @@ class PlayerService : InvincibleService(),
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
 
+    private val actions = PlaybackStateCompat.ACTION_PLAY or
+                PlaybackStateCompat.ACTION_PAUSE or
+                PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                PlaybackStateCompat.ACTION_STOP or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
+                PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_REWIND or
+                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+
+
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithoutCustomAction
-        get() = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                    PlaybackStateCompat.ACTION_STOP or
-                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                    PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-                    PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-        )
+        get() = PlaybackStateCompat.Builder().setActions(actions)
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilder
-        get() = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                    PlaybackStateCompat.ACTION_STOP or
-                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                    PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-                    PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-        ).addCustomAction(
+        get() = PlaybackStateCompat.Builder().setActions(actions)
+        .addCustomAction(
             /* action = */ "DOWNLOAD",
             /* name   = */
             "Download",
@@ -242,18 +234,7 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithDownloadOnly
-        get() = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                    PlaybackStateCompat.ACTION_STOP or
-                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                    PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-                    PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-        ).addCustomAction(
+        get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
             /* action = */ "DOWNLOAD",
             /* name   = */
             "Download",
@@ -265,18 +246,7 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithLikeOnly
-        get() = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                    PlaybackStateCompat.ACTION_STOP or
-                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                    PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-                    PlaybackStateCompat.ACTION_SEEK_TO or
-                    PlaybackStateCompat.ACTION_REWIND or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-        ).addCustomAction(
+        get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
             /* action = */ "LIKE",
             /* name   = */ "Like",
             /* icon   = */ if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
@@ -318,6 +288,25 @@ class PlayerService : InvincibleService(),
     private lateinit var notificationActionReceiver: NotificationActionReceiver
 
     private lateinit var audioQualityFormat: AudioQualityFormat
+
+    /*
+    private val media = MutableStateFlow<MediaItem?>(null)
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    private val currentMedia = media.flatMapLatest { mediaItem ->
+        Database.song(mediaItem?.mediaId)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
+
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    private var currentMediaLiked = media.flatMapLatest { mediaItem ->
+       if (mediaItem?.mediaId?.let { Database.songliked(it) } == 0) flowOf(false) else flowOf(true)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    private var currentMediaDownloaded = media.flatMapLatest { mediaItem ->
+        val downloads = DownloadUtil.downloads.value
+        flowOf(downloads[mediaItem?.mediaId]?.state == Download.STATE_COMPLETED)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+     */
 
     private val mediaItemState = MutableStateFlow<MediaItem?>(null)
 
@@ -488,10 +477,6 @@ class PlayerService : InvincibleService(),
         player.addListener(this)
         player.addAnalyticsListener(PlaybackStatsListener(false, this))
 
-
-
-
-
         mediaSession = MediaSessionCompat(baseContext, "PlayerService")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
         mediaSession.setCallback(SessionCallback(player))
@@ -505,6 +490,24 @@ class PlayerService : InvincibleService(),
             mediaSession.setPlaybackState(stateBuilderWithoutCustomAction.build())
 
         mediaSession.isActive = true
+
+        /*
+        coroutineScope.launch {
+            currentMedia.collect {
+                updateNotification()
+            }
+        }
+
+        currentMediaLiked = media.flatMapLatest { mediaItem ->
+            if (mediaItem?.mediaId?.let { Database.songliked(it) } == 0) flowOf(false) else flowOf(true)
+        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+
+        currentMediaDownloaded = media.flatMapLatest { mediaItem ->
+            val downloads = DownloadUtil.downloads.value
+            flowOf(downloads[mediaItem?.mediaId]?.state == Download.STATE_COMPLETED)
+        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+         */
+
 
         coroutineScope.launch {
             var first = true
@@ -604,6 +607,56 @@ class PlayerService : InvincibleService(),
         maybeResumePlaybackWhenDeviceConnected()
 
     }
+
+    /*
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    private fun updateNotification() {
+        coroutineScope.launch {
+            playbackStateMutex.withLock {
+                withContext(Dispatchers.Main) {
+                    if (showLikeButton && showDownloadButton)
+                        mediaSession.setPlaybackState(
+                            PlaybackStateCompat.Builder().setActions(actions)
+                                .addCustomAction(
+                                    "DOWNLOAD",
+                                    "Download",
+                                    if (currentMediaDownloaded.value) R.drawable.downloaded_to else R.drawable.download_to
+
+                                ).addCustomAction(
+                                    "LIKE",
+                                    "Like",
+                                    if (currentMediaLiked.value) R.drawable.heart else R.drawable.heart_outline
+                                )
+                                .setState(player.androidPlaybackState, player.currentPosition, 1f)
+                                .setBufferedPosition(player.bufferedPosition)
+                                .build()
+                        )
+                    if (showLikeButton && !showDownloadButton)
+                        mediaSession.setPlaybackState(
+                            stateBuilderWithLikeOnly
+                                .setState(player.androidPlaybackState, player.currentPosition, 1f)
+                                .setBufferedPosition(player.bufferedPosition)
+                                .build()
+                        )
+                    if (showDownloadButton && !showLikeButton)
+                        mediaSession.setPlaybackState(
+                            stateBuilderWithDownloadOnly
+                                .setState(player.androidPlaybackState, player.currentPosition, 1f)
+                                .setBufferedPosition(player.bufferedPosition)
+                                .build()
+                        )
+                    if (!showDownloadButton && !showLikeButton)
+                        mediaSession.setPlaybackState(
+                            stateBuilderWithoutCustomAction
+                                .setState(player.androidPlaybackState, player.currentPosition, 1f)
+                                .setBufferedPosition(player.bufferedPosition)
+                                .build()
+                        )
+                }
+            }
+        }
+    }
+     */
 
     override fun onTaskRemoved(rootIntent: Intent?) {
 
@@ -1082,7 +1135,9 @@ class PlayerService : InvincibleService(),
                 .build()
         )
 
+        //updateNotification()
         updatePlaybackState()
+
 
         if (events.containsAny(
                 Player.EVENT_PLAYBACK_STATE_CHANGED,
@@ -1233,15 +1288,18 @@ class PlayerService : InvincibleService(),
                 if (player.shouldBePlaying) pauseIntent else playIntent
             )
             .addAction(R.drawable.play_skip_forward, "Skip forward", nextIntent)
+
         if (showLikeButton && showDownloadButton) {
             //Prior Android 11
             builder
                 .addAction(
                     if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to,
+                    //if (currentMediaDownloaded.value) R.drawable.downloaded_to else R.drawable.download_to,
                     "Download", downloadIntent
                 )
                 .addAction(
                     if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline,
+                    //if (currentMediaLiked.value) R.drawable.heart else R.drawable.heart_outline,
                     "Like",
                     likeIntent
                 )
