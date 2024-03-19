@@ -137,6 +137,8 @@ fun PlaylistsItemMenu(
                             val playlistId = Database.insert( Playlist(name = text) )
                             onAddToPlaylist(PlaylistPreview(Playlist(id = playlistId, name = text),0))
                         }
+
+
                     }
                 )
 
