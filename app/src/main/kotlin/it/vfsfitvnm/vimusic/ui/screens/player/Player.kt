@@ -545,6 +545,10 @@ fun Player(
         mutableIntStateOf(0)
     }
 
+    var showSpeedDialog by remember {
+        mutableStateOf(false)
+    }
+
     OnGlobalRoute {
         layoutState.collapseSoft()
     }
@@ -1101,25 +1105,6 @@ fun Player(
                                     .size(24.dp)
 
                             )
-                        /*
-                        IconButton(
-                            icon = R.drawable.ellipsis_vertical,
-                            color = colorPalette.text,
-                            onClick = {
-                                menuState.display {
-                                    PlayerMenu(
-                                        onDismiss = menuState::hide,
-                                        mediaItem = mediaItem,
-                                        binder = binder
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 15.dp)
-                                .size(24.dp)
-                        )
-                         */
-
 
                     }
                 }
@@ -1409,39 +1394,6 @@ fun Player(
                                     .size(24.dp)
                             )
                         }
-                   /*
-                    } else {
-                        IconButton(
-                            icon = R.drawable.playlist,
-                            color = colorPalette.text,
-                            enabled = true,
-                            onClick = {
-                                playerBottomSheetState.expandSoft()
-                            },
-                            modifier = Modifier
-                                .size(24.dp),
-                        )
-
-                        IconButton(
-                            icon = R.drawable.ellipsis_horizontal,
-                            color = colorPalette.text,
-                            onClick = {
-                                menuState.display {
-                                    PlayerMenu(
-                                        onDismiss = menuState::hide,
-                                        mediaItem = mediaItem,
-                                        binder = binder
-
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 4.dp)
-                                .size(24.dp)
-                        )
-
-                    }
-                    */
                 }
             },
             backgroundColorProvider = { colorPalette.background2 },
@@ -1465,46 +1417,5 @@ fun Player(
 
 }
 
-/*
-@ExperimentalTextApi
-@ExperimentalAnimationApi
-@UnstableApi
-@Composable
-private fun PlayerMenu(
-    binder: PlayerService.Binder,
-    mediaItem: MediaItem,
-    onDismiss: () -> Unit,
 
-    ) {
-    val context = LocalContext.current
-
-    val activityResultLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
-    BaseMediaItemMenu(
-        mediaItem = mediaItem,
-        onStartRadio = {
-            binder.stopRadio()
-            binder.player.seamlessPlay(mediaItem)
-            binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
-        },
-        onGoToEqualizer = {
-            try {
-                activityResultLauncher.launch(
-                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                        putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder.player.audioSessionId)
-                        putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-                        putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                    }
-                )
-            } catch (e: ActivityNotFoundException) {
-                context.toast("Couldn't find an application to equalize audio")
-            }
-        },
-        onShowSleepTimer = {},
-        onDismiss = onDismiss
-    )
-}
-
-*/
 
