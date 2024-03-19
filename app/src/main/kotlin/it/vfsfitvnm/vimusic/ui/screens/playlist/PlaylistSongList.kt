@@ -397,17 +397,14 @@ fun PlaylistSongList(
                                 onImportOnlinePlaylist = {
                                     isImportingPlaylist = true
                                 },
-                                /*
+
                                 //NOT NECESSARY IN ONLINE PLAYLIST USE IMPORT
                                 onAddToPlaylist = { playlistPreview ->
                                     position =
                                         playlistPreview.songCount.minus(1) ?: 0
-                                    //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
                                     if (position > 0) position++ else position = 0
-                                    //Log.d("mediaItem", "next initial pos ${position}")
 
                                     playlistPage!!.songsPage?.items?.forEachIndexed { index, song ->
-                                        println("mediaItem playlist name ${song}")
                                             runCatching {
                                                 Database.insert(song.asMediaItem)
                                                 Database.insert(
@@ -426,7 +423,7 @@ fun PlaylistSongList(
                                     }
                                 }
 
-                                 */
+
                             )
                         }
                     }
