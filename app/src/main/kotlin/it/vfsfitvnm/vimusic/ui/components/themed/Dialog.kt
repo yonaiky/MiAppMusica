@@ -1,5 +1,6 @@
 package it.vfsfitvnm.vimusic.ui.components.themed
 
+import CustomSlider
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,6 +36,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,10 +47,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
@@ -65,17 +70,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.media3.common.PlaybackParameters
+import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Info
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 import it.vfsfitvnm.vimusic.ui.styling.shimmer
 import it.vfsfitvnm.vimusic.utils.bold
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.drawCircle
+import it.vfsfitvnm.vimusic.utils.formatAsDuration
 import it.vfsfitvnm.vimusic.utils.medium
+import it.vfsfitvnm.vimusic.utils.playbackPitchKey
+import it.vfsfitvnm.vimusic.utils.playbackSpeedKey
+import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import kotlinx.coroutines.delay
+import progress
+import track
 
 @Composable
 fun TextFieldDialog(
@@ -978,4 +992,160 @@ fun NewVersionDialog (
         }
 
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlaybackParamsDialog(
+    onDismiss: () -> Unit,
+    speedValue: (Float) -> Unit,
+    pitchValue: (Float) -> Unit,
+) {
+    val (colorPalette) = LocalAppearance.current
+    val defaultSpeed = 1f
+    val defaultPitch = 1f
+    var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
+    var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
+    val binder = LocalPlayerServiceBinder.current
+
+    DefaultDialog(
+        onDismiss = {
+            speedValue(playbackSpeed)
+            pitchValue(playbackPitch)
+            onDismiss()
+        }
+    ) {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    playbackSpeed = defaultSpeed
+                    binder?.player?.playbackParameters =
+                        PlaybackParameters(playbackSpeed, playbackPitch)
+                },
+                icon = R.drawable.slow_motion,
+                color = colorPalette.favoritesIcon
+            )
+
+            CustomSlider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                value = playbackSpeed,
+                onValueChange = {
+                    playbackSpeed = it
+                    binder?.player?.playbackParameters =
+                            PlaybackParameters(playbackSpeed, playbackPitch)
+                },
+                valueRange = 0.1f..5f,
+                gap = 1,
+                showIndicator = true,
+                thumb = { thumbValue ->
+                    CustomSliderDefaults.Thumb(
+                        thumbValue = "%.1fx".format(playbackSpeed),
+                        color = Color.Transparent,
+                        size = 40.dp,
+                        modifier = Modifier.background(
+                            brush = Brush.linearGradient(listOf(colorPalette.background1, colorPalette.favoritesIcon)),
+                            shape = CircleShape
+                        )
+                    )
+                },
+                track = { sliderPositions ->
+                    Box(
+                        modifier = Modifier
+                            .track()
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                            .background(Color.White)
+                            .padding(3.5.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .progress(sliderPositions = sliderPositions)
+                                .background(
+                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
+                                )
+                        )
+                    }
+                }
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            IconButton(
+                onClick = {
+                    playbackPitch = defaultPitch
+                    binder?.player?.playbackParameters =
+                        PlaybackParameters(playbackSpeed, playbackPitch)
+                },
+                icon = R.drawable.equalizer,
+                color = colorPalette.favoritesIcon
+            )
+
+            CustomSlider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                value = playbackPitch,
+                onValueChange = {
+                    playbackPitch = it
+                    binder?.player?.playbackParameters =
+                        PlaybackParameters(playbackSpeed, playbackPitch)
+                },
+                valueRange = 0.1f..5f,
+                gap = 1,
+                showIndicator = true,
+                thumb = { thumbValue ->
+                    CustomSliderDefaults.Thumb(
+                        thumbValue = "%.1fx".format(playbackPitch),
+                        color = Color.Transparent,
+                        size = 40.dp,
+                        modifier = Modifier.background(
+                            brush = Brush.linearGradient(listOf(colorPalette.background1, colorPalette.favoritesIcon)),
+                            shape = CircleShape
+                        )
+                    )
+                },
+                track = { sliderPositions ->
+                    Box(
+                        modifier = Modifier
+                            .track()
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                            .background(Color.White)
+                            .padding(3.5.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .progress(sliderPositions = sliderPositions)
+                                .background(
+                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
+                                )
+                        )
+                    }
+                }
+            )
+        }
+
+    }
 }

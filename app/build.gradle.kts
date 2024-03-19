@@ -109,9 +109,10 @@ dependencies {
     implementation("androidx.appcompat:appcompat:$appcompatVersion")
     implementation("androidx.appcompat:appcompat-resources:$appcompatVersion")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.media3:media3-datasource-okhttp:1.2.1")
+    implementation("androidx.media3:media3-datasource-okhttp:1.3.0")
     implementation("androidx.media:media:1.7.0")
-    implementation("androidx.compose.material:material:1.6.1")
+    implementation("androidx.compose.material:material:1.6.3")
+    implementation("androidx.compose.material3:material3-android:1.2.1")
     implementation("com.github.therealbush:translator:1.0.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
 

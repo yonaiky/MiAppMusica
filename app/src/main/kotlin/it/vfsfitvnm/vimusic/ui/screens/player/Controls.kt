@@ -1,5 +1,6 @@
 package it.vfsfitvnm.vimusic.ui.screens.player
 
+import CustomSlider
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -17,6 +18,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,12 +33,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -58,6 +65,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
@@ -81,9 +89,13 @@ import it.vfsfitvnm.vimusic.ui.components.SeekBar
 import it.vfsfitvnm.vimusic.ui.components.SeekBarCustom
 import it.vfsfitvnm.vimusic.ui.components.SeekBarWaved
 import it.vfsfitvnm.vimusic.ui.components.themed.BaseMediaItemMenu
+import it.vfsfitvnm.vimusic.ui.components.themed.ConfirmationDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
+import it.vfsfitvnm.vimusic.ui.components.themed.PlaybackParamsDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.ScrollText
+import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.SelectorDialog
+import it.vfsfitvnm.vimusic.ui.components.themed.SliderDialog
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.artistRoute
 import it.vfsfitvnm.vimusic.ui.styling.DefaultDarkColorPalette
@@ -105,6 +117,7 @@ import it.vfsfitvnm.vimusic.utils.formatTimelineSongDurationToTime
 import it.vfsfitvnm.vimusic.utils.isCompositionLaunched
 import it.vfsfitvnm.vimusic.utils.isGradientBackgroundEnabledKey
 import it.vfsfitvnm.vimusic.utils.pauseBetweenSongsKey
+import it.vfsfitvnm.vimusic.utils.playbackSpeedKey
 import it.vfsfitvnm.vimusic.utils.playerPlayButtonTypeKey
 import it.vfsfitvnm.vimusic.utils.playerThumbnailSizeKey
 import it.vfsfitvnm.vimusic.utils.playerTimelineTypeKey
@@ -122,9 +135,13 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.format
+import progress
+import track
 import kotlin.time.Duration.Companion.seconds
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -259,6 +276,19 @@ fun Controls(
      */
 
     val pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey,   PauseBetweenSongs.`0`)
+
+    var playbackSpeed  by rememberPreference(playbackSpeedKey,   1f)
+    var showSpeedPlayerDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showSpeedPlayerDialog) {
+        PlaybackParamsDialog(
+            onDismiss = { showSpeedPlayerDialog = false },
+            speedValue = { playbackSpeed = it },
+            pitchValue = {}
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -744,7 +774,26 @@ fun Controls(
 
             Box(
                 modifier = Modifier
+                    .combinedClickable(
+                        indication = rememberRipple(bounded = false),
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = {
+                            if (shouldBePlaying) {
+                                binder.player.pause()
+                            } else {
+                                if (binder.player.playbackState == Player.STATE_IDLE) {
+                                    binder.player.prepare()
+                                }
+                                binder.player.play()
+                            }
+                            if (effectRotationEnabled) isRotated = !isRotated
+                        },
+                        onLongClick = {
+                            showSpeedPlayerDialog = true
+                        }
+                    )
                     .clip(RoundedCornerShape(playPauseRoundness))
+                    /*
                     .clickable {
                         if (shouldBePlaying) {
                             binder.player.pause()
@@ -756,6 +805,7 @@ fun Controls(
                         }
                         if (effectRotationEnabled) isRotated = !isRotated
                     }
+                     */
                     //.background(if (uiType != UiType.RiMusic) colorPalette.background3 else colorPalette.background0)
                     .background(
                         when (colorPaletteName) {
@@ -765,6 +815,7 @@ fun Controls(
                                         if (isGradientBackgroundEnabled) colorPalette.background2
                                         else colorPalette.background1
                                     }
+
                                     PlayerPlayButtonType.Disabled -> colorPalette.background1
                                     else -> {
                                         if (isGradientBackgroundEnabled) colorPalette.background1
@@ -772,7 +823,7 @@ fun Controls(
                                     }
                                 }
                             }
-                                /*
+                            /*
                                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
                                     colorPalette.background1 else
                                     if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
@@ -816,6 +867,23 @@ fun Controls(
                         .align(Alignment.Center)
                         .size(30.dp)
                 )
+
+                Box(
+                    modifier = Modifier
+                    .align(Alignment.CenterStart)
+                ) {
+                    BasicText(
+                        text = "%.1fx".format(playbackSpeed),
+                        style = TextStyle(
+                            color = colorPalette.collapsedPlayerProgressBar,
+                            fontStyle = typography.xxs.semiBold.fontStyle,
+                            fontSize = typography.xxs.semiBold.fontSize
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                    )
+                }
             }
 
 

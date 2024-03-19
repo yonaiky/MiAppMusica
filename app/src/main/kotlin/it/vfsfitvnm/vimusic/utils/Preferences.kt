@@ -108,6 +108,8 @@ const val showDownloadedPlaylistKey = "showDownloadedPlaylist"
 const val showOnDevicePlaylistKey = "showOnDevicePlaylist"
 const val showPlaylistsKey = "showPlaylists"
 const val isGradientBackgroundEnabledKey = "isGradientBackgroundEnabled"
+const val playbackSpeedKey = "playbackSpeed"
+const val playbackPitchKey = "playbackPitch"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

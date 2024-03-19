@@ -19,6 +19,7 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
+import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -115,6 +116,7 @@ import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getEnum
 import it.vfsfitvnm.vimusic.utils.intent
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid10
+import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid12
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid6
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid8
@@ -204,15 +206,20 @@ class PlayerService : InvincibleService(),
                 PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
 
 
+
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithoutCustomAction
-        get() = PlaybackStateCompat.Builder().setActions(actions)
+        get() = PlaybackStateCompat.Builder().setActions(actions.let {
+            if (isAtLeastAndroid12) it or PlaybackState.ACTION_SET_PLAYBACK_SPEED else it
+        })
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilder
-        get() = PlaybackStateCompat.Builder().setActions(actions)
+        get() = PlaybackStateCompat.Builder().setActions(actions.let {
+            if (isAtLeastAndroid12) it or PlaybackState.ACTION_SET_PLAYBACK_SPEED else it
+        })
         .addCustomAction(
             "DOWNLOAD",
             "Download",
@@ -227,7 +234,9 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithDownloadOnly
-        get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
+        get() = PlaybackStateCompat.Builder().setActions(actions.let {
+            if (isAtLeastAndroid12) it or PlaybackState.ACTION_SET_PLAYBACK_SPEED else it
+        }).addCustomAction(
             "DOWNLOAD",
             "Download",
             if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to
@@ -237,7 +246,9 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val stateBuilderWithLikeOnly
-        get() = PlaybackStateCompat.Builder().setActions(actions).addCustomAction(
+        get() = PlaybackStateCompat.Builder().setActions(actions.let {
+            if (isAtLeastAndroid12) it or PlaybackState.ACTION_SET_PLAYBACK_SPEED else it
+        }).addCustomAction(
             "LIKE",
             "Like",
             if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
@@ -277,7 +288,6 @@ class PlayerService : InvincibleService(),
         get() = NotificationId
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
-
     private lateinit var audioQualityFormat: AudioQualityFormat
 
     /*
@@ -373,14 +383,11 @@ class PlayerService : InvincibleService(),
         isShowingThumbnailInLockscreen =
             preferences.getBoolean(isShowingThumbnailInLockscreenKey, false)
 
-
         audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
-
         showLikeButton = preferences.getBoolean(showLikeButtonBackgroundPlayerKey, true)
         showDownloadButton = preferences.getBoolean(showDownloadButtonBackgroundPlayerKey, true)
 
         val exoPlayerCustomCache = preferences.getInt(exoPlayerCustomCacheKey, 32) * 1000 * 1000L
-
 
         val cacheEvictor = when (val size =
             preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`32MB`)) {
@@ -502,6 +509,7 @@ class PlayerService : InvincibleService(),
          */
 
         updatePlaybackState()
+
 
         coroutineScope.launch {
             var first = true
