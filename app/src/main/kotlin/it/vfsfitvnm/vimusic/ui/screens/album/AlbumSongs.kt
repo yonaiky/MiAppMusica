@@ -62,7 +62,6 @@ import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.ShimmerHost
 import it.vfsfitvnm.vimusic.ui.components.themed.AlbumsItemMenu
 import it.vfsfitvnm.vimusic.ui.components.themed.ConfirmationDialog
-import it.vfsfitvnm.vimusic.ui.components.themed.CustomDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.InputTextDialog
@@ -160,9 +159,11 @@ fun AlbumSongs(
         mutableStateOf(false)
     }
 
+    /*
     var showAddPlaylistSelectDialog by remember {
         mutableStateOf(false)
     }
+     */
 
     var showSelectCustomizeAlbumDialog by remember {
         mutableStateOf(false)
