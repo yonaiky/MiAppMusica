@@ -126,7 +126,9 @@ import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import it.vfsfitvnm.vimusic.utils.toast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -414,7 +416,9 @@ fun PlaylistSongList(
                                                 )
                                             }
                                         }
-                                    context.toast(context.resources.getString(R.string.done))
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        context.toast(context.resources.getString(R.string.done))
+                                    }
                                 }
                             )
                         }
