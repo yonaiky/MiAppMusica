@@ -140,6 +140,7 @@ import it.vfsfitvnm.vimusic.utils.toast
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -253,7 +254,7 @@ fun DeviceListSongs(
             else Manifest.permission.READ_EXTERNAL_STORAGE
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        LocalContext.current.toast("On device require read media permission, grant please.")
+        //LocalContext.current.toast("On device require read media permission, grant please.")
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
