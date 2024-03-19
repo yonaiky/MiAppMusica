@@ -1,6 +1,5 @@
 package it.vfsfitvnm.vimusic.service
 
-//import androidx.media3.exoplayer.audio.SonicAudioProcessor
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -699,8 +698,12 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     override fun onConfigurationChanged(newConfig: Configuration) {
+        handler.post {
+            runCatching {
         if (bitmapProvider.setDefaultBitmap() && player.currentMediaItem != null) {
             notificationManager?.notify(NotificationId, notification())
+        }
+            }
         }
         super.onConfigurationChanged(newConfig)
     }
@@ -975,9 +978,11 @@ class PlayerService : InvincibleService(),
             return
         }
 
-        if (loudnessEnhancer == null) {
-            loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
-        }
+        runCatching {
+            if (loudnessEnhancer == null) {
+                loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
+            }
+        }.onFailure { return }
 
         player.currentMediaItem?.mediaId?.let { songId ->
             volumeNormalizationJob?.cancel()
@@ -1159,7 +1164,9 @@ class PlayerService : InvincibleService(),
                     makeInvincible(true)
                     sendCloseEqualizerIntent()
                 }
-                notificationManager?.notify(NotificationId, notification)
+                runCatching {
+                    notificationManager?.notify(NotificationId, notification)
+                }
             }
         }
         //updateNotification()
@@ -1186,6 +1193,7 @@ class PlayerService : InvincibleService(),
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
+
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
@@ -1315,7 +1323,11 @@ class PlayerService : InvincibleService(),
 
         bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
             maybeShowSongCoverInLockScreen()
-            notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
+            handler.post {
+                runCatching {
+                    notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
+                }
+            }
         }
 
 
