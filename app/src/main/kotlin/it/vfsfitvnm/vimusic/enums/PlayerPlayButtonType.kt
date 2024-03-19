@@ -11,7 +11,7 @@ enum class PlayerPlayButtonType {
         get() = when (this) {
             Default, Disabled -> 60
             Rectangular -> 70
-            CircularRibbed -> 90
+            CircularRibbed -> 100
             Square -> 75
         }
 
@@ -19,7 +19,7 @@ enum class PlayerPlayButtonType {
         get() = when (this) {
             Default, Disabled -> 60
             Rectangular -> 110
-            CircularRibbed -> 90
+            CircularRibbed -> 100
             Square -> 75
 
         }

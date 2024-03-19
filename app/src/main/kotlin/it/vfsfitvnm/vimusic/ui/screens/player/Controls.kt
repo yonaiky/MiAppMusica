@@ -761,7 +761,10 @@ fun Controls(
                         when (colorPaletteName) {
                             ColorPaletteName.Dynamic, ColorPaletteName.Default -> {
                                 when (playerPlayButtonType) {
-                                    PlayerPlayButtonType.CircularRibbed,
+                                    PlayerPlayButtonType.CircularRibbed -> {
+                                        if (isGradientBackgroundEnabled) colorPalette.background2
+                                        else colorPalette.background1
+                                    }
                                     PlayerPlayButtonType.Disabled -> colorPalette.background1
                                     else -> {
                                         if (isGradientBackgroundEnabled) colorPalette.background1
@@ -793,7 +796,8 @@ fun Controls(
                     colorFilter = ColorFilter.tint(
                         when (colorPaletteName) {
                             ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
-                            else -> colorPalette.background2
+                            else -> if (isGradientBackgroundEnabled) colorPalette.background1
+                            else colorPalette.background2
                         }
                     ),
                     modifier = Modifier
