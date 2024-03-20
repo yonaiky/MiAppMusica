@@ -48,6 +48,7 @@ fun languageDestination (
         Languages.Sinhala -> Language.SINHALA
         Languages.Spanish -> Language.SPANISH
         Languages.Swedish -> Language.SWEDISH
+        Languages.Telugu -> Language.TELUGU
         Languages.Turkish -> Language.TURKISH
         Languages.Ukrainian -> Language.UKRAINIAN
         Languages.Vietnamese -> Language.VIETNAMESE

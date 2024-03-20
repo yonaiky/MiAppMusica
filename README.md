@@ -81,6 +81,7 @@
 - **Sinhala:** thanks to [VINULA2007](https://crowdin.com/profile/VINULA2007)
 - **Swedish:** thanks to [Dženan](https://crowdin.com/profile/Dženan)
 - **Turkish:** thanks to [abfreeman](https://github.com/abfreeman) and [2010furs](https://github.com/2010furs) and [Muha Aliss](https://crowdin.com/profile/muhaaliss)
+- **Telugu** thanks to [SureshTimma](https://crowdin.com/profile/sureshtimma)
 - **Ukrainian:** thanks to [NiXT0y](https://crowdin.com/profile/nixt0y) and [Crayz310](https://github.com/Crayz310) 
 - **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
 
@@ -150,6 +151,7 @@
 - [Sharunkumar](https://crowdin.com/profile/sharunkumar)
 - [Shilave malay](https://crowdin.com/profile/Bash.boy)
 - [siggi1984](https://github.com/siggi1984)
+- [SureshTimma](https://crowdin.com/profile/sureshtimma)
 - [teaminh](https://crowdin.com/profile/teaminh)
 - [teddysulaimanGL](https://github.com/teddysulaimanGL)
 - [Th3-C0der](https://github.com/Th3-C0der)

@@ -36,6 +36,7 @@ enum class Languages {
     Sinhala,
     Spanish,
     Swedish,
+    Telugu,
     Turkish,
     Ukrainian,
     Vietnamese;
@@ -77,6 +78,7 @@ enum class Languages {
             SerbianCyrillic -> "sr"
             Sinhala -> "si"
             Swedish -> "sv"
+            Telugu -> "te"
             Turkish -> "tr"
             Ukrainian -> "uk"
             Vietnamese -> "vi"

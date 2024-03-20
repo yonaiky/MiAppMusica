@@ -414,4 +414,5 @@ CC-BY-SA 3.0</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Use gradient background</string>
     <string name="show_total_time_of_queue">Show total time of queue</string>
+    <string name="lang_telugu">Telugu</string>
 </resources>

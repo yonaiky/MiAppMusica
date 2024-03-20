@@ -388,6 +388,7 @@ fun  UiSettings() {
                         Languages.Sinhala -> stringResource(R.string.lang_sinhala)
                         Languages.Spanish -> stringResource(R.string.spanish)
                         Languages.Swedish -> stringResource(R.string.lang_swedish)
+                        Languages.Telugu -> stringResource(R.string.lang_telugu)
                         Languages.Turkish -> stringResource(R.string.turkish)
                         Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
                         Languages.Vietnamese -> "Vietnamese"
