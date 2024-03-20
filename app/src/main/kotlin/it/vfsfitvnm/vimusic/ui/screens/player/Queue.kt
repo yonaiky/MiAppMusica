@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults.colors
@@ -148,6 +149,10 @@ fun Queue(
     layoutState: BottomSheetState,
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
+    shape: RoundedCornerShape = RoundedCornerShape(
+        topStart = 12.dp,
+        topEnd = 12.dp
+    )
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
@@ -168,6 +173,7 @@ fun Queue(
         collapsedContent = {
                 Box(
                     modifier = Modifier
+                        //.clip(shape)
                         .drawBehind { drawRect(backgroundColorProvider()) }
                         .fillMaxSize()
                         .padding(horizontalBottomPaddingValues)
@@ -663,6 +669,7 @@ fun Queue(
 
             Box(
                 modifier = Modifier
+                    //.clip(shape)
                     .clickable(onClick = layoutState::collapseSoft)
                     .background(colorPalette.background1)
                     .fillMaxWidth()
@@ -691,63 +698,7 @@ fun Queue(
 
             ) {
 
-                /*
-                IconButton(
-                    icon = R.drawable.trash,
-                    color = colorPalette.text,
-                    onClick = {
-                        if (!selectQueueItems)
-                        showSelectTypeClearQueue = true else {
-                            val mediacount = listMediaItemsIndex.size - 1
-                            listMediaItemsIndex.sort()
-                            for (i in mediacount.downTo(0)) {
-                                //if (i == mediaItemIndex) null else
-                                binder.player.removeMediaItem(listMediaItemsIndex[i])
-                            }
-                            listMediaItemsIndex.clear()
-                            listMediaItems.clear()
-                            selectQueueItems = false
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(24.dp)
-                )
-
-                 */
-                /*
-                if (showSelectTypeClearQueue)
-                    SelectorDialog(
-                        title = stringResource(R.string.clear_queue),
-                        onDismiss = { showSelectTypeClearQueue = false },
-                        values = listOf(
-                            Info("a", stringResource(R.string.remove_all)),
-                            Info("s", stringResource(R.string.remove_selected))
-                        ),
-                        onValueSelected = {
-                            if (it == "a") {
-                                val mediacount = binder.player.mediaItemCount - 1
-                                for (i in mediacount.downTo(0)) {
-                                    if (i == mediaItemIndex) null else binder.player.removeMediaItem(i)
-                                }
-                            } else selectQueueItems = true
-
-                            showSelectTypeClearQueue = false
-                        }
-                    )
-                */
-                /*
-                IconButton(
-                    icon = R.drawable.chevron_forward,
-                    color = colorPalette.text,
-                    onClick = {},
-                    enabled = false,
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(16.dp)
-                )
-                 */
-                BasicText(
+                 BasicText(
                     text = "${binder.player.mediaItemCount} " + stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
                     style = typography.xxs.medium,
                 )

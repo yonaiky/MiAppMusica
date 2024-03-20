@@ -60,6 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -84,6 +85,7 @@ import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.ColorPaletteName
 import it.vfsfitvnm.vimusic.enums.PlayerThumbnailSize
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
 import it.vfsfitvnm.vimusic.enums.PlaylistSortBy
@@ -114,10 +116,13 @@ import it.vfsfitvnm.vimusic.ui.screens.homeRoute
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.collapsedPlayerProgressBar
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
+import it.vfsfitvnm.vimusic.ui.styling.overlay
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.DisposableListener
 import it.vfsfitvnm.vimusic.utils.UiTypeKey
 import it.vfsfitvnm.vimusic.utils.asMediaItem
+import it.vfsfitvnm.vimusic.utils.colorPaletteNameKey
 import it.vfsfitvnm.vimusic.utils.disableClosingPlayerSwipingDownKey
 import it.vfsfitvnm.vimusic.utils.disablePlayerHorizontalSwipeKey
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
@@ -170,6 +175,10 @@ import kotlin.math.absoluteValue
 fun Player(
     layoutState: BottomSheetState,
     modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = RoundedCornerShape(
+        topStart = 12.dp,
+        topEnd = 12.dp
+    )
 ) {
     val menuState = LocalMenuState.current
 
@@ -185,6 +194,7 @@ fun Player(
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+    //val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -370,12 +380,12 @@ fun Player(
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
-
+    /*
     val playlistPreviews by remember {
         Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
     }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
-    /*
+
     var showPlaylistSelectDialog by remember {
         mutableStateOf(false)
     }
@@ -545,10 +555,6 @@ fun Player(
         mutableIntStateOf(0)
     }
 
-    var showSpeedDialog by remember {
-        mutableStateOf(false)
-    }
-
     OnGlobalRoute {
         layoutState.collapseSoft()
     }
@@ -575,9 +581,21 @@ fun Player(
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier
                     .background(colorPalette.background1)
+                    .clip(shape)
                     .fillMaxSize()
                     .padding(horizontalBottomPaddingValues)
                     .drawBehind {
+                        drawRect(
+                            color = colorPalette.favoritesIcon,
+                            topLeft = Offset.Zero,
+                            size = Size(
+                                width = positionAndDuration.first.toFloat() /
+                                        positionAndDuration.second.absoluteValue * size.width,
+                                height = size.maxDimension
+                            )
+                        )
+
+                        /*
                         drawLine(
                             color = colorPalette.textDisabled,
                             start = Offset(x = 0f, y = 1.dp.toPx()),
@@ -592,14 +610,21 @@ fun Player(
                             color = colorPalette.collapsedPlayerProgressBar,
                             start = Offset(x = 0f, y = 1.dp.toPx()),
                             end = Offset(x = size.width * progress, y = 1.dp.toPx()),
-                            strokeWidth = 2.dp.toPx()
+                            strokeWidth = 60.dp.toPx()
                         )
 
+                        drawLine(
+                            color = colorPalette.collapsedPlayerProgressBar,
+                            start = Offset(x = 0f, y = 1.dp.toPx()),
+                            end = Offset(x = size.width * progress, y = 1.dp.toPx()),
+                            strokeWidth = 2.dp.toPx()
+                        )
                         drawCircle(
                             color = colorPalette.collapsedPlayerProgressBar,
                             radius = 3.dp.toPx(),
                             center = Offset(x = size.width * progress, y = 1.dp.toPx())
                         )
+                         */
                     }
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
@@ -662,7 +687,7 @@ fun Player(
 
                     BasicText(
                         text = mediaItem.mediaMetadata.artist?.toString() ?: "",
-                        style = typography.xxs.semiBold.secondary,
+                        style = typography.xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -793,6 +818,7 @@ fun Player(
         val containerModifier =
             if (!isGradientBackgroundEnabled)
                 Modifier
+                    .clip(shape)
                     .background(colorPalette.background1)
                     .padding(
                         windowInsets
@@ -802,6 +828,7 @@ fun Player(
                     .padding(bottom = playerBottomSheetState.collapsedBound)
             else
                 Modifier
+                    .clip(shape)
                     .background(
                         Brush.verticalGradient(
                             0.0f to colorPalette.textSecondary,
@@ -1398,7 +1425,8 @@ fun Player(
             },
             backgroundColorProvider = { colorPalette.background2 },
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            shape = shape
         )
 
 
