@@ -1,13 +1,12 @@
 package it.vfsfitvnm.vimusic.ui.screens.home
 
-//import androidx.compose.material3.CardDefaults
-//import androidx.compose.material3.ElevatedCard
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +24,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -77,6 +77,7 @@ import it.vfsfitvnm.vimusic.utils.isLandscape
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
+import it.vfsfitvnm.vimusic.utils.rememberSnapLayoutInfoProvider
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
@@ -87,14 +88,14 @@ import kotlinx.coroutines.Dispatchers
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
 @UnstableApi
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeDiscovery(
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onNewReleaseAlbumClick: (String) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
+    //val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -135,27 +136,17 @@ fun HomeDiscovery(
     //Log.d("mediaItemArtists",preferitesArtists.toString())
 
     BoxWithConstraints {
-        val moodItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
-/*
-        val snapLayoutInfoProvider = remember(lazyGridState) {
-            SnapLayoutInfoProvider(
-                lazyGridState = lazyGridState,
-                positionInLayout = { layoutSize, itemSize ->
-                    layoutSize * moodItemWidthFactor / 2f - itemSize / 2f
-                }
-            )
-        }
 
-        val snapLayoutInfoProviderAlbums = remember(lazyGridState) {
-            SnapLayoutInfoProvider(
-                lazyGridState = lazyGridState,
-                positionInLayout = { layoutSize, itemSize ->
-                    layoutSize * moodItemWidthFactor / 2f - itemSize / 2f
-                }
-            )
-        }
-*/
-        //val itemWidth = maxWidth * moodItemWidthFactor
+        val moodItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
+        /*
+        val snapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
+            lazyGridState = lazyGridState,
+            positionInLayout = { layoutSize, itemSize ->
+                layoutSize * moodItemWidthFactor / 2f - itemSize / 2f
+            }
+        )
+         */
+        val itemWidth = maxWidth * moodItemWidthFactor
 
         Column(
             modifier = Modifier
@@ -240,6 +231,8 @@ fun HomeDiscovery(
 
                 }
 
+
+
                 if (page.moods.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.moods_and_genres),
@@ -249,13 +242,14 @@ fun HomeDiscovery(
 
                     LazyHorizontalGrid(
                         state = lazyGridState,
-                        rows = GridCells.Fixed(8),
+                        rows = GridCells.Fixed(20),
                         flingBehavior = ScrollableDefaults.flingBehavior(),
+                        //flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
                         contentPadding = endPaddingValues,
                         modifier = Modifier
                             .fillMaxWidth()
                             //.height((thumbnailSizeDp + Dimensions.itemsVerticalPadding * 8) * 8)
-                            .height(Dimensions.itemsVerticalPadding * 8 * 8)
+                            .height(Dimensions.itemsVerticalPadding * 16 * 8)
                     ) {
                         items(
                             items = page.moods.sortedBy { it.title },
@@ -264,6 +258,9 @@ fun HomeDiscovery(
                             MoodItem(
                                 mood = it,
                                 onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
+                                modifier = Modifier
+                                    .width(itemWidth)
+                                    .padding(4.dp)
                             )
                         }
                     }
@@ -291,6 +288,7 @@ fun HomeDiscovery(
                     state = lazyGridState,
                     rows = GridCells.Fixed(4),
                     flingBehavior = ScrollableDefaults.flingBehavior(),
+                    //flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
                     contentPadding = endPaddingValues,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -298,7 +296,8 @@ fun HomeDiscovery(
                 ) {
                     items(16) {
                         MoodItemPlaceholder(
-                            width = 92.dp, //itemWidth,
+                            //width = 92.dp, //itemWidth,
+                            width = itemWidth,
                             modifier = Modifier.padding(4.dp)
                         )
                     }
@@ -344,7 +343,7 @@ fun MoodItem(
     ) {
         Box(
             modifier = Modifier
-                .requiredWidth(200.dp)
+                .requiredWidth(150.dp)
                 .background(color = colorPalette.background4, shape = thumbnailRoundness.shape())
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
