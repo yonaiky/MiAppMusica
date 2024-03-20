@@ -155,7 +155,7 @@ fun Queue(
     )
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+    //val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val windowInsets = WindowInsets.systemBars
 
     val horizontalBottomPaddingValues = windowInsets
@@ -492,6 +492,7 @@ fun Queue(
                                                 modifier = Modifier
                                                     .scale(0.7f)
                                             )
+                                        else checkedState.value = false
 
                                         if (!isReorderDisabled) {
                                             IconButton(

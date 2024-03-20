@@ -1186,6 +1186,7 @@ fun LocalPlaylistSongs(
                                             uncheckedColor = colorPalette.text
                                         )
                                     )
+                                else checkedState.value = false
 
                                 if (!isReorderDisabled) {
                                     IconButton(

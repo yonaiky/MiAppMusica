@@ -682,6 +682,7 @@ fun AlbumSongs(
                                             uncheckedColor = colorPalette.text
                                         )
                                     )
+                                else checkedState.value = false
                             }
                     )
                 }

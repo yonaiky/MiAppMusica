@@ -1096,6 +1096,7 @@ fun BuiltInPlaylistSongs(
                                             uncheckedColor = colorPalette.text
                                         )
                                     )
+                                else checkedState.value = false
                             },
                             modifier = Modifier
                                 .combinedClickable(

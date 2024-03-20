@@ -685,6 +685,7 @@ fun DeviceListSongs(
                                     uncheckedColor = colorPalette.text
                                 )
                             )
+                        else checkedState.value = false
                     },
                     modifier = Modifier
                         .combinedClickable(

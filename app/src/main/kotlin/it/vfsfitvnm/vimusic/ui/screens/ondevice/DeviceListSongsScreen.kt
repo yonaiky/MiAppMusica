@@ -52,7 +52,7 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
 
     val (tabIndex, onTabIndexChanged) = rememberSaveable {
         mutableStateOf(when (deviceLists) {
-            DeviceLists.LocalSongs -> 0
+            DeviceLists.LocalSongs -> 4
         })
     }
     val showSearchTab by rememberPreference(showSearchTabKey, false)
