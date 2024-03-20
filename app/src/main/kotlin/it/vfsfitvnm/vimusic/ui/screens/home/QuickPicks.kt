@@ -65,6 +65,7 @@ import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.innertube.models.bodies.NextBody
 import it.vfsfitvnm.innertube.requests.discoverPageNewAlbums
+import it.vfsfitvnm.innertube.requests.discoverPageNewAlbumsComplete
 import it.vfsfitvnm.innertube.requests.relatedPage
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
@@ -211,6 +212,9 @@ fun QuickPicks(
     LaunchedEffect(Unit) {
         discoverPageAlbums = Innertube.discoverPageNewAlbums()
     }
+
+    println("mediaItem newalbums $discoverPageAlbums")
+
     LaunchedEffect(Unit) {
         Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }

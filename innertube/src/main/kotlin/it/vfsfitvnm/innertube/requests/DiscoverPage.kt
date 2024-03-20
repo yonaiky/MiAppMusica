@@ -12,7 +12,7 @@ import it.vfsfitvnm.innertube.models.oddElements
 import it.vfsfitvnm.innertube.models.splitBySeparator
 import it.vfsfitvnm.innertube.utils.runCatchingNonCancellable
 
-suspend fun Innertube.discoverPage() = runCatchingNonCancellable {
+suspend fun Innertube.discoverPage() = runCatching {
     val response = client.post(browse) {
         setBody(BrowseBodyWithLocale(browseId = "FEmusic_explore"))
         mask("contents")
@@ -34,9 +34,9 @@ suspend fun Innertube.discoverPage() = runCatchingNonCancellable {
     )
 }
 
-suspend fun Innertube.discoverPageNewAlbums() = runCatchingNonCancellable {
+suspend fun Innertube.discoverPageNewAlbums() = runCatching {
     val response = client.post(browse) {
-        setBody(BrowseBody(browseId = "FEmusic_explore"))
+        setBody(BrowseBodyWithLocale(browseId = "FEmusic_explore"))
         mask("contents")
     }.body<BrowseResponse>()
 
@@ -46,6 +46,19 @@ suspend fun Innertube.discoverPageNewAlbums() = runCatchingNonCancellable {
                 it.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer
                     ?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint?.browseId == "FEmusic_new_releases_albums"
             }?.musicCarouselShelfRenderer?.contents?.mapNotNull { it.musicTwoRowItemRenderer?.toNewReleaseAlbumPage() }
+            .orEmpty()
+    )
+}
+
+suspend fun Innertube.discoverPageNewAlbumsComplete() = runCatching {
+    val response = client.post(browse) {
+        setBody(BrowseBodyWithLocale(browseId = "FEmusic_new_releases_albums"))
+        mask("contents")
+    }.body<BrowseResponse>()
+
+    Innertube.DiscoverPageAlbums(
+        newReleaseAlbums = response.contents?.singleColumnBrowseResultsRenderer?.tabs
+            ?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer?.items?.mapNotNull { it.musicTwoRowItemRenderer?.toNewReleaseAlbumPage() }
             .orEmpty()
     )
 }

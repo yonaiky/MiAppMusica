@@ -114,7 +114,7 @@ fun HomeDiscovery(
     val thumbnailDp = Dimensions.thumbnails.album
     val thumbnailPx = thumbnailDp.px
     val thumbnailSizeDp = 20.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
+    //val thumbnailSizePx = thumbnailSizeDp.px
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discovery")
 
