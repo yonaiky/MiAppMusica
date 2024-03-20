@@ -683,7 +683,8 @@ fun AlbumSongs(
                                         )
                                     )
                                 else checkedState.value = false
-                            }
+                            },
+                            mediaId = song.asMediaItem.mediaId
                     )
                 }
 

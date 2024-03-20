@@ -681,7 +681,8 @@ fun MediaItemMenu(
                         duration = null,
                         thumbnailSizeDp = thumbnailSizeDp,
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f),
+                        mediaId = mediaItem.mediaId
                     )
 
 

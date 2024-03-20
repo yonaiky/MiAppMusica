@@ -1,6 +1,7 @@
 package it.vfsfitvnm.vimusic.ui.items
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -22,10 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.media3.exoplayer.offline.DownloadService
 import coil.compose.AsyncImage
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Song
+import it.vfsfitvnm.vimusic.service.MyDownloadService
 import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.TextPlaceholder
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
@@ -57,7 +61,8 @@ fun SongItem(
         isDownloaded = isDownloaded,
         onDownloadClick = onDownloadClick,
         downloadState = downloadState,
-        isExplicit = song.explicit
+        isExplicit = song.explicit,
+        mediaId = song.key
     )
 }
 
@@ -88,7 +93,8 @@ fun SongItem(
         isDownloaded = isDownloaded,
         onDownloadClick = onDownloadClick,
         downloadState = downloadState,
-        isRecommended = isRecommended
+        isRecommended = isRecommended,
+        mediaId = song.mediaId
     )
 }
 
@@ -116,7 +122,8 @@ fun SongItem(
         modifier = modifier,
         isDownloaded = isDownloaded,
         onDownloadClick = onDownloadClick,
-        downloadState = downloadState
+        downloadState = downloadState,
+        mediaId = song.id
     )
 }
 
@@ -135,7 +142,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    isExplicit: Boolean = false
+    isExplicit: Boolean = false,
+    mediaId: String
 ) {
     SongItem(
         title = title,
@@ -160,7 +168,8 @@ fun SongItem(
         onDownloadClick = onDownloadClick,
         downloadState = downloadState,
         isRecommended = isRecommended,
-        isExplicit = isExplicit
+        isExplicit = isExplicit,
+        mediaId = mediaId
     )
 }
 
@@ -262,7 +271,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    isExplicit: Boolean = false
+    isExplicit: Boolean = false,
+    mediaId: String
 ) {
     val (colorPalette, typography) = LocalAppearance.current
 
@@ -358,11 +368,20 @@ fun SongItem(
                             || downloadState == Download.STATE_RESTARTING
                         )
                     && !isDownloaded) {
+                    val context = LocalContext.current
                     CircularProgressIndicator(
                         strokeWidth = 2.dp,
                         color = colorPalette.text,
                         modifier = Modifier
                             .size(16.dp)
+                            .clickable {
+                                DownloadService.sendRemoveDownload(
+                                        context,
+                                        MyDownloadService::class.java,
+                                        mediaId,
+                                        false
+                                    )
+                            }
 
                     )
                 } else {
