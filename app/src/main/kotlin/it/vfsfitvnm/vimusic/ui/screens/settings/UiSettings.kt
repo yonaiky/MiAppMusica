@@ -687,7 +687,7 @@ fun  UiSettings() {
                         HomeScreenTabs.Albums -> stringResource(R.string.albums)
                         HomeScreenTabs.Artists -> stringResource(R.string.artists)
                         HomeScreenTabs.Library -> stringResource(R.string.library)
-                        HomeScreenTabs.Discovery -> stringResource(R.string.discovery)
+                        //HomeScreenTabs.Discovery -> stringResource(R.string.discovery)
                     }
                 }
             )

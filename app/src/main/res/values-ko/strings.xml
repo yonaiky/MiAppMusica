@@ -411,4 +411,6 @@
     <string name="show_search_tab_in_home">사이드바에 검색 탭 표시</string>
     <string name="action_bar_show_menu_button">메뉴 버튼 표시</string>
     <string name="sort_album">Album</string>
+    <string name="use_gradient_background">Use gradient background</string>
+    <string name="show_total_time_of_queue">Show total time of queue</string>
 </resources>

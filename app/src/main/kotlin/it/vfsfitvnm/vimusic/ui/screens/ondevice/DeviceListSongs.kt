@@ -299,7 +299,7 @@ fun DeviceListSongs(
                         //.background(colorPalette.background4)
                         .fillMaxSize(0.99F)
                         .background(
-                            color = colorPalette.background4,
+                            color = colorPalette.background1,
                             shape = thumbnailRoundness.shape()
                         )
                 ) {
@@ -318,7 +318,7 @@ fun DeviceListSongs(
                     if (filteredSongs.isNotEmpty())
                         PlaylistItem(
                             thumbnailContent = {
-                                if (thumbnails.toSet().size == 1) {
+                                if (thumbnails.size == 1) {
                                     AsyncImage(
                                         model = thumbnails.first().thumbnail(playlistThumbnailSizePx),
                                         contentDescription = null,
@@ -750,6 +750,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
             val collection =
                 if (isAtLeastAndroid10) MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
                 else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+
             val projection = arrayOf(
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DISPLAY_NAME,
@@ -798,27 +799,39 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                             val exclude = blacklist.contains(relativePath)
 
                             if (!exclude) {
-                                val albumUri = ContentUris.withAppendedId(albumUriBase, albumId)
-                                val durationText =
-                                    duration.milliseconds.toComponents { minutes, seconds, _ ->
-                                        "$minutes:${seconds.toString().padStart(2, '0')}"
-                                    }
-                                add(
-                                    Song(
-                                        id = "$LOCAL_KEY_PREFIX$id",
-                                        title = trackName ?: name,
-                                        artistsText = artist,
-                                        durationText = durationText,
-                                        thumbnailUrl = albumUri.toString()
+                                runCatching {
+                                    val albumUri = ContentUris.withAppendedId(albumUriBase, albumId)
+                                    val durationText =
+                                        duration.milliseconds.toComponents { minutes, seconds, _ ->
+                                            "$minutes:${seconds.toString().padStart(2, '0')}"
+                                        }
+                                    add(
+                                        Song(
+                                            id = "$LOCAL_KEY_PREFIX$id",
+                                            title = trackName ?: name,
+                                            artistsText = artist,
+                                            durationText = durationText,
+                                            thumbnailUrl = albumUri.toString()
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
-                }?.let { emit(it) }
+                }?.let {
+                    runCatching {
+                        emit(it)
+                    }
+                }
         }
-        delay(5.seconds)
+        runCatching {
+            delay(5.seconds)
+        }
     }
 }.distinctUntilChanged()
-    .onEach { songs -> transaction { songs.forEach(Database::insert) } }
+    .onEach { songs ->
+        runCatching {
+            transaction { songs.forEach(Database::insert) }
+        }
+    }
     .stateIn(mediaScope, SharingStarted.Eagerly, listOf())

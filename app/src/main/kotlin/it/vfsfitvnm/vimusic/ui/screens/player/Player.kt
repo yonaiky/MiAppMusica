@@ -151,6 +151,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerLyricsKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
+import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.shuffleQueue
 import it.vfsfitvnm.vimusic.utils.thumbnail
 import it.vfsfitvnm.vimusic.utils.thumbnailTapEnabledKey
@@ -380,6 +381,7 @@ fun Player(
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
+    val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     /*
     val playlistPreviews by remember {
         Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
@@ -1158,27 +1160,28 @@ fun Player(
                 }
 
 
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.time),
-                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                if (showTotalTimeQueue)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(20.dp)
-                            .padding(horizontal = 5.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                    BasicText(
-                        text = " ${formatAsTime(totalPlayTimes)}",
-                        style = typography.xxs.semiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.time),
+                            colorFilter = ColorFilter.tint(colorPalette.accent),
+                            modifier = Modifier
+                                .size(20.dp)
+                                .padding(horizontal = 5.dp),
+                            contentDescription = "Background Image",
+                            contentScale = ContentScale.Fit
+                        )
+                        BasicText(
+                            text = " ${formatAsTime(totalPlayTimes)}",
+                            style = typography.xxs.semiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
 
 
                 Spacer(

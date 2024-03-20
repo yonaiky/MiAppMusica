@@ -109,6 +109,7 @@ import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
 import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
+import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import it.vfsfitvnm.vimusic.utils.thumbnailTapEnabledKey
 
@@ -161,6 +162,7 @@ fun AppearanceSettings() {
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+    var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -341,12 +343,20 @@ fun AppearanceSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "Use gradient background",
+                title = stringResource(R.string.use_gradient_background),
                 text = "",
                 isChecked = isGradientBackgroundEnabled,
                 onCheckedChange = { isGradientBackgroundEnabled = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_total_time_of_queue),
+                text = "",
+                isChecked = showTotalTimeQueue,
+                onCheckedChange = { showTotalTimeQueue = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(filterCharSequence,true))

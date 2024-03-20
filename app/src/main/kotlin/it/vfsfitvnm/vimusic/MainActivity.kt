@@ -154,6 +154,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
 import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
+import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import it.vfsfitvnm.vimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
@@ -399,7 +400,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                             disableClosingPlayerSwipingDownKey,
                             showSearchTabKey,
                             navigationBarPositionKey,
-                            navigationBarTypeKey -> {
+                            navigationBarTypeKey,
+                            showTotalTimeQueueKey-> {
                                 this@MainActivity.recreate()
                             }
 
