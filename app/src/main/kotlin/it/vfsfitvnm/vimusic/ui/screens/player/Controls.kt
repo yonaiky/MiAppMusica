@@ -733,7 +733,8 @@ fun Controls(
                         indication = rememberRipple(bounded = false),
                         interactionSource = remember { MutableInteractionSource() },
                         onClick = {
-                            binder.player.forceSeekToPrevious()
+                            //binder.player.forceSeekToPrevious()
+                            binder.player.seekToPrevious()
                             if (effectRotationEnabled) isRotated = !isRotated
                         },
                         onLongClick = {
@@ -767,20 +768,6 @@ fun Controls(
                         }
                     )
                     .clip(RoundedCornerShape(playPauseRoundness))
-                    /*
-                    .clickable {
-                        if (shouldBePlaying) {
-                            binder.player.pause()
-                        } else {
-                            if (binder.player.playbackState == Player.STATE_IDLE) {
-                                binder.player.prepare()
-                            }
-                            binder.player.play()
-                        }
-                        if (effectRotationEnabled) isRotated = !isRotated
-                    }
-                     */
-                    //.background(if (uiType != UiType.RiMusic) colorPalette.background3 else colorPalette.background0)
                     .background(
                         when (colorPaletteName) {
                             ColorPaletteName.Dynamic, ColorPaletteName.Default -> {
@@ -797,12 +784,6 @@ fun Controls(
                                     }
                                 }
                             }
-                            /*
-                                if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                                    colorPalette.background1 else
-                                    if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
-                                        colorPalette.background2 else colorPalette.background1
-                                 */
 
                             ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
                                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
