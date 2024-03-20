@@ -5,10 +5,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -97,6 +101,7 @@ import it.vfsfitvnm.vimusic.models.SongPlaylistMap
 import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
+import it.vfsfitvnm.vimusic.ui.components.themed.DialogTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
@@ -105,6 +110,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.IconInfo
 import it.vfsfitvnm.vimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.vfsfitvnm.vimusic.ui.components.themed.NowPlayingShow
 import it.vfsfitvnm.vimusic.ui.components.themed.PlaylistsItemMenu
+import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.SortMenu
 import it.vfsfitvnm.vimusic.ui.items.PlaylistItem
 import it.vfsfitvnm.vimusic.ui.items.SongItem
@@ -117,7 +123,6 @@ import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.OnDeviceBlacklist
 import it.vfsfitvnm.vimusic.utils.UiTypeKey
 import it.vfsfitvnm.vimusic.utils.asMediaItem
-import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.color
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
 import it.vfsfitvnm.vimusic.utils.durationTextToMillis
@@ -125,8 +130,11 @@ import it.vfsfitvnm.vimusic.utils.enqueue
 import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
 import it.vfsfitvnm.vimusic.utils.forcePlayFromBeginning
 import it.vfsfitvnm.vimusic.utils.formatAsTime
+import it.vfsfitvnm.vimusic.utils.hasPermission
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid10
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
+import it.vfsfitvnm.vimusic.utils.isCompositionLaunched
+import it.vfsfitvnm.vimusic.utils.medium
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.secondary
@@ -165,22 +173,65 @@ fun DeviceListSongs(
     onSearchClick: () -> Unit
 ) {
 
-    val activity = LocalContext.current as Activity
-    if (ContextCompat.checkSelfPermission(
-            activity,
-            if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
-            else Manifest.permission.READ_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        //LocalContext.current.toast("On device require read media permission, grant please.")
-        ActivityCompat.requestPermissions(
-            activity,
-            arrayOf(if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
-            else Manifest.permission.READ_EXTERNAL_STORAGE), 41
-        )
+    val context = LocalContext.current
+    val (colorPalette,typography) = LocalAppearance.current
+    val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
+    else Manifest.permission.READ_EXTERNAL_STORAGE
+
+    var relaunchPermission by remember {
+        mutableStateOf(false)
+    }
+
+    var hasPermission by remember(isCompositionLaunched()) {
+        mutableStateOf(context.applicationContext.hasPermission(permission))
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { hasPermission = it }
+    )
+
+
+    if (!hasPermission) {
+
+        LaunchedEffect(Unit, relaunchPermission) { launcher.launch(permission) }
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            BasicText(
+                text = stringResource(R.string.media_permission_required_please_grant),
+                modifier = Modifier.fillMaxWidth(0.75f),
+                style = typography.xs.semiBold
+            )
+            /*
+            Spacer(modifier = Modifier.height(12.dp))
+            SecondaryTextButton(
+                text = stringResource(R.string.grant_permission),
+                onClick = {
+                    relaunchPermission = !relaunchPermission
+                }
+            )
+             */
+            Spacer(modifier = Modifier.height(20.dp))
+            SecondaryTextButton(
+                text = stringResource(R.string.open_permission_settings),
+                onClick = {
+                    context.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            setData(Uri.fromParts("package", context.packageName, null))
+                        }
+                    )
+                }
+            )
+
+        }
+
     } else {
 
-        val (colorPalette,typography) = LocalAppearance.current
+
         val binder = LocalPlayerServiceBinder.current
         val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         val menuState = LocalMenuState.current
@@ -194,6 +245,7 @@ fun DeviceListSongs(
         var filteredSongs = songs
         val context = LocalContext.current
         LaunchedEffect(sortBy, sortOrder) {
+            if (hasPermission)
             context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songs = it }
         }
 
@@ -730,7 +782,6 @@ fun DeviceListSongs(
         )
 
     }
-
 
     }
 
