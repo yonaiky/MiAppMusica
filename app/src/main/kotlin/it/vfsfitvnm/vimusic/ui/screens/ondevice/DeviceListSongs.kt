@@ -164,88 +164,6 @@ fun DeviceListSongs(
     deviceLists: DeviceLists,
     onSearchClick: () -> Unit
 ) {
-    val (colorPalette,typography) = LocalAppearance.current
-    val binder = LocalPlayerServiceBinder.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-    val menuState = LocalMenuState.current
-
-    var sortBy by rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
-    var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
-
-    var songs by remember(sortBy, sortOrder) {
-        mutableStateOf<List<Song>>(emptyList())
-    }
-    var filteredSongs = songs
-    val context = LocalContext.current
-    LaunchedEffect(sortBy, sortOrder) {
-        context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songs = it }
-    }
-
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
-
-    var filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
-    if (!filter.isNullOrBlank())
-    filteredSongs = songs
-        .filter {
-            it.title?.contains(filterCharSequence,true) ?: false
-            || it.artistsText?.contains(filterCharSequence,true) ?: false
-        }
-
-    var searching by rememberSaveable { mutableStateOf(false) }
-
-    val thumbnailSizeDp = Dimensions.thumbnails.song
-    val thumbnailSize = thumbnailSizeDp.px
-
-    val sortOrderIconRotation by animateFloatAsState(
-        targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
-    )
-
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
-
-    val lazyListState = rememberLazyListState()
-
-    var totalPlayTimes = 0L
-    filteredSongs.forEach {
-        totalPlayTimes += it.durationText?.let { it1 ->
-            durationTextToMillis(it1)
-        }?.toLong() ?: 0
-    }
-
-    val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
-    val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
-
-    val thumbnails = songs
-        .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
-        .take(4)
-        .map { it.thumbnailUrl.thumbnail(playlistThumbnailSizePx / 2) }
-
-    var listMediaItems = remember {
-        mutableListOf<MediaItem>()
-    }
-
-    var selectItems by remember {
-        mutableStateOf(false)
-    }
-
-    var position by remember {
-        mutableIntStateOf(0)
-    }
-    var scrollToNowPlaying by remember {
-        mutableStateOf(false)
-    }
-
-    var nowPlayingItem by remember {
-        mutableStateOf(-1)
-    }
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val activity = LocalContext.current as Activity
     if (ContextCompat.checkSelfPermission(
@@ -261,6 +179,89 @@ fun DeviceListSongs(
             else Manifest.permission.READ_EXTERNAL_STORAGE), 41
         )
     } else {
+
+        val (colorPalette,typography) = LocalAppearance.current
+        val binder = LocalPlayerServiceBinder.current
+        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+        val menuState = LocalMenuState.current
+
+        var sortBy by rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
+        var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
+
+        var songs by remember(sortBy, sortOrder) {
+            mutableStateOf<List<Song>>(emptyList())
+        }
+        var filteredSongs = songs
+        val context = LocalContext.current
+        LaunchedEffect(sortBy, sortOrder) {
+            context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songs = it }
+        }
+
+        var filter: String? by rememberSaveable { mutableStateOf(null) }
+
+        var filterCharSequence: CharSequence
+        filterCharSequence = filter.toString()
+        //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
+        if (!filter.isNullOrBlank())
+            filteredSongs = songs
+                .filter {
+                    it.title?.contains(filterCharSequence,true) ?: false
+                            || it.artistsText?.contains(filterCharSequence,true) ?: false
+                }
+
+        var searching by rememberSaveable { mutableStateOf(false) }
+
+        val thumbnailSizeDp = Dimensions.thumbnails.song
+        val thumbnailSize = thumbnailSizeDp.px
+
+        val sortOrderIconRotation by animateFloatAsState(
+            targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
+            animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
+        )
+
+        var thumbnailRoundness by rememberPreference(
+            thumbnailRoundnessKey,
+            ThumbnailRoundness.Heavy
+        )
+
+        val lazyListState = rememberLazyListState()
+
+        var totalPlayTimes = 0L
+        filteredSongs.forEach {
+            totalPlayTimes += it.durationText?.let { it1 ->
+                durationTextToMillis(it1)
+            }?.toLong() ?: 0
+        }
+
+        val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
+        val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
+
+        val thumbnails = songs
+            .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
+            .take(4)
+            .map { it.thumbnailUrl.thumbnail(playlistThumbnailSizePx / 2) }
+
+        var listMediaItems = remember {
+            mutableListOf<MediaItem>()
+        }
+
+        var selectItems by remember {
+            mutableStateOf(false)
+        }
+
+        var position by remember {
+            mutableIntStateOf(0)
+        }
+        var scrollToNowPlaying by remember {
+            mutableStateOf(false)
+        }
+
+        var nowPlayingItem by remember {
+            mutableStateOf(-1)
+        }
+
+        val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+        val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
         Box(
             modifier = Modifier

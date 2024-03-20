@@ -186,7 +186,7 @@ fun HomeScreen(
                     Item(2, stringResource(R.string.artists), R.drawable.person)
                     Item(3, stringResource(R.string.albums), R.drawable.disc)
                     Item(4, stringResource(R.string.library), R.drawable.library)
-                    Item(5, stringResource(R.string.discovery), R.drawable.megaphone)
+                    //Item(5, stringResource(R.string.discovery), R.drawable.megaphone)
                     //if (showSearchTab)
                     //Item(6, stringResource(R.string.search), R.drawable.search)
                     //Item(6, "Equalizer", R.drawable.musical_notes)
@@ -199,7 +199,8 @@ fun HomeScreen(
                             onAlbumClick = { albumRoute(it) },
                             onArtistClick = { artistRoute(it) },
                             onPlaylistClick = { playlistRoute(it) },
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
                         )
 
                         1 -> HomeSongs(
