@@ -114,13 +114,15 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <action android:name=
+                    "android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name=
+                    "android.intent.category.DEFAULT" />
             </intent-filter>
 
         </activity>
@@ -148,6 +150,7 @@
 
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
 

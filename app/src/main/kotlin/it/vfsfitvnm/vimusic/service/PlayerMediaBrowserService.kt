@@ -43,6 +43,7 @@ import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getEnum
 import it.vfsfitvnm.vimusic.utils.intent
 import it.vfsfitvnm.vimusic.utils.preferences
+import it.vfsfitvnm.vimusic.utils.skipSilenceKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,6 +51,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
@@ -167,13 +169,13 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         songsBrowserMediaItem,
                         playlistsBrowserMediaItem,
                         albumsBrowserMediaItem,
-                        //artistsBrowserMediaItem
+                        artistsBrowserMediaItem
                     )
 
                     MediaId.songs -> Database
                         .songsByPlayTimeDesc()
                         .first()
-                        //.take(30)
+                        .take(500)
                         .also { lastSongs = it }
                         .map { it.asBrowserMediaItem }
                         .toMutableList()
@@ -315,7 +317,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.top)
-                .setTitle((this as Context).resources.getString(R.string.my_playlist_top))
+                .setTitle("${(this as Context).resources.getString(R.string.my_playlist_top)} " +
+                        "${preferences.getEnum(MaxTopPlaylistItemsKey,
+                            MaxTopPlaylistItems.`10`).number}")
                 .setIconUri(uriFor(R.drawable.trending))
                 .build(),
             MediaItem.FLAG_PLAYABLE
@@ -365,7 +369,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaItem.FLAG_PLAYABLE
         )
 
-    private inner class SessionCallback(
+    private inner class SessionCallback @OptIn(UnstableApi::class) constructor(
        // private val player: Player,
         private val binder: PlayerService.Binder,
         private val cache: Cache
@@ -449,9 +453,11 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     }
 
                     MediaId.top -> {
-                        Database.trending(200)
-                            .first()
-                            //.shuffled()
+                        val maxTopSongs = preferences.getEnum(MaxTopPlaylistItemsKey,
+                            MaxTopPlaylistItems.`10`).number.toInt()
+
+                        Database.trending(maxTopSongs)
+                                .first()
                     }
 
                     MediaId.playlists -> data
@@ -467,10 +473,12 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.let(Database::albumSongs)
                         ?.first()
 
-                    MediaId.artists -> data
+                    MediaId.artists -> {
+                        data
                         .getOrNull(1)
                         ?.let(Database::artistSongsByname)
                         ?.first()
+                    }
 
                     else -> emptyList()
                 }?.map(Song::asMediaItem) ?: return@launch
@@ -487,7 +495,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         const val songs = "songs"
         const val playlists = "playlists"
         const val albums = "albums"
-        const val artists = "srtists"
+        const val artists = "artists"
 
         const val favorites = "favorites"
         const val offline = "offline"

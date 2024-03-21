@@ -475,10 +475,17 @@ class PlayerService : InvincibleService(),
         player.addListener(this)
         player.addAnalyticsListener(PlaybackStatsListener(false, this))
 
+        // Build a PendingIntent that can be used to launch the UI.
+        val sessionActivityPendingIntent =
+            packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
+                PendingIntent.getActivity(this, 0, sessionIntent, PendingIntent.FLAG_IMMUTABLE)
+            }
+
         mediaSession = MediaSessionCompat(baseContext, "PlayerService")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        mediaSession.setRatingType(RatingCompat.RATING_NONE)
+        mediaSession.setSessionActivity(sessionActivityPendingIntent)
         mediaSession.setCallback(SessionCallback(player))
-        mediaSession.setRatingType(RatingCompat.RATING_HEART)
 
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())

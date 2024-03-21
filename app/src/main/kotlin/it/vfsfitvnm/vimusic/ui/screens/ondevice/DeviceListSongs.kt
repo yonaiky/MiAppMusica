@@ -224,7 +224,7 @@ fun DeviceListSongs(
             mutableStateOf<List<Song>>(emptyList())
         }
         var filteredSongs = songs
-        val context = LocalContext.current
+
         LaunchedEffect(sortBy, sortOrder) {
             if (hasPermission)
             context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songs = it }
@@ -790,7 +790,8 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.RELATIVE_PATH,
-                MediaStore.Audio.Media.TITLE
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.IS_MUSIC
             )
 
             val sortOrderSQL = when (order) {
@@ -816,15 +817,18 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                     val albumIdIdx = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
                     val relativePathIdx = cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
                     val titleIdx = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
+                    val isMusicIdx = cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)
                     val blacklist = OnDeviceBlacklist(context = context)
 
 
                     buildList {
                         while (cursor.moveToNext()) {
+                            if (cursor.getInt(isMusicIdx) == 0) continue
                             val id = cursor.getLong(idIdx)
                             val name = cursor.getString(nameIdx).substringBeforeLast(".")
                             val trackName = cursor.getString(titleIdx)
                             val duration = cursor.getInt(durationIdx)
+                            if (duration == 0) continue
                             val artist = cursor.getString(artistIdx)
                             val albumId = cursor.getLong(albumIdIdx)
                             val relativePath = cursor.getString(relativePathIdx)

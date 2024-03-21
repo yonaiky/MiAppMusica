@@ -65,6 +65,12 @@ import kotlinx.coroutines.flow.Flow
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
+
+    @Transaction
+    @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")
+    @RewriteQueriesToDropUnusedColumns
+    fun topSongs(count: Int = 10): Flow<List<Song>>
+
     @Transaction
     @Query("SELECT * FROM Song")
     fun listAllSongs(): List<Song>

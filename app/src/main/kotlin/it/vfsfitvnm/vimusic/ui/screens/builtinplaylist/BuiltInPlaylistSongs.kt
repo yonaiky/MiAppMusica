@@ -273,7 +273,8 @@ fun BuiltInPlaylistSongs(
                      }.map(SongWithContentLength::song)
                  }
 
-             BuiltInPlaylist.Top -> Database.trending(maxTopPlaylistItems.number.toInt())
+             BuiltInPlaylist.Top ->
+                 Database.trending(maxTopPlaylistItems.number.toInt())
 
          }.collect { songs = it }
 
