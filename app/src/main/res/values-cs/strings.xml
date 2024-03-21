@@ -400,14 +400,14 @@
     <string name="value_copied">Zkopírováno</string>
     <string name="do_you_really_want_to_delete_cache">Opravdu chcete odstranit mezipaměť?</string>
     <string name="lang_swedish">Švědština (Svenska)</string>
-    <string name="pinned_playlists">Pinned Playlists</string>
-    <string name="locked">Locked</string>
-    <string name="sort_duration">Duration</string>
-    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
-    <string name="pause_between_songs">Pause between songs</string>
-    <string name="navigation_bar_type">Navigation bar type</string>
-    <string name="icon_and_text">Icon and text</string>
-    <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="pinned_playlists">Připnuté playlisty</string>
+    <string name="locked">Uzamčeno</string>
+    <string name="sort_duration">Trvání</string>
+    <string name="lang_serbian_cyrillic">Srbská cyrilice (Српски Ћирилица)</string>
+    <string name="pause_between_songs">Pauza mezi skladbami</string>
+    <string name="navigation_bar_type">Typ navigačního panelu</string>
+    <string name="icon_and_text">Ikona a text</string>
+    <string name="only_icon">Pouze ikona</string>
+    <string name="show_search_tab_in_home">Zobrazit záložku Vyhledávání na domovské obrazovce</string>
+    <string name="action_bar_show_menu_button">Zobrazit tlačítko menu</string>
 </resources>
