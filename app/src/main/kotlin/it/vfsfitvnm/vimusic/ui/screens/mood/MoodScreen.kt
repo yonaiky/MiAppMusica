@@ -40,7 +40,7 @@ fun MoodScreen(mood: Mood) {
                 tabIndex = 0,
                 onTabChanged = { },
                 tabColumnContent = { item ->
-                    item(0, stringResource(R.string.mood), R.drawable.disc)
+                    item(0, stringResource(R.string.mood), R.drawable.album)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

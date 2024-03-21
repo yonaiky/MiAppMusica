@@ -286,7 +286,7 @@ fun Controls(
                 if (uiType != UiType.ViMusic) {
 
                     IconButton(
-                        icon = if (albumId == null) R.drawable.alert_circle_not_filled else R.drawable.disc,
+                        icon = if (albumId == null) R.drawable.alert_circle_not_filled else R.drawable.album,
                         color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
                         enabled = albumId != null,
                         onClick = {

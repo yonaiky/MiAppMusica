@@ -220,7 +220,7 @@ fun AlbumScreen(browseId: String) {
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                    Item(1, stringResource(R.string.other_versions), R.drawable.disc)
+                    Item(1, stringResource(R.string.other_versions), R.drawable.album)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

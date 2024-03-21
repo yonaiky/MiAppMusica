@@ -258,7 +258,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.albums)
                 .setTitle((this as Context).resources.getString(R.string.albums))
-                .setIconUri(uriFor(R.drawable.disc))
+                .setIconUri(uriFor(R.drawable.album))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )

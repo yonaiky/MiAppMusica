@@ -113,7 +113,7 @@ fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
                 onTabChanged = onTabIndexChanges,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                    Item(1, stringResource(R.string.albums), R.drawable.disc)
+                    Item(1, stringResource(R.string.albums), R.drawable.album)
                     Item(2, stringResource(R.string.artists), R.drawable.person)
                     Item(3, stringResource(R.string.videos), R.drawable.film)
                     Item(4, stringResource(R.string.playlists), R.drawable.playlist)

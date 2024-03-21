@@ -223,7 +223,7 @@ class PlayerService : InvincibleService(),
         .addCustomAction(
             "DOWNLOAD",
             "Download",
-            if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to
+            if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download
 
         ).addCustomAction(
             "LIKE",
@@ -239,7 +239,7 @@ class PlayerService : InvincibleService(),
         }).addCustomAction(
             "DOWNLOAD",
             "Download",
-            if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to
+            if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download
 
         )
 
@@ -1306,7 +1306,7 @@ class PlayerService : InvincibleService(),
             //Prior Android 11
             builder
                 .addAction(
-                    if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to,
+                    if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download,
                     //if (currentMediaDownloaded.value) R.drawable.downloaded_to else R.drawable.download_to,
                     "Download", downloadIntent
                 )
@@ -1330,7 +1330,7 @@ class PlayerService : InvincibleService(),
         if (!showLikeButton && showDownloadButton) {
             builder
                 .addAction(
-                    if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded_to else R.drawable.download_to,
+                    if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download,
                     "Download", downloadIntent
                 )
         }

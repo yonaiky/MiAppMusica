@@ -171,7 +171,7 @@ fun HomeAlbums(
                 ){
                     HeaderInfo(
                         title = "${items.size}",
-                        icon = painterResource(R.drawable.disc),
+                        icon = painterResource(R.drawable.album),
                         spacer = 0
                     )
 
