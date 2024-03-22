@@ -85,7 +85,7 @@ import kotlinx.coroutines.withContext
 @UnstableApi
 @Composable
 fun ArtistScreen(browseId: String) {
-    val saveableStateHolder = rememberSaveableStateHolder()
+    //val saveableStateHolder = rememberSaveableStateHolder()
 
     var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
 
@@ -234,7 +234,7 @@ fun ArtistScreen(browseId: String) {
                     Item(4, stringResource(R.string.library), R.drawable.library)
                 },
             ) { currentTabIndex ->
-                saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
+                //saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> {
                             ArtistOverview(
@@ -474,7 +474,7 @@ fun ArtistScreen(browseId: String) {
                             )
                         }
                     }
-                }
+                //}
             }
         }
     }
