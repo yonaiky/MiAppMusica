@@ -428,7 +428,7 @@ fun Controls(
 
             Spacer(
                 modifier = Modifier
-                    .width(7.dp)
+                    .width(12.dp)
             )
         }
 
