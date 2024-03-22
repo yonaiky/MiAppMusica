@@ -71,6 +71,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Info
@@ -994,6 +995,7 @@ fun NewVersionDialog (
     )
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaybackParamsDialog(
