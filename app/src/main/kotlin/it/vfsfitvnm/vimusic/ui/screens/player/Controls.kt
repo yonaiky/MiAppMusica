@@ -829,22 +829,23 @@ fun Controls(
                         .size(30.dp)
                 )
 
-                Box(
-                    modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                ) {
-                    BasicText(
-                        text = "%.1fx".format(playbackSpeed),
-                        style = TextStyle(
-                            color = colorPalette.collapsedPlayerProgressBar,
-                            fontStyle = typography.xxxs.semiBold.fontStyle,
-                            fontSize = typography.xxxs.semiBold.fontSize
-                        ),
-                        maxLines = 1,
+                if ("%.1fx".format(playbackSpeed) != "1,0x")
+                    Box(
                         modifier = Modifier
-                            .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
-                    )
-                }
+                        .align(Alignment.BottomCenter)
+                    ) {
+                        BasicText(
+                            text = "%.1fx".format(playbackSpeed),
+                            style = TextStyle(
+                                color = colorPalette.collapsedPlayerProgressBar,
+                                fontStyle = typography.xxxs.semiBold.fontStyle,
+                                fontSize = typography.xxxs.semiBold.fontSize
+                            ),
+                            maxLines = 1,
+                            modifier = Modifier
+                                .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                        )
+                    }
             }
 
 
