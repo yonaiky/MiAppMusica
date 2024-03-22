@@ -1066,7 +1066,7 @@ fun PlaybackParamsDialog(
                                 shape = CircleShape
                             )
                             .background(Color.White)
-                            .padding(3.5.dp),
+                            .padding(1.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Box(
@@ -1132,7 +1132,7 @@ fun PlaybackParamsDialog(
                                 shape = CircleShape
                             )
                             .background(Color.White)
-                            .padding(3.5.dp),
+                            .padding(1.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Box(

@@ -173,7 +173,7 @@ fun HomeArtistList(
                 Header(title = "") {
                     HeaderInfo(
                         title = "${items.size}",
-                        icon = painterResource(R.drawable.person),
+                        icon = painterResource(R.drawable.artists),
                         spacer = 0
                     )
 
