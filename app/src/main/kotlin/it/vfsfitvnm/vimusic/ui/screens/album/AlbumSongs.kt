@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
@@ -67,6 +69,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.InputTextDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.vfsfitvnm.vimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.vfsfitvnm.vimusic.ui.components.themed.NowPlayingShow
 import it.vfsfitvnm.vimusic.ui.components.themed.SelectorDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.TextFieldDialog
 import it.vfsfitvnm.vimusic.ui.items.SongItem
@@ -191,6 +194,14 @@ fun AlbumSongs(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+
+    var scrollToNowPlaying by remember {
+        mutableStateOf(false)
+    }
+
+    var nowPlayingItem by remember {
+        mutableStateOf(-1)
+    }
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -332,6 +343,30 @@ fun AlbumSongs(
                                     }
                                 }
                             )
+
+                            HeaderIconButton(
+                                modifier = Modifier.padding(horizontal = 5.dp),
+                                icon = R.drawable.locate,
+                                enabled = songs.isNotEmpty(),
+                                color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                onClick = {
+                                    nowPlayingItem = -1
+                                    scrollToNowPlaying = false
+                                    songs
+                                        .forEachIndexed { index, song ->
+                                            if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                nowPlayingItem = index
+                                        }
+
+                                    if (nowPlayingItem > -1)
+                                        scrollToNowPlaying = true
+                                }
+                            )
+                            LaunchedEffect(scrollToNowPlaying) {
+                                if (scrollToNowPlaying)
+                                    lazyListState.scrollToItem(nowPlayingItem, 1)
+                                scrollToNowPlaying = false
+                            }
 
                             HeaderIconButton(
                                 icon = R.drawable.ellipsis_horizontal,
@@ -646,6 +681,9 @@ fun AlbumSongs(
                                     .width(thumbnailSizeDp)
                                     .align(Alignment.Center)
                             )
+
+                            if (nowPlayingItem > -1)
+                                NowPlayingShow(song.asMediaItem.mediaId)
                         },
                         modifier = Modifier
                             .combinedClickable(
