@@ -180,7 +180,7 @@ fun HomeScreen(
                                 mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                           }
                         }
-                    else -> mutableStateOf(openTabFromShortcut)
+                    else -> remember { mutableStateOf(openTabFromShortcut) }
                 }
 
             /*
