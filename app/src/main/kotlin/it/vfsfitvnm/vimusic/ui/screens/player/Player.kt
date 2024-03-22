@@ -85,6 +85,7 @@ import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.BackgroundProgress
 import it.vfsfitvnm.vimusic.enums.ColorPaletteName
 import it.vfsfitvnm.vimusic.enums.PlayerThumbnailSize
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
@@ -151,7 +152,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerLyricsKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
-import it.vfsfitvnm.vimusic.utils.showPlayerBackgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.shuffleQueue
 import it.vfsfitvnm.vimusic.utils.thumbnail
@@ -383,7 +384,7 @@ fun Player(
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
-    val showPlayerBackgroundProgress by rememberPreference(showPlayerBackgroundProgressKey, true)
+    val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
     /*
     val playlistPreviews by remember {
         Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
@@ -589,7 +590,7 @@ fun Player(
                     .fillMaxSize()
                     .padding(horizontalBottomPaddingValues)
                     .drawBehind {
-                        if (showPlayerBackgroundProgress) {
+                        if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
                             drawRect(
                                 color = colorPalette.favoritesOverlay,
                                 topLeft = Offset.Zero,
@@ -1027,7 +1028,7 @@ fun Player(
                 modifier = containerModifier
                     .padding(top = 10.dp)
                     .drawBehind {
-                        if (showPlayerBackgroundProgress) {
+                        if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
                                 color = colorPalette.favoritesOverlay,
                                 topLeft = Offset.Zero,
