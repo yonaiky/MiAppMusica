@@ -456,9 +456,11 @@ fun HomeSongs(
                                 }
                             },
                             onClick = {
+                                val itemsLimited = if (items.size > 500)  items.take(500) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
-                                    items.map(Song::asMediaItem),
+                                    itemsLimited
+                                        .map(Song::asMediaItem),
                                     index
                                 )
                             }
