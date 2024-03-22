@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.BackgroundProgress
 import it.vfsfitvnm.vimusic.enums.ColorPaletteMode
 import it.vfsfitvnm.vimusic.enums.ColorPaletteName
 import it.vfsfitvnm.vimusic.enums.FontType
@@ -108,7 +109,7 @@ import it.vfsfitvnm.vimusic.utils.showFavoritesPlaylistKey
 import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
 import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
-import it.vfsfitvnm.vimusic.utils.showPlayerBackgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
@@ -164,7 +165,7 @@ fun AppearanceSettings() {
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
-    var showPlayerBackgroundProgress by rememberPreference(showPlayerBackgroundProgressKey, true)
+    var backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -353,12 +354,20 @@ fun AppearanceSettings() {
                 onCheckedChange = { isGradientBackgroundEnabled = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_background_progress_bar).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_background_progress_bar),
-                text = "",
-                isChecked = showPlayerBackgroundProgress,
-                onCheckedChange = { showPlayerBackgroundProgress = it }
+        if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.background_progress_bar),
+                selectedValue = backgroundProgress,
+                onValueSelected = {
+                    backgroundProgress = it
+                },
+                valueText = {
+                    when (it) {
+                        BackgroundProgress.Player -> stringResource(R.string.player)
+                        BackgroundProgress.MiniPlayer -> stringResource(R.string.minimized_player)
+                        BackgroundProgress.Both -> stringResource(R.string.both)
+                    }
+                },
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(filterCharSequence,true))

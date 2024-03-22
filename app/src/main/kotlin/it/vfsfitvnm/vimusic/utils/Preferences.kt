@@ -111,7 +111,7 @@ const val isGradientBackgroundEnabledKey = "isGradientBackgroundEnabled"
 const val playbackSpeedKey = "playbackSpeed"
 const val playbackPitchKey = "playbackPitch"
 const val showTotalTimeQueueKey = "showTotalTimeQueue"
-const val showPlayerBackgroundProgressKey = "showPlayerBackgroundProgress"
+const val backgroundProgressKey = "backgroundProgress"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
