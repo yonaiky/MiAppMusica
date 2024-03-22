@@ -203,14 +203,12 @@ fun Uri?.thumbnail(size: Int): Uri? {
 }
 
 fun formatAsDuration(millis: Long) = DateUtils.formatElapsedTime(millis / 1000).removePrefix("0")
-fun durationToMillis(duration: String) = Duration.between(
-    LocalTime.MIN,
-    LocalTime.parse(
-        if (duration.length == 4) "0$duration"
-        else if (duration.length < 4) "00:00"
-        else duration
-    )
-).toMillis()
+fun durationToMillis(duration: String): Long {
+    val parts = duration.split(":")
+    val hours = parts[0].toLong()
+    val minutes = parts[1].toLong()
+    return hours * 3600000 + minutes * 60000
+}
 
 fun durationTextToMillis(duration: String): Long {
     return try {
