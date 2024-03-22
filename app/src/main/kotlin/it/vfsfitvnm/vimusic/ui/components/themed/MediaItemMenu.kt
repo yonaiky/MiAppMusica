@@ -774,7 +774,7 @@ fun MediaItemMenu(
 
                   if (!isLocal && songSaved > 0) {
                     MenuEntry(
-                        icon = R.drawable.pencil,
+                        icon = R.drawable.title_edit,
                         text = stringResource(R.string.update_title),
                         onClick = {
                             showDialogChangeSongTitle = true
@@ -1081,7 +1081,7 @@ fun MediaItemMenu(
                 if (!isLocal) onGoToArtist?.let { onGoToArtist ->
                     artistsInfo?.forEach { (authorId, authorName) ->
                         MenuEntry(
-                            icon = R.drawable.person,
+                            icon = R.drawable.artists,
                             text = stringResource(R.string.more_of) + " $authorName",
                             onClick = {
                                 onDismiss()

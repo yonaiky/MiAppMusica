@@ -594,7 +594,7 @@ fun Lyrics(
                                         )
 
                                         MenuEntry(
-                                            icon = R.drawable.pencil,
+                                            icon = R.drawable.title_edit,
                                             text = stringResource(R.string.edit_lyrics),
                                             onClick = {
                                                 menuState.hide()

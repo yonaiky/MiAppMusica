@@ -131,7 +131,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 Database
                     .favorites()
                     .first()
-                    //.map { Song::asMediaItem }
                     .map {
                         MediaItem(
                             MediaDescriptionCompat.Builder()
@@ -192,8 +191,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                             add(0, favoritesBrowserMediaItem)
                             add(1, offlineBrowserMediaItem)
                             add(2, downloadedBrowserMediaItem)
-                            add(3, ondeviceBrowserMediaItem)
-                            add(4, topBrowserMediaItem)
+                            add(3, topBrowserMediaItem)
+                            add(4, ondeviceBrowserMediaItem)
+
                         }
 
                     MediaId.albums -> Database
@@ -268,7 +268,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.artists)
                 .setTitle((this as Context).resources.getString(R.string.artists))
-                .setIconUri(uriFor(R.drawable.person))
+                .setIconUri(uriFor(R.drawable.artists))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -288,7 +288,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.offline)
                 .setTitle((this as Context).resources.getString(R.string.cached))
-                .setIconUri(uriFor(R.drawable.airplane))
+                .setIconUri(uriFor(R.drawable.sync))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
@@ -341,7 +341,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.forPlaylist(playlist.id))
                 .setTitle(playlist.name)
-                .setSubtitle("$songCount songs")
+                .setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
                 .setIconUri(uriFor(R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE

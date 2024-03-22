@@ -322,7 +322,7 @@ fun AlbumsItemMenu(
 
                 onChangeAlbumTitle?.let{
                     MenuEntry(
-                        icon = R.drawable.pencil,
+                        icon = R.drawable.title_edit,
                         text = stringResource(R.string.update_title),
                         onClick = {
                             onDismiss()
@@ -332,7 +332,7 @@ fun AlbumsItemMenu(
                 }
                 onChangeAlbumAuthors?.let{
                     MenuEntry(
-                        icon = R.drawable.pencil,
+                        icon = R.drawable.artists_edit,
                         text = stringResource(R.string.update_authors),
                         onClick = {
                             onDismiss()
@@ -342,7 +342,7 @@ fun AlbumsItemMenu(
                 }
                 onChangeAlbumCover?.let{
                     MenuEntry(
-                        icon = R.drawable.pencil,
+                        icon = R.drawable.cover_edit,
                         text = stringResource(R.string.update_cover),
                         onClick = {
                             onDismiss()

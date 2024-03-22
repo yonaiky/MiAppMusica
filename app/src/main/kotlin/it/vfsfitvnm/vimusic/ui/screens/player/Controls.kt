@@ -293,7 +293,7 @@ fun Controls(
                             if (albumId != null) onGoToAlbum(albumId)
                         },
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(26.dp)
                     )
 
                     Spacer(
@@ -422,13 +422,13 @@ fun Controls(
                             onGoToArtist( artistIds[0].id )
                     },
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(start = 6.dp)
+                        .size(24.dp)
+                        .padding(start = 2.dp)
                 )
 
             Spacer(
                 modifier = Modifier
-                    .width(10.dp)
+                    .width(7.dp)
             )
         }
 

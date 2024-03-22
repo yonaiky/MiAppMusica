@@ -356,7 +356,7 @@ fun PlaylistsItemMenu(
 
                 onRename?.let { onRename ->
                     MenuEntry(
-                        icon = R.drawable.pencil,
+                        icon = R.drawable.title_edit,
                         text = stringResource(R.string.rename),
                         onClick = {
                             onDismiss()
