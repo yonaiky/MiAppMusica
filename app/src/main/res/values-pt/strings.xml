@@ -129,7 +129,7 @@
     <string name="reset_cache_location_folder">REDEFINIR LOCALIZAÇÃO DA PASTA CACHE</string>
     <string name="used">" usado"</string>
     <string name="close_background_player">Fechar player de fundo</string>
-    <string name="when_app_swipe_out_from_task_manager">Quando A app deslizar para fora do gestor de tarefas</string>
+    <string name="when_app_swipe_out_from_task_manager">Quando deslizar a janela da aplicação para fora dos recentes</string>
     <string name="opening_url">está carregando...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">Ocorreu um erro ao buscar a letra</string>
     <string name="are_not_available_for_this_song">não estão disponíveis para esta música</string>
@@ -410,12 +410,12 @@
     <string name="only_icon">Apenas ícone</string>
     <string name="show_search_tab_in_home">Mostrar barra de navegação no ecrã inicial</string>
     <string name="action_bar_show_menu_button">Mostrar botão do menu</string>
-    <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
-    <string name="show_total_time_of_queue">Show total time of queue</string>
-    <string name="lang_telugu">Telugu</string>
-    <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
-    <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
+    <string name="sort_album">Álbum</string>
+    <string name="use_gradient_background">Usar fundo em gradiente</string>
+    <string name="show_total_time_of_queue">Mostrar tempo total da fila</string>
+    <string name="lang_telugu">Télugu (తెలుగు)</string>
+    <string name="media_permission_required_please_grant">Permissão de mídia requerida, por favor conceda.</string>
+    <string name="grant_permission">Conceder permissão</string>
+    <string name="open_permission_settings">Abrir definições de permissão</string>
+    <string name="show_background_progress_bar">Mostrar barra de progresso no plano de fundo</string>
 </resources>
