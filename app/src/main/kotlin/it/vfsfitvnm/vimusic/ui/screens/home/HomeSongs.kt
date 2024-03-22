@@ -101,6 +101,7 @@ import it.vfsfitvnm.vimusic.utils.color
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
 import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
+import it.vfsfitvnm.vimusic.utils.forcePlayFromBeginning
 import it.vfsfitvnm.vimusic.utils.getDownloadState
 import it.vfsfitvnm.vimusic.utils.manageDownload
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
@@ -221,30 +222,51 @@ fun HomeSongs(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
+
+                    HeaderInfo(
+                        title = "${items.size}",
+                        icon = painterResource(R.drawable.musical_notes),
+                        spacer = 20
+                    )
+
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
                         color = colorPalette.text,
-                        iconSize = 24.dp
+                        iconSize = 24.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
                     )
                     HeaderIconButton(
                         onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
                         icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
                         color = colorPalette.text,
-                        iconSize = 24.dp
+                        iconSize = 24.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
                     )
 
-                    HeaderInfo(
-                        title = "${items.size}",
-                        icon = painterResource(R.drawable.musical_notes),
-                        spacer = 0
+                    HeaderIconButton(
+                        icon = R.drawable.shuffle,
+                        enabled = items.isNotEmpty(),
+                        color = if (items.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {
+                            if (items.isNotEmpty()) {
+                                val itemsLimited = if (items.size > 500)  items.take(500) else items
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(
+                                    itemsLimited.shuffled().map(Song::asMediaItem)
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
                     )
 
                     Spacer(
                         modifier = Modifier
-                            .width(20.dp)
+                            .weight(0.3f)
                     )
-
 
                     BasicText(
                         text = when (sortBy) {
@@ -459,8 +481,7 @@ fun HomeSongs(
                                 val itemsLimited = if (items.size > 500)  items.take(500) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
-                                    itemsLimited
-                                        .map(Song::asMediaItem),
+                                    itemsLimited.map(Song::asMediaItem),
                                     index
                                 )
                             }
