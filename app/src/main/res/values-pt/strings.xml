@@ -410,9 +410,6 @@
     <string name="only_icon">Apenas ícone</string>
     <string name="show_search_tab_in_home">Mostrar barra de navegação no ecrã inicial</string>
     <string name="action_bar_show_menu_button">Mostrar botão do menu</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
     <string name="sort_album">Álbum</string>
     <string name="use_gradient_background">Usar fundo em gradiente</string>
     <string name="show_total_time_of_queue">Mostrar tempo total da fila</string>
@@ -421,4 +418,7 @@
     <string name="grant_permission">Conceder permissão</string>
     <string name="open_permission_settings">Abrir definições de permissão</string>
     <string name="show_background_progress_bar">Mostrar barra de progresso no plano de fundo</string>
+    <string name="background_progress_bar">Background progress bar</string>
+    <string name="minimized_player">Minimized player</string>
+    <string name="both">Both</string>
 </resources>
