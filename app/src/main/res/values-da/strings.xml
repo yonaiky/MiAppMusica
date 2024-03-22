@@ -16,7 +16,7 @@
     <string name="hide_from_quick_picks">Skjul fra \"Hurtige valg\"</string>
     <string name="related_albums">Relaterede album</string>
     <string name="similar_artists">Lignende kunstnere</string>
-    <string name="playlists_you_might_like">Playlister du måske vil synes om</string>
+    <string name="playlists_you_might_like">Playlister, du måske vil synes om</string>
     <string name="an_error_has_occurred">En fejl opstod</string>
     <string name="albums">Album</string>
     <string name="artists">Kunstnere</string>
@@ -53,7 +53,7 @@
     <string name="clear">Ryd</string>
     <string name="error">En fejl opstod.</string>
     <string name="online">Online</string>
-    <string name="no_results_found">Ingen resultater fundet. Prøv en anden forespørgsel eller kategori</string>
+    <string name="no_results_found">Ingen resultater fundet. Prøv venligst en anden søgning eller kategori</string>
     <string name="videos">Videoer</string>
     <string name="featured">Fremhævet</string>
     <string name="view_the_source_code">Se kildekoden</string>
@@ -69,7 +69,7 @@
     <string name="add_spacing_around_texts">Tilføj afstand omkring tekster</string>
     <string name="lockscreen">LÅSESKÆRM</string>
     <string name="show_song_cover">Vis sangcover</string>
-    <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
+    <string name="use_song_cover_on_lockscreen">Brug coveret af den sang, der afspiller, som låseskærmens baggrund</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">Når cachen løber tør for plads, ryddes de ressourcer, der ikke er blevet tilgået i længst tid</string>
     <string name="image_cache">BILLEDCACHE</string>
@@ -78,7 +78,7 @@
     <string name="reset_quick_picks">Nulstil hurtige valg</string>
     <string name="quick_picks_are_cleared">Hurtige valg ryddes</string>
     <string name="backup">BACKUP</string>
-    <string name="personal_preference">Personlige præferencer (dvs. tematilstand) og cachen er ikke omfattet.</string>
+    <string name="personal_preference">Personlige præferencer (fx tema-tilstand) og cachen er ikke inkluderet.</string>
     <string name="backup_1">Backup</string>
     <string name="export_the_database">Eksportér databasen til det eksterne lager</string>
     <string name="restore">GENDAN</string>
@@ -87,7 +87,7 @@
     <string name="android_auto">ANDROID AUTO</string>
     <string name="enable_unknown_sources">Husk at aktivere \"Ukendte kilder\" i udviklerindstillinger for Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
-    <string name="enable_android_auto_support">Aktivér Android Auto understøttelse</string>
+    <string name="enable_android_auto_support">Aktivér Android Auto-understøttelse</string>
     <string name="search_history">SØGEHISTORIK</string>
     <string name="pause_search_history">Sæt søgehistorik på pause</string>
     <string name="neither_save_new_searched_query">Hverken gem nye søgninger eller vis historik</string>
@@ -101,7 +101,7 @@
     <string name="disable_background_restrictions">Deaktivér baggrundsrestriktioner</string>
     <string name="invincible_service">Uovervindelig tjeneste</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Når det ikke er nok at slå batterioptimering fra</string>
-    <string name="player">Spiller</string>
+    <string name="player">Afspiller</string>
     <string name="persistent_queue">Vedvarende kø</string>
     <string name="save_and_restore_playing_songs">Gem og gendan afspillende sange</string>
     <string name="resume_playback">Genoptag afspilning</string>
@@ -129,7 +129,7 @@
     <string name="reset_cache_location_folder">NULSTIL CACHE-PLACERINGSMAPPE</string>
     <string name="used">" brugt"</string>
     <string name="close_background_player">Luk baggrundsafspiller</string>
-    <string name="when_app_swipe_out_from_task_manager">When app swipe out from task manager</string>
+    <string name="when_app_swipe_out_from_task_manager">Når app stryges ud af seneste apps</string>
     <string name="opening_url">indlæser...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">Der opstod en fejl under hentning af sangtekster</string>
     <string name="are_not_available_for_this_song">er ikke tilgængelige for denne sang</string>
@@ -148,8 +148,8 @@
     <string name="medium">Mellem</string>
     <string name="big">Stor</string>
     <string name="none">Ingen</string>
-    <string name="light">Lys</string>
-    <string name="heavy">Tung</string>
+    <string name="light">Lidt</string>
+    <string name="heavy">Meget</string>
     <string name="player_rotating_buttons">Roterende knapper</string>
     <string name="player_enable_rotation_buttons">Aktivér rotation af knapper ved klik</string>
     <string name="statistics">Statistikker</string>
@@ -193,8 +193,8 @@
     <string name="mood">Humør</string>
     <string name="new_albums">Nye album</string>
     <string name="moods_and_genres">Humør og genrer</string>
-    <string name="search_queries">" søgeforespørgelser"</string>
-    <string name="not_find_battery_optimization_settings">Kunne ikke finde indstillinger for batterioptimering; venligst whitelist manuelt</string>
+    <string name="search_queries">" søgninger"</string>
+    <string name="not_find_battery_optimization_settings">Kunne ikke finde indstillinger for batterioptimering; whitelist venligst manuelt</string>
     <string name="search">Søg...</string>
     <string name="no">Nej</string>
     <string name="stop">Stop</string>
@@ -238,11 +238,11 @@
     <string name="custom_cache_size">Tilpasset cache-størrelse</string>
     <string name="listen_on">Lyt på</string>
     <string name="error_local_music_not_found">Lokal musikfil ikke fundet</string>
-    <string name="bodied_bar">Bodied Bar</string>
-    <string name="pin_bar">Pin Bar</string>
+    <string name="bodied_bar">Fyldig</string>
+    <string name="pin_bar">Nål</string>
     <string name="rectangular">Rektangulær</string>
     <string name="square">Firkantet</string>
-    <string name="circular_ribbed">Circular ribbed</string>
+    <string name="circular_ribbed">Riflet Cirkel</string>
     <string name="play_button">Afspil-knap</string>
     <string name="portuguese_brazilian">Portugisisk, brasiliansk</string>
     <string name="portuguese">Portugisisk</string>
@@ -256,7 +256,7 @@
     <string name="audio_quality_format_medium">Mellem</string>
     <string name="audio_quality_format_low">Lav</string>
     <string name="audio_quality_format_unknown">Ukendt</string>
-    <string name="do_you_really_want_to_delete_download">Do you really want to delete download?</string>
+    <string name="do_you_really_want_to_delete_download">Vil du virkelig slette download?</string>
     <string name="remove_all">Fjern alle</string>
     <string name="remove_selected">Fjern valgte</string>
     <string name="clear_queue">Ryd kø</string>
@@ -278,7 +278,7 @@
     <string name="by_most_played_song">Efter Mest afspillet sang</string>
     <string name="by_last_played_song">Efter Sidst afspillet sang</string>
     <string name="audio_quality_automatic">Automatisk</string>
-    <string name="statistics_songs_heard">hørt sange</string>
+    <string name="statistics_songs_heard">sange hørt</string>
     <string name="statistics_of_time_taken">af tid taget</string>
     <string name="statistics_max_number_of_items">Maks. antal elementer</string>
     <string name="arabic">Arabisk</string>
@@ -308,7 +308,7 @@
     <string name="you_can_put_a_complete_link">Du kan sætte et komplet link til en playliste, et album, en kanal eller en enkelt sang på YouTube eller YouTube Musik</string>
     <string name="go_to_link">Gå til link</string>
     <string name="action_bar_show_download_button">Vis Hent-knap</string>
-    <string name="action_bar_show_add_to_playlist_button">Vis Tilføj til playliste-knap</string>
+    <string name="action_bar_show_add_to_playlist_button">Vis Føj til playliste-knap</string>
     <string name="action_bar_show_loop_button">Vis Loop-knap</string>
     <string name="action_bar_show_shuffle_button">Vis Bland-knap</string>
     <string name="action_bar_show_lyrics_button">Vis Sangtekst-knap</string>
