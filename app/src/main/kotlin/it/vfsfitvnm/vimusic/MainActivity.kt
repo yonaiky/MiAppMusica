@@ -63,6 +63,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.os.BuildCompat
 import androidx.core.os.LocaleListCompat
@@ -90,7 +91,9 @@ import it.vfsfitvnm.vimusic.enums.CheckUpdateState
 import it.vfsfitvnm.vimusic.enums.ColorPaletteMode
 import it.vfsfitvnm.vimusic.enums.ColorPaletteName
 import it.vfsfitvnm.vimusic.enums.FontType
+import it.vfsfitvnm.vimusic.enums.HomeScreenTabs
 import it.vfsfitvnm.vimusic.enums.Languages
+import it.vfsfitvnm.vimusic.enums.SearchType
 import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.service.DownloadUtil
 import it.vfsfitvnm.vimusic.service.PlayerService
@@ -104,6 +107,7 @@ import it.vfsfitvnm.vimusic.ui.screens.artistRoute
 import it.vfsfitvnm.vimusic.ui.screens.home.HomeScreen
 import it.vfsfitvnm.vimusic.ui.screens.player.Player
 import it.vfsfitvnm.vimusic.ui.screens.playlistRoute
+import it.vfsfitvnm.vimusic.ui.screens.search.SearchTypeScreen
 import it.vfsfitvnm.vimusic.ui.styling.Appearance
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
@@ -182,11 +186,12 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
     var client = OkHttpClient()
     var request = OkHttpRequest(client)
 
+    /*
     var isConnected = false
     var updatedProductName = ""
     var updatedVersionName = ""
     var updatedVersionCode = 0
-
+    */
 
 
     private val serviceConnection = object : ServiceConnection {
@@ -536,6 +541,16 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     }
                 }
 
+                //println("mediaItem intent ${intent?.action}")
+                val openTabFromShortcut = remember {
+                    when (intent?.action) {
+                        action_songs -> HomeScreenTabs.Songs.index
+                        action_albums -> HomeScreenTabs.Albums.index
+                        action_library -> HomeScreenTabs.Library.index
+                        action_search -> -2
+                        else -> -1
+                    }
+                }
 
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
@@ -548,12 +563,11 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     LocalDownloader provides downloadUtil
                 ) {
 
-
-
                     HomeScreen(
                         onPlaylistUrl = { url ->
                             onNewIntent(Intent.parseUri(url, 0))
-                        }
+                        },
+                        openTabFromShortcut = openTabFromShortcut
                     )
 
                     Player(
@@ -567,6 +581,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                     )
+
                 }
 
                 DisposableEffect(binder?.player) {
@@ -648,7 +663,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     val browseId = "VL$playlistId"
 
                     if (playlistId.startsWith("OLAK5uy_")) {
-                        Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let {
+                        Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
                             it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
                                 albumRoute.ensureGlobal(browseId)
                             }
@@ -715,6 +730,13 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
             window.navigationBarColor =
                 (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
         }
+    }
+
+    companion object {
+        const val action_search = "it.fast4x.rimusic.action.search"
+        const val action_songs = "it.fast4x.rimusic.action.songs"
+        const val action_albums = "it.fast4x.rimusic.action.albums"
+        const val action_library = "it.fast4x.rimusic.action.library"
     }
 
 }

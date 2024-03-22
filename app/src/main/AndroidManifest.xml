@@ -47,7 +47,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ViMusic.NoActionBar"
         android:requestLegacyExternalStorage="true"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu">
 
 
         <activity
@@ -55,19 +56,23 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.App.Starting"
-            android:windowSoftInputMode="adjustResize"
-
-        >
-
+            android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.APP_MUSIC" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -118,13 +123,8 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
-            <intent-filter>
-                <action android:name=
-                    "android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-                <category android:name=
-                    "android.intent.category.DEFAULT" />
-            </intent-filter>
-
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <service
@@ -134,10 +134,6 @@
             android:enabled="true"
             android:stopWithTask="false">
 
-            <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </service>
 
         <service android:name=".service.PlayerMediaBrowserService"
@@ -146,11 +142,6 @@
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
 

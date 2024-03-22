@@ -106,7 +106,10 @@ inline fun RouteHandlerScope.globalRoutes() {
     }
 
     homeRoute {
-        HomeScreen(onPlaylistUrl = {pop})
+        HomeScreen(
+            onPlaylistUrl = {pop},
+            openTabFromShortcut = -1
+        )
     }
 
     moodRoute { mood ->

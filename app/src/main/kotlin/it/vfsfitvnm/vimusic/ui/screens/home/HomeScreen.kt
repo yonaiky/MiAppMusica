@@ -2,6 +2,11 @@ package it.vfsfitvnm.vimusic.ui.screens.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,9 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.compose.persist.PersistMapCleanup
 import it.vfsfitvnm.compose.routing.RouteHandler
@@ -30,6 +37,7 @@ import it.vfsfitvnm.vimusic.enums.StatisticsType
 import it.vfsfitvnm.vimusic.models.SearchQuery
 import it.vfsfitvnm.vimusic.models.toUiMood
 import it.vfsfitvnm.vimusic.query
+import it.vfsfitvnm.vimusic.ui.components.rememberBottomSheetState
 import it.vfsfitvnm.vimusic.ui.components.themed.ConfirmationDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.Scaffold
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
@@ -45,6 +53,7 @@ import it.vfsfitvnm.vimusic.ui.screens.moodRoute
 import it.vfsfitvnm.vimusic.ui.screens.playlist.PlaylistScreen
 import it.vfsfitvnm.vimusic.ui.screens.playlistRoute
 import it.vfsfitvnm.vimusic.ui.screens.search.SearchScreen
+import it.vfsfitvnm.vimusic.ui.screens.search.SearchSheet
 import it.vfsfitvnm.vimusic.ui.screens.searchResultRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchTypeRoute
@@ -52,6 +61,7 @@ import it.vfsfitvnm.vimusic.ui.screens.searchresult.SearchResultScreen
 import it.vfsfitvnm.vimusic.ui.screens.settings.SettingsScreen
 import it.vfsfitvnm.vimusic.ui.screens.settingsRoute
 import it.vfsfitvnm.vimusic.ui.screens.statisticsTypeRoute
+import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.utils.CheckAvailableNewVersion
 import it.vfsfitvnm.vimusic.utils.checkUpdateStateKey
 import it.vfsfitvnm.vimusic.utils.getEnum
@@ -73,7 +83,8 @@ const val PINNED_PREFIX = "pinned:"
 @UnstableApi
 @Composable
 fun HomeScreen(
-    onPlaylistUrl: (String) -> Unit
+    onPlaylistUrl: (String) -> Unit,
+    openTabFromShortcut: Int
 ) {
     var showNewversionDialog by remember {
         mutableStateOf(true)
@@ -161,6 +172,19 @@ fun HomeScreen(
         host {
 
             var (tabIndex, onTabChanged) =
+                when (openTabFromShortcut) {
+                    -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
+                            HomeScreenTabs.Default -> rememberPreference(homeScreenTabIndexKey,
+                            HomeScreenTabs.QuickPics.index)
+                          else -> remember {
+                                mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
+                          }
+                        }
+                    else -> mutableStateOf(openTabFromShortcut)
+                }
+
+            /*
+            var (tabIndex, onTabChanged) =
                 if (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default) == HomeScreenTabs.Default)
                     rememberPreference(
                         homeScreenTabIndexKey,
@@ -169,6 +193,8 @@ fun HomeScreen(
                     remember {
                         mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                     }
+
+             */
 
             Scaffold(
                 topIconButtonId = R.drawable.settings,
