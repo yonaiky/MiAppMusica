@@ -64,8 +64,8 @@ fun SeekBarWaved(
 
     val currentAmplitude by transition.animateDp(label = "") { if (it || !isActive) 0.dp else 2.dp }
     val currentScrubberHeight by transition.animateDp(label = "") {
-        if (it) 10.dp else 5.dp
-        //if (it) 20.dp else 15.dp
+        //if (it) 10.dp else 5.dp
+        if (it) 20.dp else 15.dp
     }
 
     Box(modifier = modifier
@@ -198,9 +198,9 @@ private fun SeekBarContent(
             drawPath(
                 wavePath(size.copy(height = size.height * 2), progress),
                 color,
-                //style = Stroke(width = 15f)
+                style = Stroke(width = 15f)
                 //style = Stroke(width = 10f)
-                style = Stroke(width = 5f)
+                //style = Stroke(width = 5f)
             )
         }
     }
