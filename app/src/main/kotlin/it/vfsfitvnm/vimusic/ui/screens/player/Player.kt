@@ -1026,19 +1026,6 @@ fun Player(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = containerModifier
                     .padding(top = 10.dp)
-                    .drawBehind {
-                        if (showPlayerBackgroundProgress) {
-                            drawRect(
-                                color = colorPalette.favoritesOverlay,
-                                topLeft = Offset.Zero,
-                                size = Size(
-                                    width = positionAndDuration.first.toFloat() /
-                                            positionAndDuration.second.absoluteValue * size.width,
-                                    height = size.maxDimension
-                                )
-                            )
-                        }
-                    }
                     /*
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
