@@ -831,18 +831,18 @@ fun Controls(
 
                 Box(
                     modifier = Modifier
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.BottomCenter)
                 ) {
                     BasicText(
                         text = "%.1fx".format(playbackSpeed),
                         style = TextStyle(
                             color = colorPalette.collapsedPlayerProgressBar,
-                            fontStyle = typography.xxs.semiBold.fontStyle,
-                            fontSize = typography.xxs.semiBold.fontSize
+                            fontStyle = typography.xxxs.semiBold.fontStyle,
+                            fontSize = typography.xxxs.semiBold.fontSize
                         ),
                         maxLines = 1,
                         modifier = Modifier
-                            .padding(horizontal = 10.dp)
+                            .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
                     )
                 }
             }

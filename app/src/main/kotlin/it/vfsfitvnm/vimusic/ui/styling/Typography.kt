@@ -16,6 +16,7 @@ import it.vfsfitvnm.vimusic.enums.FontType
 
 @Immutable
 data class Typography(
+    val xxxs: TextStyle,
     val xxs: TextStyle,
     val xs: TextStyle,
     val s: TextStyle,
@@ -24,6 +25,7 @@ data class Typography(
     val xxl: TextStyle,
 ) {
     fun copy(color: Color) = Typography(
+        xxxs = xxs.copy(color = color),
         xxs = xxs.copy(color = color),
         xs = xs.copy(color = color),
         s = s.copy(color = color),
@@ -100,6 +102,7 @@ fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean
     )
 
     return Typography(
+        xxxs = textStyle.copy(fontSize = 12.sp),
         xxs = textStyle.copy(fontSize = 12.sp),
         xs = textStyle.copy(fontSize = 14.sp),
         s = textStyle.copy(fontSize = 16.sp),
