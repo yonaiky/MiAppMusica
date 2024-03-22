@@ -410,10 +410,7 @@
     <string name="only_icon">Само икона</string>
     <string name="show_search_tab_in_home">Прикажи картицу за претрагу на почетној страници</string>
     <string name="action_bar_show_menu_button">Прикажи дугме за Мени</string>
-    <string name="sort_album">Album</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
+    <string name="sort_album">Албум</string>
     <string name="use_gradient_background">Користите градијент позадину</string>
     <string name="show_total_time_of_queue">Прикажи укупно време реда чекања</string>
     <string name="lang_telugu">Телугу</string>
@@ -421,4 +418,7 @@
     <string name="grant_permission">Дајте дозволу</string>
     <string name="open_permission_settings">Отворите подешавања дозвола</string>
     <string name="show_background_progress_bar">Прикажи позадинску траку напретка</string>
+    <string name="background_progress_bar">Background progress bar</string>
+    <string name="minimized_player">Minimized player</string>
+    <string name="both">Both</string>
 </resources>
