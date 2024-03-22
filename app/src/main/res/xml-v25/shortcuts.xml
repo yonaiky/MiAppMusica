@@ -2,7 +2,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:shortcutId="search"
-        android:enabled="true"
+        android:enabled="false"
         android:icon="@drawable/search"
         android:shortcutShortLabel="@string/search">
         <intent

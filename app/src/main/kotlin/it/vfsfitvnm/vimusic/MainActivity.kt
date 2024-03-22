@@ -541,7 +541,6 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     }
                 }
 
-                //println("mediaItem intent ${intent?.action}")
                 val openTabFromShortcut = remember {
                     when (intent?.action) {
                         action_songs -> HomeScreenTabs.Songs.index
