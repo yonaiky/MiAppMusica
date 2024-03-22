@@ -310,7 +310,9 @@ fun Controls(
                             fontStyle = typography.l.bold.fontStyle,
                             fontSize = typography.l.bold.fontSize
                         ),
-                        onClick = { if (albumId != null) onGoToAlbum(albumId) },
+                        onClick = {
+                            //if (albumId != null) onGoToAlbum(albumId)
+                        },
 
                     )
                 } else {
@@ -323,7 +325,9 @@ fun Controls(
                         ),
                         maxLines = 1,
                         modifier = Modifier
-                            .clickable { if (albumId != null) onGoToAlbum(albumId) }
+                            .clickable {
+                                //if (albumId != null) onGoToAlbum(albumId)
+                            }
                     )
                 }
             }
