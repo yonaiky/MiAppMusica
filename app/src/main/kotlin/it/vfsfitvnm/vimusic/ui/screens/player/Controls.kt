@@ -796,8 +796,10 @@ fun Controls(
                                         colorPalette.background4 else colorPalette.background0
                         }
                     )
-                    .width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
-                    .height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
+                    .width(playerPlayButtonType.width.dp)
+                    .height(playerPlayButtonType.height.dp)
+                    //.width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
+                    //.height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
             ) {
                 //if (uiType == UiType.RiMusic && playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
