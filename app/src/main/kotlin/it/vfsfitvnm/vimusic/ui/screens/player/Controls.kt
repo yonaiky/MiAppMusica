@@ -833,6 +833,7 @@ fun Controls(
                     Box(
                         modifier = Modifier
                         .align(Alignment.BottomCenter)
+
                     ) {
                         BasicText(
                             text = "%.1fx".format(playbackSpeed),
