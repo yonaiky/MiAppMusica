@@ -183,6 +183,8 @@ inline val ColorPalette.collapsedPlayerProgressBar: Color
         accent
     }
 
+
+
 inline val ColorPalette.favoritesIcon: Color
     get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {
         red
@@ -202,6 +204,14 @@ inline val ColorPalette.primaryButton: Color
         Color(0xFF272727)
     } else {
         background2
+    }
+
+
+inline val ColorPalette.favoritesOverlay: Color
+    get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {
+        red.copy(alpha = 0.4f)
+    } else {
+        accent.copy(alpha = 0.4f)
     }
 
 inline val ColorPalette.overlay: Color

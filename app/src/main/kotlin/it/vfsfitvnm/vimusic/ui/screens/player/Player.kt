@@ -117,7 +117,7 @@ import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.collapsedPlayerProgressBar
 import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
-import it.vfsfitvnm.vimusic.ui.styling.overlay
+import it.vfsfitvnm.vimusic.ui.styling.favoritesOverlay
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.DisposableListener
 import it.vfsfitvnm.vimusic.utils.UiTypeKey
@@ -151,6 +151,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerLyricsKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
+import it.vfsfitvnm.vimusic.utils.showPlayerBackgroundProgressKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.shuffleQueue
 import it.vfsfitvnm.vimusic.utils.thumbnail
@@ -382,6 +383,7 @@ fun Player(
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
+    val showPlayerBackgroundProgress by rememberPreference(showPlayerBackgroundProgressKey, true)
     /*
     val playlistPreviews by remember {
         Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
@@ -587,16 +589,17 @@ fun Player(
                     .fillMaxSize()
                     .padding(horizontalBottomPaddingValues)
                     .drawBehind {
-                        drawRect(
-                            color = colorPalette.favoritesIcon,
-                            topLeft = Offset.Zero,
-                            size = Size(
-                                width = positionAndDuration.first.toFloat() /
-                                        positionAndDuration.second.absoluteValue * size.width,
-                                height = size.maxDimension
+                        if (showPlayerBackgroundProgress) {
+                            drawRect(
+                                color = colorPalette.favoritesOverlay,
+                                topLeft = Offset.Zero,
+                                size = Size(
+                                    width = positionAndDuration.first.toFloat() /
+                                            positionAndDuration.second.absoluteValue * size.width,
+                                    height = size.maxDimension
+                                )
                             )
-                        )
-
+                        }
                         /*
                         drawLine(
                             color = colorPalette.textDisabled,
@@ -1023,7 +1026,19 @@ fun Player(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = containerModifier
                     .padding(top = 10.dp)
-
+                    .drawBehind {
+                        if (showPlayerBackgroundProgress) {
+                            drawRect(
+                                color = colorPalette.favoritesOverlay,
+                                topLeft = Offset.Zero,
+                                size = Size(
+                                    width = positionAndDuration.first.toFloat() /
+                                            positionAndDuration.second.absoluteValue * size.width,
+                                    height = size.maxDimension
+                                )
+                            )
+                        }
+                    }
                     /*
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(

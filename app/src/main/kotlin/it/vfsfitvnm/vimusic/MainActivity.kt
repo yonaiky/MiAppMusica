@@ -157,6 +157,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
 import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
+import it.vfsfitvnm.vimusic.utils.showPlayerBackgroundProgressKey
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
@@ -406,7 +407,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                             showSearchTabKey,
                             navigationBarPositionKey,
                             navigationBarTypeKey,
-                            showTotalTimeQueueKey-> {
+                            showTotalTimeQueueKey,
+                            showPlayerBackgroundProgressKey -> {
                                 this@MainActivity.recreate()
                             }
 
