@@ -421,4 +421,5 @@
     <string name="grant_permission">Conceder permissão</string>
     <string name="open_permission_settings">Abrir definições de permissão</string>
     <string name="show_background_progress_bar">Mostrar barra de progresso no plano de fundo</string>
+    <string name="max_songs_in_queue">Max songs in queue</string>
 </resources>

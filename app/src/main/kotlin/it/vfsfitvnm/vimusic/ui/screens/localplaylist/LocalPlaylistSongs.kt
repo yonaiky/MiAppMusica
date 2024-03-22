@@ -93,6 +93,7 @@ import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.MaxSongs
 import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.PlaylistSongSortBy
 import it.vfsfitvnm.vimusic.enums.RecommendationsNumber
@@ -146,6 +147,7 @@ import it.vfsfitvnm.vimusic.utils.formatAsTime
 import it.vfsfitvnm.vimusic.utils.getDownloadState
 import it.vfsfitvnm.vimusic.utils.isRecommendationEnabledKey
 import it.vfsfitvnm.vimusic.utils.manageDownload
+import it.vfsfitvnm.vimusic.utils.maxSongsInQueueKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.playlistSongSortByKey
 import it.vfsfitvnm.vimusic.utils.preferences
@@ -531,6 +533,7 @@ fun LocalPlaylistSongs(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     Box(
         modifier = Modifier
@@ -764,9 +767,10 @@ fun LocalPlaylistSongs(
                         onClick = {
                             playlistSongs.let { songs ->
                                 if (songs.isNotEmpty()) {
+                                    val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayFromBeginning(
-                                        songs.shuffled().map(Song::asMediaItem)
+                                        itemsLimited.shuffled().map(Song::asMediaItem)
                                     )
                                 }
                             }

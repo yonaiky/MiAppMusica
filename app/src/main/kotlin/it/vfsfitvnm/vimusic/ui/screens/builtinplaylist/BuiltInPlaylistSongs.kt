@@ -88,6 +88,7 @@ import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.AlbumSortBy
 import it.vfsfitvnm.vimusic.enums.BuiltInPlaylist
+import it.vfsfitvnm.vimusic.enums.MaxSongs
 import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
 import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.PlaylistSongSortBy
@@ -153,6 +154,7 @@ import it.vfsfitvnm.vimusic.utils.LeftAction
 import it.vfsfitvnm.vimusic.utils.MaxTopPlaylistItemsKey
 import it.vfsfitvnm.vimusic.utils.RightActions
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
+import it.vfsfitvnm.vimusic.utils.maxSongsInQueueKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
@@ -444,6 +446,7 @@ fun BuiltInPlaylistSongs(
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     Box (
         modifier = Modifier
@@ -698,9 +701,10 @@ fun BuiltInPlaylistSongs(
                         color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
                         onClick = {
                             if (songs.isNotEmpty()) {
+                                val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayFromBeginning(
-                                    songs.shuffled().map(Song::asMediaItem)
+                                    itemsLimited.shuffled().map(Song::asMediaItem)
                                 )
                             }
                         }
@@ -1120,9 +1124,10 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
+                                            val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
-                                                songs.map(Song::asMediaItem),
+                                                itemsLimited.map(Song::asMediaItem),
                                                 index
                                             )
                                         }
