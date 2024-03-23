@@ -128,10 +128,10 @@ fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean, isPitchBlack: Boolean
     val palette = Palette
         .from(bitmap)
         .maximumColorCount(8)
-        .addFilter(if (isDark) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
+        .addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
         .generate()
 
-    val hsl = if (isDark) {
+    val hsl = if (isDark || isPitchBlack) {
         palette.dominantSwatch ?: Palette
             .from(bitmap)
             .maximumColorCount(8)
@@ -155,7 +155,7 @@ fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean, isPitchBlack: Boolean
 }
 
 fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean, isPitchBlack: Boolean): ColorPalette {
-    return colorPaletteOf(ColorPaletteName.Dynamic, if (isDark) ColorPaletteMode.Dark else ColorPaletteMode.Light, false).copy(
+    return colorPaletteOf(ColorPaletteName.Dynamic, if (isDark || isPitchBlack) ColorPaletteMode.Dark else ColorPaletteMode.Light, false).copy(
 
 
         background0 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0f)
