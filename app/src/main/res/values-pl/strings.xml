@@ -421,4 +421,5 @@
     <string name="background_progress_bar">Pasek postępu w tle</string>
     <string name="minimized_player">Zminimalizowany odtwarzacz</string>
     <string name="both">Oba</string>
+    <string name="max_songs_in_queue">Max songs in queue</string>
 </resources>
