@@ -5,7 +5,7 @@
 </div>
 
 ## ❗ CUSTOM VERSION
-WARNING, the custom version is not an official release, it only serves to anticipate fix or feature pending the official release. Downloading only if invited by the developer to download it may damage your current installation.
+WARNING, the custom version is not an official release, it only serves to anticipate fix or feature pending the official release. Downloading only if invited by the developer, it may damage your current installation.
 
 ## 📲 Installation
 Download [app-release.apk](https://raw.githubusercontent.com/fast4x/RiMusic/master/customVersion/app-release.apk)

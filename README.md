@@ -90,6 +90,10 @@
 [<img src="./assets/images/getItIzzyOnDroid.png" alt="IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/it.fast4x.rimusic/)
 [<img src="./assets/images/getItf-droid.png" alt="F-Droid" height="80">](https://f-droid.org/it/packages/it.fast4x.rimusic/)
 
+## ❗ CUSTOM VERSION
+WARNING, the custom version is not an official release, downloading only if invited by the developer!
+[Go to custom version](https://github.com/fast4x/RiMusic/tree/master/customVersion)
+
 ## ❓ FAQs
 - See [Wiki page FAQs](https://github.com/fast4x/RiMusic/wiki/FAQs)
 
