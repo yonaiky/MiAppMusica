@@ -428,7 +428,7 @@ fun Controls(
 
             Spacer(
                 modifier = Modifier
-                    .width(7.dp)
+                    .width(12.dp)
             )
         }
 
@@ -796,8 +796,10 @@ fun Controls(
                                         colorPalette.background4 else colorPalette.background0
                         }
                     )
-                    .width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
-                    .height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
+                    .width(playerPlayButtonType.width.dp)
+                    .height(playerPlayButtonType.height.dp)
+                    //.width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
+                    //.height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
             ) {
                 //if (uiType == UiType.RiMusic && playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
                 if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
@@ -827,22 +829,24 @@ fun Controls(
                         .size(30.dp)
                 )
 
-                Box(
-                    modifier = Modifier
-                    .align(Alignment.CenterStart)
-                ) {
-                    BasicText(
-                        text = "%.1fx".format(playbackSpeed),
-                        style = TextStyle(
-                            color = colorPalette.collapsedPlayerProgressBar,
-                            fontStyle = typography.xxs.semiBold.fontStyle,
-                            fontSize = typography.xxs.semiBold.fontSize
-                        ),
-                        maxLines = 1,
+                if ("%.1fx".format(playbackSpeed) != "1,0x")
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                    )
-                }
+                        .align(Alignment.BottomCenter)
+
+                    ) {
+                        BasicText(
+                            text = "%.1fx".format(playbackSpeed),
+                            style = TextStyle(
+                                color = colorPalette.collapsedPlayerProgressBar,
+                                fontStyle = typography.xxxs.semiBold.fontStyle,
+                                fontSize = typography.xxxs.semiBold.fontSize
+                            ),
+                            maxLines = 1,
+                            modifier = Modifier
+                                .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                        )
+                    }
             }
 
 

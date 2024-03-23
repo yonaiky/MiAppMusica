@@ -65,6 +65,7 @@ import it.vfsfitvnm.vimusic.enums.FontType
 import it.vfsfitvnm.vimusic.enums.Languages
 import it.vfsfitvnm.vimusic.enums.MaxStatisticsItems
 import it.vfsfitvnm.vimusic.enums.HomeScreenTabs
+import it.vfsfitvnm.vimusic.enums.MaxSongs
 import it.vfsfitvnm.vimusic.enums.MaxTopPlaylistItems
 import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.NavigationBarType
@@ -106,6 +107,7 @@ import it.vfsfitvnm.vimusic.utils.lastPlayerPlayButtonTypeKey
 import it.vfsfitvnm.vimusic.utils.lastPlayerThumbnailSizeKey
 import it.vfsfitvnm.vimusic.utils.lastPlayerTimelineTypeKey
 import it.vfsfitvnm.vimusic.utils.lastPlayerVisualizerTypeKey
+import it.vfsfitvnm.vimusic.utils.maxSongsInQueueKey
 import it.vfsfitvnm.vimusic.utils.maxStatisticsItemsKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.navigationBarTypeKey
@@ -211,7 +213,8 @@ fun  UiSettings() {
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
-    var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey,   PauseBetweenSongs.`0`)
+    var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -482,6 +485,22 @@ fun  UiSettings() {
                 isChecked = disableClosingPlayerSwipingDown,
                 onCheckedChange = {
                     disableClosingPlayerSwipingDown = it
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.max_songs_in_queue).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.max_songs_in_queue),
+                selectedValue = maxSongsInQueue,
+                onValueSelected = { maxSongsInQueue = it },
+                valueText = {
+                    when (it) {
+                        MaxSongs.Unlimited -> stringResource(R.string.unlimited)
+                        MaxSongs.`500` -> MaxSongs.`500`.name
+                        MaxSongs.`1000` -> MaxSongs.`1000`.name
+                        MaxSongs.`2000` -> MaxSongs.`2000`.name
+                        MaxSongs.`3000` -> MaxSongs.`3000`.name
+                    }
                 }
             )
 

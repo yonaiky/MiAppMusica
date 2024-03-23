@@ -70,6 +70,7 @@ import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.AlbumSortBy
+import it.vfsfitvnm.vimusic.enums.MaxSongs
 import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.SongSortBy
 import it.vfsfitvnm.vimusic.enums.SortOrder
@@ -104,6 +105,7 @@ import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
 import it.vfsfitvnm.vimusic.utils.forcePlayFromBeginning
 import it.vfsfitvnm.vimusic.utils.getDownloadState
 import it.vfsfitvnm.vimusic.utils.manageDownload
+import it.vfsfitvnm.vimusic.utils.maxSongsInQueueKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
@@ -189,6 +191,7 @@ fun HomeSongs(
     val lazyListState = rememberLazyListState()
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     Box(
         modifier = Modifier
@@ -252,7 +255,7 @@ fun HomeSongs(
                         color = if (items.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
                         onClick = {
                             if (items.isNotEmpty()) {
-                                val itemsLimited = if (items.size > 500)  items.take(500) else items
+                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayFromBeginning(
                                     itemsLimited.shuffled().map(Song::asMediaItem)
@@ -478,7 +481,7 @@ fun HomeSongs(
                                 }
                             },
                             onClick = {
-                                val itemsLimited = if (items.size > 500)  items.take(500) else items
+                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
                                     itemsLimited.map(Song::asMediaItem),
