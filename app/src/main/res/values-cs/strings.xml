@@ -411,15 +411,15 @@
     <string name="show_search_tab_in_home">Zobrazit záložku Vyhledávání na domovské obrazovce</string>
     <string name="action_bar_show_menu_button">Zobrazit tlačítko menu</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
-    <string name="show_total_time_of_queue">Show total time of queue</string>
-    <string name="lang_telugu">Telugu</string>
-    <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
-    <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
-    <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="use_gradient_background">Použít gradientní pozadí</string>
+    <string name="show_total_time_of_queue">Zobrazit celkový čas fronty</string>
+    <string name="lang_telugu">Telugština (తెలుగు)</string>
+    <string name="media_permission_required_please_grant">Je vyžadováno oprávnění k médiím, prosím udělte je.</string>
+    <string name="grant_permission">Udělit oprávnění</string>
+    <string name="open_permission_settings">Otevřít nastavení oprávnění</string>
+    <string name="show_background_progress_bar">Zobrazit ukazatel průběhu na pozadí</string>
+    <string name="background_progress_bar">Ukazatel průběhu na pozadí</string>
+    <string name="minimized_player">Minimalizovaný přehrávač</string>
+    <string name="both">Oba</string>
+    <string name="max_songs_in_queue">Maximální počet skladeb ve frontě</string>
 </resources>
