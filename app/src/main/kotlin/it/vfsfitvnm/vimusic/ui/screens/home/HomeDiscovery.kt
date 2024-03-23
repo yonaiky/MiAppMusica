@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -67,6 +68,7 @@ import it.vfsfitvnm.vimusic.ui.items.AlbumItem
 import it.vfsfitvnm.vimusic.ui.items.AlbumItemPlaceholder
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.ui.styling.shimmer
 //import it.vfsfitvnm.vimusic.utils.SnapLayoutInfoProvider
@@ -351,7 +353,11 @@ fun MoodItem(
 
         BasicText(
             text = mood.title,
-            style = typography.xs.semiBold,
+            style =  TextStyle(
+                color = colorPalette.favoritesIcon,
+                fontStyle = typography.xs.semiBold.fontStyle,
+                fontWeight = typography.xs.semiBold.fontWeight
+            ), //typography.xs.semiBold,
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1,
 

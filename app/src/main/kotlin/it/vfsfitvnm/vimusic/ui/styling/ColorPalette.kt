@@ -158,21 +158,33 @@ fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean, isPitchBlack: Boolea
     return colorPaletteOf(ColorPaletteName.Dynamic, if (isDark) ColorPaletteMode.Dark else ColorPaletteMode.Light, false).copy(
 
 
-        background0 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0f else 0.925f)
+        background0 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0f)
         else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.10f else 0.925f),
-        background1 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0f else 0.90f)
+        background1 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0f)
         else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0.15f else 0.90f),
-        background2 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0f else 0.85f)
+        background2 = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0f)
         else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0.2f else 0.85f),
-        /*
+
+
+/*
         background0 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.10f else 0.925f),
         background1 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.3f), if (isDark) 0.15f else 0.90f),
         background2 = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.4f), if (isDark) 0.2f else 0.85f),
-         */
+*/
         accent = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.5f), 0.5f),
+
+        text = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0.88f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.02f), if (isDark) 0.88f else 0.12f),
+        textSecondary = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0.65f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.65f else 0.40f),
+        textDisabled = if (isPitchBlack) Color.hsl(hsl[0], hsl[1].coerceAtMost(0f), 0.40f)
+        else Color.hsl(hsl[0], hsl[1].coerceAtMost(0.2f), if (isDark) 0.40f else 0.65f),
+/*
         text = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.02f), if (isDark) 0.88f else 0.12f),
         textSecondary = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.65f else 0.40f),
         textDisabled = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.2f), if (isDark) 0.40f else 0.65f),
+
+ */
     )
 }
 
