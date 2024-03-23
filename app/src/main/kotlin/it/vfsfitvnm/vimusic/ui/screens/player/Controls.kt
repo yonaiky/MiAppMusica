@@ -829,14 +829,15 @@ fun Controls(
                         .size(30.dp)
                 )
 
-                if ("%.1fx".format(playbackSpeed) != "1,0x")
+                val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",",".")
+                if (fmtSpeed != "1.0x")
                     Box(
                         modifier = Modifier
                         .align(Alignment.BottomCenter)
 
                     ) {
                         BasicText(
-                            text = "%.1fx".format(playbackSpeed),
+                            text = fmtSpeed,
                             style = TextStyle(
                                 color = colorPalette.collapsedPlayerProgressBar,
                                 fontStyle = typography.xxxs.semiBold.fontStyle,
