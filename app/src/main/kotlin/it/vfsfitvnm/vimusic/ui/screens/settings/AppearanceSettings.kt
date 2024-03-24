@@ -157,12 +157,7 @@ fun AppearanceSettings() {
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
-    var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
-    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
-    var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
-    var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
-    var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
-    var showPlaylists by rememberPreference(showPlaylistsKey, true)
+
     var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     var backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
@@ -531,52 +526,6 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = showButtonPlayerMenu,
                 onCheckedChange = { showButtonPlayerMenu = it }
-            )
-
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.playlists).uppercase())
-
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}",
-                text = "",
-                isChecked = showFavoritesPlaylist,
-                onCheckedChange = { showFavoritesPlaylist = it }
-            )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
-                text = "",
-                isChecked = showCachedPlaylist,
-                onCheckedChange = { showCachedPlaylist = it }
-            )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",
-                text = "",
-                isChecked = showDownloadedPlaylist,
-                onCheckedChange = { showDownloadedPlaylist = it }
-            )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}",
-                text = "",
-                isChecked = showMyTopPlaylist,
-                onCheckedChange = { showMyTopPlaylist = it }
-            )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}",
-                text = "",
-                isChecked = showOnDevicePlaylist,
-                onCheckedChange = { showOnDevicePlaylist = it }
-            )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}".contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}",
-                text = "",
-                isChecked = showPlaylists,
-                onCheckedChange = { showPlaylists = it }
             )
 
         SettingsGroupSpacer()

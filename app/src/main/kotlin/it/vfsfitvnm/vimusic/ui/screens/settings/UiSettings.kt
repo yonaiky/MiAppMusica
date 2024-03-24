@@ -123,6 +123,12 @@ import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
+import it.vfsfitvnm.vimusic.utils.showCachedPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showDownloadedPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showFavoritesPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
+import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 import it.vfsfitvnm.vimusic.utils.showStatsListeningTimeKey
 import it.vfsfitvnm.vimusic.utils.skipSilenceKey
@@ -225,6 +231,13 @@ fun  UiSettings() {
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+
+    var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
+    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
+    var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
+    var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
+    var showPlaylists by rememberPreference(showPlaylistsKey, true)
 
     Column(
         modifier = Modifier
@@ -756,6 +769,52 @@ fun  UiSettings() {
                 text = stringResource(R.string.activate_the_action_menu_by_swiping_the_song_left_or_right),
                 isChecked = isSwipeToActionEnabled,
                 onCheckedChange = { isSwipeToActionEnabled = it }
+            )
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.library).uppercase())
+
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}",
+                text = "",
+                isChecked = showFavoritesPlaylist,
+                onCheckedChange = { showFavoritesPlaylist = it }
+            )
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
+                text = "",
+                isChecked = showCachedPlaylist,
+                onCheckedChange = { showCachedPlaylist = it }
+            )
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",
+                text = "",
+                isChecked = showDownloadedPlaylist,
+                onCheckedChange = { showDownloadedPlaylist = it }
+            )
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}",
+                text = "",
+                isChecked = showMyTopPlaylist,
+                onCheckedChange = { showMyTopPlaylist = it }
+            )
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}",
+                text = "",
+                isChecked = showOnDevicePlaylist,
+                onCheckedChange = { showOnDevicePlaylist = it }
+            )
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}",
+                text = "",
+                isChecked = showPlaylists,
+                onCheckedChange = { showPlaylists = it }
             )
 
         SettingsGroupSpacer()
