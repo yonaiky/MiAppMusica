@@ -362,6 +362,7 @@ fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
                                         playlist = playlist,
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
+                                        showSongsCount = false,
                                         modifier = Modifier
                                             .clickable(onClick = { playlistRoute(playlist.key) })
                                     )

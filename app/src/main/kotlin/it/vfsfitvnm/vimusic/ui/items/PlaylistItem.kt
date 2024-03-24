@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +38,11 @@ import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.ui.components.themed.TextPlaceholder
 import it.vfsfitvnm.vimusic.ui.screens.home.PINNED_PREFIX
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.onOverlay
 import it.vfsfitvnm.vimusic.ui.styling.overlay
 import it.vfsfitvnm.vimusic.ui.styling.shimmer
+import it.vfsfitvnm.vimusic.utils.color
+import it.vfsfitvnm.vimusic.utils.medium
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.thumbnail
@@ -146,10 +150,12 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
+    showSongsCount: Boolean = true
 ) {
     PlaylistItem(
         thumbnailUrl = playlist.thumbnail?.url,
         songCount = playlist.songCount,
+        showSongsCount = showSongsCount,
         name = playlist.info?.name,
         channelName = playlist.channel?.name,
         thumbnailSizePx = thumbnailSizePx,
@@ -169,6 +175,7 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
+    showSongsCount: Boolean = true
 ) {
     PlaylistItem(
         thumbnailContent = {
@@ -180,6 +187,7 @@ fun PlaylistItem(
             )
         },
         songCount = songCount,
+        showSongsCount = showSongsCount,
         name = name,
         channelName = channelName,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -197,7 +205,8 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showName: Boolean = true
+    showName: Boolean = true,
+    showSongsCount: Boolean = true
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
@@ -231,21 +240,22 @@ fun PlaylistItem(
                 }
             }
 
-/*
-            songCount?.let {
-                BasicText(
-                    text = "$songCount",
-                    style = typography.xxs.medium.color(colorPalette.onOverlay),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(all = 4.dp)
-                        .background(color = colorPalette.overlay, shape = RoundedCornerShape(2.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .align(Alignment.BottomEnd)
-                )
-            }
-            */
+
+            if (showSongsCount)
+                songCount?.let {
+                    BasicText(
+                        text = "$songCount",
+                        style = typography.xxs.medium.color(colorPalette.onOverlay),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(all = 4.dp)
+                            .background(color = colorPalette.overlay, shape = RoundedCornerShape(4.dp))
+                            .padding(horizontal = 6.dp, vertical = 6.dp)
+                            .align(Alignment.BottomEnd)
+                    )
+                }
+
         }
 
 
