@@ -298,10 +298,10 @@
     <string name="lang_hebrew">Hebræisk</string>
     <string name="customize_album">Tilpas album</string>
     <string name="update_title">Opdatér Titel</string>
-    <string name="update_authors">Update Authors</string>
+    <string name="update_authors">Opdatér Forfatter</string>
     <string name="update_cover">Opdatér Cover</string>
     <string name="title">Titel</string>
-    <string name="authors">Authors</string>
+    <string name="authors">Forfattere</string>
     <string name="cover">Cover</string>
     <string name="lang_japanese">Japansk</string>
     <string name="paste_or_type_a_valid_url">Indsæt eller skriv en gyldig URL</string>
@@ -411,7 +411,7 @@
     <string name="show_search_tab_in_home">Vis Søgefane i Hjem</string>
     <string name="action_bar_show_menu_button">Vis menu-knap</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
+    <string name="use_gradient_background">Brug gradueret baggrund</string>
     <string name="show_total_time_of_queue">Vis samlede tid for kø</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Medietilladelse påkrævet; tillad venligst.</string>
