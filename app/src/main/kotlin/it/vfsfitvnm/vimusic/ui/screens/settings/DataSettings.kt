@@ -350,11 +350,14 @@ fun DataSettings() {
                 onValueSelected = { coilDiskCacheMaxSize = it },
                 valueText = {
                     when (it) {
+                        CoilDiskCacheMaxSize.`32MB` -> "32MB"
+                        CoilDiskCacheMaxSize.`64MB` -> "64MB"
                         CoilDiskCacheMaxSize.`128MB` -> "128MB"
                         CoilDiskCacheMaxSize.`256MB`-> "256MB"
                         CoilDiskCacheMaxSize.`512MB`-> "512MB"
                         CoilDiskCacheMaxSize.`1GB`-> "1GB"
                         CoilDiskCacheMaxSize.`2GB` -> "2GB"
+                        CoilDiskCacheMaxSize.`4GB` -> "4GB"
                     }
                 }
             )
