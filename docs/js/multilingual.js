@@ -2,10 +2,14 @@ class Multilingual {
   language;
   defaultValues = {};
   selectedValues = {};
-  constructor() {
-    this.language =
-      localStorage.getItem("language") ||
-      (navigator.language || navigator.userLanguage).split("-")[0];
+  constructor(supported) {
+    const user = (navigator.language || navigator.userLanguage).split("-")[0]
+    if (supported.includes(user)) {
+      this.language = localStorage.getItem("language") || user || "en"
+    }
+    else {
+      this.language = localStorage.getItem("language") || "en"
+    }
   }
   async loadStrings() {
     const defaultValuesResponse = await fetch("/res/values/strings.xml");

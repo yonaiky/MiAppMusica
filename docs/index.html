@@ -286,7 +286,7 @@
     <script src="js/main.min.js"></script>
     <script>
       // Load the locales
-      const multilingual = new Multilingual();
+      const multilingual = new Multilingual(["en", "cs"]);
       (async () => {
         await multilingual.loadStrings();
         multilingual.updateDom();
