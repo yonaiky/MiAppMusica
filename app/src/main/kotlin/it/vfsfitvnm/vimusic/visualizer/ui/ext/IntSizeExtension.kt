@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui.ext
+package it.vfsfitvnm.vimusic.visualizer.ui.ext
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity

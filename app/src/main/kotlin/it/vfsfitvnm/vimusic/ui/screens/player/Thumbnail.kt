@@ -203,7 +203,7 @@ fun Thumbnail(
             )
 
 
-            ShowEqualizer(
+            ShowVisualizer(
                 isDisplayed = isShowingEqualizer && error == null,
                 onDismiss = { onShowEqualizer(false) }
             )

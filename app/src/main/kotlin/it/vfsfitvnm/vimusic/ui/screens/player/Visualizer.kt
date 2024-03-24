@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -26,7 +25,7 @@ import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
 
-import it.vfsfitvnm.vimusic.equalizer.Equalizer
+import it.vfsfitvnm.vimusic.visualizer.Visualizer
 import it.vfsfitvnm.vimusic.utils.playerVisualizerTypeKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 
@@ -34,7 +33,7 @@ import it.vfsfitvnm.vimusic.utils.toast
 
 @UnstableApi
 @Composable
-fun ShowEqualizer(
+fun ShowVisualizer(
     //mediaId: String,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
@@ -68,7 +67,7 @@ fun ShowEqualizer(
             enter = fadeIn(tween(500)),
             exit = fadeOut(tween(500)),
         ) {
-            Equalizer(
+            Visualizer(
                 showInPage = false,
                 playerVisualizerType = playerVisualizerType
             )

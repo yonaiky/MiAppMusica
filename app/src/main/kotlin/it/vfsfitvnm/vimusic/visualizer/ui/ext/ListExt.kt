@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui.ext
+package it.vfsfitvnm.vimusic.visualizer.ui.ext
 
 fun <T> List<T>.repeat(times: Int): MutableList<T> {
     val result = mutableListOf<T>()

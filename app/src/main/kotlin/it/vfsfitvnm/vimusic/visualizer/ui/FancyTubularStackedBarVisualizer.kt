@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui
+package it.vfsfitvnm.vimusic.visualizer.ui
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import kotlin.math.min
 import kotlin.math.pow
@@ -30,7 +30,7 @@ import kotlin.math.sqrt
 
 // Main inspiration: https://www.shutterstock.com/fr/video/clip-771901-sound-graphic-equalizer
 @Composable
-fun FancyTubularStackedBarEqualizer(
+fun FancyTubularStackedBarVisualizer(
     modifier: Modifier,
     data: VisualizerData,
     barCount: Int,

@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui
+package it.vfsfitvnm.vimusic.visualizer.ui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
 
 
 @Composable
-fun DoubleSidedCircularPathEqualizer(
+fun DoubleSidedCircularPathVisualizer(
     modifier: Modifier,
     data: VisualizerData,
     segmentCount: Int,

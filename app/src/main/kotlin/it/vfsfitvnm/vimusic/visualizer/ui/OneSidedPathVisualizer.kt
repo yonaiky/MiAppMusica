@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui
+package it.vfsfitvnm.vimusic.visualizer.ui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
 
 
 @Composable
-fun DoubleSidedPathEqualizer(
+fun OneSidedPathVisualizer(
     modifier: Modifier,
     data: VisualizerData,
     segmentCount: Int,
@@ -31,12 +31,16 @@ fun DoubleSidedPathEqualizer(
         val viewportWidth = size.width.toFloat()
         val viewportHeight = size.height.toFloat()
 
-        val resampled = data.resample(segmentCount)
-        val pathData = computeDoubleSidedPoints(resampled, viewportWidth, viewportHeight, segmentCount)
-            .map { p ->
-                val height by animateFloatAsState(targetValue = p.y())
-                PathNode.LineTo(p.x(), height)
-            }
+        val barWidth = viewportWidth / (segmentCount - 1)
+
+        val nodes = mutableListOf<PathNode>()
+        nodes.add(PathNode.MoveTo(0f, viewportHeight))
+
+        data.resample(segmentCount).forEachIndexed { index, d ->
+            val height by animateFloatAsState(targetValue = viewportHeight * (1 - (d / 128f)))
+            nodes.add(PathNode.LineTo(barWidth * (index + 0), height))
+        }
+        nodes.add(PathNode.LineTo(viewportWidth, viewportHeight))
 
         val vectorPainter = rememberVectorPainter(
             defaultWidth = viewportWidth.dp,
@@ -44,10 +48,10 @@ fun DoubleSidedPathEqualizer(
             viewportWidth = viewportWidth,
             viewportHeight = viewportHeight,
             autoMirror = false
-        ) { _, _ ->
+        ) { vw, vh ->
             Path(
                 fill = fillBrush,
-                pathData = pathData
+                pathData = nodes
             )
         }
         Image(

@@ -1,8 +1,7 @@
-package it.vfsfitvnm.vimusic.equalizer
+package it.vfsfitvnm.vimusic.visualizer
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,21 +22,21 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerComputer
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerData
-import it.vfsfitvnm.vimusic.equalizer.ui.CircularStackedBarEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.DoubleSidedCircularPathEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.DoubleSidedPathEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.FancyTubularStackedBarEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.FullBarEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.OneSidedPathEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.StackedBarEqualizer
-import it.vfsfitvnm.vimusic.equalizer.ui.ext.repeat
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerComputer
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.visualizer.ui.CircularStackedBarVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.DoubleSidedCircularPathVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.DoubleSidedPathVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.FancyTubularStackedBarVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.FullBarVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.OneSidedPathVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.StackedBarVisualizer
+import it.vfsfitvnm.vimusic.visualizer.ui.ext.repeat
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 
 @UnstableApi
 @Composable
-fun Equalizer(
+fun Visualizer(
     showInPage: Boolean? = true,
     playerVisualizerType: PlayerVisualizerType = PlayerVisualizerType.Disabled
 ) {
@@ -86,7 +85,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 0))
             item {
-                FancyTubularStackedBarEqualizer(
+                FancyTubularStackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -99,7 +98,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 1))
             item {
-                CircularStackedBarEqualizer(
+                CircularStackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         //.height(300.dp)
@@ -113,7 +112,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 2))
             item {
-                StackedBarEqualizer(
+                StackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -126,7 +125,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 3))
             item {
-                FullBarEqualizer(
+                FullBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(100.dp)
@@ -140,7 +139,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 4))
             item {
-                OneSidedPathEqualizer(
+                OneSidedPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(100.dp)
@@ -165,7 +164,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 5))
             item {
-                DoubleSidedPathEqualizer(
+                DoubleSidedPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(100.dp)
@@ -183,7 +182,7 @@ fun Content(
 
         if (displayAllItems || (selectItemIndex == 6))
             item {
-                DoubleSidedCircularPathEqualizer(
+                DoubleSidedCircularPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -232,7 +231,7 @@ fun ContentType(
 
 
         if (visualizerType == PlayerVisualizerType.Fancy)
-                FancyTubularStackedBarEqualizer(
+                FancyTubularStackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -245,7 +244,7 @@ fun ContentType(
                 )
 
     if (visualizerType == PlayerVisualizerType.Circular)
-                CircularStackedBarEqualizer(
+                CircularStackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         //.height(300.dp)
@@ -259,7 +258,7 @@ fun ContentType(
 
 
     if (visualizerType == PlayerVisualizerType.Stacked)
-                StackedBarEqualizer(
+                StackedBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         //.height(300.dp)
@@ -273,7 +272,7 @@ fun ContentType(
 
 
     if (visualizerType == PlayerVisualizerType.Full)
-                FullBarEqualizer(
+                FullBarVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -288,7 +287,7 @@ fun ContentType(
 
 
     if (visualizerType == PlayerVisualizerType.Oneside)
-                OneSidedPathEqualizer(
+                OneSidedPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -318,7 +317,7 @@ fun ContentType(
 
 
     if (visualizerType == PlayerVisualizerType.Doubleside)
-                DoubleSidedPathEqualizer(
+                DoubleSidedPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -337,7 +336,7 @@ fun ContentType(
 
 
     if (visualizerType == PlayerVisualizerType.DoublesideCircular)
-    DoubleSidedCircularPathEqualizer(
+                DoubleSidedCircularPathVisualizer(
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)

@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui
+package it.vfsfitvnm.vimusic.visualizer.ui
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
@@ -14,13 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerData
-import it.vfsfitvnm.vimusic.equalizer.ui.ext.getHeightDp
-import it.vfsfitvnm.vimusic.equalizer.ui.ext.getWidthDp
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.visualizer.ui.ext.getHeightDp
+import it.vfsfitvnm.vimusic.visualizer.ui.ext.getWidthDp
 
 
 @Composable
-fun FullBarEqualizer(
+fun FullBarVisualizer(
     modifier: Modifier,
     barModifier: (Int, Modifier) -> Modifier,
     data: VisualizerData,

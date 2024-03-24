@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.ui.theme
+package it.vfsfitvnm.vimusic.visualizer.ui.theme
 
 //import it.vfsfitvnm.vimusic.equalizer.ui.theme.Shapes
 /*

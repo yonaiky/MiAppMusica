@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.equalizer.audio
+package it.vfsfitvnm.vimusic.visualizer.audio
 
 import kotlin.math.abs
 import kotlin.math.min

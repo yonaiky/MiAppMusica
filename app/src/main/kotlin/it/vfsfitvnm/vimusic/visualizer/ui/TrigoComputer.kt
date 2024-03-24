@@ -1,10 +1,10 @@
-package it.vfsfitvnm.vimusic.equalizer.ui
+package it.vfsfitvnm.vimusic.visualizer.ui
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.PathNode
-import it.vfsfitvnm.vimusic.equalizer.audio.VisualizerComputer.Companion.SAMPLING_INTERVAL
+import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerComputer.Companion.SAMPLING_INTERVAL
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.pow
