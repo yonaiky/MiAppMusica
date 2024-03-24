@@ -12,13 +12,13 @@ class Multilingual {
     }
   }
   async loadStrings() {
-    const defaultValuesResponse = await fetch("/res/values/strings.xml");
+    const defaultValuesResponse = await fetch("res/values/strings.xml");
     const defaultValues = await defaultValuesResponse.text();
     if (this.language == "en") {
       var selectedValues = defaultValues;
     } else {
       const selectedValuesResponse = await fetch(
-        `/res/values-${this.language}/strings.xml`,
+        `res/values-${this.language}/strings.xml`,
       );
       var selectedValues = await selectedValuesResponse.text();
     }
