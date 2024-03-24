@@ -44,7 +44,7 @@
     <string name="edit_lyrics">Redigér sangtekst</string>
     <string name="search_lyrics_online">Søg efter sangtekster online</string>
     <string name="fetch_lyrics_again">Hent sangtekster igen</string>
-    <string name="id">Id</string>
+    <string name="id">ID</string>
     <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">Størrelse</string>
