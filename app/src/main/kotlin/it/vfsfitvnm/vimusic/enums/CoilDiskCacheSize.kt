@@ -1,6 +1,8 @@
 package it.vfsfitvnm.vimusic.enums
 
 enum class CoilDiskCacheMaxSize {
+    `32MB`,
+    `64MB`,
     `128MB`,
     `256MB`,
     `512MB`,
@@ -9,6 +11,8 @@ enum class CoilDiskCacheMaxSize {
 
     val bytes: Long
         get() = when (this) {
+            `32MB` -> 32
+            `64MB` -> 64
             `128MB` -> 128
             `256MB` -> 256
             `512MB` -> 512
