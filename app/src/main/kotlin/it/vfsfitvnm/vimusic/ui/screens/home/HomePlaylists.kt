@@ -392,7 +392,6 @@ fun HomePlaylists(
                     )
                 }
 
-            //if(exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled && showCachedPlaylist)
             if(showCachedPlaylist)
                 item(key = "offline") {
                     PlaylistItem(
@@ -409,7 +408,6 @@ fun HomePlaylists(
                     )
                 }
 
-            //if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled && showDownloadedPlaylist)
             if(showDownloadedPlaylist)
                 item(key = "downloaded") {
                     PlaylistItem(
