@@ -423,4 +423,6 @@ CC-BY-SA 3.0</string>
     <string name="minimized_player">Minimized player</string>
     <string name="both">Both</string>
     <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="lang_danish">Danish</string>
+    <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>

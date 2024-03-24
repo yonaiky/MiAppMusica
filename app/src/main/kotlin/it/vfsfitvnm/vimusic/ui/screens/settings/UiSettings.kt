@@ -364,7 +364,7 @@ fun  UiSettings() {
                         Languages.ChineseSimplified -> stringResource(R.string.chinese_simplified)
                         Languages.ChineseTraditional -> stringResource(R.string.chinese_traditional)
                         Languages.Czech -> stringResource(R.string.czech)
-                        Languages.Danish -> "Danish"
+                        Languages.Danish -> stringResource(R.string.lang_danish)
                         Languages.Dutch -> stringResource(R.string.lang_dutch)
                         Languages.English -> stringResource(R.string.english)
                         Languages.Esperanto -> stringResource(R.string.esperanto)
@@ -388,6 +388,7 @@ fun  UiSettings() {
                         //Languages.RomanianEmo -> stringResource(R.string.romanian_emoticons_rom_n)
                         Languages.Russian -> stringResource(R.string.russian)
                         Languages.SerbianCyrillic -> stringResource(R.string.lang_serbian_cyrillic)
+                        Languages.SerbianLatin -> stringResource(R.string.lang_serbian_latin)
                         Languages.Sinhala -> stringResource(R.string.lang_sinhala)
                         Languages.Spanish -> stringResource(R.string.spanish)
                         Languages.Swedish -> stringResource(R.string.lang_swedish)

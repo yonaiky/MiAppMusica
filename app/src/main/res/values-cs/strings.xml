@@ -422,4 +422,6 @@
     <string name="minimized_player">Minimalizovaný přehrávač</string>
     <string name="both">Oba</string>
     <string name="max_songs_in_queue">Maximální počet skladeb ve frontě</string>
+    <string name="lang_danish">Danish</string>
+    <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>

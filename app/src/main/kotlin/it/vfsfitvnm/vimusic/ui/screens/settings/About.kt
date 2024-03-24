@@ -126,6 +126,7 @@ fun About() {
                     "abfreeman \n"+
                     "ABS zarzis \n"+
                     "Adam Kop \n"+
+                    "agefcgo \n"+
                     "Ahmad Al Juwaisri \n"+
                     "Alnoer \n"+
                     "AntoniNowak \n" +
@@ -151,17 +152,21 @@ fun About() {
                     "Lolozweipunktnull \n" +
                     "ManuelCoimbra) \n" +
                     "Marinkas \n"+
+                    "materialred \n"+
                     "Mid_Vur_Shaan \n" +
                     "Muha Aliss \n"+
                     "Ndvok \n"+
                     "Nebula-Mechanica \n"+
                     "NEVARLeVrai \n"+
+                    "NikunjKhangwal \n"+
                     "NiXT0y \n"+
                     "OlimitLolli \n"+
                     "OrangeZXZ \n"+
+                    "pnextremer \n"+
                     "RegularWater \n"+
                     "Rikalaj \n" +
                     "Roklc \n"+
+                    "sebbe.ekman \n"+
                     "Seryoga1984 \n" +
                     "SharkChan0622 \n"+
                     "Sharunkumar \n" +

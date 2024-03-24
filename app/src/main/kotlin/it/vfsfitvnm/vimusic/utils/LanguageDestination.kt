@@ -44,7 +44,7 @@ fun languageDestination (
         Languages.Portuguese -> Language.PORTUGUESE
         Languages.Romanian -> Language.ROMANIAN
         Languages.Russian -> Language.RUSSIAN
-        Languages.SerbianCyrillic -> Language.SERBIAN
+        Languages.SerbianCyrillic, Languages.SerbianLatin -> Language.SERBIAN
         Languages.Sinhala -> Language.SINHALA
         Languages.Spanish -> Language.SPANISH
         Languages.Swedish -> Language.SWEDISH

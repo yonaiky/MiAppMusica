@@ -422,4 +422,6 @@
     <string name="minimized_player">Lettore minimizzato</string>
     <string name="both">Entrambi</string>
     <string name="max_songs_in_queue">Massimo brani in coda</string>
+    <string name="lang_danish">Danish</string>
+    <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>
