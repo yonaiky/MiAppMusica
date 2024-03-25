@@ -411,17 +411,17 @@
     <string name="show_search_tab_in_home">사이드바에 검색 탭 표시</string>
     <string name="action_bar_show_menu_button">메뉴 버튼 표시</string>
     <string name="sort_album">앨범</string>
-    <string name="use_gradient_background">Use gradient background</string>
-    <string name="show_total_time_of_queue">Show total time of queue</string>
+    <string name="use_gradient_background">그라데이션 색상 배경 사용</string>
+    <string name="show_total_time_of_queue">재생목록 전체시간 표시</string>
     <string name="lang_telugu">텔루구어</string>
     <string name="media_permission_required_please_grant">미디어 접근 권한이 필요하니, 허용해주세요.</string>
     <string name="grant_permission">권한 허용</string>
     <string name="open_permission_settings">권한 설정 열기</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
-    <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="show_background_progress_bar">백그라운드 진행률 표시줄 표시</string>
+    <string name="background_progress_bar">백그라운드 진행률 표시줄</string>
+    <string name="minimized_player">플레이어 최소화</string>
+    <string name="both">둘다</string>
+    <string name="max_songs_in_queue">재생목록 노래 최대 갯수</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>
