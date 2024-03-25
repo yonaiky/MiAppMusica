@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.visualizer.ui
+package it.vfsfitvnm.vimusic.extensions.visualizer.ui
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerData
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import kotlin.math.min
 import kotlin.math.pow

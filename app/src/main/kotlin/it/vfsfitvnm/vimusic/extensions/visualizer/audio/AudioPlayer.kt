@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.visualizer.audio
+package it.vfsfitvnm.vimusic.extensions.visualizer.audio
 
 class AudioPlayer {
 

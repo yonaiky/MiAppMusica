@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.visualizer
+package it.vfsfitvnm.vimusic.extensions.visualizer
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -22,16 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
-import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerComputer
-import it.vfsfitvnm.vimusic.visualizer.audio.VisualizerData
-import it.vfsfitvnm.vimusic.visualizer.ui.CircularStackedBarVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.DoubleSidedCircularPathVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.DoubleSidedPathVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.FancyTubularStackedBarVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.FullBarVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.OneSidedPathVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.StackedBarVisualizer
-import it.vfsfitvnm.vimusic.visualizer.ui.ext.repeat
+import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerComputer
+import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerData
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.CircularStackedBarVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.DoubleSidedCircularPathVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.DoubleSidedPathVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.FancyTubularStackedBarVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.FullBarVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.OneSidedPathVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.StackedBarVisualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.ui.ext.repeat
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 
 @UnstableApi

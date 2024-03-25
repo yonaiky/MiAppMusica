@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.visualizer.ui.theme
+package it.vfsfitvnm.vimusic.extensions.visualizer.ui.theme
 
 /*
 val shapes = Shapes(

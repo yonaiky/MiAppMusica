@@ -25,7 +25,7 @@ import androidx.media3.common.util.UnstableApi
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
 
-import it.vfsfitvnm.vimusic.visualizer.Visualizer
+import it.vfsfitvnm.vimusic.extensions.visualizer.Visualizer
 import it.vfsfitvnm.vimusic.utils.playerVisualizerTypeKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 

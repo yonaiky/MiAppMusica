@@ -1,4 +1,4 @@
-package it.vfsfitvnm.vimusic.visualizer.ui.theme
+package it.vfsfitvnm.vimusic.extensions.visualizer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

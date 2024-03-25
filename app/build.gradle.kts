@@ -115,7 +115,9 @@ dependencies {
     implementation("androidx.compose.material3:material3-android:1.2.1")
     implementation("com.github.therealbush:translator:1.0.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
+    implementation("com.github.lincollincol:compose-audiowaveform:1.1.1")
 
+    
     //End
     coreLibraryDesugaring(libs.desugaring)
 }
