@@ -411,15 +411,15 @@
     <string name="show_search_tab_in_home">Zeige Such-Tab auf der Startseite</string>
     <string name="action_bar_show_menu_button">Menütaste anzeigen</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
-    <string name="show_total_time_of_queue">Show total time of queue</string>
+    <string name="use_gradient_background">Farbverlauf Hintergrund verwenden</string>
+    <string name="show_total_time_of_queue">Gesamtzeit der Warteschlange anzeigen</string>
     <string name="lang_telugu">Telugu</string>
-    <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
-    <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
+    <string name="media_permission_required_please_grant">Medienberechtigung erforderlich, bitte erteilen.</string>
+    <string name="grant_permission">Berechtigungen erteilen</string>
+    <string name="open_permission_settings">Berechtigungseinstellungen öffnen</string>
+    <string name="show_background_progress_bar">Zeige Fortschrittsbalken im Hintergrund</string>
+    <string name="background_progress_bar">Hintergrund-Fortschrittsbalken</string>
+    <string name="minimized_player">Minimierter Player</string>
+    <string name="both">Beides</string>
     <string name="max_songs_in_queue">Max songs in queue</string>
 </resources>
