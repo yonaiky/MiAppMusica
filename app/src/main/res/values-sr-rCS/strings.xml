@@ -65,9 +65,9 @@
     <string name="thumbnail_roundness">Zaobljenost sličice</string>
     <string name="use_system_font">Koristi sistemski font</string>
     <string name="use_font_by_the_system">Koristi font koji primenjuje sistem</string>
-    <string name="apply_font_padding">Apply font padding</string>
-    <string name="add_spacing_around_texts">Add spacing around texts</string>
-    <string name="lockscreen">LOCKSCREEN</string>
+    <string name="apply_font_padding">Primeni povećanje fonta</string>
+    <string name="add_spacing_around_texts">Dodajte razmak oko tekstova</string>
+    <string name="lockscreen">ZAKLJUČAN EKRAN</string>
     <string name="show_song_cover">Show song cover</string>
     <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
     <string name="cache">Cache</string>
