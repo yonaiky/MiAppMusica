@@ -270,7 +270,7 @@
     <string name="persian">Farsça (فارسی)</string>
     <string name="hungarian">Macarca (Hungarian)</string>
     <string name="korean">Korece (Korean)</string>
-    <string name="background_player">"ARKAPLAN OYNATICISI "</string>
+    <string name="background_player">"ARKA PLAN OYNATICISI "</string>
     <string name="show_favorite_button">Favori düğmesini göster</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Favori düğmesini kilit ekranında ve bildirimlerde göster</string>
     <string name="show_download_button">İndirme düğmesini göster</string>
@@ -421,5 +421,5 @@
     <string name="background_progress_bar">Arka plan ilerleme çubuğu</string>
     <string name="minimized_player">Küçültümüş oynatıcı</string>
     <string name="both">Her ikisi de</string>
-    <string name="max_songs_in_queue">Sıradaki maksimum şarkı sayısı</string>
+    <string name="max_songs_in_queue">Sırada maksimum şarkıya ulaştınız</string>
 </resources>
