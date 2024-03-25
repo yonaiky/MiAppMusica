@@ -94,8 +94,8 @@
     <string name="clear_search_history">Obriši istoriju pretrage</string>
     <string name="history_is_empty">Istorija je prazna</string>
     <string name="service_lifetime">ŽIVOTNI VEK SERVISA</string>
-    <string name="battery_optimizations_applied">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invincible service\" option to take effect.</string>
+    <string name="battery_optimizations_applied">Ako se primeni optimizacija baterije, obaveštenje o reprodukciji može iznenada nestati kada se pauzira.</string>
+    <string name="is_android12">Od Android 12, onemogućavanje optimizacije baterije je potrebno da bi opcija „Nepobedivi servis“ stupila na snagu.</string>
     <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
     <string name="already_unrestricted">Already unrestricted</string>
     <string name="disable_background_restrictions">Disable background restrictions</string>
