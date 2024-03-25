@@ -70,6 +70,7 @@ import it.vfsfitvnm.vimusic.enums.PlayerPlayButtonType
 import it.vfsfitvnm.vimusic.enums.PlayerThumbnailSize
 import it.vfsfitvnm.vimusic.enums.PlayerTimelineType
 import it.vfsfitvnm.vimusic.enums.UiType
+import it.vfsfitvnm.vimusic.extensions.visualizer.GetVisualizer
 import it.vfsfitvnm.vimusic.models.Info
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.ui.UiMedia
@@ -480,6 +481,8 @@ fun Controls(
                 .padding(horizontal = 10.dp)
                 .fillMaxWidth()
         ) {
+
+            GetVisualizer()
 
             if (playerTimelineType != PlayerTimelineType.Default && playerTimelineType != PlayerTimelineType.Wavy)
                 SeekBarCustom(

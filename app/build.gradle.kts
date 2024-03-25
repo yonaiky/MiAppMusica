@@ -116,8 +116,9 @@ dependencies {
     implementation("com.github.therealbush:translator:1.0.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
     implementation("com.github.lincollincol:compose-audiowaveform:1.1.1")
+    //implementation("com.github.lincollincol:amplituda:2.2.2")
 
-    
+
     //End
     coreLibraryDesugaring(libs.desugaring)
 }
