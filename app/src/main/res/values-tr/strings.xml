@@ -411,15 +411,15 @@
     <string name="show_search_tab_in_home">Ana Sayfada Arama Sekmesini Göster</string>
     <string name="action_bar_show_menu_button">Menü düğmesini göster</string>
     <string name="sort_album">Albüm</string>
-    <string name="use_gradient_background">Gradyanlı arka planı kullan</string>
-    <string name="show_total_time_of_queue">Sırada kalan zamanı göster</string>
+    <string name="use_gradient_background">Gradyanlı arka plan kullan</string>
+    <string name="show_total_time_of_queue">Çalma sırasının toplam süresini göster</string>
     <string name="lang_telugu">Telugu</string>
-    <string name="media_permission_required_please_grant">Ses dosyalarına erişim gerekli, lütfen izin verin.</string>
+    <string name="media_permission_required_please_grant">Medyaya erişim izni gereklidir, lütfen izin verin.</string>
     <string name="grant_permission">Erişim izni ver</string>
     <string name="open_permission_settings">İzin ayarlarını aç</string>
-    <string name="show_background_progress_bar">Arkaplanda oynatma çubuğunu göster</string>
-    <string name="background_progress_bar">Arkaplan oynatma çubuğu</string>
+    <string name="show_background_progress_bar">Arka planda ilerleme çubuğunu göster</string>
+    <string name="background_progress_bar">Arka plan ilerleme çubuğu</string>
     <string name="minimized_player">Küçültümüş oynatıcı</string>
     <string name="both">Her ikisi de</string>
-    <string name="max_songs_in_queue">Sırada maksimum şarkıya ulaştınız</string>
+    <string name="max_songs_in_queue">Sıradaki maksimum şarkı sayısı</string>
 </resources>
