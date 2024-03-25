@@ -18,8 +18,12 @@
     <script src="js/scrollreveal.min.js"></script>
     <script src="js/multilingual.js"></script>
     <link rel="stylesheet" href="css/custom.css" />
+    <script src="js/loadingScreen.js" defer></script>
   </head>
-  <body class="is-boxed has-animations">
+  <body class="is-boxed has-animations" onload="LoadingScreen.loaded()">
+    <div class="loadingScreen">
+      <div class="loader"></div>
+    </div>
     <div class="body-wrap boxed-container">
       <header class="site-header text-light">
         <div class="container">
@@ -87,8 +91,10 @@
                 </div>
                 <img
                   class="device-mockup"
-                  src="./images/Screenshot_20231215_091712.png"
-                  alt=""
+                  src="./images/Screenshot_1.png"
+                  alt="Homepage screenshot"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -109,8 +115,10 @@
                     </div>
                     <img
                       class="device-mockup is-revealing"
-                      src="./images/Screenshot_20231215_091516.png"
-                      alt=" Feature 01"
+                      src="./images/Screenshot_2.png"
+                      alt="Library screenshot"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="feature-extended-body is-revealing">
@@ -128,8 +136,10 @@
                     </div>
                     <img
                       class="device-mockup is-revealing"
-                      src="./images/Screenshot_20231215_091325.png"
-                      alt=" Feature 02"
+                      src="./images/Screenshot_3.png"
+                      alt="Player screenshot"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="feature-extended-body is-revealing">
@@ -147,8 +157,10 @@
                     </div>
                     <img
                       class="device-mockup is-revealing"
-                      src="./images/Screenshot_20231215_091257.png"
-                      alt=" Feature 03"
+                      src="./images/Screenshot_4.png"
+                      alt="Player screenshot"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="feature-extended-body is-revealing">
@@ -166,8 +178,10 @@
                     </div>
                     <img
                       class="device-mockup is-revealing"
-                      src="./images/Screenshot_20231215_091223.png"
-                      alt=" Feature 04"
+                      src="./images/Screenshot_5.png"
+                      alt="Player screenshot"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="feature-extended-body is-revealing">
