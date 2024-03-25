@@ -17,11 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import com.linc.audiowaveform.model.AmplitudeType
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.enums.PlayerVisualizerType
+import it.vfsfitvnm.vimusic.extensions.audiowave.AudioWaveform
+import it.vfsfitvnm.vimusic.extensions.audiowave.getAmplitudes
 import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerComputer
 import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerData
 import it.vfsfitvnm.vimusic.extensions.visualizer.ui.CircularStackedBarVisualizer
@@ -33,6 +37,7 @@ import it.vfsfitvnm.vimusic.extensions.visualizer.ui.OneSidedPathVisualizer
 import it.vfsfitvnm.vimusic.extensions.visualizer.ui.StackedBarVisualizer
 import it.vfsfitvnm.vimusic.extensions.visualizer.ui.ext.repeat
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 
 @UnstableApi
 @Composable
@@ -213,6 +218,7 @@ fun ContentType(
 
     val (colorPalette,) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
+    val context = LocalContext.current
 
     VisualizerComputer.setupPermissions( LocalContext.current as Activity )
     val audioComputer = VisualizerComputer()
@@ -242,6 +248,7 @@ fun ContentType(
                     barCount = 48,
                     maxStackCount = 16,
                 )
+
 
     if (visualizerType == PlayerVisualizerType.Circular)
                 CircularStackedBarVisualizer(

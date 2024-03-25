@@ -804,7 +804,7 @@ fun Player(
             mutableStateOf(false)
         }
 
-        var isShowingEqualizer by rememberSaveable {
+        var isShowingEqualizer by remember {
             mutableStateOf(false)
         }
 

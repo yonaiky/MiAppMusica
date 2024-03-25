@@ -55,7 +55,7 @@ class VisualizerComputer {
                 waveform: ByteArray,
                 samplingRate: Int
             ) {
-                val now = System.currentTimeMillis()
+                //val now = System.currentTimeMillis()
                 //Check
 
                 //if (start == null) start = now
@@ -69,18 +69,19 @@ class VisualizerComputer {
                  */
 
                 //Timber.e("Wave - samplingRate=$samplingRate, waveform=${waveform.joinToString()} thread=" + Thread.currentThread())
-                val durationSinceLastData = lastDataTimestamp?.let { now - it } ?: 0
-                if (lastDataTimestamp == null || durationSinceLastData > SAMPLING_INTERVAL) {
+                //val durationSinceLastData = lastDataTimestamp?.let { now - it } ?: 0
+                //if (lastDataTimestamp == null || durationSinceLastData > SAMPLING_INTERVAL) {
                     onData(
                         VisualizerData(
                             rawWaveform = waveform.clone(),
                             captureSize = CAPTURE_SIZE,
                             samplingRate = samplingRate,
-                            durationSinceLastData = 0 //if (durationSinceLastData < 200) durationSinceLastData else 0
+                            durationSinceLastData = 0
+                            //if (durationSinceLastData < 200) durationSinceLastData else 0
                         )
                     )
-                    lastDataTimestamp = now
-                }
+                    //lastDataTimestamp = now
+                //}
             }
         }
 

@@ -36,6 +36,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,6 +62,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import com.linc.audiowaveform.model.AmplitudeType
 import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
@@ -70,7 +73,9 @@ import it.vfsfitvnm.vimusic.enums.PlayerPlayButtonType
 import it.vfsfitvnm.vimusic.enums.PlayerThumbnailSize
 import it.vfsfitvnm.vimusic.enums.PlayerTimelineType
 import it.vfsfitvnm.vimusic.enums.UiType
-import it.vfsfitvnm.vimusic.extensions.visualizer.GetVisualizer
+import it.vfsfitvnm.vimusic.extensions.audiowave.AudioWaveform
+import it.vfsfitvnm.vimusic.extensions.audiowave.getAmplitudes
+import it.vfsfitvnm.vimusic.extensions.visualizer.audio.VisualizerData
 import it.vfsfitvnm.vimusic.models.Info
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.ui.UiMedia
@@ -96,7 +101,6 @@ import it.vfsfitvnm.vimusic.utils.disableScrollingTextKey
 import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
 import it.vfsfitvnm.vimusic.utils.effectRotationKey
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
-import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.formatAsDuration
 import it.vfsfitvnm.vimusic.utils.isCompositionLaunched
 import it.vfsfitvnm.vimusic.utils.isGradientBackgroundEnabledKey
@@ -141,6 +145,7 @@ fun Controls(
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
 
+    val context = LocalContext.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
@@ -482,7 +487,27 @@ fun Controls(
                 .fillMaxWidth()
         ) {
 
-            GetVisualizer()
+            /*
+            val visualizerData = remember {
+                mutableStateOf(VisualizerData())
+            }
+            val amp = getAmplitudes(
+                binder = binder,
+                context = context,
+                visualizerData = visualizerData
+            )
+            //println("mediaItem Controls amplitudes ${amp}")
+
+            AudioWaveform(
+                amplitudes = amp,
+                progress = position.toFloat(),
+                onProgressChange = {},
+                amplitudeType = AmplitudeType.Avg,
+                waveformBrush = SolidColor(colorPalette.text),
+                progressBrush = SolidColor(colorPalette.favoritesIcon)
+
+            )
+             */
 
             if (playerTimelineType != PlayerTimelineType.Default && playerTimelineType != PlayerTimelineType.Wavy)
                 SeekBarCustom(
@@ -585,6 +610,8 @@ fun Controls(
                 )
             }
         }
+
+
 
         Spacer(
             modifier = Modifier
