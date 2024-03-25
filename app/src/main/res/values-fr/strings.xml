@@ -368,7 +368,7 @@
     <string name="enabled">Activé</string>
     <string name="ask">Demander</string>
     <string name="item_select">Sélectionner</string>
-    <string name="item_uncheck">Décoché</string>
+    <string name="item_uncheck">Décocher</string>
     <string name="blacklisted_folders">Dossiers sur la liste noire</string>
     <string name="edit_blacklist_for_on_device_songs">Editer la liste noire pour les chansons de l\'appareil.</string>
     <string name="add_folder">Ajouter un dossier</string>
@@ -411,17 +411,17 @@
     <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur l\'écran d\'accueil</string>
     <string name="action_bar_show_menu_button">Afficher le bouton menu</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
-    <string name="show_total_time_of_queue">Show total time of queue</string>
-    <string name="lang_telugu">Telugu</string>
-    <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
-    <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
-    <string name="background_progress_bar">Background progress bar</string>
-    <string name="minimized_player">Minimized player</string>
-    <string name="both">Both</string>
-    <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="use_gradient_background">Utiliser le dégradé d\'arrière-plan</string>
+    <string name="show_total_time_of_queue">Afficher la durée totale de la file d\'attente</string>
+    <string name="lang_telugu">Télougou (తెలుగు)</string>
+    <string name="media_permission_required_please_grant">Autorisation du média requise, veuillez l\'accorder.</string>
+    <string name="grant_permission">Accorder l’autorisation</string>
+    <string name="open_permission_settings">Ouvrir les paramètres d\'autorisation</string>
+    <string name="show_background_progress_bar">Afficher la barre de progression en arrière plan</string>
+    <string name="background_progress_bar">Barre de progression en arrière-plan</string>
+    <string name="minimized_player">Lecteur minimisé</string>
+    <string name="both">Les deux</string>
+    <string name="max_songs_in_queue">Nombre maximum de titres dans la file d\'attente</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>
