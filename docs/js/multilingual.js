@@ -86,4 +86,7 @@ class Multilingual {
       }
     }
   }
+  setAttribute(el) {
+    el.setAttribute("lang", this.language)
+  }
 }
