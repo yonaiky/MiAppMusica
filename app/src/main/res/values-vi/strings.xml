@@ -2,11 +2,11 @@
 <resources>
     <string name="cancel">Hủy</string>
     <string name="done">Xong</string>
-    <string name="hidesong">Do you really want to hide this song? Its playback time and cache will be wiped.\nThis action is irreversible.</string>
+    <string name="hidesong">Bạn có thực sự muốn ẩn bài hát này? Thời gian phát lại và bộ nhớ đệm sẽ bị xóa.\nHành động này không thể thay đổi được.</string>
     <string name="new_playlist">Danh sách phát mới</string>
-    <string name="start_radio">Start radio</string>
+    <string name="start_radio">Bắt đầu nghe đài</string>
     <string name="equalizer">Bộ chỉnh âm</string>
-    <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
+    <string name="stop_sleep_timer">Bạn có muốn dừng bộ hẹn giờ tắt không?</string>
     <string name="set_sleep_timer">Đặt hẹn giờ ngủ</string>
     <string name="add_to_playlist">Thêm vào danh sách phát</string>
     <string name="go_to_album">Xem album</string>
@@ -44,16 +44,16 @@
     <string name="edit_lyrics">Sửa lời bài hát</string>
     <string name="search_lyrics_online">Tìm kiếm lời bài hát trực tuyến</string>
     <string name="fetch_lyrics_again">Tìm nạp lại lời bài hát</string>
-    <string name="id">Id</string>
+    <string name="id">Mã</string>
     <string name="itag">Itag</string>
-    <string name="bitrate">Bitrate</string>
+    <string name="bitrate">Tốc độ bit</string>
     <string name="size">Kích thước</string>
     <string name="cached">Đã lưu vào bộ nhớ đệm</string>
-    <string name="loudness">Loudness</string>
-    <string name="clear">Clear</string>
+    <string name="loudness">Độ ồn</string>
+    <string name="clear">Xóa</string>
     <string name="error">Đã xảy ra lỗi.</string>
     <string name="online">Trực tuyến</string>
-    <string name="no_results_found">No results found. Please try a different query or category</string>
+    <string name="no_results_found">Không có kết quả nào được tìm thấy. Vui lòng thử một truy vấn hoặc danh mục khác</string>
     <string name="videos">Video</string>
     <string name="featured">Nổi bật</string>
     <string name="view_the_source_code">Xem mã nguồn</string>
