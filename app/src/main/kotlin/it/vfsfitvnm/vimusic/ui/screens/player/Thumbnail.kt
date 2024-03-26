@@ -11,10 +11,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -161,26 +167,52 @@ fun Thumbnail(
                 .clip(LocalAppearance.current.thumbnailShape)
                 .size(thumbnailSizeDp)
         ) {
-            AsyncImage(
-                model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onLongPress = { onShowStatsForNerds(true) },
-                            onTap = if (thumbnailTapEnabledKey) {
-                                {
-                                    onShowLyrics(true)
-                                    onShowEqualizer(false)
-                                }
-                            } else null,
-                            onDoubleTap = { onDoubleTap() }
-                        )
+            if (currentWindow.mediaItem.mediaMetadata.artworkUri.toString().isEmpty()) {
+                Image(
+                    painter = painterResource(R.drawable.app_icon),
+                    colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
+                    modifier = Modifier
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { onShowStatsForNerds(true) },
+                                onTap = if (thumbnailTapEnabledKey) {
+                                    {
+                                        onShowLyrics(true)
+                                        onShowEqualizer(false)
+                                    }
+                                } else null,
+                                onDoubleTap = { onDoubleTap() }
+                            )
 
-                    }
-                    .fillMaxSize()
-            )
+                        }
+                        .fillMaxSize(),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Fit
+                )
+            } else {
+                AsyncImage(
+                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                        thumbnailSizePx
+                    ),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { onShowStatsForNerds(true) },
+                                onTap = if (thumbnailTapEnabledKey) {
+                                    {
+                                        onShowLyrics(true)
+                                        onShowEqualizer(false)
+                                    }
+                                } else null,
+                                onDoubleTap = { onDoubleTap() }
+                            )
+
+                        }
+                        .fillMaxSize()
+                )
+            }
 
             //if (!currentWindow.mediaItem.isLocal)
                 Lyrics(
