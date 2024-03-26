@@ -409,6 +409,7 @@ fun Queue(
                         key = { it.uid.hashCode() }
                     ) { window ->
                         val currentItem by rememberUpdatedState(window)
+                        val checkedState = remember { mutableStateOf(false) }
                         BehindMotionSwipe(
                             content = {
                                 var deltaX by remember { mutableStateOf(0f) }
@@ -469,8 +470,6 @@ fun Queue(
                                         }
                                     },
                                     trailingContent = {
-
-                                        val checkedState = remember { mutableStateOf(false) }
                                         if (selectQueueItems)
                                             Checkbox(
                                                 checked = checkedState.value,
@@ -530,16 +529,18 @@ fun Queue(
                                                 }
                                             },
                                             onClick = {
-                                                if (isPlayingThisMediaItem) {
-                                                    if (shouldBePlaying) {
-                                                        player.pause()
+                                                if (!selectQueueItems) {
+                                                    if (isPlayingThisMediaItem) {
+                                                        if (shouldBePlaying) {
+                                                            player.pause()
+                                                        } else {
+                                                            player.play()
+                                                        }
                                                     } else {
-                                                        player.play()
+                                                        player.seekToDefaultPosition(window.firstPeriodIndex)
+                                                        player.playWhenReady = true
                                                     }
-                                                } else {
-                                                    player.seekToDefaultPosition(window.firstPeriodIndex)
-                                                    player.playWhenReady = true
-                                                }
+                                                } else checkedState.value = !checkedState.value
                                             }
                                         )
                                         /*
