@@ -97,6 +97,7 @@ import it.vfsfitvnm.vimusic.models.QueuedMediaItem
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.models.asMediaItem
 import it.vfsfitvnm.vimusic.query
+import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.utils.ConditionalCacheDataSourceFactory
 import it.vfsfitvnm.vimusic.utils.InvincibleService
 import it.vfsfitvnm.vimusic.utils.RingBuffer
@@ -332,7 +333,7 @@ class PlayerService : InvincibleService(),
                 //flowOf(downloadCache.isCached(it, 0, Database.formatContentLength(it)))
             } ?: flowOf(false)
         }
-        .map { it }
+        //.map { true }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     //private val mediaCachedItemState = MutableStateFlow<MediaItem?>(null)
@@ -1121,6 +1122,7 @@ class PlayerService : InvincibleService(),
                     )
             }
         }
+        println("mediaItem updatePlaybackState")
     }
 
     private val Player.androidPlaybackState
@@ -1879,32 +1881,30 @@ class PlayerService : InvincibleService(),
         @ExperimentalCoroutinesApi
         @FlowPreview
         fun toggleLike() = mediaItemState.value?.let { mediaItem ->
-            mediaItemToggleLike(mediaItem)
-            /*
+            //mediaItemToggleLike(mediaItem)
             transaction {
                 Database.like(
                     mediaItem.mediaId,
                     if (isLikedState.value) null else System.currentTimeMillis()
                 )
             }
-             */
-        }.let {  }
+             updatePlaybackState()
+        }
 
 
 
         @ExperimentalCoroutinesApi
         @FlowPreview
         fun toggleDownload() = mediaItemState.value?.let { mediaItem ->
-            runCatching {
                 val downloads = DownloadUtil.downloads.value
                 manageDownload(
                     context = this@PlayerService,
                     songId = mediaItem.mediaId,
                     songTitle = mediaItem.mediaMetadata.title.toString(),
-                    downloadState = downloads[mediaItem.mediaId]?.state == Download.STATE_COMPLETED //isDownloadedState.value
+                    downloadState = downloads[mediaItem.mediaId]?.state == Download.STATE_COMPLETED
                 )
-            }
-        }.let { }
+            updatePlaybackState()
+        }
 
         fun refreshPlayer() {
             coroutineScope.launch {
