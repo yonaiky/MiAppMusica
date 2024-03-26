@@ -421,7 +421,7 @@
     <string name="background_progress_bar">Hintergrund-Fortschrittsbalken</string>
     <string name="minimized_player">Minimierter Player</string>
     <string name="both">Beides</string>
-    <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="max_songs_in_queue">Maximale Titel in der Warteschlange</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
 </resources>
