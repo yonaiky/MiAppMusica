@@ -1122,7 +1122,7 @@ class PlayerService : InvincibleService(),
                     )
             }
         }
-        println("mediaItem updatePlaybackState")
+
     }
 
     private val Player.androidPlaybackState
