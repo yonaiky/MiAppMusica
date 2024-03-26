@@ -187,14 +187,6 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
     var client = OkHttpClient()
     var request = OkHttpRequest(client)
 
-    /*
-    var isConnected = false
-    var updatedProductName = ""
-    var updatedVersionName = ""
-    var updatedVersionCode = 0
-    */
-
-
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is PlayerService.Binder) {
@@ -593,7 +585,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                             playerBottomSheetState.dismiss()
                         }
                     } else {
-                        if (playerBottomSheetState.isDismissed) {
+                        //if (playerBottomSheetState.isDismissed) {
                             if (launchedFromNotification) {
                                 intent.replaceExtras(Bundle())
                                 if (preferences.getBoolean(keepPlayerMinimizedKey, false))
@@ -602,7 +594,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                             } else {
                                 playerBottomSheetState.collapse(tween(700))
                             }
-                        }
+                        //}
                     }
 
                     val listener = object : Player.Listener {
