@@ -690,6 +690,7 @@ fun DeviceListSongs(
                 )
 
 */
+                val checkedState = remember { mutableStateOf(false) }
 
                 SongItem(
                     song = song,
@@ -705,7 +706,6 @@ fun DeviceListSongs(
                             NowPlayingShow(song.asMediaItem.mediaId)
                     },
                     trailingContent = {
-                        val checkedState = remember { mutableStateOf(false) }
                         if (selectItems)
                             Checkbox(
                                 checked = checkedState.value,
@@ -740,7 +740,7 @@ fun DeviceListSongs(
                                         filteredSongs.map(Song::asMediaItem),
                                         index
                                     )
-                                }
+                                } else checkedState.value = !checkedState.value
                             }
                         )
                         .animateItemPlacement()

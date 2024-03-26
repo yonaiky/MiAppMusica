@@ -1141,6 +1141,7 @@ fun LocalPlaylistSongs(
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                        val checkedState = remember { mutableStateOf(false) }
                         //if (isDownloaded && !listDownloadedMedia.contains(song)) listDownloadedMedia.add(song)
                         //if (!isDownloaded) listDownloadedMedia.dropWhile {  it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                         //Log.d("mediaItem", "loop items listDownloadedMedia ${listDownloadedMedia.distinct().size} ${listDownloadedMedia.distinct()}")
@@ -1176,7 +1177,6 @@ fun LocalPlaylistSongs(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             trailingContent = {
-                                val checkedState = remember { mutableStateOf(false) }
                                 if (selectItems)
                                     Checkbox(
                                         checked = checkedState.value,
@@ -1246,13 +1246,17 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onClick = {
-                                        if (!selectItems)
+                                        if (!selectItems) {
                                             playlistSongs
                                                 .map(Song::asMediaItem)
                                                 .let { mediaItems ->
                                                     binder?.stopRadio()
-                                                    binder?.player?.forcePlayAtIndex(mediaItems, index)
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        mediaItems,
+                                                        index
+                                                    )
                                                 }
+                                        } else checkedState.value = !checkedState.value
                                     }
                                 )
                                 //.animateItemPlacement(reorderingState)

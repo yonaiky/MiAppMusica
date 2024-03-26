@@ -643,6 +643,7 @@ fun AlbumSongs(
                     val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                     val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                    val checkedState = remember { mutableStateOf(false) }
                     SongItem(
                         title = song.title,
                         isDownloaded = isDownloaded,
@@ -702,11 +703,10 @@ fun AlbumSongs(
                                             songs.map(Song::asMediaItem),
                                             index
                                         )
-                                    }
+                                    } else checkedState.value = !checkedState.value
                                 }
                             ),
                             trailingContent = {
-                                val checkedState = remember { mutableStateOf(false) }
                                 if (selectItems)
                                     Checkbox(
                                         checked = checkedState.value,

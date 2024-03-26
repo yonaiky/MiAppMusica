@@ -1012,6 +1012,7 @@ fun BuiltInPlaylistSongs(
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded =
                             if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                        val checkedState = remember { mutableStateOf(false) }
                         SongItem(
                             song = song,
                             isDownloaded = isDownloaded,
@@ -1087,7 +1088,6 @@ fun BuiltInPlaylistSongs(
                                     )
                             },
                             trailingContent = {
-                                val checkedState = remember { mutableStateOf(false) }
                                 if (selectItems)
                                     Checkbox(
                                         checked = checkedState.value,
@@ -1130,7 +1130,7 @@ fun BuiltInPlaylistSongs(
                                                 itemsLimited.map(Song::asMediaItem),
                                                 index
                                             )
-                                        }
+                                        } else checkedState.value = !checkedState.value
                                     }
                                 )
                                 .background(color = colorPalette.background0)
