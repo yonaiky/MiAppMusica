@@ -2,9 +2,9 @@
 <resources>
     <string name="cancel">Откажи</string>
     <string name="done">Готово</string>
-    <string name="hidesong">Sakrij pesmu.</string>
+    <string name="hidesong">Да ли заиста желите да сакријете ову песму? Његово време репродукције и кеш меморија ће бити обрисани.\n Ова радња је неповратна.</string>
     <string name="new_playlist">Нова плејлиста</string>
-    <string name="start_radio">Pokreni radio</string>
+    <string name="start_radio">Покрени радио</string>
     <string name="equalizer">Еквилајзер</string>
     <string name="stop_sleep_timer">Дали желите да зауставите тајмер за спавање?</string>
     <string name="set_sleep_timer">Подесите тајмер за спавање</string>
@@ -419,7 +419,7 @@
     <string name="open_permission_settings">Отворите подешавања дозвола</string>
     <string name="show_background_progress_bar">Прикажи позадинску траку напретка</string>
     <string name="background_progress_bar">Позадинска трака напретка</string>
-    <string name="minimized_player">Умањи плејер</string>
+    <string name="minimized_player">Умањени плејер</string>
     <string name="both">Оба</string>
     <string name="max_songs_in_queue">Максималан број песама у реду</string>
 </resources>
