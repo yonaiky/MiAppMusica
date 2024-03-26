@@ -368,7 +368,6 @@
     <string name="enabled">Engedélyezve</string>
     <string name="ask">Kérdez</string>
     <string name="item_select">Kiválaszt</string>
-    <string name="item_uncheck">Törölje a kijelölést</string>
     <string name="blacklisted_folders">Feketelistás mappák</string>
     <string name="edit_blacklist_for_on_device_songs">Feketelista szerkesztése a készüléken lévő dalokhoz.</string>
     <string name="add_folder">Mappa hozzáadása</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

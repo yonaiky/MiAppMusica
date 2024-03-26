@@ -368,7 +368,6 @@
     <string name="enabled">활성화됨</string>
     <string name="ask">물어보기</string>
     <string name="item_select">선택</string>
-    <string name="item_uncheck">선택 해제</string>
     <string name="blacklisted_folders">차단된 폴더</string>
     <string name="edit_blacklist_for_on_device_songs">기기 내 노래에 대한 차단 목록을 수정합니다.</string>
     <string name="add_folder">폴더 추가</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">재생목록 노래 최대 갯수</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

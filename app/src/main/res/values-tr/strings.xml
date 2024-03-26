@@ -368,7 +368,6 @@
     <string name="enabled">Etkin</string>
     <string name="ask">Bana sor</string>
     <string name="item_select">Seç</string>
-    <string name="item_uncheck">İşareti kaldır</string>
     <string name="blacklisted_folders">Kara listedeki klasörler</string>
     <string name="edit_blacklist_for_on_device_songs">Cihazdaki şarkılar için kara listeyi düzenleyin.</string>
     <string name="add_folder">Klasör ekle</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Sırada maksimum şarkıya ulaştınız</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

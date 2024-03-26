@@ -95,6 +95,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AlbumsItemMenu(
     onDismiss: () -> Unit,
+    onSelectUnselect: (() -> Unit)? = null,
     onSelect: (() -> Unit)? = null,
     onUncheck: (() -> Unit)? = null,
     onChangeAlbumTitle: (() -> Unit)? = null,
@@ -299,6 +300,17 @@ fun AlbumsItemMenu(
                         .height(8.dp)
                 )
 
+                onSelectUnselect?.let { onSelectUnselect ->
+                    MenuEntry(
+                        icon = R.drawable.checked,
+                        text = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}",
+                        onClick = {
+                            onDismiss()
+                            onSelectUnselect()
+                        }
+                    )
+                }
+
                 onSelect?.let { onSelect ->
                     MenuEntry(
                         icon = R.drawable.checked,
@@ -309,6 +321,7 @@ fun AlbumsItemMenu(
                         }
                     )
                 }
+                /*
                 onUncheck?.let { onUncheck ->
                     MenuEntry(
                         icon = R.drawable.unchecked,
@@ -319,6 +332,7 @@ fun AlbumsItemMenu(
                         }
                     )
                 }
+                 */
 
                 onChangeAlbumTitle?.let{
                     MenuEntry(

@@ -368,7 +368,6 @@
     <string name="enabled">Aktif</string>
     <string name="ask">Tanyakan</string>
     <string name="item_select">Pilih</string>
-    <string name="item_uncheck">Batalkan pemilihan</string>
     <string name="blacklisted_folders">Folder yang diabaikan</string>
     <string name="edit_blacklist_for_on_device_songs">Ubah daftar hitam untuk lagu yang ada di perangkat.</string>
     <string name="add_folder">Tambah folder</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

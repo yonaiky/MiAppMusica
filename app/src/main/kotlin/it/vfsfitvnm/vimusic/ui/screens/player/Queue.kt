@@ -775,12 +775,20 @@ fun Queue(
                             menuState.display {
                                 PlaylistsItemMenu(
                                     onDismiss = menuState::hide,
+                                    onSelectUnselect = {
+                                        selectQueueItems = !selectQueueItems
+                                        if (!selectQueueItems) {
+                                            listMediaItems.clear()
+                                        }
+                                    },
+                                    /*
                                     onSelect = { selectQueueItems = true },
                                     onUncheck = {
                                         selectQueueItems = false
                                         listMediaItems.clear()
                                         listMediaItemsIndex.clear()
                                     },
+                                     */
                                     onDelete = {
                                         if (listMediaItemsIndex.isNotEmpty())
                                             //showSelectTypeClearQueue = true else

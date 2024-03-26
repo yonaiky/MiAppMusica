@@ -368,7 +368,6 @@
     <string name="enabled">Activé</string>
     <string name="ask">Demander</string>
     <string name="item_select">Sélectionner</string>
-    <string name="item_uncheck">Décocher</string>
     <string name="blacklisted_folders">Dossiers sur la liste noire</string>
     <string name="edit_blacklist_for_on_device_songs">Editer la liste noire pour les chansons de l\'appareil.</string>
     <string name="add_folder">Ajouter un dossier</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Nombre maximum de titres dans la file d\'attente</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

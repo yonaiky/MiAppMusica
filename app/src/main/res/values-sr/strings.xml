@@ -368,7 +368,6 @@
     <string name="enabled">Омогућено</string>
     <string name="ask">Питај</string>
     <string name="item_select">Изабери</string>
-    <string name="item_uncheck">Одчекирај</string>
     <string name="blacklisted_folders">Фасцикле на Црној листи</string>
     <string name="edit_blacklist_for_on_device_songs">Уредите црну листу за песме на уређају.</string>
     <string name="add_folder">Додај фасциклу</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Максималан број песама у реду</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

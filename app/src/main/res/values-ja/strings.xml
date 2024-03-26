@@ -368,7 +368,6 @@
     <string name="enabled">有効</string>
     <string name="ask">確認</string>
     <string name="item_select">選択</string>
-    <string name="item_uncheck">チェックしない</string>
     <string name="blacklisted_folders">ブラックリストフォルダ</string>
     <string name="edit_blacklist_for_on_device_songs">デバイス上の曲のブラックリストを編集する。</string>
     <string name="add_folder">フォルダを追加</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

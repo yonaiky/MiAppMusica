@@ -64,6 +64,7 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun PlaylistsItemMenu(
     onDismiss: () -> Unit,
+    onSelectUnselect: (() -> Unit)? = null,
     onSelect: (() -> Unit)? = null,
     onUncheck: (() -> Unit)? = null,
     playlist: PlaylistPreview? = null,
@@ -281,6 +282,16 @@ fun PlaylistsItemMenu(
                         .height(8.dp)
                 )
 
+                onSelectUnselect?.let { onSelectUnselect ->
+                    MenuEntry(
+                        icon = R.drawable.checked,
+                        text = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}",
+                        onClick = {
+                            onDismiss()
+                            onSelectUnselect()
+                        }
+                    )
+                }
                 onSelect?.let { onSelect ->
                     MenuEntry(
                         icon = R.drawable.checked,
@@ -291,6 +302,7 @@ fun PlaylistsItemMenu(
                         }
                     )
                 }
+                /*
                 onUncheck?.let { onUncheck ->
                     MenuEntry(
                         icon = R.drawable.unchecked,
@@ -301,6 +313,7 @@ fun PlaylistsItemMenu(
                         }
                     )
                 }
+                 */
 
                 onEnqueue?.let { onEnqueue ->
                     MenuEntry(

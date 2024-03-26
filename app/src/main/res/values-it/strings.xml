@@ -368,7 +368,6 @@
     <string name="enabled">Abilitato</string>
     <string name="ask">Chiedi</string>
     <string name="item_select">Seleziona</string>
-    <string name="item_uncheck">Deseleziona</string>
     <string name="blacklisted_folders">Cartelle in blacklist</string>
     <string name="edit_blacklist_for_on_device_songs">Modifica blacklist per i brani del dispositivo.</string>
     <string name="add_folder">Aggiungi cartella</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Massimo brani in coda</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

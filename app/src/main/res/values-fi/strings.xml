@@ -368,7 +368,6 @@
     <string name="enabled">Käytössä</string>
     <string name="ask">Kysy</string>
     <string name="item_select">Valitse</string>
-    <string name="item_uncheck">Poista valinta</string>
     <string name="blacklisted_folders">Mustalla listalla olevat kansiot</string>
     <string name="edit_blacklist_for_on_device_songs">Muokkaa laitteen kappaleiden mustaa listaa.</string>
     <string name="add_folder">Lisää kansio</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

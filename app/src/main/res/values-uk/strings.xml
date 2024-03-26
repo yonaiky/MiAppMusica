@@ -368,7 +368,6 @@
     <string name="enabled">Увімкнено</string>
     <string name="ask">Запитати</string>
     <string name="item_select">Вибрати</string>
-    <string name="item_uncheck">Зняти позначку</string>
     <string name="blacklisted_folders">Теки чорного списку</string>
     <string name="edit_blacklist_for_on_device_songs">Редагувати чорний список для пісень на пристрої.</string>
     <string name="add_folder">Додати теку</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

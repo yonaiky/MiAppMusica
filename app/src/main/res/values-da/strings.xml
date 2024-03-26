@@ -368,7 +368,6 @@
     <string name="enabled">Aktiveret</string>
     <string name="ask">Spørg</string>
     <string name="item_select">Vælg</string>
-    <string name="item_uncheck">Fravælg</string>
     <string name="blacklisted_folders">Sortlistede mapper</string>
     <string name="edit_blacklist_for_on_device_songs">Redigér sortliste for sange på enhed.</string>
     <string name="add_folder">Tilføj mappe</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Maks. sange i kø</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

@@ -368,7 +368,6 @@
     <string name="enabled">Povoleno</string>
     <string name="ask">Zeptat se</string>
     <string name="item_select">Vybrat</string>
-    <string name="item_uncheck">Odznačit</string>
     <string name="blacklisted_folders">Složky v blacklistu</string>
     <string name="edit_blacklist_for_on_device_songs">Úprava blacklistu pro skladby v zařízení.</string>
     <string name="add_folder">Přidat složku</string>
@@ -424,4 +423,5 @@
     <string name="max_songs_in_queue">Maximální počet skladeb ve frontě</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="item_deselect">Deselect</string>
 </resources>

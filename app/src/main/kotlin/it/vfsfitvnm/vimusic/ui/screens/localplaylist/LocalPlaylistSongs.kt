@@ -55,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -788,11 +789,19 @@ fun LocalPlaylistSongs(
                                 playlistPreview?.let { playlistPreview ->
                                     PlaylistsItemMenu(
                                         onDismiss = menuState::hide,
+                                        onSelectUnselect = {
+                                            selectItems = !selectItems
+                                            if (!selectItems) {
+                                                listMediaItems.clear()
+                                            }
+                                        },
+                                        /*
                                         onSelect = { selectItems = true },
                                         onUncheck = {
                                             selectItems = false
                                             listMediaItems.clear()
                                         },
+                                         */
                                         playlist = playlistPreview,
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
@@ -1188,7 +1197,9 @@ fun LocalPlaylistSongs(
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = colorPalette.accent,
                                             uncheckedColor = colorPalette.text
-                                        )
+                                        ),
+                                        modifier = Modifier
+                                            .scale(0.6f)
                                     )
                                 else checkedState.value = false
 

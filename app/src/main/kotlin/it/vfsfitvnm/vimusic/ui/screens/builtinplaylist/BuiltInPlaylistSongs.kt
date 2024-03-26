@@ -54,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -720,11 +721,19 @@ fun BuiltInPlaylistSongs(
                             menuState.display {
                                 PlaylistsItemMenu(
                                     onDismiss = menuState::hide,
+                                    onSelectUnselect = {
+                                        selectItems = !selectItems
+                                        if (!selectItems) {
+                                            listMediaItems.clear()
+                                        }
+                                    },
+                                    /*
                                     onSelect = { selectItems = true },
                                     onUncheck = {
                                         selectItems = false
                                         listMediaItems.clear()
                                     },
+                                     */
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
                                             binder?.player?.enqueue(songs.map(Song::asMediaItem))
@@ -1099,7 +1108,9 @@ fun BuiltInPlaylistSongs(
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = colorPalette.accent,
                                             uncheckedColor = colorPalette.text
-                                        )
+                                        ),
+                                        modifier = Modifier
+                                            .scale(0.7f)
                                     )
                                 else checkedState.value = false
                             },
