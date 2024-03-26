@@ -80,7 +80,7 @@ fun SettingsScreen() {
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.ui_tab), R.drawable.app_icon)
+                    Item(0, stringResource(R.string.ui_tab), R.drawable.ui)
                     Item(1, stringResource(R.string.player_appearance), R.drawable.color_palette)
                     Item(2, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(3, stringResource(R.string.tab_data), R.drawable.server)

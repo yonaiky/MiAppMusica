@@ -1004,7 +1004,7 @@ fun MediaItemMenu(
                     }
 
                     MenuEntry(
-                        icon = R.drawable.alarm,
+                        icon = R.drawable.sleep,
                         text = stringResource(R.string.sleep_timer),
                         onClick = { isShowingSleepTimerDialog = true },
                         trailingContent = sleepTimerMillisLeft?.let {

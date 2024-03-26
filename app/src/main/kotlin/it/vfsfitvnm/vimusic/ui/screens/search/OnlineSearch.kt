@@ -65,6 +65,7 @@ import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.models.SearchQuery
 import it.vfsfitvnm.vimusic.query
+import it.vfsfitvnm.vimusic.ui.components.SimpleDockedSearchBar
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
@@ -454,4 +455,5 @@ fun OnlineSearch(
         delay(300)
         focusRequester.requestFocus()
     }
+
 }

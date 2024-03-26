@@ -135,7 +135,7 @@ fun SortMenu (
         }
         onArtist?.let {
             MenuEntry(
-                icon = R.drawable.person,
+                icon = R.drawable.artist,
                 text = stringResource(R.string.sort_artist),
                 onClick = {
                     onDismiss()
@@ -145,7 +145,7 @@ fun SortMenu (
         }
         onArtistAndAlbum?.let {
             MenuEntry(
-                icon = R.drawable.person,
+                icon = R.drawable.artist,
                 text = "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}",
                 onClick = {
                     onDismiss()

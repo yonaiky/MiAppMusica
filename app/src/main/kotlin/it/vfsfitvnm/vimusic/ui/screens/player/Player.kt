@@ -1380,7 +1380,7 @@ fun Player(
 
                         if (showButtonPlayerSleepTimer)
                         IconButton(
-                            icon = R.drawable.alarm,
+                            icon = R.drawable.sleep,
                             color = if (sleepTimerMillisLeft != null) colorPalette.text else colorPalette.textDisabled,
                             enabled = true,
                             onClick = {
