@@ -369,6 +369,21 @@ fun SongItem(
                         )
                     && !isDownloaded) {
                     val context = LocalContext.current
+                    IconButton(
+                        onClick = {
+                            DownloadService.sendRemoveDownload(
+                                context,
+                                MyDownloadService::class.java,
+                                mediaId,
+                                false
+                            )
+                        },
+                        icon = R.drawable.download_progress,
+                        color = colorPalette.text,
+                        modifier = Modifier
+                            .size(16.dp)
+                    )
+                    /*
                     CircularProgressIndicator(
                         strokeWidth = 2.dp,
                         color = colorPalette.text,
@@ -382,8 +397,8 @@ fun SongItem(
                                         false
                                     )
                             }
-
                     )
+                     */
                 } else {
                    IconButton(
                         onClick = onDownloadClick,
