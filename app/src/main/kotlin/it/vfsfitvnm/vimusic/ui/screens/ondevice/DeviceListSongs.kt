@@ -249,7 +249,7 @@ fun DeviceListSongs(
         if (showFolders) {
             val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
             val currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
-            songs = currentFolder?.songs?.map { it.toSong() } ?: emptyList()
+            songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSong() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
         }
@@ -461,7 +461,7 @@ fun DeviceListSongs(
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
 
-                    if (showFolders) {
+                    if (!showFolders) {
                         BasicText(
                             text = when (sortBy) {
                                 OnDeviceSongSortBy.Title -> stringResource(R.string.sort_title)
