@@ -388,10 +388,10 @@
     <string name="smart_recommendations">УМНЫЕ РЕКОМЕНДАЦИИ</string>
     <string name="player_collapsed_disable_swiping_down">Отключить свайп вниз</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Избежать закрытия плеера и очистки очереди свайпом вниз, пока он свёрнут</string>
-    <string name="sort_date_liked">Date Liked</string>
+    <string name="sort_date_liked">По дате добавления в Любимые</string>
     <string name="export_playlist">Экспортировать плейлист</string>
     <string name="lang_afrikaans">Африкаанс (Afrikaans)</string>
-    <string name="playlist_top">Playlist Top</string>
+    <string name="playlist_top">Плейлист Топ</string>
     <string name="my_playlist_top">Мой Топ</string>
     <string name="navigation_bar_position">Положение панели навигации</string>
     <string name="direction_left">Слева</string>
@@ -419,7 +419,7 @@
     <string name="open_permission_settings">Открыть настройки разрешений</string>
     <string name="show_background_progress_bar">Показать фоновый прогресс бар</string>
     <string name="background_progress_bar">Фоновый прогресс бар</string>
-    <string name="minimized_player">Minimized player</string>
+    <string name="minimized_player">Свернутый плеер</string>
     <string name="both">Оба</string>
     <string name="max_songs_in_queue">Макс. кол-во треков в очереди</string>
 </resources>
