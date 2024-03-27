@@ -1174,21 +1174,21 @@ fun BuiltInPlaylistSongs(
                                 },
                                 iconAction2 = R.drawable.trash,
                                 backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
-                                enableAction2 = builtInPlaylist == BuiltInPlaylist.Offline || builtInPlaylist == BuiltInPlaylist.Downloaded,
+                                enableAction2 = builtInPlaylist == BuiltInPlaylist.Offline,
                                 onClickAction2 = {
                                     if (binder != null) {
                                         when (builtInPlaylist) {
                                             BuiltInPlaylist.Offline ->
                                                 binder.cache.removeResource(song.asMediaItem.mediaId)
                                             BuiltInPlaylist.Favorites -> {}
-                                            BuiltInPlaylist.Downloaded -> {
-                                                binder.cache.removeResource(song.asMediaItem.mediaId)
+                                            BuiltInPlaylist.Downloaded -> {/*
+                                                binder.downloadCache.removeResource(song.asMediaItem.mediaId)
                                                 manageDownload(
                                                     context = context,
                                                     songId = song.asMediaItem.mediaId,
                                                     songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                                     downloadState = false
-                                                )
+                                                )*/
                                             }
                                             BuiltInPlaylist.Top -> {}
                                         }
