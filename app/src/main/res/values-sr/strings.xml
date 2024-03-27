@@ -201,7 +201,7 @@
     <string name="listen_on_youtube">Слушајте на Јутјубу</string>
     <string name="listen_on_youtube_music">Слушајте на Јутјуб Музици</string>
     <string name="on_device">На уређају</string>
-    <string name="wavy_timeline">Таласаста временска линија</string>
+    <string name="wavy_timeline">Таласаста</string>
     <string name="play_next">Пусти следеће</string>
     <string name="toggle_lyrics">Прикажи стихове</string>
     <string name="by_tapping_on_the_thumbnail">Додиром на сличицу</string>
@@ -238,8 +238,8 @@
     <string name="custom_cache_size">Прилагођена величина кеша</string>
     <string name="listen_on">Слушај на</string>
     <string name="error_local_music_not_found">Локална музичка датотека није пронађена</string>
-    <string name="bodied_bar">Дебео Бар</string>
-    <string name="pin_bar">Прикачи Бар</string>
+    <string name="bodied_bar">Дебела</string>
+    <string name="pin_bar">Цели Екран</string>
     <string name="rectangular">Правоугаоно</string>
     <string name="square">Квадрат</string>
     <string name="circular_ribbed">Кружна ребраста</string>
