@@ -185,7 +185,8 @@ fun HomeArtistList(
                         onClick = {
                             isRotated = !isRotated
                             onArtistClick(items.get((0..<items.size).random()))
-                        }
+                        },
+                        iconSize = 16.dp
                     )
 
                     Spacer(

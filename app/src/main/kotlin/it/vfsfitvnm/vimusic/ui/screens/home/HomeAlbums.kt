@@ -183,7 +183,8 @@ fun HomeAlbums(
                         onClick = {
                             isRotated = !isRotated
                             onAlbumClick(items.get((0..<items.size).random()))
-                        }
+                        },
+                        iconSize = 16.dp
                     )
 
                     Spacer(

@@ -262,7 +262,7 @@ fun HeaderInfo (
         contentDescription = null,
         colorFilter = ColorFilter.tint(colorPalette.shimmer),
         modifier = Modifier
-            .size(14.dp)
+            .size(20.dp)
     )
     BasicText(
         text = title,
