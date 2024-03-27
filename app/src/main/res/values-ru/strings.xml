@@ -407,7 +407,7 @@
     <string name="navigation_bar_type">Вид панели навигации</string>
     <string name="icon_and_text">Иконки и текст</string>
     <string name="only_icon">Только иконки</string>
-    <string name="show_search_tab_in_home">Показывать вкладку поиска на домашней панели</string>
+    <string name="show_search_tab_in_home">Показывать панель поиска на начальной странице</string>
     <string name="action_bar_show_menu_button">Показать кнопку меню</string>
     <string name="sort_album">Альбом</string>
     <string name="use_gradient_background">Использовать градиентный фон</string>
