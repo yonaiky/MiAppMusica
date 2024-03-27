@@ -86,7 +86,7 @@ fun  QuickPicsSettings() {
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.quick_picks),
-            iconId = R.drawable.app_icon,
+            iconId = R.drawable.sparkles,
             enabled = false,
             showIcon = true,
             modifier = Modifier,
