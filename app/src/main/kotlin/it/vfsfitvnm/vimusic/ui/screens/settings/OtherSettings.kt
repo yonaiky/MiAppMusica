@@ -200,7 +200,7 @@ fun OtherSettings() {
 
         SwitchSettingEntry(
             title = stringResource(R.string.folders),
-            text = "Show folders in On Device page",
+            text = stringResource(R.string.show_folders_in_on_device_page),
             isChecked = showFolders,
             onCheckedChange = { showFolders = it }
         )

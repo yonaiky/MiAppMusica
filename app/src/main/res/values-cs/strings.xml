@@ -423,6 +423,7 @@
     <string name="max_songs_in_queue">Maximální počet skladeb ve frontě</string>
     <string name="back">Zpět</string>
     <string name="folders">Složky</string>
+    <string name="show_folders_in_on_device_page">Zobrazení složek na stránce V zařízení</string>
     <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
