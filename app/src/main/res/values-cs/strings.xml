@@ -422,4 +422,7 @@
     <string name="minimized_player">Minimalizovaný přehrávač</string>
     <string name="both">Oba</string>
     <string name="max_songs_in_queue">Maximální počet skladeb ve frontě</string>
+    <string name="back">Zpět</string>
+    <string name="folders">Složky</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
 </resources>

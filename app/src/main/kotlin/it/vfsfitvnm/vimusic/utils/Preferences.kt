@@ -37,6 +37,7 @@ const val applyFontPaddingKey = "applyFontPadding"
 const val songSortOrderKey = "songSortOrder"
 const val songSortByKey = "songSortBy"
 const val onDeviceSongSortByKey = "onDeviceSongSortBy"
+const val onDeviceFolderSortByKey = "onDeviceFolderSortBy"
 const val playlistSortOrderKey = "playlistSortOrder"
 const val playlistSortByKey = "playlistSortBy"
 const val albumSortOrderKey = "albumSortOrder"
@@ -113,6 +114,7 @@ const val playbackPitchKey = "playbackPitch"
 const val showTotalTimeQueueKey = "showTotalTimeQueue"
 const val backgroundProgressKey = "backgroundProgress"
 const val maxSongsInQueueKey = "maxSongsInQueue"
+const val showFoldersOnDeviceKey = "showFoldersOnDevice"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
