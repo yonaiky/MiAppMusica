@@ -422,4 +422,7 @@
     <string name="minimized_player">Zminimalizowany odtwarzacz</string>
     <string name="both">Oba</string>
     <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="back">Back</string>
+    <string name="folders">Folders</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
 </resources>

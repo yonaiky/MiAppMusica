@@ -422,4 +422,7 @@
     <string name="minimized_player">Умањени плејер</string>
     <string name="both">Оба</string>
     <string name="max_songs_in_queue">Максималан број песама у реду</string>
+    <string name="back">Back</string>
+    <string name="folders">Folders</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
 </resources>

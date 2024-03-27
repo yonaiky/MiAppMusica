@@ -422,4 +422,7 @@
     <string name="minimized_player">最小化播放器</string>
     <string name="both">两者</string>
     <string name="max_songs_in_queue">队列中的最大歌曲数</string>
+    <string name="back">Back</string>
+    <string name="folders">Folders</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
 </resources>
