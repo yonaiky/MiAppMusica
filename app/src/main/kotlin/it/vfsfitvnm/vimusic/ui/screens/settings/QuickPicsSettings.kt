@@ -32,11 +32,13 @@ import it.vfsfitvnm.vimusic.ui.components.themed.ConfirmationDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
+import it.vfsfitvnm.vimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.playEventsTypeKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.showNewAlbumsArtistsKey
+import it.vfsfitvnm.vimusic.utils.showNewAlbumsKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistMightLikeKey
 import it.vfsfitvnm.vimusic.utils.showRelatedAlbumsKey
 import it.vfsfitvnm.vimusic.utils.showSimilarArtistsKey
@@ -54,6 +56,7 @@ fun  QuickPicsSettings() {
     var showRelatedAlbums by rememberPreference(showRelatedAlbumsKey, true)
     var showSimilarArtists by rememberPreference(showSimilarArtistsKey, true)
     var showNewAlbumsArtists by rememberPreference(showNewAlbumsArtistsKey, true)
+    var showNewAlbums by rememberPreference(showNewAlbumsKey, true)
     var showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
     val eventsCount by remember {
         Database.eventsCount().distinctUntilChanged()
@@ -66,6 +69,8 @@ fun  QuickPicsSettings() {
             onConfirm = { query(Database::clearEvents) }
         )
     }
+
+    var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
 
     val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
@@ -141,6 +146,15 @@ fun  QuickPicsSettings() {
             }
         )
 
+        SwitchSettingEntry(
+            title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}",
+            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.new_albums),
+            isChecked = showNewAlbums,
+            onCheckedChange = {
+                showNewAlbums = it
+            }
+        )
+
         //SettingsGroupSpacer()
 
         SwitchSettingEntry(
@@ -151,6 +165,16 @@ fun  QuickPicsSettings() {
                 showPlaylistMightLike = it
             }
         )
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.enable_language_in_discovery),
+            text = stringResource(R.string.if_possible_allows_discovery_content_language),
+            isChecked = isEnabledDiscoveryLangCode,
+            onCheckedChange = {
+                isEnabledDiscoveryLangCode = it
+            }
+        )
+        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
 
         SettingsEntry(
             title = stringResource(R.string.reset_quick_picks),

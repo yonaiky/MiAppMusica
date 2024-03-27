@@ -172,7 +172,7 @@ fun  UiSettings() {
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
-    var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
+
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
@@ -413,17 +413,7 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.enable_language_in_discovery).contains(filterCharSequence,true)) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.enable_language_in_discovery),
-                text = stringResource(R.string.if_possible_allows_discovery_content_language),
-                isChecked = isEnabledDiscoveryLangCode,
-                onCheckedChange = {
-                    isEnabledDiscoveryLangCode = it
-                }
-            )
-            SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
-        }
+
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))

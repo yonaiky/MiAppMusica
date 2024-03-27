@@ -112,6 +112,7 @@ import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.showNewAlbumsArtistsKey
+import it.vfsfitvnm.vimusic.utils.showNewAlbumsKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistMightLikeKey
 import it.vfsfitvnm.vimusic.utils.showRelatedAlbumsKey
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
@@ -162,6 +163,7 @@ fun QuickPicks(
     val showSimilarArtists by rememberPreference(showSimilarArtistsKey, true)
     val showNewAlbumsArtists by rememberPreference(showNewAlbumsArtistsKey, true)
     val showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
+    val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
@@ -302,12 +304,12 @@ fun QuickPicks(
             relatedPageResult?.getOrNull()?.let { related ->
                 LazyHorizontalGrid(
                     state = quickPicksLazyGridState,
-                    rows = GridCells.Fixed(2),
+                    rows = GridCells.Fixed(3),
                     flingBehavior = ScrollableDefaults.flingBehavior(),
                     contentPadding = endPaddingValues,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(Dimensions.itemsVerticalPadding * 3 * 6)
+                        .height(Dimensions.itemsVerticalPadding * 3 * 9)
                         //.height((songThumbnailSizeDp + Dimensions.itemsVerticalPadding * 2) * 4)
                 ) {
                     trending?.let { song ->
@@ -532,26 +534,27 @@ fun QuickPicks(
 
                         }
 
-                    BasicText(
-                        text = stringResource(R.string.new_albums),
-                        style = typography.m.semiBold,
-                        modifier = sectionTextModifier
-                    )
+                    if (showNewAlbums) {
+                        BasicText(
+                            text = stringResource(R.string.new_albums),
+                            style = typography.m.semiBold,
+                            modifier = sectionTextModifier
+                        )
 
-                    LazyRow(contentPadding = endPaddingValues) {
-                        items(items = page.newReleaseAlbums.distinct(), key = { it.key }) {
-                            AlbumItem(
-                                album = it,
-                                thumbnailSizePx = albumThumbnailSizePx,
-                                thumbnailSizeDp = albumThumbnailSizeDp,
-                                alternative = true,
-                                modifier = Modifier.clickable(onClick = {
-                                    onAlbumClick( it.key )
-                                })
-                            )
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(items = page.newReleaseAlbums.distinct(), key = { it.key }) {
+                                AlbumItem(
+                                    album = it,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier.clickable(onClick = {
+                                        onAlbumClick(it.key)
+                                    })
+                                )
+                            }
                         }
                     }
-
                 }
 
                 if (showRelatedAlbums)
@@ -676,7 +679,7 @@ fun QuickPicks(
                         .padding(all = 16.dp)
                 )
             } ?: ShimmerHost {
-                repeat(2) {
+                repeat(3) {
                     SongItemPlaceholder(
                         thumbnailSizeDp = songThumbnailSizeDp,
                     )
