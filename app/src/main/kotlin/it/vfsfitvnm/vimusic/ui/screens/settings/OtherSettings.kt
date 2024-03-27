@@ -59,6 +59,7 @@ import it.vfsfitvnm.vimusic.utils.proxyHostnameKey
 import it.vfsfitvnm.vimusic.utils.proxyModeKey
 import it.vfsfitvnm.vimusic.utils.proxyPortKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
+import it.vfsfitvnm.vimusic.utils.showFoldersOnDeviceKey
 import it.vfsfitvnm.vimusic.utils.showStatsListeningTimeKey
 import it.vfsfitvnm.vimusic.utils.toast
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -113,6 +114,8 @@ fun OtherSettings() {
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+
+    var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
     Column(
         modifier = Modifier
@@ -193,6 +196,13 @@ fun OtherSettings() {
             conflictTitle = stringResource(R.string.this_folder_already_exists),
             removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
             context = LocalContext.current
+        )
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.folders),
+            text = "Show folders in On Device page",
+            isChecked = showFolders,
+            onCheckedChange = { showFolders = it }
         )
 
         SettingsGroupSpacer()

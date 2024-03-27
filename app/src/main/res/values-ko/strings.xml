@@ -421,6 +421,9 @@
     <string name="minimized_player">플레이어 최소화</string>
     <string name="both">둘다</string>
     <string name="max_songs_in_queue">재생목록 노래 최대 갯수</string>
+    <string name="back">Back</string>
+    <string name="folders">Folders</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>

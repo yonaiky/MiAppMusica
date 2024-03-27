@@ -421,6 +421,9 @@
     <string name="minimized_player">छोटा प्लेयर</string>
     <string name="both">दोनों</string>
     <string name="max_songs_in_queue">Max songs in queue</string>
+    <string name="back">Back</string>
+    <string name="folders">Folders</string>
+    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>
