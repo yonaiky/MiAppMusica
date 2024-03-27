@@ -1,5 +1,6 @@
 package it.vfsfitvnm.vimusic.ui.screens.player
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -167,7 +168,7 @@ fun Thumbnail(
                 .clip(LocalAppearance.current.thumbnailShape)
                 .size(thumbnailSizeDp)
         ) {
-            if (currentWindow.mediaItem.mediaMetadata.artworkUri.toString().isEmpty()) {
+            if (currentWindow.mediaItem.mediaMetadata.artworkUri == null ||  currentWindow.mediaItem.mediaMetadata.artworkUri == Uri.EMPTY) {
                 Image(
                     painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),

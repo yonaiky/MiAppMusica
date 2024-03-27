@@ -113,6 +113,7 @@ import it.vfsfitvnm.vimusic.utils.positionAndDurationState
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.seamlessPlay
 import it.vfsfitvnm.vimusic.utils.semiBold
+import it.vfsfitvnm.vimusic.utils.showRemainingSongTimeKey
 import it.vfsfitvnm.vimusic.utils.toast
 import it.vfsfitvnm.vimusic.utils.trackLoopEnabledKey
 import kotlinx.coroutines.delay
@@ -261,6 +262,7 @@ fun Controls(
     var showSpeedPlayerDialog by rememberSaveable {
         mutableStateOf(false)
     }
+    val showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
 
     if (showSpeedPlayerDialog) {
         PlaybackParamsDialog(
@@ -657,14 +659,15 @@ fun Controls(
 
                     if (!paused) {
 
-                        BasicText(
-                            text = "-${formatAsDuration(timeRemaining.toLong())}",
-                            style = typography.xxs.semiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                        )
+                        if (showRemainingSongTime)
+                            BasicText(
+                                text = "-${formatAsDuration(timeRemaining.toLong())}",
+                                style = typography.xxs.semiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                            )
 
                         /*
                         Row(

@@ -110,7 +110,9 @@ import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
 import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
 import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.showNextSongsInPlayerKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
+import it.vfsfitvnm.vimusic.utils.showRemainingSongTimeKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import it.vfsfitvnm.vimusic.utils.thumbnailTapEnabledKey
@@ -161,6 +163,8 @@ fun AppearanceSettings() {
     var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     var backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
+    var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
+    var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -349,21 +353,6 @@ fun AppearanceSettings() {
                 onCheckedChange = { isGradientBackgroundEnabled = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(filterCharSequence,true))
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.background_progress_bar),
-                selectedValue = backgroundProgress,
-                onValueSelected = {
-                    backgroundProgress = it
-                },
-                valueText = {
-                    when (it) {
-                        BackgroundProgress.Player -> stringResource(R.string.player)
-                        BackgroundProgress.MiniPlayer -> stringResource(R.string.minimized_player)
-                        BackgroundProgress.Both -> stringResource(R.string.both)
-                    }
-                },
-            )
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(filterCharSequence,true))
             SwitchSettingEntry(
@@ -371,6 +360,22 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = showTotalTimeQueue,
                 onCheckedChange = { showTotalTimeQueue = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.show_remaining_song_time).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_remaining_song_time),
+                text = "",
+                isChecked = showRemainingSongTime,
+                onCheckedChange = { showRemainingSongTime = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.show_next_songs_in_player).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_next_songs_in_player),
+                text = "",
+                isChecked = showNextSongsInPlayer,
+                onCheckedChange = { showNextSongsInPlayer = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(filterCharSequence,true))
@@ -387,6 +392,38 @@ fun AppearanceSettings() {
                 text = stringResource(R.string.disable_song_switching_via_swipe),
                 isChecked = disablePlayerHorizontalSwipe,
                 onCheckedChange = { disablePlayerHorizontalSwipe = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_rotating_buttons).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_rotating_buttons),
+                text = stringResource(R.string.player_enable_rotation_buttons),
+                isChecked = effectRotationEnabled,
+                onCheckedChange = { effectRotationEnabled = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.toggle_lyrics).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.toggle_lyrics),
+                text = stringResource(R.string.by_tapping_on_the_thumbnail),
+                isChecked = thumbnailTapEnabled,
+                onCheckedChange = { thumbnailTapEnabled = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.background_progress_bar),
+                selectedValue = backgroundProgress,
+                onValueSelected = {
+                    backgroundProgress = it
+                },
+                valueText = {
+                    when (it) {
+                        BackgroundProgress.Player -> stringResource(R.string.player)
+                        BackgroundProgress.MiniPlayer -> stringResource(R.string.minimized_player)
+                        BackgroundProgress.Both -> stringResource(R.string.both)
+                    }
+                },
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(filterCharSequence,true))
@@ -424,14 +461,6 @@ fun AppearanceSettings() {
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_rotating_buttons).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_rotating_buttons),
-                text = stringResource(R.string.player_enable_rotation_buttons),
-                isChecked = effectRotationEnabled,
-                onCheckedChange = { effectRotationEnabled = it }
-            )
-
         if (filter.isNullOrBlank() || stringResource(R.string.visualizer).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.visualizer),
@@ -452,14 +481,6 @@ fun AppearanceSettings() {
             )
             ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
         }
-
-        if (filter.isNullOrBlank() || stringResource(R.string.toggle_lyrics).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.toggle_lyrics),
-                text = stringResource(R.string.by_tapping_on_the_thumbnail),
-                isChecked = thumbnailTapEnabled,
-                onCheckedChange = { thumbnailTapEnabled = it }
-            )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))

@@ -14,9 +14,11 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -153,6 +155,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
 import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.showNextSongsInPlayerKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.shuffleQueue
 import it.vfsfitvnm.vimusic.utils.thumbnail
@@ -343,16 +346,6 @@ fun Player(
     */
 
 
-    /*
-
-    var nextmediaItemIndex = binder.player.nextMediaItemIndex ?: -1
-    var nextmediaItemtitle = ""
-
-
-    if (nextmediaItemIndex.toShort() > -1)
-        nextmediaItemtitle = binder.player.getMediaItemAt(nextmediaItemIndex).mediaMetadata.title.toString()
-    */
-
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
 
 
@@ -406,9 +399,7 @@ fun Player(
 
     var timeRemaining by remember { mutableIntStateOf(0) }
 
-    if (positionAndDuration != null) {
-        timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
-    }
+    timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -809,9 +800,11 @@ fun Player(
         }
 
         val thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
+        val showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
 
+        val playerBottomHeight = if (showNextSongsInPlayer) 80.dp else 50.dp
         val playerBottomSheetState = rememberBottomSheetState(
-            60.dp + horizontalBottomPaddingValues.calculateBottomPadding(),
+            playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
             layoutState.expandedBound
         )
 
@@ -1156,7 +1149,7 @@ fun Player(
 
                 Spacer(
                     modifier = Modifier
-                        .height(20.dp)
+                        .height(5.dp)
                 )
 
                 Box(
@@ -1222,35 +1215,43 @@ fun Player(
 
                 val context = LocalContext.current
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.SpaceEvenly,
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(horizontal = 12.dp)
-                        .fillMaxWidth()
-
+                        //.border(BorderStroke(1.dp, Color.Green))
+                        .fillMaxHeight()
                 ) {
-                    //if (uiType != UiType.ViMusic) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            //.align(Alignment.Center)
+                            .padding(horizontal = 12.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.5f)
 
-                        if(showButtonPlayerDownload)
-                        DownloadStateIconButton(
-                            icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                            color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
-                            downloadState = downloadState,
-                            onClick = {
-                                //if (!isLocal)
-                                manageDownload(
-                                    context = context,
-                                    songId = mediaItem.mediaId,
-                                    songTitle = mediaItem.mediaMetadata.title.toString(),
-                                    downloadState = isDownloaded
-                                )
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 4.dp)
-                                .size(24.dp)
-                        )
+                    ) {
+                        //if (uiType != UiType.ViMusic) {
+
+                        if (showButtonPlayerDownload)
+                            DownloadStateIconButton(
+                                icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
+                                color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                                downloadState = downloadState,
+                                onClick = {
+                                    //if (!isLocal)
+                                    manageDownload(
+                                        context = context,
+                                        songId = mediaItem.mediaId,
+                                        songTitle = mediaItem.mediaMetadata.title.toString(),
+                                        downloadState = isDownloaded
+                                    )
+                                },
+                                modifier = Modifier
+                                    //.padding(horizontal = 4.dp)
+                                    .size(24.dp)
+                            )
 
                         /*
                         if (showPlaylistSelectDialog) {
@@ -1290,7 +1291,7 @@ fun Player(
                         }
                         */
 
-                        if(showButtonPlayerAddToPlaylist)
+                        if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
                                 color = colorPalette.text,
@@ -1303,17 +1304,17 @@ fun Player(
                                                 position =
                                                     playlistPreview.songCount.minus(1) ?: 0
                                                 if (position > 0) position++ else position = 0
-                                                        transaction {
-                                                            Database.insert(mediaItem)
-                                                            Database.insert(
-                                                                SongPlaylistMap(
-                                                                    songId = mediaItem.mediaId,
-                                                                    playlistId = playlistPreview.playlist.id,
-                                                                    position = position + 1
-                                                                )
-                                                            )
-                                                        }
+                                                transaction {
+                                                    Database.insert(mediaItem)
+                                                    Database.insert(
+                                                        SongPlaylistMap(
+                                                            songId = mediaItem.mediaId,
+                                                            playlistId = playlistPreview.playlist.id,
+                                                            position = position + 1
+                                                        )
+                                                    )
                                                 }
+                                            }
                                         )
                                     }
                                 },
@@ -1324,44 +1325,44 @@ fun Player(
 
 
 
-                        if(showButtonPlayerLoop)
-                        IconButton(
-                            icon = R.drawable.repeat,
-                            color = if (trackLoopEnabled) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                trackLoopEnabled = !trackLoopEnabled
-                                if (effectRotationEnabled) isRotated = !isRotated
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 4.dp)
-                                .size(24.dp)
-                        )
+                        if (showButtonPlayerLoop)
+                            IconButton(
+                                icon = R.drawable.repeat,
+                                color = if (trackLoopEnabled) colorPalette.text else colorPalette.textDisabled,
+                                onClick = {
+                                    trackLoopEnabled = !trackLoopEnabled
+                                    if (effectRotationEnabled) isRotated = !isRotated
+                                },
+                                modifier = Modifier
+                                    //.padding(horizontal = 4.dp)
+                                    .size(24.dp)
+                            )
 
-                        if(showButtonPlayerShuffle)
-                        IconButton(
-                            icon = R.drawable.shuffle,
-                            color = colorPalette.text,
-                            enabled = true,
-                            onClick = {
-                                binder?.player?.shuffleQueue()
-                                binder.player.forceSeekToNext()
-                            },
-                            modifier = Modifier
-                                .size(24.dp),
-                        )
+                        if (showButtonPlayerShuffle)
+                            IconButton(
+                                icon = R.drawable.shuffle,
+                                color = colorPalette.text,
+                                enabled = true,
+                                onClick = {
+                                    binder?.player?.shuffleQueue()
+                                    binder.player.forceSeekToNext()
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
-                        if(showButtonPlayerLyrics)
-                        IconButton(
-                            icon = R.drawable.song_lyrics,
-                            color = if (isShowingLyrics) colorPalette.text else colorPalette.textDisabled,
-                            enabled = true,
-                            onClick = {
-                                if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
-                                isShowingLyrics = !isShowingLyrics
-                            },
-                            modifier = Modifier
-                                .size(24.dp),
-                        )
+                        if (showButtonPlayerLyrics)
+                            IconButton(
+                                icon = R.drawable.song_lyrics,
+                                color = if (isShowingLyrics) colorPalette.text else colorPalette.textDisabled,
+                                enabled = true,
+                                onClick = {
+                                    if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
+                                    isShowingLyrics = !isShowingLyrics
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
 
                         if (playerVisualizerType != PlayerVisualizerType.Disabled)
@@ -1379,46 +1380,46 @@ fun Player(
 
 
                         if (showButtonPlayerSleepTimer)
-                        IconButton(
-                            icon = R.drawable.sleep,
-                            color = if (sleepTimerMillisLeft != null) colorPalette.text else colorPalette.textDisabled,
-                            enabled = true,
-                            onClick = {
-                                isShowingSleepTimerDialog = true
-                            },
-                            modifier = Modifier
-                                .size(24.dp),
-                        )
+                            IconButton(
+                                icon = R.drawable.sleep,
+                                color = if (sleepTimerMillisLeft != null) colorPalette.text else colorPalette.textDisabled,
+                                enabled = true,
+                                onClick = {
+                                    isShowingSleepTimerDialog = true
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
-                        if(showButtonPlayerArrow)
-                        IconButton(
-                            icon = R.drawable.chevron_up,
-                            color = colorPalette.text,
-                            enabled = true,
-                            onClick = {
-                                playerBottomSheetState.expandSoft()
-                            },
-                            modifier = Modifier
-                                .size(24.dp),
-                        )
+                        if (showButtonPlayerArrow)
+                            IconButton(
+                                icon = R.drawable.chevron_up,
+                                color = colorPalette.text,
+                                enabled = true,
+                                onClick = {
+                                    playerBottomSheetState.expandSoft()
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
-                        if(showButtonPlayerMenu)
-                        IconButton(
-                            icon = R.drawable.ellipsis_vertical,
-                            color = colorPalette.text,
-                            onClick = {
-                                menuState.display {
-                                    PlayerMenu(
-                                        onDismiss = menuState::hide,
-                                        mediaItem = mediaItem,
-                                        binder = binder
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 15.dp)
-                                .size(24.dp)
-                        )
+                        if (showButtonPlayerMenu)
+                            IconButton(
+                                icon = R.drawable.ellipsis_vertical,
+                                color = colorPalette.text,
+                                onClick = {
+                                    menuState.display {
+                                        PlayerMenu(
+                                            onDismiss = menuState::hide,
+                                            mediaItem = mediaItem,
+                                            binder = binder
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    //.padding(horizontal = 15.dp)
+                                    .size(24.dp)
+                            )
 
 
                         if (isLandscape) {
@@ -1440,6 +1441,101 @@ fun Player(
                                     .size(24.dp)
                             )
                         }
+                    }
+
+                    if (showNextSongsInPlayer) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            val nextMediaItemIndex = binder.player.nextMediaItemIndex
+                            val nextMediaItem = if (binder.player.hasNextMediaItem())
+                                                    binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
+                                                else MediaItem.EMPTY
+                            val nextNextMediaItem = try {
+                                binder.player.getMediaItemAt(nextMediaItemIndex+1)
+                            } catch (e: Exception) {
+                                MediaItem.EMPTY
+                            }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .height(Dimensions.collapsedPlayer)
+                            ) {
+                                AsyncImage(
+                                    model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(Dimensions.thumbnails.song.px / 2),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(Dimensions.collapsedPlayer)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .height(Dimensions.collapsedPlayer)
+                            ) {
+                                AsyncImage(
+                                    model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(Dimensions.thumbnails.song.px / 2),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(Dimensions.collapsedPlayer)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.title?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.artist?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                        }
+                    }
                 }
             },
             backgroundColorProvider = { colorPalette.background2 },

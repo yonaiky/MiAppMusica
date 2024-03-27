@@ -114,6 +114,8 @@ const val playbackPitchKey = "playbackPitch"
 const val showTotalTimeQueueKey = "showTotalTimeQueue"
 const val backgroundProgressKey = "backgroundProgress"
 const val maxSongsInQueueKey = "maxSongsInQueue"
+const val showNextSongsInPlayerKey = "showNextSongsInPlayer"
+const val showRemainingSongTimeKey = "showRemainingSongTime"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
