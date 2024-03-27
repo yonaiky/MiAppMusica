@@ -84,6 +84,7 @@ import it.vfsfitvnm.vimusic.ui.styling.DefaultDarkColorPalette
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.PureBlackColorPalette
+import it.vfsfitvnm.vimusic.ui.styling.Typography
 import it.vfsfitvnm.vimusic.ui.styling.onOverlayShimmer
 import it.vfsfitvnm.vimusic.utils.SynchronizedLyrics
 import it.vfsfitvnm.vimusic.utils.TextCopyToClipboard
@@ -94,6 +95,7 @@ import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getHttpClient
 import it.vfsfitvnm.vimusic.utils.isShowingSynchronizedLyricsKey
 import it.vfsfitvnm.vimusic.utils.languageDestination
+import it.vfsfitvnm.vimusic.utils.lyricsFontSizeKey
 import it.vfsfitvnm.vimusic.utils.medium
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.shouldBePlaying
@@ -158,66 +160,6 @@ fun Lyrics(
 
         val languageDestination = languageDestination()
 
-        /*
-        val languageApp  by rememberPreference(languageAppKey, Languages.English)
-
-        val languageDestination = when (languageApp){
-            Languages.Arabic -> Language.ARABIC
-            Languages.Bashkir -> Language.BASQUE
-            Languages.Catalan -> Language.CATALAN
-            Languages.ChineseSimplified -> Language.CHINESE_SIMPLIFIED
-            Languages.ChineseTraditional -> Language.CHINESE_TRADITIONAL
-            Languages.Czech -> Language.CZECH
-            Languages.Dutch -> Language.DUTCH
-            Languages.English -> Language.ENGLISH
-            Languages.Esperanto -> Language.ESPERANTO
-            Languages.Finnish -> Language.FINNISH
-            Languages.French -> Language.FRENCH
-            Languages.German -> Language.GERMAN
-            Languages.Greek -> Language.GREEK
-            Languages.Hebrew -> Language.HEBREW_HE
-            Languages.Hindi -> Language.HINDI
-            Languages.Hungarian -> Language.HUNGARIAN
-            Languages.Indonesian -> Language.INDONESIAN
-            Languages.Japanese -> Language.JAPANESE
-            Languages.Korean -> Language.KOREAN
-            Languages.Italian -> Language.ITALIAN
-            Languages.Odia -> Language.ODIA
-            Languages.Persian -> Language.PERSIAN
-            Languages.Polish -> Language.POLISH
-            Languages.PortugueseBrazilian -> Language.PORTUGUESE
-            Languages.Portuguese -> Language.PORTUGUESE
-            Languages.Romanian -> Language.ROMANIAN
-            Languages.Russian -> Language.RUSSIAN
-            Languages.Sinhala -> Language.SINHALA
-            Languages.Spanish -> Language.SPANISH
-            Languages.Turkish -> Language.TURKISH
-            Languages.Ukrainian -> Language.UKRAINIAN
-            Languages.Vietnamese -> Language.VIETNAMESE
-            else -> Language.ENGLISH
-        }
-         */
-        //val systemLocale = LocaleListCompat.getDefault().get(0).toString()
-        //val systemLangCode = AppCompatDelegate.getApplicationLocales().get(0).toString()
-        /*
-        val systemLocale = Locale.getDefault().getLanguage()
-
-        val languageDestination = when (systemLocale) {
-            "ru" -> Language.RUSSIAN
-            "it" -> Language.ITALIAN
-            "cs" -> Language.CZECH
-            "de" -> Language.GERMAN
-            "es" -> Language.SPANISH
-            "fr" -> Language.FRENCH
-            "ro" -> Language.ROMANIAN
-            "tr" -> Language.TURKISH
-            "pl" -> Language.POLISH
-            else -> {
-                Language.ENGLISH
-            }
-        }
-         */
-
         var translateEnabled by remember {
             mutableStateOf(false)
         }
@@ -232,33 +174,8 @@ fun Lyrics(
                 TextCopyToClipboard(it)
         }
 
-        /*
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-        if (copyToClipboard) text?.let {
-            if (!translateEnabled)
-                TextCopyToClipboard(it)
-            else {
-                var transText by remember { mutableStateOf("") }
-                    coroutineScope.launch {
-                        val result = withContext(Dispatchers.IO) {
-                            try {
-                                translator.translate(
-                                    it,
-                                    languageDestination,
-                                    Language.AUTO
-                                ).translatedText
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-                        transText =
-                            if (result.toString() == "kotlin.Unit") "" else result.toString()
-                    }
-                if (transText != "") TextCopyToClipboard(transText)
-            }
-            copyToClipboard = false
-        }
-        */
+        //var fontSize by rememberPreference(lyricsFontSizeKey, Typography::m.get())
+
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics) {
             withContext(Dispatchers.IO) {
 

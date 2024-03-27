@@ -22,6 +22,7 @@ data class Typography(
     val s: TextStyle,
     val m: TextStyle,
     val l: TextStyle,
+    val xl: TextStyle,
     val xxl: TextStyle,
 ) {
     fun copy(color: Color) = Typography(
@@ -31,6 +32,7 @@ data class Typography(
         s = s.copy(color = color),
         m = m.copy(color = color),
         l = l.copy(color = color),
+        xl = xl.copy(color = color),
         xxl = xxl.copy(color = color)
     )
 
@@ -102,12 +104,13 @@ fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean
     )
 
     return Typography(
-        xxxs = textStyle.copy(fontSize = 12.sp),
+        xxxs = textStyle.copy(fontSize = 10.sp),
         xxs = textStyle.copy(fontSize = 12.sp),
         xs = textStyle.copy(fontSize = 14.sp),
         s = textStyle.copy(fontSize = 16.sp),
         m = textStyle.copy(fontSize = 18.sp),
         l = textStyle.copy(fontSize = 20.sp),
+        xl = textStyle.copy(fontSize = 24.sp),
         xxl = textStyle.copy(fontSize = 28.sp)
     )
 }
