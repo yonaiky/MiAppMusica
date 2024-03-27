@@ -1031,7 +1031,9 @@ fun PlaybackParamsDialog(
                         PlaybackParameters(playbackSpeed, playbackPitch)
                 },
                 icon = R.drawable.slow_motion,
-                color = colorPalette.favoritesIcon
+                color = colorPalette.favoritesIcon,
+                modifier = Modifier
+                    .size(24.dp)
             )
 
             CustomSlider(
@@ -1097,7 +1099,9 @@ fun PlaybackParamsDialog(
                         PlaybackParameters(playbackSpeed, playbackPitch)
                 },
                 icon = R.drawable.equalizer,
-                color = colorPalette.favoritesIcon
+                color = colorPalette.favoritesIcon,
+                modifier = Modifier
+                    .size(20.dp)
             )
 
             CustomSlider(

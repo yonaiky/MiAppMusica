@@ -43,8 +43,8 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -267,7 +267,7 @@ fun DeviceListSongs(
         if (!filter.isNullOrBlank())
             filteredSongs = songs
                 .filter {
-                    it.title?.contains(filterCharSequence,true) ?: false
+                    it.title.contains(filterCharSequence,true) ?: false
                             || it.artistsText?.contains(filterCharSequence,true) ?: false
                 }
 
