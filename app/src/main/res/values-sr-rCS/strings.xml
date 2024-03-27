@@ -278,9 +278,9 @@
     <string name="by_most_played_song">Najviše puštana pesma</string>
     <string name="by_last_played_song">Poslednja puštena pesma</string>
     <string name="audio_quality_automatic">Automatski</string>
-    <string name="statistics_songs_heard">songs heard</string>
-    <string name="statistics_of_time_taken">of time taken</string>
-    <string name="statistics_max_number_of_items">Max number of items</string>
+    <string name="statistics_songs_heard">slušane pesme</string>
+    <string name="statistics_of_time_taken">oduzetog vremena</string>
+    <string name="statistics_max_number_of_items">Maksimalni broj stavki</string>
     <string name="arabic">Arabic</string>
     <string name="chinese_simplified">Chinese Simplified</string>
     <string name="chinese_traditional">Chinese Traditional</string>
