@@ -930,6 +930,9 @@ fun Controls(
         }
 
 }
+
+
+/*
 @ExperimentalTextApi
 @ExperimentalAnimationApi
 @UnstableApi
@@ -997,3 +1000,4 @@ private fun Duration(
         }
     }
 }
+*/

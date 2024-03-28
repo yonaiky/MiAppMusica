@@ -155,6 +155,7 @@ import it.vfsfitvnm.vimusic.utils.showButtonPlayerMenuKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerShuffleKey
 import it.vfsfitvnm.vimusic.utils.showButtonPlayerSleepTimerKey
 import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.vfsfitvnm.vimusic.utils.showNextSongsInPlayerKey
 import it.vfsfitvnm.vimusic.utils.showTotalTimeQueueKey
 import it.vfsfitvnm.vimusic.utils.shuffleQueue
@@ -375,6 +376,7 @@ fun Player(
     val showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    val showButtonPlayerSystemEqualizer by rememberPreference(showButtonPlayerSystemEqualizerKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
@@ -1390,6 +1392,41 @@ fun Player(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
+
+                        if (showButtonPlayerSystemEqualizer) {
+                            val activityResultLauncher =
+                                rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
+                            IconButton(
+                                icon = R.drawable.equalizer,
+                                color = colorPalette.text,
+                                enabled = true,
+                                onClick = {
+                                    try {
+                                        activityResultLauncher.launch(
+                                            Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                                                putExtra(
+                                                    AudioEffect.EXTRA_AUDIO_SESSION,
+                                                    binder.player.audioSessionId
+                                                )
+                                                putExtra(
+                                                    AudioEffect.EXTRA_PACKAGE_NAME,
+                                                    context.packageName
+                                                )
+                                                putExtra(
+                                                    AudioEffect.EXTRA_CONTENT_TYPE,
+                                                    AudioEffect.CONTENT_TYPE_MUSIC
+                                                )
+                                            }
+                                        )
+                                    } catch (e: ActivityNotFoundException) {
+                                        context.toast("Couldn't find an application to equalize audio")
+                                    }
+                                },
+                                modifier = Modifier
+                                    .size(20.dp),
+                            )
+                        }
 
                         if (showButtonPlayerArrow)
                             IconButton(

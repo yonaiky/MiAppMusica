@@ -110,6 +110,7 @@ import it.vfsfitvnm.vimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
 import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
 import it.vfsfitvnm.vimusic.utils.backgroundProgressKey
+import it.vfsfitvnm.vimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.vfsfitvnm.vimusic.utils.showNextSongsInPlayerKey
 import it.vfsfitvnm.vimusic.utils.showPlaylistsKey
 import it.vfsfitvnm.vimusic.utils.showRemainingSongTimeKey
@@ -154,6 +155,7 @@ fun AppearanceSettings() {
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    var showButtonPlayerSystemEqualizer by rememberPreference(showButtonPlayerSystemEqualizerKey, false)
 
     val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
@@ -531,6 +533,14 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = showButtonPlayerSleepTimer,
                 onCheckedChange = { showButtonPlayerSleepTimer = it }
+            )
+
+        if (filter.isNullOrBlank() || ("${stringResource(R.string.show)} ${stringResource(R.string.equalizer)}").contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.equalizer)}",
+                text = "",
+                isChecked = showButtonPlayerSystemEqualizer,
+                onCheckedChange = { showButtonPlayerSystemEqualizer = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_arrow_button).contains(filterCharSequence,true))
