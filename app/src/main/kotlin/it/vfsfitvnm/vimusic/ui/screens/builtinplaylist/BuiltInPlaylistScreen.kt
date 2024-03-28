@@ -39,6 +39,11 @@ import it.vfsfitvnm.vimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.vfsfitvnm.vimusic.utils.pauseSearchHistoryKey
 import it.vfsfitvnm.vimusic.utils.preferences
 import it.vfsfitvnm.vimusic.utils.rememberPreference
+import it.vfsfitvnm.vimusic.utils.showCachedPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showDownloadedPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showFavoritesPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showMyTopPlaylistKey
+import it.vfsfitvnm.vimusic.utils.showOnDevicePlaylistKey
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 
 @ExperimentalMaterialApi
@@ -75,6 +80,11 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
         MaxTopPlaylistItemsKey,
         MaxTopPlaylistItems.`10`
     )
+    val showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
+    val showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    val showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
+    val showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
+    val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     PersistMapCleanup(tagPrefix = "${builtInPlaylist.name}/")
@@ -121,13 +131,16 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.favorites), R.drawable.heart)
-                    if(exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled)
+                    if(showFavoritesPlaylist)
+                        Item(0, stringResource(R.string.favorites), R.drawable.heart)
+                    if(showCachedPlaylist)
                         Item(1, stringResource(R.string.cached), R.drawable.sync)
-                    if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled)
+                    if(showDownloadedPlaylist)
                         Item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
-                    Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
-                    Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
+                    if(showMyTopPlaylist)
+                        Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
+                    if(showOnDevicePlaylist)
+                        Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

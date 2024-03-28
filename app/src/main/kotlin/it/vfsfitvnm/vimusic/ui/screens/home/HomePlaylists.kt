@@ -131,7 +131,7 @@ fun HomePlaylists(
         mutableStateOf(false)
     }
 
-
+/*
     var exoPlayerDiskCacheMaxSize by rememberPreference(
         exoPlayerDiskCacheMaxSizeKey,
         ExoPlayerDiskCacheMaxSize.`32MB`
@@ -141,6 +141,8 @@ fun HomePlaylists(
         exoPlayerDiskDownloadCacheMaxSizeKey,
         ExoPlayerDiskDownloadCacheMaxSize.`2GB`
     )
+
+ */
 
     if (isCreatingANewPlaylist) {
         InputTextDialog(
