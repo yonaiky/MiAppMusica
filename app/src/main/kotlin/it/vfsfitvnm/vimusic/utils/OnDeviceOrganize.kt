@@ -32,7 +32,7 @@ class OnDeviceOrganize {
             }
         }
         fun organizeSongsIntoFolders(songs: List<OnDeviceSong>): Folder {
-            val rootFolder = Folder("/")
+            val rootFolder = Folder("/", fullPath = "/")
 
             for (song in songs) {
                 if (song.relativePath == "/") {
@@ -41,15 +41,16 @@ class OnDeviceOrganize {
                 else {
                     val pathSegments = song.relativePath.split('/')
                     var currentFolder = rootFolder
+                    var currentFullPath = ""
 
-                    for (i in 0 until pathSegments.size) {
-                        val folderName = pathSegments[i]
-                        if (folderName.isNotBlank()) {
-                            val existingFolder = currentFolder.subFolders.find { it.name == folderName }
+                    for (segment in pathSegments) {
+                        if (segment.isNotBlank()) {
+                            currentFullPath += "/$segment"
+                            val existingFolder = currentFolder.subFolders.find { it.name == segment }
                             currentFolder = if (existingFolder != null) {
                                 existingFolder
                             } else {
-                                val newFolder = Folder(folderName, currentFolder)
+                                val newFolder = Folder(segment, currentFolder, fullPath = currentFullPath + "/")
                                 currentFolder.addSubFolder(newFolder)
                                 newFolder
                             }

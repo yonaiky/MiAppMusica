@@ -44,6 +44,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.checkUpdateStateKey
 import it.vfsfitvnm.vimusic.utils.contentWidthKey
+import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid10
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid12
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid6
 import it.vfsfitvnm.vimusic.utils.isIgnoringBatteryOptimizations
@@ -192,7 +193,11 @@ fun OtherSettings() {
             title = stringResource(R.string.blacklisted_folders),
             text = stringResource(R.string.edit_blacklist_for_on_device_songs),
             addTitle = stringResource(R.string.add_folder),
-            addPlaceholder = "Android/media/com.whatsapp/WhatsApp/Media",
+            addPlaceholder = if (isAtLeastAndroid10) {
+                "Android/media/com.whatsapp/WhatsApp/Media"
+            } else {
+                "/storage/emulated/0/Android/media/com.whatsapp/"
+            },
             conflictTitle = stringResource(R.string.this_folder_already_exists),
             removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
             context = LocalContext.current
