@@ -119,6 +119,7 @@ const val showFoldersOnDeviceKey = "showFoldersOnDevice"
 const val showNextSongsInPlayerKey = "showNextSongsInPlayer"
 const val showRemainingSongTimeKey = "showRemainingSongTime"
 const val lyricsFontSizeKey = "lyricsFontSize"
+const val includeLocalSongsKey = "includeLocalSongs"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

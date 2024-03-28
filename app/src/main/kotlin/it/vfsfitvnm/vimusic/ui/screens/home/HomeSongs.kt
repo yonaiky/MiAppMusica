@@ -78,6 +78,7 @@ import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.enums.UiType
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.query
+import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.service.isLocal
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -104,6 +105,7 @@ import it.vfsfitvnm.vimusic.utils.downloadedStateMedia
 import it.vfsfitvnm.vimusic.utils.forcePlayAtIndex
 import it.vfsfitvnm.vimusic.utils.forcePlayFromBeginning
 import it.vfsfitvnm.vimusic.utils.getDownloadState
+import it.vfsfitvnm.vimusic.utils.includeLocalSongsKey
 import it.vfsfitvnm.vimusic.utils.manageDownload
 import it.vfsfitvnm.vimusic.utils.maxSongsInQueueKey
 import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
@@ -163,9 +165,17 @@ fun HomeSongs(
         mutableStateOf(0)
     }
 
-    LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs) {
-        Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+    var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
+
+    LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
+            Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
     }
+
+    if (!includeLocalSongs)
+        items = items
+            .filter {
+                !it.id.startsWith(LOCAL_KEY_PREFIX)
+            }
 
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
@@ -244,7 +254,7 @@ fun HomeSongs(
                         onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
                         icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
                         color = colorPalette.text,
-                        iconSize = 24.dp,
+                        //iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     )
@@ -262,6 +272,15 @@ fun HomeSongs(
                                 )
                             }
                         },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    )
+
+                    HeaderIconButton(
+                        onClick = { includeLocalSongs = !includeLocalSongs },
+                        icon = R.drawable.devices,
+                        color = if (includeLocalSongs) colorPalette.text else colorPalette.textDisabled,
+                        //iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     )
