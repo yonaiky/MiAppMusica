@@ -72,6 +72,7 @@ import it.vfsfitvnm.kugou.KuGou
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.LyricsFontSize
 import it.vfsfitvnm.vimusic.models.Lyrics
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
@@ -90,6 +91,7 @@ import it.vfsfitvnm.vimusic.utils.SynchronizedLyrics
 import it.vfsfitvnm.vimusic.utils.TextCopyToClipboard
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.color
+import it.vfsfitvnm.vimusic.utils.disablePlayerHorizontalSwipeKey
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.getHttpClient
@@ -174,7 +176,7 @@ fun Lyrics(
                 TextCopyToClipboard(it)
         }
 
-        //var fontSize by rememberPreference(lyricsFontSizeKey, Typography::m.get())
+        var fontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics) {
             withContext(Dispatchers.IO) {
@@ -376,7 +378,14 @@ fun Lyrics(
                             } else translatedText = sentence.second
                             BasicText(
                                 text = translatedText,
-                                style = typography.m.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled),
+                                style = when (fontSize) {
+                                    LyricsFontSize.Light ->
+                                        typography.m.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
+                                    LyricsFontSize.Medium ->
+                                        typography.l.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
+                                    LyricsFontSize.Heavy ->
+                                        typography.xl.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
+                                },
                                 modifier = Modifier
                                     .padding(vertical = 4.dp, horizontal = 32.dp)
                                     .clickable {
@@ -410,7 +419,14 @@ fun Lyrics(
 
                     BasicText(
                         text = translatedText,
-                        style = typography.m.center.medium.color(PureBlackColorPalette.text),
+                        style = when (fontSize) {
+                            LyricsFontSize.Light ->
+                                typography.m.center.medium.color(PureBlackColorPalette.text)
+                            LyricsFontSize.Medium ->
+                                typography.l.center.medium.color(PureBlackColorPalette.text)
+                            LyricsFontSize.Heavy ->
+                                typography.xl.center.medium.color(PureBlackColorPalette.text)
+                        },
                         modifier = Modifier
                             .verticalFadingEdge()
                             .verticalScroll(rememberScrollState())
@@ -449,18 +465,65 @@ fun Lyrics(
             /*********/
 
 
-
-            IconButton(
-                icon = R.drawable.minmax,
-                color = DefaultDarkColorPalette.text,
-                enabled = true,
-                onClick = onMaximize,
+            Box(
                 modifier = Modifier
-                    .padding(all = 8.dp)
                     .align(Alignment.BottomStart)
-                    .size(24.dp)
-            )
+                    .fillMaxWidth(0.22f)
+            ) {
+                IconButton(
+                    icon = R.drawable.minmax,
+                    color = DefaultDarkColorPalette.text,
+                    enabled = true,
+                    onClick = onMaximize,
+                    modifier = Modifier
+                        .padding(all = 8.dp)
+                        .align(Alignment.BottomStart)
+                        .size(24.dp)
+                )
 
+                IconButton(
+                    icon = R.drawable.text,
+                    color = DefaultDarkColorPalette.text,
+                    enabled = true,
+                    onClick = {
+                            menuState.display {
+                            Menu {
+                                MenuEntry(
+                                    icon = R.drawable.text,
+                                    text = stringResource(R.string.light),
+                                    secondaryText = "",
+                                    onClick = {
+                                        menuState.hide()
+                                        fontSize = LyricsFontSize.Light
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.text,
+                                    text = stringResource(R.string.medium),
+                                    secondaryText = "",
+                                    onClick = {
+                                        menuState.hide()
+                                        fontSize = LyricsFontSize.Medium
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.text,
+                                    text = stringResource(R.string.heavy),
+                                    secondaryText = "",
+                                    onClick = {
+                                        menuState.hide()
+                                        fontSize = LyricsFontSize.Heavy
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(all = 8.dp)
+                        .align(Alignment.BottomEnd)
+                        .size(24.dp)
+                )
+            }
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

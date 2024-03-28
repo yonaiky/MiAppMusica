@@ -424,9 +424,6 @@
     <string name="back">Geri dön</string>
     <string name="folders">Klasörler</string>
     <string name="show_folders_in_on_device_page">Klasörleri \"Cihazınızda\" sekmesinde göster</string>
-    <string name="back">Back</string>
-    <string name="folders">Folders</string>
-    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>

@@ -424,9 +424,6 @@
     <string name="back">Назад</string>
     <string name="folders">Папки</string>
     <string name="show_folders_in_on_device_page">Отображать папки на странице \"На устройстве\"</string>
-    <string name="back">Back</string>
-    <string name="folders">Folders</string>
-    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>
