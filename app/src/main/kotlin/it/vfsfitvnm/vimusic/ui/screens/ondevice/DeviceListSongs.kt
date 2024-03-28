@@ -218,7 +218,7 @@ fun DeviceListSongs(
 
     } else {
 
-
+        val backButtonFolder = Folder(stringResource(R.string.back))
         val binder = LocalPlayerServiceBinder.current
         val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         val menuState = LocalMenuState.current
@@ -794,9 +794,9 @@ fun DeviceListSongs(
                 }
             } else {
                 if (currentFolderPath != "/") {
-                    item {
+                    itemsIndexed(items = listOf(backButtonFolder)) { index, folderItem ->
                         FolderItem(
-                            folder = Folder(stringResource(R.string.back)),
+                            folder = folderItem,
                             thumbnailSizeDp = thumbnailSizeDp,
                             icon = R.drawable.chevron_back,
                             modifier = Modifier
@@ -984,7 +984,6 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                             } else {
                                 cursor.getString(relativePathIdx).substringBeforeLast("/")
                             }
-                            println(relativePath)
                             val exclude = blacklist.contains(relativePath)
 
                             if (!exclude) {
@@ -994,24 +993,19 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                         duration.milliseconds.toComponents { minutes, seconds, _ ->
                                             "$minutes:${seconds.toString().padStart(2, '0')}"
                                         }
+                                    val song = OnDeviceSong(
+                                        id = "$LOCAL_KEY_PREFIX$id",
+                                        title = trackName ?: name,
+                                        artistsText = artist,
+                                        durationText = durationText,
+                                        thumbnailUrl = albumUri.toString(),
+                                        relativePath = relativePath
+                                    )
                                     Database.insert(
-                                        Song(
-                                            id = "$LOCAL_KEY_PREFIX$id",
-                                            title = trackName ?: name,
-                                            artistsText = artist,
-                                            durationText = durationText,
-                                            thumbnailUrl = albumUri.toString(),
-                                        )
+                                        song.toSong()
                                     )
                                     add(
-                                        OnDeviceSong(
-                                            id = "$LOCAL_KEY_PREFIX$id",
-                                            title = trackName ?: name,
-                                            artistsText = artist,
-                                            durationText = durationText,
-                                            thumbnailUrl = albumUri.toString(),
-                                            relativePath = relativePath
-                                        )
+                                        song
                                     )
                                 }
                             }
