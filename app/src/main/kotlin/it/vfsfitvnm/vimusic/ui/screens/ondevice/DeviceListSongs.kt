@@ -810,6 +810,8 @@ fun DeviceListSongs(
                 }
                 itemsIndexed(
                     items = folders,
+                    key = { _, folder -> folder.fullPath },
+                    contentType = { _, folder -> folder }
                 ) { index, folder ->
                     FolderItem(
                         folder = folder,
