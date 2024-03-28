@@ -145,6 +145,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -731,68 +732,7 @@ fun DeviceListSongs(
 
             }
 
-            if (!showFolders) {
-                itemsIndexed(
-                    items = filteredSongs,
-                    key = { _, song -> song.id },
-                    contentType = { _, song -> song },
-                ) { index, song ->
-                    SongItem(
-                        song = song,
-                        isDownloaded = true,
-                        onDownloadClick = {
-                            // not necessary
-                        },
-                        downloadState = Download.STATE_COMPLETED,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSize,
-                        onThumbnailContent = {
-                            if (nowPlayingItem > -1)
-                                NowPlayingShow(song.asMediaItem.mediaId)
-                        },
-                        trailingContent = {
-                            val checkedState = remember { mutableStateOf(false) }
-                            if (selectItems)
-                                Checkbox(
-                                    checked = checkedState.value,
-                                    onCheckedChange = {
-                                        checkedState.value = it
-                                        if (it) listMediaItems.add(song.asMediaItem) else
-                                            listMediaItems.remove(song.asMediaItem)
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorPalette.accent,
-                                        uncheckedColor = colorPalette.text
-                                    )
-                                )
-                            else checkedState.value = false
-                        },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        when (deviceLists) {
-                                            DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                    }
-                                },
-                                onClick = {
-                                    if (!selectItems) {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            filteredSongs.map(Song::asMediaItem),
-                                            index
-                                        )
-                                    }
-                                }
-                            )
-                            .animateItemPlacement()
-                    )
-                }
-            } else {
+            if (showFolders) {
                 if (currentFolderPath != "/") {
                     itemsIndexed(items = listOf(backButtonFolder)) { index, folderItem ->
                         FolderItem(
@@ -824,85 +764,84 @@ fun DeviceListSongs(
                             ),
                     )
                 }
-                itemsIndexed(
-                    items = filteredSongs,
-                    key = { _, song -> song.id },
-                    contentType = { _, song -> song },
-                ) { index, song ->
-                    SongItem(
-                        song = song,
-                        isDownloaded = true,
-                        onDownloadClick = {
-                            // not necessary
-                        },
-                        downloadState = Download.STATE_COMPLETED,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSize,
-                        onThumbnailContent = {
-                            if (nowPlayingItem > -1)
-                                NowPlayingShow(song.asMediaItem.mediaId)
-                        },
-                        trailingContent = {
-                            val checkedState = remember { mutableStateOf(false) }
-                            if (selectItems)
-                                Checkbox(
-                                    checked = checkedState.value,
-                                    onCheckedChange = {
-                                        checkedState.value = it
-                                        if (it) listMediaItems.add(song.asMediaItem) else
-                                            listMediaItems.remove(song.asMediaItem)
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorPalette.accent,
-                                        uncheckedColor = colorPalette.text
-                                    )
-                                )
-                            else checkedState.value = false
-                        },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        when (deviceLists) {
-                                            DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                    }
+            }
+
+            itemsIndexed(
+                items = filteredSongs,
+                key = { index, _ -> Random.nextLong().toString() },
+                contentType = { _, song -> song },
+            ) { index, song ->
+                SongItem(
+                    song = song,
+                    isDownloaded = true,
+                    onDownloadClick = {
+                        // not necessary
+                    },
+                    downloadState = Download.STATE_COMPLETED,
+                    thumbnailSizeDp = thumbnailSizeDp,
+                    thumbnailSizePx = thumbnailSize,
+                    onThumbnailContent = {
+                        if (nowPlayingItem > -1)
+                            NowPlayingShow(song.asMediaItem.mediaId)
+                    },
+                    trailingContent = {
+                        val checkedState = remember { mutableStateOf(false) }
+                        if (selectItems)
+                            Checkbox(
+                                checked = checkedState.value,
+                                onCheckedChange = {
+                                    checkedState.value = it
+                                    if (it) listMediaItems.add(song.asMediaItem) else
+                                        listMediaItems.remove(song.asMediaItem)
                                 },
-                                onClick = {
-                                    if (!selectItems) {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            filteredSongs.map(Song::asMediaItem),
-                                            index
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = colorPalette.accent,
+                                    uncheckedColor = colorPalette.text
+                                )
+                            )
+                        else checkedState.value = false
+                    },
+                    modifier = Modifier
+                        .combinedClickable(
+                            onLongClick = {
+                                menuState.display {
+                                    when (deviceLists) {
+                                        DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
+                                            song = song,
+                                            onDismiss = menuState::hide
                                         )
                                     }
                                 }
-                            )
-                            .animateItemPlacement()
-                    )
-                }
+                            },
+                            onClick = {
+                                if (!selectItems) {
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayAtIndex(
+                                        filteredSongs.map(Song::asMediaItem),
+                                        index
+                                    )
+                                }
+                            }
+                        )
+                        .animateItemPlacement()
+                )
             }
-
         }
 
-        if(uiType == UiType.ViMusic)
-        FloatingActionsContainerWithScrollToTop(
-            lazyListState = lazyListState,
-            iconId = R.drawable.shuffle,
-            onClick = {
-                if (filteredSongs.isNotEmpty()) {
-                    binder?.stopRadio()
-                    binder?.player?.forcePlayFromBeginning(
-                        filteredSongs.shuffled().map(Song::asMediaItem)
-                    )
+            if(uiType == UiType.ViMusic)
+            FloatingActionsContainerWithScrollToTop(
+                lazyListState = lazyListState,
+                iconId = R.drawable.shuffle,
+                onClick = {
+                    if (filteredSongs.isNotEmpty()) {
+                        binder?.stopRadio()
+                        binder?.player?.forcePlayFromBeginning(
+                            filteredSongs.shuffled().map(Song::asMediaItem)
+                        )
+                    }
                 }
-            }
-        )
-
-    }
+            )
+        }
 
     }
 
