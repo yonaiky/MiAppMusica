@@ -424,5 +424,5 @@
     <string name="max_songs_in_queue">Sırada maksimum şarkıya ulaştınız</string>
     <string name="back">Geri dön</string>
     <string name="folders">Klasörler</string>
-    <string name="show_folders_in_on_device_page">Klasörleri \"Cihazınızda\" sekmesinde göster</string>
+    <string name="show_folders_in_on_device_page">Klasörleri \"Cihazınızda\" sayfasında göster</string>
 </resources>
