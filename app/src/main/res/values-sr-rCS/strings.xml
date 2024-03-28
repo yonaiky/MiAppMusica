@@ -383,7 +383,7 @@
     <string name="save_to_backup">Sačuvaj u rezervnu kopiju</string>
     <string name="restore_from_backup">Vrati iz rezervne kopije</string>
     <string name="tab_miscellaneous">Razno</string>
-    <string name="swipe_to_action">Swipe to action</string>
+    <string name="swipe_to_action">Prevucite prstom do akcije</string>
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Aktivirajte meni radnji prevlačenjem pesme ulevo ili udesno</string>
     <string name="smart_recommendations">PAMETNE PREPORUKE</string>
     <string name="player_collapsed_disable_swiping_down">Onemogući prevlačenje nadole</string>
