@@ -94,6 +94,7 @@ import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.vfsfitvnm.vimusic.ui.components.themed.FolderItemMenu
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
 import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
@@ -162,6 +163,7 @@ fun DeviceListSongs(
 ) {
 
     val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
     val (colorPalette,typography) = LocalAppearance.current
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
     else Manifest.permission.READ_EXTERNAL_STORAGE
@@ -758,6 +760,21 @@ fun DeviceListSongs(
                         thumbnailSizeDp = thumbnailSizeDp,
                         modifier = Modifier
                             .combinedClickable(
+                                onLongClick = {
+                                    menuState.display {
+                                        when (deviceLists) {
+                                            DeviceLists.LocalSongs -> FolderItemMenu(
+                                                folder = folder,
+                                                onDismiss = menuState::hide,
+                                                onEnqueue = {
+                                                    val allSongs = folder.getAllSongs().map { it.toSong().asMediaItem }
+                                                    binder?.player?.enqueue(allSongs)
+                                                },
+                                                thumbnailSizeDp = thumbnailSizeDp
+                                            )
+                                        }
+                                    }
+                                },
                                 onClick = {
                                     currentFolderPath += folder.name + "/"
                                 }

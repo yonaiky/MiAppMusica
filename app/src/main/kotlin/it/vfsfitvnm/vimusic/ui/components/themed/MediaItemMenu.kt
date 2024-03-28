@@ -57,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -70,6 +71,7 @@ import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.PlaylistSortBy
 import it.vfsfitvnm.vimusic.enums.SortOrder
 import it.vfsfitvnm.vimusic.models.Artist
+import it.vfsfitvnm.vimusic.models.Folder
 import it.vfsfitvnm.vimusic.models.Info
 import it.vfsfitvnm.vimusic.models.Playlist
 import it.vfsfitvnm.vimusic.models.Song
@@ -78,6 +80,7 @@ import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.service.isLocal
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.items.ArtistItem
+import it.vfsfitvnm.vimusic.ui.items.FolderItem
 import it.vfsfitvnm.vimusic.ui.items.SongItem
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.artistRoute
@@ -356,6 +359,63 @@ fun BaseMediaItemMenu(
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
         modifier = modifier
     )
+}
+
+@UnstableApi
+@Composable
+fun FolderItemMenu(
+    folder: Folder,
+    thumbnailSizeDp: Dp,
+    onDismiss: () -> Unit,
+    onEnqueue: () -> Unit,
+) {
+    val (colorPalette) = LocalAppearance.current
+    val density = LocalDensity.current
+
+    Menu(
+        modifier = Modifier
+            .onPlaced { with(density) { it.size.height.toDp() } }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+
+        ) {
+            Image(
+                painter = painterResource(R.drawable.chevron_down),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(colorPalette.text),
+                modifier = Modifier
+                    .absoluteOffset(0.dp, -10.dp)
+                    .align(Alignment.TopCenter)
+                    .size(30.dp)
+                    .clickable { onDismiss() }
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(end = 12.dp)
+        ) {
+            FolderItem(folder, thumbnailSizeDp)
+
+        }
+
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+
+        MenuEntry(
+            icon = R.drawable.enqueue,
+            text = stringResource(R.string.enqueue),
+            onClick = {
+                onDismiss()
+                onEnqueue()
+            }
+        )
+    }
 }
 
 @ExperimentalTextApi
