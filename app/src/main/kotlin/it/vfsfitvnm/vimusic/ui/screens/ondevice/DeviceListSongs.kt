@@ -146,6 +146,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -784,7 +785,7 @@ fun DeviceListSongs(
 
             itemsIndexed(
                 items = filteredSongs,
-                key = { _, song -> song.id },
+                key = { index, _ -> Random.nextLong().toString() },
                 contentType = { _, song -> song },
             ) { index, song ->
                 SongItem(
