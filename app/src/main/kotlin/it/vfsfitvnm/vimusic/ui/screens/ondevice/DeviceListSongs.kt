@@ -242,6 +242,7 @@ fun DeviceListSongs(
         var songs: List<Song> = emptyList()
         var folders: List<Folder> = emptyList()
         var filteredSongs = songs
+        var filteredFolders = folders
         var currentFolderPath by remember {
             mutableStateOf("/")
         }
@@ -255,6 +256,7 @@ fun DeviceListSongs(
             songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSong() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
+            filteredFolders = folders
         }
         else {
             songs = songsDevice.map { it.toSong() }
@@ -271,6 +273,11 @@ fun DeviceListSongs(
                 .filter {
                     it.title?.contains(filterCharSequence,true) ?: false
                             || it.artistsText?.contains(filterCharSequence,true) ?: false
+                }
+        if (!filter.isNullOrBlank())
+            filteredFolders = folders
+                .filter {
+                    it.name.contains(filterCharSequence,true)
                 }
 
         var searching by rememberSaveable { mutableStateOf(false) }
@@ -751,7 +758,7 @@ fun DeviceListSongs(
                     }
                 }
                 itemsIndexed(
-                    items = folders,
+                    items = filteredFolders,
                     key = { _, folder -> folder.fullPath },
                     contentType = { _, folder -> folder }
                 ) { index, folder ->
