@@ -929,7 +929,11 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.RELATIVE_PATH,
+                if (isAtLeastAndroid10) {
+                    MediaStore.Audio.Media.RELATIVE_PATH
+                } else {
+                    MediaStore.Audio.Media.DATA
+                },
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.IS_MUSIC
             )
@@ -955,7 +959,11 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                     val durationIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
                     val artistIdx = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
                     val albumIdIdx = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
-                    val relativePathIdx = cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
+                    val relativePathIdx = if (isAtLeastAndroid10) {
+                        cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
+                    } else {
+                        cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
+                    }
                     val titleIdx = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
                     val isMusicIdx = cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)
                     val blacklist = OnDeviceBlacklist(context = context)
@@ -971,7 +979,12 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                             if (duration == 0) continue
                             val artist = cursor.getString(artistIdx)
                             val albumId = cursor.getLong(albumIdIdx)
-                            val relativePath = cursor.getString(relativePathIdx)
+                            val relativePath = if (isAtLeastAndroid10) {
+                                cursor.getString(relativePathIdx)
+                            } else {
+                                cursor.getString(relativePathIdx).substringBeforeLast("/")
+                            }
+                            println(relativePath)
                             val exclude = blacklist.contains(relativePath)
 
                             if (!exclude) {
