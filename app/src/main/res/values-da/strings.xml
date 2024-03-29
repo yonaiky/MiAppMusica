@@ -422,7 +422,7 @@
     <string name="minimized_player">Minimeret afspiller</string>
     <string name="both">Begge</string>
     <string name="max_songs_in_queue">Maks. sange i kø</string>
-    <string name="back">Back</string>
-    <string name="folders">Folders</string>
-    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
+    <string name="back">Tilbage</string>
+    <string name="folders">Mapper</string>
+    <string name="show_folders_in_on_device_page">Vis mapper i På Enhed-siden</string>
 </resources>
