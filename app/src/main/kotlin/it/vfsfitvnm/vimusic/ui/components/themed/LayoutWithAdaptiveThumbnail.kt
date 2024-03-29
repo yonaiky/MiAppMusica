@@ -86,6 +86,7 @@ fun adaptiveThumbnailContent(
         //    model = url?.thumbnail(thumbnailSizePx),
         //)
 
+        /*
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(url)
@@ -97,6 +98,7 @@ fun adaptiveThumbnailContent(
             null
         }
         val imageState = painter.state
+        */
         /*
         val scaledBitmap = remember {
             bitmap?.asImageBitmap()?.let {
@@ -111,6 +113,7 @@ fun adaptiveThumbnailContent(
         }
          */
 
+        /*
         var isExporting by remember {
             mutableStateOf(false)
         }
@@ -135,6 +138,8 @@ fun adaptiveThumbnailContent(
                     }
 
             }
+
+         */
 
         /*
         if (isExporting) {
@@ -175,6 +180,7 @@ fun adaptiveThumbnailContent(
                 contentDescription = null,
                 modifier = modifier
             )
+            /*
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -198,6 +204,7 @@ fun adaptiveThumbnailContent(
                     modifier = Modifier.size(35.dp)
                 )
             }
+             */
         }
     }
 }

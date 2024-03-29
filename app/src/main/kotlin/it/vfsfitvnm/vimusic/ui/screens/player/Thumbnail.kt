@@ -109,6 +109,10 @@ fun Thumbnail(
 
     val formatUnsupported = "This file seems to have an unsupported format"
 
+    var artImageAvailable by remember {
+        mutableStateOf(true)
+    }
+
     player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -168,7 +172,38 @@ fun Thumbnail(
                 .clip(LocalAppearance.current.thumbnailShape)
                 .size(thumbnailSizeDp)
         ) {
-            if (currentWindow.mediaItem.mediaMetadata.artworkUri == null ||  currentWindow.mediaItem.mediaMetadata.artworkUri == Uri.EMPTY) {
+
+            if(artImageAvailable)
+                AsyncImage(
+                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                        thumbnailSizePx
+                    ),
+                    onSuccess = {
+                        artImageAvailable = true
+                    },
+                    onError = {
+                        artImageAvailable = false
+                    },
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { onShowStatsForNerds(true) },
+                                onTap = if (thumbnailTapEnabledKey) {
+                                    {
+                                        onShowLyrics(true)
+                                        onShowEqualizer(false)
+                                    }
+                                } else null,
+                                onDoubleTap = { onDoubleTap() }
+                            )
+
+                        }
+                        .fillMaxSize()
+                )
+
+            if(!artImageAvailable)
                 Image(
                     painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
@@ -190,30 +225,6 @@ fun Thumbnail(
                     contentDescription = "Background Image",
                     contentScale = ContentScale.Fit
                 )
-            } else {
-                AsyncImage(
-                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                        thumbnailSizePx
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = { onShowStatsForNerds(true) },
-                                onTap = if (thumbnailTapEnabledKey) {
-                                    {
-                                        onShowLyrics(true)
-                                        onShowEqualizer(false)
-                                    }
-                                } else null,
-                                onDoubleTap = { onDoubleTap() }
-                            )
-
-                        }
-                        .fillMaxSize()
-                )
-            }
 
             //if (!currentWindow.mediaItem.isLocal)
                 Lyrics(
