@@ -424,9 +424,9 @@
     <string name="back">Înapoi</string>
     <string name="folders">Foldere</string>
     <string name="show_folders_in_on_device_page">Arată foldere pe pagina \"În dispozitiv\"</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Daneză</string>
+    <string name="lang_serbian_latin">Sârbă (Latină)</string>
+    <string name="item_deselect">Deselectează</string>
+    <string name="show_next_songs_in_player">Arată următoarele muzici în player</string>
+    <string name="show_remaining_song_time">Arată timpul rămas din melodie</string>
 </resources>

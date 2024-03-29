@@ -421,12 +421,12 @@
     <string name="minimized_player">Lettore minimizzato</string>
     <string name="both">Entrambi</string>
     <string name="max_songs_in_queue">Massimo brani in coda</string>
-    <string name="back">Back</string>
-    <string name="folders">Folders</string>
-    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="back">Indietro</string>
+    <string name="folders">Cartelle</string>
+    <string name="show_folders_in_on_device_page">Mostra le cartelle nella pagina Sul Dispositivo</string>
+    <string name="lang_danish">Danese</string>
+    <string name="lang_serbian_latin">Latino serbo</string>
+    <string name="item_deselect">Deseleziona</string>
+    <string name="show_next_songs_in_player">Mostra i brani successivi nel player</string>
+    <string name="show_remaining_song_time">Mostra il tempo rimanente del brano</string>
 </resources>
