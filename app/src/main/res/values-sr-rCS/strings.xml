@@ -239,7 +239,7 @@
     <string name="listen_on">Slušaj na</string>
     <string name="error_local_music_not_found">Lokalna muzička datoteka nije pronađena</string>
     <string name="bodied_bar">Debela</string>
-    <string name="pin_bar">Prikači bar</string>
+    <string name="pin_bar">Celi Ekran</string>
     <string name="rectangular">Pravougaono</string>
     <string name="square">Kvadrat</string>
     <string name="circular_ribbed">Kružno rebrasto</string>
@@ -411,7 +411,7 @@
     <string name="show_search_tab_in_home">Prikaži Karticu Za Pretragu na Početnoj stranici</string>
     <string name="action_bar_show_menu_button">Prikaži dugme za meni</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Koristi gradijent pozadinu</string>
+    <string name="use_gradient_background">Koristi prelaznu boju pozadine</string>
     <string name="show_total_time_of_queue">Prikaži ukupno vreme redosleda</string>
     <string name="lang_telugu">Teluški</string>
     <string name="media_permission_required_please_grant">Potrebna je medijska dozvola, molim vas odobrite.</string>
