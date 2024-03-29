@@ -424,9 +424,9 @@
     <string name="back">Zpět</string>
     <string name="folders">Složky</string>
     <string name="show_folders_in_on_device_page">Zobrazení složek na stránce V zařízení</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Dánština (Dansk)</string>
+    <string name="lang_serbian_latin">Srbská latinka (Srpski latinica)</string>
+    <string name="item_deselect">Odznačit</string>
+    <string name="show_next_songs_in_player">Zobrazení dalších skladeb v přehrávači</string>
+    <string name="show_remaining_song_time">Zobrazit zbývající čas skladby</string>
 </resources>
