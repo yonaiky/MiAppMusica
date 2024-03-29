@@ -255,7 +255,8 @@ fun AlbumSongs(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth()
         ) {
 
                 LazyColumn(
@@ -697,6 +698,7 @@ fun AlbumSongs(
                                 thumbnailContent()
                             }
 
+                            /*
                             album?.title?.let {
                                 BasicText(
                                     text = it,
@@ -704,12 +706,15 @@ fun AlbumSongs(
                                     maxLines = 1
                                 )
                             }
+                             */
                             BasicText(
                                 text = songs.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
                                 style = typography.xxs.medium,
-                                maxLines = 1
+                                maxLines = 1,
+                                modifier = Modifier
+                                    .padding(all = 5.dp)
                             )
                         }
                     }

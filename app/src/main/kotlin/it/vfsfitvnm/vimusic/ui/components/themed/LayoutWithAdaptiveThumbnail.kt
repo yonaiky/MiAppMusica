@@ -36,10 +36,13 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.shimmer
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.PlayerThumbnailSize
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.ui.styling.shimmer
 import it.vfsfitvnm.vimusic.utils.isLandscape
+import it.vfsfitvnm.vimusic.utils.playerThumbnailSizeKey
+import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.thumbnail
 import it.vfsfitvnm.vimusic.utils.toast
 import java.io.FileOutputStream
@@ -78,11 +81,13 @@ fun adaptiveThumbnailContent(
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
         val thumbnailSizePx = thumbnailSizeDp.px
         val context = LocalContext.current
+        val playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
 
         val modifier = Modifier
-            .padding(all = 16.dp)
+            //.padding(all = 16.dp)
+            .padding(horizontal = playerThumbnailSize.size.dp)
             .clip(shape ?: thumbnailShape)
-            .size(thumbnailSizeDp)
+            //.size(thumbnailSizeDp)
 
         //val painter = rememberAsyncImagePainter(
         //    model = url?.thumbnail(thumbnailSizePx),

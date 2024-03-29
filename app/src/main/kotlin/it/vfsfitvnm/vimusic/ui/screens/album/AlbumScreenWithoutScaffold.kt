@@ -37,6 +37,7 @@ import it.vfsfitvnm.innertube.models.bodies.BrowseBody
 import it.vfsfitvnm.innertube.requests.albumPage
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.models.Album
 import it.vfsfitvnm.vimusic.models.SongAlbumMap
 import it.vfsfitvnm.vimusic.query
@@ -58,6 +59,7 @@ import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.asMediaItem
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
+import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
@@ -72,8 +74,13 @@ import kotlinx.coroutines.withContext
 @Composable
 fun AlbumScreenWithoutScaffold(browseId: String) {
 
-    val uriHandler = LocalUriHandler.current
-    val saveableStateHolder = rememberSaveableStateHolder()
+    //val uriHandler = LocalUriHandler.current
+    //val saveableStateHolder = rememberSaveableStateHolder()
+
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
 
     var tabIndex by rememberSaveable {
         mutableStateOf(0)
@@ -227,7 +234,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                             IconButton(
                                 onClick = { pop() },
                                 icon = R.drawable.chevron_back,
-                                color = colorPalette.textSecondary
+                                color = colorPalette.textSecondary,
+                                modifier = Modifier
+                                    .size(24.dp)
                             )
                         }
                     }
@@ -240,8 +249,8 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                     showIcon = albumPage?.otherVersions?.isNotEmpty(),
                     onOtherVersionAvailable = {
                         showAlternativePage = !showAlternativePage
-                        println("mediaItem Click other version")
-                    }
+                    },
+                    shape = thumbnailRoundness.shape()
                 )
 
 
