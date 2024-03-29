@@ -239,7 +239,7 @@
     <string name="listen_on">Slušaj na</string>
     <string name="error_local_music_not_found">Lokalna muzička datoteka nije pronađena</string>
     <string name="bodied_bar">Debela</string>
-    <string name="pin_bar">Celi Ekran</string>
+    <string name="pin_bar">Pin</string>
     <string name="rectangular">Pravougaono</string>
     <string name="square">Kvadrat</string>
     <string name="circular_ribbed">Kružno rebrasto</string>
