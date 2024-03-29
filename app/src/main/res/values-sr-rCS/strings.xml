@@ -129,7 +129,7 @@
     <string name="reset_cache_location_folder">RESETUJTE DIREKTORIJUM LOKACIJE KEŠA</string>
     <string name="used">" korišćeno"</string>
     <string name="close_background_player">Zatvori pozadinski plejer</string>
-    <string name="when_app_swipe_out_from_task_manager">Kada aplikacija prevuci prstom iz menadžera zadataka</string>
+    <string name="when_app_swipe_out_from_task_manager">Kada aplikaciju prevučete prstom iz menadžera zadataka</string>
     <string name="opening_url">učitava se...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">Došlo je do greške pri preuzimanju stihova</string>
     <string name="are_not_available_for_this_song">nisu dostupni za ovu pesmu</string>
@@ -148,7 +148,7 @@
     <string name="medium">Srednja</string>
     <string name="big">Velika</string>
     <string name="none">Nema</string>
-    <string name="light">Malo</string>
+    <string name="light">Slabo</string>
     <string name="heavy">Puno</string>
     <string name="player_rotating_buttons">Rotirajuća dugmad</string>
     <string name="player_enable_rotation_buttons">Omogući rotaciju dugmadi kada se klikne</string>
@@ -161,8 +161,8 @@
     <string name="_1_year">1 Godina</string>
     <string name="all">Sve</string>
     <string name="most_played_songs">Najčešće puštane pesme</string>
-    <string name="most_listened_artists">Najslušaniji izvođači</string>
-    <string name="most_albums_listened">Najslušaniji albumi</string>
+    <string name="most_listened_artists">Najslušanijih izvođača</string>
+    <string name="most_albums_listened">Najslušanijih albuma</string>
     <string name="most_played_playlists">Najslušanije plejliste</string>
     <string name="languages">Jezici</string>
     <string name="app_language">Jezik aplikacije</string>
@@ -180,10 +180,10 @@
     <string name="russian">Ruski (Русский)</string>
     <string name="turkish">Turski (Türkçe)</string>
     <string name="polish">Poljski (Polski)</string>
-    <string name="dark">Tamno</string>
+    <string name="dark">Tamna</string>
     <string name="system">Sistem</string>
     <string name="unlimited">Neograničeno</string>
-    <string name="_light">Malo</string>
+    <string name="_light">Svetla</string>
     <string name="downloaded">Preuzimanja</string>
     <string name="turn_off">Isključi</string>
     <string name="download">Prеuzimanjе</string>
