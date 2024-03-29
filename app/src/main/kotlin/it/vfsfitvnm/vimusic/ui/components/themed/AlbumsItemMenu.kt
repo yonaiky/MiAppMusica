@@ -101,6 +101,7 @@ fun AlbumsItemMenu(
     onChangeAlbumTitle: (() -> Unit)? = null,
     onChangeAlbumAuthors: (() -> Unit)? = null,
     onChangeAlbumCover: (() -> Unit)? = null,
+    onDownloadAlbumCover: (() -> Unit)? = null,
     album: Album,
     modifier: Modifier = Modifier,
     onEnqueue: (() -> Unit)? = null,
@@ -361,6 +362,17 @@ fun AlbumsItemMenu(
                         onClick = {
                             onDismiss()
                             onChangeAlbumCover()
+                        }
+                    )
+                }
+
+                onDownloadAlbumCover?.let{
+                    MenuEntry(
+                        icon = R.drawable.download_cover,
+                        text = "Download cover",
+                        onClick = {
+                            onDismiss()
+                            onDownloadAlbumCover()
                         }
                     )
                 }

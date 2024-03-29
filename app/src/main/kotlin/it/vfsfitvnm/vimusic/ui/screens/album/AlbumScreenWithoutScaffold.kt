@@ -6,11 +6,15 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -39,6 +43,7 @@ import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderPlaceholder
+import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.Scaffold
 import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.adaptiveThumbnailContent
@@ -65,7 +70,7 @@ import kotlinx.coroutines.withContext
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun AlbumScreen(browseId: String) {
+fun AlbumScreenWithoutScaffold(browseId: String) {
 
     val uriHandler = LocalUriHandler.current
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -77,10 +82,13 @@ fun AlbumScreen(browseId: String) {
     var album by persist<Album?>("album/$browseId/album")
     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
 
+    var showAlternativePage by remember {
+        mutableStateOf(false)
+    }
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, showAlternativePage) {
         Database
             .album(browseId)
             .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
@@ -97,7 +105,7 @@ fun AlbumScreen(browseId: String) {
                 }
 
 
-                if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
+                if (showAlternativePage && albumPage == null && currentAlbum?.timestamp == null) {
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
@@ -213,6 +221,12 @@ fun AlbumScreen(browseId: String) {
                                     }
                                 }
                             )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            IconButton(
+                                onClick = { pop() },
+                                icon = R.drawable.chevron_back,
+                                color = colorPalette.textSecondary
+                            )
                         }
                     }
                 }
@@ -223,68 +237,54 @@ fun AlbumScreen(browseId: String) {
                     album?.thumbnailUrl,
                     showIcon = albumPage?.otherVersions?.isNotEmpty(),
                     onOtherVersionAvailable = {
+                        showAlternativePage = !showAlternativePage
                         println("mediaItem Click other version")
                     }
                 )
 
-            Scaffold(
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = tabIndex,
-                onTabChanged = { tabIndex = it },
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                    Item(1, stringResource(R.string.other_versions), R.drawable.alternative_version)
-                }
-            ) { currentTabIndex ->
-                saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
-                    when (currentTabIndex) {
-                        0 -> AlbumSongs(
-                            browseId = browseId,
-                            headerContent = headerContent,
-                            thumbnailContent = thumbnailContent
-                        )
 
-                        1 -> {
-                            val thumbnailSizeDp = 108.dp
-                            val thumbnailSizePx = thumbnailSizeDp.px
-
-                            ItemsPage(
-                                tag = "album/$browseId/alternatives",
-                                headerContent = headerContent,
-                                initialPlaceholderCount = 1,
-                                continuationPlaceholderCount = 1,
-                                emptyItemsText = stringResource(R.string.album_no_alternative_version),
-                                itemsPageProvider = albumPage?.let {
-                                    ({
-                                        Result.success(
-                                            Innertube.ItemsPage(
-                                                items = albumPage?.otherVersions,
-                                                continuation = null
-                                            )
-                                        )
-                                    })
-                                },
-                                itemContent = { album ->
-                                    AlbumItem(
-                                        album = album,
-                                        thumbnailSizePx = thumbnailSizePx,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clickable { albumRoute(album.key) }
+                if(!showAlternativePage) {
+                    AlbumSongs(
+                        browseId = browseId,
+                        headerContent = headerContent,
+                        thumbnailContent = thumbnailContent
+                    )
+                } else {
+                    val thumbnailSizeDp = 108.dp
+                    val thumbnailSizePx = thumbnailSizeDp.px
+                    ItemsPage(
+                        tag = "album/$browseId/alternatives",
+                        headerContent = headerContent,
+                        initialPlaceholderCount = 1,
+                        continuationPlaceholderCount = 1,
+                        emptyItemsText = stringResource(R.string.album_no_alternative_version),
+                        itemsPageProvider = albumPage?.let {
+                            ({
+                                Result.success(
+                                    Innertube.ItemsPage(
+                                        items = albumPage?.otherVersions,
+                                        continuation = null
                                     )
-                                },
-                                itemPlaceholderContent = {
-                                    AlbumItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
-                                }
+                                )
+                            })
+                        },
+                        itemContent = { album ->
+                            AlbumItem(
+                                album = album,
+                                thumbnailSizePx = thumbnailSizePx,
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                modifier = Modifier
+                                    .clickable { albumRoute(album.key) }
                             )
+                        },
+                        itemPlaceholderContent = {
+                            AlbumItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
                         }
-                    }
+                    )
+
                 }
-            }
         }
+
     }
+
 }

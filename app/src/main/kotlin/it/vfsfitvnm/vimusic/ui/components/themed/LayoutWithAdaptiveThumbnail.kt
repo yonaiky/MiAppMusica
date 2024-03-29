@@ -68,7 +68,9 @@ inline fun LayoutWithAdaptiveThumbnail(
 fun adaptiveThumbnailContent(
     isLoading: Boolean,
     url: String?,
-    shape: Shape? = null
+    shape: Shape? = null,
+    showIcon: Boolean? = false,
+    onOtherVersionAvailable: (() -> Unit)? = {}
 ): @Composable () -> Unit = {
     val (colorPalette, _, thumbnailShape) = LocalAppearance.current
 
@@ -180,6 +182,23 @@ fun adaptiveThumbnailContent(
                 contentDescription = null,
                 modifier = modifier
             )
+            if(showIcon == true)
+                onOtherVersionAvailable?.let {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .fillMaxWidth(0.2f)
+                    ) {
+                        HeaderIconButton(
+                            icon = R.drawable.alternative_version,
+                            color = colorPalette.text,
+                            onClick = {
+                                onOtherVersionAvailable()
+                            },
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                }
             /*
             Box(
                 modifier = Modifier

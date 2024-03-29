@@ -21,6 +21,7 @@ import it.vfsfitvnm.vimusic.enums.SearchType
 import it.vfsfitvnm.vimusic.enums.StatisticsType
 import it.vfsfitvnm.vimusic.models.Mood
 import it.vfsfitvnm.vimusic.ui.screens.album.AlbumScreen
+import it.vfsfitvnm.vimusic.ui.screens.album.AlbumScreenWithoutScaffold
 import it.vfsfitvnm.vimusic.ui.screens.artist.ArtistScreen
 import it.vfsfitvnm.vimusic.ui.screens.home.HomeScreen
 import it.vfsfitvnm.vimusic.ui.screens.playlist.PlaylistScreen
@@ -61,9 +62,14 @@ val playlistRoute = Route2<String?, String?>("playlistRoute")
 @Composable
 inline fun RouteHandlerScope.globalRoutes() {
     albumRoute { browseId ->
+        AlbumScreenWithoutScaffold(
+            browseId = browseId ?: error("browseId cannot be null")
+        )
+        /*
         AlbumScreen(
             browseId = browseId ?: error("browseId cannot be null")
         )
+         */
     }
 
     artistRoute { browseId ->
