@@ -424,9 +424,9 @@
     <string name="back">Назад</string>
     <string name="folders">Фасцикле</string>
     <string name="show_folders_in_on_device_page">Прикажи фасцикле на страници На уређају</string>
-    <string name="lang_danish">Danski</string>
-    <string name="lang_serbian_latin">Srpski Latinica</string>
+    <string name="lang_danish">Дански</string>
+    <string name="lang_serbian_latin">Српски Латиница</string>
     <string name="item_deselect">Поништи</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="show_next_songs_in_player">Прикажи следеће песме у плејеру</string>
+    <string name="show_remaining_song_time">Прикажи преостало време песме</string>
 </resources>

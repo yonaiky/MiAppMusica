@@ -22,7 +22,7 @@
     <string name="artists">Izvođači</string>
     <string name="enter_the_playlist_name">Unesite ime za plejlistu</string>
     <string name="playlists">Plejliste</string>
-    <string name="favorites">Omiljeni</string>
+    <string name="favorites">Omiljeno</string>
     <string name="quick_picks">Brzi odabiri</string>
     <string name="songs">Pesme</string>
     <string name="other_versions">Druge verzije</string>
@@ -148,8 +148,8 @@
     <string name="medium">Srednja</string>
     <string name="big">Velika</string>
     <string name="none">Nema</string>
-    <string name="light">Slabo</string>
-    <string name="heavy">Puno</string>
+    <string name="light">Slaba</string>
+    <string name="heavy">Teška</string>
     <string name="player_rotating_buttons">Rotirajuća dugmad</string>
     <string name="player_enable_rotation_buttons">Omogući rotaciju dugmadi kada se klikne</string>
     <string name="statistics">Statistika</string>
@@ -424,9 +424,9 @@
     <string name="back">Nazad</string>
     <string name="folders">Fascikle</string>
     <string name="show_folders_in_on_device_page">Prikaži fascikle na stranici Na uređaju</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Danski</string>
+    <string name="lang_serbian_latin">Srpski Latinica</string>
+    <string name="item_deselect">Poništi</string>
+    <string name="show_next_songs_in_player">Prikaži sledeće pesme u plejeru</string>
+    <string name="show_remaining_song_time">Prikaži preostalo vreme pesme</string>
 </resources>
