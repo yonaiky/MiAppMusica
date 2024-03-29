@@ -129,7 +129,7 @@
     <string name="reset_cache_location_folder">РЕСЕТУЈТЕ ФОЛДЕР ЛОКАЦИЈЕ КЕША</string>
     <string name="used">"коришћен"</string>
     <string name="close_background_player">Затвори позадински плејер</string>
-    <string name="when_app_swipe_out_from_task_manager">Када апликација превучете прстом из менаџера задатака</string>
+    <string name="when_app_swipe_out_from_task_manager">Када апликацију превучете прстом из менаџера задатака</string>
     <string name="opening_url">се учитава...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">Дошло је до грешке при преузимању стихова</string>
     <string name="are_not_available_for_this_song">нису доступни за ову песму</string>
@@ -148,7 +148,7 @@
     <string name="medium">Средње</string>
     <string name="big">Велико</string>
     <string name="none">Ниједан</string>
-    <string name="light">Светла</string>
+    <string name="light">Слабо</string>
     <string name="heavy">Тешка</string>
     <string name="player_rotating_buttons">Ротирајућа дугмад</string>
     <string name="player_enable_rotation_buttons">Омогући ротацију дугмади када се кликне</string>
@@ -160,9 +160,9 @@
     <string name="_6_month">6 месеци</string>
     <string name="_1_year">1 Година</string>
     <string name="all">Све</string>
-    <string name="most_played_songs">Најчешће пуштане песме</string>
-    <string name="most_listened_artists">Најслушанији извођачи</string>
-    <string name="most_albums_listened">Већина слушаних албума</string>
+    <string name="most_played_songs">Најчешће пуштаних песама</string>
+    <string name="most_listened_artists">Најслушанијих извођача</string>
+    <string name="most_albums_listened">Најслушанијих албума</string>
     <string name="most_played_playlists">Најслушаније плејлисте</string>
     <string name="languages">Језици</string>
     <string name="app_language">Језик апликације</string>
@@ -180,10 +180,10 @@
     <string name="russian">Руски (Русский)</string>
     <string name="turkish">Турски (Türkçe)</string>
     <string name="polish">Пољски (Polski)</string>
-    <string name="dark">Тамно</string>
+    <string name="dark">Тамна</string>
     <string name="system">Систем</string>
     <string name="unlimited">Неограничено</string>
-    <string name="_light">Светло</string>
+    <string name="_light">Светла</string>
     <string name="downloaded">Преузето</string>
     <string name="turn_off">Искључи</string>
     <string name="download">Преузимања</string>
@@ -242,7 +242,7 @@
     <string name="pin_bar">Цели Екран</string>
     <string name="rectangular">Правоугаоно</string>
     <string name="square">Квадрат</string>
-    <string name="circular_ribbed">Кружна ребраста</string>
+    <string name="circular_ribbed">Кружно ребрасто</string>
     <string name="play_button">Плеј дугме</string>
     <string name="portuguese_brazilian">Португалски, Бразил</string>
     <string name="portuguese">Португалски</string>
