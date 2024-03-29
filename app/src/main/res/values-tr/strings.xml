@@ -424,9 +424,9 @@
     <string name="back">Geri dön</string>
     <string name="folders">Klasörler</string>
     <string name="show_folders_in_on_device_page">Klasörleri \"Cihazınızda\" sayfasında göster</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Danca</string>
+    <string name="lang_serbian_latin">Sırpça (Latin)</string>
+    <string name="item_deselect">Seçimi kaldır</string>
+    <string name="show_next_songs_in_player">Oynatıcıda sonraki şarkıyı göster</string>
+    <string name="show_remaining_song_time">Şarkının ne kadar süresi kaldığını göster</string>
 </resources>
