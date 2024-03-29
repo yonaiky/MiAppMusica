@@ -87,16 +87,6 @@ fun AlbumScreen(browseId: String) {
             .collect { (currentAlbum, tabIndex) ->
                 album = currentAlbum
 
-
-                withContext(Dispatchers.IO) {
-                    Innertube.albumPage(BrowseBody(browseId = browseId))
-                        ?.onSuccess { currentAlbumPage ->
-                            albumPage = currentAlbumPage
-                        }
-                    println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
-                }
-
-
                 if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
@@ -135,6 +125,16 @@ fun AlbumScreen(browseId: String) {
 
                 }
             }
+    }
+
+    LaunchedEffect(Unit ) {
+        withContext(Dispatchers.IO) {
+            Innertube.albumPage(BrowseBody(browseId = browseId))
+                ?.onSuccess { currentAlbumPage ->
+                    albumPage = currentAlbumPage
+                }
+            println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
+        }
     }
 
     RouteHandler(listenToGlobalEmitter = true) {

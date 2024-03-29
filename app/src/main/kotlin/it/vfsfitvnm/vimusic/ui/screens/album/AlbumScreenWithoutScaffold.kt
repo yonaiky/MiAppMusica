@@ -88,24 +88,14 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
-    LaunchedEffect(Unit, showAlternativePage) {
+    LaunchedEffect(Unit) {
         Database
             .album(browseId)
             .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
             .collect { (currentAlbum, tabIndex) ->
                 album = currentAlbum
 
-
-                withContext(Dispatchers.IO) {
-                    Innertube.albumPage(BrowseBody(browseId = browseId))
-                        ?.onSuccess { currentAlbumPage ->
-                            albumPage = currentAlbumPage
-                        }
-                    println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
-                }
-
-
-                if (showAlternativePage && albumPage == null && currentAlbum?.timestamp == null) {
+                if (albumPage == null && currentAlbum?.timestamp == null) {
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
@@ -144,6 +134,18 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                 }
             }
     }
+
+
+    LaunchedEffect(Unit ) {
+        withContext(Dispatchers.IO) {
+            Innertube.albumPage(BrowseBody(browseId = browseId))
+                ?.onSuccess { currentAlbumPage ->
+                    albumPage = currentAlbumPage
+                }
+            //println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
+        }
+    }
+
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
