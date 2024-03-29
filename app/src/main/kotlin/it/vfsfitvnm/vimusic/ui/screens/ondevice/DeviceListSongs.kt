@@ -95,6 +95,7 @@ import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.vfsfitvnm.vimusic.ui.components.themed.FolderItemMenu
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderWithIcon
 import it.vfsfitvnm.vimusic.ui.components.themed.IconButton
@@ -146,6 +147,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -162,6 +164,7 @@ fun DeviceListSongs(
 ) {
 
     val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
     val (colorPalette,typography) = LocalAppearance.current
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
     else Manifest.permission.READ_EXTERNAL_STORAGE
@@ -240,6 +243,7 @@ fun DeviceListSongs(
         var songs: List<Song> = emptyList()
         var folders: List<Folder> = emptyList()
         var filteredSongs = songs
+        var filteredFolders = folders
         var currentFolderPath by remember {
             mutableStateOf("/")
         }
@@ -253,6 +257,7 @@ fun DeviceListSongs(
             songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSong() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
+            filteredFolders = folders
         }
         else {
             songs = songsDevice.map { it.toSong() }
@@ -269,6 +274,11 @@ fun DeviceListSongs(
                 .filter {
                     it.title.contains(filterCharSequence,true) ?: false
                             || it.artistsText?.contains(filterCharSequence,true) ?: false
+                }
+        if (!filter.isNullOrBlank())
+            filteredFolders = folders
+                .filter {
+                    it.name.contains(filterCharSequence,true)
                 }
 
         var searching by rememberSaveable { mutableStateOf(false) }
@@ -741,68 +751,7 @@ fun DeviceListSongs(
 
             }
 
-            if (!showFolders) {
-                itemsIndexed(
-                    items = filteredSongs,
-                    key = { _, song -> song.id },
-                    contentType = { _, song -> song },
-                ) { index, song ->
-                    SongItem(
-                        song = song,
-                        isDownloaded = true,
-                        onDownloadClick = {
-                            // not necessary
-                        },
-                        downloadState = Download.STATE_COMPLETED,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSize,
-                        onThumbnailContent = {
-                            if (nowPlayingItem > -1)
-                                NowPlayingShow(song.asMediaItem.mediaId)
-                        },
-                        trailingContent = {
-                            val checkedState = remember { mutableStateOf(false) }
-                            if (selectItems)
-                                Checkbox(
-                                    checked = checkedState.value,
-                                    onCheckedChange = {
-                                        checkedState.value = it
-                                        if (it) listMediaItems.add(song.asMediaItem) else
-                                            listMediaItems.remove(song.asMediaItem)
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorPalette.accent,
-                                        uncheckedColor = colorPalette.text
-                                    )
-                                )
-                            else checkedState.value = false
-                        },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        when (deviceLists) {
-                                            DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                    }
-                                },
-                                onClick = {
-                                    if (!selectItems) {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            filteredSongs.map(Song::asMediaItem),
-                                            index
-                                        )
-                                    }
-                                }
-                            )
-                            .animateItemPlacement()
-                    )
-                }
-            } else {
+            if (showFolders) {
                 if (currentFolderPath != "/") {
                     itemsIndexed(items = listOf(backButtonFolder)) { index, folderItem ->
                         FolderItem(
@@ -819,7 +768,7 @@ fun DeviceListSongs(
                     }
                 }
                 itemsIndexed(
-                    items = folders,
+                    items = filteredFolders,
                     key = { _, folder -> folder.fullPath },
                     contentType = { _, folder -> folder }
                 ) { index, folder ->
@@ -828,90 +777,34 @@ fun DeviceListSongs(
                         thumbnailSizeDp = thumbnailSizeDp,
                         modifier = Modifier
                             .combinedClickable(
+                                onLongClick = {
+                                    menuState.display {
+                                        when (deviceLists) {
+                                            DeviceLists.LocalSongs -> FolderItemMenu(
+                                                folder = folder,
+                                                onDismiss = menuState::hide,
+                                                onEnqueue = {
+                                                    val allSongs = folder.getAllSongs().map { it.toSong().asMediaItem }
+                                                    binder?.player?.enqueue(allSongs)
+                                                },
+                                                thumbnailSizeDp = thumbnailSizeDp
+                                            )
+                                        }
+                                    }
+                                },
                                 onClick = {
                                     currentFolderPath += folder.name + "/"
                                 }
                             ),
                     )
                 }
-                itemsIndexed(
-                    items = filteredSongs,
-                    key = { _, song -> song.id },
-                    contentType = { _, song -> song },
-                ) { index, song ->
-                    SongItem(
-                        song = song,
-                        isDownloaded = true,
-                        onDownloadClick = {
-                            // not necessary
-                        },
-                        downloadState = Download.STATE_COMPLETED,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSize,
-                        onThumbnailContent = {
-                            if (nowPlayingItem > -1)
-                                NowPlayingShow(song.asMediaItem.mediaId)
-                        },
-                        trailingContent = {
-                            val checkedState = remember { mutableStateOf(false) }
-                            if (selectItems)
-                                Checkbox(
-                                    checked = checkedState.value,
-                                    onCheckedChange = {
-                                        checkedState.value = it
-                                        if (it) listMediaItems.add(song.asMediaItem) else
-                                            listMediaItems.remove(song.asMediaItem)
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorPalette.accent,
-                                        uncheckedColor = colorPalette.text
-                                    )
-                                )
-                            else checkedState.value = false
-                        },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        when (deviceLists) {
-                                            DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                    }
-                                },
-                                onClick = {
-                                    if (!selectItems) {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            filteredSongs.map(Song::asMediaItem),
-                                            index
-                                        )
-                                    }
-                                }
-                            )
-                            .animateItemPlacement()
-                    )
-                }
             }
 
             itemsIndexed(
                 items = filteredSongs,
-                key = { _, song -> song.id },
+                key = { index, _ -> Random.nextLong().toString() },
                 contentType = { _, song -> song },
             ) { index, song ->
-/*
-                Log.d("mediaItemUri",
-                ContentUris.withAppendedId(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        song.id.substringAfter(LOCAL_KEY_PREFIX).toLong()
-                ).toString()
-                )
-
-*/
-                val checkedState = remember { mutableStateOf(false) }
-
                 SongItem(
                     song = song,
                     isDownloaded = true,
@@ -926,6 +819,7 @@ fun DeviceListSongs(
                             NowPlayingShow(song.asMediaItem.mediaId)
                     },
                     trailingContent = {
+                        val checkedState = remember { mutableStateOf(false) }
                         if (selectItems)
                             Checkbox(
                                 checked = checkedState.value,
@@ -937,9 +831,7 @@ fun DeviceListSongs(
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = colorPalette.accent,
                                     uncheckedColor = colorPalette.text
-                                ),
-                                modifier = Modifier
-                                    .scale(0.6f)
+                                )
                             )
                         else checkedState.value = false
                     },
@@ -962,7 +854,7 @@ fun DeviceListSongs(
                                         filteredSongs.map(Song::asMediaItem),
                                         index
                                     )
-                                } else checkedState.value = !checkedState.value
+                                }
                             }
                         )
                         .animateItemPlacement()
@@ -970,21 +862,20 @@ fun DeviceListSongs(
             }
         }
 
-        if(uiType == UiType.ViMusic)
-        FloatingActionsContainerWithScrollToTop(
-            lazyListState = lazyListState,
-            iconId = R.drawable.shuffle,
-            onClick = {
-                if (filteredSongs.isNotEmpty()) {
-                    binder?.stopRadio()
-                    binder?.player?.forcePlayFromBeginning(
-                        filteredSongs.shuffled().map(Song::asMediaItem)
-                    )
+            if(uiType == UiType.ViMusic)
+            FloatingActionsContainerWithScrollToTop(
+                lazyListState = lazyListState,
+                iconId = R.drawable.shuffle,
+                onClick = {
+                    if (filteredSongs.isNotEmpty()) {
+                        binder?.stopRadio()
+                        binder?.player?.forcePlayFromBeginning(
+                            filteredSongs.shuffled().map(Song::asMediaItem)
+                        )
+                    }
                 }
-            }
-        )
-
-    }
+            )
+        }
 
     }
 
