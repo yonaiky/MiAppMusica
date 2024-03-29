@@ -144,9 +144,9 @@
     <string name="min_listening_time">Мин. време слушања</string>
     <string name="player_thumbnail_size">Величина Сличица</string>
     <string name="restarting_rimusic_is_required">Потребно је рестартовање</string>
-    <string name="small">Мало</string>
-    <string name="medium">Средње</string>
-    <string name="big">Велико</string>
+    <string name="small">Мала</string>
+    <string name="medium">Средња</string>
+    <string name="big">Велика</string>
     <string name="none">Ниједан</string>
     <string name="light">Слабо</string>
     <string name="heavy">Тешка</string>
@@ -229,7 +229,7 @@
     <string name="user_interface">Кориснички интерфејс</string>
     <string name="ui_tab">Интерфејс</string>
     <string name="system_language">Системски језик</string>
-    <string name="biggest">Највеће</string>
+    <string name="biggest">Највећа</string>
     <string name="set_custom_cache">Подесите прилагођену кеш меморију</string>
     <string name="enter_value_in_mb">Унесите вредност у МБ</string>
     <string name="value_cannot_be_empty">Вредност не може бити празна</string>
@@ -239,7 +239,7 @@
     <string name="listen_on">Слушај на</string>
     <string name="error_local_music_not_found">Локална музичка датотека није пронађена</string>
     <string name="bodied_bar">Дебела</string>
-    <string name="pin_bar">Цели Екран</string>
+    <string name="pin_bar">Пин</string>
     <string name="rectangular">Правоугаоно</string>
     <string name="square">Квадрат</string>
     <string name="circular_ribbed">Кружно ребрасто</string>
@@ -411,7 +411,7 @@
     <string name="show_search_tab_in_home">Прикажи картицу за претрагу на почетној страници</string>
     <string name="action_bar_show_menu_button">Прикажи дугме за Мени</string>
     <string name="sort_album">Албум</string>
-    <string name="use_gradient_background">Користите градијент позадину</string>
+    <string name="use_gradient_background">Користите прелазну боју позадине</string>
     <string name="show_total_time_of_queue">Прикажи укупно време реда чекања</string>
     <string name="lang_telugu">Телугу</string>
     <string name="media_permission_required_please_grant">Потребна је медијска дозвола, молим вас дајте.</string>
