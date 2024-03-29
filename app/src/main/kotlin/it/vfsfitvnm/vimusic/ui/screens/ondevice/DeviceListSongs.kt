@@ -133,6 +133,7 @@ import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 import it.vfsfitvnm.vimusic.utils.showFoldersOnDeviceKey
+import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 import it.vfsfitvnm.vimusic.utils.songSortOrderKey
 import it.vfsfitvnm.vimusic.utils.thumbnail
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
@@ -332,6 +333,8 @@ fun DeviceListSongs(
             mutableStateOf(-1)
         }
 
+        val showSearchTab by rememberPreference(showSearchTabKey, false)
+
         val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
         val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
@@ -359,7 +362,7 @@ fun DeviceListSongs(
                     title = stringResource(R.string.on_device),
                     iconId = R.drawable.search,
                     enabled = true,
-                    showIcon = true,
+                    showIcon = !showSearchTab,
                     modifier = Modifier,
                     onClick = onSearchClick
                 )
