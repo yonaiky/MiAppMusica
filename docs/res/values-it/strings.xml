@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">Un'applicazione Android Open source and multilingua per ascoltare musica in streaming da YouTube Music</string>
+    <string name="opensource_multilingual_application">Un'applicazione Android Open source e multilingua per ascoltare musica in streaming da YouTube Music</string>
     <string name="your_library">La tua libreria.</string>
     <string name="organized_in_one_place">Tutto organizzato in un unico posto, brani preferiti, scaricati, ascoltati e tutte le tue playlist.</string>
     <string name="beautiful_player">Un player accattivante.</string>
