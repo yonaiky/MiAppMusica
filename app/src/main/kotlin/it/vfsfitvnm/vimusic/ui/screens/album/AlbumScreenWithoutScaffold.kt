@@ -37,6 +37,7 @@ import it.vfsfitvnm.innertube.models.bodies.BrowseBody
 import it.vfsfitvnm.innertube.requests.albumPage
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.NavigationBarPosition
 import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.models.Album
 import it.vfsfitvnm.vimusic.models.SongAlbumMap
@@ -55,8 +56,10 @@ import it.vfsfitvnm.vimusic.ui.screens.globalRoutes
 import it.vfsfitvnm.vimusic.ui.screens.searchRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchresult.ItemsPage
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
+import it.vfsfitvnm.vimusic.ui.styling.favoritesIcon
 import it.vfsfitvnm.vimusic.ui.styling.px
 import it.vfsfitvnm.vimusic.utils.asMediaItem
+import it.vfsfitvnm.vimusic.utils.navigationBarPositionKey
 import it.vfsfitvnm.vimusic.utils.rememberPreference
 import it.vfsfitvnm.vimusic.utils.showSearchTabKey
 import it.vfsfitvnm.vimusic.utils.thumbnailRoundnessKey
@@ -92,6 +95,8 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
     var showAlternativePage by remember {
         mutableStateOf(false)
     }
+
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
@@ -170,7 +175,21 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                         val context = LocalContext.current
 
                         Header(title = album?.title ?: "Unknown") {
+
+                            if (navigationBarPosition == NavigationBarPosition.Left) {
+                                IconButton(
+                                    onClick = { pop() },
+                                    icon = R.drawable.chevron_back,
+                                    color = colorPalette.favoritesIcon,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                            }
+
                             textButton?.invoke()
+
+
 
                             Spacer(
                                 modifier = Modifier
@@ -230,14 +249,16 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                                     }
                                 }
                             )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            IconButton(
-                                onClick = { pop() },
-                                icon = R.drawable.chevron_back,
-                                color = colorPalette.textSecondary,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
+                            if (navigationBarPosition == NavigationBarPosition.Right) {
+                                Spacer(modifier = Modifier.width(10.dp))
+                                IconButton(
+                                    onClick = { pop() },
+                                    icon = R.drawable.chevron_back,
+                                    color = colorPalette.favoritesIcon,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
