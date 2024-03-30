@@ -190,7 +190,7 @@ fun adaptiveThumbnailContent(
             if(showIcon == true)
                 onOtherVersionAvailable?.let {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .align(Alignment.BottomEnd)
                             .fillMaxWidth(0.2f)
                     ) {
