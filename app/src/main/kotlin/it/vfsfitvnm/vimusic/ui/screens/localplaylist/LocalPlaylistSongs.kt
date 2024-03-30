@@ -768,7 +768,7 @@ fun LocalPlaylistSongs(
                         onClick = {
                             playlistSongs.let { songs ->
                                 if (songs.isNotEmpty()) {
-                                    val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
+                                    val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayFromBeginning(
                                         itemsLimited.shuffled().map(Song::asMediaItem)
