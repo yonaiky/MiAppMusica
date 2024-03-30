@@ -424,9 +424,9 @@
     <string name="back">Назад</string>
     <string name="folders">Папки</string>
     <string name="show_folders_in_on_device_page">Отображать папки на странице \"На устройстве\"</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Датский (Dansk)</string>
+    <string name="lang_serbian_latin">Сербский (Српски)</string>
+    <string name="item_deselect">Отменить выделение</string>
+    <string name="show_next_songs_in_player">Показать следующие песни в плеере</string>
+    <string name="show_remaining_song_time">Показать оставшееся время песни</string>
 </resources>
