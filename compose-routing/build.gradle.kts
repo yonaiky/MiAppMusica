@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "it.vfsfitvnm.compose.routing"
+    namespace = "it.fast4x.compose.routing"
     compileSdk = 34
 
     defaultConfig {

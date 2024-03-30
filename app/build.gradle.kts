@@ -24,7 +24,7 @@ android {
         }
     }
 
-    namespace = "it.vfsfitvnm.vimusic"
+    namespace = "it.fast4x.rimusic"
 
     buildTypes {
         debug {
