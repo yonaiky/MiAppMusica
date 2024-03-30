@@ -276,6 +276,7 @@
                   >
                     <option value="en">English</option>
                     <option value="cs">Čeština</option>
+                    <option value="it">Italiano</option>
                   </select>
                 </li>
               </ul>
@@ -300,7 +301,7 @@
     <script src="js/main.min.js"></script>
     <script>
       // Load the locales
-      const multilingual = new Multilingual(["en", "cs"]);
+      const multilingual = new Multilingual(["en", "cs", "it"]);
       (async () => {
         await multilingual.loadStrings();
         multilingual.updateDom();
