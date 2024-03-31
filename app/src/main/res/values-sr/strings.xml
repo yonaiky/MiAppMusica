@@ -223,8 +223,8 @@
     <string name="restart_app_please">Поново покрените апликацију молим вас.</string>
     <string name="listen_on_piped">Слушај на Пипед</string>
     <string name="listen_on_invidious">Слушај на Инвидиоус</string>
-    <string name="disable_horizontal_swipe">Онемогућите хоризонтално превлачење</string>
-    <string name="disable_song_switching_via_swipe">Онемогућите пребацивање песама превлачењем</string>
+    <string name="disable_horizontal_swipe">Онемогући хоризонтално превлачење</string>
+    <string name="disable_song_switching_via_swipe">Онемогући пребацивање песама превлачењем</string>
     <string name="interface_in_use">Интерфејс у употреби</string>
     <string name="user_interface">Кориснички интерфејс</string>
     <string name="ui_tab">Интерфејс</string>
@@ -250,7 +250,7 @@
     <string name="odia">Одиа</string>
     <string name="bashkir">Башкирски</string>
     <string name="esperanto">Есперанто</string>
-    <string name="close_app_with_back_button">Затворите апликацију помоћу дугмета Назад</string>
+    <string name="close_app_with_back_button">Затвори апликацију помоћу дугмета Назад</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Када користите дугме за повратак са почетне странице</string>
     <string name="audio_quality_format_high">Висок</string>
     <string name="audio_quality_format_medium">Средњи</string>
@@ -264,7 +264,7 @@
     <string name="enqueue_selected">Ред изабран</string>
     <string name="greek">Грчки</string>
     <string name="catalan">Каталонски</string>
-    <string name="disable_scrolling_text">Онемогућите померање текста</string>
+    <string name="disable_scrolling_text">Онемогући померање текста</string>
     <string name="scrolling_text_is_used_for_long_texts">Померајући текст се користи за дугачке текстове</string>
     <string name="audio_quality_format">Формат квалитета Звука</string>
     <string name="persian">Персијски</string>
@@ -362,7 +362,7 @@
     <string name="artist_subscribers">%s претплатника</string>
     <string name="but_these_updates_would_not_go_through">Али ова ажурирања не би прошла кроз додатни скрининг који се врши на нпр. ИззиОнДроид или Ф-Дроид.</string>
     <string name="sleeptimer_stop">заустави</string>
-    <string name="player_keep_minimized">Држите минимизираног</string>
+    <string name="player_keep_minimized">Држи минимизираног</string>
     <string name="when_click_on_a_song_player_start_minimized">Када кликнете на песму, почетак плејера је минимизиран</string>
     <string name="settings_use_font_type">Користите тип фонта</string>
     <string name="enabled">Омогућено</string>
@@ -385,7 +385,7 @@
     <string name="swipe_to_action">Акција превлачења</string>
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Активирајте мени радњи превлачењем песме улево или удесно</string>
     <string name="smart_recommendations">ПАМЕТНЕ ПРЕПОРУКЕ</string>
-    <string name="player_collapsed_disable_swiping_down">Онемогућите превлачење надоле</string>
+    <string name="player_collapsed_disable_swiping_down">Онемогући превлачење надоле</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Избегавајте затварање плејера и чишћење реда превлачењем надоле док је минимизиран</string>
     <string name="sort_date_liked">Датум свиђања</string>
     <string name="export_playlist">Извези плејлисту</string>
