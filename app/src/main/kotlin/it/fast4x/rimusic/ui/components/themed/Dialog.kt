@@ -67,6 +67,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
+import com.google.common.collect.ImmutableList
+import it.fast4x.lrclib.models.Track
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Info
@@ -1147,5 +1149,86 @@ fun PlaybackParamsDialog(
             )
         }
 
+    }
+}
+
+@Composable
+fun <T> ValueSelectorDialogBody(
+    onDismiss: () -> Unit,
+    title: String,
+    selectedValue: T?,
+    values: ImmutableList<T>,
+    onValueSelected: (T) -> Unit,
+    modifier: Modifier = Modifier,
+    valueText: @Composable (T) -> String = { it.toString() }
+) = Column(modifier = modifier) {
+    val (colorPalette, typography) = LocalAppearance.current
+
+    BasicText(
+        text = title,
+        style = typography.s.semiBold,
+        modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
+    )
+
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        values.forEach { value ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            onDismiss()
+                            onValueSelected(value)
+                        }
+                    )
+                    .padding(vertical = 12.dp, horizontal = 24.dp)
+                    .fillMaxWidth()
+            ) {
+                if (selectedValue == value) Canvas(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .background(
+                            color = colorPalette.accent,
+                            shape = CircleShape
+                        )
+                ) {
+                    drawCircle(
+                        color = colorPalette.onAccent,
+                        radius = 4.dp.toPx(),
+                        center = size.center,
+                        shadow = Shadow(
+                            color = Color.Black.copy(alpha = 0.4f),
+                            blurRadius = 4.dp.toPx(),
+                            offset = Offset(x = 0f, y = 1.dp.toPx())
+                        )
+                    )
+                } else Spacer(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .border(
+                            width = 1.dp,
+                            color = colorPalette.textDisabled,
+                            shape = CircleShape
+                        )
+                )
+
+                BasicText(
+                    text = valueText(value),
+                    style = typography.xs.medium
+                )
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .align(Alignment.End)
+            .padding(end = 24.dp)
+    ) {
+        DialogTextButton(
+            text = stringResource(R.string.cancel),
+            onClick = onDismiss
+        )
     }
 }

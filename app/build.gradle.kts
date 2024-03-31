@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.palette)
     implementation(libs.exoplayer)
     implementation(libs.room)
+    implementation(project(":lrclib"))
     kapt(libs.room.compiler)
     implementation(projects.innertube)
     implementation(projects.kugou)
