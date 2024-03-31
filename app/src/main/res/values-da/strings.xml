@@ -424,9 +424,9 @@
     <string name="back">Tilbage</string>
     <string name="folders">Mapper</string>
     <string name="show_folders_in_on_device_page">Vis mapper i På Enhed-siden</string>
-    <string name="lang_danish">Danish</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
-    <string name="show_remaining_song_time">Show remaining song time</string>
+    <string name="lang_danish">Dansk</string>
+    <string name="lang_serbian_latin">Serbisk latin</string>
+    <string name="item_deselect">Fravælg</string>
+    <string name="show_next_songs_in_player">Vis næste sange i afspiller</string>
+    <string name="show_remaining_song_time">Vis resterende sangtid</string>
 </resources>
