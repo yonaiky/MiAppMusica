@@ -250,7 +250,7 @@
     <string name="odia">Odia</string>
     <string name="bashkir">Baškir</string>
     <string name="esperanto">Esperanto</string>
-    <string name="close_app_with_back_button">Zatvorite aplikaciju pomoću Dugmeta Nazad</string>
+    <string name="close_app_with_back_button">Zatvori aplikaciju pomoću Dugmeta Nazad</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Kada koristite dugme za povratak sa početne stranice</string>
     <string name="audio_quality_format_high">Visok</string>
     <string name="audio_quality_format_medium">Srednji</string>
