@@ -12,9 +12,9 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 25
-        versionName = "0.6.28"
-        buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
+        versionCode = 26
+        versionName = "0.6.28.1"
+        //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 
     splits {
@@ -47,6 +47,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {

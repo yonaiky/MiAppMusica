@@ -27,7 +27,7 @@ import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.plus
-import it.fast4x.rimusic.BuildConfig
+//import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
@@ -291,8 +291,8 @@ fun CheckAvailableNewVersion(
         updatedProductName =  if(dataText.size == 3) dataText[2] else ""
     }
 
-    //if (updatedVersionCode > getVersionCode().toInt()))
-    if (updatedVersionCode > BuildConfig.VERSION_CODE)
+    if (updatedVersionCode > getVersionCode())
+    //if (updatedVersionCode > BuildConfig.VERSION_CODE)
         NewVersionDialog(
             updatedVersionName = updatedVersionName,
             updatedVersionCode = updatedVersionCode,
@@ -449,6 +449,18 @@ fun getLongVersionCode(): Long {
     return 0L
 }
 
+
+@Composable
+fun getVersionCode(): Int {
+    val context = LocalContext.current
+    try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        return pInfo.versionCode
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+    return 0
+}
 
 
 
