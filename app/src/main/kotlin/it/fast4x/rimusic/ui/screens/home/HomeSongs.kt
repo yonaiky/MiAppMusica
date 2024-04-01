@@ -495,7 +495,7 @@ fun HomeSongs(
                                 }
                             },
                             onClick = {
-                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.shuffled().take(maxSongsInQueue.number.toInt()) else items
+                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
                                     itemsLimited.map(Song::asMediaItem),

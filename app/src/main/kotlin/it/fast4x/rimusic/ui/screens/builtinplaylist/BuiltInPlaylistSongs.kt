@@ -1127,7 +1127,7 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
+                                            val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
                                                 itemsLimited.map(Song::asMediaItem),
