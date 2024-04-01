@@ -45,6 +45,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -116,6 +117,7 @@ import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.contentWidthKey
+import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -164,7 +166,6 @@ fun DeviceListSongs(
 ) {
 
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
     val (colorPalette,typography) = LocalAppearance.current
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
     else Manifest.permission.READ_EXTERNAL_STORAGE
@@ -232,6 +233,8 @@ fun DeviceListSongs(
         var sortByFolder by rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
         var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
 
+        val defaultFolder by rememberPreference(defaultFolderKey, "/")
+
         var songsDevice by remember(sortBy, sortOrder) {
             mutableStateOf<List<OnDeviceSong>>(emptyList())
         }
@@ -244,8 +247,9 @@ fun DeviceListSongs(
         var folders: List<Folder> = emptyList()
         var filteredSongs = songs
         var filteredFolders = folders
+        var currentFolder: Folder? = null;
         var currentFolderPath by remember {
-            mutableStateOf("/")
+            mutableStateOf(defaultFolder)
         }
 
 
@@ -253,7 +257,7 @@ fun DeviceListSongs(
 
         if (showFolders) {
             val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
-            val currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
+            currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
             songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSong() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
@@ -769,36 +773,46 @@ fun DeviceListSongs(
                         )
                     }
                 }
-                itemsIndexed(
-                    items = filteredFolders,
-                    key = { _, folder -> folder.fullPath },
-                    contentType = { _, folder -> folder }
-                ) { index, folder ->
-                    FolderItem(
-                        folder = folder,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        when (deviceLists) {
-                                            DeviceLists.LocalSongs -> FolderItemMenu(
-                                                folder = folder,
-                                                onDismiss = menuState::hide,
-                                                onEnqueue = {
-                                                    val allSongs = folder.getAllSongs().map { it.toSong().asMediaItem }
-                                                    binder?.player?.enqueue(allSongs)
-                                                },
-                                                thumbnailSizeDp = thumbnailSizeDp
-                                            )
+                if (currentFolder != null) {
+                    itemsIndexed(
+                        items = filteredFolders,
+                        key = { _, folder -> folder.fullPath },
+                        contentType = { _, folder -> folder }
+                    ) { index, folder ->
+                        FolderItem(
+                            folder = folder,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            when (deviceLists) {
+                                                DeviceLists.LocalSongs -> FolderItemMenu(
+                                                    folder = folder,
+                                                    onDismiss = menuState::hide,
+                                                    onEnqueue = {
+                                                        val allSongs = folder.getAllSongs()
+                                                            .map { it.toSong().asMediaItem }
+                                                        binder?.player?.enqueue(allSongs)
+                                                    },
+                                                    thumbnailSizeDp = thumbnailSizeDp
+                                                )
+                                            }
                                         }
+                                    },
+                                    onClick = {
+                                        currentFolderPath += folder.name + "/"
                                     }
-                                },
-                                onClick = {
-                                    currentFolderPath += folder.name + "/"
-                                }
-                            ),
-                    )
+                                ),
+                        )
+                    }
+                } else {
+                    item {
+                        BasicText(
+                            text = stringResource(R.string.folder_was_not_found),
+                            style = typography.xs.semiBold
+                        )
+                    }
                 }
             }
 

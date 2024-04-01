@@ -431,4 +431,6 @@
     <string name="show_remaining_song_time">Şarkının ne kadar süresi kaldığını göster</string>
     <string name="full_screen">Tam ekran</string>
     <string name="click_lyrics_text">Şarkı sözü metnine tıkla</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
+    <string name="folder_was_not_found">Folder was not found</string>
 </resources>
