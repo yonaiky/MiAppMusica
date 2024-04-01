@@ -291,7 +291,7 @@ fun BuiltInPlaylistSongs(
     if (!filter.isNullOrBlank())
     songs = songs
         .filter {
-            it.title.contains(filterCharSequence,true) ?: false
+            it.title.contains(filterCharSequence,true)
             || it.artistsText?.contains(filterCharSequence,true) ?: false
         }
 
@@ -737,7 +737,7 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onAddToPlaylist = { playlistPreview ->
                                         position =
-                                            playlistPreview.songCount.minus(1) ?: 0
+                                            playlistPreview.songCount.minus(1)
                                         //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
                                         if (position > 0) position++ else position = 0
                                         //Log.d("mediaItem", "next initial pos ${position}")
