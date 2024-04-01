@@ -102,21 +102,15 @@ inline fun StringListValueSelectorSettingsEntry(
     addPlaceholder: String,
     conflictTitle: String,
     removeTitle: String,
-    context: Context
+    context: Context,
+    list: List<String>,
+    crossinline add: (String) -> Unit,
+    crossinline remove: (String) -> Unit
 ) {
-    val filename = "Blacklisted_paths.txt"
     var showStringListDialog by remember {
         mutableStateOf(false)
     }
 
-    var blackListedPaths by remember {
-        val file = File(context.filesDir, filename)
-        if (file.exists()) {
-            mutableStateOf(file.readLines())
-        } else {
-            mutableStateOf(emptyList())
-        }
-    }
 
     if (showStringListDialog) {
         StringListDialog(
@@ -125,17 +119,9 @@ inline fun StringListValueSelectorSettingsEntry(
             addPlaceholder = addPlaceholder,
             removeTitle = removeTitle,
             conflictTitle = conflictTitle,
-            list = blackListedPaths,
-            add = { newPath ->
-                blackListedPaths = blackListedPaths + newPath
-                val file = File(context.filesDir, filename)
-                file.writeText(blackListedPaths.joinToString("\n"))
-            },
-            remove = { path ->
-                blackListedPaths = blackListedPaths.filter { it != path }
-                val file = File(context.filesDir, filename)
-                file.writeText(blackListedPaths.joinToString("\n"))
-            },
+            list = list,
+            add = add,
+            remove = remove,
             onDismiss = { showStringListDialog = false },
         )
     }

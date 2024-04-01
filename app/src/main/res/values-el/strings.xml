@@ -55,7 +55,7 @@
     <string name="online">Συνδεδεμένο</string>
     <string name="no_results_found">Δεν βρέθηκαν αποτελέσματα. Δοκιμάστε διαφορετικές λέξεις-κλειδιά ή κατηγορίες</string>
     <string name="videos">Βίντεο</string>
-    <string name="featured">Προτεινόμενα</string>
+    <string name="featured">﻿Προτεινόμενα</string>
     <string name="view_the_source_code">Προβολή Πηγαίου Κώδικα</string>
     <string name="report_an_issue">Αναφορά προβλήματος</string>
     <string name="you_will_be_redirected_to_github">Θα μεταφερθείτε στο GitHub</string>
@@ -431,4 +431,6 @@
     <string name="show_remaining_song_time">Show remaining song time</string>
     <string name="full_screen">Full screen</string>
     <string name="click_lyrics_text">Click lyrics text</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
+    <string name="folder_was_not_found">Folder was not found</string>
 </resources>
