@@ -39,6 +39,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.contentWidthKey
+import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
@@ -54,6 +55,7 @@ import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.toast
+import java.io.File
 import java.net.Proxy
 
 @SuppressLint("BatteryLife")
@@ -99,6 +101,8 @@ fun OtherSettings() {
     var proxyPort by rememberPreference(proxyPortKey, 1080)
     var proxyMode by rememberPreference(proxyModeKey, Proxy.Type.HTTP)
 
+    var defaultFolder by rememberPreference(defaultFolderKey, "/")
+
     var isKeepScreenOnEnabled by rememberPreference(isKeepScreenOnEnabledKey, false)
 
     var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
@@ -107,6 +111,15 @@ fun OtherSettings() {
     val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
+
+    var blackListedPaths by remember {
+        val file = File(context.filesDir, "Blacklisted_paths.txt")
+        if (file.exists()) {
+            mutableStateOf(file.readLines())
+        } else {
+            mutableStateOf(emptyList())
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -190,7 +203,18 @@ fun OtherSettings() {
             },
             conflictTitle = stringResource(R.string.this_folder_already_exists),
             removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
-            context = LocalContext.current
+            context = LocalContext.current,
+            list = blackListedPaths,
+            add = { newPath ->
+                blackListedPaths = blackListedPaths + newPath
+                val file = File(context.filesDir, "Blacklisted_paths.txt")
+                file.writeText(blackListedPaths.joinToString("\n"))
+            },
+            remove = { path ->
+                blackListedPaths = blackListedPaths.filter { it != path }
+                val file = File(context.filesDir, "Blacklisted_paths.txt")
+                file.writeText(blackListedPaths.joinToString("\n"))
+            }
         )
 
         SwitchSettingEntry(
@@ -199,6 +223,14 @@ fun OtherSettings() {
             isChecked = showFolders,
             onCheckedChange = { showFolders = it }
         )
+        AnimatedVisibility(visible = showFolders) {
+            TextDialogSettingEntry(
+                title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
+                text = defaultFolder,
+                currentText = defaultFolder,
+                onTextSave = { defaultFolder = it }
+            )
+        }
 
         SettingsGroupSpacer()
 
