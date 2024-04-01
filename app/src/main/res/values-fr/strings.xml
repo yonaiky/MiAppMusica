@@ -407,7 +407,7 @@
     <string name="navigation_bar_type">Type de barre de navigation</string>
     <string name="icon_and_text">Texte et icône</string>
     <string name="only_icon">Icône uniquement</string>
-    <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur l\'écran d\'accueil</string>
+    <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur la barre de navigation</string>
     <string name="action_bar_show_menu_button">Afficher le bouton menu</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Utiliser le dégradé d\'arrière-plan</string>
@@ -429,8 +429,8 @@
     <string name="item_deselect">Désélectionner</string>
     <string name="show_next_songs_in_player">Afficher les titres suivants dans le lecteur</string>
     <string name="show_remaining_song_time">Afficher le temps restant du titre</string>
-    <string name="full_screen">Full screen</string>
-    <string name="click_lyrics_text">Click lyrics text</string>
+    <string name="full_screen">Plein écran</string>
+    <string name="click_lyrics_text">Cliquer sur le texte des paroles</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
     <string name="folder_was_not_found">Folder was not found</string>
 </resources>

@@ -95,9 +95,9 @@ CC-BY-SA 3.0</string>
     <string name="clear_search_history">සෙවීම් අතීතය හිස් කරන්න</string>
     <string name="history_is_empty">අතීතය හිස් </string>
     <string name="service_lifetime">SERVICE LIFETIME</string>
-    <string name="battery_optimizations_applied">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invincible service\" option to take effect.</string>
-    <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
+    <string name="battery_optimizations_applied">බැටරි ප්‍රශස්තිකරණය යොදන්නේ නම්, විරාම කළ විට නැවත ධාවනය දැනුම්දීම හදිසියේම අතුරුදහන් විය හැක.</string>
+    <string name="is_android12">Android 12 සිට, \"අපරාජිත සේවා\" විකල්පය බලාත්මක වීමට බැටරි ප්‍රශස්තිකරණය අක්‍රිය කිරීම අවශ්‍ය වේ.</string>
+    <string name="ignore_battery_optimizations">බැටරි ප්‍රශස්තකරණය නොසලකා හරින්න</string>
     <string name="already_unrestricted">Already unrestricted</string>
     <string name="disable_background_restrictions">Disable background restrictions</string>
     <string name="invincible_service">Invincible service</string>
