@@ -407,7 +407,7 @@
     <string name="navigation_bar_type">Type de barre de navigation</string>
     <string name="icon_and_text">Texte et icône</string>
     <string name="only_icon">Icône uniquement</string>
-    <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur l\'écran d\'accueil</string>
+    <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur la barre de navigation</string>
     <string name="action_bar_show_menu_button">Afficher le bouton menu</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Utiliser le dégradé d\'arrière-plan</string>
