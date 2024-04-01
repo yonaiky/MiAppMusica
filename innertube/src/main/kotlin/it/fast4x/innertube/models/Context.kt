@@ -1,7 +1,12 @@
 package it.fast4x.innertube.models
 
+import io.ktor.client.request.headers
+import io.ktor.http.HttpMessageBuilder
+import io.ktor.http.headers
+import io.ktor.http.userAgent
 import it.fast4x.innertube.utils.LocalePreferences
 import kotlinx.serialization.Serializable
+import okhttp3.internal.userAgent
 
 @Serializable
 data class Context(
@@ -18,13 +23,26 @@ data class Context(
         //val hl: String = Innertube.localeHl,
         val visitorData: String = "CgtEUlRINDFjdm1YayjX1pSaBg%3D%3D",
         val androidSdkVersion: Int? = null,
-        val userAgent: String? = null
+        val userAgent: String? = null,
+        val referer: String? = null
     )
 
     @Serializable
     data class ThirdParty(
         val embedUrl: String,
     )
+
+
+    fun apply() {
+        client.userAgent
+
+        headers {
+            client.referer?.let { append("Referer", it) }
+            append("X-Youtube-Bootstrap-Logged-In", "false")
+            append("X-YouTube-Client-Name", client.clientName)
+            append("X-YouTube-Client-Version", client.clientVersion)
+        }
+    }
 
     companion object {
         /*

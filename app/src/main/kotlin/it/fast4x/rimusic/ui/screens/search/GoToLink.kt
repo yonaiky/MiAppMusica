@@ -200,7 +200,8 @@ fun GoToLink(
                                                 }
                                             }
                                     } else {
-                                        playlistRoute.ensureGlobal(browseId, null)
+                                        //playlistRoute.ensureGlobal(browseId, null)
+                                        playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
                                     }
                                 }
 

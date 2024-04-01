@@ -77,6 +77,7 @@ import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
+import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -812,6 +813,9 @@ fun AlbumSongs(
                                 modifier = Modifier
                                     .fillParentMaxSize()
                             ) {
+                                repeat(1) {
+                                    AlbumItemPlaceholder(thumbnailSizeDp = Dimensions.thumbnails.album)
+                                }
                                 repeat(4) {
                                     SongItemPlaceholder(thumbnailSizeDp = Dimensions.thumbnails.song)
                                 }

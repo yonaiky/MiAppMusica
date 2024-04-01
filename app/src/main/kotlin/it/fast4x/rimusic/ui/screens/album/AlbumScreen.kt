@@ -85,7 +85,7 @@ fun AlbumScreen(browseId: String) {
                 if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
-                            .onSuccess { currentAlbumPage ->
+                            ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
                                 Database.clearAlbum(browseId)
@@ -125,10 +125,10 @@ fun AlbumScreen(browseId: String) {
     LaunchedEffect(Unit ) {
         withContext(Dispatchers.IO) {
             Innertube.albumPage(BrowseBody(browseId = browseId))
-                .onSuccess { currentAlbumPage ->
+                ?.onSuccess { currentAlbumPage ->
                     albumPage = currentAlbumPage
                 }
-            println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
+            //println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
         }
     }
 

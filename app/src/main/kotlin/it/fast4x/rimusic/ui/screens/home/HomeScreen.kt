@@ -121,12 +121,22 @@ fun HomeScreen(
             )
         }
 
+        playlistRoute { browseId, params, maxDepth ->
+            PlaylistScreen(
+                browseId = browseId ?: error("browseId cannot be null"),
+                params = params,
+                maxDepth = maxDepth
+            )
+        }
+
+        /*
         playlistRoute { browseId, params ->
             PlaylistScreen(
                 browseId = browseId ?: "",
                 params = params
             )
         }
+         */
 
         searchResultRoute { query ->
             SearchResultScreen(

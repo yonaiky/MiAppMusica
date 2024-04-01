@@ -646,7 +646,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     val browseId = "VL$playlistId"
 
                     if (playlistId.startsWith("OLAK5uy_")) {
-                        Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
+                        Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let {
                             it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
                                 albumRoute.ensureGlobal(browseId)
                             }
@@ -654,7 +654,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     } else {
                         //playlistRoute.ensureGlobal(browseId)
                         //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"))
-                        playlistRoute.ensureGlobal(browseId,null)
+                        //playlistRoute.ensureGlobal(browseId,null)
+                        playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
                     }
                 }
 

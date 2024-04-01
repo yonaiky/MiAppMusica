@@ -24,7 +24,8 @@ import it.fast4x.rimusic.ui.screens.globalRoutes
 @Composable
 fun PlaylistScreen(
     browseId: String,
-    params: String?
+    params: String?,
+    maxDepth: Int? = null
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
     PersistMapCleanup(tagPrefix = "playlist/$browseId")
@@ -50,7 +51,8 @@ fun PlaylistScreen(
                     when (currentTabIndex) {
                         0 -> PlaylistSongList(
                             browseId = browseId,
-                            params = params
+                            params = params,
+                            maxDepth = maxDepth
                         )
                     }
                 }

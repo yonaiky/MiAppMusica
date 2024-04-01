@@ -131,7 +131,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun PlaylistSongList(
     browseId: String,
-    params: String?
+    params: String?,
+    maxDepth: Int?,
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -144,23 +145,25 @@ fun PlaylistSongList(
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
     LaunchedEffect(Unit, filter) {
-        //if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
+        if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
 
+        /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube
                 .playlistPage(BrowseBody(browseId = browseId, params = params))
                 ?.completed()
                 ?.getOrNull()
         }
+         */
         //Log.d("mediaPlaylist", "${playlistPage?.title} songs ${playlistPage?.songsPage?.items?.size} continuation ${playlistPage?.songsPage?.continuation}")
 
-/*
+
                 playlistPage = withContext(Dispatchers.IO) {
                     Innertube.playlistPage(BrowseBody(browseId = browseId, params = params))
                         ?.completed(maxDepth = maxDepth ?: Int.MAX_VALUE)?.getOrNull()
                 }
 
- */
+
 /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()

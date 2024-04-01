@@ -170,6 +170,14 @@ fun MoodList(mood: Mood) {
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
                                         modifier = Modifier.clickable {
+                                            childItem.info?.endpoint?.let { endpoint ->
+                                                playlistRoute.global(
+                                                    p0 = endpoint.browseId,
+                                                    p1 = endpoint.params,
+                                                    p2 = childItem.songCount?.let { it / 100 }
+                                                )
+                                            }
+                                            /*
                                             childItem.info?.endpoint?.browseId?.let {
                                                 playlistRoute.global(
                                                     it,
@@ -177,6 +185,7 @@ fun MoodList(mood: Mood) {
 
                                                 )
                                             }
+                                             */
                                         }
                                     )
 

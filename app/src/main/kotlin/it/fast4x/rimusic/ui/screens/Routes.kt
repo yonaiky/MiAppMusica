@@ -11,6 +11,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.routing.Route0
 import it.fast4x.compose.routing.Route1
 import it.fast4x.compose.routing.Route2
+import it.fast4x.compose.routing.Route3
 import it.fast4x.compose.routing.RouteHandlerScope
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
@@ -41,8 +42,8 @@ val settingsRoute = Route0("settingsRoute")
 val homeRoute = Route0("homeRoute")
 val moodRoute = Route1<Mood>("moodRoute")
 //val playlistRoute = Route1<String?>("playlistRoute")
-//val playlistRoute = Route3<String?, String?, Int?>("playlistRoute")
-val playlistRoute = Route2<String?, String?>("playlistRoute")
+val playlistRoute = Route3<String?, String?, Int?>("playlistRoute")
+//val playlistRoute = Route2<String?, String?>("playlistRoute")
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -71,13 +72,6 @@ inline fun RouteHandlerScope.globalRoutes() {
         )
     }
 
-/*
-    playlistRoute { browseId ->
-        PlaylistScreen(
-        )
-    }
- */
-
     localPlaylistRoute { playlistId ->
         LocalPlaylistScreen(
             playlistId = playlistId ?: error("playlistId cannot be null")
@@ -85,12 +79,27 @@ inline fun RouteHandlerScope.globalRoutes() {
     }
 
 
+    playlistRoute { browseId, params, maxDepth ->
+        PlaylistScreen(
+            browseId = browseId ?: error("browseId cannot be null"),
+            params = params,
+            maxDepth = maxDepth
+        )
+    }
+    /*
     playlistRoute { browseId, params ->
         PlaylistScreen(
             browseId = browseId ?: error("browseId cannot be null"),
             params = params
         )
     }
+     */
+    /*
+    playlistRoute { browseId ->
+        PlaylistScreen(
+        )
+    }
+ */
 
     statisticsTypeRoute { browseId ->
         StatisticsScreen(
