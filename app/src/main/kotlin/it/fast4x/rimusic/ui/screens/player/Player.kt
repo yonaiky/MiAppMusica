@@ -68,6 +68,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import coil.compose.AsyncImage
@@ -744,13 +745,15 @@ fun Player(
     ) {
 
 
-        var windows by remember {
+        val windows by remember {
             mutableStateOf(binder.player.currentTimeline.windows)
         }
+
         var queuedSongs by remember {
             mutableStateOf<List<Song>>(emptyList())
         }
-        LaunchedEffect(mediaItem.mediaId, windows) {
+
+        LaunchedEffect(Unit, mediaItem.mediaId, windows) {
             Database.getSongsList(
                 windows.map {
                     it.mediaItem.mediaId

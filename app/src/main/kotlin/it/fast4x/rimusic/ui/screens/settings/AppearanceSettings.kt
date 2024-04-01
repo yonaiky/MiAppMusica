@@ -50,6 +50,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
@@ -91,6 +92,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
@@ -112,7 +114,6 @@ fun AppearanceSettings() {
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
 
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
-    var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
@@ -147,6 +148,7 @@ fun AppearanceSettings() {
     var backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -390,6 +392,22 @@ fun AppearanceSettings() {
                 text = stringResource(R.string.by_tapping_on_the_thumbnail),
                 isChecked = thumbnailTapEnabled,
                 onCheckedChange = { thumbnailTapEnabled = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.click_lyrics_text).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.click_lyrics_text),
+                selectedValue = clickLyricsText,
+                onValueSelected = {
+                    clickLyricsText = it
+                },
+                valueText = {
+                    when (it) {
+                        ClickLyricsText.Player -> stringResource(R.string.player)
+                        ClickLyricsText.FullScreen -> stringResource(R.string.full_screen)
+                        ClickLyricsText.Both -> stringResource(R.string.both)
+                    }
+                },
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(filterCharSequence,true))

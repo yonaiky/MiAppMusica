@@ -171,7 +171,7 @@ fun  UiSettings() {
 
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)

@@ -1846,6 +1846,13 @@ class PlayerService : InvincibleService(),
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
+
+                    it.process().forEach {
+                        transaction {
+                            Database.insert(it)
+                        }
+                    }
+
                     if (justAdd) {
                         player.addMediaItems(it.process().drop(1))
                     } else {

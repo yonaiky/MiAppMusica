@@ -46,6 +46,8 @@ import java.io.File
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.time.Duration
+import java.util.Formatter
+import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
 
@@ -225,6 +227,22 @@ fun formatAsTime(millis: Long): String {
 
 fun formatTimelineSongDurationToTime(millis: Long) =
     Duration.ofMillis(millis*1000).toMinutes().minutes.toString()
+
+fun TimeToString(timeMs: Int): String {
+    val mFormatBuilder = StringBuilder()
+    val mFormatter = Formatter(mFormatBuilder, Locale.getDefault())
+    val totalSeconds = timeMs / 1000
+    //  videoDurationInSeconds = totalSeconds % 60;
+    val seconds = totalSeconds % 60
+    val minutes = totalSeconds / 60 % 60
+    val hours = totalSeconds / 3600
+    mFormatBuilder.setLength(0)
+    return if (hours > 0) {
+        mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString()
+    } else {
+        mFormatter.format("%02d:%02d", minutes, seconds).toString()
+    }
+}
 
 
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(

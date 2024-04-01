@@ -822,6 +822,7 @@ fun Lyrics(
                                                 }
                                             }
                                         )
+                                        /*
                                         if (isShowingSynchronizedLyrics) {
                                             MenuEntry(
                                                 icon = R.drawable.download,
@@ -848,6 +849,7 @@ fun Lyrics(
                                             )
                                              */
                                         }
+                                         */
                                     }
                                 }
                             }

@@ -188,13 +188,15 @@ WARNING, the custom version is not an official release, downloading only if invi
 
 ## 🫂 Acknowledgments
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
-- [**RiMusic Logo and icons**] [@ikanakova](https://github.com/ikanakova)
-- [**RiMusic Website and other features**] [JZITNIK-github](https://github.com/JZITNIK-github)
+- **RiMusic Logo and icons** [@ikanakova](https://github.com/ikanakova)
+- **RiMusic Website and other features** [JZITNIK-github](https://github.com/JZITNIK-github)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
 - [**Rubik** Font](https://fonts.google.com/specimen/Rubik): Rubik is RiMusic's default font.
 - [**Poppins** Font](https://fonts.google.com/specimen/Poppins): Poppins is ViMusic's default font.
 - [**Translator**](https://github.com/therealbush/translator): A simple and free Google Translate library for Kotlin/JVM and Java.
+- [**KuGou**](https://www.kugou.com): Lyrics text
+- [**LrcLib**](https://lrclib.net): Lyrics text
 
 
 ## ❗ Disclaimer

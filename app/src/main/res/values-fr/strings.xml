@@ -429,4 +429,6 @@
     <string name="item_deselect">Désélectionner</string>
     <string name="show_next_songs_in_player">Afficher les titres suivants dans le lecteur</string>
     <string name="show_remaining_song_time">Afficher le temps restant du titre</string>
+    <string name="full_screen">Full screen</string>
+    <string name="click_lyrics_text">Click lyrics text</string>
 </resources>

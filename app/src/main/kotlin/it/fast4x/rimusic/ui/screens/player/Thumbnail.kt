@@ -39,6 +39,7 @@ import coil.compose.AsyncImage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -51,8 +52,10 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnail
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -107,6 +110,8 @@ fun Thumbnail(
     var artImageAvailable by remember {
         mutableStateOf(true)
     }
+
+    val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
 
     player.DisposableListener {
         object : Player.Listener {
@@ -232,7 +237,11 @@ fun Thumbnail(
                 size = thumbnailSizeDp,
                 mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
                 durationProvider = player::getDuration,
-                onMaximize = onMaximize
+                onMaximize = onMaximize,
+                enableClick = when (clickLyricsText) {
+                    ClickLyricsText.Player, ClickLyricsText.Both -> true
+                    else -> false
+                }
             )
 
             StatsForNerds(

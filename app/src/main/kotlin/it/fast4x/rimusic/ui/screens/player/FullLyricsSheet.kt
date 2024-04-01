@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.BottomSheet
 import it.fast4x.rimusic.ui.components.BottomSheetState
@@ -49,6 +50,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -93,7 +95,8 @@ fun FullLyricsSheet(
         mutableStateOf(binder?.player?.currentMediaItem?.mediaId ?: "")
     }
 
-    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+    val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
 
     BottomSheet(
         state = layoutState,
@@ -171,7 +174,10 @@ fun FullLyricsSheet(
                     player.currentMediaItem?.mediaId?.let {
                         player.currentMediaItem!!::mediaMetadata.let { it1 ->
                             Lyrics(
-                                enableClick = true,
+                                enableClick = when (clickLyricsText) {
+                                    ClickLyricsText.FullScreen, ClickLyricsText.Both -> true
+                                    else -> false
+                                },
                                 mediaId = it,
                                 isDisplayed = true,
                                 onDismiss = {},
