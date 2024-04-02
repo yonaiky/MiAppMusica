@@ -423,7 +423,7 @@
     <string name="max_songs_in_queue">Макс. к-сть пісень у черзі</string>
     <string name="back">Назад</string>
     <string name="folders">Теки</string>
-    <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
+    <string name="show_folders_in_on_device_page">Показати папки на сторінці пристрою</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Srpski Latinica)</string>
     <string name="item_deselect">Скасовувати виділення</string>
@@ -431,6 +431,6 @@
     <string name="show_remaining_song_time">Показати час до закінчення пісні</string>
     <string name="full_screen">Повний екран</string>
     <string name="click_lyrics_text">Натиснути на текст пісні</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Теки, які показуватимуться, коли ви відкриєте на сторінці пристрою.</string>
     <string name="folder_was_not_found">Тека не знайдена</string>
 </resources>
