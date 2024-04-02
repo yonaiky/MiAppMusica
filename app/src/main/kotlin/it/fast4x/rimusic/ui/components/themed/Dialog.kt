@@ -1157,7 +1157,7 @@ fun <T> ValueSelectorDialogBody(
     onDismiss: () -> Unit,
     title: String,
     selectedValue: T?,
-    values: ImmutableList<T>,
+    values: List<T>,
     onValueSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
     valueText: @Composable (T) -> String = { it.toString() }

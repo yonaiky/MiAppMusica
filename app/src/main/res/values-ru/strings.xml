@@ -434,4 +434,5 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Папка, которая будет отображаться при открытии страницы \"На устройстве\".</string>
     <string name="folder_was_not_found">Папка не найдена</string>
     <string name="direction_top">Direction Top</string>
+    <string name="pick_from">Pick from</string>
 </resources>

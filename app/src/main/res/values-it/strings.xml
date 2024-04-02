@@ -434,4 +434,5 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Cartella che viene visualizzata quando si apre la pagina Sul Dispositivo.</string>
     <string name="folder_was_not_found">Cartella non trovata</string>
     <string name="direction_top">Direction Top</string>
+    <string name="pick_from">Pick from</string>
 </resources>

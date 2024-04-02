@@ -103,6 +103,7 @@ import me.bush.translator.Language
 import me.bush.translator.Translator
 import okhttp3.internal.toImmutableList
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 
 @UnstableApi
@@ -285,74 +286,86 @@ fun Lyrics(
             )
         }
 
-        /*
-        if (isPicking && isShowingSynchronizedLyrics) DefaultDialog(
-            onDismiss = {
-                isPicking = false
-            },
-            //horizontalPadding = 0.dp
-        ) {
-            val tracks = remember { mutableStateListOf<Track>() }
+
+        if (isPicking && isShowingSynchronizedLyrics) {
             var loading by remember { mutableStateOf(true) }
-            var error by remember { mutableStateOf(false) }
-
-            LaunchedEffect(Unit) {
-                val mediaMetadata = mediaMetadataProvider()
-
-                LrcLib.lyrics(
-                    artist = mediaMetadata.artist?.toString().orEmpty(),
-                    title = mediaMetadata.title?.toString().orEmpty()
-                )?.onSuccess {
-                    tracks.clear()
-                    tracks.addAll(it)
-                    loading = false
-                    error = false
-                }?.onFailure {
-                    loading = false
-                    error = true
-                } ?: run { loading = false }
-            }
-
-            when {
-                loading -> CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                error || tracks.isEmpty() -> BasicText(
-                    text = "No lyrics found",
-                    style = typography.s.semiBold.center,
-                    modifier = Modifier
-                        .padding(all = 24.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-
-                else -> ValueSelectorDialogBody(
-                    onDismiss = { isPicking = false },
-                    title = stringResource(R.string.choose_lyric_track),
-                    selectedValue = null,
-                    values = tracks.toImmutableList(),
-                    onValueSelected = {
-                        transaction {
-                            Database.upsert(
-                                Lyrics(
-                                    songId = mediaId,
-                                    fixed = lyrics?.fixed,
-                                    synced = it.syncedLyrics.orEmpty()
-                                )
-                            )
-                            isPicking = false
-                        }
-                    }
+            //if (loading)
+                DefaultDialog(
+                    onDismiss = {
+                        isPicking = false
+                    },
+                    //horizontalPadding = 0.dp
                 ) {
-                    "${it.artistName} - ${it.trackName} (${
-                        it.duration.seconds.toComponents { minutes, seconds, _ ->
-                            "$minutes:${seconds.toString().padStart(2, '0')}"
+                    val tracks = remember { mutableStateListOf<Track>() }
+                    var error by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(Unit) {
+                        val mediaMetadata = mediaMetadataProvider()
+
+                        LrcLib.lyrics(
+                            artist = mediaMetadata.artist?.toString().orEmpty(),
+                            title = mediaMetadata.title?.toString().orEmpty()
+                        )?.onSuccess {
+                            tracks.clear()
+                            tracks.addAll(it)
+                            loading = false
+                            error = false
+                        }?.onFailure {
+                            loading = false
+                            error = true
+                        } ?: run { loading = false }
+                    }
+
+                    when {
+                        loading -> CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                        error || tracks.isEmpty() -> BasicText(
+                            text = "No lyrics found",
+                            style = typography.s.semiBold.center,
+                            modifier = Modifier
+                                .padding(all = 24.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+
+                        else ->{
+                            lyrics?.let {
+                                SelectLyricFromTrack(tracks = tracks, mediaId = mediaId , lyrics = it)
+                                isPicking = false
+                            }
                         }
-                    })"
+                        /*
+                        ValueSelectorDialogBody(
+                        onDismiss = { isPicking = false },
+                        title = "Choose lyric track",
+                        selectedValue = null,
+                        values = tracks.toList(),
+                        onValueSelected = {
+                            transaction {
+                                Database.upsert(
+                                    Lyrics(
+                                        songId = mediaId,
+                                        fixed = lyrics?.fixed,
+                                        synced = it.syncedLyrics.orEmpty()
+                                    )
+                                )
+                                isPicking = false
+                            }
+                        }
+                    ) {
+                        "${it.artistName} - ${it.trackName} (${
+                            it.duration.seconds.toComponents { minutes, seconds, _ ->
+                                "$minutes:${seconds.toString().padStart(2, '0')}"
+                            }
+                        })"
+                    }
+                    */
+                    }
                 }
-            }
         }
-        */
+
+
 
         if (isShowingSynchronizedLyrics) {
             DisposableEffect(Unit) {
@@ -507,7 +520,8 @@ fun Lyrics(
                                         LyricsFontSize.Heavy ->
                                             typography.xl.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
                                     },
-                                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 32.dp)
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp, horizontal = 32.dp)
                                         .clickable {
                                             if (enableClick)
                                                 binder?.player?.seekTo(sentence.first)
@@ -806,7 +820,7 @@ fun Lyrics(
                                         )
 
                                         MenuEntry(
-                                            icon = R.drawable.download,
+                                            icon = R.drawable.sync,
                                             text = stringResource(R.string.fetch_lyrics_again),
                                             enabled = lyrics != null,
                                             onClick = {
@@ -822,34 +836,17 @@ fun Lyrics(
                                                 }
                                             }
                                         )
-                                        /*
+
                                         if (isShowingSynchronizedLyrics) {
                                             MenuEntry(
-                                                icon = R.drawable.download,
-                                                text = "Pick from Lrclib",
+                                                icon = R.drawable.sync,
+                                                text = stringResource(R.string.pick_from) + " LrcLib.net",
                                                 onClick = {
                                                     menuState.hide()
                                                     isPicking = true
                                                 }
                                             )
-                                            /*
-                                            MenuEntry(
-                                                icon = R.drawable.play_skip_forward,
-                                                text = "Set start offset",
-                                                secondaryText = "Offsets the synchronized lyrics by the current playback time",
-                                                onClick = {
-                                                    menuState.hide()
-                                                    lyrics?.let {
-                                                        val startTime = binder?.player?.currentPosition
-                                                        query {
-                                                            Database.upsert(it.copy(startTime = startTime))
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                             */
                                         }
-                                         */
                                     }
                                 }
                             }
@@ -864,3 +861,49 @@ fun Lyrics(
 }
 
 
+@Composable
+fun SelectLyricFromTrack (
+    tracks: List<Track>,
+    mediaId: String,
+    lyrics: Lyrics
+) {
+    val menuState = LocalMenuState.current
+
+    menuState.display {
+        Menu {
+            MenuEntry(
+                icon = R.drawable.chevron_back,
+                text = stringResource(R.string.cancel),
+                onClick = { menuState.hide() }
+            )
+            tracks.forEach {
+                MenuEntry(
+                    icon = R.drawable.text,
+                    text = "${it.artistName} - ${it.trackName}",
+                    secondaryText = "(${
+                        it.duration.seconds.toComponents { minutes, seconds, _ ->
+                            "$minutes:${seconds.toString().padStart(2, '0')}"
+                        }
+                    })",
+                    onClick = {
+                        menuState.hide()
+                        transaction {
+                            Database.upsert(
+                                Lyrics(
+                                    songId = mediaId,
+                                    fixed = lyrics.fixed,
+                                    synced = it.syncedLyrics.orEmpty()
+                                )
+                            )
+                        }
+                    }
+                )
+            }
+            MenuEntry(
+                icon = R.drawable.chevron_back,
+                text = stringResource(R.string.cancel),
+                onClick = { menuState.hide() }
+            )
+        }
+    }
+}
