@@ -168,7 +168,7 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
 
                         Header(title = album?.title ?: "Unknown") {
 
-                            if (navigationBarPosition == NavigationBarPosition.Left) {
+                            if (navigationBarPosition == NavigationBarPosition.Left || navigationBarPosition == NavigationBarPosition.Top) {
                                 IconButton(
                                     onClick = { pop() },
                                     icon = R.drawable.chevron_back,
