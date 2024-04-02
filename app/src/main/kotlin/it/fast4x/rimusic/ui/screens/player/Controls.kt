@@ -277,7 +277,7 @@ fun Controls(
                 if (uiType != UiType.ViMusic) {
 
                     IconButton(
-                        icon = if (albumId == null) R.drawable.alert_circle_not_filled else R.drawable.album,
+                        icon = if (albumId == null && !media.isLocal) R.drawable.alert_circle_not_filled else R.drawable.album,
                         color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
                         enabled = albumId != null,
                         onClick = {
@@ -404,7 +404,7 @@ fun Controls(
 
             if (uiType != UiType.ViMusic) {
                 IconButton(
-                    icon = if (artistIds?.isEmpty() == true) R.drawable.alert_circle_not_filled else R.drawable.artists,
+                    icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.alert_circle_not_filled else R.drawable.artists,
                     color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
                     onClick = {
                         if (artistIds?.isNotEmpty() == true && artistIds.size > 1)

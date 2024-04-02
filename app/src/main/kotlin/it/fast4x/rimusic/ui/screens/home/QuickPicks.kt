@@ -614,6 +614,7 @@ fun QuickPicks(
                                 thumbnailSizePx = playlistThumbnailSizePx,
                                 thumbnailSizeDp = playlistThumbnailSizeDp,
                                 alternative = true,
+                                showSongsCount = false,
                                 modifier = Modifier
                                     .clickable(onClick = { onPlaylistClick(playlist.key) })
                             )
