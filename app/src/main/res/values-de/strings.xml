@@ -422,7 +422,7 @@
     <string name="both">Beides</string>
     <string name="max_songs_in_queue">Maximale Titel in der Warteschlange</string>
     <string name="back">Back</string>
-    <string name="folders">Folders</string>
+    <string name="folders">Ordner</string>
     <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
@@ -430,7 +430,7 @@
     <string name="show_next_songs_in_player">Show next songs in player</string>
     <string name="show_remaining_song_time">Show remaining song time</string>
     <string name="full_screen">Full screen</string>
-    <string name="click_lyrics_text">Click lyrics text</string>
+    <string name="click_lyrics_text">Tippe auf Songtext</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
-    <string name="folder_was_not_found">Folder was not found</string>
+    <string name="folder_was_not_found">Ordner wurde nicht gefunden</string>
 </resources>
