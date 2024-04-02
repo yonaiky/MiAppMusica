@@ -677,6 +677,7 @@ fun  UiSettings() {
                     when (it) {
                         NavigationBarPosition.Left -> stringResource(R.string.direction_left)
                         NavigationBarPosition.Right -> stringResource(R.string.direction_right)
+                        NavigationBarPosition.Top -> stringResource(R.string.direction_top)
                     }
                 }
             )

@@ -433,4 +433,5 @@
     <string name="click_lyrics_text">Napauta sanoitusta</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
     <string name="folder_was_not_found">Folder was not found</string>
+    <string name="direction_top">Direction Top</string>
 </resources>

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.ui.components.ScaffoldTB
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -43,54 +44,76 @@ fun Scaffold(
     val (colorPalette) = LocalAppearance.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
-    Row(
-        modifier = modifier
-            .background(colorPalette.background0)
-            .fillMaxSize()
-    ) {
 
-        val navigationRail: @Composable () -> Unit = {
-            NavigationRail(
+
+    if (navigationBarPosition == NavigationBarPosition.Top) {
+            ScaffoldTB(
                 topIconButtonId = topIconButtonId,
                 onTopIconButtonClick = onTopIconButtonClick,
                 topIconButton2Id = topIconButton2Id,
                 onTopIconButton2Click = onTopIconButton2Click,
                 showButton2 = showButton2,
+                tabIndex = tabIndex,
+                onTabChanged = onTabChanged,
+                tabColumnContent = tabColumnContent,
+                showBottomButton = showBottomButton,
                 bottomIconButtonId = bottomIconButtonId,
                 onBottomIconButtonClick = onBottomIconButtonClick ?: {},
-                showBottomButton = showBottomButton,
-                tabIndex = tabIndex,
-                onTabIndexChanged = onTabChanged,
-                content = tabColumnContent,
+                content = content,
                 hideTabs = hideTabs
             )
+    } else {
+        Row(
+            modifier = modifier
+                .background(colorPalette.background0)
+                .fillMaxSize()
+        ) {
+
+            val navigationRail: @Composable () -> Unit = {
+                NavigationRail(
+                    topIconButtonId = topIconButtonId,
+                    onTopIconButtonClick = onTopIconButtonClick,
+                    topIconButton2Id = topIconButton2Id,
+                    onTopIconButton2Click = onTopIconButton2Click,
+                    showButton2 = showButton2,
+                    bottomIconButtonId = bottomIconButtonId,
+                    onBottomIconButtonClick = onBottomIconButtonClick ?: {},
+                    showBottomButton = showBottomButton,
+                    tabIndex = tabIndex,
+                    onTabIndexChanged = onTabChanged,
+                    content = tabColumnContent,
+                    hideTabs = hideTabs
+                )
+            }
+
+            if (navigationBarPosition == NavigationBarPosition.Left)
+                navigationRail()
+
+            AnimatedContent(
+                targetState = tabIndex,
+                transitionSpec = {
+                    val slideDirection = when (targetState > initialState) {
+                        true -> AnimatedContentTransitionScope.SlideDirection.Up
+                        false -> AnimatedContentTransitionScope.SlideDirection.Down
+                    }
+
+                    val animationSpec = spring(
+                        dampingRatio = 0.9f,
+                        stiffness = Spring.StiffnessLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    )
+
+                    slideIntoContainer(slideDirection, animationSpec) togetherWith
+                            slideOutOfContainer(slideDirection, animationSpec)
+                },
+                content = content, label = ""
+            )
+
+            if (navigationBarPosition == NavigationBarPosition.Right)
+                navigationRail()
+
         }
 
-        if (navigationBarPosition == NavigationBarPosition.Left)
-            navigationRail()
-
-        AnimatedContent(
-            targetState = tabIndex,
-            transitionSpec = {
-                val slideDirection = when (targetState > initialState) {
-                    true -> AnimatedContentTransitionScope.SlideDirection.Up
-                    false -> AnimatedContentTransitionScope.SlideDirection.Down
-                }
-
-                val animationSpec = spring(
-                    dampingRatio = 0.9f,
-                    stiffness = Spring.StiffnessLow,
-                    visibilityThreshold = IntOffset.VisibilityThreshold
-                )
-
-                slideIntoContainer(slideDirection, animationSpec) togetherWith
-                        slideOutOfContainer(slideDirection, animationSpec)
-            },
-            content = content, label = ""
-        )
-
-        if (navigationBarPosition == NavigationBarPosition.Right)
-            navigationRail()
-
     }
+
 }
