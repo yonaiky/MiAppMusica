@@ -435,20 +435,10 @@ fun Lyrics(
                     val player = LocalPlayerServiceBinder.current?.player
                         ?: return@AnimatedVisibility
 
-                    /*
-                    val synchronizedLyrics = remember(text) {
-                        SynchronizedLyrics(KuGou.Lyrics(text).sentences) {
-                            player.currentPosition + 50
-                        }
-                    }
-                     */
                     val synchronizedLyrics = remember(text) {
                         val sentences = LrcLib.Lyrics(text).sentences
 
-                        if (sentences == null) {
-                            invalidLrc = true
-                            null
-                        } else {
+                        run {
                             invalidLrc = false
                             SynchronizedLyrics(sentences) {
                                 player.currentPosition + 50L //- (lyrics?.startTime ?: 0L)
@@ -456,114 +446,42 @@ fun Lyrics(
                         }
                     }
 
-                    if (synchronizedLyrics != null) {
-                        val lazyListState = rememberLazyListState()
+                    val lazyListState = rememberLazyListState()
 
-                        LaunchedEffect(synchronizedLyrics, density) {
-                            val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
+                    LaunchedEffect(synchronizedLyrics, density) {
+                        val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
+
+                        lazyListState.animateScrollToItem(
+                            index = synchronizedLyrics.index + 1,
+                            scrollOffset = centerOffset
+                        )
+
+                        while (isActive) {
+                            delay(50)
+                            if (!synchronizedLyrics.update()) continue
 
                             lazyListState.animateScrollToItem(
                                 index = synchronizedLyrics.index + 1,
                                 scrollOffset = centerOffset
                             )
-
-                            while (isActive) {
-                                delay(50)
-                                if (!synchronizedLyrics.update()) continue
-
-                                lazyListState.animateScrollToItem(
-                                    index = synchronizedLyrics.index + 1,
-                                    scrollOffset = centerOffset
-                                )
-                            }
-                        }
-
-                        LazyColumn(
-                            state = lazyListState,
-                            userScrollEnabled = false,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.verticalFadingEdge()
-                        ) {
-                            item(key = "header", contentType = 0) {
-                                Spacer(modifier = Modifier.height(thumbnailSize))
-                            }
-                            itemsIndexed(
-                                items = synchronizedLyrics.sentences
-                            ) { index, sentence ->
-                                var translatedText by remember { mutableStateOf("") }
-                                if (translateEnabled == true) {
-                                    LaunchedEffect(Unit) {
-                                        val result = withContext(Dispatchers.IO) {
-                                            try {
-                                                translator.translate(
-                                                    sentence.second,
-                                                    languageDestination,
-                                                    Language.AUTO
-                                                ).translatedText
-                                            } catch (e: Exception) {
-                                                e.printStackTrace()
-                                            }
-                                        }
-                                        translatedText =
-                                            if (result.toString() == "kotlin.Unit") "" else result.toString()
-                                        showPlaceholder = false
-                                    }
-                                } else translatedText = sentence.second
-                                BasicText(
-                                    text = translatedText,
-                                    style = when (fontSize) {
-                                        LyricsFontSize.Light ->
-                                            typography.m.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
-                                        LyricsFontSize.Medium ->
-                                            typography.l.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
-                                        LyricsFontSize.Heavy ->
-                                            typography.xl.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
-                                    },
-                                    modifier = Modifier
-                                        .padding(vertical = 4.dp, horizontal = 32.dp)
-                                        .clickable {
-                                            if (enableClick)
-                                                binder?.player?.seekTo(sentence.first)
-                                        }
-                                )
-                            }
-                            item(key = "footer", contentType = 0) {
-                                Spacer(modifier = Modifier.height(thumbnailSize))
-                            }
-                        }
-                    }
-
-                    /*
-                    val lazyListState = rememberLazyListState(
-                        synchronizedLyrics.index,
-                        with(density) { size.roundToPx() } / 6)
-
-                    LaunchedEffect(synchronizedLyrics) {
-                        val center = with(density) { size.roundToPx() } / 6
-
-                        while (isActive) {
-                            delay(50)
-                            if (synchronizedLyrics.update()) {
-                                lazyListState.animateScrollToItem(
-                                    synchronizedLyrics.index,
-                                    center
-                                )
-                            }
                         }
                     }
 
                     LazyColumn(
                         state = lazyListState,
-                        userScrollEnabled = true,
-                        contentPadding = PaddingValues(vertical = size / 2),
+                        userScrollEnabled = false,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .verticalFadingEdge()
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.verticalFadingEdge()
                     ) {
-                        itemsIndexed(items = synchronizedLyrics.sentences) { index, sentence ->
+                        item(key = "header", contentType = 0) {
+                            Spacer(modifier = Modifier.height(thumbnailSize))
+                        }
+                        itemsIndexed(
+                            items = synchronizedLyrics.sentences
+                        ) { index, sentence ->
                             var translatedText by remember { mutableStateOf("") }
-                            if (translateEnabled == true) {
+                            if (translateEnabled) {
                                 LaunchedEffect(Unit) {
                                     val result = withContext(Dispatchers.IO) {
                                         try {
@@ -594,14 +512,15 @@ fun Lyrics(
                                 modifier = Modifier
                                     .padding(vertical = 4.dp, horizontal = 32.dp)
                                     .clickable {
-                                        //Log.d("mediaItem","${sentence.first}")
                                         if (enableClick)
                                             binder?.player?.seekTo(sentence.first)
                                     }
                             )
                         }
+                        item(key = "footer", contentType = 0) {
+                            Spacer(modifier = Modifier.height(thumbnailSize))
+                        }
                     }
-                     */
                 } else {
                     var translatedText by remember { mutableStateOf("") }
                     if (translateEnabled == true) {
@@ -742,7 +661,7 @@ fun Lyrics(
                     enabled = true,
                     onClick = {
                         translateEnabled = !translateEnabled
-                        if (!translateEnabled) showPlaceholder = false else showPlaceholder = true
+                        showPlaceholder = if (!translateEnabled) false else true
                     },
                     modifier = Modifier
                         //.padding(horizontal = 8.dp)
@@ -880,11 +799,11 @@ fun SelectLyricFromTrack (
                 MenuEntry(
                     icon = R.drawable.text,
                     text = "${it.artistName} - ${it.trackName}",
-                    secondaryText = "(${
+                    secondaryText = "(${stringResource(R.string.sort_duration)} ${
                         it.duration.seconds.toComponents { minutes, seconds, _ ->
                             "$minutes:${seconds.toString().padStart(2, '0')}"
                         }
-                    })",
+                    } ${stringResource(R.string.id)} ${it.id}) ",
                     onClick = {
                         menuState.hide()
                         transaction {
