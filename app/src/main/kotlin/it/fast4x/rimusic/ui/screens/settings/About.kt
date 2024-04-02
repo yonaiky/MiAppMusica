@@ -145,9 +145,11 @@ fun About() {
                     "HelloZebra1133 \n"+
                     "Ikanakova \n"+
                     "iOSStarWorld \n"+
+                    "IvanMaksimovic77 \n"+
                     "JZITNIK-github \n"+
                     "Kjev666 \n"+
                     "Kptmx \n"+
+                    "koliwan \n"+
                     "Lolozweipunktnull \n" +
                     "ManuelCoimbra) \n" +
                     "Marinkas \n"+
@@ -161,7 +163,6 @@ fun About() {
                     "NiXT0y \n"+
                     "OlimitLolli \n"+
                     "OrangeZXZ \n"+
-                    "pnextremer \n"+
                     "RegularWater \n"+
                     "Rikalaj \n" +
                     "Roklc \n"+
