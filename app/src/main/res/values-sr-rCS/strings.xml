@@ -122,11 +122,11 @@
     <string name="provided_by">Obezbeđuje</string>
     <string name="delete_playback_events">Izbriši %1$s događaje reprodukcije</string>
     <string name="existing_data_will_be_overwritten">Postojeći podaci će biti prepisani.\n%1$s će se automatski zatvoriti nakon vraćanja baze podataka.</string>
-    <string name="folder_cache">DIREKTORIJUM KEŠA</string>
-    <string name="cache_reset_by_clicking_button">Pažnja klikom na dugme ispod, direktorijum lokacije keša će biti resetovan na podrazumevane vrednosti</string>
-    <string name="cache_location_folder">Lokacija direktorijuma</string>
+    <string name="folder_cache">FASCIKLA KEŠA</string>
+    <string name="cache_reset_by_clicking_button">Pažnja klikom na dugme ispod, fascikla lokacije keša će biti resetovana na podrazumevane vrednosti</string>
+    <string name="cache_location_folder">Lokacija fascikle</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Od Android 10 ova funkcija možda neće biti dostupna</string>
-    <string name="reset_cache_location_folder">RESETUJTE DIREKTORIJUM LOKACIJE KEŠA</string>
+    <string name="reset_cache_location_folder">RESETUJTE FASCIKLU LOKACIJE KEŠA</string>
     <string name="used">" korišćeno"</string>
     <string name="close_background_player">Zatvori pozadinski plejer</string>
     <string name="when_app_swipe_out_from_task_manager">Kada aplikaciju prevučete prstom iz menadžera zadataka</string>
@@ -431,6 +431,6 @@
     <string name="show_remaining_song_time">Prikaži preostalo vreme pesme</string>
     <string name="full_screen">Celi ekran</string>
     <string name="click_lyrics_text">Klik na tekst stihova</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
-    <string name="folder_was_not_found">Folder was not found</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Fascikla koja će se prikazati kada otvorite stranicu Na uređaju.</string>
+    <string name="folder_was_not_found">Fascikla nije pronađena</string>
 </resources>
