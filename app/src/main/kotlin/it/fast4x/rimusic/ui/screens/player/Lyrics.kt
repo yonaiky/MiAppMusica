@@ -593,7 +593,7 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .fillMaxWidth(0.22f)
+                    .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
                 IconButton(
                     icon = R.drawable.minmax,
