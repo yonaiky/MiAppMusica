@@ -123,7 +123,7 @@ fun FullLyricsSheet(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .height(Dimensions.collapsedPlayer)
+                        .height(Dimensions.collapsedPlayer * 2)
                 ) {
                     AsyncImage(
                         model = player.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(
@@ -132,8 +132,9 @@ fun FullLyricsSheet(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
+                            .padding(all = 10.dp)
                             .clip(thumbnailShape)
-                            .size(48.dp)
+                            .size(Dimensions.collapsedPlayer * 2)
                     )
                 }
 
@@ -146,14 +147,14 @@ fun FullLyricsSheet(
                 ) {
                     BasicText(
                         text = player.currentMediaItem?.mediaMetadata?.title?.toString() ?: "",
-                        style = typography.s.medium.secondary,
+                        style = typography.m.medium.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
 
                     BasicText(
                         text = player.currentMediaItem?.mediaMetadata?.artist?.toString() ?: "",
-                        style = typography.xs.medium.secondary,
+                        style = typography.s.medium.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
