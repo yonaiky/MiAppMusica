@@ -261,6 +261,7 @@ fun FullLyricsSheet(
                                 },
                                 modifier = Modifier
                                     .fillMaxHeight(0.9f)
+
                             )
                         }
                     }

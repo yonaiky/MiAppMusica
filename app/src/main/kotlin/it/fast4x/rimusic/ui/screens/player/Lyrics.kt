@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,9 +43,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -55,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
@@ -82,6 +86,8 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import it.fast4x.rimusic.ui.styling.onOverlayShimmer
+import it.fast4x.rimusic.ui.styling.overlay
+import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.SynchronizedLyrics
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.center
@@ -93,6 +99,7 @@ import it.fast4x.rimusic.utils.lyricsFontSizeKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import kotlinx.coroutines.Dispatchers
@@ -126,11 +133,12 @@ fun Lyrics(
         enter = fadeIn(),
         exit = fadeOut(),
     ) {
-        val (colorPalette, typography) = LocalAppearance.current
+        val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
         val context = LocalContext.current
         val menuState = LocalMenuState.current
         val currentView = LocalView.current
         val binder = LocalPlayerServiceBinder.current
+        val player = binder?.player
 
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
@@ -376,6 +384,19 @@ fun Lyrics(
             }
         }
 
+        AsyncImage(
+            model = player?.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(
+                Dimensions.thumbnails.song.px
+            ),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(all = 10.dp)
+                .clip(thumbnailShape)
+                .background(colorPalette.overlay)
+                .fillMaxSize(0.8f)
+        )
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier
@@ -449,7 +470,11 @@ fun Lyrics(
                     val lazyListState = rememberLazyListState()
 
                     LaunchedEffect(synchronizedLyrics, density) {
-                        val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
+                        //val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
+                        val centerOffset = with(density) {
+                            (-thumbnailSize.div(if (trailingContent == null) 3 else 2))
+                                .roundToPx()
+                        }
 
                         lazyListState.animateScrollToItem(
                             index = synchronizedLyrics.index + 1,
@@ -472,7 +497,8 @@ fun Lyrics(
                         userScrollEnabled = true,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.verticalFadingEdge()
+                        modifier = Modifier
+                            .verticalFadingEdge()
                     ) {
                         item(key = "header", contentType = 0) {
                             Spacer(modifier = Modifier.height(thumbnailSize))
