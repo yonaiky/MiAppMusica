@@ -469,7 +469,7 @@ fun Lyrics(
 
                     LazyColumn(
                         state = lazyListState,
-                        userScrollEnabled = false,
+                        userScrollEnabled = true,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier.verticalFadingEdge()
