@@ -61,6 +61,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Artist
@@ -90,6 +91,7 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
@@ -236,27 +238,57 @@ fun NonQueuedMediaItemMenu(
 ) {
     val binder = LocalPlayerServiceBinder.current
 
-    BaseMediaItemMenu(
-        mediaItem = mediaItem,
-        onDismiss = onDismiss,
-        onStartRadio = {
-            binder?.stopRadio()
-            binder?.player?.forcePlay(mediaItem)
-            binder?.setupRadio(
-                NavigationEndpoint.Endpoint.Watch(
-                    videoId = mediaItem.mediaId,
-                    playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
-                )
-            )
-        },
-        onPlayNext = { binder?.player?.addNext(mediaItem) },
-        onEnqueue = { binder?.player?.enqueue(mediaItem) },
-        onDownload = onDownload,
-        onRemoveFromPlaylist = onRemoveFromPlaylist,
-        onHideFromDatabase = onHideFromDatabase,
-        onRemoveFromQuickPicks = onRemoveFromQuickPicks,
-        modifier = modifier
+    val menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
     )
+
+    if (menuStyle == MenuStyle.Grid) {
+        BaseMediaItemGridMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onEnqueue = { binder?.player?.enqueue(mediaItem) },
+            onDownload = onDownload,
+            onRemoveFromPlaylist = onRemoveFromPlaylist,
+            onHideFromDatabase = onHideFromDatabase,
+            onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            modifier = modifier
+        )
+    } else {
+
+        BaseMediaItemMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onEnqueue = { binder?.player?.enqueue(mediaItem) },
+            onDownload = onDownload,
+            onRemoveFromPlaylist = onRemoveFromPlaylist,
+            onHideFromDatabase = onHideFromDatabase,
+            onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            modifier = modifier
+        )
+    }
 }
 
 @ExperimentalTextApi
@@ -819,7 +851,7 @@ fun MediaItemMenu(
                         .height(8.dp)
                 )
 
-                  if (!isLocal && songSaved > 0) {
+                if (!isLocal && songSaved > 0) {
                     MenuEntry(
                         icon = R.drawable.title_edit,
                         text = stringResource(R.string.update_title),

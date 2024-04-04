@@ -65,6 +65,7 @@ import it.fast4x.rimusic.enums.MaxStatisticsItems
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
@@ -105,6 +106,7 @@ import it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
 import it.fast4x.rimusic.utils.lastPlayerVisualizerTypeKey
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
+import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
@@ -234,6 +236,11 @@ fun  UiSettings() {
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
+
+    var menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
+    )
 
     Column(
         modifier = Modifier
@@ -691,6 +698,19 @@ fun  UiSettings() {
                     when (it) {
                         NavigationBarType.IconAndText -> stringResource(R.string.icon_and_text)
                         NavigationBarType.IconOnly -> stringResource(R.string.only_icon)
+                    }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.menu_style).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.menu_style),
+                selectedValue = menuStyle,
+                onValueSelected = { menuStyle = it },
+                valueText = {
+                    when (it) {
+                        MenuStyle.Grid -> stringResource(R.string.style_grid)
+                        MenuStyle.List -> stringResource(R.string.style_list)
                     }
                 }
             )

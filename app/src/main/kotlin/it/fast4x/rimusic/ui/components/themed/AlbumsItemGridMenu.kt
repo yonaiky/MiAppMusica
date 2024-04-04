@@ -9,13 +9,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -61,7 +65,7 @@ import kotlinx.coroutines.Dispatchers
 @UnstableApi
 @ExperimentalAnimationApi
 @Composable
-fun AlbumsItemMenu(
+fun AlbumsItemGridMenu(
     onDismiss: () -> Unit,
     onSelectUnselect: (() -> Unit)? = null,
     onSelect: (() -> Unit)? = null,
@@ -87,24 +91,9 @@ fun AlbumsItemMenu(
         mutableStateOf(0.dp)
     }
 
-    val menuStyle by rememberPreference(
-        menuStyleKey,
-        MenuStyle.List
-    )
+    val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
+    val thumbnailSizePx = thumbnailSizeDp.px
 
-    if (menuStyle == MenuStyle.Grid) {
-        AlbumsItemGridMenu(
-            onDismiss = onDismiss,
-            album = album,
-            onSelectUnselect = onSelectUnselect,
-            onChangeAlbumTitle = onChangeAlbumTitle,
-            onChangeAlbumAuthors = onChangeAlbumAuthors,
-            onChangeAlbumCover = onChangeAlbumCover,
-            onDownloadAlbumCover = onDownloadAlbumCover,
-            onEnqueue = onEnqueue,
-            onAddToPlaylist = onAddToPlaylist
-        )
-    } else {
         AnimatedContent(
             targetState = isViewingPlaylists,
             transitionSpec = {
@@ -256,71 +245,31 @@ fun AlbumsItemMenu(
                     }
                 }
             } else {
-                Menu(
-                    modifier = modifier
-                        .onPlaced { height = with(density) { it.size.height.toDp() } }
-                ) {
-                    val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
-                    val thumbnailSizePx = thumbnailSizeDp.px
-                    val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
-                    val thumbnailArtistSizePx = thumbnailArtistSizeDp.px
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(end = 12.dp)
-                    ) {
+                val selectText = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}"
+                GridMenu(
+                    contentPadding = PaddingValues(
+                        start = 8.dp,
+                        top = 8.dp,
+                        end = 8.dp,
+                        bottom = 8.dp + WindowInsets.systemBars.asPaddingValues()
+                            .calculateBottomPadding()
+                    ),
+                    topContent = {
                         AlbumItem(
                             album = album,
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp
                         )
-
-                        /*
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        IconButton(
-                            //icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-                            icon = R.drawable.heart,
-                            //color = colorPalette.favoritesIcon,
-                            color = if (likedAt == null) colorPalette.textDisabled else colorPalette.text,
-                            onClick = {
-                                query {
-                                    if (Database.like(
-                                            mediaItem.mediaId,
-                                            if (likedAt == null) System.currentTimeMillis() else null
-                                        ) == 0
-                                    ) {
-                                        Database.insert(mediaItem, Song::toggleLike)
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(all = 4.dp)
-                                .size(24.dp)
-                        )
-
-                        if (!isLocal) IconButton(
-                            icon = R.drawable.share_social,
-                            color = colorPalette.text,
-                            onClick = onShare,
-                            modifier = Modifier
-                                .padding(all = 4.dp)
-                                .size(24.dp)
-                        )
-
                     }
-                    */
-                    }
-
-                    Spacer(
-                        modifier = Modifier
-                            .height(8.dp)
-                    )
+                ) {
 
                     onSelectUnselect?.let { onSelectUnselect ->
-                        MenuEntry(
+                        GridMenuItem(
                             icon = R.drawable.checked,
-                            text = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}",
+                            title = R.string.item_select,
+                            titleString = selectText,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onSelectUnselect()
@@ -328,53 +277,38 @@ fun AlbumsItemMenu(
                         )
                     }
 
-                    onSelect?.let { onSelect ->
-                        MenuEntry(
-                            icon = R.drawable.checked,
-                            text = stringResource(R.string.item_select),
-                            onClick = {
-                                onDismiss()
-                                onSelect()
-                            }
-                        )
-                    }
-                    /*
-                onUncheck?.let { onUncheck ->
-                    MenuEntry(
-                        icon = R.drawable.unchecked,
-                        text = stringResource(R.string.item_uncheck),
-                        onClick = {
-                            onDismiss()
-                            onUncheck()
-                        }
-                    )
-                }
-                 */
-
                     onChangeAlbumTitle?.let {
-                        MenuEntry(
+                        GridMenuItem(
                             icon = R.drawable.title_edit,
-                            text = stringResource(R.string.update_title),
+                            title = R.string.update_title,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumTitle()
                             }
                         )
                     }
+
                     onChangeAlbumAuthors?.let {
-                        MenuEntry(
+                        GridMenuItem(
                             icon = R.drawable.artists_edit,
-                            text = stringResource(R.string.update_authors),
+                            title = R.string.update_authors,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumAuthors()
                             }
                         )
                     }
+
                     onChangeAlbumCover?.let {
-                        MenuEntry(
+                        GridMenuItem(
                             icon = R.drawable.cover_edit,
-                            text = stringResource(R.string.update_cover),
+                            title = R.string.update_cover,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumCover()
@@ -383,9 +317,11 @@ fun AlbumsItemMenu(
                     }
 
                     onDownloadAlbumCover?.let {
-                        MenuEntry(
+                        GridMenuItem(
                             icon = R.drawable.download_cover,
-                            text = stringResource(R.string.download_cover),
+                            title = R.string.download_cover,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onDownloadAlbumCover()
@@ -393,10 +329,12 @@ fun AlbumsItemMenu(
                         )
                     }
 
-                    onEnqueue?.let { onEnqueue ->
-                        MenuEntry(
+                    onEnqueue?.let {
+                        GridMenuItem(
                             icon = R.drawable.enqueue,
-                            text = stringResource(R.string.enqueue),
+                            title = R.string.enqueue,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
                             onClick = {
                                 onDismiss()
                                 onEnqueue()
@@ -404,22 +342,14 @@ fun AlbumsItemMenu(
                         )
                     }
 
-
-                    if (onAddToPlaylist != null) {
-                        MenuEntry(
+                    onAddToPlaylist?.let { onAddToPlaylist ->
+                        GridMenuItem(
                             icon = R.drawable.add_in_playlist,
-                            text = stringResource(R.string.add_to_playlist),
-                            onClick = { isViewingPlaylists = true },
-                            trailingContent = {
-                                Image(
-                                    painter = painterResource(R.drawable.chevron_forward),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(
-                                        colorPalette.textSecondary
-                                    ),
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                )
+                            title = R.string.add_to_playlist,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
+                            onClick = {
+                                isViewingPlaylists = true
                             }
                         )
                     }
@@ -427,5 +357,5 @@ fun AlbumsItemMenu(
                 }
             }
         }
-    }
+
 }

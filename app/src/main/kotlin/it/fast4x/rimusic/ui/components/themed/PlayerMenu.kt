@@ -19,8 +19,13 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.MenuStyle
+import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.utils.menuStyleKey
+import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.toast
 
@@ -34,6 +39,12 @@ fun PlayerMenu(
     onDismiss: () -> Unit,
 
     ) {
+
+    val menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
+    )
+
     val context = LocalContext.current
 
     val activityResultLauncher =
@@ -68,50 +79,55 @@ fun PlayerMenu(
     }
 
 
-    MediaItemGridMenu(
-        mediaItem = mediaItem,
-        onDismiss = {},
-        onStartRadio = {
-            println("mediaItem")
-        },
-        onPlayNext = {
-            println("mediaItem")
-        },
-        onDownload = {
-            println("mediaItem")
-        },
-        onGoToEqualizer = {
-            println("mediaItem")
-        },
-        onAddToPlaylist = { i, y ->
-            println("mediaItem")
-        },
-    )
+    if (menuStyle == MenuStyle.Grid) {
+        BaseMediaItemGridMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onStartRadio = {
+                binder.stopRadio()
+                binder.player.seamlessPlay(mediaItem)
+                binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
+            },
+            onGoToEqualizer = {
+                try {
+                    activityResultLauncher.launch(
+                        Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder.player.audioSessionId)
+                            putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                            putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                        }
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    context.toast("Couldn't find an application to equalize audio")
+                }
+            },
+            onHideFromDatabase = { isHiding = true },
+        )
+    } else {
+        BaseMediaItemMenu(
+            mediaItem = mediaItem,
+            onStartRadio = {
+                binder.stopRadio()
+                binder.player.seamlessPlay(mediaItem)
+                binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
+            },
+            onGoToEqualizer = {
+                try {
+                    activityResultLauncher.launch(
+                        Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder.player.audioSessionId)
+                            putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                            putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                        }
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    context.toast("Couldn't find an application to equalize audio")
+                }
+            },
+            onShowSleepTimer = {},
+            onHideFromDatabase = { isHiding = true },
+            onDismiss = onDismiss
+        )
+    }
 
-/*
-    BaseMediaItemMenu(
-        mediaItem = mediaItem,
-        onStartRadio = {
-            binder.stopRadio()
-            binder.player.seamlessPlay(mediaItem)
-            binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
-        },
-        onGoToEqualizer = {
-            try {
-                activityResultLauncher.launch(
-                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                        putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder.player.audioSessionId)
-                        putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-                        putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                    }
-                )
-            } catch (e: ActivityNotFoundException) {
-                context.toast("Couldn't find an application to equalize audio")
-            }
-        },
-        onShowSleepTimer = {},
-        onHideFromDatabase = { isHiding = true },
-        onDismiss = onDismiss
-    )
- */
 }

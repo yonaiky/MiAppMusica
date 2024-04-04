@@ -123,6 +123,7 @@ const val lyricsFontSizeKey = "lyricsFontSize"
 const val includeLocalSongsKey = "includeLocalSongs"
 const val clickLyricsTextKey = "clickLyricsText"
 const val defaultFolderKey = "defaultFolder"
+const val menuStyleKey = "menuStyle"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
