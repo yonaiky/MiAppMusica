@@ -36,9 +36,11 @@ val GridMenuItemHeight = 96.dp
 @Composable
 fun GridMenu(
     modifier: Modifier = Modifier,
+    topContent: @Composable (() -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    content: LazyGridScope.() -> Unit,
+    content: LazyGridScope.() -> Unit
 ) {
+
     val (colorPalette) = LocalAppearance.current
     Column(
         modifier = modifier
@@ -48,6 +50,11 @@ fun GridMenu(
             .padding(top = 2.dp)
             .padding(vertical = 8.dp),
     ) {
+
+        if (topContent != null) {
+            topContent()
+        }
+
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 120.dp),
             modifier = modifier,
@@ -65,6 +72,7 @@ fun LazyGridScope.GridMenuItem(
     colorText: Color,
     @DrawableRes icon: Int,
     @StringRes title: Int,
+    titleString: String = "",
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) = GridMenuItem(
@@ -78,6 +86,7 @@ fun LazyGridScope.GridMenuItem(
         )
     },
     title = title,
+    titleString = titleString,
     enabled = enabled,
     onClick = onClick,
     colorText = colorText
@@ -89,6 +98,7 @@ fun LazyGridScope.GridMenuItem(
     colorText: Color,
     icon: @Composable BoxScope.() -> Unit,
     @StringRes title: Int,
+    titleString: String = "",
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -112,7 +122,7 @@ fun LazyGridScope.GridMenuItem(
                 content = icon
             )
             Text(
-                text = stringResource(title),
+                text = titleString.ifEmpty { stringResource(title) },
                 color = colorText,
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,

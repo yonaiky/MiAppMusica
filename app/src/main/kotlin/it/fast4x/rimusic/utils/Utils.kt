@@ -55,7 +55,7 @@ fun songToggleLike( song: Song ) {
     query {
         if (Database.songExist(song.asMediaItem.mediaId) == 0)
             Database.insert(song.asMediaItem, Song::toggleLike)
-        else {
+        //else {
             if (Database.songliked(song.asMediaItem.mediaId) == 0)
                 Database.like(
                     song.asMediaItem.mediaId,
@@ -65,7 +65,7 @@ fun songToggleLike( song: Song ) {
                 song.asMediaItem.mediaId,
                 null
             )
-        }
+        //}
     }
 }
 
@@ -73,7 +73,7 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
     query {
         if (Database.songExist(mediaItem.mediaId) == 0)
             Database.insert(mediaItem, Song::toggleLike)
-        else {
+        //else {
             if (Database.songliked(mediaItem.mediaId) == 0)
                 Database.like(
                     mediaItem.mediaId,
@@ -83,7 +83,7 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
                 mediaItem.mediaId,
                 null
             )
-        }
+        //}
     }
 }
 

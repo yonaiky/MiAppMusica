@@ -67,14 +67,28 @@ fun PlayerMenu(
         )
     }
 
-    /*
-    MediaItemGridMenu(
-        binder = binder,
-        mediaItem = mediaItem,
-        onDismiss = {}
-    )
-     */
 
+    MediaItemGridMenu(
+        mediaItem = mediaItem,
+        onDismiss = {},
+        onStartRadio = {
+            println("mediaItem")
+        },
+        onPlayNext = {
+            println("mediaItem")
+        },
+        onDownload = {
+            println("mediaItem")
+        },
+        onGoToEqualizer = {
+            println("mediaItem")
+        },
+        onAddToPlaylist = { i, y ->
+            println("mediaItem")
+        },
+    )
+
+/*
     BaseMediaItemMenu(
         mediaItem = mediaItem,
         onStartRadio = {
@@ -99,4 +113,5 @@ fun PlayerMenu(
         onHideFromDatabase = { isHiding = true },
         onDismiss = onDismiss
     )
+ */
 }
