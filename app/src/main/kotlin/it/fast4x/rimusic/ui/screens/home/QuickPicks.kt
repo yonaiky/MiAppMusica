@@ -494,7 +494,7 @@ fun QuickPicks(
                     }
 
                     if (showNewAlbumsArtists)
-                        if ( newReleaseAlbumsFiltered.distinct().isNotEmpty() && preferitesArtists.isNotEmpty() ) {
+                        if ( newReleaseAlbumsFiltered.isNotEmpty() && preferitesArtists.isNotEmpty() ) {
                             BasicText(
                                 text = stringResource(R.string.new_albums_of_your_artists),
                                 style = typography.m.semiBold,
@@ -529,7 +529,7 @@ fun QuickPicks(
                         )
 
                         LazyRow(contentPadding = endPaddingValues) {
-                            items(items = page.newReleaseAlbums.distinct(), key = { it.key }) {
+                            items(items = page.newReleaseAlbums, key = { it.key }) {
                                 AlbumItem(
                                     album = it,
                                     thumbnailSizePx = albumThumbnailSizePx,

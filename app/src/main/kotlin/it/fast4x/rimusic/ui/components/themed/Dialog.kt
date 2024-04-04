@@ -1086,7 +1086,7 @@ fun PlaybackParamsDialog(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp)
+                .padding(top = 20.dp, start = 4.dp)
         ) {
             IconButton(
                 onClick = {
