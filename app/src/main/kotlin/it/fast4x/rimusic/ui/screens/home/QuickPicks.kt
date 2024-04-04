@@ -478,7 +478,6 @@ fun QuickPicks(
                                     .width(itemInHorizontalGridWidth)
                             )
                         }
-                    //}//
                 }
 
 
@@ -488,7 +487,6 @@ fun QuickPicks(
                         preferitesArtists.forEach { artist ->
                             if (artist.name == album.authors?.first()?.name) {
                                 newReleaseAlbumsFiltered += album
-                                //Log.d("mediaItem","artst ok")
                             }
                         }
                     }
@@ -502,9 +500,7 @@ fun QuickPicks(
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {
-                                items(items = newReleaseAlbumsFiltered.distinct(), key = { it.key }) {
-                                    //preferitesArtists.forEach { artist ->
-                                    //    if (artist.name == it.authors?.first()?.name)
+                                items(items = newReleaseAlbumsFiltered, key = { it.key }) {
                                     AlbumItem(
                                         album = it,
                                         thumbnailSizePx = albumThumbnailSizePx,
@@ -514,8 +510,6 @@ fun QuickPicks(
                                             onAlbumClick( it.key )
                                         })
                                     )
-                                    //}
-
                                 }
                             }
 
