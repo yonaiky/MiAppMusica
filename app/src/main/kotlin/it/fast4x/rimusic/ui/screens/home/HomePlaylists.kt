@@ -170,7 +170,6 @@ fun HomePlaylists(
         mutableStateOf(0L)
     }
     val context = LocalContext.current
-    val activity = context as Activity
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
@@ -522,7 +521,7 @@ fun HomePlaylists(
                                         )
                                     )
                                 } catch (e: ActivityNotFoundException) {
-                                    context.toast("Couldn't find an application to open documents")
+                                    context.toast(e.message ?: "Couldn't find an application to open documents")
                                 }
                             },
                             modifier = Modifier

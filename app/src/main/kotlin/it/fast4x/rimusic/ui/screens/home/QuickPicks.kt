@@ -500,7 +500,7 @@ fun QuickPicks(
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {
-                                items(items = newReleaseAlbumsFiltered, key = { it.key }) {
+                                items(items = newReleaseAlbumsFiltered.distinct(), key = { it.key }) {
                                     AlbumItem(
                                         album = it,
                                         thumbnailSizePx = albumThumbnailSizePx,
@@ -523,7 +523,7 @@ fun QuickPicks(
                         )
 
                         LazyRow(contentPadding = endPaddingValues) {
-                            items(items = page.newReleaseAlbums, key = { it.key }) {
+                            items(items = page.newReleaseAlbums.distinct(), key = { it.key }) {
                                 AlbumItem(
                                     album = it,
                                     thumbnailSizePx = albumThumbnailSizePx,

@@ -90,6 +90,7 @@ import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.SynchronizedLyrics
 import it.fast4x.rimusic.utils.TextCopyToClipboard
+import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.getHttpClient
@@ -163,6 +164,9 @@ fun Lyrics(
         var isError by remember(mediaId, isShowingSynchronizedLyrics) {
             mutableStateOf(false)
         }
+        var isErrorSync by remember(mediaId, isShowingSynchronizedLyrics) {
+            mutableStateOf(false)
+        }
 
         val languageDestination = languageDestination()
 
@@ -206,6 +210,7 @@ fun Lyrics(
                             duration = duration.milliseconds,
                             album = mediaMetadata.albumTitle?.toString()
                         )?.onSuccess {
+                            isError = false
                             Database.upsert(
                                 Lyrics(
                                     songId = mediaId,
@@ -219,6 +224,7 @@ fun Lyrics(
                                 title = mediaMetadata.title?.toString() ?: "",
                                 duration = duration / 1000
                             )?.onSuccess {
+                                isError = false
                                 Database.upsert(
                                     Lyrics(
                                         songId = mediaId,
@@ -230,25 +236,9 @@ fun Lyrics(
                                 isError = true
                             }
                         }
-                        /*
-                        KuGou.lyrics(
-                            artist = mediaMetadata.artist?.toString() ?: "",
-                            title = mediaMetadata.title?.toString() ?: "",
-                            duration = duration / 1000
-                        )?.onSuccess { syncedLyrics ->
-                            Database.upsert(
-                                Lyrics(
-                                    songId = mediaId,
-                                    fixed = it?.fixed,
-                                    synced = syncedLyrics?.value ?: ""
-                                )
 
-                            )
-                        }?.onFailure {
-                            isError = true
-                        }
-                         */
                     } else if (!isShowingSynchronizedLyrics && currentLyrics?.fixed == null) {
+                        isError = false
                         lyrics = null
                         Innertube.lyrics(NextBody(videoId = mediaId))?.onSuccess { fixedLyrics ->
                             Database.upsert(
@@ -343,32 +333,7 @@ fun Lyrics(
                                 isPicking = false
                             }
                         }
-                        /*
-                        ValueSelectorDialogBody(
-                        onDismiss = { isPicking = false },
-                        title = "Choose lyric track",
-                        selectedValue = null,
-                        values = tracks.toList(),
-                        onValueSelected = {
-                            transaction {
-                                Database.upsert(
-                                    Lyrics(
-                                        songId = mediaId,
-                                        fixed = lyrics?.fixed,
-                                        synced = it.syncedLyrics.orEmpty()
-                                    )
-                                )
-                                isPicking = false
-                            }
-                        }
-                    ) {
-                        "${it.artistName} - ${it.trackName} (${
-                            it.duration.seconds.toComponents { minutes, seconds, _ ->
-                                "$minutes:${seconds.toString().padStart(2, '0')}"
-                            }
-                        })"
-                    }
-                    */
+
                     }
                 }
         }
@@ -435,17 +400,29 @@ fun Lyrics(
             ) {
                 BasicText(
                     text = "${
-                        if (isShowingSynchronizedLyrics) stringResource(id = R.string.synchronized_lyrics) else stringResource(
-                            id = R.string.unsynchronized_lyrics
+                        if (isShowingSynchronizedLyrics) stringResource(R.string.synchronized_lyrics) else stringResource(
+                            R.string.unsynchronized_lyrics
                         )
                     } " +
                             " ${stringResource(R.string.are_not_available_for_this_song)}",
-                    //text = stringResource(R.string.are_not_available_for_this_song)
                     style = typography.xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
                         .background(Color.Black.copy(0.4f))
                         .padding(all = 8.dp)
                         .fillMaxWidth()
+                )
+                BasicText(
+                    text = "${stringResource(R.string.click_to_switch_to)} ${if(isShowingSynchronizedLyrics) stringResource(R.string.synchronized_lyrics) else stringResource(
+                        R.string.unsynchronized_lyrics)}",
+                    style = typography.xs.center.bold.color(PureBlackColorPalette.text),
+                    modifier = Modifier
+                        .background(Color.Black.copy(0.4f))
+                        .padding(all = 8.dp)
+                        .padding(top = 80.dp)
+                        .fillMaxWidth()
+                        .clickable {
+                            isShowingSynchronizedLyrics = !isShowingSynchronizedLyrics
+                        }
                 )
             }
 
