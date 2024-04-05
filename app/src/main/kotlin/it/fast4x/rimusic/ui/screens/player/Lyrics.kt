@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -359,7 +360,8 @@ fun Lyrics(
                 .padding(all = 10.dp)
                 .clip(thumbnailShape)
                 .background(colorPalette.overlay)
-                .fillMaxSize(0.8f)
+                .fillMaxSize(0.9f)
+                .aspectRatio(1f)
         )
 
         Box(
