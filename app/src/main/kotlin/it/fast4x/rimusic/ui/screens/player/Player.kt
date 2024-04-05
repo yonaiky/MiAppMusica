@@ -1638,6 +1638,7 @@ fun PlayerSheet(
                         .coerceAtLeast(0)
                 IntOffset(x = 0, y = y)
             }
+
             .pointerInput(state) {
                 val velocityTracker = VelocityTracker()
 
@@ -1645,7 +1646,7 @@ fun PlayerSheet(
                     onVerticalDrag = { change, dragAmount ->
                         if (disableVerticalDrag == false) {
                             velocityTracker.addPointerInputChange(change)
-                            if (disableDismiss == false)
+                            //if (disableDismiss == false)
                                 state.dispatchRawDelta(dragAmount)
                         }
                     },
