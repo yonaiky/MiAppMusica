@@ -582,7 +582,7 @@ fun Player(
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier
                     .background(colorPalette.background1)
-                    .clip(shape)
+                    //.clip(shape)
                     .fillMaxSize()
                     //.padding(horizontalBottomPaddingValues) //change bottom navigation
                     .drawBehind {
@@ -834,7 +834,7 @@ fun Player(
         val containerModifier =
             if (!isGradientBackgroundEnabled)
                 Modifier
-                    .clip(shape)
+                    //.clip(shape)
                     .background(colorPalette.background1)
                     .padding(
                         windowInsets
@@ -844,7 +844,7 @@ fun Player(
                     .padding(bottom = playerSheetState.collapsedBound)
             else
                 Modifier
-                    .clip(shape)
+                    //.clip(shape)
                     .background(
                         Brush.verticalGradient(
                             0.0f to colorPalette.textSecondary,
