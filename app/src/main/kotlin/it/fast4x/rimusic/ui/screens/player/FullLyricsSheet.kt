@@ -39,6 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import coil.compose.AsyncImage
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -51,6 +53,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.forceSeekToNext
@@ -80,6 +83,7 @@ fun FullLyricsSheet(
     val (thumbnailSizeDp) = Dimensions.thumbnails.player.song.let {
         it to (it - 64.dp).px
     }
+
     val binder = LocalPlayerServiceBinder.current
     var shouldBePlaying by remember {
         mutableStateOf(false)
@@ -91,6 +95,24 @@ fun FullLyricsSheet(
         label = "playPauseRoundness",
         targetValueByState = { if (it == true) 24.dp else 12.dp }
     )
+
+    binder?.player?.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+
+            }
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                shouldBePlaying = binder.player.shouldBePlaying
+            }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                shouldBePlaying = binder.player.shouldBePlaying
+            }
+        }
+    }
+
+
     val size = thumbnailSizeDp
     var mediaId by remember {
         mutableStateOf(binder?.player?.currentMediaItem?.mediaId ?: "")
@@ -219,6 +241,7 @@ fun FullLyricsSheet(
                                                 .clip(RoundedCornerShape(playPauseRoundness))
                                                 .clickable {
                                                     //Log.d("mediaItem", "$shouldBePlaying")
+                                                    /*
                                                     shouldBePlaying = if (shouldBePlaying == true) {
                                                         binder.player.pause()
                                                         false
@@ -229,7 +252,15 @@ fun FullLyricsSheet(
                                                         binder.player.play()
                                                         true
                                                     }
-
+                                                     */
+                                                    if (shouldBePlaying)
+                                                        binder.player.pause()
+                                                    else {
+                                                        if (binder.player.playbackState == Player.STATE_IDLE) {
+                                                            binder.player.prepare()
+                                                        }
+                                                        binder.player.play()
+                                                    }
                                                 }
                                                 .background(when (colorPaletteName) {
                                                     ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
