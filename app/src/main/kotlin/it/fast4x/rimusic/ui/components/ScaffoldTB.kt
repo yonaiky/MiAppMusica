@@ -9,11 +9,16 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -64,18 +69,23 @@ fun ScaffoldTB(
         )
     }
 
+    val topPadding =  if (navigationBarPosition == NavigationBarPosition.Top) 60.dp else 0.dp
+
     androidx.compose.material3.Scaffold(
        containerColor = colorPalette.background0,
         topBar = {
-            navigationRailTB()
+            if (navigationBarPosition == NavigationBarPosition.Top)
+                navigationRailTB()
         },
 
         bottomBar = {
-            /*
-            BottomAppBar {
-                Text("My App bottom")
-            }
-             */
+            if (navigationBarPosition == NavigationBarPosition.Bottom)
+                Row(
+                    modifier = Modifier.background(colorPalette.background0)
+                ){
+                    navigationRailTB()
+                }
+
         }
 
     ) {
@@ -86,11 +96,11 @@ fun ScaffoldTB(
                 val slideDirection = when (targetState > initialState) {
                     true -> when (navigationBarPosition) {
                         NavigationBarPosition.Left, NavigationBarPosition.Right -> AnimatedContentTransitionScope.SlideDirection.Up
-                        NavigationBarPosition.Top -> AnimatedContentTransitionScope.SlideDirection.Left
+                        NavigationBarPosition.Top, NavigationBarPosition.Bottom -> AnimatedContentTransitionScope.SlideDirection.Left
                     }
                     false -> when (navigationBarPosition) {
                         NavigationBarPosition.Left, NavigationBarPosition.Right -> AnimatedContentTransitionScope.SlideDirection.Down
-                        NavigationBarPosition.Top -> AnimatedContentTransitionScope.SlideDirection.Right
+                        NavigationBarPosition.Top, NavigationBarPosition.Bottom -> AnimatedContentTransitionScope.SlideDirection.Right
                     }
                 }
 
@@ -107,7 +117,7 @@ fun ScaffoldTB(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 60.dp)
+                .padding(top = topPadding) //only with top navigation
         )
         //it.calculateBottomPadding()
     }

@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
@@ -12,10 +13,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
@@ -25,9 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -36,6 +43,7 @@ import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 
+@OptIn(UnstableApi::class)
 @Composable
 inline fun NavigationRailTB(
     topIconButtonId: Int,
@@ -63,13 +71,19 @@ inline fun NavigationRailTB(
      */
 
     val navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
+    val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
+    val localSheetState = LocalPlayerSheetState.current
+    val bottomPadding = if (localSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer else bottomDp
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom,
         modifier = modifier
-            .padding(top = 30.dp)
+            //.padding(top = 30.dp)
+            .padding(top = 0.dp, bottom = bottomPadding) //bottom navigation
             .background(colorPalette.background0)
     ) {
 

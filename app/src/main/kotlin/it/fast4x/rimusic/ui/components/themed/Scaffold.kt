@@ -45,8 +45,7 @@ fun Scaffold(
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
 
-
-    if (navigationBarPosition == NavigationBarPosition.Top) {
+    if (navigationBarPosition == NavigationBarPosition.Top || navigationBarPosition == NavigationBarPosition.Bottom) {
             ScaffoldTB(
                 topIconButtonId = topIconButtonId,
                 onTopIconButtonClick = onTopIconButtonClick,

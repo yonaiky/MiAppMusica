@@ -61,6 +61,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -153,6 +154,8 @@ import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
+import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filterNotNull
@@ -509,6 +512,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 val windowsInsets = WindowInsets.systemBars
                 val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
+                /*
                 val playerBottomSheetState = rememberBottomSheetState(
                     dismissedBound = 0.dp,
                     collapsedBound = Dimensions.collapsedPlayer + bottomDp,
@@ -518,6 +522,27 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 val playerAwareWindowInsets by remember(bottomDp, playerBottomSheetState.value) {
                     derivedStateOf {
                         val bottom = playerBottomSheetState.value.coerceIn(bottomDp, playerBottomSheetState.collapsedBound)
+
+                        windowsInsets
+                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                            .add(WindowInsets(bottom = bottom))
+                    }
+                }
+                 */
+                //change bottom navigation
+                val playerSheetState = rememberPlayerSheetState(
+                    dismissedBound = 0.dp,
+                    collapsedBound = Dimensions.collapsedPlayer + bottomDp,
+                    //collapsedBound = Dimensions.collapsedPlayer, // bottom navigation
+                    expandedBound = maxHeight,
+                )
+
+                val playerAwareWindowInsets by remember(
+                    bottomDp,
+                    playerSheetState.value
+                ) {
+                    derivedStateOf {
+                        val bottom = playerSheetState.value.coerceIn(bottomDp, playerSheetState.collapsedBound)
 
                         windowsInsets
                             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
@@ -543,7 +568,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     LocalPlayerServiceBinder provides binder,
                     LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                     LocalLayoutDirection provides LayoutDirection.Ltr,
-                    LocalDownloader provides downloadUtil
+                    LocalDownloader provides downloadUtil,
+                    LocalPlayerSheetState provides playerSheetState
                 ) {
 
                     HomeScreen(
@@ -553,8 +579,15 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                         openTabFromShortcut = openTabFromShortcut
                     )
 
+                    /*
                     Player(
                         layoutState = playerBottomSheetState,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                    )
+                     */
+                    Player(
+                        layoutState = playerSheetState,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                     )
@@ -570,6 +603,7 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 DisposableEffect(binder?.player) {
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
+                    /*
                     if (player.currentMediaItem == null) {
                         if (!playerBottomSheetState.isDismissed) {
                             playerBottomSheetState.dismiss()
@@ -596,6 +630,37 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                                     else playerBottomSheetState.expand(tween(500))
                                 } else {
                                     playerBottomSheetState.collapse(tween(700))
+                                }
+                            }
+                        }
+                    }
+                     */
+                    if (player.currentMediaItem == null) {
+                        if (!playerSheetState.isDismissed) {
+                            playerSheetState.dismiss()
+                        }
+                    } else {
+                        //if (playerSheetState.isDismissed) {
+                        if (launchedFromNotification) {
+                            intent.replaceExtras(Bundle())
+                            if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                                playerSheetState.collapse(tween(700))
+                            else playerSheetState.expand(tween(500))
+                        } else {
+                            playerSheetState.collapse(tween(700))
+                        }
+                        //}
+                    }
+
+                    val listener = object : Player.Listener {
+                        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                            if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
+                                if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
+                                    if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                                        playerSheetState.collapse(tween(700))
+                                    else playerSheetState.expand(tween(500))
+                                } else {
+                                    playerSheetState.collapse(tween(700))
                                 }
                             }
                         }
@@ -730,6 +795,8 @@ val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerService.Binder?> {
 val LocalPlayerAwareWindowInsets = staticCompositionLocalOf<WindowInsets> { TODO() }
 
 val LocalDownloader = staticCompositionLocalOf<DownloadUtil> { error("No Downloader provided") }
+
+val LocalPlayerSheetState = staticCompositionLocalOf<PlayerSheetState> { error("No player sheet state provided") }
 
 
 

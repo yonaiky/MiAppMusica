@@ -440,4 +440,5 @@
     <string name="style_grid">Grid</string>
     <string name="style_list">List</string>
     <string name="click_to_switch_to">Click to switch to</string>
+    <string name="direction_bottom">Direction bottom</string>
 </resources>

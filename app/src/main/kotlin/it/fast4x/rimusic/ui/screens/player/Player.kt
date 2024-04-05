@@ -4,10 +4,16 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -16,9 +22,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +38,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,12 +49,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,24 +70,33 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.util.VelocityTracker
+import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import coil.compose.AsyncImage
 import it.fast4x.compose.routing.OnGlobalRoute
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
@@ -86,8 +108,6 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
-import it.fast4x.rimusic.ui.components.BottomSheet
-import it.fast4x.rimusic.ui.components.BottomSheetState
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.rememberBottomSheetState
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
@@ -143,9 +163,11 @@ import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.windows
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
 
@@ -158,7 +180,7 @@ import kotlin.math.absoluteValue
 @UnstableApi
 @Composable
 fun Player(
-    layoutState: BottomSheetState,
+    layoutState: PlayerSheetState, //BottomSheetState,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(
         topStart = 12.dp,
@@ -166,6 +188,9 @@ fun Player(
     )
 ) {
     val menuState = LocalMenuState.current
+
+    //val localSheetState = LocalPlayerSheetState.current
+    //println("mediaItem localsheetstate collapsed ${localSheetState.isCollapsed}")
 
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
@@ -206,7 +231,7 @@ fun Player(
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
-    var playerVisualizerType by rememberPreference(
+    val playerVisualizerType by rememberPreference(
         playerVisualizerTypeKey,
         PlayerVisualizerType.Disabled
     )
@@ -537,7 +562,7 @@ fun Player(
 
     val onGoToHome = homeRoute::global
 
-    BottomSheet(
+    PlayerSheet(
         state = layoutState,
         modifier = modifier,
         disableDismiss = disableClosingPlayerSwipingDown,
@@ -559,7 +584,7 @@ fun Player(
                     .background(colorPalette.background1)
                     .clip(shape)
                     .fillMaxSize()
-                    .padding(horizontalBottomPaddingValues)
+                    //.padding(horizontalBottomPaddingValues) //change bottom navigation
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
                             drawRect(
@@ -785,7 +810,17 @@ fun Player(
         val showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
 
         val playerBottomHeight = if (showNextSongsInPlayer) 80.dp else 50.dp
+        /*
         val playerBottomSheetState = rememberBottomSheetState(
+            playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
+            layoutState.expandedBound
+        )
+         */
+        val playerSheetState = rememberPlayerSheetState(
+            playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
+            layoutState.expandedBound
+        )
+        val queueSheetState = rememberBottomSheetState(
             playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
             layoutState.expandedBound
         )
@@ -806,7 +841,7 @@ fun Player(
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                             .asPaddingValues()
                     )
-                    .padding(bottom = playerBottomSheetState.collapsedBound)
+                    .padding(bottom = playerSheetState.collapsedBound)
             else
                 Modifier
                     .clip(shape)
@@ -823,7 +858,7 @@ fun Player(
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                             .asPaddingValues()
                     )
-                    .padding(bottom = playerBottomSheetState.collapsedBound)
+                    .padding(bottom = playerSheetState.collapsedBound)
 
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }
@@ -1192,7 +1227,7 @@ fun Player(
 
 
         Queue(
-            layoutState = playerBottomSheetState,
+            layoutState = queueSheetState,
             content = {
 
                 val context = LocalContext.current
@@ -1414,7 +1449,7 @@ fun Player(
                                 color = colorPalette.text,
                                 enabled = true,
                                 onClick = {
-                                    playerBottomSheetState.expandSoft()
+                                    playerSheetState.expandSoft()
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
@@ -1578,4 +1613,281 @@ fun Player(
 }
 
 
+@UnstableApi
+@Composable
+fun PlayerSheet(
+    state: PlayerSheetState,
+    disableVerticalDrag: Boolean? = false,
+    disableDismiss: Boolean? = false,
+    modifier: Modifier = Modifier,
+    onDismiss: (() -> Unit)? = null,
+    collapsedContent: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
+    val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
+    Box(
+        modifier = modifier
+            //change bottom navigation
+            .offset {
+                val y =
+                    (state.expandedBound - state.value)
+                        //(state.expandedBound - state.value - (Dimensions.collapsedPlayer + bottomDp)) //bottom navigation
+                        .roundToPx()
+                        .coerceAtLeast(0)
+                IntOffset(x = 0, y = y)
+            }
+            .pointerInput(state) {
+                val velocityTracker = VelocityTracker()
 
+                detectVerticalDragGestures(
+                    onVerticalDrag = { change, dragAmount ->
+                        if (disableVerticalDrag == false) {
+                            velocityTracker.addPointerInputChange(change)
+                            if (disableDismiss == false)
+                                state.dispatchRawDelta(dragAmount)
+                        }
+                    },
+                    onDragCancel = {
+                        velocityTracker.resetTracking()
+                        state.snapTo(state.collapsedBound)
+                    },
+                    onDragEnd = {
+                        if (disableVerticalDrag == false) {
+                            val velocity = -velocityTracker.calculateVelocity().y
+                            velocityTracker.resetTracking()
+                            state.performFling(
+                                velocity,
+                                if (disableDismiss == false) onDismiss else null
+                            )
+                        }
+                    }
+                )
+            }
+            .fillMaxSize()
+    ) {
+        if (!state.isCollapsed) {
+            BackHandler(onBack = state::collapseSoft)
+            content()
+        }
+
+        if (!state.isExpanded && (onDismiss == null || !state.isDismissed)) {
+            Box(
+                modifier = Modifier
+                    .graphicsLayer {
+                        alpha = 1f - (state.progress * 16).coerceAtMost(1f)
+                    }
+                    .clickable(onClick = {
+                        if (disableVerticalDrag == false) state.expandSoft()
+                    })
+                    .fillMaxWidth()
+                    .height(state.collapsedBound),
+                content = collapsedContent
+            )
+        }
+    }
+}
+
+@Stable
+class PlayerSheetState(
+    draggableState: DraggableState,
+    private val coroutineScope: CoroutineScope,
+    private val animatable: Animatable<Dp, AnimationVector1D>,
+    private val onAnchorChanged: (Int) -> Unit,
+    val collapsedBound: Dp,
+) : DraggableState by draggableState {
+    val dismissedBound: Dp
+        get() = animatable.lowerBound!!
+
+    val expandedBound: Dp
+        get() = animatable.upperBound!!
+
+    val value by animatable.asState()
+
+    val isDismissed by derivedStateOf {
+        value == animatable.lowerBound!!
+    }
+
+    val isCollapsed by derivedStateOf {
+        value == collapsedBound
+    }
+
+    val isExpanded by derivedStateOf {
+        value == animatable.upperBound
+    }
+
+    val progress by derivedStateOf {
+        1f - (animatable.upperBound!! - animatable.value) / (animatable.upperBound!! - collapsedBound)
+    }
+
+    fun collapse(animationSpec: AnimationSpec<Dp>) {
+        onAnchorChanged(collapsedAnchor)
+        coroutineScope.launch {
+            animatable.animateTo(collapsedBound, animationSpec)
+        }
+    }
+
+    fun expand(animationSpec: AnimationSpec<Dp>) {
+        onAnchorChanged(expandedAnchor)
+        coroutineScope.launch {
+            animatable.animateTo(animatable.upperBound!!, animationSpec)
+        }
+    }
+
+    private fun collapse() {
+        collapse(SpringSpec())
+    }
+
+    private fun expand() {
+        expand(SpringSpec())
+    }
+
+    fun collapseSoft() {
+        collapse(tween(300))
+    }
+
+    fun expandSoft() {
+        expand(tween(300))
+    }
+
+    fun dismiss() {
+        onAnchorChanged(dismissedAnchor)
+        coroutineScope.launch {
+            animatable.animateTo(animatable.lowerBound!!)
+        }
+    }
+
+    fun snapTo(value: Dp) {
+        coroutineScope.launch {
+            animatable.snapTo(value)
+        }
+    }
+
+    fun performFling(velocity: Float, onDismiss: (() -> Unit)?) {
+        if (velocity > 250) {
+            expand()
+        } else if (velocity < -250) {
+            if (value < collapsedBound && onDismiss != null) {
+                dismiss()
+                onDismiss.invoke()
+            } else {
+                collapse()
+            }
+        } else {
+            val l0 = dismissedBound
+            val l1 = (collapsedBound - dismissedBound) / 2
+            val l2 = (expandedBound - collapsedBound) / 2
+            val l3 = expandedBound
+
+            when (value) {
+                in l0..l1 -> {
+                    if (onDismiss != null) {
+                        dismiss()
+                        onDismiss.invoke()
+                    } else {
+                        collapse()
+                    }
+                }
+                in l1..l2 -> collapse()
+                in l2..l3 -> expand()
+                else -> Unit
+            }
+        }
+    }
+
+    val preUpPostDownNestedScrollConnection
+        get() =  object : NestedScrollConnection {
+            var isTopReached = false
+
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (isExpanded && available.y < 0) {
+                    isTopReached = false
+                }
+
+                return if (isTopReached && available.y < 0 && source == NestedScrollSource.Drag) {
+                    dispatchRawDelta(available.y)
+                    available
+                } else {
+                    Offset.Zero
+                }
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                if (!isTopReached) {
+                    isTopReached = consumed.y == 0f && available.y > 0
+                }
+
+                return if (isTopReached && source == NestedScrollSource.Drag) {
+                    dispatchRawDelta(available.y)
+                    available
+                } else {
+                    Offset.Zero
+                }
+            }
+
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                return if (isTopReached) {
+                    val velocity = -available.y
+                    performFling(velocity, null)
+
+                    available
+                } else {
+                    Velocity.Zero
+                }
+            }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                isTopReached = false
+                return Velocity.Zero
+            }
+        }
+}
+
+const val expandedAnchor = 2
+const val collapsedAnchor = 1
+const val dismissedAnchor = 0
+
+@Composable
+fun rememberPlayerSheetState(
+    dismissedBound: Dp,
+    expandedBound: Dp,
+    collapsedBound: Dp = dismissedBound,
+    initialAnchor: Int = dismissedAnchor
+): PlayerSheetState {
+    val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var previousAnchor by rememberSaveable {
+        mutableStateOf(initialAnchor)
+    }
+
+    return remember(dismissedBound, expandedBound, collapsedBound, coroutineScope) {
+        val initialValue = when (previousAnchor) {
+            expandedAnchor -> expandedBound
+            collapsedAnchor -> collapsedBound
+            dismissedAnchor -> dismissedBound
+            else -> error("Unknown PlayerSheet anchor")
+        }
+
+        val animatable = Animatable(initialValue, Dp.VectorConverter).also {
+            it.updateBounds(dismissedBound.coerceAtMost(expandedBound), expandedBound)
+        }
+
+        PlayerSheetState(
+            draggableState = DraggableState { delta ->
+                coroutineScope.launch {
+                    animatable.snapTo(animatable.value - with(density) { delta.toDp() })
+                }
+            },
+            onAnchorChanged = { previousAnchor = it },
+            coroutineScope = coroutineScope,
+            animatable = animatable,
+            collapsedBound = collapsedBound
+        )
+    }
+}

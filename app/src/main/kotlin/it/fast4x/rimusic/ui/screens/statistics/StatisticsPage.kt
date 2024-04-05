@@ -245,7 +245,11 @@ fun StatisticsPage(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left || navigationBarPosition == NavigationBarPosition.Top) 1f else contentWidth)
+                .fillMaxWidth(
+                    if (navigationBarPosition == NavigationBarPosition.Left ||
+                        navigationBarPosition == NavigationBarPosition.Top ||
+                        navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                    else contentWidth)
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets
