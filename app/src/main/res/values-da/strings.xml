@@ -373,7 +373,7 @@
     <string name="add_folder">Tilføj mappe</string>
     <string name="this_folder_already_exists">Denne mappe findes allerede.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Er du sikker på, at du vil fjerne denne mappe fra sortlisten?</string>
-    <string name="player_appearance">Afspiller Udseende</string>
+    <string name="player_appearance">Udseende</string>
     <string name="player_action_bar">AFSPILLER HANDLINGSLINJE</string>
     <string name="tab_data">Data</string>
     <string name="image_cache_max_size">Maks. størrelse på billedcache</string>
@@ -434,13 +434,13 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Mappe, der vises, når du åbner På enhed-siden.</string>
     <string name="folder_was_not_found">Mappe blev ikke fundet</string>
     <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
+    <string name="pick_from">Vælg fra</string>
     <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
+    <string name="menu_style">Menu-stil</string>
+    <string name="style_grid">Gitter</string>
+    <string name="style_list">Liste</string>
+    <string name="click_to_switch_to">Klik for at skifte til</string>
     <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="event_shake">Ryst</string>
+    <string name="shake_to_change_song">Ryst for at skifte sang</string>
 </resources>
