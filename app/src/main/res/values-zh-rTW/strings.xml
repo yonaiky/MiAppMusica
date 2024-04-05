@@ -2,16 +2,16 @@
 <resources>
     <string name="cancel">取消</string>
     <string name="done">完成</string>
-    <string name="hidesong">你真的想要隐藏这首歌吗？它的播放记录和缓存将会被清除。（这个动作是不可逆的）</string>
-    <string name="new_playlist">新播放列表</string>
-    <string name="start_radio">开始播放电台</string>
-    <string name="equalizer">均衡器</string>
-    <string name="stop_sleep_timer">你想要停止睡眠计时器吗？</string>
-    <string name="set_sleep_timer">设置睡眠计时器</string>
-    <string name="add_to_playlist">添加到播放列表</string>
-    <string name="go_to_album">转到专辑</string>
-    <string name="remove_from_queue">从队列中删除</string>
-    <string name="remove_from_playlist">从播放列表中删除</string>
+    <string name="hidesong">你真的想要隱藏這首歌曲嗎？播放記錄和暫存將被清除。\n此動作不可逆。</string>
+    <string name="new_playlist">新增播放清單</string>
+    <string name="start_radio">開啟電台</string>
+    <string name="equalizer">等化器</string>
+    <string name="stop_sleep_timer">你想要停止睡眠計時器嗎?</string>
+    <string name="set_sleep_timer">設置睡眠計時器</string>
+    <string name="add_to_playlist">新增到播放清單</string>
+    <string name="go_to_album">前往專輯</string>
+    <string name="remove_from_queue">從佇列中移除</string>
+    <string name="remove_from_playlist">從播放清單中移除</string>
     <string name="hide">隐藏</string>
     <string name="hide_from_quick_picks">从\"快速选择\"中隐藏</string>
     <string name="related_albums">相关专辑</string>
