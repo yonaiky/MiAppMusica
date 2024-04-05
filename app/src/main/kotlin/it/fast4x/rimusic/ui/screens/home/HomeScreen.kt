@@ -199,7 +199,7 @@ fun HomeScreen(
                 onTopIconButtonClick = { settingsRoute() },
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
-                showButton2 = true,
+                showButton2 = false,
                 showBottomButton = showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
@@ -241,11 +241,13 @@ fun HomeScreen(
                             onSearchClick = { searchRoute("") }
                         )
 
-                        4 -> HomePlaylists(
+                        4 -> HomeLibrary(
                             onBuiltInPlaylist = { builtInPlaylistRoute(it) },
                             onPlaylistClick = { localPlaylistRoute(it.id) },
                             onSearchClick = { searchRoute("") },
-                            onDeviceListSongsClick = { deviceListSongRoute("") }
+                            onDeviceListSongsClick = { deviceListSongRoute("") },
+                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
+
                         )
 
                         5 -> HomeDiscovery(

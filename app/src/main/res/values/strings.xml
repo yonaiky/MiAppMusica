@@ -433,12 +433,12 @@
     <string name="click_lyrics_text">Click lyrics text</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
     <string name="folder_was_not_found">Folder was not found</string>
-    <string name="direction_top">Direction Top</string>
+    <string name="direction_top">Top</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Download cover</string>
     <string name="menu_style">Menu style</string>
     <string name="style_grid">Grid</string>
     <string name="style_list">List</string>
     <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
+    <string name="direction_bottom">Bottom</string>
 </resources>

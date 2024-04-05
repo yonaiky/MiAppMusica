@@ -38,6 +38,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -86,7 +87,7 @@ inline fun NavigationRail(
                 Image(
                     painter = painterResource(topIconButtonId),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                    colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
                     modifier = Modifier
                         .offset(
                             x = 0.dp, //if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
@@ -95,7 +96,7 @@ inline fun NavigationRail(
                         .clip(CircleShape)
                         .clickable(onClick = onTopIconButtonClick)
                         .padding(all = 12.dp)
-                        .size(24.dp)
+                        .size(20.dp)
                 )
                 if (showButton2) {
                     Image(

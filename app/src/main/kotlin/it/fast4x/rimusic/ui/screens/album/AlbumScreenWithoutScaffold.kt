@@ -168,7 +168,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
 
                         Header(title = album?.title ?: "Unknown") {
 
-                            if (navigationBarPosition == NavigationBarPosition.Left || navigationBarPosition == NavigationBarPosition.Top) {
+                            if (navigationBarPosition == NavigationBarPosition.Left
+                                || navigationBarPosition == NavigationBarPosition.Top
+                                ) {
                                 IconButton(
                                     onClick = { pop() },
                                     icon = R.drawable.chevron_back,
@@ -241,7 +243,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                                     }
                                 }
                             )
-                            if (navigationBarPosition == NavigationBarPosition.Right) {
+                            if (navigationBarPosition == NavigationBarPosition.Right
+                                || navigationBarPosition == NavigationBarPosition.Bottom
+                                ) {
                                 Spacer(modifier = Modifier.width(10.dp))
                                 IconButton(
                                     onClick = { pop() },

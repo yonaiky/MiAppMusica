@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,6 +55,7 @@ import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
+import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -72,6 +72,9 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.PlaylistItem
+import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.statistics.StatisticsPage
+import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -100,11 +103,12 @@ import it.fast4x.rimusic.utils.toast
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun HomePlaylists(
+fun HomeLibrary(
     onBuiltInPlaylist: (BuiltInPlaylist) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
     onDeviceListSongsClick: () -> Unit,
     onSearchClick: () -> Unit,
+    onStatisticsClick: () -> Unit
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -255,6 +259,8 @@ fun HomePlaylists(
     val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     val showPlaylists by rememberPreference(showPlaylistsKey, true)
 
+
+
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -296,6 +302,13 @@ fun HomePlaylists(
                             .padding(top = 50.dp)
                             .fillMaxSize()
                     ) {
+
+                        HeaderIconButton(
+                            icon = R.drawable.stats_chart,
+                            color = colorPalette.text,
+                            onClick = { onStatisticsClick() }
+                        )
+
                         /*
                         HeaderInfo(
                             title = "${items.size}",
