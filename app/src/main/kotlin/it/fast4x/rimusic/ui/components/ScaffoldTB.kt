@@ -27,7 +27,7 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @ExperimentalAnimationApi
 @Composable
 fun ScaffoldTB(
