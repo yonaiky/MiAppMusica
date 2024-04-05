@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">取消</string>
     <string name="done">完成</string>
-    <string name="hidesong">你真的想要隐藏这首歌吗？它的播放记录和缓存将会被清除。（这个动作是不可逆的）</string>
+    <string name="hidesong">你真的想要隱藏這首歌曲嗎？播放記錄和暫存將被清除。\n此動作不可逆。</string>
     <string name="new_playlist">新播放列表</string>
     <string name="start_radio">开始播放电台</string>
     <string name="equalizer">均衡器</string>
