@@ -36,9 +36,11 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
@@ -75,15 +77,17 @@ inline fun NavigationRailTB(
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val localSheetState = LocalPlayerSheetState.current
     val bottomPadding = if (localSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer else bottomDp
+    val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom,
         modifier = modifier
             //.padding(top = 30.dp)
-            .padding(top = 0.dp, bottom = bottomPadding) //bottom navigation
+            .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
             .background(colorPalette.background0)
     ) {
 
