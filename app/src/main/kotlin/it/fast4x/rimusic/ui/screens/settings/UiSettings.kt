@@ -579,10 +579,10 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "Shake",
-                text = "Enable shake event to change song",
+                title = stringResource(R.string.event_shake),
+                text = stringResource(R.string.shake_to_change_song),
                 isChecked = shakeEventEnabled,
                 onCheckedChange = {
                     shakeEventEnabled = it

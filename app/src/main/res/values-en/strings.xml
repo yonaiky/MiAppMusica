@@ -441,4 +441,6 @@
     <string name="style_list">List</string>
     <string name="click_to_switch_to">Click to switch to</string>
     <string name="direction_bottom">Bottom</string>
+    <string name="event_shake">Shake</string>
+    <string name="shake_to_change_song">Shake to change song</string>
 </resources>
