@@ -121,6 +121,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
@@ -236,6 +237,7 @@ fun  UiSettings() {
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
+    var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
 
     var menuStyle by rememberPreference(
         menuStyleKey,
@@ -577,6 +579,16 @@ fun  UiSettings() {
                 }
             )
 
+        if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "Shake",
+                text = "Enable shake event to change song",
+                isChecked = shakeEventEnabled,
+                onCheckedChange = {
+                    shakeEventEnabled = it
+                }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.equalizer).contains(filterCharSequence,true))
             SettingsEntry(
                 title = stringResource(R.string.equalizer),
@@ -874,7 +886,9 @@ fun  UiSettings() {
                 }
             )
 
-        SettingsGroupSpacer()
+        SettingsGroupSpacer(
+            modifier = Modifier.height(100.dp)
+        )
 
     }
 }

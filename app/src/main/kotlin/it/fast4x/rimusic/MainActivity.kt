@@ -6,6 +6,10 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -61,7 +65,6 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -95,11 +98,12 @@ import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.rememberBottomSheetState
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.player.Player
+import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
+import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Appearance
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -113,6 +117,7 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -139,6 +144,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
@@ -147,15 +153,11 @@ import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
-import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.useSystemFontKey
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
-import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filterNotNull
@@ -169,6 +171,8 @@ import okhttp3.Response
 import java.io.File
 import java.net.Proxy
 import java.util.Locale
+import java.util.Objects
+import kotlin.math.sqrt
 
 
 @UnstableApi
@@ -194,6 +198,12 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
     private var binder by mutableStateOf<PlayerService.Binder?>(null)
 
     override lateinit var persistMap: PersistMap
+
+    private var sensorManager: SensorManager? = null
+    private var acceleration = 0f
+    private var currentAcceleration = 0f
+    private var lastAcceleration = 0f
+    private var shakeCounter = 0
 
     override fun onStart() {
         super.onStart()
@@ -680,8 +690,60 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
 
         onNewIntent(intent)
 
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        Objects.requireNonNull(sensorManager)!!
+            .registerListener(sensorListener, sensorManager!!
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
+
     }
-@UnstableApi
+
+    private val sensorListener: SensorEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+
+            if (preferences.getBoolean(shakeEventEnabledKey, false)) {
+                // Fetching x,y,z values
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+                lastAcceleration = currentAcceleration
+
+                // Getting current accelerations
+                // with the help of fetched x,y,z values
+                currentAcceleration = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
+                val delta: Float = currentAcceleration - lastAcceleration
+                acceleration = acceleration * 0.9f + delta
+
+                // Display a Toast message if
+                // acceleration value is over 12
+                if (acceleration > 12) {
+                    shakeCounter++
+                    //Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT).show()
+                }
+                if (shakeCounter >= 1) {
+                    //Toast.makeText(applicationContext, "Shaked $shakeCounter times", Toast.LENGTH_SHORT).show()
+                    shakeCounter = 0
+                    binder?.player?.seekToNextMediaItem()
+                }
+
+            }
+
+        }
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
+    }
+
+    override fun onResume() {
+        sensorManager?.registerListener(sensorListener, sensorManager!!.getDefaultSensor(
+            Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL
+        )
+        super.onResume()
+    }
+
+    override fun onPause() {
+        sensorManager!!.unregisterListener(sensorListener)
+        super.onPause()
+    }
+
+    @UnstableApi
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 

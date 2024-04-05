@@ -124,7 +124,7 @@ const val includeLocalSongsKey = "includeLocalSongs"
 const val clickLyricsTextKey = "clickLyricsText"
 const val defaultFolderKey = "defaultFolder"
 const val menuStyleKey = "menuStyle"
-const val playerSheetStateKey = "playerSheetState"
+const val shakeEventEnabledKey = "shakeEventEnabled"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
