@@ -200,27 +200,58 @@ fun NonQueuedMediaItemMenuLibrary(
         )
     }
 
-    BaseMediaItemMenu(
-        mediaItem = mediaItem,
-        onDismiss = onDismiss,
-        onStartRadio = {
-            binder?.stopRadio()
-            binder?.player?.forcePlay(mediaItem)
-            binder?.setupRadio(
-                NavigationEndpoint.Endpoint.Watch(
-                    videoId = mediaItem.mediaId,
-                    playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
-                )
-            )
-        },
-        onPlayNext = { binder?.player?.addNext(mediaItem) },
-        onEnqueue = { binder?.player?.enqueue(mediaItem) },
-        onDownload = onDownload,
-        onRemoveFromPlaylist = onRemoveFromPlaylist,
-        onHideFromDatabase = { isHiding = true },
-        onRemoveFromQuickPicks = onRemoveFromQuickPicks,
-        modifier = modifier
+    val menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
     )
+
+    if (menuStyle == MenuStyle.Grid) {
+
+        BaseMediaItemGridMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onEnqueue = { binder?.player?.enqueue(mediaItem) },
+            onDownload = onDownload,
+            onRemoveFromPlaylist = onRemoveFromPlaylist,
+            onHideFromDatabase = { isHiding = true },
+            onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            modifier = modifier
+        )
+    } else {
+
+        BaseMediaItemMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onEnqueue = { binder?.player?.enqueue(mediaItem) },
+            onDownload = onDownload,
+            onRemoveFromPlaylist = onRemoveFromPlaylist,
+            onHideFromDatabase = { isHiding = true },
+            onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            modifier = modifier
+        )
+    }
 }
 
 @ExperimentalTextApi
