@@ -31,7 +31,7 @@ import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.Scaffold
+import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.builtInPlaylistRoute

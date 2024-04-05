@@ -16,7 +16,7 @@ import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.StatisticsType
-import it.fast4x.rimusic.ui.components.themed.Scaffold
+import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.utils.rememberPreference

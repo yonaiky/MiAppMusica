@@ -1,4 +1,4 @@
-package it.fast4x.rimusic.ui.components.themed
+package it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateFloat

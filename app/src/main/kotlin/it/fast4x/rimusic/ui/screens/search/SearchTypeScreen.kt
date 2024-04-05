@@ -35,7 +35,7 @@ import it.fast4x.rimusic.enums.SearchType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.IconButton
-import it.fast4x.rimusic.ui.components.themed.Scaffold
+import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.searchResultRoute

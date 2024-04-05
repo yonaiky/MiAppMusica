@@ -26,7 +26,7 @@ import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.ui.components.themed.Scaffold
+import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongs
 import it.fast4x.rimusic.ui.screens.search.SearchScreen

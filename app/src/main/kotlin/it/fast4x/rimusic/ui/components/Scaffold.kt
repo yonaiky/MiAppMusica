@@ -1,4 +1,4 @@
-package it.fast4x.rimusic.ui.components.themed
+package it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.ui.components.NavigationRail
 import it.fast4x.rimusic.ui.components.ScaffoldTB
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.navigationBarPositionKey
