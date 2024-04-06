@@ -350,6 +350,7 @@ fun Lyrics(
             }
         }
 
+        /*
         AsyncImage(
             model = player?.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(
                 Dimensions.thumbnails.song.px
@@ -363,6 +364,7 @@ fun Lyrics(
                 .fillMaxSize(0.9f)
                 .aspectRatio(1f)
         )
+         */
 
         Box(
             contentAlignment = Alignment.Center,
