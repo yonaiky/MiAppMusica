@@ -705,7 +705,8 @@ fun QuickPicks(
                 }
             }
         }
-        if(uiType == UiType.ViMusic)
+
+        //if(uiType == UiType.ViMusic)
         FloatingActionsContainerWithScrollToTop(
             scrollState = scrollState,
             iconId = R.drawable.search,

@@ -274,7 +274,7 @@ fun HomeArtistList(
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
         FloatingActionsContainerWithScrollToTop(
             lazyGridState = lazyGridState,
             iconId = R.drawable.search,

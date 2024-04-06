@@ -510,7 +510,7 @@ fun HomeSongs(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
         FloatingActionsContainerWithScrollToTop(
             lazyListState = lazyListState,
             iconId = R.drawable.search,

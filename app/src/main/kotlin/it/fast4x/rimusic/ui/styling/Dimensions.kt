@@ -17,6 +17,9 @@ object Dimensions {
     val headerHeight3 = 160.dp
     val halfheaderHeight = 60.dp
     val mediumheaderHeight = 80.dp
+    val collapsedPlayer = 64.dp
+    val navigationBarHeight = 70.dp
+
 
     object thumbnails {
         val album = 128.dp
@@ -33,7 +36,6 @@ object Dimensions {
         }
     }
 
-    val collapsedPlayer = 64.dp
 }
 
 inline val Dp.px: Int
