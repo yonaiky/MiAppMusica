@@ -603,7 +603,7 @@ fun DataSettings() {
 
         SettingsEntry(
             title = stringResource(R.string.cache_location_folder),
-            text = if (exoPlayerAlternateCacheLocation == "") "Default" else exoPlayerAlternateCacheLocation,
+            text = if (exoPlayerAlternateCacheLocation == "") stringResource(R.string._default) else exoPlayerAlternateCacheLocation,
             isEnabled = if (sdkVersion.toShort() < 29) true else false,
             onClick = {
                 dirRequest.launch(null)
