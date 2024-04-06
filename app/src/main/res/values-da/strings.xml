@@ -379,7 +379,7 @@
     <string name="image_cache_max_size">Maks. størrelse for billedcache</string>
     <string name="song_cache_max_size">Maks. størrelse for sangcache</string>
     <string name="song_download_max_size">Maks. størrelse for sanghentning</string>
-    <string name="save_to_backup">Gem i sikkerhedskopi</string>
+    <string name="save_to_backup">Gem til sikkerhedskopi</string>
     <string name="restore_from_backup">Gendan fra sikkerhedskopi</string>
     <string name="tab_miscellaneous">Diverse</string>
     <string name="swipe_to_action">Stryg for handling</string>
@@ -404,7 +404,7 @@
     <string name="sort_duration">Varighed</string>
     <string name="lang_serbian_cyrillic">Serbisk Kyrillisk</string>
     <string name="pause_between_songs">Pause mellem sange</string>
-    <string name="navigation_bar_type">Navigationslinje-type</string>
+    <string name="navigation_bar_type">Navigationslinjetype</string>
     <string name="icon_and_text">Ikon og tekst</string>
     <string name="only_icon">Kun ikon</string>
     <string name="show_search_tab_in_home">Vis Søgefane i Hjem</string>
@@ -416,8 +416,8 @@
     <string name="media_permission_required_please_grant">Medietilladelse påkrævet; tillad venligst.</string>
     <string name="grant_permission">Giv tilladelse</string>
     <string name="open_permission_settings">Åbn tilladelsesindstillinger</string>
-    <string name="show_background_progress_bar">Vis proceslinje i baggrunden</string>
-    <string name="background_progress_bar">Proceslinje i baggrunden</string>
+    <string name="show_background_progress_bar">Vis baggrundsproceslinje</string>
+    <string name="background_progress_bar">Baggrundsproceslinje</string>
     <string name="minimized_player">Minimeret afspiller</string>
     <string name="both">Begge</string>
     <string name="max_songs_in_queue">Maks. sange i kø</string>
@@ -431,12 +431,12 @@
     <string name="show_remaining_song_time">Vis resterende sangtid</string>
     <string name="full_screen">Fuld skærm</string>
     <string name="click_lyrics_text">Klik på sangtekst</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Mappe, der vises, når du åbner På enhed-siden.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Mappe, der vises, når du åbner På Enhed-siden.</string>
     <string name="folder_was_not_found">Mappe blev ikke fundet</string>
     <string name="direction_top">Op</string>
     <string name="pick_from">Vælg fra</string>
     <string name="download_cover">Hent cover</string>
-    <string name="menu_style">Menu-stil</string>
+    <string name="menu_style">Menustil</string>
     <string name="style_grid">Gitter</string>
     <string name="style_list">Liste</string>
     <string name="click_to_switch_to">Klik for at skifte til</string>
