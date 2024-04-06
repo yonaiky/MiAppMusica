@@ -421,10 +421,10 @@
     <string name="minimized_player">Minimized player</string>
     <string name="both">Both</string>
     <string name="max_songs_in_queue">Max songs in queue</string>
-    <string name="back">Back</string>
-    <string name="folders">Folders</string>
+    <string name="back">Tillbaka</string>
+    <string name="folders">Mappar</string>
     <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
-    <string name="lang_danish">Danish</string>
+    <string name="lang_danish">Danska</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>
     <string name="show_next_songs_in_player">Show next songs in player</string>
