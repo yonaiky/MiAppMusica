@@ -434,13 +434,13 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Cartella che viene visualizzata quando si apre la pagina Sul Dispositivo.</string>
     <string name="folder_was_not_found">Cartella non trovata</string>
     <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
+    <string name="pick_from">Scegli tra</string>
+    <string name="download_cover">Scarica copertina</string>
+    <string name="menu_style">Stile menu</string>
+    <string name="style_grid">Griglia</string>
+    <string name="style_list">Elenco</string>
+    <string name="click_to_switch_to">Clicca per passare a</string>
     <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="event_shake">Scuoti</string>
+    <string name="shake_to_change_song">Scuoti per cambiare brano</string>
 </resources>
