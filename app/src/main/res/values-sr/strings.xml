@@ -373,7 +373,7 @@
     <string name="add_folder">Додај фасциклу</string>
     <string name="this_folder_already_exists">Овај фасцикла већ постоји.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Да ли сте сигурни да желите да уклоните ову фасциклу са црне листе?</string>
-    <string name="player_appearance">Изглед Плејера</string>
+    <string name="player_appearance">Изглед</string>
     <string name="player_action_bar">АКЦИОНА ТРАКА ПЛЕЈЕРА</string>
     <string name="tab_data">Подаци</string>
     <string name="image_cache_max_size">Максимална величина кеша Cлика</string>
@@ -433,14 +433,14 @@
     <string name="click_lyrics_text">Клик на тест стихова</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Фасцикла која ће се приказати када отворите страницу На уређају.</string>
     <string name="folder_was_not_found">Фасцикла није пронађена</string>
-    <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="direction_top">Врх</string>
+    <string name="pick_from">Одабери из</string>
+    <string name="download_cover">Преузми омот</string>
+    <string name="menu_style">Стил менија</string>
+    <string name="style_grid">Мрежа</string>
+    <string name="style_list">Листа</string>
+    <string name="click_to_switch_to">Кликните да бисте прешли на</string>
+    <string name="direction_bottom">Дно</string>
+    <string name="event_shake">Протреси</string>
+    <string name="shake_to_change_song">Протресите да бисте променили песму</string>
 </resources>
