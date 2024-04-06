@@ -24,7 +24,7 @@
     <string name="playlists">Soittolistat</string>
     <string name="favorites">Suosikit</string>
     <string name="quick_picks">Pikavalinnat</string>
-    <string name="songs">Kappaletta</string>
+    <string name="songs">Kappaleet</string>
     <string name="other_versions">Muut versiot</string>
     <string name="album_no_alternative_version">Tällä albumilla ei ole vaihtoehtoista versiota</string>
     <string name="enqueue">Lisää jonoon</string>
