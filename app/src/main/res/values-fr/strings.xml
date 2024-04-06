@@ -373,7 +373,7 @@
     <string name="add_folder">Ajouter un dossier</string>
     <string name="this_folder_already_exists">Ce dossier existe déjà.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Êtes-vous sûr de vouloir supprimer ce dossier de la liste noire ?</string>
-    <string name="player_appearance">Apparence du lecteur </string>
+    <string name="player_appearance">Apparence du lecteur</string>
     <string name="player_action_bar">BARRE D\'ACTION DU LECTEUR</string>
     <string name="tab_data">Donnée</string>
     <string name="image_cache_max_size">Taille maximale du cache des images</string>
@@ -423,7 +423,7 @@
     <string name="max_songs_in_queue">Nombre maximum de titres dans la file d\'attente</string>
     <string name="back">Précédent</string>
     <string name="folders">Dossiers</string>
-    <string name="show_folders_in_on_device_page">Afficher les dossiers sur la page Périphérique</string>
+    <string name="show_folders_in_on_device_page">Afficher les dossiers sur la page de l\'appareil</string>
     <string name="lang_danish">Danois (Dansk)</string>
     <string name="lang_serbian_latin">Latin Serbe (Српски)</string>
     <string name="item_deselect">Désélectionner</string>
@@ -431,16 +431,16 @@
     <string name="show_remaining_song_time">Afficher le temps restant du titre</string>
     <string name="full_screen">Plein écran</string>
     <string name="click_lyrics_text">Cliquer sur le texte des paroles</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Le dossier qui s\'affichera lorsque vous ouvrirez Sur la page de l\'appareil.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Le dossier qui s\'affichera lorsque vous ouvrirez sur la page de l\'appareil.</string>
     <string name="folder_was_not_found">Le dossier n\'a pas été trouvé</string>
-    <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="direction_top">Direction vers le top</string>
+    <string name="pick_from">Choisir parmi</string>
+    <string name="download_cover">Télécharger l\'album</string>
+    <string name="menu_style">Style du menu</string>
+    <string name="style_grid">Grille</string>
+    <string name="style_list">Liste</string>
+    <string name="click_to_switch_to">Cliquer pour basculer vers</string>
+    <string name="direction_bottom">Direction vers le bas</string>
+    <string name="event_shake">Secouer</string>
+    <string name="shake_to_change_song">Secouer pour changer de titre</string>
 </resources>
