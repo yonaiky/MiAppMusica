@@ -433,14 +433,14 @@
     <string name="click_lyrics_text">Нажать на текст песни</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Папка, которая будет отображаться при открытии страницы \"На устройстве\".</string>
     <string name="folder_was_not_found">Папка не найдена</string>
-    <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="direction_top">Сверху</string>
+    <string name="pick_from">Выбрать из</string>
+    <string name="download_cover">Скачать обложку</string>
+    <string name="menu_style">Стиль меню</string>
+    <string name="style_grid">Сетка</string>
+    <string name="style_list">Список</string>
+    <string name="click_to_switch_to">Нажмите, чтобы перейти к</string>
+    <string name="direction_bottom">Снизу</string>
+    <string name="event_shake">Встряхнуть</string>
+    <string name="shake_to_change_song">Встряхните, чтобы переключить песню</string>
 </resources>
