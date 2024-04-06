@@ -16,18 +16,26 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.ScrollingInfo
+import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.scrollingInfo
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
@@ -114,10 +122,16 @@ fun BoxScope.FloatingActions(
     onClick: (() -> Unit)? = null
 ) {
     val transition = updateTransition(transitionState, "")
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) 40.dp else 0.dp
+    //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
+    val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-    val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
+    val playerSheetState = LocalPlayerSheetState.current
+    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
 
-    val (colorPalette) = LocalAppearance.current
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -144,7 +158,8 @@ fun BoxScope.FloatingActions(
                     enabled = transition.targetState?.isScrollingDown == false,
                     modifier = Modifier
                         .padding(bottom = 16.dp)
-                        .padding(bottomPaddingValues)
+                        //.padding(bottomPaddingValues)
+                        .padding(bottom = bottomPadding)
                 )
                 /*
                 SecondaryCircleButton(
@@ -179,7 +194,8 @@ fun BoxScope.FloatingActions(
                         enabled = true, //transition.targetState?.isScrollingDown == false,
                         modifier = Modifier
                             .padding(bottom = 16.dp)
-                            .padding(bottomPaddingValues)
+                            //.padding(bottomPaddingValues)
+                            .padding(bottom = bottomPadding)
                     )
                 }
             }

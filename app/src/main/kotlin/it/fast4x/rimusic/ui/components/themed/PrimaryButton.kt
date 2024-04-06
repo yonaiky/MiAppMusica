@@ -29,7 +29,7 @@ fun PrimaryButton(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable(enabled = enabled, onClick = onClick)
-            .background(colorPalette.background1)
+            .background(colorPalette.background2)
             .size(62.dp)
     ) {
         Image(
