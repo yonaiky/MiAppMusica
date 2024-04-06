@@ -373,7 +373,7 @@
     <string name="add_folder">Dodaj fasciklu</string>
     <string name="this_folder_already_exists">Ova fascikla već postoji.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Da li ste sigurni da želite da uklonite ovu fasciklu sa crne liste?</string>
-    <string name="player_appearance">Izgled Plejera</string>
+    <string name="player_appearance">Izgled</string>
     <string name="player_action_bar">AKCIONA TRAKA PLEJERA</string>
     <string name="tab_data">Podaci</string>
     <string name="image_cache_max_size">Maksimalna veličina keša slika</string>
@@ -433,14 +433,14 @@
     <string name="click_lyrics_text">Klik na tekst stihova</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Fascikla koja će se prikazati kada otvorite stranicu Na uređaju.</string>
     <string name="folder_was_not_found">Fascikla nije pronađena</string>
-    <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="direction_top">Vrh</string>
+    <string name="pick_from">Odaberi iz</string>
+    <string name="download_cover">Preuzmi omot</string>
+    <string name="menu_style">Stil menija</string>
+    <string name="style_grid">Mreža</string>
+    <string name="style_list">Lista</string>
+    <string name="click_to_switch_to">Kliknite da biste prešli na</string>
+    <string name="direction_bottom">Dno</string>
+    <string name="event_shake">Protresi</string>
+    <string name="shake_to_change_song">Protresite da biste promenili pesmu</string>
 </resources>
