@@ -433,14 +433,14 @@
     <string name="click_lyrics_text">Şarkı sözü metnine tıkla</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Cihazdakiler sayfasını açtığınızda gösterilecek klasör.</string>
     <string name="folder_was_not_found">Klasör bulunamadı</string>
-    <string name="direction_top">Direction Top</string>
-    <string name="pick_from">... dan Al</string>
-    <string name="download_cover">Kapak Fotoğrafını indir</string>
-    <string name="menu_style">Menü Stili</string>
-    <string name="style_grid">Kılavuz</string>
+    <string name="direction_top">Üstte</string>
+    <string name="pick_from">Şuradan seç</string>
+    <string name="download_cover">Kapak resmini indir</string>
+    <string name="menu_style">Menü stili</string>
+    <string name="style_grid">Izgara</string>
     <string name="style_list">Liste</string>
-    <string name="click_to_switch_to">... ya değistrmek için tıkla</string>
-    <string name="direction_bottom">Direction bottom</string>
+    <string name="click_to_switch_to">Şuna geçiş yapmak için tıkla</string>
+    <string name="direction_bottom">Altta</string>
     <string name="event_shake">Salla</string>
-    <string name="shake_to_change_song">Şarkı değistirmek için sallayın</string>
+    <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
 </resources>
