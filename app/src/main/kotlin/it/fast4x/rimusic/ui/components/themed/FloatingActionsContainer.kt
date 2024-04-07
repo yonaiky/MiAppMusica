@@ -26,19 +26,63 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.ui.components.FabItem
+import it.fast4x.rimusic.ui.components.MultiFloatingActionsButton
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.ScrollingInfo
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.scrollingInfo
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
+
+@ExperimentalAnimationApi
+@Composable
+fun BoxScope.MultiFloatingActionsContainer(
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
+    visible: Boolean = true,
+    iconId: Int? = null,
+    onClick: (() -> Unit)? = null,
+    //windowInsets: WindowInsets = LocalPlayerAwareWindowInsets.current
+) {
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
+        Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
+    //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
+    val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
+
+    val playerSheetState = LocalPlayerSheetState.current
+    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.Bottom,
+        modifier = modifier
+            .align(Alignment.BottomEnd)
+            .padding(end = 16.dp)
+            .padding(bottom = bottomPadding)
+    ) {
+        MultiFloatingActionsButton(
+            fabIcon = painterResource(id = R.drawable.search),
+            items = arrayListOf(
+                FabItem(
+                    icon = painterResource(id = R.drawable.search),
+                    label = "ab",
+                    onFabItemClicked = { println("mediaItem click") }
+                )
+            )
+        )
+    }
+
+}
 
 @ExperimentalAnimationApi
 @Composable
@@ -123,7 +167,8 @@ fun BoxScope.FloatingActions(
 ) {
     val transition = updateTransition(transitionState, "")
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) 80.dp else 0.dp
+    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
+        Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -202,3 +247,4 @@ fun BoxScope.FloatingActions(
         }
     }
 }
+

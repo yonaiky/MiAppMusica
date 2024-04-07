@@ -68,8 +68,8 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
-import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -705,12 +705,21 @@ fun QuickPicks(
             }
         }
 
+
+        MultiFloatingActionsContainer(
+            scrollState = scrollState,
+            iconId = R.drawable.search,
+            onClick = onSearchClick
+        )
+
         //if(uiType == UiType.ViMusic)
+        /*
         FloatingActionsContainerWithScrollToTop(
             scrollState = scrollState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
         /*
         PullRefreshIndicator(
