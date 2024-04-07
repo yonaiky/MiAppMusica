@@ -123,7 +123,7 @@ fun BoxScope.FloatingActions(
 ) {
     val transition = updateTransition(transitionState, "")
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) 60.dp else 0.dp
+    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) 80.dp else 0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
