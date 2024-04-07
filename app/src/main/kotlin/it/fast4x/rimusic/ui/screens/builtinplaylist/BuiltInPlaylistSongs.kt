@@ -147,7 +147,6 @@ import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.RightActions
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -437,7 +436,6 @@ fun BuiltInPlaylistSongs(
     }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
@@ -446,7 +444,10 @@ fun BuiltInPlaylistSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyColumn(
             state = lazyListState,

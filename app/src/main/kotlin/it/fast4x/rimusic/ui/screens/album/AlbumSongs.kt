@@ -86,7 +86,6 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -199,9 +198,6 @@ fun AlbumSongs(
     var position by remember {
         mutableIntStateOf(0)
     }
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     var scrollToNowPlaying by remember {
         mutableStateOf(false)

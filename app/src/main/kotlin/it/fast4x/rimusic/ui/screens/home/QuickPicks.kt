@@ -86,7 +86,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
@@ -153,7 +152,7 @@ fun QuickPicks(
     val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+
 
     /*
     val refreshScope = rememberCoroutineScope()
@@ -258,7 +257,8 @@ fun QuickPicks(
                     if (navigationBarPosition == NavigationBarPosition.Left ||
                         navigationBarPosition == NavigationBarPosition.Top ||
                         navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                    else contentWidth)
+                    else Dimensions.contentWidthRightBar
+                )
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets

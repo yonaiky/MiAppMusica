@@ -70,11 +70,9 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
-//import it.vfsfitvnm.vimusic.utils.SnapLayoutInfoProvider
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -220,7 +218,6 @@ fun StatisticsPage(
     }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     BoxWithConstraints {
         val quickPicksLazyGridItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) {
@@ -245,11 +242,10 @@ fun StatisticsPage(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                    else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets

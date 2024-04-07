@@ -28,8 +28,8 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -42,16 +42,17 @@ import it.fast4x.rimusic.utils.secondary
 fun About() {
     val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
-    val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     Column(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current

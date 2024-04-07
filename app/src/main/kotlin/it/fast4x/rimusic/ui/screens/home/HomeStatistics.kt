@@ -51,7 +51,6 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
@@ -124,7 +123,6 @@ fun HomeStatistics(
 
     val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
@@ -137,7 +135,7 @@ fun HomeStatistics(
                 if (navigationBarPosition == NavigationBarPosition.Left ||
                     navigationBarPosition == NavigationBarPosition.Top ||
                     navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else contentWidth)
+                else Dimensions.contentWidthRightBar)
     ) {
         LazyVerticalGrid(
             state = lazyGridState,

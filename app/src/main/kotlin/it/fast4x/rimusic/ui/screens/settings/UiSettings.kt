@@ -79,6 +79,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
@@ -89,7 +90,6 @@ import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
@@ -216,7 +216,6 @@ fun  UiSettings() {
     )
 
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
@@ -249,7 +248,10 @@ fun  UiSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current

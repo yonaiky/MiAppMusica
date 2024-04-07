@@ -3,7 +3,9 @@ package it.fast4x.rimusic.ui.components
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -27,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
@@ -74,15 +78,19 @@ inline fun NavigationRail(
         modifier = modifier
             .verticalScroll(rememberScrollState())
             .padding(paddingValues)
+            //.border(BorderStroke(1.dp, Color.Green))
+            //.fillMaxWidth()
     ) {
         if (hideTabs == false)
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
                     .size(
-                        width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,
+                        //width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,
+                        width = Dimensions.navigationRailWidth,
                         height = if (showButton2) Dimensions.headerHeight else Dimensions.halfheaderHeight
                     )
+                    //.border(BorderStroke(1.dp, Color.Red))
             ) {
                 Image(
                     painter = painterResource(topIconButtonId),
@@ -95,8 +103,9 @@ inline fun NavigationRail(
                         )
                         .clip(CircleShape)
                         .clickable(onClick = onTopIconButtonClick)
-                        .padding(all = 12.dp)
-                        .size(20.dp)
+                        //.padding(all = 12.dp)
+                        .padding(top = 12.dp, bottom = 12.dp)
+                        .size(24.dp)
                 )
                 if (showButton2) {
                     Image(
@@ -110,7 +119,8 @@ inline fun NavigationRail(
                             )
                             .clip(CircleShape)
                             .clickable(onClick = onTopIconButton2Click)
-                            .padding(all = 12.dp)
+                            //.padding(all = 12.dp)
+                            .padding(top = 12.dp, bottom = 12.dp)
                             .size(24.dp)
                     )
                 }
@@ -121,7 +131,10 @@ inline fun NavigationRail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .width(if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth)
+                    //.width(if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth)
+                    //.width(Dimensions.navigationRailWidth)
+                    //.fillMaxWidth()
+                    //.border(BorderStroke(1.dp, Color.Magenta))
             ) {
                 val transition = updateTransition(targetState = tabIndex, label = null)
 
@@ -170,7 +183,8 @@ inline fun NavigationRail(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(textColor),
                                 modifier = Modifier
-                                    .padding(all = 12.dp)
+                                    //.padding(all = 12.dp)
+                                    .padding(top = 12.dp, bottom = 12.dp)
                                     .size(24.dp)
                             )
                         } else {
@@ -273,171 +287,6 @@ inline fun NavigationRail(
             }
 
 
-    }
-}
-
-@Composable
-inline fun NavigationRail3(
-    topIconButtonId: Int,
-    noinline onTopIconButtonClick: () -> Unit,
-    topIconButton2Id: Int,
-    noinline onTopIconButton2Click: () -> Unit,
-    showButton2: Boolean,
-    topIconButton3Id: Int,
-    noinline onTopIconButton3Click: () -> Unit,
-    showButton3: Boolean,
-    tabIndex: Int,
-    crossinline onTabIndexChanged: (Int) -> Unit,
-    content: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val (colorPalette, typography) = LocalAppearance.current
-
-    val isLandscape = isLandscape
-
-    val paddingValues = LocalPlayerAwareWindowInsets.current
-        .only(WindowInsetsSides.Vertical + WindowInsetsSides.Start).asPaddingValues()
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues)
-    ) {
-
-
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .size(
-                    width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,
-                    height = Dimensions.headerHeight3
-                )
-        ) {
-            Image(
-                painter = painterResource(topIconButtonId),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                modifier = Modifier
-                    .offset(
-                        x = if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
-                        y = 7.dp
-                    )
-                    .clip(CircleShape)
-                    .clickable(onClick = onTopIconButtonClick)
-                    .padding(all = 12.dp)
-                    .size(22.dp)
-            )
-            if (showButton2) {
-                Image(
-                    painter = painterResource(topIconButton2Id),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                    modifier = Modifier
-                        .offset(
-                            x = if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
-                            y = 60.dp
-                        )
-                        .clip(CircleShape)
-                        .clickable(onClick = onTopIconButton2Click)
-                        .padding(all = 12.dp)
-                        .size(22.dp)
-                )
-            }
-            if (showButton3) {
-                Image(
-                    painter = painterResource(topIconButton3Id),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                    modifier = Modifier
-                        .offset(
-                            x = if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
-                            y = if (showButton2) 113.dp else 60.dp
-                        )
-                        .clip(CircleShape)
-                        .clickable(onClick = onTopIconButton3Click)
-                        .padding(all = 12.dp)
-                        .size(22.dp)
-                )
-            }
-
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .width(if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth)
-        ) {
-            val transition = updateTransition(targetState = tabIndex, label = null)
-
-            content { index, text, icon ->
-                val dothAlpha by transition.animateFloat(label = "") {
-                    if (it == index) 1f else 0f
-                }
-
-                val textColor by transition.animateColor(label = "") {
-                    if (it == index) colorPalette.text else colorPalette.textDisabled
-                }
-
-                val iconContent: @Composable () -> Unit = {
-                    Image(
-                        painter = painterResource(icon),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.text),
-                        modifier = Modifier
-                            .vertical(enabled = !isLandscape)
-                            .graphicsLayer {
-                                alpha = dothAlpha
-                                translationX = (1f - dothAlpha) * -48.dp.toPx()
-                                rotationZ = if (isLandscape) 0f else -90f
-                            }
-                            .size(Dimensions.navigationRailIconOffset * 2)
-                    )
-                }
-
-                val textContent: @Composable () -> Unit = {
-                    BasicText(
-                        text = text,
-                        //style = typography.xs.semiBold.center.color(textColor),
-                        style = TextStyle(
-                            fontSize = typography.xs.semiBold.fontSize,
-                            fontWeight = typography.xs.semiBold.fontWeight,
-                            color = colorPalette.text,
-                            //textAlign = if(uiType != UiType.ViMusic) TextAlign.Center else TextAlign.End
-
-                        ),
-                        modifier = Modifier
-                            .vertical(enabled = !isLandscape)
-                            .rotate(if (isLandscape) 0f else -90f)
-                            .padding(horizontal = 16.dp)
-                    )
-                }
-
-                val contentModifier = Modifier
-                    .clip(RoundedCornerShape(24.dp))
-                    .clickable(onClick = { onTabIndexChanged(index) })
-
-                if (isLandscape) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = contentModifier
-                            .padding(vertical = 8.dp)
-                    ) {
-                        iconContent()
-                        textContent()
-                    }
-                } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = contentModifier
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        iconContent()
-                        textContent()
-                    }
-                }
-            }
-        }
     }
 }
 

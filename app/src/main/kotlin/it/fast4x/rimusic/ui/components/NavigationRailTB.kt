@@ -148,8 +148,8 @@ inline fun NavigationRailTB(
                                         BasicText(
                                             text = text,
                                             style = TextStyle(
-                                                fontSize = typography.xs.semiBold.fontSize,
-                                                fontWeight = typography.xs.semiBold.fontWeight,
+                                                fontSize = typography.s.semiBold.fontSize,
+                                                fontWeight = typography.s.semiBold.fontWeight,
                                                 color = textColor,
                                             ),
                                             maxLines = 2,
