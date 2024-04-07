@@ -237,6 +237,12 @@ fun QuickPicks(
 
     BoxWithConstraints (
         modifier = Modifier
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar
+            )
             //.pullRefresh(refreshState)
     ) {
         val quickPicksLazyGridItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) {
@@ -252,14 +258,7 @@ fun QuickPicks(
         Column(
             modifier = Modifier
                 .background(colorPalette.background0)
-                //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                    else Dimensions.contentWidthRightBar
-                )
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets
