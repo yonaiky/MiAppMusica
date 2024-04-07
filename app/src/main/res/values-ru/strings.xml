@@ -439,7 +439,7 @@
     <string name="menu_style">Стиль меню</string>
     <string name="style_grid">Сетка</string>
     <string name="style_list">Список</string>
-    <string name="click_to_switch_to">Нажмите, чтобы перейти к</string>
+    <string name="click_to_switch_to">Нажмите, чтобы переключиться на</string>
     <string name="direction_bottom">Снизу</string>
     <string name="event_shake">Встряхнуть</string>
     <string name="shake_to_change_song">Встряхните, чтобы переключить песню</string>
