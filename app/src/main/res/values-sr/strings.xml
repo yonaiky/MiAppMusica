@@ -219,7 +219,7 @@
     <string name="song_cache_by_player">КЕШ ПЕСМЕ (од Плејера)</string>
     <string name="song_cache_by_download">КЕШ ПЕСМЕ (према Преузимању)</string>
     <string name="visualizer">Визуализатор</string>
-    <string name="visualizer_require_mic_permission">Висуализер ЗАХТЕВА ДОЗВОЛУ ЗА МИКРОФОН</string>
+    <string name="visualizer_require_mic_permission">Визуализатор ЗАХТЕВА ДОЗВОЛУ ЗА МИКРОФОН</string>
     <string name="restart_app_please">Поново покрените апликацију молим вас.</string>
     <string name="listen_on_piped">Слушај на Пипед</string>
     <string name="listen_on_invidious">Слушај на Инвидиоус</string>
@@ -279,7 +279,7 @@
     <string name="by_last_played_song">Најчешће пуштане песме</string>
     <string name="audio_quality_automatic">Аутоматски</string>
     <string name="statistics_songs_heard">слушане песме</string>
-    <string name="statistics_of_time_taken">одузетог времена</string>
+    <string name="statistics_of_time_taken">утрошеног времена</string>
     <string name="statistics_max_number_of_items">Максимални број ставки</string>
     <string name="arabic">Арапски</string>
     <string name="chinese_simplified">Кинески поједностављени</string>
