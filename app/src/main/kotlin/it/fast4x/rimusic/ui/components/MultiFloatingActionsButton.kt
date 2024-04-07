@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,12 +45,15 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.PrimaryButton
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 enum class MultiFabState {
     Collapsed, Expanded
@@ -103,8 +108,21 @@ fun MultiFloatingActionsButton (
                 currentState = MultiFabState.Collapsed
             } else Modifier.fillMaxSize()
 
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
 
-    Box(modifier = modifier, contentAlignment = Alignment.BottomEnd) {
+    Box(
+        modifier = modifier
+        .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+        .pointerInput(Unit) {
+            detectDragGestures { change, dragAmount ->
+                change.consume()
+                offsetX += dragAmount.x
+                offsetY += dragAmount.y
+            }
+        },
+        contentAlignment = Alignment.BottomEnd
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -154,6 +172,8 @@ fun MultiFloatingActionsButton (
                                 println("mediaItem long click")
                             }
                         )
+
+
                 ) {
                     Image(
                         painter = fabIcon,
