@@ -709,7 +709,8 @@ fun QuickPicks(
         MultiFloatingActionsContainer(
             scrollState = scrollState,
             iconId = R.drawable.search,
-            onClick = onSearchClick
+            onClick = onSearchClick,
+            onClickSettings = {}
         )
 
         //if(uiType == UiType.ViMusic)

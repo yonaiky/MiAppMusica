@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerSheetState
@@ -34,6 +35,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.FabItem
 import it.fast4x.rimusic.ui.components.MultiFloatingActionsButton
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.ScrollingInfo
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -48,9 +50,9 @@ fun BoxScope.MultiFloatingActionsContainer(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
     visible: Boolean = true,
-    iconId: Int? = null,
-    onClick: (() -> Unit)? = null,
-    //windowInsets: WindowInsets = LocalPlayerAwareWindowInsets.current
+    iconId: Int,
+    onClick: () -> Unit,
+    onClickSettings: () -> Unit
 ) {
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
@@ -71,14 +73,15 @@ fun BoxScope.MultiFloatingActionsContainer(
             .padding(bottom = bottomPadding)
     ) {
         MultiFloatingActionsButton(
-            fabIcon = painterResource(id = R.drawable.search),
+            fabIcon = painterResource(iconId),
             items = arrayListOf(
                 FabItem(
-                    icon = painterResource(id = R.drawable.search),
-                    label = "ab",
-                    onFabItemClicked = { println("mediaItem click") }
+                    icon = painterResource(R.drawable.settings),
+                    label = "Settings",
+                    onFabItemClicked = { onClickSettings() }
                 )
-            )
+            ),
+            onClick = { onClick() }
         )
     }
 
@@ -184,7 +187,11 @@ fun BoxScope.FloatingActions(
         modifier = modifier
             .align(Alignment.BottomEnd)
             .padding(end = 16.dp)
-            .padding(windowInsets.only(WindowInsetsSides.End).asPaddingValues())
+            .padding(
+                windowInsets
+                    .only(WindowInsetsSides.End)
+                    .asPaddingValues()
+            )
     ) {
         onScrollToTop?.let {
             transition.AnimatedVisibility(

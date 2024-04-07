@@ -70,7 +70,8 @@ fun MultiFloatingActionsButton (
     fabIcon: Painter,
     items: List<FabItem>,
     showLabels: Boolean = true,
-    onStateChanged: ((state: MultiFabState) -> Unit)? = null
+    onStateChanged: ((state: MultiFabState) -> Unit)? = null,
+    onClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     var currentState by remember { mutableStateOf(MultiFabState.Collapsed) }
@@ -164,13 +165,9 @@ fun MultiFloatingActionsButton (
                         //.size(62.dp)
                         .combinedClickable(
                             onClick = {
-                                if (currentState == MultiFabState.Expanded) stateChange()
-                                println("mediaItem click")
+                                if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
                             },
-                            onLongClick = {
-                                stateChange()
-                                println("mediaItem long click")
-                            }
+                            onDoubleClick = { stateChange() }
                         )
 
 
@@ -275,7 +272,8 @@ fun SmallFloatingActionButtonRow(
         ) {
             Icon(
                 painter = item.icon,
-                contentDescription = item.label
+                contentDescription = item.label,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
