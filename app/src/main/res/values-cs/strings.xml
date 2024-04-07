@@ -434,13 +434,13 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Složka, která se zobrazí při otevření stránky V zařízení.</string>
     <string name="folder_was_not_found">Složka nebyla nalezena</string>
     <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
-    <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
-    <string name="click_to_switch_to">Click to switch to</string>
+    <string name="pick_from">Vybrat z</string>
+    <string name="download_cover">Stáhnout obal</string>
+    <string name="menu_style">Styl menu</string>
+    <string name="style_grid">Mřížka</string>
+    <string name="style_list">Seznam</string>
+    <string name="click_to_switch_to">Kliknutím přepnete na</string>
     <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="event_shake">Zatřepat</string>
+    <string name="shake_to_change_song">Zatřepat pro změnu skladby</string>
 </resources>
