@@ -26,6 +26,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.toUiMood
@@ -56,6 +57,7 @@ import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.homeScreenTabIndexKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
+import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -197,6 +199,7 @@ fun HomeScreen(
             Scaffold(
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },
+                showButton1 = false,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
                 showButton2 = false,
@@ -225,20 +228,24 @@ fun HomeScreen(
                             onPlaylistClick = { playlistRoute(it) },
                             onSearchClick = { searchRoute("") },
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         1 -> HomeSongs(
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         2 -> HomeArtistList(
                             onArtistClick = { artistRoute(it.id) },
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         3 -> HomeAlbums(
                             onAlbumClick = { albumRoute(it.id) },
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         4 -> HomeLibrary(
@@ -246,15 +253,17 @@ fun HomeScreen(
                             onPlaylistClick = { localPlaylistRoute(it.id) },
                             onSearchClick = { searchRoute("") },
                             onDeviceListSongsClick = { deviceListSongRoute("") },
-                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
+                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
+                            onSettingsClick = { settingsRoute() }
 
                         )
-
+                        /*
                         5 -> HomeDiscovery(
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
                             onNewReleaseAlbumClick = { albumRoute(it) },
                             onSearchClick = { searchRoute("") }
                         )
+                         */
 
                         //6 -> HomeEqualizer( )
                         /*

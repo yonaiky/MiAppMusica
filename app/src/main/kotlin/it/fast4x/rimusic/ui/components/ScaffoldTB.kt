@@ -33,6 +33,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 fun ScaffoldTB(
     topIconButtonId: Int,
     onTopIconButtonClick: () -> Unit,
+    showButton1: Boolean = true,
     topIconButton2Id: Int,
     onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
@@ -53,6 +54,7 @@ fun ScaffoldTB(
         NavigationRailTB(
             topIconButtonId = topIconButtonId,
             onTopIconButtonClick = onTopIconButtonClick,
+            showButton1 = showButton1,
             topIconButton2Id = topIconButton2Id,
             onTopIconButton2Click = onTopIconButton2Click,
             showButton2 = showButton2,

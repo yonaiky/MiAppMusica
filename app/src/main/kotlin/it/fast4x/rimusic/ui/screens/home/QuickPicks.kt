@@ -80,6 +80,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -118,7 +119,8 @@ fun QuickPicks(
     onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
-    onMoodClick: (mood: Innertube.Mood.Item) -> Unit
+    onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -707,10 +709,9 @@ fun QuickPicks(
 
 
         MultiFloatingActionsContainer(
-            scrollState = scrollState,
             iconId = R.drawable.search,
             onClick = onSearchClick,
-            onClickSettings = {}
+            onClickSettings = onSettingsClick
         )
 
         //if(uiType == UiType.ViMusic)

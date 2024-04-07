@@ -52,6 +52,7 @@ import it.fast4x.rimusic.utils.semiBold
 inline fun NavigationRail(
     topIconButtonId: Int,
     noinline onTopIconButtonClick: () -> Unit,
+    showButton1: Boolean = true,
     topIconButton2Id: Int,
     noinline onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
@@ -81,6 +82,7 @@ inline fun NavigationRail(
             //.border(BorderStroke(1.dp, Color.Green))
             //.fillMaxWidth()
     ) {
+
         if (hideTabs == false)
             Box(
                 contentAlignment = Alignment.TopCenter,
@@ -92,21 +94,22 @@ inline fun NavigationRail(
                     )
                     //.border(BorderStroke(1.dp, Color.Red))
             ) {
-                Image(
-                    painter = painterResource(topIconButtonId),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
-                    modifier = Modifier
-                        .offset(
-                            x = 0.dp, //if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
-                            y = 7.dp
-                        )
-                        .clip(CircleShape)
-                        .clickable(onClick = onTopIconButtonClick)
-                        //.padding(all = 12.dp)
-                        .padding(top = 12.dp, bottom = 12.dp)
-                        .size(24.dp)
-                )
+                if (showButton1)
+                    Image(
+                        painter = painterResource(topIconButtonId),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                        modifier = Modifier
+                            .offset(
+                                x = 0.dp, //if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
+                                y = 7.dp
+                            )
+                            .clip(CircleShape)
+                            .clickable(onClick = onTopIconButtonClick)
+                            //.padding(all = 12.dp)
+                            .padding(top = 12.dp, bottom = 12.dp)
+                            .size(24.dp)
+                    )
                 if (showButton2) {
                     Image(
                         painter = painterResource(topIconButton2Id),
@@ -126,6 +129,7 @@ inline fun NavigationRail(
                 }
 
             }
+
 
         if (hideTabs == false)
             Column(

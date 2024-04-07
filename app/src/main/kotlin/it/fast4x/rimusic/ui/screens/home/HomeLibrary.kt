@@ -70,6 +70,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.globalRoutes
@@ -107,7 +108,8 @@ fun HomeLibrary(
     onPlaylistClick: (Playlist) -> Unit,
     onDeviceListSongsClick: () -> Unit,
     onSearchClick: () -> Unit,
-    onStatisticsClick: () -> Unit
+    onStatisticsClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -567,11 +569,18 @@ fun HomeLibrary(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyGridState = lazyGridState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
 
     }

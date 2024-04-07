@@ -55,6 +55,7 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -78,6 +79,7 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 fun HomeAlbums(
     onAlbumClick: (Album) -> Unit,
     onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
@@ -250,11 +252,18 @@ fun HomeAlbums(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyListState = lazyListState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
 
     }

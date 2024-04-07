@@ -6,10 +6,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -46,12 +48,16 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.PrimaryButton
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.overlay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -113,15 +119,7 @@ fun MultiFloatingActionsButton (
     var offsetY by remember { mutableStateOf(0f) }
 
     Box(
-        modifier = modifier
-        .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-        .pointerInput(Unit) {
-            detectDragGestures { change, dragAmount ->
-                change.consume()
-                offsetX += dragAmount.x
-                offsetY += dragAmount.y
-            }
-        },
+        modifier = modifier,
         contentAlignment = Alignment.BottomEnd
     ) {
         Box(
@@ -132,6 +130,7 @@ fun MultiFloatingActionsButton (
         ) {
             if (currentState == MultiFabState.Expanded) {
                 Canvas(modifier = Modifier
+                    //.border(BorderStroke(1.dp, Color.Green))
                     .fillMaxSize()
                     .graphicsLayer {
                         scaleX = 2.2f
@@ -139,7 +138,7 @@ fun MultiFloatingActionsButton (
                     }) {
                     translate(150f, top = 300f) {
                         scale(5f) {}
-                        drawCircle(Color.Gray, radius = 200.dp.toPx())
+                        drawCircle(colorPalette.favoritesIcon.copy(0.7f), radius = 200.dp.toPx())
 
                     }
                 }
@@ -159,10 +158,17 @@ fun MultiFloatingActionsButton (
 
                 Box(
                     modifier = Modifier
+                        .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                        .pointerInput(Unit) {
+                            detectDragGestures { change, dragAmount ->
+                                change.consume()
+                                offsetX += dragAmount.x
+                                offsetY += dragAmount.y
+                            }
+                        }
                         .clip(RoundedCornerShape(16.dp))
-                        .background(colorPalette.background2)
+                        .background(colorPalette.favoritesIcon)
                         .padding(all = 20.dp)
-                        //.size(62.dp)
                         .combinedClickable(
                             onClick = {
                                 if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
@@ -181,47 +187,7 @@ fun MultiFloatingActionsButton (
                             .align(Alignment.Center)
                             .size(24.dp)
                     )
-                    /*
-                    Icon(
-                        painter = fabIcon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .rotate(rotation)
-                            .align(Alignment.Center)
-                    )
-                     */
                 }
-                /*
-                FloatingActionButton(
-                    shape = CircleShape,
-                    containerColor = Color.Blue,
-                    modifier = Modifier
-                        .combinedClickable (
-                            onClick = {
-                                stateChange()
-                                println("mediaItem click")
-                            },
-
-                            onLongClick = {
-                                println("mediaItem long click")
-                            }
-                        ),
-
-                    onClick = {
-                        stateChange()
-                        println("mediaItem click")
-                    }
-
-                ) {
-                    Icon(
-                        painter = fabIcon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.rotate(rotation)
-                    )
-                }
-                */
             }
 
         }
@@ -236,6 +202,7 @@ fun SmallFloatingActionButtonRow(
     showLabel: Boolean,
     stateTransition: Transition<MultiFabState>
 ) {
+    val (colorPalette, typography) = LocalAppearance.current
     val alpha: Float by stateTransition.animateFloat(
         transitionSpec = {
             tween(durationMillis = 50)
@@ -267,8 +234,8 @@ fun SmallFloatingActionButtonRow(
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },
-            containerColor = Color.Blue,
-            contentColor = Color.White
+            containerColor = colorPalette.background2,
+            contentColor = colorPalette.favoritesIcon
         ) {
             Icon(
                 painter = item.icon,

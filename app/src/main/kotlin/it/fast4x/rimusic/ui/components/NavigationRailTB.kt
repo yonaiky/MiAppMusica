@@ -53,6 +53,7 @@ import it.fast4x.rimusic.utils.semiBold
 inline fun NavigationRailTB(
     topIconButtonId: Int,
     noinline onTopIconButtonClick: () -> Unit,
+    showButton1: Boolean = true,
     topIconButton2Id: Int,
     noinline onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
@@ -182,6 +183,7 @@ inline fun NavigationRailTB(
                     }
 
 
+                    /*
                     if (showBottomButton == true)
                         Image(
                             painter = painterResource(bottomIconButtonId ?: R.drawable.search ),
@@ -205,16 +207,18 @@ inline fun NavigationRailTB(
                                 .size(20.dp)
                         )
                     }
-                    Image(
-                        painter = painterResource(topIconButtonId),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable(onClick = onTopIconButtonClick)
-                            .padding(all = 4.dp)
-                            .size(20.dp)
-                    )
+                    */
+                    if (showButton1)
+                        Image(
+                            painter = painterResource(topIconButtonId),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable(onClick = onTopIconButtonClick)
+                                .padding(all = 4.dp)
+                                .size(20.dp)
+                        )
 
 
                 }
