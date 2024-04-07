@@ -373,7 +373,7 @@
     <string name="add_folder">Añadir carpeta</string>
     <string name="this_folder_already_exists">La carpeta ya existe.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">¿Realmente quieres eliminar esta carpeta de la lista negra?</string>
-    <string name="player_appearance">Apariencia del reproductor</string>
+    <string name="player_appearance">Apariencia</string>
     <string name="player_action_bar">BARRA DE ACCIÓN DEL REPRODUCTOR</string>
     <string name="tab_data">Datos</string>
     <string name="image_cache_max_size">Tamaño máximo de caché de imágenes</string>
@@ -432,15 +432,15 @@
     <string name="full_screen">Pantalla completa</string>
     <string name="click_lyrics_text">Click lyrics text</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
-    <string name="folder_was_not_found">Folder was not found</string>
-    <string name="direction_top">Direction Top</string>
+    <string name="folder_was_not_found">No se ha encontrado la carpeta</string>
+    <string name="direction_top">Arriba</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
+    <string name="menu_style">Estilo del menú</string>
     <string name="style_grid">Grid</string>
-    <string name="style_list">List</string>
+    <string name="style_list">Lista</string>
     <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Direction bottom</string>
-    <string name="event_shake">Shake</string>
-    <string name="shake_to_change_song">Shake to change song</string>
+    <string name="direction_bottom">Abajo</string>
+    <string name="event_shake">Agitar</string>
+    <string name="shake_to_change_song">Agitar para cambiar de canción</string>
 </resources>
