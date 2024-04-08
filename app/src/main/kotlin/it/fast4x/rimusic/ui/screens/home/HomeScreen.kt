@@ -62,6 +62,7 @@ import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 
 const val PINNED_PREFIX = "pinned:"
 
@@ -86,6 +87,7 @@ fun HomeScreen(
 
     val preferences = LocalContext.current.preferences
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     PersistMapCleanup("home/")
 
@@ -202,7 +204,7 @@ fun HomeScreen(
                 showButton1 = false,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
-                showButton2 = false,
+                showButton2 = showStatsInNavbar,
                 showBottomButton = showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,

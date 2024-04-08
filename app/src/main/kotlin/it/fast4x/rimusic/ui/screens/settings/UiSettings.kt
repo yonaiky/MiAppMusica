@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -201,7 +202,7 @@ fun  UiSettings() {
     var isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
     var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
     var showSearchTab by rememberPreference(showSearchTabKey, false)
-
+    var showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     var maxStatisticsItems by rememberPreference(
         maxStatisticsItemsKey,
@@ -755,6 +756,14 @@ fun  UiSettings() {
                 text = "",
                 isChecked = showSearchTab,
                 onCheckedChange = { showSearchTab = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "Show statistics in navigation bar",
+                text = "",
+                isChecked = showStatsInNavbar,
+                onCheckedChange = { showStatsInNavbar = it }
             )
 
 

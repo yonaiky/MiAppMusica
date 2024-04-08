@@ -124,6 +124,7 @@ const val clickLyricsTextKey = "clickLyricsText"
 const val defaultFolderKey = "defaultFolder"
 const val menuStyleKey = "menuStyle"
 const val shakeEventEnabledKey = "shakeEventEnabled"
+const val showStatsInNavbarKey = "showStatsInNavbar"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

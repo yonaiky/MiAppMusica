@@ -182,32 +182,6 @@ inline fun NavigationRailTB(
                         it()
                     }
 
-
-
-                    if (showBottomButton == true)
-                        Image(
-                            painter = painterResource(bottomIconButtonId ?: R.drawable.search ),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                            modifier = Modifier
-                                .clickable(onClick = onBottomIconButtonClick)
-                                .padding(all = 4.dp)
-                                .size(24.dp)
-                        )
-                    /*
-                                       if (showButton2) {
-                                           Image(
-                                               painter = painterResource(topIconButton2Id),
-                                               contentDescription = null,
-                                               colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                                               modifier = Modifier
-                                                   .clip(CircleShape)
-                                                   .clickable(onClick = onTopIconButton2Click)
-                                                   .padding(all = 4.dp)
-                                                   .size(20.dp)
-                                           )
-                                       }
-                                    */
                    if (showButton1)
                        Image(
                            painter = painterResource(topIconButtonId),
@@ -220,6 +194,29 @@ inline fun NavigationRailTB(
                                .size(24.dp)
                        )
 
+                    if (showButton2)
+                        Image(
+                            painter = painterResource(topIconButton2Id),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable(onClick = onTopIconButton2Click)
+                                .padding(all = 4.dp)
+                                .size(24.dp)
+                        )
+
+
+                    if (showBottomButton == true)
+                        Image(
+                            painter = painterResource(bottomIconButtonId ?: R.drawable.search ),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                            modifier = Modifier
+                                .clickable(onClick = onBottomIconButtonClick)
+                                .padding(all = 4.dp)
+                                .size(24.dp)
+                        )
 
                 }
 
