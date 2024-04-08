@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import com.valentinilk.shimmer.shimmer
@@ -69,6 +70,7 @@ import it.fast4x.rimusic.utils.artistScreenTabIndexKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
@@ -289,7 +291,7 @@ fun ArtistScreen(browseId: String) {
                             val menuState = LocalMenuState.current
                             val thumbnailSizeDp = Dimensions.thumbnails.song
                             val thumbnailSizePx = thumbnailSizeDp.px
-
+                            val listMediaItems = remember { mutableListOf<MediaItem>() }
                             ItemsPage(
                                 tag = "artist/$browseId/songs",
                                 headerContent = headerContent,
@@ -321,7 +323,7 @@ fun ArtistScreen(browseId: String) {
                                     })
                                 },
                                 itemContent = { song ->
-
+                                    listMediaItems.add(song.asMediaItem)
                                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                                     val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                                     SongItem(
@@ -362,35 +364,15 @@ fun ArtistScreen(browseId: String) {
                                                     }
                                                 },
                                                 onClick = {
-
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        listMediaItems,
+                                                        listMediaItems.indexOf(song.asMediaItem)
+                                                    )
+                                                    /*
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
-
-                                                    /*
-                                                    binder?.setRadioMediaItems(song.info?.endpoint)
-                                                    binder?.player?.currentTimeline?.mediaItems
-                                                        //.map(Song::asMediaItem)
-                                                        .let { mediaItems ->
-                                                            var i = -1
-                                                            mediaItems?.forEachIndexed{index, mediaItem ->
-                                                                if (mediaItem.mediaId == song.asMediaItem.mediaId)
-                                                                    i = index
-                                                            }
-                                                            binder?.stopRadio()
-                                                            if (mediaItems != null) {
-                                                                binder?.player?.forcePlayAtIndex(
-                                                                    mediaItems,
-                                                                    i
-                                                                )
-                                                            }
-                                                        }
-                                                     */
-                                                    /*
-                                                    binder?.player?.playAtMedia(
-                                                        binder.player.currentTimeline.mediaItems,
-                                                        song.asMediaItem.mediaId
-                                                    )
                                                      */
                                                 }
                                             )

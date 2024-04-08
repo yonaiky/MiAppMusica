@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import it.fast4x.innertube.Innertube
@@ -74,6 +75,7 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
@@ -146,6 +148,8 @@ fun ArtistOverview(
     val languageDestination = languageDestination()
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+
+    val listMediaItems = remember { mutableListOf<MediaItem>() }
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -305,8 +309,8 @@ fun ArtistOverview(
                             }
                         }
 
-                        songs.forEach { song ->
-
+                        songs.forEachIndexed { index, song ->
+                            listMediaItems.add(song.asMediaItem)
                             downloadState = getDownloadState(song.asMediaItem.mediaId)
                             val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                             SongItem(
@@ -347,12 +351,19 @@ fun ArtistOverview(
                                             }
                                         },
                                         onClick = {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                listMediaItems,
+                                                index
+                                            )
+                                            /*
                                             val mediaItem = song.asMediaItem
                                             binder?.stopRadio()
                                             binder?.player?.forcePlay(mediaItem)
                                             binder?.setupRadio(
                                                 NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
                                             )
+                                             */
                                         }
                                     )
                                     .padding(endPaddingValues)
