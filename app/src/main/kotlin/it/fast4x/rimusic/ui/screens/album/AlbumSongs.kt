@@ -824,20 +824,20 @@ fun AlbumSongs(
                 }
 
 
-            //if(uiType == UiType.ViMusic)
-            MultiFloatingActionsContainer(
-                iconId = R.drawable.shuffle,
-                onClick = {
-                    if (songs.isNotEmpty()) {
-                        binder?.stopRadio()
-                        binder?.player?.forcePlayFromBeginning(
-                            songs.shuffled().map(Song::asMediaItem)
-                        )
-                    }
-                },
-                onClickSettings = onSettingsClick,
-                onClickSearch = onSearchClick
-            )
+            if(uiType == UiType.ViMusic)
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.shuffle,
+                    onClick = {
+                        if (songs.isNotEmpty()) {
+                            binder?.stopRadio()
+                            binder?.player?.forcePlayFromBeginning(
+                                songs.shuffled().map(Song::asMediaItem)
+                            )
+                        }
+                    },
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
                 /*
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,

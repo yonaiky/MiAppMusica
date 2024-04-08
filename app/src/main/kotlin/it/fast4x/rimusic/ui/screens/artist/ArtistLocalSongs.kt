@@ -313,22 +313,22 @@ fun ArtistLocalSongs(
                 }
             }
 
-            //if(uiType == UiType.ViMusic)
-            MultiFloatingActionsContainer(
-                iconId = R.drawable.shuffle,
-                onClick = {
-                    songs?.let { songs ->
-                        if (songs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Song::asMediaItem)
-                            )
+            if(uiType == UiType.ViMusic)
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.shuffle,
+                    onClick = {
+                        songs?.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(
+                                    songs.shuffled().map(Song::asMediaItem)
+                                )
+                            }
                         }
-                    }
-                },
-                onClickSettings = onSettingsClick,
-                onClickSearch = onSearchClick
-            )
+                    },
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
             /*
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
