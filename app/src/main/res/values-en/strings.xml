@@ -407,7 +407,7 @@
     <string name="navigation_bar_type">Navigation bar type</string>
     <string name="icon_and_text">Icon and text</string>
     <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in navigation bar</string>
+    <string name="show_search_tab_in_home">Move search shortcut to navigation bar</string>
     <string name="action_bar_show_menu_button">Show menu button</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Use gradient background</string>
