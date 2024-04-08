@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -563,6 +564,13 @@ fun HomeLibrary(
                             .fillMaxSize()
                     )
                 }
+                item(
+                    key = "footer",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         }
 
@@ -572,7 +580,8 @@ fun HomeLibrary(
         MultiFloatingActionsContainer(
             iconId = R.drawable.search,
             onClick = onSearchClick,
-            onClickSettings = onSettingsClick
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
         )
         /*
         FloatingActionsContainerWithScrollToTop(

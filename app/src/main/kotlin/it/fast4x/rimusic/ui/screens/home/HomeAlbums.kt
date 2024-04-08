@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -247,6 +249,13 @@ fun HomeAlbums(
                         .animateItemPlacement()
                 )
             }
+
+            item(
+                key = "footer",
+                contentType = 0,
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
@@ -255,7 +264,8 @@ fun HomeAlbums(
         MultiFloatingActionsContainer(
             iconId = R.drawable.search,
             onClick = onSearchClick,
-            onClickSettings = onSettingsClick
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
         )
         /*
         FloatingActionsContainerWithScrollToTop(

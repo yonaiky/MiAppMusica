@@ -53,15 +53,11 @@ import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
 
 @androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
-)
 @ExperimentalAnimationApi
 @Composable
 fun BoxScope.MultiFloatingActionsContainer(
-    //scrollState: ScrollState,
     modifier: Modifier = Modifier,
-    visible: Boolean = true,
+    useAsActionsMenu: Boolean = true,
     iconId: Int,
     onClick: () -> Unit,
     onClickSettings: () -> Unit,
@@ -86,10 +82,12 @@ fun BoxScope.MultiFloatingActionsContainer(
             .padding(end = 16.dp)
             .padding(bottom = bottomPadding)
     ) {
+
         MultiFloatingActionsButton(
+            useAsActionsMenu = useAsActionsMenu,
             fabIcon = painterResource(iconId),
-            items = when (iconId) {
-                R.drawable.search ->
+            items = when (useAsActionsMenu) {
+                false ->
                     arrayListOf(
                         FabItem(
                             icon = painterResource(R.drawable.settings),

@@ -73,6 +73,7 @@ class FabItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MultiFloatingActionsButton (
+    useAsActionsMenu: Boolean = true,
     fabIcon: Painter,
     items: List<FabItem>,
     showLabels: Boolean = true,
@@ -171,7 +172,9 @@ fun MultiFloatingActionsButton (
                         .padding(all = 20.dp)
                         .combinedClickable(
                             onClick = {
-                                if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
+                                if (!useAsActionsMenu)
+                                    if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
+                                else stateChange()
                             },
                             onDoubleClick = { stateChange() }
                         )
@@ -179,7 +182,7 @@ fun MultiFloatingActionsButton (
 
                 ) {
                     Image(
-                        painter = fabIcon,
+                        painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(colorPalette.text),
                         modifier = Modifier

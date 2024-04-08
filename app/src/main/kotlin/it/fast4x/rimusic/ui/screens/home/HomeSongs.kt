@@ -518,7 +518,8 @@ fun HomeSongs(
         MultiFloatingActionsContainer(
             iconId = R.drawable.search,
             onClick = onSearchClick,
-            onClickSettings = onSettingsClick
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
         )
         /*
         FloatingActionsContainerWithScrollToTop(

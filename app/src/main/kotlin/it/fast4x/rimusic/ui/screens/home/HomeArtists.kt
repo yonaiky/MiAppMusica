@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -272,6 +273,13 @@ fun HomeArtistList(
                         .animateItemPlacement()
                 )
             }
+            item(
+                key = "footer",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
@@ -280,7 +288,8 @@ fun HomeArtistList(
         MultiFloatingActionsContainer(
             iconId = R.drawable.search,
             onClick = onSearchClick,
-            onClickSettings = onSettingsClick
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
         )
         /*
         FloatingActionsContainerWithScrollToTop(
@@ -289,6 +298,7 @@ fun HomeArtistList(
             onClick = onSearchClick
         )
          */
+
 
 
     }
