@@ -410,7 +410,7 @@
     <string name="show_search_tab_in_home">Tampilkan Tab Pencarian di Home</string>
     <string name="action_bar_show_menu_button">Tampilkan tombol menu</string>
     <string name="sort_album">Album</string>
-    <string name="use_gradient_background">Use gradient background</string>
+    <string name="use_gradient_background">Latar belakang gradien</string>
     <string name="show_total_time_of_queue">Show total time of queue</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
@@ -429,7 +429,7 @@
     <string name="item_deselect">Deselect</string>
     <string name="show_next_songs_in_player">Show next songs in player</string>
     <string name="show_remaining_song_time">Show remaining song time</string>
-    <string name="full_screen">Full screen</string>
+    <string name="full_screen">Layar penuh</string>
     <string name="click_lyrics_text">Click lyrics text</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
     <string name="folder_was_not_found">Folder was not found</string>
