@@ -15,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.SmallFloatingActionButton
@@ -73,7 +75,7 @@ class FabItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MultiFloatingActionsButton (
-    useAsActionsMenu: Boolean = true,
+    useAsActionsMenu: Boolean = false,
     fabIcon: Painter,
     items: List<FabItem>,
     showLabels: Boolean = true,
@@ -166,21 +168,49 @@ fun MultiFloatingActionsButton (
                                 offsetX += dragAmount.x
                                 offsetY += dragAmount.y
                             }
+                            /*
+                            detectDragGesturesAfterLongPress{ change, dragAmount ->
+                                change.consume()
+                                offsetX += dragAmount.x
+                                offsetY += dragAmount.y
+                            }
+                             */
                         }
                         .clip(RoundedCornerShape(16.dp))
                         .background(colorPalette.favoritesIcon)
-                        .padding(all = 20.dp)
+                        //.padding(all = 20.dp)
+                        //.padding(horizontal = 20.dp)
+                        .height(64.dp)
+                        .width(64.dp)
                         .combinedClickable(
                             onClick = {
                                 if (!useAsActionsMenu)
                                     if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
                                 else stateChange()
                             },
-                            onDoubleClick = { stateChange() }
+                            onDoubleClick = { stateChange() },
+                            onLongClick = { stateChange() }
                         )
 
 
                 ) {
+                    Box (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopEnd)
+                            //.border(BorderStroke(1.dp, Color.Green))
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.settings),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.text),
+                            modifier = Modifier
+                                .padding(top = 5.dp, end = 5.dp)
+                                .rotate(rotation)
+                                .align(Alignment.TopEnd)
+                                .size(16.dp)
+                        )
+                    }
                     Image(
                         painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,

@@ -208,17 +208,17 @@ inline fun NavigationRailTB(
                                            )
                                        }
                                     */
-                                       if (showButton1)
-                                           Image(
-                                               painter = painterResource(topIconButtonId),
-                                               contentDescription = null,
-                                               colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
-                                               modifier = Modifier
-                                                   .clip(CircleShape)
-                                                   .clickable(onClick = onTopIconButtonClick)
-                                                   .padding(all = 4.dp)
-                                                   .size(24.dp)
-                                           )
+                                   if (showButton1)
+                                       Image(
+                                           painter = painterResource(topIconButtonId),
+                                           contentDescription = null,
+                                           colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                                           modifier = Modifier
+                                               .clip(CircleShape)
+                                               .clickable(onClick = onTopIconButtonClick)
+                                               .padding(all = 4.dp)
+                                               .size(24.dp)
+                                       )
 
 
                 }

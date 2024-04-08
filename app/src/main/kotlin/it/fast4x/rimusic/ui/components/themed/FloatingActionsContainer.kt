@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BoxScope.MultiFloatingActionsContainer(
     modifier: Modifier = Modifier,
-    useAsActionsMenu: Boolean = true,
+    useAsActionsMenu: Boolean = false,
     iconId: Int,
     onClick: () -> Unit,
     onClickSettings: () -> Unit,
