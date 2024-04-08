@@ -244,6 +244,25 @@ fun TimeToString(timeMs: Int): String {
     }
 }
 
+
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
+    var playlistPage = getOrNull() ?: return null
+
+    while (playlistPage.songsPage?.continuation != null) {
+        val continuation = playlistPage.songsPage?.continuation!!
+        val otherPlaylistPageResult = Innertube.playlistPage(ContinuationBody(continuation = continuation)) ?: break
+
+        if (otherPlaylistPageResult.isFailure) break
+
+        otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
+            playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
+        }
+    }
+
+    return Result.success(playlistPage)
+}
+
+/*
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     maxDepth: Int = Int.MAX_VALUE
 ) = runCatching {
@@ -271,6 +290,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
         )
     )
 }
+ */
 
 /*
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
