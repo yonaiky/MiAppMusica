@@ -253,6 +253,9 @@ fun DataSettings() {
     var cleanDownloadCache by remember {
         mutableStateOf(false)
     }
+    var cleanCacheImages by remember {
+        mutableStateOf(false)
+    }
 
     if (cleanCacheOfflineSongs) {
         ConfirmationDialog(
@@ -278,6 +281,18 @@ fun DataSettings() {
                 binder?.downloadCache?.keys?.forEach { song ->
                     binder.downloadCache.removeResource(song)
                 }
+            }
+        )
+    }
+
+    if (cleanCacheImages) {
+        ConfirmationDialog(
+            text = stringResource(R.string.do_you_really_want_to_delete_cache),
+            onDismiss = {
+                cleanCacheImages = false
+            },
+            onConfirm = {
+                Coil.imageLoader(context).diskCache?.clear()
             }
         )
     }
@@ -339,6 +354,39 @@ fun DataSettings() {
                         diskCacheSize
                     )
                 } ${stringResource(R.string.used)} (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes.coerceAtLeast(1)}%)",
+                trailingContent = {
+                    HeaderIconButton(
+                        icon = R.drawable.trash,
+                        enabled = true,
+                        color = colorPalette.text,
+                        onClick = { cleanCacheImages = true }
+                    )
+                },
+                selectedValue = coilDiskCacheMaxSize,
+                onValueSelected = { coilDiskCacheMaxSize = it},
+                valueText = {
+                    when (it) {
+                        CoilDiskCacheMaxSize.`32MB` -> "32MB"
+                        CoilDiskCacheMaxSize.`64MB` -> "64MB"
+                        CoilDiskCacheMaxSize.`128MB` -> "128MB"
+                        CoilDiskCacheMaxSize.`256MB`-> "256MB"
+                        CoilDiskCacheMaxSize.`512MB`-> "512MB"
+                        CoilDiskCacheMaxSize.`1GB`-> "1GB"
+                        CoilDiskCacheMaxSize.`2GB` -> "2GB"
+                        CoilDiskCacheMaxSize.`4GB` -> "4GB"
+                    }
+                }
+            )
+
+            /*
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.image_cache_max_size),
+                titleSecondary = "${
+                    Formatter.formatShortFileSize(
+                        context,
+                        diskCacheSize
+                    )
+                } ${stringResource(R.string.used)} (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes.coerceAtLeast(1)}%)",
                 selectedValue = coilDiskCacheMaxSize,
                 onValueSelected = { coilDiskCacheMaxSize = it },
                 valueText = {
@@ -354,6 +402,7 @@ fun DataSettings() {
                     }
                 }
             )
+            */
         }
 
         binder?.cache?.let { cache ->
