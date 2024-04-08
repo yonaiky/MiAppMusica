@@ -284,7 +284,7 @@
     <string name="arabic">Arabe (عرب)</string>
     <string name="chinese_simplified">Chinois Simplifié (简体中文)</string>
     <string name="chinese_traditional">Chinois traditionnel (繁體中文)</string>
-    <string name="do_you_really_want_to_download_all">Vous voulez vraiment supprimer tous les téléchargements ?</string>
+    <string name="do_you_really_want_to_download_all">Voulez-vous vraiment tout télécharger ?</string>
     <string name="add_all_in_playlist">Ajouter tout dans la playlist</string>
     <string name="add_in_playlist">Ajouter à la playlist</string>
     <string name="import_playlist">Importer une playlist</string>
