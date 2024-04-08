@@ -161,10 +161,13 @@ fun AppearanceSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current
@@ -421,6 +424,7 @@ fun AppearanceSettings() {
                         BackgroundProgress.Player -> stringResource(R.string.player)
                         BackgroundProgress.MiniPlayer -> stringResource(R.string.minimized_player)
                         BackgroundProgress.Both -> stringResource(R.string.both)
+                        BackgroundProgress.Disabled -> stringResource(R.string.vt_disabled)
                     }
                 },
             )
