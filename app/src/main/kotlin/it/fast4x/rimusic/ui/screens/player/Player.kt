@@ -1449,7 +1449,7 @@ fun Player(
                                 color = colorPalette.text,
                                 enabled = true,
                                 onClick = {
-                                    playerSheetState.expandSoft()
+                                    queueSheetState.expandSoft()
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
