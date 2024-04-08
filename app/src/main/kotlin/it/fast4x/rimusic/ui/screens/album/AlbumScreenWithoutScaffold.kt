@@ -36,6 +36,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.themed.Header
@@ -47,12 +48,21 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
+import it.fast4x.rimusic.ui.screens.search.SearchScreen
+import it.fast4x.rimusic.ui.screens.searchResultRoute
+import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
+import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
+import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.pauseSearchHistoryKey
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
@@ -153,6 +163,39 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
+
+        settingsRoute {
+            SettingsScreen()
+        }
+
+        searchResultRoute { query ->
+            SearchResultScreen(
+                query = query,
+                onSearchAgain = {
+                    searchRoute(query)
+                }
+            )
+        }
+
+        searchRoute { initialTextInput ->
+            val context = LocalContext.current
+
+            SearchScreen(
+                initialTextInput = initialTextInput,
+                onSearch = { query ->
+                    pop()
+                    searchResultRoute(query)
+
+                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                        query {
+                            Database.insert(SearchQuery(query = query))
+                        }
+                    }
+                },
+                onViewPlaylist = {}, //onPlaylistUrl,
+                onDismiss = { homeRoute::global }
+            )
+        }
 
         host {
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
@@ -275,7 +318,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                     AlbumSongs(
                         browseId = browseId,
                         headerContent = headerContent,
-                        thumbnailContent = thumbnailContent
+                        thumbnailContent = thumbnailContent,
+                        onSearchClick = { searchRoute("") },
+                        onSettingsClick = { settingsRoute() }
                     )
                 } else {
                     val thumbnailSizeDp = 108.dp

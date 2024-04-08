@@ -37,6 +37,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -53,7 +54,14 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
+import it.fast4x.rimusic.ui.screens.search.SearchScreen
+import it.fast4x.rimusic.ui.screens.searchResultRoute
+import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
+import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
+import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -63,6 +71,8 @@ import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.pauseSearchHistoryKey
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -125,6 +135,37 @@ fun ArtistScreen(browseId: String) {
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
+
+        settingsRoute {
+            SettingsScreen()
+        }
+
+        searchResultRoute { query ->
+            SearchResultScreen(
+                query = query,
+                onSearchAgain = {
+                    searchRoute(query)
+                }
+            )
+        }
+
+        searchRoute { initialTextInput ->
+            SearchScreen(
+                initialTextInput = initialTextInput,
+                onSearch = { query ->
+                    pop()
+                    searchResultRoute(query)
+
+                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                        query {
+                            Database.insert(SearchQuery(query = query))
+                        }
+                    }
+                },
+                onViewPlaylist = {}, //onPlaylistUrl,
+                onDismiss = { homeRoute::global }
+            )
+        }
 
         host {
             val thumbnailContent =
@@ -238,6 +279,8 @@ fun ArtistScreen(browseId: String) {
                                 onViewAllSongsClick = { tabIndex = 1 },
                                 onViewAllAlbumsClick = { tabIndex = 2 },
                                 onViewAllSinglesClick = { tabIndex = 3 },
+                                onSearchClick = { searchRoute("") },
+                                onSettingsClick = { settingsRoute() }
                             )
                         }
 
@@ -464,6 +507,8 @@ fun ArtistScreen(browseId: String) {
                                 browseId = browseId,
                                 headerContent = headerContent,
                                 thumbnailContent = thumbnailContent,
+                                onSearchClick = { searchRoute("") },
+                                onSettingsClick = { settingsRoute() }
                             )
                         }
                     }

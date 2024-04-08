@@ -141,7 +141,7 @@ fun MultiFloatingActionsButton (
                     }) {
                     translate(150f, top = 300f) {
                         scale(5f) {}
-                        drawCircle(colorPalette.favoritesIcon.copy(0.7f), radius = 200.dp.toPx())
+                        drawCircle(colorPalette.favoritesIcon.copy(0.85f), radius = 200.dp.toPx())
 
                     }
                 }

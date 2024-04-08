@@ -74,6 +74,7 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
@@ -113,7 +114,9 @@ import java.util.Date
 fun AlbumSongs(
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
-    thumbnailContent: @Composable () -> Unit
+    thumbnailContent: @Composable () -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -821,7 +824,21 @@ fun AlbumSongs(
                 }
 
 
-            if(uiType == UiType.ViMusic)
+            //if(uiType == UiType.ViMusic)
+            MultiFloatingActionsContainer(
+                iconId = R.drawable.shuffle,
+                onClick = {
+                    if (songs.isNotEmpty()) {
+                        binder?.stopRadio()
+                        binder?.player?.forcePlayFromBeginning(
+                            songs.shuffled().map(Song::asMediaItem)
+                        )
+                    }
+                },
+                onClickSettings = onSettingsClick,
+                onClickSearch = onSearchClick
+            )
+                /*
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
@@ -834,6 +851,7 @@ fun AlbumSongs(
                     }
                 }
             )
+                 */
 
 
         }

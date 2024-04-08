@@ -60,7 +60,7 @@ fun BoxScope.MultiFloatingActionsContainer(
     useAsActionsMenu: Boolean = false,
     iconId: Int,
     onClick: () -> Unit,
-    onClickSettings: () -> Unit,
+    onClickSettings: (() -> Unit)? = null,
     onClickSearch: (() -> Unit)? = null
 ) {
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
@@ -86,21 +86,16 @@ fun BoxScope.MultiFloatingActionsContainer(
         MultiFloatingActionsButton(
             useAsActionsMenu = useAsActionsMenu,
             fabIcon = painterResource(iconId),
-            items = when (useAsActionsMenu) {
-                false ->
-                    arrayListOf(
-                        FabItem(
-                            icon = painterResource(R.drawable.settings),
-                            label = "Settings",
-                            onFabItemClicked = { onClickSettings() }
-                        )
-                    )
-                else ->
+            items =
                 arrayListOf(
                     FabItem(
                         icon = painterResource(R.drawable.settings),
                         label = "Settings",
-                        onFabItemClicked = { onClickSettings() }
+                        onFabItemClicked = {
+                            if (onClickSettings != null) {
+                                onClickSettings()
+                            }
+                        }
                     ),
                     FabItem(
                         icon = painterResource(R.drawable.search),
@@ -112,7 +107,6 @@ fun BoxScope.MultiFloatingActionsContainer(
                         }
                     )
                 )
-            }
             ,
             onClick = { onClick() }
         )

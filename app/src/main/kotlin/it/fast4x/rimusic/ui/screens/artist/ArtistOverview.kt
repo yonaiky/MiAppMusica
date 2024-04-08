@@ -58,6 +58,7 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -99,6 +100,8 @@ fun ArtistOverview(
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
 ) {
@@ -559,8 +562,18 @@ fun ArtistOverview(
                 }
             }
 
-            if(uiType == UiType.ViMusic)
+            //if(uiType == UiType.ViMusic)
             youtubeArtistPage?.radioEndpoint?.let { endpoint ->
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.radio,
+                    onClick = {
+                        binder?.stopRadio()
+                        binder?.playRadio(endpoint)
+                    },
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
+                /*
                 FloatingActionsContainerWithScrollToTop(
                     scrollState = scrollState,
                     iconId = R.drawable.radio,
@@ -569,6 +582,7 @@ fun ArtistOverview(
                         binder?.playRadio(endpoint)
                     }
                 )
+                 */
             }
 
 

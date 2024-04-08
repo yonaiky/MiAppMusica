@@ -44,6 +44,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -71,6 +72,8 @@ fun ArtistLocalSongs(
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val binder = LocalPlayerServiceBinder.current
     val (colorPalette) = LocalAppearance.current
@@ -310,7 +313,23 @@ fun ArtistLocalSongs(
                 }
             }
 
-            if(uiType == UiType.ViMusic)
+            //if(uiType == UiType.ViMusic)
+            MultiFloatingActionsContainer(
+                iconId = R.drawable.shuffle,
+                onClick = {
+                    songs?.let { songs ->
+                        if (songs.isNotEmpty()) {
+                            binder?.stopRadio()
+                            binder?.player?.forcePlayFromBeginning(
+                                songs.shuffled().map(Song::asMediaItem)
+                            )
+                        }
+                    }
+                },
+                onClickSettings = onSettingsClick,
+                onClickSearch = onSearchClick
+            )
+            /*
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
@@ -325,6 +344,7 @@ fun ArtistLocalSongs(
                     }
                 }
             )
+             */
 
 
         }
