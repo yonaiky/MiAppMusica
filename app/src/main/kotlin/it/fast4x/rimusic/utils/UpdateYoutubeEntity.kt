@@ -11,6 +11,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.artistPage
 import it.fast4x.rimusic.Database

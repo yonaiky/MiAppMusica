@@ -443,4 +443,5 @@
     <string name="direction_bottom">Abajo</string>
     <string name="event_shake">Agitar</string>
     <string name="shake_to_change_song">Agitar para cambiar de canción</string>
+    <string name="history">History</string>
 </resources>

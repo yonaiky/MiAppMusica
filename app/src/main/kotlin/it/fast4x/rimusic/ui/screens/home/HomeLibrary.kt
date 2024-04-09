@@ -307,11 +307,13 @@ fun HomeLibrary(
                             .fillMaxSize()
                     ) {
 
+                        /*
                         HeaderIconButton(
                             icon = R.drawable.stats_chart,
                             color = colorPalette.text,
                             onClick = { onStatisticsClick() }
                         )
+                         */
 
                         /*
                         HeaderInfo(

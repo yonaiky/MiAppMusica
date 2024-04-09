@@ -443,4 +443,5 @@
     <string name="direction_bottom">Direction bottom</string>
     <string name="event_shake">Scuoti</string>
     <string name="shake_to_change_song">Scuoti per cambiare brano</string>
+    <string name="history">History</string>
 </resources>

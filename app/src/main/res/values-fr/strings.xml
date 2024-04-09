@@ -443,4 +443,5 @@
     <string name="direction_bottom">Direction vers le bas</string>
     <string name="event_shake">Secouer</string>
     <string name="shake_to_change_song">Secouer pour changer de titre</string>
+    <string name="history">History</string>
 </resources>

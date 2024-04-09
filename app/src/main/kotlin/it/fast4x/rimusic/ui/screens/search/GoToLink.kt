@@ -36,6 +36,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.song
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets

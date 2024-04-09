@@ -443,4 +443,5 @@
     <string name="direction_bottom">Снизу</string>
     <string name="event_shake">Встряхнуть</string>
     <string name="shake_to_change_song">Встряхните, чтобы переключить песню</string>
+    <string name="history">History</string>
 </resources>

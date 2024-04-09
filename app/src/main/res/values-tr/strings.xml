@@ -443,4 +443,5 @@
     <string name="direction_bottom">Altta</string>
     <string name="event_shake">Salla</string>
     <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
+    <string name="history">History</string>
 </resources>

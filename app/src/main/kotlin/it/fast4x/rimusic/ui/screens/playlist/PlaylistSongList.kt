@@ -146,6 +146,10 @@ fun PlaylistSongList(
     LaunchedEffect(Unit, filter) {
         if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
 
+        playlistPage = withContext(Dispatchers.IO) {
+            Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
+        }
+
         /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube
@@ -156,11 +160,12 @@ fun PlaylistSongList(
          */
         //Log.d("mediaPlaylist", "${playlistPage?.title} songs ${playlistPage?.songsPage?.items?.size} continuation ${playlistPage?.songsPage?.continuation}")
 
-
+/*
                 playlistPage = withContext(Dispatchers.IO) {
                     Innertube.playlistPage(BrowseBody(browseId = browseId, params = params))
                         ?.completed(maxDepth = maxDepth ?: Int.MAX_VALUE)?.getOrNull()
                 }
+ */
 
 
 /*

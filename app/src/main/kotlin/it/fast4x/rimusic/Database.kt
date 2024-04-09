@@ -60,11 +60,21 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import kotlin.jvm.Throws
 import kotlinx.coroutines.flow.Flow
+import java.sql.Timestamp
 
 @Dao
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
+    @Transaction
+    @Query("SELECT DISTINCT E.timestamp FROM Event E ORDER BY E.timestamp DESC")
+    fun listEvents(): Flow<List<Long>>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S LEFT JOIN Event E ON E.songId=S.id " +
+            "WHERE E.timestamp = :timestamp " +
+            "ORDER BY E.timestamp DESC")
+    fun songsInEvent(timestamp: Long): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")

@@ -39,6 +39,8 @@ import it.fast4x.rimusic.ui.screens.builtInPlaylistRoute
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.deviceListSongRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.history.HistoryScreen
+import it.fast4x.rimusic.ui.screens.historyRoute
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.localPlaylistRoute
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
@@ -111,6 +113,10 @@ fun HomeScreen(
 
         settingsRoute {
             SettingsScreen()
+        }
+
+        historyRoute {
+            HistoryScreen()
         }
 
         localPlaylistRoute { playlistId ->
@@ -230,7 +236,9 @@ fun HomeScreen(
                             onPlaylistClick = { playlistRoute(it) },
                             onSearchClick = { searchRoute("") },
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
-                            onSettingsClick = { settingsRoute() }
+                            onSettingsClick = { settingsRoute() },
+                            onHistoryClick = { historyRoute() },
+                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
                         )
 
                         1 -> HomeSongs(
