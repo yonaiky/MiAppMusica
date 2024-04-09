@@ -246,7 +246,7 @@ fun TimeToString(timeMs: Int): String {
 }
 
 
-// NEW RESULT PLAYLIST OR ALBUM PAGE WITH WORKING WORKAROUND TEMPORARILY
+// NEW RESULT PLAYLIST OR ALBUM PAGE WITH TEMPORARILY WORKING WORKAROUND
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     maxDepth: Int = Int.MAX_VALUE
 ): Result<Innertube.PlaylistOrAlbumPage>? {
