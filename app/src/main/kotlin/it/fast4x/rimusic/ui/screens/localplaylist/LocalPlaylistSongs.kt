@@ -1255,6 +1255,8 @@ fun LocalPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
+                                            searching = false
+                                            filter = null
                                             playlistSongs
                                                 .map(Song::asMediaItem)
                                                 .let { mediaItems ->

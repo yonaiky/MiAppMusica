@@ -1128,6 +1128,8 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
+                                            searching = false
+                                            filter = null
                                             val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(

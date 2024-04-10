@@ -499,6 +499,8 @@ fun HomeSongs(
                                 }
                             },
                             onClick = {
+                                searching = false
+                                filter = null
                                 val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(

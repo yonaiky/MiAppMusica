@@ -686,6 +686,8 @@ fun PlaylistSongList(
                                     }
                                 },
                                 onClick = {
+                                    searching = false
+                                    filter = null
                                     playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(mediaItems, index)

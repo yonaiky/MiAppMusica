@@ -866,6 +866,8 @@ fun DeviceListSongs(
                             },
                             onClick = {
                                 if (!selectItems) {
+                                    searching = false
+                                    filter = null
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayAtIndex(
                                         filteredSongs.map(Song::asMediaItem),
