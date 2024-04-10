@@ -56,25 +56,28 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
+import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import kotlin.jvm.Throws
 import kotlinx.coroutines.flow.Flow
-import java.sql.Timestamp
+
 
 @Dao
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
+    //@Query("SELECT DISTINCT timestamp / 86400000 FROM Event ORDER BY timestamp DESC")
     @Transaction
-    @Query("SELECT DISTINCT E.timestamp FROM Event E ORDER BY E.timestamp DESC")
-    fun listEvents(): Flow<List<Long>>
+    @Query("SELECT * FROM event ORDER BY rowId DESC")
+    fun events(): Flow<List<EventWithSong>>
 
     @Transaction
-    @Query("SELECT DISTINCT S.* FROM Song S LEFT JOIN Event E ON E.songId=S.id " +
-            "WHERE E.timestamp = :timestamp " +
-            "ORDER BY E.timestamp DESC")
-    fun songsInEvent(timestamp: Long): Flow<List<Song>>
+    @Query("SELECT Event.* FROM Event JOIN Song ON Song.id = songId WHERE " +
+            "Event.timestamp / 86400000 = :date / 86400000 LIMIT :limit")
+    @RewriteQueriesToDropUnusedColumns
+    fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
+
 
     @Transaction
     @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")
