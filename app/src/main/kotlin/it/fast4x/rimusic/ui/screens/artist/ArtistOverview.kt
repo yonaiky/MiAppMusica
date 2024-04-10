@@ -280,7 +280,8 @@ fun ArtistOverview(
                     BasicText(
                         text = String.format(stringResource(R.string.artist_subscribers),it),
                         style = typography.xs.semiBold,
-                        maxLines = 1
+                        maxLines = 1,
+                        modifier = Modifier.padding(top = 10.dp)
                     )
                 }
 
@@ -302,7 +303,7 @@ fun ArtistOverview(
                             youtubeArtistPage.songsEndpoint?.let {
                                 BasicText(
                                     text = stringResource(R.string.view_all),
-                                    style = typography.xs.secondary,
+                                    style = typography.xs.semiBold,
                                     modifier = sectionTextModifier
                                         .clickable(onClick = onViewAllSongsClick),
                                 )

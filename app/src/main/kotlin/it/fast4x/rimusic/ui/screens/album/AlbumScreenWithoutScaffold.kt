@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -97,7 +98,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
     var showAlternativePage by remember {
         mutableStateOf(false)
     }
-
+    var changeShape by remember {
+        mutableStateOf(false)
+    }
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
@@ -310,7 +313,9 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
                     onOtherVersionAvailable = {
                         showAlternativePage = !showAlternativePage
                     },
-                    shape = thumbnailRoundness.shape()
+                    //shape = thumbnailRoundness.shape()
+                    onClick = { changeShape = !changeShape },
+                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
 

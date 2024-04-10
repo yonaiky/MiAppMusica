@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,8 @@ fun adaptiveThumbnailContent(
     url: String?,
     shape: Shape? = null,
     showIcon: Boolean? = false,
-    onOtherVersionAvailable: (() -> Unit)? = {}
+    onOtherVersionAvailable: (() -> Unit)? = {},
+    onClick: (() -> Unit)? = {}
 ): @Composable () -> Unit = {
     val (colorPalette, _, thumbnailShape) = LocalAppearance.current
 
@@ -67,6 +69,11 @@ fun adaptiveThumbnailContent(
             //.padding(all = 16.dp)
             .padding(horizontal = playerThumbnailSize.size.dp)
             .clip(shape ?: thumbnailShape)
+            .clickable {
+                if (onClick != null) {
+                    onClick()
+                }
+            }
             //.size(thumbnailSizeDp)
 
         //val painter = rememberAsyncImagePainter(

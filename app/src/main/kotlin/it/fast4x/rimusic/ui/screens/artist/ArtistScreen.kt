@@ -37,6 +37,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.Song
@@ -76,6 +77,7 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -105,6 +107,13 @@ fun ArtistScreen(browseId: String) {
     }
     val context = LocalContext.current
 
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+    var changeShape by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         Database
@@ -174,7 +183,9 @@ fun ArtistScreen(browseId: String) {
                 adaptiveThumbnailContent(
                     artist?.timestamp == null,
                     artist?.thumbnailUrl,
-                    CircleShape
+                    //CircleShape
+                    onClick = { changeShape = !changeShape },
+                    shape = if (!changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
@@ -263,7 +274,7 @@ fun ArtistScreen(browseId: String) {
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.overview), R.drawable.sparkles)
+                    Item(0, stringResource(R.string.overview), R.drawable.artist)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(2, stringResource(R.string.albums), R.drawable.album)
                     Item(3, stringResource(R.string.singles), R.drawable.disc)
