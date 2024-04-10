@@ -1080,6 +1080,7 @@ class PlayerService : InvincibleService(),
         sendBroadcast(
             Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
                 putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             }
         )
     }
