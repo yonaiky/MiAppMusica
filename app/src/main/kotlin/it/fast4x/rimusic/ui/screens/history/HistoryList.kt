@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.DateAgo
 import it.fast4x.rimusic.models.EventWithSong
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -124,12 +126,25 @@ fun HistoryList() {
                 else Dimensions.contentWidthRightBar
             )
     ) {
-                //println("mediaItem songs ${listSongs.size}")
-                println("mediaItem eventwithsong inside ${events.value.size}")
+
         LazyColumn(
-            contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
-            modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
+            contentPadding = LocalPlayerAwareWindowInsets.current
+                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+            modifier = Modifier
+                .background(colorPalette.background0)
+                .fillMaxSize()
         ) {
+
+            item(key = "header", contentType = 0) {
+                HeaderWithIcon(
+                    title = stringResource(R.string.history),
+                    iconId = R.drawable.history,
+                    enabled = false,
+                    showIcon = false,
+                    modifier = Modifier,
+                    onClick = {}
+                )
+            }
             events.value.forEach { (dateAgo, events) ->
                 stickyHeader {
                     Title(
@@ -147,11 +162,15 @@ fun HistoryList() {
                 }
 
                 items(
-                    items = events,
+                    items = events.map {
+                                       it.apply {
+                                           this.event.timestamp = this.timestampDay!!
+                                       }
+                    }.distinctBy { it.song.id},
                     key = { it.event.id }
                 ) { event ->
                     Text(
-                        text = event.song.title,
+                        text = "${event.timestampDay} ${event.event.timestamp} ${event.song.id}",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,

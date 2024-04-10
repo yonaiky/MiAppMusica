@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 @Immutable
 data class EventWithSong(
+    val timestampDay: Long?,
     @Embedded
     val event: Event,
     @Relation(

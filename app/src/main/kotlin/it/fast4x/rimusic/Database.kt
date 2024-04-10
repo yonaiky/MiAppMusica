@@ -67,9 +67,14 @@ import kotlinx.coroutines.flow.Flow
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
-    //@Query("SELECT DISTINCT timestamp / 86400000 FROM Event ORDER BY timestamp DESC")
+    /*
     @Transaction
     @Query("SELECT * FROM event ORDER BY rowId DESC")
+    fun events(): Flow<List<EventWithSong>>
+     */
+
+    @Transaction
+    @Query("SELECT DISTINCT (timestamp / 86400000) as timestampDay, event.* FROM event ORDER BY rowId DESC")
     fun events(): Flow<List<EventWithSong>>
 
     @Transaction
