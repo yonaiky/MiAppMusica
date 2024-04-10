@@ -373,7 +373,7 @@
     <string name="add_folder">Ordner hinzufügen</string>
     <string name="this_folder_already_exists">Dieser Ordner existiert bereits.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Sind Sie sicher, dass Sie diesen Ordner von der Blacklist entfernen möchten?</string>
-    <string name="player_appearance">Player-Darstellung</string>
+    <string name="player_appearance">Erscheinungsbild</string>
     <string name="player_action_bar">PLAYER-AKTIONSLEISTE</string>
     <string name="tab_data">Daten</string>
     <string name="image_cache_max_size">Maximale Größe des Bild-Cache</string>
@@ -431,10 +431,10 @@
     <string name="show_remaining_song_time">Verbleibende Songzeit anzeigen</string>
     <string name="full_screen">Vollbild</string>
     <string name="click_lyrics_text">Tippe auf Songtext</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Ordner, der auf der Seite \"Lokal\" angezeigt werden soll.</string>
     <string name="folder_was_not_found">Ordner wurde nicht gefunden</string>
     <string name="direction_top">Oben</string>
-    <string name="pick_from">Pick from</string>
+    <string name="pick_from">Auswählen von</string>
     <string name="download_cover">Cover herunterladen</string>
     <string name="menu_style">Menüdarstellung</string>
     <string name="style_grid">Raster</string>
