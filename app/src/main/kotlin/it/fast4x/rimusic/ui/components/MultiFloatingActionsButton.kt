@@ -163,18 +163,18 @@ fun MultiFloatingActionsButton (
                     modifier = Modifier
                         .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                         .pointerInput(Unit) {
+                            /*
                             detectDragGestures { change, dragAmount ->
                                 change.consume()
                                 offsetX += dragAmount.x
                                 offsetY += dragAmount.y
                             }
-                            /*
+                             */
                             detectDragGesturesAfterLongPress{ change, dragAmount ->
                                 change.consume()
                                 offsetX += dragAmount.x
                                 offsetY += dragAmount.y
                             }
-                             */
                         }
                         .clip(RoundedCornerShape(16.dp))
                         .background(colorPalette.favoritesIcon)
@@ -189,7 +189,7 @@ fun MultiFloatingActionsButton (
                                 else stateChange()
                             },
                             onDoubleClick = { stateChange() },
-                            onLongClick = { stateChange() }
+                            //onLongClick = { stateChange() }
                         )
 
 
