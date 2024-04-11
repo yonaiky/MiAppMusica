@@ -387,10 +387,10 @@
     <string name="smart_recommendations">INTELLIGENTE EMPFEHLUNGEN</string>
     <string name="player_collapsed_disable_swiping_down">Wischen nach unten deaktivieren</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Das Schließen des Players und das Löschen der Warteschlange durch Wischen nach unten auf dem minimierten Player verhindern</string>
-    <string name="sort_date_liked">Date Liked</string>
+    <string name="sort_date_liked">Like-Datum</string>
     <string name="export_playlist">Wiedergabeliste exportieren</string>
     <string name="lang_afrikaans">Afrikanisch</string>
-    <string name="playlist_top">Playlist Top</string>
+    <string name="playlist_top">Wiedergabeliste Top</string>
     <string name="my_playlist_top">Meine Top</string>
     <string name="navigation_bar_position">Position der Navigationsleiste</string>
     <string name="direction_left">Links</string>
@@ -425,7 +425,7 @@
     <string name="folders">Ordner</string>
     <string name="show_folders_in_on_device_page">Zeige Ordner unter \"Lokal\" im Register \"Bibliothek\" an</string>
     <string name="lang_danish">Dänisch (Dansk)</string>
-    <string name="lang_serbian_latin">Serbian Latin</string>
+    <string name="lang_serbian_latin">Serbisch - Latein (srpski)</string>
     <string name="item_deselect">Auswahl aufheben</string>
     <string name="show_next_songs_in_player">Nächste Titel im Player anzeigen</string>
     <string name="show_remaining_song_time">Verbleibende Songzeit anzeigen</string>
