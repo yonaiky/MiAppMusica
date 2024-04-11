@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -105,12 +106,6 @@ fun HomeArtistList(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    /*
-    var showSortTypeSelectDialog by remember {
-        mutableStateOf(false)
-    }
-     */
-
     val lazyGridState = rememberLazyGridState()
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
@@ -126,7 +121,6 @@ fun HomeArtistList(
     Box (
         modifier = Modifier
             .background(colorPalette.background0)
-            //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
                 navigationBarPosition == NavigationBarPosition.Top ||
@@ -135,14 +129,8 @@ fun HomeArtistList(
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
-            columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.itemsVerticalPadding * 2),
-            horizontalArrangement = Arrangement.spacedBy(
-                space = Dimensions.itemsVerticalPadding * 2,
-                alignment = Alignment.CenterHorizontally
-            ),
+            columns = GridCells.Adaptive(Dimensions.thumbnails.artist + 24.dp),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
                 .background(colorPalette.background0)
                 .fillMaxSize()
@@ -152,7 +140,6 @@ fun HomeArtistList(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-
                 HeaderWithIcon(
                     title = stringResource(R.string.artists),
                     iconId = R.drawable.search,
@@ -161,15 +148,23 @@ fun HomeArtistList(
                     modifier = Modifier,
                     onClick = onSearchClick
                 )
+            }
 
+            item(
+                key = "filter",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
 
                 Row (
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 20.dp)
                         .fillMaxWidth()
                 ){
-                Header(title = "") {
+
                     HeaderInfo(
                         title = "${items.size}",
                         icon = painterResource(R.drawable.artists),
@@ -214,41 +209,7 @@ fun HomeArtistList(
                                 //showSortTypeSelectDialog = true
                             }
                     )
-                    /*
-                    if (showSortTypeSelectDialog)
-                        ValueSelectorDialog(
-                            onDismiss = { showSortTypeSelectDialog = false },
-                            title = stringResource(R.string.sorting_order),
-                            selectedValue = sortBy,
-                            values = enumValues<ArtistSortBy>().toList(),
-                            onValueSelected = { sortBy = it },
-                            valueText = {
-                                when (it) {
-                                    ArtistSortBy.Name -> stringResource(R.string.sort_name)
-                                    ArtistSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                                }
-                            }
-                        )
 
-                     */
-                    /*
-                    HeaderIconButton(
-                        icon = R.drawable.text,
-                        color = if (sortBy == ArtistSortBy.Name) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = ArtistSortBy.Name }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.time,
-                        color = if (sortBy == ArtistSortBy.DateAdded) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = ArtistSortBy.DateAdded }
-                    )
-
-                    Spacer(
-                        modifier = Modifier
-                            .width(2.dp)
-                    )
-                     */
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
@@ -257,7 +218,7 @@ fun HomeArtistList(
                         modifier = Modifier
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
-                }
+
             }
 
             }

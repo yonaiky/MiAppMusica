@@ -25,7 +25,7 @@ object Dimensions {
 
     object thumbnails {
         val album = 128.dp
-        val artist = 192.dp
+        val artist = 128.dp
         val song = 54.dp
         val playlist = album
 
