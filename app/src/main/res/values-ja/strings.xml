@@ -447,4 +447,5 @@
     <string name="yesterday">Yesterday</string>
     <string name="this_week">This week</string>
     <string name="last_week">Last week</string>
+    <string name="by_casual_played_song">By Casual played song</string>
 </resources>

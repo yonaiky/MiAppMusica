@@ -78,10 +78,13 @@ fun  QuickPicsSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current
@@ -108,6 +111,7 @@ fun  QuickPicsSettings() {
                 when (it) {
                     PlayEventsType.MostPlayed -> stringResource(R.string.by_most_played_song)
                     PlayEventsType.LastPlayed -> stringResource(R.string.by_last_played_song)
+                    PlayEventsType.CasualPlayed -> stringResource(R.string.by_casual_played_song)
                 }
             }
         )
