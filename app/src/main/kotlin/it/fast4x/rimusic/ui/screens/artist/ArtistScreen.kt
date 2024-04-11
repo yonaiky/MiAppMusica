@@ -94,7 +94,10 @@ import kotlinx.coroutines.withContext
 fun ArtistScreen(browseId: String) {
     //val saveableStateHolder = rememberSaveableStateHolder()
 
-    var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
+    //var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
+    var tabIndex by remember {
+        mutableStateOf(0)
+    }
 
     PersistMapCleanup(tagPrefix = "artist/$browseId/")
 

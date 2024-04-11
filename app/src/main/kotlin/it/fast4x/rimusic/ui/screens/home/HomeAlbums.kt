@@ -79,6 +79,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlin.random.Random
 
 @ExperimentalTextApi
 @UnstableApi
@@ -196,7 +197,10 @@ fun HomeAlbums(
                         color = colorPalette.text,
                         onClick = {
                             isRotated = !isRotated
-                            onAlbumClick(items.get((0..<items.size).random()))
+                            //onAlbumClick(items.get((0..<items.size).random()))
+                            onAlbumClick(items.get(
+                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
+                            ))
                         },
                         iconSize = 16.dp
                     )

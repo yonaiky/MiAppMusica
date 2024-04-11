@@ -73,6 +73,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlin.random.Random
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -171,6 +172,9 @@ fun HomeArtistList(
                         spacer = 0
                     )
 
+                    var randomGenerator = Random(System.currentTimeMillis())
+                    var result = randomGenerator.nextInt(30, 50)
+
                     HeaderIconButton(
                         modifier = Modifier.rotate(rotationAngle),
                         icon = R.drawable.dice,
@@ -178,7 +182,10 @@ fun HomeArtistList(
                         color = colorPalette.text,
                         onClick = {
                             isRotated = !isRotated
-                            onArtistClick(items.get((0..<items.size).random()))
+                            //onArtistClick(items.get((0..<items.size).random()))
+                            onArtistClick(items.get(
+                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
+                            ))
                         },
                         iconSize = 16.dp
                     )
