@@ -76,6 +76,7 @@ fun AlbumsItemGridMenu(
     onDownloadAlbumCover: (() -> Unit)? = null,
     album: Album,
     modifier: Modifier = Modifier,
+    onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
 
@@ -325,6 +326,19 @@ fun AlbumsItemGridMenu(
                             onClick = {
                                 onDismiss()
                                 onDownloadAlbumCover()
+                            }
+                        )
+                    }
+
+                    onPlayNext?.let { onPlayNext ->
+                        GridMenuItem(
+                            icon = R.drawable.play_skip_forward,
+                            title = R.string.play_next,
+                            colorIcon = colorPalette.text,
+                            colorText = colorPalette.text,
+                            onClick = {
+                                onDismiss()
+                                onPlayNext()
                             }
                         )
                     }

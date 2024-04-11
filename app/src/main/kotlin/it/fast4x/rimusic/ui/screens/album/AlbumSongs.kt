@@ -84,6 +84,7 @@ import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -455,6 +456,15 @@ fun AlbumSongs(
                                                             )
                                                         } catch (e: ActivityNotFoundException) {
                                                             context.toast("Couldn't find an application to create documents")
+                                                        }
+                                                    },
+                                                    onPlayNext = {
+                                                        if (listMediaItems.isEmpty()) {
+                                                            binder?.player?.addNext(songs.map(Song::asMediaItem))
+                                                        } else {
+                                                            binder?.player?.addNext(listMediaItems)
+                                                            listMediaItems.clear()
+                                                            selectItems = false
                                                         }
                                                     },
                                                     onEnqueue = {

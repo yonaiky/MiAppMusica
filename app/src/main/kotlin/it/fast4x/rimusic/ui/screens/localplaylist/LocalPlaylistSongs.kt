@@ -130,6 +130,7 @@ import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -805,6 +806,15 @@ fun LocalPlaylistSongs(
                                                 binder?.player?.enqueue(playlistSongs.map(Song::asMediaItem))
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems)
+                                                listMediaItems.clear()
+                                                selectItems = false
+                                            }
+                                        },
+                                        onPlayNext = {
+                                            if (listMediaItems.isEmpty()) {
+                                                binder?.player?.addNext(playlistSongs.map(Song::asMediaItem))
+                                            } else {
+                                                binder?.player?.addNext(listMediaItems)
                                                 listMediaItems.clear()
                                                 selectItems = false
                                             }

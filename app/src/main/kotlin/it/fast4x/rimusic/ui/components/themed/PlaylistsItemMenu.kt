@@ -68,6 +68,7 @@ fun PlaylistsItemMenu(
     onUncheck: (() -> Unit)? = null,
     playlist: PlaylistPreview? = null,
     modifier: Modifier = Modifier,
+    onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onImportOnlinePlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
@@ -92,7 +93,6 @@ fun PlaylistsItemMenu(
         mutableStateOf(0.dp)
     }
 
-    val binder = LocalPlayerServiceBinder.current
     val menuStyle by rememberPreference(
         menuStyleKey,
         MenuStyle.List
@@ -104,6 +104,7 @@ fun PlaylistsItemMenu(
             modifier = modifier,
             playlist = playlist,
             onSelectUnselect = onSelectUnselect,
+            onPlayNext = onPlayNext,
             onEnqueue = onEnqueue,
             onImportOnlinePlaylist = onImportOnlinePlaylist,
             onAddToPlaylist = onAddToPlaylist,
@@ -365,6 +366,16 @@ fun PlaylistsItemMenu(
                     )
                 }
                  */
+                    onPlayNext?.let { onPlayNext ->
+                        MenuEntry(
+                            icon = R.drawable.play_skip_forward,
+                            text = stringResource(R.string.play_next),
+                            onClick = {
+                                onDismiss()
+                                onPlayNext()
+                            }
+                        )
+                    }
 
                     onEnqueue?.let { onEnqueue ->
                         MenuEntry(

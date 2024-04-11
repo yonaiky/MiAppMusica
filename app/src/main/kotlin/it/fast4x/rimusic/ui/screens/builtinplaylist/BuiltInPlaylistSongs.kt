@@ -147,6 +147,7 @@ import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.RightActions
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -727,6 +728,15 @@ fun BuiltInPlaylistSongs(
                                         listMediaItems.clear()
                                     },
                                      */
+                                    onPlayNext = {
+                                        if (listMediaItems.isEmpty()) {
+                                            binder?.player?.addNext(songs.map(Song::asMediaItem))
+                                        } else {
+                                            binder?.player?.addNext(listMediaItems)
+                                            listMediaItems.clear()
+                                            selectItems = false
+                                        }
+                                    },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
                                             binder?.player?.enqueue(songs.map(Song::asMediaItem))

@@ -99,6 +99,21 @@ fun Player.addNext(mediaItem: MediaItem) {
     }
 }
 
+@UnstableApi
+fun Player.addNext(mediaItems: List<MediaItem>) {
+    mediaItems.forEach { mediaItem ->
+        val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
+        if (itemIndex > -1) removeMediaItem(itemIndex)
+    }
+
+    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
+        forcePlay(mediaItems.first())
+    } else {
+        addMediaItems(currentMediaItemIndex + 1, mediaItems)
+    }
+
+}
+
 
 fun Player.enqueue(mediaItem: MediaItem) {
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {

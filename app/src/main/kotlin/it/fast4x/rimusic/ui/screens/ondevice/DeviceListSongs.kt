@@ -115,6 +115,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.OnDeviceBlacklist
 import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -614,6 +615,15 @@ fun DeviceListSongs(
                                         listMediaItems.clear()
                                     },
                                      */
+                                    onPlayNext = {
+                                        if (listMediaItems.isEmpty()) {
+                                            binder?.player?.addNext(filteredSongs.map(Song::asMediaItem))
+                                        } else {
+                                            binder?.player?.addNext(listMediaItems)
+                                            listMediaItems.clear()
+                                            selectItems = false
+                                        }
+                                    },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
                                             binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem))
