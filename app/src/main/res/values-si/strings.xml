@@ -445,4 +445,7 @@ CC-BY-SA 3.0</string>
     <string name="event_shake">Shake</string>
     <string name="shake_to_change_song">Shake to change song</string>
     <string name="history">History</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="this_week">This week</string>
+    <string name="last_week">Last week</string>
 </resources>

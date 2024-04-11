@@ -46,11 +46,28 @@ import org.json.JSONException
 import java.io.File
 import java.net.InetSocketAddress
 import java.net.Proxy
+import java.text.SimpleDateFormat
 import java.time.Duration
+import java.util.Date
 import java.util.Formatter
 import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
+fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
+    try {
+        return SimpleDateFormat("dd/MM/yyyy").format(Date(dateAsLongInMs))
+    } catch (e: Exception) {
+        return null // parsing exception
+    }
+}
+
+fun getTimestampFromDate(date: String): Long {
+    return try {
+        SimpleDateFormat("dd-MM-yyyy").parse(date).time
+    } catch (e: Exception) {
+        return 0
+    }
+}
 
 fun songToggleLike( song: Song ) {
     query {

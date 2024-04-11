@@ -219,16 +219,17 @@ fun HistoryList() {
                     Title(
                         title = when (dateAgo) {
                             DateAgo.Today -> stringResource(R.string.today)
-                            DateAgo.Yesterday -> "Yesterday"
-                            DateAgo.ThisWeek -> "This week"
-                            DateAgo.LastWeek -> "Last week"
+                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
+                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
+                            DateAgo.LastWeek -> stringResource(R.string.last_week)
                             is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
                                 colorPalette.favoritesOverlay,
-                                    shape = thumbnailRoundness.shape())
+                                shape = thumbnailRoundness.shape()
+                            )
 
 
                     )
@@ -304,10 +305,10 @@ fun HistoryList() {
                                     .combinedClickable(
                                         onLongClick = {
                                             menuState.display {
-                                               NonQueuedMediaItemMenuLibrary(
+                                                NonQueuedMediaItemMenuLibrary(
                                                     mediaItem = event.song.asMediaItem,
                                                     onDismiss = menuState::hide
-                                               )
+                                                )
                                             }
                                         },
                                         onClick = {
@@ -344,7 +345,7 @@ fun HistoryList() {
                                 },
                                 iconAction2 = R.drawable.trash,
                                 backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
-                                enableAction2 = false, //builtInPlaylist == BuiltInPlaylist.Offline,
+                                enableAction2 = false,
                                 onClickAction2 = {
                                     /*
                                     if (binder != null) {
@@ -380,18 +381,3 @@ fun HistoryList() {
     }
 }
 
-fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
-    try {
-        return SimpleDateFormat("dd/MM/yyyy").format(Date(dateAsLongInMs))
-    } catch (e: Exception) {
-        return null // parsing exception
-    }
-}
-
-fun getTimestampFromDate(date: String): Long {
-    return try {
-        SimpleDateFormat("dd-MM-yyyy").parse(date).time
-    } catch (e: Exception) {
-        return 0
-    }
-}

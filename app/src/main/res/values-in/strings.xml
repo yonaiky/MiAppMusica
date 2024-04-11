@@ -444,4 +444,7 @@
     <string name="event_shake">Goyang lagu</string>
     <string name="shake_to_change_song">Goyang untuk berganti lagu</string>
     <string name="history">History</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="this_week">This week</string>
+    <string name="last_week">Last week</string>
 </resources>
