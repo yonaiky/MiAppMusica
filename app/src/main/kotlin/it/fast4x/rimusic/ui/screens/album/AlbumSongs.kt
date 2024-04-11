@@ -244,6 +244,164 @@ fun AlbumSongs(
 
         }
 
+    if (showSelectCustomizeAlbumDialog)
+        SelectorDialog(
+            title = stringResource(R.string.customize_album),
+            onDismiss = { showSelectCustomizeAlbumDialog = false },
+            values = listOf(
+                Info("t", stringResource(R.string.update_title)),
+                Info("a", stringResource(R.string.update_authors)),
+                Info("c", stringResource(R.string.update_cover))
+            ),
+            onValueSelected = {
+                when (it) {
+                    "t" -> showDialogChangeAlbumTitle = true
+                    "a" -> showDialogChangeAlbumAuthors = true
+                    "c" -> showDialogChangeAlbumCover = true
+                }
+                showSelectCustomizeAlbumDialog = false
+            }
+        )
+
+    if (showDialogChangeAlbumTitle)
+        InputTextDialog(
+            onDismiss = { showDialogChangeAlbumTitle = false },
+            title = stringResource(R.string.update_title),
+            value = album?.title.toString(),
+            placeholder = stringResource(R.string.title),
+            setValue = {
+                if (it.isNotEmpty()) {
+                    query {
+                        Database.updateAlbumTitle(browseId, it)
+                    }
+                    //context.toast("Album Saved $it")
+                }
+            }
+        )
+    if (showDialogChangeAlbumAuthors)
+        InputTextDialog(
+            onDismiss = { showDialogChangeAlbumAuthors = false },
+            title = stringResource(R.string.update_authors),
+            value = album?.authorsText.toString(),
+            placeholder = stringResource(R.string.authors),
+            setValue = {
+                if (it.isNotEmpty()) {
+                    query {
+                        Database.updateAlbumAuthors(browseId, it)
+                    }
+                    //context.toast("Album Saved $it")
+                }
+            }
+        )
+
+    if (showDialogChangeAlbumCover)
+        InputTextDialog(
+            onDismiss = { showDialogChangeAlbumCover = false },
+            title = stringResource(R.string.update_cover),
+            value = album?.thumbnailUrl.toString(),
+            placeholder = stringResource(R.string.cover),
+            setValue = {
+                if (it.isNotEmpty()) {
+                    query {
+                        Database.updateAlbumCover(browseId, it)
+                    }
+                    //context.toast("Album Saved $it")
+                }
+            }
+        )
+
+    if (isCreatingNewPlaylist)
+        InputTextDialog(
+            onDismiss = { isCreatingNewPlaylist = false },
+            title = stringResource(R.string.new_playlist),
+            value = "",
+            placeholder = stringResource(R.string.new_playlist),
+            setValue = {
+                if (it.isNotEmpty()) {
+                    query {
+                        Database.insert(Playlist(name = it))
+                    }
+                    //context.toast("Song Saved $it")
+                }
+            }
+        )
+
+    if (showConfirmDeleteDownloadDialog) {
+        ConfirmationDialog(
+            text = stringResource(R.string.do_you_really_want_to_delete_download),
+            onDismiss = { showConfirmDeleteDownloadDialog = false },
+            onConfirm = {
+                showConfirmDeleteDownloadDialog = false
+                downloadState = Download.STATE_DOWNLOADING
+                if (songs.isNotEmpty() == true)
+                    songs.forEach {
+                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                        manageDownload(
+                            context = context,
+                            songId = it.asMediaItem.mediaId,
+                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                            downloadState = true
+                        )
+                    }
+            }
+        )
+    }
+
+    if (showConfirmDownloadAllDialog) {
+        ConfirmationDialog(
+            text = stringResource(R.string.do_you_really_want_to_download_all),
+            onDismiss = { showConfirmDownloadAllDialog = false },
+            onConfirm = {
+                showConfirmDownloadAllDialog = false
+                downloadState = Download.STATE_DOWNLOADING
+                if (songs.isNotEmpty() == true)
+                    songs.forEach {
+                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                        query {
+                            Database.insert(
+                                Song(
+                                    id = it.asMediaItem.mediaId,
+                                    title = it.asMediaItem.mediaMetadata.title.toString(),
+                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                    thumbnailUrl = it.thumbnailUrl,
+                                    durationText = null
+                                )
+                            )
+                        }
+                        manageDownload(
+                            context = context,
+                            songId = it.asMediaItem.mediaId,
+                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                            downloadState = false
+                        )
+                    }
+            }
+        )
+    }
+
+    if (showSelectDialog)
+        SelectorDialog(
+            title = stringResource(R.string.enqueue),
+            onDismiss = { showSelectDialog = false },
+            values = listOf(
+                Info("a", stringResource(R.string.enqueue_all)),
+                Info("s", stringResource(R.string.enqueue_selected))
+            ),
+            onValueSelected = {
+                if (it == "a") {
+                    binder?.player?.enqueue(songs.map(Song::asMediaItem))
+                } else selectItems = true
+
+                showSelectDialog = false
+            }
+        )
+
+    LaunchedEffect(scrollToNowPlaying) {
+        if (scrollToNowPlaying)
+            lazyListState.scrollToItem(nowPlayingItem, 1)
+        scrollToNowPlaying = false
+    }
+
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
@@ -277,54 +435,6 @@ fun AlbumSongs(
                                     }
                                 )
 
-                                if (isCreatingNewPlaylist)
-                                    InputTextDialog(
-                                        onDismiss = { isCreatingNewPlaylist = false },
-                                        title = stringResource(R.string.new_playlist),
-                                        value = "",
-                                        placeholder = stringResource(R.string.new_playlist),
-                                        setValue = {
-                                            if (it.isNotEmpty()) {
-                                                query {
-                                                    Database.insert(Playlist(name = it))
-                                                }
-                                                //context.toast("Song Saved $it")
-                                            }
-                                        }
-                                    )
-
-                                if (showConfirmDownloadAllDialog) {
-                                    ConfirmationDialog(
-                                        text = stringResource(R.string.do_you_really_want_to_download_all),
-                                        onDismiss = { showConfirmDownloadAllDialog = false },
-                                        onConfirm = {
-                                            showConfirmDownloadAllDialog = false
-                                            downloadState = Download.STATE_DOWNLOADING
-                                            if (songs.isNotEmpty() == true)
-                                                songs.forEach {
-                                                    binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    query {
-                                                        Database.insert(
-                                                            Song(
-                                                                id = it.asMediaItem.mediaId,
-                                                                title = it.asMediaItem.mediaMetadata.title.toString(),
-                                                                artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                                                thumbnailUrl = it.thumbnailUrl,
-                                                                durationText = null
-                                                            )
-                                                        )
-                                                    }
-                                                    manageDownload(
-                                                        context = context,
-                                                        songId = it.asMediaItem.mediaId,
-                                                        songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                                        downloadState = false
-                                                    )
-                                                }
-                                        }
-                                    )
-                                }
-
                                 HeaderIconButton(
                                     icon = R.drawable.download,
                                     color = colorPalette.text,
@@ -333,26 +443,7 @@ fun AlbumSongs(
                                     }
                                 )
 
-                                if (showConfirmDeleteDownloadDialog) {
-                                    ConfirmationDialog(
-                                        text = stringResource(R.string.do_you_really_want_to_delete_download),
-                                        onDismiss = { showConfirmDeleteDownloadDialog = false },
-                                        onConfirm = {
-                                            showConfirmDeleteDownloadDialog = false
-                                            downloadState = Download.STATE_DOWNLOADING
-                                            if (songs.isNotEmpty() == true)
-                                                songs.forEach {
-                                                    binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    manageDownload(
-                                                        context = context,
-                                                        songId = it.asMediaItem.mediaId,
-                                                        songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                                        downloadState = true
-                                                    )
-                                                }
-                                        }
-                                    )
-                                }
+
 
                                 /*
                             HeaderIconButton(
@@ -405,11 +496,7 @@ fun AlbumSongs(
                                             scrollToNowPlaying = true
                                     }
                                 )
-                                LaunchedEffect(scrollToNowPlaying) {
-                                    if (scrollToNowPlaying)
-                                        lazyListState.scrollToItem(nowPlayingItem, 1)
-                                    scrollToNowPlaying = false
-                                }
+
 
                                 HeaderIconButton(
                                     icon = R.drawable.ellipsis_horizontal,
@@ -520,181 +607,10 @@ fun AlbumSongs(
                                                 )
                                             }
                                         }
-                                        /*
-                                    if (!selectItems)
-                                        showAddPlaylistSelectDialog = true  else
-                                        showPlaylistSelectDialog = true
 
-                                     */
-                                    }
-                                )
-                                /*
-                            if (showAddPlaylistSelectDialog)
-                                SelectorDialog(
-                                    title = stringResource(R.string.playlists),
-                                    onDismiss = { showAddPlaylistSelectDialog = false },
-                                    values = listOf(
-                                        Info("n", stringResource(R.string.new_playlist)),
-                                        Info("a", stringResource(R.string.add_all_in_playlist)),
-                                        Info("s", stringResource(R.string.add_selected_in_playlist))
-                                    ),
-                                    onValueSelected = {
-                                        when (it) {
-                                            "a" -> showPlaylistSelectDialog = true
-                                            "n" -> isCreatingNewPlaylist = true
-                                            else -> selectItems = true
-                                        }
-                                        showAddPlaylistSelectDialog = false
                                     }
                                 )
 
-
-                            if (showPlaylistSelectDialog) {
-                                SelectorDialog(
-                                    title = stringResource(R.string.playlists),
-                                    onDismiss = { showPlaylistSelectDialog = false },
-                                    showItemsIcon = true,
-                                    values = playlistPreviews.map {
-                                        Info(
-                                            it.playlist.id.toString(),
-                                            "${it.playlist.name} \n ${it.songCount} ${stringResource(R.string.songs)}",
-                                            it.songCount
-                                        )
-                                    },
-                                    onValueSelected = {
-                                        position = playlistPreviews.firstOrNull { playlistPreview ->
-                                            playlistPreview.playlist.id == it.toLong()
-                                        }?.songCount?.minus(1) ?: 0
-                                        //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
-                                        if (position > 0) position++ else position = 0
-                                        //Log.d("mediaItem", "next initial pos ${position}")
-                                        if (listMediaItems.isEmpty()) {
-                                        songs.forEachIndexed { index, song ->
-                                            transaction {
-                                                Database.insert(song.asMediaItem)
-                                                Database.insert(
-                                                    SongPlaylistMap(
-                                                        songId = song.asMediaItem.mediaId,
-                                                        playlistId = it.toLong(),
-                                                        position = position + index
-                                                    )
-                                                )
-                                            }
-                                            //Log.d("mediaItemPos", "added position ${position + index}")
-                                        }
-                                    } else {
-                                            listMediaItems.forEachIndexed { index, song ->
-                                                //Log.d("mediaItemMaxPos", position.toString())
-                                                transaction {
-                                                    Database.insert(song)
-                                                    Database.insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.mediaId,
-                                                            playlistId = it.toLong(),
-                                                            position = position + index
-                                                        )
-                                                    )
-                                                }
-                                                //Log.d("mediaItemPos", "add position $position")
-                                            }
-                                            listMediaItems.clear()
-                                            selectItems = false
-                                    }
-                                        showPlaylistSelectDialog = false
-                                    }
-                                )
-                            }
-                            */
-                                if (showSelectDialog)
-                                    SelectorDialog(
-                                        title = stringResource(R.string.enqueue),
-                                        onDismiss = { showSelectDialog = false },
-                                        values = listOf(
-                                            Info("a", stringResource(R.string.enqueue_all)),
-                                            Info("s", stringResource(R.string.enqueue_selected))
-                                        ),
-                                        onValueSelected = {
-                                            if (it == "a") {
-                                                binder?.player?.enqueue(songs.map(Song::asMediaItem))
-                                            } else selectItems = true
-
-                                            showSelectDialog = false
-                                        }
-                                    )
-                                /*
-                            HeaderIconButton(
-                                icon = R.drawable.pencil,
-                                color = colorPalette.text,
-                                onClick = {
-                                    showSelectCustomizeAlbumDialog = true
-                                }
-                            )
-                            */
-                                if (showSelectCustomizeAlbumDialog)
-                                    SelectorDialog(
-                                        title = stringResource(R.string.customize_album),
-                                        onDismiss = { showSelectCustomizeAlbumDialog = false },
-                                        values = listOf(
-                                            Info("t", stringResource(R.string.update_title)),
-                                            Info("a", stringResource(R.string.update_authors)),
-                                            Info("c", stringResource(R.string.update_cover))
-                                        ),
-                                        onValueSelected = {
-                                            when (it) {
-                                                "t" -> showDialogChangeAlbumTitle = true
-                                                "a" -> showDialogChangeAlbumAuthors = true
-                                                "c" -> showDialogChangeAlbumCover = true
-                                            }
-                                            showSelectCustomizeAlbumDialog = false
-                                        }
-                                    )
-
-                                if (showDialogChangeAlbumTitle)
-                                    InputTextDialog(
-                                        onDismiss = { showDialogChangeAlbumTitle = false },
-                                        title = stringResource(R.string.update_title),
-                                        value = album?.title.toString(),
-                                        placeholder = stringResource(R.string.title),
-                                        setValue = {
-                                            if (it.isNotEmpty()) {
-                                                query {
-                                                    Database.updateAlbumTitle(browseId, it)
-                                                }
-                                                //context.toast("Album Saved $it")
-                                            }
-                                        }
-                                    )
-                                if (showDialogChangeAlbumAuthors)
-                                    InputTextDialog(
-                                        onDismiss = { showDialogChangeAlbumAuthors = false },
-                                        title = stringResource(R.string.update_authors),
-                                        value = album?.authorsText.toString(),
-                                        placeholder = stringResource(R.string.authors),
-                                        setValue = {
-                                            if (it.isNotEmpty()) {
-                                                query {
-                                                    Database.updateAlbumAuthors(browseId, it)
-                                                }
-                                                //context.toast("Album Saved $it")
-                                            }
-                                        }
-                                    )
-
-                                if (showDialogChangeAlbumCover)
-                                    InputTextDialog(
-                                        onDismiss = { showDialogChangeAlbumCover = false },
-                                        title = stringResource(R.string.update_cover),
-                                        value = album?.thumbnailUrl.toString(),
-                                        placeholder = stringResource(R.string.cover),
-                                        setValue = {
-                                            if (it.isNotEmpty()) {
-                                                query {
-                                                    Database.updateAlbumCover(browseId, it)
-                                                }
-                                                //context.toast("Album Saved $it")
-                                            }
-                                        }
-                                    )
 
                             }
 
@@ -720,6 +636,9 @@ fun AlbumSongs(
                                 modifier = Modifier
                                     .padding(all = 5.dp)
                             )
+
+
+
                         }
                     }
                         itemsIndexed(
