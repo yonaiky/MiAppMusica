@@ -334,6 +334,7 @@ fun QuickPicks(
                         modifier = Modifier.weight(1f)
                     )
 
+
                     Image(
                         painter = painterResource(R.drawable.app_icon),
                         contentDescription = null,
