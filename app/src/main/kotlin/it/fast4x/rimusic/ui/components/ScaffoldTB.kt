@@ -68,7 +68,7 @@ fun ScaffoldTB(
         )
     }
 
-    val topPadding =  if (navigationBarPosition == NavigationBarPosition.Top) 60.dp else 0.dp
+    val topPadding =  if (navigationBarPosition == NavigationBarPosition.Top) 60.dp else 10.dp
 
     androidx.compose.material3.Scaffold(
        containerColor = colorPalette.background0,
