@@ -194,6 +194,7 @@ fun About() {
                 "DanielSevillano \n"+
                 "Fast4x \n"+
                 "Ikanakova \n"+
+                 "Iscle \n"+
                 "JZITNIK-github \n" +
                 "Locxter \n"+
                 "Roklc \n"+
