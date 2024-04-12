@@ -181,6 +181,7 @@ WARNING, the custom version is not an official release, downloading only if invi
 - [DanielSevillano](https://github.com/DanielSevillano)
 - [fast4x](https://github.com/fast4x)
 - [ikanakova](https://github.com/ikanakova)
+- [iscle](https://github.com/iscle)
 - [JZITNIK-github](https://github.com/JZITNIK-github)
 - [locxter](https://github.com/locxter)
 - [roklc](https://github.com/roklc)
