@@ -58,7 +58,7 @@
     <string name="featured">Fremhævet</string>
     <string name="view_the_source_code">Se kildekoden</string>
     <string name="report_an_issue">Rapportér et problem</string>
-    <string name="you_will_be_redirected_to_github">Du vil blive omdirigeret til GitHub</string>
+    <string name="you_will_be_redirected_to_github">Du omdirigeres til GitHub</string>
     <string name="request_a_feature_or_suggest_an_idea">Anmod om en funktion eller foreslå en idé</string>
     <string name="theme">Tema</string>
     <string name="theme_mode">Tema tilstand</string>
