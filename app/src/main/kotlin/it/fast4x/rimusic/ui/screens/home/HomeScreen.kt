@@ -210,7 +210,7 @@ fun HomeScreen(
                 showButton1 = false,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
-                showButton2 = showStatsInNavbar,
+                showButton2 = false, //showStatsInNavbar,
                 showBottomButton = showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,

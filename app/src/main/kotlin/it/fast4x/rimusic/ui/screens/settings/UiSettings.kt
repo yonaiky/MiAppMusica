@@ -762,6 +762,7 @@ fun  UiSettings() {
                 onCheckedChange = { showSearchTab = it }
             )
 
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "Show statistics in navigation bar",
@@ -769,6 +770,7 @@ fun  UiSettings() {
                 isChecked = showStatsInNavbar,
                 onCheckedChange = { showStatsInNavbar = it }
             )
+         */
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.settings_use_font_type).contains(filterCharSequence,true))

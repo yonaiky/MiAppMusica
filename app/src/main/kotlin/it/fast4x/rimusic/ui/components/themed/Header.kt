@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -37,6 +38,7 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlin.random.Random
@@ -165,6 +167,7 @@ fun HeaderWithIcon (
     val colorPalette = LocalAppearance.current.colorPalette
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     //val disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     Row (
         horizontalArrangement = Arrangement.End,
@@ -190,7 +193,9 @@ fun HeaderWithIcon (
                 .fillMaxSize(if(showIcon && uiType != UiType.ViMusic) 0.9f else 1f)
         )
 
-        if (showIcon && uiType != UiType.ViMusic)
+        if (showIcon && uiType != UiType.ViMusic &&
+            (navigationBarPosition == NavigationBarPosition.Left
+                    || navigationBarPosition == NavigationBarPosition.Right))
             SecondaryButton(
                 iconId = iconId,
                 enabled = enabled,

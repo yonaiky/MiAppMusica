@@ -306,14 +306,16 @@ fun QuickPicks(
                     )
             ) {
 
-                HeaderWithIcon(
-                    title = stringResource(R.string.quick_picks),
-                    iconId = R.drawable.search,
-                    enabled = true,
-                    showIcon = !showSearchTab,
-                    modifier = Modifier,
-                    onClick = onSearchClick
-                )
+                if (uiType == UiType.ViMusic)
+                    HeaderWithIcon(
+                        title = stringResource(R.string.quick_picks),
+                        iconId = R.drawable.search,
+                        enabled = true,
+                        showIcon = !showSearchTab,
+                        modifier = Modifier,
+                        onClick = onSearchClick
+                    )
+
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
