@@ -954,7 +954,9 @@ class MainActivity :
         monetColors: ColorScheme,
         isInitialChange: Boolean
     ) {
-        if (!isInitialChange) {
+        val colorPaletteName =
+            preferences.getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+        if (!isInitialChange && colorPaletteName == ColorPaletteName.MaterialYou) {
             /*
             monet.updateMonetColors()
             monet.invokeOnReady {

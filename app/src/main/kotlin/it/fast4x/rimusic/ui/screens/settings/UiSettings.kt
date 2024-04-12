@@ -249,10 +249,13 @@ fun  UiSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current
@@ -663,7 +666,7 @@ fun  UiSettings() {
                         ColorPaletteName.Dynamic -> stringResource(R.string.dynamic)
                         ColorPaletteName.PureBlack -> ColorPaletteName.PureBlack.name
                         ColorPaletteName.ModernBlack -> ColorPaletteName.ModernBlack.name
-                        ColorPaletteName.MaterialYou -> "MaterialYou"
+                        ColorPaletteName.MaterialYou -> stringResource(R.string.theme_material_you)
                     }
                 }
             )
