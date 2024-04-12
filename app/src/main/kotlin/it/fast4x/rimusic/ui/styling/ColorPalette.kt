@@ -92,7 +92,6 @@ val PureBlackColorPalette = DefaultDarkColorPalette.copy(
     background0 = Color.Black,
     background1 = Color.Black,
     background2 = Color.Black,
-
     )
 
 val ModernBlackColorPalette = DefaultDarkColorPalette.copy(
@@ -110,7 +109,7 @@ fun colorPaletteOf(
     isSystemInDarkMode: Boolean
 ): ColorPalette {
     return when (colorPaletteName) {
-        ColorPaletteName.Default, ColorPaletteName.Dynamic -> when (colorPaletteMode) {
+        ColorPaletteName.Default, ColorPaletteName.Dynamic, ColorPaletteName.MaterialYou -> when (colorPaletteMode) {
             ColorPaletteMode.Light -> DefaultLightColorPalette
             ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack -> DefaultDarkColorPalette
             ColorPaletteMode.System -> when (isSystemInDarkMode) {
@@ -186,6 +185,66 @@ fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean, isPitchBlack: Boolea
  */
     )
 }
+
+
+fun dynamicColorPaletteOf(hsl: Hsl, isDark: Boolean, isPitchBlack: Boolean) = hsl.let { (hue, saturation) ->
+    val accentColor = Color.hsl(
+        hue = hue,
+        saturation = saturation.coerceAtMost(if (isPitchBlack || isDark) 0.4f else 0.5f),
+        lightness = 0.5f
+    )
+
+    if (isPitchBlack) PureBlackColorPalette.copy(
+        accent = accentColor,
+        isDark = true
+    ) else colorPaletteOf(
+        ColorPaletteName.Dynamic,
+        if (isDark) ColorPaletteMode.Dark else ColorPaletteMode.Light,
+        isDark
+    ).copy(
+        background0 = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.1f),
+            lightness = if (isDark) 0.10f else 0.925f
+        ),
+        background1 = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.3f),
+            lightness = if (isDark) 0.15f else 0.90f
+        ),
+        background2 = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.4f),
+            lightness = if (isDark) 0.2f else 0.85f
+        ),
+        accent = accentColor,
+        text = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.02f),
+            lightness = if (isDark) 0.88f else 0.12f
+        ),
+        textSecondary = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.1f),
+            lightness = if (isDark) 0.65f else 0.40f
+        ),
+        textDisabled = Color.hsl(
+            hue = hue,
+            saturation = saturation.coerceAtMost(0.2f),
+            lightness = if (isDark) 0.40f else 0.65f
+        )
+    )
+}
+
+fun dynamicColorPaletteOf(
+    accentColor: Color,
+    isDark: Boolean,
+    isPitchBlack: Boolean
+) = dynamicColorPaletteOf(
+    hsl = accentColor.hsl,
+    isDark = isDark,
+    isPitchBlack = isPitchBlack
+)
 
 inline val ColorPalette.collapsedPlayerProgressBar: Color
     get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {

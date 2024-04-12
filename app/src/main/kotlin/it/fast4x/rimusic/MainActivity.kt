@@ -69,13 +69,20 @@ import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import com.kieronquinn.monetcompat.app.MonetCompatActivity
+import com.kieronquinn.monetcompat.core.MonetActivityAccessException
+import com.kieronquinn.monetcompat.core.MonetCompat
+import com.kieronquinn.monetcompat.interfaces.MonetColorsChangedListener
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
+import dev.kdrag0n.monet.theme.ColorScheme
 import it.fast4x.compose.persist.PersistMap
 import it.fast4x.compose.persist.PersistMapOwner
 import it.fast4x.innertube.Innertube
@@ -106,12 +113,15 @@ import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Appearance
+import it.fast4x.rimusic.ui.styling.ColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
+import it.fast4x.rimusic.ui.styling.hsl
 import it.fast4x.rimusic.ui.styling.typographyOf
 import it.fast4x.rimusic.utils.InitDownloader
+import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
@@ -129,6 +139,7 @@ import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.invokeOnReady
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
@@ -144,6 +155,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
@@ -160,6 +172,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -176,7 +189,11 @@ import kotlin.math.sqrt
 
 
 @UnstableApi
-class MainActivity : AppCompatActivity(), PersistMapOwner {
+class MainActivity :
+    //MonetCompatActivity(),
+    AppCompatActivity(),
+    MonetColorsChangedListener,
+    PersistMapOwner {
 
     var downloadUtil = DownloadUtil
 
@@ -205,6 +222,9 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
     private var lastAcceleration = 0f
     private var shakeCounter = 0
 
+    private var _monet: MonetCompat? by mutableStateOf(null)
+    private val monet get() = _monet ?: throw MonetActivityAccessException()
+
     override fun onStart() {
         super.onStart()
         startService(Intent(this, PlayerService::class.java))
@@ -218,6 +238,12 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MonetCompat.enablePaletteCompat()
+
+        @Suppress("DEPRECATION", "UNCHECKED_CAST")
+        persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         var splashScreenStays = true
         val delayTime = 800L
@@ -226,42 +252,78 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
         Handler(Looper.getMainLooper()).postDelayed({ splashScreenStays = false }, delayTime)
 
 
-        if (!preferences.getBoolean(closeWithBackButtonKey, false))
-        if (Build.VERSION.SDK_INT >= 33) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT
-            ) {
-                //Log.d("onBackPress", "yeah")
+        MonetCompat.setup(this)
+        _monet = MonetCompat.getInstance()
+        monet.setDefaultPalette()
+        monet.addMonetColorsChangedListener(
+            listener = this,
+            notifySelf = false
+        )
+        monet.updateMonetColors()
+
+        monet.invokeOnReady {
+            startApp()
+        }
+        /*
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                monet.awaitMonetReady()
+                setContent()
             }
         }
+         */
+        onNewIntent(intent)
 
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        Objects.requireNonNull(sensorManager)!!
+            .registerListener(sensorListener, sensorManager!!
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
 
-        @Suppress("DEPRECATION", "UNCHECKED_CAST")
-        persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
+    }
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class,
+        ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
+        ExperimentalComposeUiApi::class
+    )
+    fun startApp() {
 
-        val launchedFromNotification = intent?.extras?.getBoolean("expandPlayerBottomSheet") == true
-
-        with(preferences){
-            if(getBoolean(isKeepScreenOnEnabledKey,false)) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            if(getBoolean(isProxyEnabledKey,false)) {
-                val hostName = getString(proxyHostnameKey,null)
-                val proxyPort = getInt(proxyPortKey, 8080)
-                val proxyMode = getEnum(proxyModeKey, Proxy.Type.HTTP)
-                hostName?.let { hName->
-                    ProxyPreferences.preference = ProxyPreferenceItem(hName,proxyPort,proxyMode)
+        if (!preferences.getBoolean(closeWithBackButtonKey, false))
+            if (Build.VERSION.SDK_INT >= 33) {
+                onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT
+                ) {
+                    //Log.d("onBackPress", "yeah")
                 }
             }
-            if(getBoolean(isEnabledDiscoveryLangCodeKey,true))
-                LocalePreferences.preference = LocalePreferenceItem(Locale.getDefault().toLanguageTag(),"")
+
+        val launchedFromNotification =
+            intent?.extras?.getBoolean("expandPlayerBottomSheet") == true
+
+        with(preferences) {
+            if (getBoolean(isKeepScreenOnEnabledKey, false)) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+            if (getBoolean(isProxyEnabledKey, false)) {
+                val hostName = getString(proxyHostnameKey, null)
+                val proxyPort = getInt(proxyPortKey, 8080)
+                val proxyMode = getEnum(proxyModeKey, Proxy.Type.HTTP)
+                hostName?.let { hName ->
+                    ProxyPreferences.preference =
+                        ProxyPreferenceItem(hName, proxyPort, proxyMode)
+                }
+            }
+            if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
+                LocalePreferences.preference =
+                    LocalePreferenceItem(Locale.getDefault().toLanguageTag(), "")
         }
 
         setContent {
 
-            if (preferences.getEnum(checkUpdateStateKey, CheckUpdateState.Ask) == CheckUpdateState.Enabled) {
+            if (preferences.getEnum(
+                    checkUpdateStateKey,
+                    CheckUpdateState.Ask
+                ) == CheckUpdateState.Enabled
+            ) {
                 val urlVersionCode =
                     "https://raw.githubusercontent.com/fast4x/RiMusic/master/updatedVersion/updatedVersionCode.ver"
                 //val urlVersionCode = "https://rimusic.xyz/update/updatedVersionCode.ver"
@@ -297,28 +359,44 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 stateSaver = Appearance.Companion
             ) {
                 with(preferences) {
-                    val colorPaletteName = getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+                    val colorPaletteName =
+                        getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
                     val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.System)
                     val thumbnailRoundness =
                         getEnum(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
                     val useSystemFont = getBoolean(useSystemFontKey, false)
                     val applyFontPadding = getBoolean(applyFontPaddingKey, false)
 
-                    val colorPalette =
+                    var colorPalette =
                         colorPaletteOf(colorPaletteName, colorPaletteMode, isSystemInDarkTheme)
 
                     val fontType = getEnum(fontTypeKey, FontType.Rubik)
+
+                    if (colorPaletteName == ColorPaletteName.MaterialYou) {
+                        colorPalette = dynamicColorPaletteOf(
+                            Color(monet.getAccentColor(this@MainActivity)),
+                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme),
+                            colorPaletteMode == ColorPaletteMode.PitchBlack
+                        )
+                    }
 
                     setSystemBarAppearance(colorPalette.isDark)
 
                     mutableStateOf(
                         Appearance(
                             colorPalette = colorPalette,
-                            typography = typographyOf(colorPalette.text, useSystemFont, applyFontPadding, fontType),
+                            typography = typographyOf(
+                                colorPalette.text,
+                                useSystemFont,
+                                applyFontPadding,
+                                fontType
+                            ),
                             thumbnailShape = thumbnailRoundness.shape()
                         )
                     )
                 }
+
+
 
             }
 
@@ -376,12 +454,15 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                                 )
 
                                 //val precLangCode = LocaleListCompat.getDefault().get(0).toString()
-                                val systemLangCode = AppCompatDelegate.getApplicationLocales().get(0).toString()
+                                val systemLangCode =
+                                    AppCompatDelegate.getApplicationLocales().get(0).toString()
                                 //Log.d("LanguageActivity", "lang.code ${lang.code} precLangCode $precLangCode systemLangCode $systemLangCode")
 
-                                val sysLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
-                                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(lang.code)
-                                AppCompatDelegate.setApplicationLocales( if (lang.code == "") sysLocale else appLocale )
+                                val sysLocale: LocaleListCompat =
+                                    LocaleListCompat.forLanguageTags(systemLangCode)
+                                val appLocale: LocaleListCompat =
+                                    LocaleListCompat.forLanguageTags(lang.code)
+                                AppCompatDelegate.setApplicationLocales(if (lang.code == "") sysLocale else appLocale)
                             }
 
                             effectRotationKey, playerThumbnailSizeKey,
@@ -426,11 +507,19 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                                     bitmapListenerJob?.cancel()
                                     binder?.setBitmapListener(null)
 
-                                    val colorPalette = colorPaletteOf(
+                                    var colorPalette = colorPaletteOf(
                                         colorPaletteName,
                                         colorPaletteMode,
                                         isSystemInDarkTheme
                                     )
+
+                                    if (colorPaletteName == ColorPaletteName.MaterialYou) {
+                                        colorPalette = dynamicColorPaletteOf(
+                                            Color(monet.getAccentColor(this@MainActivity)),
+                                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme),
+                                            colorPaletteMode == ColorPaletteMode.PitchBlack
+                                        )
+                                    }
 
                                     setSystemBarAppearance(colorPalette.isDark)
 
@@ -451,12 +540,20 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                             }
 
                             useSystemFontKey, applyFontPaddingKey, fontTypeKey -> {
-                                val useSystemFont = sharedPreferences.getBoolean(useSystemFontKey, false)
-                                val applyFontPadding = sharedPreferences.getBoolean(applyFontPaddingKey, false)
-                                val fontType = sharedPreferences.getEnum(fontTypeKey, FontType.Rubik)
+                                val useSystemFont =
+                                    sharedPreferences.getBoolean(useSystemFontKey, false)
+                                val applyFontPadding =
+                                    sharedPreferences.getBoolean(applyFontPaddingKey, false)
+                                val fontType =
+                                    sharedPreferences.getEnum(fontTypeKey, FontType.Rubik)
 
                                 appearance = appearance.copy(
-                                    typography = typographyOf(appearance.colorPalette.text, useSystemFont, applyFontPadding, fontType),
+                                    typography = typographyOf(
+                                        appearance.colorPalette.text,
+                                        useSystemFont,
+                                        applyFontPadding,
+                                        fontType
+                                    ),
                                 )
                             }
                         }
@@ -465,7 +562,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 with(preferences) {
                     registerOnSharedPreferenceChangeListener(listener)
 
-                    val colorPaletteName = getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+                    val colorPaletteName =
+                        getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
                     if (colorPaletteName == ColorPaletteName.Dynamic) {
                         setDynamicPalette(getEnum(colorPaletteModeKey, ColorPaletteMode.System))
                     }
@@ -488,10 +586,11 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                         )
 
                         @Composable
-                        override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-                            contentColor = appearance.colorPalette.text,
-                            lightTheme = !appearance.colorPalette.isDark
-                        )
+                        override fun rippleAlpha(): RippleAlpha =
+                            RippleTheme.defaultRippleAlpha(
+                                contentColor = appearance.colorPalette.text,
+                                lightTheme = !appearance.colorPalette.isDark
+                            )
                     }
                 }
 
@@ -523,22 +622,22 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                 val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
                 /*
-                val playerBottomSheetState = rememberBottomSheetState(
-                    dismissedBound = 0.dp,
-                    collapsedBound = Dimensions.collapsedPlayer + bottomDp,
-                    expandedBound = maxHeight,
-                )
+            val playerBottomSheetState = rememberBottomSheetState(
+                dismissedBound = 0.dp,
+                collapsedBound = Dimensions.collapsedPlayer + bottomDp,
+                expandedBound = maxHeight,
+            )
 
-                val playerAwareWindowInsets by remember(bottomDp, playerBottomSheetState.value) {
-                    derivedStateOf {
-                        val bottom = playerBottomSheetState.value.coerceIn(bottomDp, playerBottomSheetState.collapsedBound)
+            val playerAwareWindowInsets by remember(bottomDp, playerBottomSheetState.value) {
+                derivedStateOf {
+                    val bottom = playerBottomSheetState.value.coerceIn(bottomDp, playerBottomSheetState.collapsedBound)
 
-                        windowsInsets
-                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                            .add(WindowInsets(bottom = bottom))
-                    }
+                    windowsInsets
+                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                        .add(WindowInsets(bottom = bottom))
                 }
-                 */
+            }
+             */
                 //change bottom navigation
                 val playerSheetState = rememberPlayerSheetState(
                     dismissedBound = 0.dp,
@@ -552,7 +651,10 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     playerSheetState.value
                 ) {
                     derivedStateOf {
-                        val bottom = playerSheetState.value.coerceIn(bottomDp, playerSheetState.collapsedBound)
+                        val bottom = playerSheetState.value.coerceIn(
+                            bottomDp,
+                            playerSheetState.collapsedBound
+                        )
 
                         windowsInsets
                             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
@@ -579,7 +681,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                     LocalLayoutDirection provides LayoutDirection.Ltr,
                     LocalDownloader provides downloadUtil,
-                    LocalPlayerSheetState provides playerSheetState
+                    LocalPlayerSheetState provides playerSheetState,
+                    LocalMonetCompat provides monet
                 ) {
 
                     HomeScreen(
@@ -590,12 +693,12 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     )
 
                     /*
-                    Player(
-                        layoutState = playerBottomSheetState,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                    )
-                     */
+                Player(
+                    layoutState = playerBottomSheetState,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                )
+                 */
                     Player(
                         layoutState = playerSheetState,
                         modifier = Modifier
@@ -614,37 +717,37 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
                     /*
-                    if (player.currentMediaItem == null) {
-                        if (!playerBottomSheetState.isDismissed) {
-                            playerBottomSheetState.dismiss()
+                if (player.currentMediaItem == null) {
+                    if (!playerBottomSheetState.isDismissed) {
+                        playerBottomSheetState.dismiss()
+                    }
+                } else {
+                    //if (playerBottomSheetState.isDismissed) {
+                        if (launchedFromNotification) {
+                            intent.replaceExtras(Bundle())
+                            if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                                playerBottomSheetState.collapse(tween(700))
+                            else playerBottomSheetState.expand(tween(500))
+                        } else {
+                            playerBottomSheetState.collapse(tween(700))
                         }
-                    } else {
-                        //if (playerBottomSheetState.isDismissed) {
-                            if (launchedFromNotification) {
-                                intent.replaceExtras(Bundle())
+                    //}
+                }
+
+                val listener = object : Player.Listener {
+                    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
+                            if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
                                 if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                    playerBottomSheetState.collapse(tween(700))
+                                playerBottomSheetState.collapse(tween(700))
                                 else playerBottomSheetState.expand(tween(500))
                             } else {
                                 playerBottomSheetState.collapse(tween(700))
                             }
-                        //}
-                    }
-
-                    val listener = object : Player.Listener {
-                        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                            if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
-                                if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
-                                    if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                    playerBottomSheetState.collapse(tween(700))
-                                    else playerBottomSheetState.expand(tween(500))
-                                } else {
-                                    playerBottomSheetState.collapse(tween(700))
-                                }
-                            }
                         }
                     }
-                     */
+                }
+                 */
                     if (player.currentMediaItem == null) {
                         if (!playerSheetState.isDismissed) {
                             playerSheetState.dismiss()
@@ -687,15 +790,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
 
             }
         }
-
-        onNewIntent(intent)
-
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        Objects.requireNonNull(sensorManager)!!
-            .registerListener(sensorListener, sensorManager!!
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
-
     }
+
 
     private val sensorListener: SensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
@@ -823,6 +919,8 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
         if (!isChangingConfigurations) {
             persistMap.clear()
         }
+        monet.removeMonetColorsChangedListener(this)
+        _monet = null
 
     }
 
@@ -849,6 +947,24 @@ class MainActivity : AppCompatActivity(), PersistMapOwner {
         const val action_albums = "it.fast4x.rimusic.action.albums"
         const val action_library = "it.fast4x.rimusic.action.library"
     }
+
+
+    override fun onMonetColorsChanged(
+        monet: MonetCompat,
+        monetColors: ColorScheme,
+        isInitialChange: Boolean
+    ) {
+        if (!isInitialChange) {
+            /*
+            monet.updateMonetColors()
+            monet.invokeOnReady {
+                startApp()
+            }
+             */
+            this@MainActivity.recreate()
+        }
+    }
+
 
 }
 

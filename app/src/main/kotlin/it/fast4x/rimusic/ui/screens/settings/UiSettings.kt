@@ -663,6 +663,7 @@ fun  UiSettings() {
                         ColorPaletteName.Dynamic -> stringResource(R.string.dynamic)
                         ColorPaletteName.PureBlack -> ColorPaletteName.PureBlack.name
                         ColorPaletteName.ModernBlack -> ColorPaletteName.ModernBlack.name
+                        ColorPaletteName.MaterialYou -> "MaterialYou"
                     }
                 }
             )
