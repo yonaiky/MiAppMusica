@@ -1455,7 +1455,7 @@ fun Player(
                                     .size(24.dp),
                             )
 
-                        if (showButtonPlayerMenu)
+                        if (showButtonPlayerMenu && !isLandscape)
                             IconButton(
                                 icon = R.drawable.ellipsis_vertical,
                                 color = colorPalette.text,
