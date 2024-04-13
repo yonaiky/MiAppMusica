@@ -125,6 +125,7 @@ const val defaultFolderKey = "defaultFolder"
 const val menuStyleKey = "menuStyle"
 const val shakeEventEnabledKey = "shakeEventEnabled"
 const val showStatsInNavbarKey = "showStatsInNavbar"
+const val showActionsBarKey = "showActionsBar"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

@@ -188,12 +188,13 @@ fun MultiFloatingActionsButton (
                                     if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
                                 else stateChange()
                             },
-                            onDoubleClick = { stateChange() },
+                            //onDoubleClick = { stateChange() },
                             //onLongClick = { stateChange() }
                         )
 
 
                 ) {
+                    /*
                     Box (
                         modifier = Modifier
                             .fillMaxWidth()
@@ -211,6 +212,7 @@ fun MultiFloatingActionsButton (
                                 .size(16.dp)
                         )
                     }
+                    */
                     Image(
                         painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,

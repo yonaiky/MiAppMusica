@@ -36,6 +36,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -71,6 +72,8 @@ fun  QuickPicsSettings() {
 
     var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
 
+    var showActionsBar by rememberPreference(showActionsBarKey, true)
+
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     Column(
@@ -102,6 +105,15 @@ fun  QuickPicsSettings() {
         )
 
         //SettingsGroupSpacer()
+
+        SwitchSettingEntry(
+            title = "Show actions bar",
+            text = "",
+            isChecked = showActionsBar,
+            onCheckedChange = {
+                showActionsBar = it
+            }
+        )
 
         EnumValueSelectorSettingsEntry(
             title = stringResource(R.string.tips),

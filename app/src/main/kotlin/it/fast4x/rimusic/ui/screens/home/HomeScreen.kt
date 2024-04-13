@@ -207,7 +207,7 @@ fun HomeScreen(
             Scaffold(
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },
-                showButton1 = false,
+                showButton1 = true,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
                 showButton2 = false, //showStatsInNavbar,

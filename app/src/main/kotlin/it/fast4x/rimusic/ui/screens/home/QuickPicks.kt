@@ -110,6 +110,7 @@ import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -270,6 +271,8 @@ fun QuickPicks(
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
+    val showActionsBar by rememberPreference(showActionsBarKey, true)
+
     PullToRefreshBox(
         refreshing = refreshing,
         onRefresh = { refresh() }
@@ -319,38 +322,46 @@ fun QuickPicks(
                         onClick = onSearchClick
                     )
 
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = 10.dp)
-                ) {
-                    ButtonWithTitle(
-                        title = stringResource(R.string.history),
-                        icon = R.drawable.history,
-                        onClick = onHistoryClick,
-                        modifier = Modifier.weight(1f)
-                    )
-
-
-                    Image(
-                        painter = painterResource(R.drawable.app_icon),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
+                if (showActionsBar)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(48.dp)
+                            .fillMaxWidth()
+                            .padding(all = 10.dp)
+                    ) {
+                        ButtonWithTitle(
+                            title = stringResource(R.string.history),
+                            icon = R.drawable.history,
+                            onClick = onHistoryClick,
+                            modifier = Modifier.weight(1f)
+                        )
 
-                    )
 
-                    ButtonWithTitle(
-                        title = stringResource(R.string.statistics),
-                        icon = R.drawable.stats_chart,
-                        onClick = onStatisticsClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                        /*
+                        ButtonWithTitle(
+                            title = "Settings", //stringResource(R.string.settings),
+                            icon = R.drawable.settings,
+                            onClick = onSettingsClick,
+                            modifier = Modifier.weight(1f)
+                        )
+                         */
+
+                        Image(
+                            painter = painterResource(R.drawable.app_icon),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
+                            modifier = Modifier
+                                .size(48.dp)
+                        )
+
+                        ButtonWithTitle(
+                            title = stringResource(R.string.statistics),
+                            icon = R.drawable.stats_chart,
+                            onClick = onStatisticsClick,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
 
 
                 BasicText(
