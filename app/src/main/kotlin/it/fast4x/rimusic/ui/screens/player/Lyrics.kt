@@ -408,7 +408,7 @@ fun Lyrics(
                             R.string.unsynchronized_lyrics
                         )
                     } " +
-                            " ${stringResource(R.string.are_not_available_for_this_song)}",
+                            "${stringResource(R.string.are_not_available_for_this_song)}",
                     style = typography.xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
                         .background(Color.Black.copy(0.4f))
@@ -422,7 +422,7 @@ fun Lyrics(
                     modifier = Modifier
                         .background(Color.Black.copy(0.4f))
                         .padding(all = 8.dp)
-                        .padding(top = 80.dp)
+                        .padding(top = 30.dp)
                         .fillMaxWidth()
                         .clickable {
                             isShowingSynchronizedLyrics = !isShowingSynchronizedLyrics
