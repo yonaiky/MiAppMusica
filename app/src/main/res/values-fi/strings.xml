@@ -390,7 +390,7 @@
     <string name="sort_date_liked">Tykkäyspäivämäärä</string>
     <string name="export_playlist">Vie soittolista</string>
     <string name="lang_afrikaans">afrikaans</string>
-    <string name="playlist_top">Playlist Top</string>
+    <string name="playlist_top">Soittolistan parhaat</string>
     <string name="my_playlist_top">Parhaat</string>
     <string name="navigation_bar_position">Navigointipalkin sijainti</string>
     <string name="direction_left">Vasen</string>
@@ -408,7 +408,7 @@
     <string name="icon_and_text">Kuvake ja teksti</string>
     <string name="only_icon">Vain kuvake</string>
     <string name="show_search_tab_in_home">Näytä hakuvälilehti kotinäkymässä</string>
-    <string name="action_bar_show_menu_button">Näytä menu -nappi</string>
+    <string name="action_bar_show_menu_button">Näytä Menu -nappi</string>
     <string name="sort_album">Albumi</string>
     <string name="use_gradient_background">Käytä liukuväritaustaa</string>
     <string name="show_total_time_of_queue">Näytä jonon kokonaiskesto</string>
@@ -436,7 +436,7 @@
     <string name="direction_top">Ylhäällä</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Lataa kansikuva</string>
-    <string name="menu_style">Menu style</string>
+    <string name="menu_style">Valikon tyyli</string>
     <string name="style_grid">Ruudukko</string>
     <string name="style_list">Lista</string>
     <string name="click_to_switch_to">Klikkaa vaihtaaksesi</string>
