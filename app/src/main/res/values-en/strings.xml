@@ -225,7 +225,7 @@
     <string name="listen_on_invidious">Listen on Invidious</string>
     <string name="disable_horizontal_swipe">Disable horizontal swipe</string>
     <string name="disable_song_switching_via_swipe">Disable song switching via swipe</string>
-    <string name="interface_in_use">Interface in use</string>
+    <string name="interface_in_use">Interface type</string>
     <string name="user_interface">User interface</string>
     <string name="ui_tab">UI</string>
     <string name="system_language">System language</string>
@@ -407,7 +407,7 @@
     <string name="navigation_bar_type">Navigation bar type</string>
     <string name="icon_and_text">Icon and text</string>
     <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Move search shortcut to navigation bar</string>
+    <string name="show_search_tab_in_home">Show search in navigation bar</string>
     <string name="action_bar_show_menu_button">Show menu button</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Use gradient background</string>
