@@ -77,6 +77,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -197,6 +198,8 @@ fun HomeSongs(
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+
+
 
     Box(
         modifier = Modifier
@@ -440,6 +443,25 @@ fun HomeSongs(
                 items = items,
                 key = { _, song -> song.id }
             ) { index, song ->
+
+                var isHiding by remember {
+                    mutableStateOf(false)
+                }
+
+                if (isHiding) {
+                    ConfirmationDialog(
+                        text = stringResource(R.string.hidesong),
+                        onDismiss = { isHiding = false },
+                        onConfirm = {
+                            query {
+                                menuState.hide()
+                                binder?.cache?.removeResource(song.id)
+                                Database.incrementTotalPlayTimeMs(song.id, -song.totalPlayTimeMs)
+                            }
+                        }
+                    )
+                }
+
                 val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                 downloadState = getDownloadState(song.asMediaItem.mediaId)
                 val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
@@ -494,7 +516,8 @@ fun HomeSongs(
                                 menuState.display {
                                     InHistoryMediaItemMenu(
                                         song = song,
-                                        onDismiss = menuState::hide
+                                        onDismiss = menuState::hide,
+                                        onHideFromDatabase = { isHiding = true }
                                     )
                                 }
                             },

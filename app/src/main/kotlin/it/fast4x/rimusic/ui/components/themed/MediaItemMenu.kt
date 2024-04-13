@@ -111,10 +111,12 @@ import java.time.format.DateTimeFormatter
 fun InHistoryMediaItemMenu(
     onDismiss: () -> Unit,
     song: Song,
+    onHideFromDatabase: (() -> Unit)? = {},
     modifier: Modifier = Modifier
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    //val binder = LocalPlayerServiceBinder.current
 
+    /*
     var isHiding by remember {
         mutableStateOf(false)
     }
@@ -133,11 +135,12 @@ fun InHistoryMediaItemMenu(
             }
         )
     }
+     */
 
     NonQueuedMediaItemMenu(
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
-        onHideFromDatabase = { isHiding = true },
+        onHideFromDatabase = onHideFromDatabase,
         modifier = modifier
     )
 }

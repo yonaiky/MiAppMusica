@@ -901,7 +901,7 @@ fun MediaItemGridMenu (
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {
-                            onDismiss()
+                            //onDismiss()
                             onHideFromDatabase()
                         }
                     )
