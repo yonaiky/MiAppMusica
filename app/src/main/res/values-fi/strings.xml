@@ -433,14 +433,14 @@
     <string name="click_lyrics_text">Napauta sanoitusta</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
     <string name="folder_was_not_found">Kansiota ei löydy</string>
-    <string name="direction_top">Direction Top</string>
+    <string name="direction_top">Ylhäällä</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Lataa kansikuva</string>
     <string name="menu_style">Menu style</string>
     <string name="style_grid">Ruudukko</string>
     <string name="style_list">Lista</string>
     <string name="click_to_switch_to">Klikkaa vaihtaaksesi</string>
-    <string name="direction_bottom">Direction bottom</string>
+    <string name="direction_bottom">Alhaalla</string>
     <string name="event_shake">Ravista</string>
     <string name="shake_to_change_song">Ravista vaihtaaksesi kappaletta</string>
 </resources>
