@@ -32,7 +32,7 @@ inline fun ItemContainer(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier
                 .padding(vertical = Dimensions.itemsVerticalPadding, horizontal = 16.dp)
-                //.width(thumbnailSizeDp)
+                .width(thumbnailSizeDp)
         ) {
             content(
                 centeredMod = Modifier

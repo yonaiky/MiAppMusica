@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -78,12 +79,13 @@ fun AlbumItem(
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
         AsyncImage(
             model = thumbnailUrl?.thumbnail(thumbnailSizePx),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            //contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(thumbnailShape)
                 .size(thumbnailSizeDp)
@@ -115,6 +117,7 @@ fun AlbumItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(top = 4.dp)
+                    .align(Alignment.CenterHorizontally)
             )
         }
     }
