@@ -310,7 +310,6 @@ fun QuickPicks(
                     .background(colorPalette.background0)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
-                    .border(BorderStroke(1.dp, Color.Yellow))
                     /*
                     .padding(
                         windowInsets

@@ -116,8 +116,14 @@ fun Scaffold(
                 showBottomButton = showBottomButton,
                 bottomIconButtonId = bottomIconButtonId,
                 onBottomIconButtonClick = onBottomIconButtonClick ?: {},
+                showTopActions = showTopActions,
                 content = content,
-                hideTabs = hideTabs
+                hideTabs = hideTabs,
+                onHomeClick = onHomeClick,
+                onStatisticsClick = onStatisticsClick,
+                onSettingsClick = onSettingsClick,
+                onHistoryClick = onHistoryClick,
+                onSearchClick = onSearchClick
             )
     } else {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -279,7 +285,7 @@ fun Scaffold(
             Row(
                 //horizontalArrangement = Arrangement.spacedBy(0.dp),
                 modifier = modifier
-                    .border(BorderStroke(1.dp, Color.Red))
+                    //.border(BorderStroke(1.dp, Color.Red))
                     //.padding(top = 50.dp)
                     .padding(it)
                     .background(colorPalette.background0)

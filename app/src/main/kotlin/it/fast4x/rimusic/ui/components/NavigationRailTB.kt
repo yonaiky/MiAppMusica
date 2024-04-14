@@ -3,8 +3,10 @@ package it.fast4x.rimusic.ui.components
 import androidx.annotation.OptIn
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -83,13 +86,17 @@ inline fun NavigationRailTB(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val localSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
-    val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
+    val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
+        if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
+    else 0.dp
 
+    //val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
+    val topPadding = 0.dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom,
         modifier = modifier
+            //.border(BorderStroke(1.dp, Color.Yellow))
             //.padding(top = 30.dp)
             .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
             .background(colorPalette.background0)

@@ -82,7 +82,7 @@ inline fun NavigationRail(
         modifier = modifier
             .verticalScroll(rememberScrollState())
             //.padding(paddingValues)
-            .border(BorderStroke(1.dp, Color.Green))
+            //.border(BorderStroke(1.dp, Color.Green))
             //.fillMaxWidth()
     ) {
 
@@ -141,7 +141,7 @@ inline fun NavigationRail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .border(BorderStroke(1.dp,Color.Green))
+                    //.border(BorderStroke(1.dp,Color.Green))
                     //.width(if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth)
                     //.width(Dimensions.navigationRailWidth)
                     //.fillMaxWidth()
