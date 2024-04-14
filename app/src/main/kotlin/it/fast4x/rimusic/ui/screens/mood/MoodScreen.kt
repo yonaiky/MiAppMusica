@@ -15,6 +15,8 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -39,6 +41,7 @@ fun MoodScreen(mood: Mood) {
                 showButton2 = false,
                 tabIndex = 0,
                 onTabChanged = { },
+                onHomeClick = { homeRoute() },
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.mood), R.drawable.album)
                 }

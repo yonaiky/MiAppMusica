@@ -12,9 +12,16 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.historyRoute
+import it.fast4x.rimusic.ui.screens.homeRoute
+import it.fast4x.rimusic.ui.screens.searchRoute
+import it.fast4x.rimusic.ui.screens.settingsRoute
+import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -39,6 +46,15 @@ fun HistoryScreen() {
                 showButton2 = false,
                 tabIndex = 0,
                 onTabChanged = { },
+                onHomeClick = { homeRoute() },
+                showTopActions = false,
+                /*
+                onSettingsClick = { settingsRoute() },
+                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
+                onHistoryClick = { historyRoute() },
+                onSearchClick = { searchRoute("") },
+
+                 */
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.history), R.drawable.history)
                 }

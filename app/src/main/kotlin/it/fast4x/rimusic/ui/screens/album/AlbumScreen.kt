@@ -44,6 +44,7 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.screens.settingsRoute
@@ -232,6 +233,7 @@ fun AlbumScreen(browseId: String) {
                 showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
+                onHomeClick = { homeRoute() },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(1, stringResource(R.string.other_versions), R.drawable.alternative_version)

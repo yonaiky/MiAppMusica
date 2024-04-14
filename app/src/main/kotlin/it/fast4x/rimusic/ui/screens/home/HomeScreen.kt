@@ -218,7 +218,12 @@ fun HomeScreen(
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
+                showTopActions = true,
+                onHomeClick = {},
                 onSettingsClick = { settingsRoute() },
+                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
+                onHistoryClick = { historyRoute() },
+                onSearchClick = { searchRoute("") },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)

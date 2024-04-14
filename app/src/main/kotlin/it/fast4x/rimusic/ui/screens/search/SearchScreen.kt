@@ -170,6 +170,7 @@ fun SearchScreen(
                 hideTabs = true,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
+                onHomeClick = { homeRoute() },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.online), R.drawable.globe)
                     Item(1, stringResource(R.string.library), R.drawable.library)

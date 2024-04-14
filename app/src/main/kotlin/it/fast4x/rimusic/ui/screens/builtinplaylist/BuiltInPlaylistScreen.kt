@@ -28,6 +28,7 @@ import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongs
 import it.fast4x.rimusic.ui.screens.search.SearchScreen
 import it.fast4x.rimusic.ui.screens.searchResultRoute
@@ -130,6 +131,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
+                onHomeClick = { homeRoute() },
                 tabColumnContent = { Item ->
                     if(showFavoritesPlaylist)
                         Item(0, stringResource(R.string.favorites), R.drawable.heart)

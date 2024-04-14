@@ -36,6 +36,7 @@ import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
@@ -66,6 +67,7 @@ fun SettingsScreen() {
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
+                onHomeClick = { homeRoute() },
                 onTabChanged = onTabChanged,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.ui_tab), R.drawable.ui)

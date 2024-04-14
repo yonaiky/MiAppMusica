@@ -275,6 +275,7 @@ fun ArtistScreen(browseId: String) {
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
+                onHomeClick = { homeRoute() },
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.overview), R.drawable.artist)

@@ -15,6 +15,7 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -45,6 +46,7 @@ fun LocalPlaylistScreen(playlistId: Long) {
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = 0,
                 onTabChanged = { },
+                onHomeClick = { homeRoute() },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
                 }

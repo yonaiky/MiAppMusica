@@ -18,7 +18,11 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.historyRoute
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
+import it.fast4x.rimusic.ui.screens.settingsRoute
+import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 
@@ -64,6 +68,14 @@ fun StatisticsScreen(
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
+                onHomeClick = { homeRoute() },
+                showTopActions = false,
+                /*
+                onSettingsClick = { settingsRoute() },
+                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
+                onHistoryClick = { historyRoute() },
+                onSearchClick = { searchRoute("") },
+                 */
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.today), R.drawable.stat_today)
                     Item(1, stringResource(R.string._1_week), R.drawable.stat_week)

@@ -30,7 +30,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -39,7 +43,9 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -82,8 +88,13 @@ fun Scaffold(
     hideTabs: Boolean? = false,
     tabIndex: Int,
     onTabChanged: (Int) -> Unit,
+    showTopActions: Boolean? = false,
     tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
+    onHomeClick: () -> Unit,
     onSettingsClick: (() -> Unit)? = {},
+    onStatisticsClick: (() -> Unit)? = {},
+    onHistoryClick: (() -> Unit)? = {},
+    onSearchClick: (() -> Unit)? = {},
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
@@ -114,6 +125,8 @@ fun Scaffold(
             Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         else Modifier
 
+        var expanded by remember { mutableStateOf(false) }
+
         androidx.compose.material3.Scaffold(
             modifier = customModifier,
             containerColor = colorPalette.background0,
@@ -128,7 +141,9 @@ fun Scaffold(
                                 Image(
                                     painter = painterResource(R.drawable.app_icon),
                                     contentDescription = null,
-                                    modifier = Modifier.size(36.dp)
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clickable { onHomeClick() }
                                 )
                                 BasicText(
                                     text = "Music",
@@ -136,40 +151,109 @@ fun Scaffold(
                                         fontSize = typography.xxxl.semiBold.fontSize,
                                         fontWeight = typography.xxxl.semiBold.fontWeight,
                                         color = colorPalette.text
-                                    )
+                                    ),
+                                    modifier = Modifier
+                                        .clickable { onHomeClick() }
                                 )
                             }
                         },
                         actions = {
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.search),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.history),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                            if (onSettingsClick != null) {
-                                IconButton(onClick = onSettingsClick) {
+                            if (showTopActions == true) {
+                                IconButton(
+                                    onClick = {
+                                        if (onSearchClick != null) {
+                                            onSearchClick()
+                                        }
+                                    }
+                                ) {
                                     Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.settings),
+                                        imageVector = ImageVector.vectorResource(R.drawable.search),
                                         contentDescription = null,
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }
+                                IconButton(onClick = { expanded = !expanded }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.burger),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.history)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.history),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            if (onHistoryClick != null) {
+                                                onHistoryClick()
+                                            }
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.statistics)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            if (onStatisticsClick != null) {
+                                                onStatisticsClick()
+                                            }
+                                        }
+                                    )
+                                    HorizontalDivider()
+                                    DropdownMenuItem(
+                                        text = { Text("Settings") },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.settings),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            if (onSettingsClick != null) {
+                                                onSettingsClick()
+                                            }
+                                        }
+                                    )
+                                }
+
+                                    /*
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                                if (onSettingsClick != null) {
+                                    IconButton(onClick = onSettingsClick) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(R.drawable.settings),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
+                                 */
                             }
                         },
                         scrollBehavior = scrollBehavior,
@@ -195,7 +279,7 @@ fun Scaffold(
             Row(
                 //horizontalArrangement = Arrangement.spacedBy(0.dp),
                 modifier = modifier
-                    .border(BorderStroke(1.dp,Color.Red))
+                    .border(BorderStroke(1.dp, Color.Red))
                     //.padding(top = 50.dp)
                     .padding(it)
                     .background(colorPalette.background0)

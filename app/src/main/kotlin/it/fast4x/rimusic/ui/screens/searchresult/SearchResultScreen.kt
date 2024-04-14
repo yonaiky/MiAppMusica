@@ -52,6 +52,7 @@ import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
@@ -109,6 +110,7 @@ fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
+                onHomeClick = { homeRoute() },
                 onTabChanged = onTabIndexChanges,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
