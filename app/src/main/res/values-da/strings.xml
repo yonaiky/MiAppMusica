@@ -77,7 +77,7 @@
     <string name="database">Database</string>
     <string name="reset_quick_picks">Nulstil hurtige valg</string>
     <string name="quick_picks_are_cleared">Hurtige valg ryddes</string>
-    <string name="backup">BACKUP</string>
+    <string name="backup">SIKKERHEDSKOPI</string>
     <string name="personal_preference">Personlige præferencer (fx tema tilstand) og cachen inkluderes ikke.</string>
     <string name="backup_1">Sikkerhedskopi</string>
     <string name="export_the_database">Eksportér databasen til det eksterne lager</string>
@@ -105,7 +105,7 @@
     <string name="persistent_queue">Vedvarende kø</string>
     <string name="save_and_restore_playing_songs">Gem og gendan afspillende sange</string>
     <string name="resume_playback">Genoptag afspilning</string>
-    <string name="when_device_is_connected">Når en kablet eller bluetooth-enhed er tilsluttet</string>
+    <string name="when_device_is_connected">Når en kablet eller Bluetooth-enhed er tilsluttet</string>
     <string name="skip_silence">Spring stilhed over</string>
     <string name="skip_silent_parts_during_playback">Spring stille dele over under afspilning</string>
     <string name="loudness_normalization">Normalisering af lydstyrke</string>
@@ -123,7 +123,7 @@
     <string name="delete_playback_events">Slet %1$s afspilningsbegivenheder</string>
     <string name="existing_data_will_be_overwritten">Eksisterende data overskrives.\n%1$s lukker sig selv automatisk efter gendannelse af databasen.</string>
     <string name="folder_cache">MAPPE CACHE</string>
-    <string name="cache_reset_by_clicking_button">Vær opmærksom på, at hvis du klikker på knappen nedenfor, nulstilles mappen til cacheplacering til standard</string>
+    <string name="cache_reset_by_clicking_button">Bemærk: Ved at klikke på knappen nedenfor nulstilles mappen til cacheplacering til standard</string>
     <string name="cache_location_folder">Placeringsmappe</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Fra Android 10 vil denne funktion muligvis ikke være tilgængelig</string>
     <string name="reset_cache_location_folder">NULSTIL CACHEPLACERING</string>
@@ -230,7 +230,7 @@
     <string name="ui_tab">UI</string>
     <string name="system_language">Systemsprog</string>
     <string name="biggest">Største</string>
-    <string name="set_custom_cache">Indstil brugerdefineret cache</string>
+    <string name="set_custom_cache">Tilpas cache</string>
     <string name="enter_value_in_mb">Indtast værdi i MB</string>
     <string name="value_cannot_be_empty">Værdi må ikke være tom</string>
     <string name="value_must_be_greater_than">"Værdi skal være større end "</string>
@@ -243,7 +243,7 @@
     <string name="rectangular">Rektangulær</string>
     <string name="square">Firkantet</string>
     <string name="circular_ribbed">Riflet Cirkel</string>
-    <string name="play_button">Afspil-knap</string>
+    <string name="play_button">Afspilningsknap</string>
     <string name="portuguese_brazilian">Portugisisk, brasiliansk</string>
     <string name="portuguese">Portugisisk</string>
     <string name="indonesian">Indonesisk</string>
