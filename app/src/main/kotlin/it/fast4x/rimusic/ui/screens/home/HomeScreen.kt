@@ -28,6 +28,7 @@ import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsType
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.query
@@ -55,6 +56,7 @@ import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
 import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.utils.CheckAvailableNewVersion
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.homeScreenTabIndexKey
@@ -90,6 +92,7 @@ fun HomeScreen(
     val preferences = LocalContext.current.preferences
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
+    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     PersistMapCleanup("home/")
 
@@ -207,7 +210,7 @@ fun HomeScreen(
             Scaffold(
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },
-                showButton1 = true,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
                 showButton2 = false, //showStatsInNavbar,
@@ -215,6 +218,7 @@ fun HomeScreen(
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
+                onSettingsClick = { settingsRoute() },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)

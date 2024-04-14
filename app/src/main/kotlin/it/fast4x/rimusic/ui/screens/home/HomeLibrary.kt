@@ -275,8 +275,8 @@ fun HomeLibrary(
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+            //contentPadding = LocalPlayerAwareWindowInsets.current
+            //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             verticalArrangement = Arrangement.spacedBy(Dimensions.itemsVerticalPadding * 2),
             horizontalArrangement = Arrangement.spacedBy(
                 space = Dimensions.itemsVerticalPadding * 2,

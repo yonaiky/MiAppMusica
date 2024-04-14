@@ -131,7 +131,7 @@ fun HomeArtistList(
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Adaptive(Dimensions.thumbnails.artist + 24.dp),
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
                 .background(colorPalette.background0)
                 .fillMaxSize()

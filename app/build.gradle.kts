@@ -101,10 +101,11 @@ dependencies {
     implementation(libs.palette)
     implementation(libs.exoplayer)
     implementation(libs.room)
-    implementation(project(":lrclib"))
     kapt(libs.room.compiler)
     implementation(projects.innertube)
+    implementation(projects.innertubes)
     implementation(projects.kugou)
+    implementation(projects.lrclib)
 
     val appcompatVersion = "1.6.1"
     implementation("androidx.appcompat:appcompat:$appcompatVersion")

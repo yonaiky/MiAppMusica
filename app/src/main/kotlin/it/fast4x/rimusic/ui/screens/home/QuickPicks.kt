@@ -2,9 +2,11 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
@@ -48,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -80,10 +83,12 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.ButtonWithTitle
+import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -305,14 +310,17 @@ fun QuickPicks(
                     .background(colorPalette.background0)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
+                    .border(BorderStroke(1.dp, Color.Yellow))
+                    /*
                     .padding(
                         windowInsets
                             .only(WindowInsetsSides.Vertical)
                             .asPaddingValues()
                     )
+                     */
             ) {
 
-                if (uiType == UiType.ViMusic)
+                //if (uiType == UiType.ViMusic)
                     HeaderWithIcon(
                         title = stringResource(R.string.quick_picks),
                         iconId = R.drawable.search,
@@ -322,6 +330,8 @@ fun QuickPicks(
                         onClick = onSearchClick
                     )
 
+
+                /*
                 if (showActionsBar)
                     Row(
                         horizontalArrangement = Arrangement.SpaceAround,
@@ -362,7 +372,7 @@ fun QuickPicks(
                             modifier = Modifier.weight(1f)
                         )
                     }
-
+                    */
 
                 BasicText(
                     text = stringResource(R.string.tips),
@@ -799,21 +809,22 @@ fun QuickPicks(
             }
 
 
+            /*
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,
                 onClickSettings = onSettingsClick,
                 onClickSearch = onSearchClick
             )
+             */
 
-            //if(uiType == UiType.ViMusic)
-            /*
-        FloatingActionsContainerWithScrollToTop(
-            scrollState = scrollState,
-            iconId = R.drawable.search,
-            onClick = onSearchClick
-        )
-         */
+            if(uiType == UiType.ViMusic)
+                FloatingActionsContainerWithScrollToTop(
+                    scrollState = scrollState,
+                    iconId = R.drawable.search,
+                    onClick = onSearchClick
+                )
+
 
 
 

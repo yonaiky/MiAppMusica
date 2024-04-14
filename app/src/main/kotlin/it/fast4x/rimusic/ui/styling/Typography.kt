@@ -23,6 +23,7 @@ data class Typography(
     val l: TextStyle,
     val xl: TextStyle,
     val xxl: TextStyle,
+    val xxxl: TextStyle,
 ) {
     fun copy(color: Color) = Typography(
         xxxs = xxs.copy(color = color),
@@ -32,7 +33,8 @@ data class Typography(
         m = m.copy(color = color),
         l = l.copy(color = color),
         xl = xl.copy(color = color),
-        xxl = xxl.copy(color = color)
+        xxl = xxl.copy(color = color),
+        xxxl = xxl.copy(color = color)
     )
 
     companion object : Saver<Typography, List<Any>> {
@@ -110,6 +112,7 @@ fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean
         m = textStyle.copy(fontSize = 18.sp),
         l = textStyle.copy(fontSize = 20.sp),
         xl = textStyle.copy(fontSize = 24.sp),
-        xxl = textStyle.copy(fontSize = 28.sp)
+        xxl = textStyle.copy(fontSize = 28.sp),
+        xxxl = textStyle.copy(fontSize = 36.sp)
     )
 }

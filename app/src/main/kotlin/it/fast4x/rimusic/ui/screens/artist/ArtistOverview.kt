@@ -168,11 +168,13 @@ fun ArtistOverview(
                     .background(colorPalette.background0)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
+                    /*
                     .padding(
                         windowInsets
                             .only(WindowInsetsSides.Vertical)
                             .asPaddingValues()
                     )
+                     */
             ) {
                 Box(
                     modifier = Modifier

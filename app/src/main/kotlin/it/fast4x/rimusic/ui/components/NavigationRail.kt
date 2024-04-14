@@ -40,9 +40,11 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarType
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -73,25 +75,29 @@ inline fun NavigationRail(
         .only(WindowInsetsSides.Vertical + WindowInsetsSides.Start).asPaddingValues()
 
     val navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
+    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(paddingValues)
-            //.border(BorderStroke(1.dp, Color.Green))
+            //.padding(paddingValues)
+            .border(BorderStroke(1.dp, Color.Green))
             //.fillMaxWidth()
     ) {
 
         if (hideTabs == false)
+        //if(uiType == UiType.ViMusic)
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
+                    /*
                     .size(
                         //width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,
                         width = Dimensions.navigationRailWidth,
                         height = if (showButton2) Dimensions.headerHeight else Dimensions.halfheaderHeight
                     )
+                     */
                     //.border(BorderStroke(1.dp, Color.Red))
             ) {
                 if (showButton1)
@@ -135,6 +141,7 @@ inline fun NavigationRail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .border(BorderStroke(1.dp,Color.Green))
                     //.width(if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth)
                     //.width(Dimensions.navigationRailWidth)
                     //.fillMaxWidth()

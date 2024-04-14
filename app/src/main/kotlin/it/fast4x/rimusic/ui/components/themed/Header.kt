@@ -190,10 +190,10 @@ fun HeaderWithIcon (
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .fillMaxSize(if(showIcon && uiType != UiType.ViMusic) 0.9f else 1f)
+                .fillMaxSize(if(showIcon && uiType == UiType.ViMusic) 0.9f else 1f)
         )
 
-        if (showIcon && uiType != UiType.ViMusic &&
+        if (showIcon && uiType == UiType.ViMusic &&
             (navigationBarPosition == NavigationBarPosition.Left
                     || navigationBarPosition == NavigationBarPosition.Right))
             SecondaryButton(
