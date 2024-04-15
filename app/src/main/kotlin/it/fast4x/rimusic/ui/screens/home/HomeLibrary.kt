@@ -186,7 +186,7 @@ fun HomeLibrary(
                 ?.use { inputStream ->
                     csvReader().open(inputStream) {
                         readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
-
+                            println("mediaItem index song ${index}")
                             transaction {
                                 plistId = row["PlaylistName"]?.let {
                                     Database.playlistExistByName(
@@ -203,7 +203,7 @@ fun HomeLibrary(
                                             )
                                         )
                                     }!!
-                                } else {
+                                }
                                     /**/
                                     if (row["MediaId"] != null && row["Title"] != null) {
                                         val song =
@@ -234,7 +234,7 @@ fun HomeLibrary(
 
                                     }
                                     /**/
-                                }
+
                             }
 
                         }
