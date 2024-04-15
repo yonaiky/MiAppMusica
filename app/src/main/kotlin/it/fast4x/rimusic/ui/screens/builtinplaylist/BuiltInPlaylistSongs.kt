@@ -1207,6 +1207,13 @@ fun BuiltInPlaylistSongs(
                 )
             }
 
+            item(
+                key = "footer",
+                contentType = 0,
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+
             }
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
