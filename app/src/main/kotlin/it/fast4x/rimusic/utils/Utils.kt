@@ -284,7 +284,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
         //println("mediaItem 1 loop continuation $continuationS songs ${songs.size}")
     }
 
-    if (songs.size < 100) {
+    if (songs.size <= 100) {
         //println("mediaItem 2 continuation ${playlistPage.songsPage?.continuation} songs ${songs.size}")
 
         var continuation = playlistPage.songsPage?.continuation
