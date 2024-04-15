@@ -697,6 +697,13 @@ fun PlaylistSongList(
                     )
                 }
 
+                item(
+                    key = "footer",
+                    contentType = 0,
+                ) {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
+
                 if (playlistPage == null) {
                     item(key = "loading") {
                         ShimmerHost(
