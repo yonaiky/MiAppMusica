@@ -11,8 +11,8 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.9.22")
-            version("compose-compiler", "1.5.8")
+            version("kotlin", "1.9.23")
+            version("compose-compiler", "1.5.11")
             version("compose", "1.6.1")
 
             plugin("kotlin-serialization","org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
