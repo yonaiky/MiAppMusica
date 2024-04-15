@@ -272,7 +272,8 @@ fun Thumbnail(
                 },
                 onDismiss = {
                     //player::prepare
-                    player.stop()
+                    //player.stop()
+                    player.seekToNext()
                 }
             )
         }
