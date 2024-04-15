@@ -414,20 +414,23 @@ fun HomeAlbums(
 */
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        //if(uiType == UiType.ViMusic)
+        if(uiType == UiType.ViMusic)
+            FloatingActionsContainerWithScrollToTop(
+                lazyListState = lazyListState,
+                iconId = R.drawable.search,
+                onClick = onSearchClick
+            )
+        /*
         MultiFloatingActionsContainer(
             iconId = R.drawable.search,
             onClick = onSearchClick,
             onClickSettings = onSettingsClick,
             onClickSearch = onSearchClick
         )
-        /*
-        FloatingActionsContainerWithScrollToTop(
-            lazyListState = lazyListState,
-            iconId = R.drawable.search,
-            onClick = onSearchClick
-        )
          */
+
+
+
 
 
     }

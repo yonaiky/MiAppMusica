@@ -132,7 +132,7 @@ fun ScaffoldTB(
                             BasicText(
                                 text = "Music",
                                 style = TextStyle(
-                                    fontSize = typography.xxxl.semiBold.fontSize,
+                                    fontSize = typography.xxl.semiBold.fontSize,
                                     fontWeight = typography.xxxl.semiBold.fontWeight,
                                     color = colorPalette.text
                                 ),

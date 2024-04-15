@@ -314,6 +314,21 @@ fun ArtistLocalSongs(
             }
 
             if(uiType == UiType.ViMusic)
+                FloatingActionsContainerWithScrollToTop(
+                    lazyListState = lazyListState,
+                    iconId = R.drawable.shuffle,
+                    onClick = {
+                        songs?.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(
+                                    songs.shuffled().map(Song::asMediaItem)
+                                )
+                            }
+                        }
+                    }
+                )
+                /*
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {
@@ -329,22 +344,11 @@ fun ArtistLocalSongs(
                     onClickSettings = onSettingsClick,
                     onClickSearch = onSearchClick
                 )
-            /*
-            FloatingActionsContainerWithScrollToTop(
-                lazyListState = lazyListState,
-                iconId = R.drawable.shuffle,
-                onClick = {
-                    songs?.let { songs ->
-                        if (songs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Song::asMediaItem)
-                            )
-                        }
-                    }
-                }
-            )
-             */
+
+                 */
+
+
+
 
 
         }
