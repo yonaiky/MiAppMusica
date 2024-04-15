@@ -44,6 +44,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -52,7 +53,6 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -72,6 +72,8 @@ fun ArtistLocalSongs(
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val binder = LocalPlayerServiceBinder.current
     val (colorPalette) = LocalAppearance.current
@@ -124,7 +126,6 @@ fun ArtistLocalSongs(
     }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -132,7 +133,10 @@ fun ArtistLocalSongs(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
         ) {
             LazyColumn(
                 state = lazyListState,
@@ -310,6 +314,22 @@ fun ArtistLocalSongs(
             }
 
             if(uiType == UiType.ViMusic)
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.shuffle,
+                    onClick = {
+                        songs?.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(
+                                    songs.shuffled().map(Song::asMediaItem)
+                                )
+                            }
+                        }
+                    },
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
+            /*
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
@@ -324,6 +344,7 @@ fun ArtistLocalSongs(
                     }
                 }
             )
+             */
 
 
         }

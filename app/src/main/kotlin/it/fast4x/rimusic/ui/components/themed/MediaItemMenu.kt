@@ -335,16 +335,54 @@ fun QueuedMediaItemMenu(
 ) {
     val binder = LocalPlayerServiceBinder.current
 
-    BaseMediaItemMenu(
-        mediaItem = mediaItem,
-        onDismiss = onDismiss,
-        onDownload = onDownload,
-        onRemoveFromQueue = if (indexInQueue != null) ({
-            binder?.player?.removeMediaItem(indexInQueue)
-        }) else null,
-        onPlayNext = { binder?.player?.addNext(mediaItem) },
-        modifier = modifier
+    val menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
     )
+
+    if (menuStyle == MenuStyle.Grid) {
+        BaseMediaItemGridMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onDownload = onDownload,
+            onRemoveFromQueue = if (indexInQueue != null) ({
+                binder?.player?.removeMediaItem(indexInQueue)
+            }) else null,
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            modifier = modifier
+        )
+    } else {
+        BaseMediaItemMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss,
+            onDownload = onDownload,
+            onRemoveFromQueue = if (indexInQueue != null) ({
+                binder?.player?.removeMediaItem(indexInQueue)
+            }) else null,
+            onPlayNext = { binder?.player?.addNext(mediaItem) },
+            onStartRadio = {
+                binder?.stopRadio()
+                binder?.player?.forcePlay(mediaItem)
+                binder?.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = mediaItem.mediaId,
+                        playlistId = mediaItem.mediaMetadata.extras?.getString("playlistId")
+                    )
+                )
+            },
+            modifier = modifier
+        )
+    }
 }
 
 @ExperimentalTextApi

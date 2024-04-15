@@ -350,6 +350,7 @@ fun Lyrics(
             }
         }
 
+        /*
         AsyncImage(
             model = player?.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(
                 Dimensions.thumbnails.song.px
@@ -363,6 +364,7 @@ fun Lyrics(
                 .fillMaxSize(0.9f)
                 .aspectRatio(1f)
         )
+         */
 
         Box(
             contentAlignment = Alignment.Center,
@@ -414,8 +416,8 @@ fun Lyrics(
                         .fillMaxWidth()
                 )
                 BasicText(
-                    text = "${stringResource(R.string.click_to_switch_to)} ${if(isShowingSynchronizedLyrics) stringResource(R.string.synchronized_lyrics) else stringResource(
-                        R.string.unsynchronized_lyrics)}",
+                    text = "${stringResource(R.string.click_to_switch_to)} ${if(isShowingSynchronizedLyrics) stringResource(R.string.unsynchronized_lyrics) else stringResource(
+                        R.string.synchronized_lyrics)}",
                     style = typography.xs.center.bold.color(PureBlackColorPalette.text),
                     modifier = Modifier
                         .background(Color.Black.copy(0.4f))

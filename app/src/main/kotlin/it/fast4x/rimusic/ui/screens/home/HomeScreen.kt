@@ -26,6 +26,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.toUiMood
@@ -38,6 +39,8 @@ import it.fast4x.rimusic.ui.screens.builtInPlaylistRoute
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.deviceListSongRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.history.HistoryScreen
+import it.fast4x.rimusic.ui.screens.historyRoute
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.localPlaylistRoute
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
@@ -56,10 +59,12 @@ import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.homeScreenTabIndexKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
+import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 
 const val PINNED_PREFIX = "pinned:"
 
@@ -84,6 +89,7 @@ fun HomeScreen(
 
     val preferences = LocalContext.current.preferences
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     PersistMapCleanup("home/")
 
@@ -107,6 +113,10 @@ fun HomeScreen(
 
         settingsRoute {
             SettingsScreen()
+        }
+
+        historyRoute {
+            HistoryScreen()
         }
 
         localPlaylistRoute { playlistId ->
@@ -197,9 +207,10 @@ fun HomeScreen(
             Scaffold(
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },
+                showButton1 = false,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
-                showButton2 = false,
+                showButton2 = false, //showStatsInNavbar,
                 showBottomButton = showSearchTab,
                 onBottomIconButtonClick = { searchRoute("") },
                 tabIndex = tabIndex,
@@ -225,20 +236,26 @@ fun HomeScreen(
                             onPlaylistClick = { playlistRoute(it) },
                             onSearchClick = { searchRoute("") },
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
+                            onSettingsClick = { settingsRoute() },
+                            onHistoryClick = { historyRoute() },
+                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
                         )
 
                         1 -> HomeSongs(
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         2 -> HomeArtistList(
                             onArtistClick = { artistRoute(it.id) },
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         3 -> HomeAlbums(
                             onAlbumClick = { albumRoute(it.id) },
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         4 -> HomeLibrary(
@@ -246,15 +263,17 @@ fun HomeScreen(
                             onPlaylistClick = { localPlaylistRoute(it.id) },
                             onSearchClick = { searchRoute("") },
                             onDeviceListSongsClick = { deviceListSongRoute("") },
-                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
+                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
+                            onSettingsClick = { settingsRoute() }
 
                         )
-
+                        /*
                         5 -> HomeDiscovery(
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
                             onNewReleaseAlbumClick = { albumRoute(it) },
                             onSearchClick = { searchRoute("") }
                         )
+                         */
 
                         //6 -> HomeEqualizer( )
                         /*

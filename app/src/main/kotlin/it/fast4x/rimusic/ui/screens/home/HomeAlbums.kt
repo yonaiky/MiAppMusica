@@ -18,9 +18,15 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -46,29 +52,34 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
+import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
+import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlin.random.Random
 
 @ExperimentalTextApi
 @UnstableApi
@@ -79,6 +90,7 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 fun HomeAlbums(
     onAlbumClick: (Album) -> Unit,
     onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
@@ -102,9 +114,7 @@ fun HomeAlbums(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 /*
     var showSortTypeSelectDialog by remember {
         mutableStateOf(false)
@@ -122,13 +132,161 @@ fun HomeAlbums(
         animationSpec = tween(durationMillis = 300), label = ""
     )
 
+    val lazyGridState = rememberLazyGridState()
+
     Box (
         modifier = Modifier
         .background(colorPalette.background0)
         //.fillMaxSize()
         .fillMaxHeight()
-        .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+        .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+            navigationBarPosition == NavigationBarPosition.Top ||
+            navigationBarPosition == NavigationBarPosition.Bottom) 1f
+        else Dimensions.contentWidthRightBar)
     ) {
+
+
+        LazyVerticalGrid(
+            state = lazyGridState,
+            columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            modifier = Modifier
+                .background(colorPalette.background0)
+                .fillMaxSize()
+        ) {
+            item(
+                key = "header",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+                HeaderWithIcon(
+                    title = stringResource(R.string.albums),
+                    iconId = R.drawable.search,
+                    enabled = true,
+                    showIcon = !showSearchTab,
+                    modifier = Modifier,
+                    onClick = onSearchClick
+                )
+
+            }
+            item(
+                key = "filter",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+
+
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 20.dp)
+                        .fillMaxWidth()
+                ){
+                    HeaderInfo(
+                        title = "${items.size}",
+                        icon = painterResource(R.drawable.album),
+                        spacer = 0
+                    )
+
+                    HeaderIconButton(
+                        modifier = Modifier.rotate(rotationAngle),
+                        icon = R.drawable.dice,
+                        enabled = items.isNotEmpty() ,
+                        color = colorPalette.text,
+                        onClick = {
+                            isRotated = !isRotated
+                            //onAlbumClick(items.get((0..<items.size).random()))
+                            onAlbumClick(items.get(
+                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
+                            ))
+                        },
+                        iconSize = 16.dp
+                    )
+
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
+
+
+                    BasicText(
+                        text = when (sortBy) {
+                            AlbumSortBy.Title -> stringResource(R.string.sort_title)
+                            AlbumSortBy.Year -> stringResource(R.string.sort_year)
+                            AlbumSortBy.DateAdded -> stringResource(R.string.sort_date_added)
+                        },
+                        style = typography.xs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .clickable {
+                                menuState.display{
+                                    SortMenu(
+                                        title = stringResource(R.string.sorting_order),
+                                        onDismiss = menuState::hide,
+                                        onTitle = { sortBy = AlbumSortBy.Title },
+                                        onYear = { sortBy = AlbumSortBy.Year },
+                                        onDateAdded = { sortBy = AlbumSortBy.DateAdded },
+                                    )
+                                }
+                                //showSortTypeSelectDialog = true
+                            }
+                    )
+
+                    HeaderIconButton(
+                        icon = R.drawable.arrow_up,
+                        color = colorPalette.text,
+                        onClick = { sortOrder = !sortOrder },
+                        modifier = Modifier
+                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                    )
+                }
+            }
+
+            items(
+                items = items,
+                key = Album::id
+            ) { album ->
+                AlbumItem(
+                    alternative = true,
+                    album = album,
+                    thumbnailSizePx = thumbnailSizePx,
+                    thumbnailSizeDp = thumbnailSizeDp,
+                    modifier = Modifier
+                        .combinedClickable(
+                            /*
+                            onLongClick = {
+                                menuState.display {
+                                    AlbumsItemMenu(
+                                        onDismiss = menuState::hide,
+                                        album = album
+                                    )
+                                }
+                            },
+                             */
+                            onClick = {
+                                onAlbumClick(album)
+                            }
+                        )
+
+                        .animateItemPlacement()
+                )
+            }
+
+            item(
+                key = "footer",
+                contentType = 0,
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
+
+
+        /****************/
+/*
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
@@ -245,16 +403,31 @@ fun HomeAlbums(
                         .animateItemPlacement()
                 )
             }
-        }
 
+            item(
+                key = "footer",
+                contentType = 0,
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
+*/
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyListState = lazyListState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
 
     }

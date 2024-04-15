@@ -360,6 +360,7 @@ fun Queue(
                     .background(colorPalette.background1)
                     .weight(1f)
             ) {
+                /*
                 Box(
                     modifier = Modifier
                         .drawBehind { drawRect(backgroundColorProvider()) }
@@ -378,7 +379,7 @@ fun Queue(
                                 .size(30.dp)
                         )
                 }
-
+                */
                 LazyColumn(
                     state = reorderingState.lazyListState,
                     contentPadding = windowInsets

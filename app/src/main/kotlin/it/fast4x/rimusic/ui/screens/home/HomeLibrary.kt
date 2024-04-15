@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -70,6 +71,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.globalRoutes
@@ -81,7 +83,6 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
@@ -108,7 +109,8 @@ fun HomeLibrary(
     onPlaylistClick: (Playlist) -> Unit,
     onDeviceListSongsClick: () -> Unit,
     onSearchClick: () -> Unit,
-    onStatisticsClick: () -> Unit
+    onStatisticsClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -246,7 +248,6 @@ fun HomeLibrary(
     )
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val lazyGridState = rememberLazyGridState()
 
@@ -266,7 +267,10 @@ fun HomeLibrary(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
@@ -303,11 +307,13 @@ fun HomeLibrary(
                             .fillMaxSize()
                     ) {
 
+                        /*
                         HeaderIconButton(
                             icon = R.drawable.stats_chart,
                             color = colorPalette.text,
                             onClick = { onStatisticsClick() }
                         )
+                         */
 
                         /*
                         HeaderInfo(
@@ -560,17 +566,32 @@ fun HomeLibrary(
                             .fillMaxSize()
                     )
                 }
+                item(
+                    key = "footer",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyGridState = lazyGridState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
 
     }

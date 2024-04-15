@@ -115,8 +115,8 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.OnDeviceBlacklist
 import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -339,14 +339,16 @@ fun DeviceListSongs(
         val showSearchTab by rememberPreference(showSearchTabKey, false)
 
         val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-        val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
         Box(
             modifier = Modifier
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
         ) {
         LazyColumn(
             state = lazyListState,
@@ -613,6 +615,15 @@ fun DeviceListSongs(
                                         listMediaItems.clear()
                                     },
                                      */
+                                    onPlayNext = {
+                                        if (listMediaItems.isEmpty()) {
+                                            binder?.player?.addNext(filteredSongs.map(Song::asMediaItem))
+                                        } else {
+                                            binder?.player?.addNext(listMediaItems)
+                                            listMediaItems.clear()
+                                            selectItems = false
+                                        }
+                                    },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
                                             binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem))
@@ -865,6 +876,8 @@ fun DeviceListSongs(
                             },
                             onClick = {
                                 if (!selectItems) {
+                                    searching = false
+                                    filter = null
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayAtIndex(
                                         filteredSongs.map(Song::asMediaItem),

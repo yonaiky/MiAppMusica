@@ -747,7 +747,7 @@ fun MediaItemGridMenu (
                 onPlayNext?.let { onPlayNext ->
                     GridMenuItem(
                         icon = R.drawable.play_skip_forward,
-                        title = R.string.enqueue,
+                        title = R.string.play_next,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {

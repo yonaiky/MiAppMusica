@@ -100,7 +100,6 @@ const val showButtonPlayerSystemEqualizerKey = "showButtonPlayerSystemEqualizer"
 const val disableClosingPlayerSwipingDownKey = "disableClosingPlayerSwipingDown"
 const val showSearchTabKey = "showSearchTab"
 const val MaxTopPlaylistItemsKey = "MaxTopPlaylistItems"
-const val contentWidthKey = "0.8f"
 const val navigationBarPositionKey = "navigationBarPosition"
 const val navigationBarTypeKey = "navigationBarType"
 const val pauseBetweenSongsKey = "pauseBetweenSongs"
@@ -125,6 +124,7 @@ const val clickLyricsTextKey = "clickLyricsText"
 const val defaultFolderKey = "defaultFolder"
 const val menuStyleKey = "menuStyle"
 const val shakeEventEnabledKey = "shakeEventEnabled"
+const val showStatsInNavbarKey = "showStatsInNavbar"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

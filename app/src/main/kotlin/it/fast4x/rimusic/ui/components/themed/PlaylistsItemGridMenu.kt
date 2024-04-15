@@ -74,6 +74,7 @@ fun PlaylistsItemGridMenu(
     onUncheck: (() -> Unit)? = null,
     playlist: PlaylistPreview? = null,
     modifier: Modifier = Modifier,
+    onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onImportOnlinePlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
@@ -289,6 +290,19 @@ fun PlaylistsItemGridMenu(
                         onClick = {
                             onDismiss()
                             onSelectUnselect()
+                        }
+                    )
+                }
+
+                onPlayNext?.let { onPlayNext ->
+                    GridMenuItem(
+                        icon = R.drawable.play_skip_forward,
+                        title = R.string.play_next,
+                        colorIcon = colorPalette.text,
+                        colorText = colorPalette.text,
+                        onClick = {
+                            onDismiss()
+                            onPlayNext()
                         }
                     )
                 }

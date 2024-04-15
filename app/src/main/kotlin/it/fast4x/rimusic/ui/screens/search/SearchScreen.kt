@@ -187,7 +187,10 @@ fun SearchScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                        pop()
+                            },
                         )
 
                         1 -> LocalSongSearch(
@@ -197,7 +200,10 @@ fun SearchScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                pop()
+                            },
                         )
 
                         2 -> GoToLink(
@@ -207,7 +213,10 @@ fun SearchScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                pop()
+                            },
                         )
                     }
                 }

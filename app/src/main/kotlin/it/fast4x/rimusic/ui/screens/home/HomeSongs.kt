@@ -83,6 +83,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -95,7 +96,6 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
@@ -122,7 +122,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 @UnstableApi
 @Composable
 fun HomeSongs(
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -191,7 +192,6 @@ fun HomeSongs(
 
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val lazyListState = rememberLazyListState()
 
@@ -203,7 +203,11 @@ fun HomeSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else Dimensions.contentWidthRightBar)
+            .fillMaxWidth( if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyColumn(
             state = lazyListState,
@@ -495,6 +499,8 @@ fun HomeSongs(
                                 }
                             },
                             onClick = {
+                                searching = false
+                                filter = null
                                 val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
@@ -510,12 +516,20 @@ fun HomeSongs(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyListState = lazyListState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
 
 
     }

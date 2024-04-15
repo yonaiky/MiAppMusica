@@ -25,6 +25,7 @@ import io.ktor.client.plugins.UserAgent
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
+import it.fast4x.innertube.requests.playlistPageLong
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.plus
 //import it.fast4x.rimusic.BuildConfig
@@ -45,11 +46,28 @@ import org.json.JSONException
 import java.io.File
 import java.net.InetSocketAddress
 import java.net.Proxy
+import java.text.SimpleDateFormat
 import java.time.Duration
+import java.util.Date
 import java.util.Formatter
 import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
+fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
+    try {
+        return SimpleDateFormat("dd/MM/yyyy").format(Date(dateAsLongInMs))
+    } catch (e: Exception) {
+        return null // parsing exception
+    }
+}
+
+fun getTimestampFromDate(date: String): Long {
+    return try {
+        SimpleDateFormat("dd-MM-yyyy").parse(date).time
+    } catch (e: Exception) {
+        return 0
+    }
+}
 
 fun songToggleLike( song: Song ) {
     query {
@@ -244,6 +262,92 @@ fun TimeToString(timeMs: Int): String {
     }
 }
 
+
+// NEW RESULT PLAYLIST OR ALBUM PAGE WITH TEMPORARILY WORKING WORKAROUND
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
+    maxDepth: Int = Int.MAX_VALUE
+): Result<Innertube.PlaylistOrAlbumPage>? {
+
+    var playlistPage = getOrNull() ?: return null
+    var songs = playlistPage.songsPage?.items.orEmpty().toMutableList()
+
+    var continuationS = playlistPage.songsPage?.continuation
+
+    //println("mediaItem 1 continuation $continuationS songs ${songs.size}")
+
+    while (continuationS != null) {
+        val newSongs = Innertube.playlistPage(
+            body = ContinuationBody(continuation = continuationS)
+        ).getOrNull()
+
+        continuationS = newSongs?.continuation
+        //println("mediaItem 1 loop continuation $continuationS songs ${songs.size}")
+    }
+
+    if (songs.size < 100) {
+        //println("mediaItem 2 continuation ${playlistPage.songsPage?.continuation} songs ${songs.size}")
+
+        var continuation = playlistPage.songsPage?.continuation
+        while (continuation != null) {
+            val otherPlaylistPageResult =
+                Innertube.playlistPageLong(ContinuationBody(continuation = continuation))
+
+            //if (otherPlaylistPageResult.isFailure) break
+
+            otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
+                /*
+                playlistPage =
+                    playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
+                 */
+                otherSongsPage.items?.forEach {
+                    songs.add(it)
+                }
+                continuation = otherSongsPage.continuation
+            }
+
+            if (songs.size > 1000) break
+            //println("mediaItem 2 loop continuation ${continuation} songs ${songs.size}")
+        }
+    }
+    /* **** */
+
+
+    return Result.success(
+        playlistPage.copy(
+            songsPage = Innertube.ItemsPage(
+                items = songs.distinct().toList(),
+                continuation = null
+            )
+        )
+    )
+
+    //return Result.success(playlistPage)
+
+}
+
+
+//fix loading playlist with much songs
+/*
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
+    var playlistPage = getOrNull() ?: return null
+
+    while (playlistPage.songsPage?.continuation != null) {
+        val continuation = playlistPage.songsPage?.continuation!!
+        val otherPlaylistPageResult = Innertube.playlistPage(ContinuationBody(continuation = continuation)) ?: break
+
+        if (otherPlaylistPageResult.isFailure) break
+
+        otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
+            playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
+        }
+    }
+
+    return Result.success(playlistPage)
+}
+*/
+
+/*
+// fix loading playlist in infinity loop
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     maxDepth: Int = Int.MAX_VALUE
 ) = runCatching {
@@ -271,6 +375,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
         )
     )
 }
+*/
 
 /*
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(

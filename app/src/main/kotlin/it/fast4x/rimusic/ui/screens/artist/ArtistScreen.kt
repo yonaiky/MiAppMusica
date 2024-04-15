@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import com.valentinilk.shimmer.shimmer
@@ -36,7 +37,9 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -53,7 +56,14 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.homeRoute
+import it.fast4x.rimusic.ui.screens.search.SearchScreen
+import it.fast4x.rimusic.ui.screens.searchResultRoute
+import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
+import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
+import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -61,9 +71,13 @@ import it.fast4x.rimusic.utils.artistScreenTabIndexKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.pauseSearchHistoryKey
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -80,7 +94,10 @@ import kotlinx.coroutines.withContext
 fun ArtistScreen(browseId: String) {
     //val saveableStateHolder = rememberSaveableStateHolder()
 
-    var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
+    //var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
+    var tabIndex by remember {
+        mutableStateOf(0)
+    }
 
     PersistMapCleanup(tagPrefix = "artist/$browseId/")
 
@@ -93,6 +110,13 @@ fun ArtistScreen(browseId: String) {
     }
     val context = LocalContext.current
 
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+    var changeShape by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         Database
@@ -126,12 +150,45 @@ fun ArtistScreen(browseId: String) {
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
 
+        settingsRoute {
+            SettingsScreen()
+        }
+
+        searchResultRoute { query ->
+            SearchResultScreen(
+                query = query,
+                onSearchAgain = {
+                    searchRoute(query)
+                }
+            )
+        }
+
+        searchRoute { initialTextInput ->
+            SearchScreen(
+                initialTextInput = initialTextInput,
+                onSearch = { query ->
+                    pop()
+                    searchResultRoute(query)
+
+                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                        query {
+                            Database.insert(SearchQuery(query = query))
+                        }
+                    }
+                },
+                onViewPlaylist = {}, //onPlaylistUrl,
+                onDismiss = { homeRoute::global }
+            )
+        }
+
         host {
             val thumbnailContent =
                 adaptiveThumbnailContent(
                     artist?.timestamp == null,
                     artist?.thumbnailUrl,
-                    CircleShape
+                    //CircleShape
+                    onClick = { changeShape = !changeShape },
+                    shape = if (!changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
@@ -220,7 +277,7 @@ fun ArtistScreen(browseId: String) {
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.overview), R.drawable.sparkles)
+                    Item(0, stringResource(R.string.overview), R.drawable.artist)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(2, stringResource(R.string.albums), R.drawable.album)
                     Item(3, stringResource(R.string.singles), R.drawable.disc)
@@ -238,6 +295,8 @@ fun ArtistScreen(browseId: String) {
                                 onViewAllSongsClick = { tabIndex = 1 },
                                 onViewAllAlbumsClick = { tabIndex = 2 },
                                 onViewAllSinglesClick = { tabIndex = 3 },
+                                onSearchClick = { searchRoute("") },
+                                onSettingsClick = { settingsRoute() }
                             )
                         }
 
@@ -246,7 +305,7 @@ fun ArtistScreen(browseId: String) {
                             val menuState = LocalMenuState.current
                             val thumbnailSizeDp = Dimensions.thumbnails.song
                             val thumbnailSizePx = thumbnailSizeDp.px
-
+                            val listMediaItems = remember { mutableListOf<MediaItem>() }
                             ItemsPage(
                                 tag = "artist/$browseId/songs",
                                 headerContent = headerContent,
@@ -278,7 +337,7 @@ fun ArtistScreen(browseId: String) {
                                     })
                                 },
                                 itemContent = { song ->
-
+                                    listMediaItems.add(song.asMediaItem)
                                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                                     val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                                     SongItem(
@@ -319,35 +378,15 @@ fun ArtistScreen(browseId: String) {
                                                     }
                                                 },
                                                 onClick = {
-
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        listMediaItems,
+                                                        listMediaItems.indexOf(song.asMediaItem)
+                                                    )
+                                                    /*
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
-
-                                                    /*
-                                                    binder?.setRadioMediaItems(song.info?.endpoint)
-                                                    binder?.player?.currentTimeline?.mediaItems
-                                                        //.map(Song::asMediaItem)
-                                                        .let { mediaItems ->
-                                                            var i = -1
-                                                            mediaItems?.forEachIndexed{index, mediaItem ->
-                                                                if (mediaItem.mediaId == song.asMediaItem.mediaId)
-                                                                    i = index
-                                                            }
-                                                            binder?.stopRadio()
-                                                            if (mediaItems != null) {
-                                                                binder?.player?.forcePlayAtIndex(
-                                                                    mediaItems,
-                                                                    i
-                                                                )
-                                                            }
-                                                        }
-                                                     */
-                                                    /*
-                                                    binder?.player?.playAtMedia(
-                                                        binder.player.currentTimeline.mediaItems,
-                                                        song.asMediaItem.mediaId
-                                                    )
                                                      */
                                                 }
                                             )
@@ -464,6 +503,8 @@ fun ArtistScreen(browseId: String) {
                                 browseId = browseId,
                                 headerContent = headerContent,
                                 thumbnailContent = thumbnailContent,
+                                onSearchClick = { searchRoute("") },
+                                onSettingsClick = { settingsRoute() }
                             )
                         }
                     }

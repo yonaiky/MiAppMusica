@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -37,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import it.fast4x.innertube.Innertube
@@ -56,6 +59,7 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -69,9 +73,9 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
@@ -98,6 +102,8 @@ fun ArtistOverview(
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
 ) {
@@ -142,7 +148,8 @@ fun ArtistOverview(
     val languageDestination = languageDestination()
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+
+    val listMediaItems = remember { mutableListOf<MediaItem>() }
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -150,7 +157,10 @@ fun ArtistOverview(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -270,7 +280,8 @@ fun ArtistOverview(
                     BasicText(
                         text = String.format(stringResource(R.string.artist_subscribers),it),
                         style = typography.xs.semiBold,
-                        maxLines = 1
+                        maxLines = 1,
+                        modifier = Modifier.padding(top = 10.dp)
                     )
                 }
 
@@ -292,15 +303,15 @@ fun ArtistOverview(
                             youtubeArtistPage.songsEndpoint?.let {
                                 BasicText(
                                     text = stringResource(R.string.view_all),
-                                    style = typography.xs.secondary,
+                                    style = typography.xs.semiBold,
                                     modifier = sectionTextModifier
                                         .clickable(onClick = onViewAllSongsClick),
                                 )
                             }
                         }
 
-                        songs.forEach { song ->
-
+                        songs.forEachIndexed { index, song ->
+                            listMediaItems.add(song.asMediaItem)
                             downloadState = getDownloadState(song.asMediaItem.mediaId)
                             val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                             SongItem(
@@ -341,12 +352,19 @@ fun ArtistOverview(
                                             }
                                         },
                                         onClick = {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                listMediaItems,
+                                                index
+                                            )
+                                            /*
                                             val mediaItem = song.asMediaItem
                                             binder?.stopRadio()
                                             binder?.player?.forcePlay(mediaItem)
                                             binder?.setupRadio(
                                                 NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
                                             )
+                                             */
                                         }
                                     )
                                     .padding(endPaddingValues)
@@ -441,6 +459,7 @@ fun ArtistOverview(
                                         .clickable(onClick = { onAlbumClick(album.key) })
                                 )
                             }
+
                         }
                     }
 
@@ -556,16 +575,27 @@ fun ArtistOverview(
             }
 
             if(uiType == UiType.ViMusic)
-            youtubeArtistPage?.radioEndpoint?.let { endpoint ->
-                FloatingActionsContainerWithScrollToTop(
-                    scrollState = scrollState,
-                    iconId = R.drawable.radio,
-                    onClick = {
-                        binder?.stopRadio()
-                        binder?.playRadio(endpoint)
-                    }
-                )
-            }
+                youtubeArtistPage?.radioEndpoint?.let { endpoint ->
+                    MultiFloatingActionsContainer(
+                        iconId = R.drawable.radio,
+                        onClick = {
+                            binder?.stopRadio()
+                            binder?.playRadio(endpoint)
+                        },
+                        onClickSettings = onSettingsClick,
+                        onClickSearch = onSearchClick
+                    )
+                    /*
+                    FloatingActionsContainerWithScrollToTop(
+                        scrollState = scrollState,
+                        iconId = R.drawable.radio,
+                        onClick = {
+                            binder?.stopRadio()
+                            binder?.playRadio(endpoint)
+                        }
+                    )
+                     */
+                }
 
 
         }

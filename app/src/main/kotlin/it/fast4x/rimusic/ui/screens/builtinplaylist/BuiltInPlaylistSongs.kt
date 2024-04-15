@@ -147,7 +147,7 @@ import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.RightActions
-import it.fast4x.rimusic.utils.contentWidthKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -437,7 +437,6 @@ fun BuiltInPlaylistSongs(
     }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
@@ -446,7 +445,10 @@ fun BuiltInPlaylistSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyColumn(
             state = lazyListState,
@@ -726,6 +728,15 @@ fun BuiltInPlaylistSongs(
                                         listMediaItems.clear()
                                     },
                                      */
+                                    onPlayNext = {
+                                        if (listMediaItems.isEmpty()) {
+                                            binder?.player?.addNext(songs.map(Song::asMediaItem))
+                                        } else {
+                                            binder?.player?.addNext(listMediaItems)
+                                            listMediaItems.clear()
+                                            selectItems = false
+                                        }
+                                    },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
                                             binder?.player?.enqueue(songs.map(Song::asMediaItem))
@@ -1127,6 +1138,8 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
+                                            searching = false
+                                            filter = null
                                             val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(

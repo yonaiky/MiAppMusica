@@ -12,8 +12,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 27
-        versionName = "0.6.29"
+        versionCode = 28
+        versionName = "0.6.30"
         //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 
@@ -112,14 +112,16 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.media3:media3-datasource-okhttp:1.3.0")
     implementation("androidx.media:media:1.7.0")
-    implementation("androidx.compose.material:material:1.6.3")
+    implementation("androidx.compose.material:material:1.6.5")
     implementation("androidx.compose.material3:material3-android:1.2.1")
     implementation("com.github.therealbush:translator:1.0.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
     implementation("com.github.lincollincol:compose-audiowaveform:1.1.1")
     //implementation("com.github.lincollincol:amplituda:2.2.2")
-
-
+    implementation("com.github.KieronQuinn:MonetCompat:0.4.1")
+    implementation("androidx.palette:palette:1.0.0")
+    implementation("com.google.android.material:material:1.12.0-rc01")
+    
     //End
     coreLibraryDesugaring(libs.desugaring)
 }

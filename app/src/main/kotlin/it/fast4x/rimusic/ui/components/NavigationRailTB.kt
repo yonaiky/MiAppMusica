@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,6 +53,7 @@ import it.fast4x.rimusic.utils.semiBold
 inline fun NavigationRailTB(
     topIconButtonId: Int,
     noinline onTopIconButtonClick: () -> Unit,
+    showButton1: Boolean = true,
     topIconButton2Id: Int,
     noinline onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
@@ -64,7 +66,7 @@ inline fun NavigationRailTB(
     hideTabs: Boolean? = false,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
+    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     /*
     val isLandscape = isLandscape
@@ -81,7 +83,7 @@ inline fun NavigationRailTB(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val localSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (localSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer else bottomDp
+    val bottomPadding = if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
     val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
 
     Column(
@@ -91,14 +93,16 @@ inline fun NavigationRailTB(
             //.padding(top = 30.dp)
             .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
             .background(colorPalette.background0)
+
     ) {
 
         if (hideTabs == false)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(Dimensions.navigationBarHeight)
             ) {
                 val transition = updateTransition(targetState = tabIndex, label = null)
 
@@ -129,26 +133,29 @@ inline fun NavigationRailTB(
                             } else {
                                 Column (
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.SpaceBetween,
+                                    verticalArrangement = Arrangement.SpaceAround,
+                                    modifier = Modifier
+                                        .padding(all = 5.dp)
+                                        .fillMaxSize()
                                 ){
                                     Image(
                                         painter = painterResource(icon),
                                         contentDescription = null,
                                         colorFilter = ColorFilter.tint(textColor),
                                         modifier = Modifier
-                                            .size(Dimensions.navigationRailIconOffset * 2)
+                                            .size(Dimensions.navigationRailIconOffset * 3)
                                     )
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    BasicText(
-                                        text = text,
-                                        style = TextStyle(
-                                            fontSize = typography.xs.semiBold.fontSize,
-                                            fontWeight = typography.xs.semiBold.fontWeight,
-                                            color = textColor,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        BasicText(
+                                            text = text,
+                                            style = TextStyle(
+                                                fontSize = typography.s.semiBold.fontSize,
+                                                fontWeight = typography.s.semiBold.fontWeight,
+                                                color = textColor,
+                                            ),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
                                 }
                             }
                         }
@@ -175,6 +182,30 @@ inline fun NavigationRailTB(
                         it()
                     }
 
+                   if (showButton1)
+                       Image(
+                           painter = painterResource(topIconButtonId),
+                           contentDescription = null,
+                           colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                           modifier = Modifier
+                               .clip(CircleShape)
+                               .clickable(onClick = onTopIconButtonClick)
+                               .padding(all = 4.dp)
+                               .size(24.dp)
+                       )
+
+                    if (showButton2)
+                        Image(
+                            painter = painterResource(topIconButton2Id),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable(onClick = onTopIconButton2Click)
+                                .padding(all = 4.dp)
+                                .size(24.dp)
+                        )
+
 
                     if (showBottomButton == true)
                         Image(
@@ -186,30 +217,6 @@ inline fun NavigationRailTB(
                                 .padding(all = 4.dp)
                                 .size(24.dp)
                         )
-
-                    if (showButton2) {
-                        Image(
-                            painter = painterResource(topIconButton2Id),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .clickable(onClick = onTopIconButton2Click)
-                                .padding(all = 4.dp)
-                                .size(20.dp)
-                        )
-                    }
-                    Image(
-                        painter = painterResource(topIconButtonId),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable(onClick = onTopIconButtonClick)
-                            .padding(all = 4.dp)
-                            .size(20.dp)
-                    )
-
 
                 }
 

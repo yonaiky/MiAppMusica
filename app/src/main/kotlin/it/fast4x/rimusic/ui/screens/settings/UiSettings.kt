@@ -79,6 +79,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
@@ -89,7 +90,6 @@ import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -201,7 +202,7 @@ fun  UiSettings() {
     var isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
     var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
     var showSearchTab by rememberPreference(showSearchTabKey, false)
-
+    var showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     var maxStatisticsItems by rememberPreference(
         maxStatisticsItemsKey,
@@ -216,7 +217,6 @@ fun  UiSettings() {
     )
 
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
@@ -249,7 +249,13 @@ fun  UiSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current
@@ -660,6 +666,7 @@ fun  UiSettings() {
                         ColorPaletteName.Dynamic -> stringResource(R.string.dynamic)
                         ColorPaletteName.PureBlack -> ColorPaletteName.PureBlack.name
                         ColorPaletteName.ModernBlack -> ColorPaletteName.ModernBlack.name
+                        ColorPaletteName.MaterialYou -> stringResource(R.string.theme_material_you)
                     }
                 }
             )
@@ -746,6 +753,7 @@ fun  UiSettings() {
                 }
             )
 
+        
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.show_search_tab_in_home),
@@ -753,6 +761,17 @@ fun  UiSettings() {
                 isChecked = showSearchTab,
                 onCheckedChange = { showSearchTab = it }
             )
+
+        /*
+        if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "Show statistics in navigation bar",
+                text = "",
+                isChecked = showStatsInNavbar,
+                onCheckedChange = { showStatsInNavbar = it }
+            )
+         */
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.settings_use_font_type).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(

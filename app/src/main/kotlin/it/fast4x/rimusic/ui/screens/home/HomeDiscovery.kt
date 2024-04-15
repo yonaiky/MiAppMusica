@@ -69,7 +69,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -121,9 +120,7 @@ fun HomeDiscovery(
         Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
 
-    val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
@@ -147,7 +144,10 @@ fun HomeDiscovery(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets

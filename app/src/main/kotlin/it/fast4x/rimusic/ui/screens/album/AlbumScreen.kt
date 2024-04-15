@@ -44,7 +44,9 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
+import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
@@ -240,7 +242,9 @@ fun AlbumScreen(browseId: String) {
                         0 -> AlbumSongs(
                             browseId = browseId,
                             headerContent = headerContent,
-                            thumbnailContent = thumbnailContent
+                            thumbnailContent = thumbnailContent,
+                            onSearchClick = { searchRoute("") },
+                            onSettingsClick = { settingsRoute() }
                         )
 
                         1 -> {

@@ -130,11 +130,11 @@ import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -529,7 +529,6 @@ fun LocalPlaylistSongs(
     }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     Box(
@@ -537,7 +536,10 @@ fun LocalPlaylistSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyColumn(
             state = reorderingState.lazyListState,
@@ -804,6 +806,15 @@ fun LocalPlaylistSongs(
                                                 binder?.player?.enqueue(playlistSongs.map(Song::asMediaItem))
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems)
+                                                listMediaItems.clear()
+                                                selectItems = false
+                                            }
+                                        },
+                                        onPlayNext = {
+                                            if (listMediaItems.isEmpty()) {
+                                                binder?.player?.addNext(playlistSongs.map(Song::asMediaItem))
+                                            } else {
+                                                binder?.player?.addNext(listMediaItems)
                                                 listMediaItems.clear()
                                                 selectItems = false
                                             }
@@ -1254,6 +1265,8 @@ fun LocalPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
+                                            searching = false
+                                            filter = null
                                             playlistSongs
                                                 .map(Song::asMediaItem)
                                                 .let { mediaItems ->

@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -57,6 +59,7 @@ import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -65,12 +68,12 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlin.random.Random
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -81,6 +84,7 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 fun HomeArtistList(
     onArtistClick: (Artist) -> Unit,
     onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
@@ -103,17 +107,9 @@ fun HomeArtistList(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    /*
-    var showSortTypeSelectDialog by remember {
-        mutableStateOf(false)
-    }
-     */
-
     val lazyGridState = rememberLazyGridState()
 
-    val context = LocalContext.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     //val effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -126,20 +122,16 @@ fun HomeArtistList(
     Box (
         modifier = Modifier
             .background(colorPalette.background0)
-            //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
-            columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.itemsVerticalPadding * 2),
-            horizontalArrangement = Arrangement.spacedBy(
-                space = Dimensions.itemsVerticalPadding * 2,
-                alignment = Alignment.CenterHorizontally
-            ),
+            columns = GridCells.Adaptive(Dimensions.thumbnails.artist + 24.dp),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
                 .background(colorPalette.background0)
                 .fillMaxSize()
@@ -149,7 +141,6 @@ fun HomeArtistList(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-
                 HeaderWithIcon(
                     title = stringResource(R.string.artists),
                     iconId = R.drawable.search,
@@ -158,20 +149,31 @@ fun HomeArtistList(
                     modifier = Modifier,
                     onClick = onSearchClick
                 )
+            }
 
+            item(
+                key = "filter",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
 
                 Row (
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 20.dp)
                         .fillMaxWidth()
                 ){
-                Header(title = "") {
+
                     HeaderInfo(
                         title = "${items.size}",
                         icon = painterResource(R.drawable.artists),
                         spacer = 0
                     )
+
+                    var randomGenerator = Random(System.currentTimeMillis())
+                    var result = randomGenerator.nextInt(30, 50)
 
                     HeaderIconButton(
                         modifier = Modifier.rotate(rotationAngle),
@@ -180,7 +182,10 @@ fun HomeArtistList(
                         color = colorPalette.text,
                         onClick = {
                             isRotated = !isRotated
-                            onArtistClick(items.get((0..<items.size).random()))
+                            //onArtistClick(items.get((0..<items.size).random()))
+                            onArtistClick(items.get(
+                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
+                            ))
                         },
                         iconSize = 16.dp
                     )
@@ -211,41 +216,7 @@ fun HomeArtistList(
                                 //showSortTypeSelectDialog = true
                             }
                     )
-                    /*
-                    if (showSortTypeSelectDialog)
-                        ValueSelectorDialog(
-                            onDismiss = { showSortTypeSelectDialog = false },
-                            title = stringResource(R.string.sorting_order),
-                            selectedValue = sortBy,
-                            values = enumValues<ArtistSortBy>().toList(),
-                            onValueSelected = { sortBy = it },
-                            valueText = {
-                                when (it) {
-                                    ArtistSortBy.Name -> stringResource(R.string.sort_name)
-                                    ArtistSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                                }
-                            }
-                        )
 
-                     */
-                    /*
-                    HeaderIconButton(
-                        icon = R.drawable.text,
-                        color = if (sortBy == ArtistSortBy.Name) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = ArtistSortBy.Name }
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.time,
-                        color = if (sortBy == ArtistSortBy.DateAdded) colorPalette.text else colorPalette.textDisabled,
-                        onClick = { sortBy = ArtistSortBy.DateAdded }
-                    )
-
-                    Spacer(
-                        modifier = Modifier
-                            .width(2.dp)
-                    )
-                     */
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
@@ -254,7 +225,7 @@ fun HomeArtistList(
                         modifier = Modifier
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
-                }
+
             }
 
             }
@@ -270,16 +241,32 @@ fun HomeArtistList(
                         .animateItemPlacement()
                 )
             }
+            item(
+                key = "footer",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-        if(uiType == UiType.ViMusic)
+        //if(uiType == UiType.ViMusic)
+        MultiFloatingActionsContainer(
+            iconId = R.drawable.search,
+            onClick = onSearchClick,
+            onClickSettings = onSettingsClick,
+            onClickSearch = onSearchClick
+        )
+        /*
         FloatingActionsContainerWithScrollToTop(
             lazyGridState = lazyGridState,
             iconId = R.drawable.search,
             onClick = onSearchClick
         )
+         */
+
 
 
     }

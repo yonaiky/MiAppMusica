@@ -72,6 +72,7 @@ fun AlbumsItemMenu(
     onDownloadAlbumCover: (() -> Unit)? = null,
     album: Album,
     modifier: Modifier = Modifier,
+    onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
 
@@ -101,6 +102,7 @@ fun AlbumsItemMenu(
             onChangeAlbumAuthors = onChangeAlbumAuthors,
             onChangeAlbumCover = onChangeAlbumCover,
             onDownloadAlbumCover = onDownloadAlbumCover,
+            onPlayNext = onPlayNext,
             onEnqueue = onEnqueue,
             onAddToPlaylist = onAddToPlaylist
         )
@@ -389,6 +391,17 @@ fun AlbumsItemMenu(
                             onClick = {
                                 onDismiss()
                                 onDownloadAlbumCover()
+                            }
+                        )
+                    }
+
+                    onPlayNext?.let { onPlayNext ->
+                        MenuEntry(
+                            icon = R.drawable.play_skip_forward,
+                            text = stringResource(R.string.play_next),
+                            onClick = {
+                                onDismiss()
+                                onPlayNext()
                             }
                         )
                     }

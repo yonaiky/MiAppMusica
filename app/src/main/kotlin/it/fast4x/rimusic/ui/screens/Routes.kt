@@ -44,6 +44,7 @@ val moodRoute = Route1<Mood>("moodRoute")
 //val playlistRoute = Route1<String?>("playlistRoute")
 val playlistRoute = Route3<String?, String?, Int?>("playlistRoute")
 //val playlistRoute = Route2<String?, String?>("playlistRoute")
+val historyRoute = Route0("historyRoute")
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

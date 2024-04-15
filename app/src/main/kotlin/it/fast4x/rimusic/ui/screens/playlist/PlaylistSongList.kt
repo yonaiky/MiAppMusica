@@ -98,7 +98,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.completed
-import it.fast4x.rimusic.utils.contentWidthKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -147,6 +146,10 @@ fun PlaylistSongList(
     LaunchedEffect(Unit, filter) {
         if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
 
+        playlistPage = withContext(Dispatchers.IO) {
+            Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
+        }
+
         /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube
@@ -157,11 +160,12 @@ fun PlaylistSongList(
          */
         //Log.d("mediaPlaylist", "${playlistPage?.title} songs ${playlistPage?.songsPage?.items?.size} continuation ${playlistPage?.songsPage?.continuation}")
 
-
+/*
                 playlistPage = withContext(Dispatchers.IO) {
                     Innertube.playlistPage(BrowseBody(browseId = browseId, params = params))
                         ?.completed(maxDepth = maxDepth ?: Int.MAX_VALUE)?.getOrNull()
                 }
+ */
 
 
 /*
@@ -594,7 +598,6 @@ fun PlaylistSongList(
     val lazyListState = rememberLazyListState()
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
-    val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -602,7 +605,10 @@ fun PlaylistSongList(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
+                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
+                else Dimensions.contentWidthRightBar)
         ) {
             LazyColumn(
                 state = lazyListState,
@@ -680,6 +686,8 @@ fun PlaylistSongList(
                                     }
                                 },
                                 onClick = {
+                                    searching = false
+                                    filter = null
                                     playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(mediaItems, index)

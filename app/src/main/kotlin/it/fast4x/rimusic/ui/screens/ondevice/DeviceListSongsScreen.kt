@@ -38,6 +38,11 @@ import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showCachedPlaylistKey
+import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
+import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
+import it.fast4x.rimusic.utils.showMyTopPlaylistKey
+import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 
 @ExperimentalMaterialApi
@@ -57,20 +62,16 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
     }
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
-    var exoPlayerDiskCacheMaxSize by rememberPreference(
-        exoPlayerDiskCacheMaxSizeKey,
-        ExoPlayerDiskCacheMaxSize.`32MB`
-    )
-
-    var exoPlayerDiskDownloadCacheMaxSize by rememberPreference(
-        exoPlayerDiskDownloadCacheMaxSizeKey,
-        ExoPlayerDiskDownloadCacheMaxSize.`2GB`
-    )
-
     val maxTopPlaylistItems by rememberPreference(
         MaxTopPlaylistItemsKey,
         MaxTopPlaylistItems.`10`
     )
+
+    val showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
+    val showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    val showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
+    val showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
+    val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
 
     PersistMapCleanup(tagPrefix = "${deviceLists.name}/")
 
@@ -116,13 +117,16 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.favorites), R.drawable.heart)
-                    if(exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled)
+                    if(showFavoritesPlaylist)
+                        Item(0, stringResource(R.string.favorites), R.drawable.heart)
+                    if(showCachedPlaylist)
                         Item(1, stringResource(R.string.cached), R.drawable.sync)
-                    if(exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled)
+                    if(showDownloadedPlaylist)
                         Item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
-                    Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
-                    Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
+                    if(showMyTopPlaylist)
+                        Item(3, stringResource(R.string.my_playlist_top)  + " ${maxTopPlaylistItems.number}" , R.drawable.trending)
+                    if(showOnDevicePlaylist)
+                        Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

@@ -20,6 +20,6 @@ import androidx.room.PrimaryKey
 data class Event(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val songId: String,
-    val timestamp: Long,
+    var timestamp: Long,
     val playTime: Long
 )
