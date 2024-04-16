@@ -42,16 +42,20 @@ import it.fast4x.innertube.requests.song
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextField
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.playlistRoute
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -91,14 +95,17 @@ fun GoToLink(
     val context = LocalContext.current
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
-            .fillMaxWidth()
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
 
         LazyColumn(
@@ -131,6 +138,7 @@ fun GoToLink(
 
                 }
 
+                /*
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -169,7 +177,7 @@ fun GoToLink(
                     )
                      */
                 }
-
+                */
                 InputTextField(
                     onDismiss = { },
                     title = stringResource(R.string.paste_or_type_a_valid_url),

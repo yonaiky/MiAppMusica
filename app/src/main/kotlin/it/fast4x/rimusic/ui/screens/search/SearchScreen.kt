@@ -87,7 +87,7 @@ fun SearchScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val onGoToHome = homeRoute::global
+        //val onGoToHome = homeRoute::global
 
         host {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
@@ -167,11 +167,14 @@ fun SearchScreen(
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = { onGoToHome() },
+                onTopIconButtonClick = {
+                    //onGoToHome()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
-                hideTabs = true,
+                //hideTabs = false,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
                 onHomeClick = {

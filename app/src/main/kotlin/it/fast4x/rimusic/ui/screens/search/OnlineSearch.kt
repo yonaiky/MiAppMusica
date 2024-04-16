@@ -58,17 +58,20 @@ import it.fast4x.innertube.requests.searchSuggestions
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -131,7 +134,7 @@ fun OnlineSearch(
     }
 
     val rippleIndication = rememberRipple(bounded = false)
-    val timeIconPainter = painterResource(R.drawable.time)
+    val timeIconPainter = painterResource(R.drawable.search_circle)
     val closeIconPainter = painterResource(R.drawable.trash)
     val arrowForwardIconPainter = painterResource(R.drawable.arrow_forward)
 
@@ -148,14 +151,17 @@ fun OnlineSearch(
 
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
-            .fillMaxWidth()
+            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
+                navigationBarPosition == NavigationBarPosition.Top ||
+                navigationBarPosition == NavigationBarPosition.Bottom) 1f
+            else Dimensions.contentWidthRightBar)
     ) {
         LazyColumn(
             state = lazyListState,
@@ -217,6 +223,7 @@ fun OnlineSearch(
                         )
                     },
                     actionsContent = {
+                        /*
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -279,6 +286,8 @@ fun OnlineSearch(
                                 onClick = { onTextFieldValueChanged(TextFieldValue()) }
                             )
                         }
+                         */
+
                          */
                     },
                     /*

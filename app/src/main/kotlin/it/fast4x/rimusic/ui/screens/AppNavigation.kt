@@ -53,13 +53,12 @@ import it.fast4x.rimusic.utils.preferences
 )
 @Composable
 fun AppNavigation(
-    navController: NavHostController,
-    player: @Composable () -> Unit = {}
+    navController: NavHostController
 ) {
     @Composable
-    fun PlayerScaffold(content: @Composable () -> Unit) {
+    fun customScaffold(content: @Composable () -> Unit) {
         Scaffold(
-            bottomBar = { player() }
+            bottomBar = {  }
         ) { paddingValues ->
             Surface(
                 modifier = Modifier.padding(paddingValues),
