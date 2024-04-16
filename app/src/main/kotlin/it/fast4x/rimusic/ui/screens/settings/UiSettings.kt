@@ -753,7 +753,7 @@ fun  UiSettings() {
                 }
             )
 
-        
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.show_search_tab_in_home),
@@ -761,6 +761,7 @@ fun  UiSettings() {
                 isChecked = showSearchTab,
                 onCheckedChange = { showSearchTab = it }
             )
+         */
 
         /*
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))

@@ -237,7 +237,7 @@ fun HomeScreen(
                     navController.navigate(NavRoutes.statistics.name)
                 },
                 showButton2 = false, //showStatsInNavbar,
-                showBottomButton = showSearchTab,
+                showBottomButton = false, //showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
