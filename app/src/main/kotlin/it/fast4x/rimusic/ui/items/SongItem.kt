@@ -358,7 +358,7 @@ fun SongItem(
 
                 //Log.d("downloadState",downloadState.toString())
 
-
+                /*
                 if ((downloadState == Download.STATE_DOWNLOADING
                             || downloadState == Download.STATE_QUEUED
                             || downloadState == Download.STATE_RESTARTING
@@ -406,6 +406,7 @@ fun SongItem(
                 }
 
                 Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                */
 
                 BasicText(
                     text = authors ?: "",
@@ -426,6 +427,39 @@ fun SongItem(
                             .padding(top = 4.dp)
                     )
                 }
+
+                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+
+                if ((downloadState == Download.STATE_DOWNLOADING
+                            || downloadState == Download.STATE_QUEUED
+                            || downloadState == Download.STATE_RESTARTING
+                            )
+                    && !isDownloaded) {
+                    val context = LocalContext.current
+                    IconButton(
+                        onClick = {
+                            DownloadService.sendRemoveDownload(
+                                context,
+                                MyDownloadService::class.java,
+                                mediaId,
+                                false
+                            )
+                        },
+                        icon = R.drawable.download_progress,
+                        color = colorPalette.text,
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
+                } else {
+                    IconButton(
+                        onClick = onDownloadClick,
+                        icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
+                        color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                        modifier = Modifier
+                            .size(20.dp)
+                    )
+                }
+
             }
         }
     }
