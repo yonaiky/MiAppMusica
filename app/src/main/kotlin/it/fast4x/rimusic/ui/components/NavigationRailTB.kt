@@ -189,9 +189,10 @@ inline fun NavigationRailTB(
                         .padding(top = 10.dp, bottom = 10.dp)
 
                 ) {
-                    listIconContent.forEach {
-                        it()
-                    }
+                    if (listIconContent.size > 1) //hide if only one icon is present
+                        listIconContent.forEach {
+                            it()
+                        }
 
                    if (showButton1)
                        Image(
