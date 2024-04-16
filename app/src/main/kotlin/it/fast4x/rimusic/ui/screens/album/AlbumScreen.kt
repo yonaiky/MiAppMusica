@@ -6,11 +6,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -34,6 +36,7 @@ import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
@@ -53,6 +56,8 @@ import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
@@ -75,6 +80,13 @@ fun AlbumScreen(
 
     var tabIndex by rememberSaveable {
         mutableStateOf(0)
+    }
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+    var changeShape by remember {
+        mutableStateOf(false)
     }
 
     var album by persist<Album?>("album/$browseId/album")
@@ -227,7 +239,10 @@ fun AlbumScreen(
                     showIcon = albumPage?.otherVersions?.isNotEmpty(),
                     onOtherVersionAvailable = {
                         println("mediaItem Click other version")
-                    }
+                    },
+                    //shape = thumbnailRoundness.shape()
+                    onClick = { changeShape = !changeShape },
+                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
             Scaffold(

@@ -29,6 +29,7 @@ import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
+import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutScaffold
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreen
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
