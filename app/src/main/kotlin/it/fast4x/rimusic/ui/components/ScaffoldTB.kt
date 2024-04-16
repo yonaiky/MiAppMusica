@@ -261,7 +261,7 @@ fun ScaffoldTB(
                                         expanded = false
                                         //if (onSettingsClick != null) {
                                             //onSettingsClick()
-                                            navController.navigate(NavRoutes.settings.name)
+                                        navController.navigate(NavRoutes.settings.name)
                                         //}
                                     }
                                 )
