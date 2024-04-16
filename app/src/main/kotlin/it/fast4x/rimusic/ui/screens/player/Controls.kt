@@ -54,10 +54,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
@@ -112,6 +114,8 @@ import kotlinx.coroutines.launch
 @UnstableApi
 @Composable
 fun Controls(
+    navController: NavController,
+    layoutState: PlayerSheetState,
     media: UiMedia,
     mediaId: String,
     title: String?,
@@ -138,8 +142,8 @@ fun Controls(
         mutableStateOf<Long?>(null)
     }
 
-    val onGoToArtist = artistRoute::global
-    val onGoToAlbum = albumRoute::global
+    //val onGoToArtist = artistRoute::global
+    //val onGoToAlbum = albumRoute::global
 
 
     var likedAt by rememberSaveable {
@@ -281,7 +285,11 @@ fun Controls(
                         color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
                         enabled = albumId != null,
                         onClick = {
-                            if (albumId != null) onGoToAlbum(albumId)
+                            if (albumId != null) {
+                                //onGoToAlbum(albumId)
+                                navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                                layoutState.collapseSoft()
+                            }
                         },
                         modifier = Modifier
                             .size(26.dp)
@@ -303,6 +311,8 @@ fun Controls(
                         ),
                         onClick = {
                             //if (albumId != null) onGoToAlbum(albumId)
+                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                            layoutState.collapseSoft()
                         },
 
                     )
@@ -318,6 +328,8 @@ fun Controls(
                         modifier = Modifier
                             .clickable {
                                 //if (albumId != null) onGoToAlbum(albumId)
+                                navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                                layoutState.collapseSoft()
                             }
                     )
                 }
@@ -396,8 +408,10 @@ fun Controls(
                     onDismiss = { showSelectDialog = false },
                     values = artistIds,
                     onValueSelected = {
-                        onGoToArtist(it)
+                        //onGoToArtist(it)
+                        navController.navigate(route = "${NavRoutes.artist.name}/${it}")
                         showSelectDialog = false
+                        layoutState.collapseSoft()
                     }
                 )
 
@@ -409,8 +423,11 @@ fun Controls(
                     onClick = {
                         if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
                             showSelectDialog = true
-                        if (artistIds?.isNotEmpty() == true && artistIds.size == 1)
-                            onGoToArtist( artistIds[0].id )
+                        if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                            //onGoToArtist( artistIds[0].id )
+                            navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                            layoutState.collapseSoft()
+                        }
                     },
                     modifier = Modifier
                         .size(24.dp)
@@ -434,8 +451,12 @@ fun Controls(
                 onClick = {
                     if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
                         showSelectDialog = true
-                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1)
-                        onGoToArtist( artistIds[0].id )
+                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                        //onGoToArtist( artistIds[0].id )
+                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                        layoutState.collapseSoft()
+                    }
+
                 }
             ) } else {
         BasicText(
@@ -450,8 +471,11 @@ fun Controls(
                 .clickable {
                     if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
                         showSelectDialog = true
-                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1)
-                        onGoToArtist( artistIds[0].id )
+                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                        //onGoToArtist( artistIds[0].id )
+                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                        layoutState.collapseSoft()
+                    }
                 }
         )}
 

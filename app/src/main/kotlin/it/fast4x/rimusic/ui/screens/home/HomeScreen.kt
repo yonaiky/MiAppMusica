@@ -117,7 +117,7 @@ fun HomeScreen(
         }
     ) {
         globalRoutes()
-
+/*
         settingsRoute {
             SettingsScreen(
                 navController = navController,
@@ -136,7 +136,8 @@ fun HomeScreen(
                 playlistId = playlistId ?: error("playlistId cannot be null")
             )
         }
-
+*/
+        /*
         builtInPlaylistRoute { builtInPlaylist ->
             BuiltInPlaylistScreen(
                 navController = navController,
@@ -152,7 +153,7 @@ fun HomeScreen(
                 maxDepth = maxDepth
             )
         }
-
+        */
         /*
         playlistRoute { browseId, params ->
             PlaylistScreen(
@@ -160,7 +161,7 @@ fun HomeScreen(
                 params = params
             )
         }
-         */
+
 
         searchResultRoute { query ->
             SearchResultScreen(
@@ -192,7 +193,7 @@ fun HomeScreen(
                 onDismiss = { homeRoute::global }
             )
         }
-
+*/
         host {
 
             /*

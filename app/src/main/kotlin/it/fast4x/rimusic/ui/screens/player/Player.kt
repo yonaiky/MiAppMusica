@@ -92,6 +92,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.compose.routing.OnGlobalRoute
 import it.fast4x.rimusic.Database
@@ -99,6 +100,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.UiType
@@ -180,6 +182,7 @@ import kotlin.math.absoluteValue
 @UnstableApi
 @Composable
 fun Player(
+    navController: NavController,
     layoutState: PlayerSheetState, //BottomSheetState,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(
@@ -556,11 +559,13 @@ fun Player(
         mutableIntStateOf(0)
     }
 
+    /*
     OnGlobalRoute {
         layoutState.collapseSoft()
     }
+     */
 
-    val onGoToHome = homeRoute::global
+    //val onGoToHome = homeRoute::global
 
     PlayerSheet(
         state = layoutState,
@@ -988,6 +993,8 @@ fun Player(
 
         val controlsContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             Controls(
+                navController = navController,
+                layoutState = layoutState,
                 media = mediaItem.toUiMedia(positionAndDuration.second),
                 mediaId = mediaItem.mediaId,
                 title = mediaItem.mediaMetadata.title?.toString(),
@@ -1115,12 +1122,17 @@ fun Player(
                         )
                          */
 
+
                         Image(
                             painter = painterResource(R.drawable.app_icon),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                             modifier = Modifier
-                                .clickable { onGoToHome() }
+                                .clickable {
+                                    //onGoToHome()
+                                    navController.navigate(NavRoutes.home.name)
+                                    layoutState.collapseSoft()
+                                }
                                 .rotate(rotationAngle)
                                 //.padding(10.dp)
                                 .size(24.dp)

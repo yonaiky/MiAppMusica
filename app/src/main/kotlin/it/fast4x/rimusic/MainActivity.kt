@@ -710,6 +710,7 @@ class MainActivity :
                 )
                  */
                     Player(
+                        navController = navController,
                         layoutState = playerSheetState,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)

@@ -38,6 +38,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.SearchQuery
@@ -153,7 +154,7 @@ fun ArtistScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-
+/*
         settingsRoute {
             SettingsScreen(
                 navController = navController,
@@ -188,7 +189,7 @@ fun ArtistScreen(
                 onDismiss = { homeRoute::global }
             )
         }
-
+*/
         host {
             val thumbnailContent =
                 adaptiveThumbnailContent(
@@ -284,7 +285,10 @@ fun ArtistScreen(
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.overview), R.drawable.artist)
@@ -301,12 +305,21 @@ fun ArtistScreen(
                                 youtubeArtistPage = artistPage,
                                 thumbnailContent = thumbnailContent,
                                 headerContent = headerContent,
-                                onAlbumClick = { albumRoute(it) },
+                                onAlbumClick = {
+                                    //albumRoute(it)
+                                    navController.navigate(route = "${NavRoutes.album.name}/$it")
+                                },
                                 onViewAllSongsClick = { tabIndex = 1 },
                                 onViewAllAlbumsClick = { tabIndex = 2 },
                                 onViewAllSinglesClick = { tabIndex = 3 },
-                                onSearchClick = { searchRoute("") },
-                                onSettingsClick = { settingsRoute() }
+                                onSearchClick = {
+                                    //searchRoute("")
+                                    navController.navigate(NavRoutes.search.name)
+                                },
+                                onSettingsClick = {
+                                    //settingsRoute()
+                                    navController.navigate(NavRoutes.settings.name)
+                                }
                             )
                         }
 
@@ -449,7 +462,10 @@ fun ArtistScreen(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable(onClick = { albumRoute(album.key) })
+                                            .clickable(onClick = {
+                                                //albumRoute(album.key)
+                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                            })
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -499,7 +515,10 @@ fun ArtistScreen(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable(onClick = { albumRoute(album.key) })
+                                            .clickable(onClick = {
+                                                //albumRoute(album.key)
+                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                            })
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -513,8 +532,14 @@ fun ArtistScreen(
                                 browseId = browseId,
                                 headerContent = headerContent,
                                 thumbnailContent = thumbnailContent,
-                                onSearchClick = { searchRoute("") },
-                                onSettingsClick = { settingsRoute() }
+                                onSearchClick = {
+                                    //searchRoute("")
+                                    navController.navigate(NavRoutes.search.name)
+                                },
+                                onSettingsClick = {
+                                    //settingsRoute()
+                                    navController.navigate(NavRoutes.settings.name)
+                                }
                             )
                         }
                     }

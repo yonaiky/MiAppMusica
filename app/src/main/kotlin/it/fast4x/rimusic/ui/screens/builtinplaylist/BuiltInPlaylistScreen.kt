@@ -25,6 +25,7 @@ import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.Scaffold
@@ -96,6 +97,7 @@ fun BuiltInPlaylistScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
+        /*
         searchResultRoute { query ->
             SearchResultScreen(
                 navController = navController,
@@ -125,7 +127,7 @@ fun BuiltInPlaylistScreen(
                 onViewPlaylist = {}
             )
         }
-
+*/
         host {
             Scaffold(
                 navController = navController,
@@ -135,10 +137,16 @@ fun BuiltInPlaylistScreen(
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 showBottomButton = showSearchTab,
-                onBottomIconButtonClick = { searchRoute("") },
+                onBottomIconButtonClick = {
+                    //searchRoute("")
+                    navController.navigate(NavRoutes.search.name)
+                },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     if(showFavoritesPlaylist)
                         Item(0, stringResource(R.string.favorites), R.drawable.heart)
@@ -156,23 +164,38 @@ fun BuiltInPlaylistScreen(
                     when (currentTabIndex) {
                         0 -> BuiltInPlaylistSongs(
                             builtInPlaylist = BuiltInPlaylist.Favorites,
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            }
                         )
                         1 -> BuiltInPlaylistSongs(
                             builtInPlaylist = BuiltInPlaylist.Offline,
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            }
                         )
                         2 -> BuiltInPlaylistSongs(
                             builtInPlaylist = BuiltInPlaylist.Downloaded,
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            }
                         )
                         3 -> BuiltInPlaylistSongs(
                             builtInPlaylist = BuiltInPlaylist.Top,
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            }
                         )
                         4 -> DeviceListSongs(
                             deviceLists = DeviceLists.LocalSongs,
-                            onSearchClick = { searchRoute("") }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            }
                         )
 
                     }

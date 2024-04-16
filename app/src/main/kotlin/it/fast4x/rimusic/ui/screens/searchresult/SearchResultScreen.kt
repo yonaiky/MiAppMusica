@@ -34,6 +34,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -115,7 +116,10 @@ fun SearchResultScreen(
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 onTabChanged = onTabIndexChanges,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
@@ -233,7 +237,10 @@ fun SearchResultScreen(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable(onClick = { albumRoute(album.key) })
+                                            .clickable(onClick = {
+                                                //albumRoute(album.key)
+                                                navController.navigate("${NavRoutes.album.name}/${album.key}")
+                                            })
                                     )
 
                                 },
@@ -270,7 +277,10 @@ fun SearchResultScreen(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable(onClick = { artistRoute(artist.key) })
+                                            .clickable(onClick = {
+                                                //artistRoute(artist.key)
+                                                navController.navigate("${NavRoutes.artist.name}/${artist.key}")
+                                            })
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -370,7 +380,10 @@ fun SearchResultScreen(
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clickable(onClick = { playlistRoute(playlist.key) })
+                                            .clickable(onClick = {
+                                                //playlistRoute(playlist.key)
+                                                navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                            })
                                     )
                                 },
                                 itemPlaceholderContent = {

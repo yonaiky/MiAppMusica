@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
@@ -173,7 +174,10 @@ fun SearchScreen(
                 hideTabs = true,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.online), R.drawable.globe)
                     Item(1, stringResource(R.string.library), R.drawable.library)

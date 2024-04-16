@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
@@ -68,10 +69,16 @@ fun StatisticsScreen(
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 showBottomButton = false, //showSearchTab,
-                onBottomIconButtonClick = { searchRoute("") },
+                onBottomIconButtonClick = {
+                    //searchRoute("")
+                    navController.navigate(NavRoutes.search.name)
+                },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 showTopActions = false,
                 /*
                 onSettingsClick = { settingsRoute() },
@@ -91,13 +98,34 @@ fun StatisticsScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> StatisticsPage(statisticsType = StatisticsType.Today)
-                        1 -> StatisticsPage(statisticsType = StatisticsType.OneWeek)
-                        2 -> StatisticsPage(statisticsType = StatisticsType.OneMonth)
-                        3 -> StatisticsPage(statisticsType = StatisticsType.ThreeMonths)
-                        4 -> StatisticsPage(statisticsType = StatisticsType.SixMonths)
-                        5 -> StatisticsPage(statisticsType = StatisticsType.OneYear)
-                        6 -> StatisticsPage(statisticsType = StatisticsType.All)
+                        0 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.Today
+                        )
+                        1 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.OneWeek
+                        )
+                        2 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.OneMonth
+                        )
+                        3 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.ThreeMonths
+                        )
+                        4 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.SixMonths
+                        )
+                        5 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.OneYear
+                        )
+                        6 -> StatisticsPage(
+                            navController = navController,
+                            statisticsType = StatisticsType.All
+                        )
                     }
                 }
             }

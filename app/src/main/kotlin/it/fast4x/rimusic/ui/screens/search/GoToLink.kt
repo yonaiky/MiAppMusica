@@ -159,6 +159,7 @@ fun GoToLink(
                         modifier = Modifier
                             .size(24.dp)
                     )
+                    /*
                     IconButton(
                         onClick = onAction4,
                         icon = R.drawable.chevron_back,
@@ -166,6 +167,7 @@ fun GoToLink(
                         modifier = Modifier
                             .size(24.dp)
                     )
+                     */
                 }
 
                 InputTextField(

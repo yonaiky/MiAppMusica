@@ -42,12 +42,14 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxStatisticsItems
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -98,12 +100,13 @@ import kotlin.time.Duration.Companion.days
 @UnstableApi
 @Composable
 fun StatisticsPage(
+    navController: NavController,
     statisticsType: StatisticsType
 ) {
-    val onGoToArtist = artistRoute::global
-    val onGoToAlbum = albumRoute::global
+    //val onGoToArtist = artistRoute::global
+    //val onGoToAlbum = albumRoute::global
     //val onGoToPlaylist = playlistRoute::global
-    val onGoToPlaylist = localPlaylistRoute::global
+    //val onGoToPlaylist = localPlaylistRoute::global
 
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -397,7 +400,8 @@ fun StatisticsPage(
                         modifier = Modifier
                             .clickable(onClick = {
                                 if (artists[it].id != "") {
-                                    onGoToArtist(artists[it].id)
+                                    //onGoToArtist(artists[it].id)
+                                    navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
                                 }
                             })
                     )
@@ -428,7 +432,8 @@ fun StatisticsPage(
                         modifier = Modifier
                             .clickable(onClick = {
                                 if (albums[it].id != "" )
-                                onGoToAlbum(albums[it].id)
+                                //onGoToAlbum(albums[it].id)
+                                    navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
                             })
                     )
                 }
@@ -456,7 +461,8 @@ fun StatisticsPage(
                             .clickable(onClick = {
 
                                // if (playlists[it].playlist.browseId != "" )
-                                    onGoToPlaylist(playlists[it].playlist.id)
+                                    //onGoToPlaylist(playlists[it].playlist.id)
+                                navController.navigate("${NavRoutes.playlist.name}/${playlists[it].playlist.id}")
                                  //   onGoToPlaylist(
                                  //       playlists[it].playlist.browseId,
                                  //       null

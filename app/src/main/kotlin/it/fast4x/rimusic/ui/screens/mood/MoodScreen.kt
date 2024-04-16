@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
@@ -50,7 +51,10 @@ fun MoodScreen(
                 showButton2 = false,
                 tabIndex = 0,
                 onTabChanged = { },
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.mood), R.drawable.album)
                 }

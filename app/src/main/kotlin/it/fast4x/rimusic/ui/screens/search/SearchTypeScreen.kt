@@ -32,6 +32,7 @@ import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.SearchType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.transaction
@@ -84,6 +85,7 @@ fun SearchTypeScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
+        /*
         searchResultRoute { query ->
             SearchResultScreen(
                 navController = navController,
@@ -95,7 +97,7 @@ fun SearchTypeScreen(
         }
 
         val onGoToHome = homeRoute::global
-
+*/
         host {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
                 Box(
@@ -141,13 +143,19 @@ fun SearchTypeScreen(
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = { onGoToHome() },
+                onTopIconButtonClick = {
+                    //onGoToHome()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.online), R.drawable.globe)
                     Item(1, stringResource(R.string.library), R.drawable.library)
@@ -159,6 +167,10 @@ fun SearchTypeScreen(
                         0 -> OnlineSearch(
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
+                            onSearch = {
+                                navController.navigate("${NavRoutes.searchResults.name}/$it")
+                            },
+                            /*
                             onSearch = { query ->
                                     //pop()
                                     searchResultRoute(query)
@@ -168,12 +180,16 @@ fun SearchTypeScreen(
                                         }
                                     }
                             },
+                             */
                             onViewPlaylist = {}, //onViewPlaylist,
                             decorationBox = decorationBox,
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                navController.navigate(NavRoutes.home.name)
+                            }
                         )
 
                         1 -> LocalSongSearch(
@@ -183,7 +199,10 @@ fun SearchTypeScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                navController.navigate(NavRoutes.home.name)
+                            }
                         )
 
                         2 -> GoToLink(
@@ -193,7 +212,10 @@ fun SearchTypeScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = { onGoToHome() },
+                            onAction4 = {
+                                //onGoToHome()
+                                navController.navigate(NavRoutes.home.name)
+                            }
                         )
                     }
                 }

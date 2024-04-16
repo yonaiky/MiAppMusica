@@ -11,9 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
@@ -21,6 +23,7 @@ import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 
+@OptIn(KotlinCsvExperimental::class)
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -48,10 +51,16 @@ fun LocalPlaylistScreen(
                 onTopIconButton2Click = pop,
                 showButton2 = false,
                 //showBottomButton = showSearchTab,
-                onBottomIconButtonClick = { searchRoute("") },
+                onBottomIconButtonClick = {
+                    //searchRoute("")
+                    navController.navigate(NavRoutes.search.name)
+                },
                 tabIndex = 0,
                 onTabChanged = { },
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
                 }
