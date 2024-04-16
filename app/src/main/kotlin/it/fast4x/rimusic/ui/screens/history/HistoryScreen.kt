@@ -9,6 +9,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
@@ -29,7 +30,9 @@ import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
-fun HistoryScreen() {
+fun HistoryScreen(
+    navController: NavController
+) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
     PersistMapCleanup(tagPrefix = "history")
@@ -39,6 +42,7 @@ fun HistoryScreen() {
 
         host {
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

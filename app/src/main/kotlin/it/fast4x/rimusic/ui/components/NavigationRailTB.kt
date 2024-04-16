@@ -38,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
@@ -54,6 +55,7 @@ import it.fast4x.rimusic.utils.semiBold
 @OptIn(UnstableApi::class)
 @Composable
 inline fun NavigationRailTB(
+    navController: NavController,
     topIconButtonId: Int,
     noinline onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = true,
@@ -99,7 +101,9 @@ inline fun NavigationRailTB(
             //.border(BorderStroke(1.dp, Color.Yellow))
             //.padding(top = 30.dp)
             .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
-            .background(colorPalette.background0)
+            //.background(colorPalette.background0)
+            .background(colorPalette.background1)
+
 
     ) {
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.Database
@@ -53,7 +54,10 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun DeviceListSongsScreen(deviceLists: DeviceLists) {
+fun DeviceListSongsScreen(
+    navController: NavController,
+    deviceLists: DeviceLists
+) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabIndexChanged) = rememberSaveable {
@@ -80,6 +84,7 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
         globalRoutes()
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -91,6 +96,7 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
             val context = LocalContext.current
 
             SearchScreen(
+                navController = navController,
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
                     pop()
@@ -108,6 +114,7 @@ fun DeviceListSongsScreen(deviceLists: DeviceLists) {
 
         host {
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

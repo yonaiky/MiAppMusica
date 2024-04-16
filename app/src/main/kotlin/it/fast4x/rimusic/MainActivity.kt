@@ -76,6 +76,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.compose.rememberNavController
 import com.kieronquinn.monetcompat.app.MonetCompatActivity
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
@@ -105,6 +106,7 @@ import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
@@ -672,6 +674,8 @@ class MainActivity :
                     }
                 }
 
+                val navController = rememberNavController()
+
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
                     LocalIndication provides rememberRipple(bounded = true),
@@ -685,12 +689,18 @@ class MainActivity :
                     LocalMonetCompat provides monet
                 ) {
 
+                    AppNavigation(
+                        navController = navController
+                    )
+
+                    /*
                     HomeScreen(
                         onPlaylistUrl = { url ->
                             onNewIntent(Intent.parseUri(url, 0))
                         },
                         openTabFromShortcut = openTabFromShortcut
                     )
+                     */
 
                     /*
                 Player(

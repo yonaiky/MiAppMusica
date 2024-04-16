@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
@@ -91,7 +92,10 @@ import kotlinx.coroutines.withContext
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun ArtistScreen(browseId: String) {
+fun ArtistScreen(
+    navController: NavController,
+    browseId: String
+) {
     //val saveableStateHolder = rememberSaveableStateHolder()
 
     //var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
@@ -151,11 +155,14 @@ fun ArtistScreen(browseId: String) {
         globalRoutes()
 
         settingsRoute {
-            SettingsScreen()
+            SettingsScreen(
+                navController = navController,
+            )
         }
 
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -165,6 +172,7 @@ fun ArtistScreen(browseId: String) {
 
         searchRoute { initialTextInput ->
             SearchScreen(
+                navController = navController,
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
                     pop()
@@ -269,6 +277,7 @@ fun ArtistScreen(browseId: String) {
                 }
 
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

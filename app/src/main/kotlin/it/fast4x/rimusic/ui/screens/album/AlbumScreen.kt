@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
@@ -32,6 +33,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
@@ -63,7 +65,10 @@ import kotlinx.coroutines.withContext
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun AlbumScreen(browseId: String) {
+fun AlbumScreen(
+    navController: NavController,
+    browseId: String
+) {
 
     val uriHandler = LocalUriHandler.current
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -226,6 +231,7 @@ fun AlbumScreen(browseId: String) {
                 )
 
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
@@ -233,7 +239,10 @@ fun AlbumScreen(browseId: String) {
                 showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
-                onHomeClick = { homeRoute() },
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(1, stringResource(R.string.other_versions), R.drawable.alternative_version)
@@ -245,8 +254,14 @@ fun AlbumScreen(browseId: String) {
                             browseId = browseId,
                             headerContent = headerContent,
                             thumbnailContent = thumbnailContent,
-                            onSearchClick = { searchRoute("") },
-                            onSettingsClick = { settingsRoute() }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            }
                         )
 
                         1 -> {
@@ -275,7 +290,10 @@ fun AlbumScreen(browseId: String) {
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable { albumRoute(album.key) }
+                                            .clickable {
+                                                //albumRoute(album.key)
+                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                            }
                                     )
                                 },
                                 itemPlaceholderContent = {

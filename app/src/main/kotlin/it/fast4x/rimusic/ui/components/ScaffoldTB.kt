@@ -30,6 +30,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -42,17 +43,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.getCurrentRoute
+import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
@@ -62,9 +73,10 @@ import it.fast4x.rimusic.utils.semiBold
 @ExperimentalAnimationApi
 @Composable
 fun ScaffoldTB(
+    navController: NavController,
     topIconButtonId: Int,
     onTopIconButtonClick: () -> Unit,
-    showButton1: Boolean = true,
+    showButton1: Boolean = false,
     topIconButton2Id: Int,
     onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
@@ -89,6 +101,7 @@ fun ScaffoldTB(
 
     val navigationRailTB: @Composable () -> Unit = {
         NavigationRailTB(
+            navController = navController,
             topIconButtonId = topIconButtonId,
             onTopIconButtonClick = onTopIconButtonClick,
             showButton1 = showButton1,
@@ -106,7 +119,8 @@ fun ScaffoldTB(
     }
 
     val topPadding =  if (navigationBarPosition == NavigationBarPosition.Top) 60.dp else 10.dp
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var expanded by remember { mutableStateOf(false) }
 
     androidx.compose.material3.Scaffold(
@@ -117,17 +131,40 @@ fun ScaffoldTB(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TopAppBar(
+                    navigationIcon = {
+                        //val currentRoute = navController.currentBackStackEntry?.destination?.route
+                        //println("navController current destination and route ${navController.currentDestination} $currentRoute")
+                        if (getCurrentRoute(navController) != "home")
+                            IconButton(
+                                onClick = {
+                                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+                                        navController.popBackStack()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.chevron_back),
+                                    tint = colorPalette.favoritesIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                    },
                     title = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(5.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.app_icon),
+                                colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(36.dp)
-                                    .clickable { onHomeClick() }
+                                    .clickable {
+                                        //onHomeClick()
+                                        navController.navigate(NavRoutes.home.name)
+                                    }
                             )
                             BasicText(
                                 text = "Music",
@@ -137,17 +174,21 @@ fun ScaffoldTB(
                                     color = colorPalette.text
                                 ),
                                 modifier = Modifier
-                                    .clickable { onHomeClick() }
+                                    .clickable {
+                                        //onHomeClick()
+                                        navController.navigate(NavRoutes.home.name)
+                                    }
                             )
                         }
                     },
                     actions = {
-                        if (showTopActions == true) {
+                        //if (showTopActions == true) {
                             IconButton(
                                 onClick = {
-                                    if (onSearchClick != null) {
-                                        onSearchClick()
-                                    }
+                                    //if (onSearchClick != null) {
+                                        //onSearchClick()
+                                        navController.navigate(NavRoutes.search.name)
+                                    //}
                                 }
                             ) {
                                 Icon(
@@ -166,10 +207,11 @@ fun ScaffoldTB(
 
                             DropdownMenu(
                                 expanded = expanded,
-                                onDismissRequest = { expanded = false }
+                                onDismissRequest = { expanded = false },
+                                modifier = Modifier.background(colorPalette.background0)
                             ) {
-
                                 DropdownMenuItem(
+                                    colors = menuItemColors(),
                                     text = { Text(stringResource(R.string.history)) },
                                     leadingIcon = {
                                         Icon(
@@ -180,12 +222,14 @@ fun ScaffoldTB(
                                     },
                                     onClick = {
                                         expanded = false
-                                        if (onHistoryClick != null) {
-                                            onHistoryClick()
-                                        }
+                                        //if (onHistoryClick != null) {
+                                            //onHistoryClick()
+                                        navController.navigate(NavRoutes.history.name)
+                                        //}
                                     }
                                 )
                                 DropdownMenuItem(
+                                    colors = menuItemColors(),
                                     text = { Text(stringResource(R.string.statistics)) },
                                     leadingIcon = {
                                         Icon(
@@ -196,13 +240,15 @@ fun ScaffoldTB(
                                     },
                                     onClick = {
                                         expanded = false
-                                        if (onStatisticsClick != null) {
-                                            onStatisticsClick()
-                                        }
+                                        //if (onStatisticsClick != null) {
+                                            //onStatisticsClick()
+                                        navController.navigate(NavRoutes.statistics.name)
+                                        //}
                                     }
                                 )
                                 HorizontalDivider()
                                 DropdownMenuItem(
+                                    colors = menuItemColors(),
                                     text = { Text("Settings") },
                                     leadingIcon = {
                                         Icon(
@@ -213,32 +259,15 @@ fun ScaffoldTB(
                                     },
                                     onClick = {
                                         expanded = false
-                                        if (onSettingsClick != null) {
-                                            onSettingsClick()
-                                        }
+                                        //if (onSettingsClick != null) {
+                                            //onSettingsClick()
+                                            navController.navigate(NavRoutes.settings.name)
+                                        //}
                                     }
                                 )
                             }
 
-                            /*
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                    if (onSettingsClick != null) {
-                        IconButton(onClick = onSettingsClick) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.settings),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                     */
-                        }
+                        //}
                     },
                     scrollBehavior = scrollBehavior,
                     colors = TopAppBarColors(

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persistMap
 import it.fast4x.compose.routing.RouteHandler
@@ -71,7 +72,10 @@ import it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
+fun SearchResultScreen(
+    navController: NavController,
+    query: String, onSearchAgain: () -> Unit
+) {
     val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabIndexChanges) = rememberPreference(searchResultScreenTabIndexKey, 0)
@@ -104,6 +108,7 @@ fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
             val emptyItemsText = stringResource(R.string.no_results_found)
 
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

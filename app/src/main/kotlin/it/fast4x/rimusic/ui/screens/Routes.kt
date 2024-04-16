@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.compose.rememberNavController
 import it.fast4x.compose.routing.Route0
 import it.fast4x.compose.routing.Route1
 import it.fast4x.compose.routing.Route2
@@ -56,8 +57,12 @@ val historyRoute = Route0("historyRoute")
 @UnstableApi
 @Composable
 inline fun RouteHandlerScope.globalRoutes() {
+
+    val navController = rememberNavController()
+
     albumRoute { browseId ->
         AlbumScreenWithoutScaffold(
+            navController = navController,
             browseId = browseId ?: error("browseId cannot be null")
         )
         /*
@@ -69,12 +74,14 @@ inline fun RouteHandlerScope.globalRoutes() {
 
     artistRoute { browseId ->
         ArtistScreen(
+            navController = navController,
             browseId = browseId ?: error("browseId cannot be null")
         )
     }
 
     localPlaylistRoute { playlistId ->
         LocalPlaylistScreen(
+            navController = navController,
             playlistId = playlistId ?: error("playlistId cannot be null")
         )
     }
@@ -82,6 +89,7 @@ inline fun RouteHandlerScope.globalRoutes() {
 
     playlistRoute { browseId, params, maxDepth ->
         PlaylistScreen(
+            navController = navController,
             browseId = browseId ?: error("browseId cannot be null"),
             params = params,
             maxDepth = maxDepth
@@ -104,30 +112,38 @@ inline fun RouteHandlerScope.globalRoutes() {
 
     statisticsTypeRoute { browseId ->
         StatisticsScreen(
+            navController = navController,
             statisticsType = browseId ?: error("browseId cannot be null")
         )
     }
 
     searchTypeRoute { browseId ->
         SearchTypeScreen(
+            navController = navController,
             searchType = browseId ?: error("browseId cannot be null")
         )
     }
 
+    /*
     homeRoute {
         HomeScreen(
             onPlaylistUrl = {pop},
             openTabFromShortcut = -1
         )
     }
+     */
 
     moodRoute { mood ->
-        MoodScreen(mood = mood)
+        MoodScreen(
+            navController = navController,
+            mood = mood
+        )
     }
 
 
     deviceListSongRoute { browseId ->
         DeviceListSongsScreen(
+            navController = navController,
             deviceLists = DeviceLists.LocalSongs
         )
     }

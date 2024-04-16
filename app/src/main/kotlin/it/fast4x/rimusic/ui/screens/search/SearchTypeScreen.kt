@@ -27,6 +27,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.Database
@@ -54,6 +55,7 @@ import it.fast4x.rimusic.utils.secondary
 @UnstableApi
 @Composable
 fun SearchTypeScreen(
+    navController: NavController,
     searchType: SearchType,
 ) {
     val preferences = LocalContext.current.preferences
@@ -84,6 +86,7 @@ fun SearchTypeScreen(
         globalRoutes()
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -136,6 +139,7 @@ fun SearchTypeScreen(
             }
 
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = { onGoToHome() },
                 topIconButton2Id = R.drawable.chevron_back,

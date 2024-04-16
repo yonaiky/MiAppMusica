@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
@@ -49,7 +50,9 @@ import it.fast4x.rimusic.utils.semiBold
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    navController: NavController
+) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabChanged) = rememberSaveable {
@@ -61,6 +64,7 @@ fun SettingsScreen() {
 
         host {
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

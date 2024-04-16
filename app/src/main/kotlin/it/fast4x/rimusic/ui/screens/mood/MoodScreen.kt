@@ -9,6 +9,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
@@ -24,7 +25,13 @@ import it.fast4x.rimusic.ui.screens.homeRoute
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
-fun MoodScreen(mood: Mood) {
+fun MoodScreen(
+    navController: NavController,
+    mood: Mood
+) {
+
+
+
     val saveableStateHolder = rememberSaveableStateHolder()
 
     PersistMapCleanup(tagPrefix = "playlist/$defaultBrowseId")
@@ -34,6 +41,8 @@ fun MoodScreen(mood: Mood) {
 
         host {
             Scaffold(
+                showButton1 = false,
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
@@ -48,7 +57,10 @@ fun MoodScreen(mood: Mood) {
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> MoodList(mood = mood)
+                        0 -> MoodList(
+                            navController = navController,
+                            mood = mood
+                        )
                     }
                 }
             }

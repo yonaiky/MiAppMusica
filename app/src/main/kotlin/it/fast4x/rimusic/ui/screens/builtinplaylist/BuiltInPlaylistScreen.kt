@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.Database
@@ -55,7 +56,10 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
+fun BuiltInPlaylistScreen(
+    navController: NavController,
+    builtInPlaylist: BuiltInPlaylist
+) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabIndexChanged) = rememberSaveable {
@@ -94,6 +98,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
         globalRoutes()
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -105,6 +110,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
             val context = LocalContext.current
 
             SearchScreen(
+                navController = navController,
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
                     pop()
@@ -122,6 +128,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
 
         host {
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,

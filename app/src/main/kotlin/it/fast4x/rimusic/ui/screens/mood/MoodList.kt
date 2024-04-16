@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -35,6 +36,7 @@ import it.fast4x.innertube.requests.BrowseResult
 import it.fast4x.innertube.requests.browse
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.ShimmerHost
@@ -63,7 +65,10 @@ internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
-fun MoodList(mood: Mood) {
+fun MoodList(
+    navController: NavController,
+    mood: Mood
+) {
     val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
@@ -143,9 +148,8 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                albumRoute.global(
-                                                    it
-                                                )
+                                                //albumRoute.global(it)
+                                                navController.navigate(route = "${NavRoutes.album.name}/$it")
                                             }
                                         }
                                     )
@@ -157,9 +161,8 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                artistRoute.global(
-                                                    it
-                                                )
+                                                //artistRoute.global(it)
+                                                navController.navigate(route = "${NavRoutes.artist.name}/$it")
                                             }
                                         }
                                     )
@@ -171,11 +174,14 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.let { endpoint ->
+                                                /*
                                                 playlistRoute.global(
                                                     p0 = endpoint.browseId,
                                                     p1 = endpoint.params,
                                                     p2 = childItem.songCount?.let { it / 100 }
                                                 )
+                                                 */
+                                                navController.navigate(route = "${NavRoutes.playlist.name}/${endpoint.browseId}")
                                             }
                                             /*
                                             childItem.info?.endpoint?.browseId?.let {

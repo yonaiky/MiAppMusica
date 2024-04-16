@@ -14,6 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.compose.routing.defaultStacking
@@ -26,6 +28,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
@@ -78,6 +81,7 @@ const val PINNED_PREFIX = "pinned:"
 @UnstableApi
 @Composable
 fun HomeScreen(
+    navController: NavController,
     onPlaylistUrl: (String) -> Unit,
     openTabFromShortcut: Int
 ) {
@@ -115,27 +119,34 @@ fun HomeScreen(
         globalRoutes()
 
         settingsRoute {
-            SettingsScreen()
+            SettingsScreen(
+                navController = navController,
+            )
         }
 
         historyRoute {
-            HistoryScreen()
+            HistoryScreen(
+                navController = navController,
+            )
         }
 
         localPlaylistRoute { playlistId ->
             LocalPlaylistScreen(
+                navController = navController,
                 playlistId = playlistId ?: error("playlistId cannot be null")
             )
         }
 
         builtInPlaylistRoute { builtInPlaylist ->
             BuiltInPlaylistScreen(
+                navController = navController,
                 builtInPlaylist = builtInPlaylist
             )
         }
 
         playlistRoute { browseId, params, maxDepth ->
             PlaylistScreen(
+                navController = navController,
                 browseId = browseId ?: error("browseId cannot be null"),
                 params = params,
                 maxDepth = maxDepth
@@ -153,6 +164,7 @@ fun HomeScreen(
 
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -164,6 +176,7 @@ fun HomeScreen(
             val context = LocalContext.current
 
             SearchScreen(
+                navController = navController,
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
                     pop()
@@ -182,6 +195,7 @@ fun HomeScreen(
 
         host {
 
+            /*
             var (tabIndex, onTabChanged) =
                 when (openTabFromShortcut) {
                     -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
@@ -193,8 +207,9 @@ fun HomeScreen(
                         }
                     else -> remember { mutableStateOf(openTabFromShortcut) }
                 }
+             */
 
-            /*
+
             var (tabIndex, onTabChanged) =
                 if (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default) == HomeScreenTabs.Default)
                     rememberPreference(
@@ -205,25 +220,47 @@ fun HomeScreen(
                         mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                     }
 
-             */
+
 
             Scaffold(
+                navController = navController,
                 topIconButtonId = R.drawable.settings,
-                onTopIconButtonClick = { settingsRoute() },
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                onTopIconButtonClick = {
+                    //settingsRoute()
+                    navController.navigate(NavRoutes.settings.name)
+                },
+                showButton1 = false, //if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.stats_chart,
-                onTopIconButton2Click = { statisticsTypeRoute(StatisticsType.Today) },
+                onTopIconButton2Click = {
+                    //statisticsTypeRoute(StatisticsType.Today)
+                    navController.navigate(NavRoutes.statistics.name)
+                },
                 showButton2 = false, //showStatsInNavbar,
                 showBottomButton = showSearchTab,
-                onBottomIconButtonClick = { searchRoute("") },
+                onBottomIconButtonClick = {
+                    //searchRoute("")
+                    navController.navigate(NavRoutes.search.name)
+                },
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
                 showTopActions = true,
                 onHomeClick = {},
-                onSettingsClick = { settingsRoute() },
-                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
-                onHistoryClick = { historyRoute() },
-                onSearchClick = { searchRoute("") },
+                onSettingsClick = {
+                    //settingsRoute()
+                    navController.navigate(NavRoutes.settings.name)
+                },
+                onStatisticsClick = {
+                    //statisticsTypeRoute(StatisticsType.Today)
+                    navController.navigate(NavRoutes.statistics.name)
+                },
+                onHistoryClick = {
+                    //historyRoute()
+                    navController.navigate(NavRoutes.history.name)
+                },
+                onSearchClick = {
+                    //searchRoute("")
+                    navController.navigate(NavRoutes.search.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
@@ -240,40 +277,109 @@ fun HomeScreen(
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> QuickPicks(
-                            onAlbumClick = { albumRoute(it) },
-                            onArtistClick = { artistRoute(it) },
-                            onPlaylistClick = { playlistRoute(it) },
-                            onSearchClick = { searchRoute("") },
-                            onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
-                            onSettingsClick = { settingsRoute() },
-                            onHistoryClick = { historyRoute() },
-                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) }
+                            onAlbumClick = {
+                                //albumRoute(it)
+                                navController.navigate(route = "${NavRoutes.album.name}/$it")
+                            },
+                            onArtistClick = {
+                                //artistRoute(it)
+                                navController.navigate(route = "${NavRoutes.artist.name}/$it")
+                            },
+                            onPlaylistClick = {
+                                //playlistRoute(it)
+                                navController.navigate(route = "${NavRoutes.playlist.name}/$it")
+                            },
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onMoodClick = { mood ->
+                                //moodRoute(mood.toUiMood())
+                                navController.currentBackStackEntry?.savedStateHandle?.set("mood", mood.toUiMood())
+                                navController.navigate(NavRoutes.mood.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            },
+                            onHistoryClick = {
+                                //historyRoute()
+                                navController.navigate(NavRoutes.history.name)
+                            },
+                            onStatisticsClick = {
+                                //statisticsTypeRoute(StatisticsType.Today)
+                                navController.navigate(NavRoutes.statistics.name)
+                            },
+                            navController = navController
+
                         )
 
                         1 -> HomeSongs(
-                            onSearchClick = { searchRoute("") },
-                            onSettingsClick = { settingsRoute() }
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            }
                         )
 
                         2 -> HomeArtistList(
-                            onArtistClick = { artistRoute(it.id) },
-                            onSearchClick = { searchRoute("") },
-                            onSettingsClick = { settingsRoute() }
+                            onArtistClick = {
+                                //artistRoute(it.id)
+                                navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
+                            },
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            }
                         )
 
                         3 -> HomeAlbums(
-                            onAlbumClick = { albumRoute(it.id) },
-                            onSearchClick = { searchRoute("") },
-                            onSettingsClick = { settingsRoute() }
+                            onAlbumClick = {
+                                //albumRoute(it.id)
+                                navController.navigate(route = "${NavRoutes.album.name}/${it.id}")
+                            },
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            }
                         )
 
                         4 -> HomeLibrary(
-                            onBuiltInPlaylist = { builtInPlaylistRoute(it) },
-                            onPlaylistClick = { localPlaylistRoute(it.id) },
-                            onSearchClick = { searchRoute("") },
-                            onDeviceListSongsClick = { deviceListSongRoute("") },
-                            onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
-                            onSettingsClick = { settingsRoute() }
+                            onBuiltInPlaylist = {
+                                //builtInPlaylistRoute(it)
+                                navController.navigate(route = "${NavRoutes.builtInPlaylist.name}/${it.ordinal}")
+                            },
+                            onPlaylistClick = {
+                                //localPlaylistRoute(it.id)
+                                navController.navigate(route = "${NavRoutes.localPlaylist.name}/${it.id}")
+                            },
+                            onSearchClick = {
+                                //searchRoute("")
+                                navController.navigate(NavRoutes.search.name)
+                            },
+                            onDeviceListSongsClick = {
+                                //deviceListSongRoute("")
+                                navController.navigate(NavRoutes.onDevice.name)
+                            },
+                            onStatisticsClick = {
+                                //statisticsTypeRoute(StatisticsType.Today)
+                                navController.navigate(NavRoutes.statistics.name)
+                            },
+                            onSettingsClick = {
+                                //settingsRoute()
+                                navController.navigate(NavRoutes.settings.name)
+                            }
 
                         )
                         /*

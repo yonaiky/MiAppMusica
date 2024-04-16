@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
@@ -78,7 +79,10 @@ import kotlinx.coroutines.withContext
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun AlbumScreenWithoutScaffold(browseId: String) {
+fun AlbumScreenWithoutScaffold(
+    navController: NavController,
+    browseId: String
+) {
 
     //val uriHandler = LocalUriHandler.current
     //val saveableStateHolder = rememberSaveableStateHolder()
@@ -168,11 +172,14 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
         globalRoutes()
 
         settingsRoute {
-            SettingsScreen()
+            SettingsScreen(
+                navController = navController,
+            )
         }
 
         searchResultRoute { query ->
             SearchResultScreen(
+                navController = navController,
                 query = query,
                 onSearchAgain = {
                     searchRoute(query)
@@ -184,6 +191,7 @@ fun AlbumScreenWithoutScaffold(browseId: String) {
             val context = LocalContext.current
 
             SearchScreen(
+                navController = navController,
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
                     pop()
