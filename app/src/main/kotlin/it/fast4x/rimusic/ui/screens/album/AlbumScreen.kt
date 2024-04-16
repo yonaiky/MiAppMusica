@@ -238,7 +238,7 @@ fun AlbumScreen(
                     album?.thumbnailUrl,
                     showIcon = albumPage?.otherVersions?.isNotEmpty(),
                     onOtherVersionAvailable = {
-                        println("mediaItem Click other version")
+                        //println("mediaItem Click other version")
                     },
                     //shape = thumbnailRoundness.shape()
                     onClick = { changeShape = !changeShape },
