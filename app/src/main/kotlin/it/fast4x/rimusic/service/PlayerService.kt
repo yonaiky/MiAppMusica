@@ -1801,6 +1801,23 @@ class PlayerService : InvincibleService(),
             startRadio(endpoint = endpoint, justAdd = false)
 
         @UnstableApi
+        fun getRadioSongs(endpoint: NavigationEndpoint.Endpoint.Watch?): List<MediaItem> {
+            YouTubeRadio(
+                endpoint?.videoId,
+                endpoint?.playlistId,
+                endpoint?.playlistSetVideoId,
+                endpoint?.params
+            ).let {
+                var mediaItems = listOf<MediaItem>()
+                runBlocking {
+                    mediaItems =  it.process()
+                    return@runBlocking mediaItems
+                }
+                return mediaItems
+            }
+        }
+
+        @UnstableApi
         fun setRadioMediaItems(endpoint: NavigationEndpoint.Endpoint.Watch?) {
             radioJob?.cancel()
             radio = null

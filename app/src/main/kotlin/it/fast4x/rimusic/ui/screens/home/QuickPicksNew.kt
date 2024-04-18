@@ -124,6 +124,7 @@ import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
 import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
+import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -140,7 +141,7 @@ import kotlinx.coroutines.withContext
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun QuickPicks(
+fun QuickPicksNew(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
@@ -233,12 +234,12 @@ fun QuickPicks(
         loadData()
     }
 
-    /*
+
     val mediaItems =
         binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))
 
-    println("mediaItems quickpics ${mediaItems?.size}")
-    */
+    //println("mediaItems quickpics ${mediaItems?.size}")
+
 
     var refreshing by remember { mutableStateOf(false) }
 
@@ -509,27 +510,27 @@ fun QuickPicks(
 
                         //if (!refreshing) {
                         items(
-                            items = related.songs?.dropLast(if (trending == null) 0 else 1)
+                            items = mediaItems?.drop(if (trending == null) 0 else 1)?.take(20)  //related.songs?.dropLast(if (trending == null) 0 else 1)
                                 ?: emptyList(),
-                            key = Innertube.SongItem::key
+                            //key = Song::id
                         ) { song ->
-                            val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                            downloadState = getDownloadState(song.asMediaItem.mediaId)
+                            val isLocal by remember { derivedStateOf { song.isLocal } }
+                            downloadState = getDownloadState(song.mediaId)
                             val isDownloaded =
-                                if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                                if (!isLocal) downloadedStateMedia(song.mediaId) else true
 
                             SongItem(
                                 song = song,
                                 isDownloaded = isDownloaded,
                                 onDownloadClick = {
-                                    binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                    binder?.cache?.removeResource(song.mediaId)
                                     query {
                                         Database.insert(
                                             Song(
-                                                id = song.asMediaItem.mediaId,
-                                                title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                thumbnailUrl = song.thumbnail?.url,
+                                                id = song.mediaId,
+                                                title = song.mediaMetadata.title.toString(),
+                                                artistsText = song.mediaMetadata.artist.toString(),
+                                                thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(50).toString(),
                                                 durationText = null
                                             )
                                         )
@@ -537,8 +538,8 @@ fun QuickPicks(
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,
-                                            songId = song.asMediaItem.mediaId,
-                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                            songId = song.mediaId,
+                                            songTitle = song.mediaMetadata.title.toString(),
                                             downloadState = isDownloaded
                                         )
 
@@ -552,24 +553,24 @@ fun QuickPicks(
                                             menuState.display {
                                                 NonQueuedMediaItemMenu(
                                                     onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
+                                                    mediaItem = song,
                                                     onDownload = {
-                                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                        binder?.cache?.removeResource(song.mediaId)
                                                         query {
                                                             Database.insert(
                                                                 Song(
-                                                                    id = song.asMediaItem.mediaId,
-                                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                                    thumbnailUrl = song.thumbnail?.url,
+                                                                    id = song.mediaId,
+                                                                    title = song.mediaMetadata.title.toString(),
+                                                                    artistsText = song.mediaMetadata.artist.toString(),
+                                                                    thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(50).toString(),
                                                                     durationText = null
                                                                 )
                                                             )
                                                         }
                                                         manageDownload(
                                                             context = context,
-                                                            songId = song.asMediaItem.mediaId,
-                                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                                            songId = song.mediaId,
+                                                            songTitle = song.mediaMetadata.title.toString(),
                                                             downloadState = isDownloaded
                                                         )
                                                     },
@@ -578,7 +579,7 @@ fun QuickPicks(
                                             }
                                         },
                                         onClick = {
-                                            val mediaItem = song.asMediaItem
+                                            val mediaItem = song
                                             binder?.stopRadio()
                                             binder?.player?.forcePlay(mediaItem)
                                             binder?.setupRadio(

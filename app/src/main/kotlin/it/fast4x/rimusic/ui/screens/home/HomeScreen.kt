@@ -277,7 +277,7 @@ fun HomeScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> QuickPicks(
+                        0 -> QuickPicksNew(
                             onAlbumClick = {
                                 //albumRoute(it)
                                 navController.navigate(route = "${NavRoutes.album.name}/$it")
