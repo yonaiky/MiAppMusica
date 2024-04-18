@@ -229,7 +229,7 @@
     <string name="user_interface">Interface do utilizador</string>
     <string name="ui_tab">IU</string>
     <string name="system_language">Idioma del sistema</string>
-    <string name="biggest">Grande</string>
+    <string name="biggest">Maior</string>
     <string name="set_custom_cache">Definir cache personalizado</string>
     <string name="enter_value_in_mb">Insira o valor em MB</string>
     <string name="value_cannot_be_empty">Valor não pode ser vazio</string>
@@ -443,10 +443,4 @@
     <string name="direction_bottom">Direction bottom</string>
     <string name="event_shake">Agitar</string>
     <string name="shake_to_change_song">Agite para mudar a música</string>
-    <string name="history">History</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="this_week">This week</string>
-    <string name="last_week">Last week</string>
-    <string name="by_casual_played_song">By Casual played song</string>
-    <string name="theme_material_you">Material You</string>
 </resources>
