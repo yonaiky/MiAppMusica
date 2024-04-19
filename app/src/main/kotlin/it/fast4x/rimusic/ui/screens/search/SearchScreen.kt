@@ -35,12 +35,14 @@ import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -163,10 +165,11 @@ fun SearchScreen(
 
                 }
             }
-
+            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)

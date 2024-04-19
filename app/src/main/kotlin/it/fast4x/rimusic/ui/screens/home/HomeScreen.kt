@@ -230,14 +230,14 @@ fun HomeScreen(
                     //settingsRoute()
                     navController.navigate(NavRoutes.settings.name)
                 },
-                showButton1 = false, //if(uiType == UiType.RiMusic) false else true,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = {
                     //statisticsTypeRoute(StatisticsType.Today)
                     navController.navigate(NavRoutes.statistics.name)
                 },
-                showButton2 = false, //showStatsInNavbar,
-                showBottomButton = false, //showSearchTab,
+                showButton2 = if(uiType == UiType.RiMusic) false else showStatsInNavbar,
+                showBottomButton = if(uiType == UiType.RiMusic) false else showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)

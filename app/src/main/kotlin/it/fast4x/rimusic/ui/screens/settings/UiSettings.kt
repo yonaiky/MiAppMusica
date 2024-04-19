@@ -257,11 +257,13 @@ fun  UiSettings() {
                 else Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
+            /*
             .padding(
                 LocalPlayerAwareWindowInsets.current
                     .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
                     .asPaddingValues()
             )
+             */
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
@@ -753,7 +755,7 @@ fun  UiSettings() {
                 }
             )
 
-        /*
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.show_search_tab_in_home),
@@ -761,17 +763,17 @@ fun  UiSettings() {
                 isChecked = showSearchTab,
                 onCheckedChange = { showSearchTab = it }
             )
-         */
 
-        /*
+
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "Show statistics in navigation bar",
+                title = stringResource(R.string.show_statistics_in_navigation_bar),
                 text = "",
                 isChecked = showStatsInNavbar,
                 onCheckedChange = { showStatsInNavbar = it }
             )
-         */
+
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.settings_use_font_type).contains(filterCharSequence,true))

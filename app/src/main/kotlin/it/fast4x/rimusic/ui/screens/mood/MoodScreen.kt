@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.stringResource
@@ -14,10 +15,13 @@ import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
+import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -39,12 +43,12 @@ fun MoodScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-
+        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
-                showButton1 = false,
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

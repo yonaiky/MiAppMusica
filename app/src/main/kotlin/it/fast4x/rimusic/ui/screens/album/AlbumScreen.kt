@@ -37,6 +37,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
@@ -55,6 +56,7 @@ import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -245,9 +247,12 @@ fun AlbumScreen(
                     shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
+            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

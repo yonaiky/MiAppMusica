@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -91,6 +92,11 @@ inline fun NavigationRail(
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
+                    .height(
+                        if(uiType == UiType.ViMusic)
+                            if (showButton2) Dimensions.headerHeight else Dimensions.halfheaderHeight
+                        else 0.dp
+                    )
                     /*
                     .size(
                         //width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,

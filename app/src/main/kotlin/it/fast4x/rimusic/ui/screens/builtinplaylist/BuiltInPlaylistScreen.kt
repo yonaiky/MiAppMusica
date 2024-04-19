@@ -26,6 +26,7 @@ import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.Scaffold
@@ -37,6 +38,7 @@ import it.fast4x.rimusic.ui.screens.searchResultRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
@@ -128,11 +130,14 @@ fun BuiltInPlaylistScreen(
             )
         }
 */
+        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+
         host {
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

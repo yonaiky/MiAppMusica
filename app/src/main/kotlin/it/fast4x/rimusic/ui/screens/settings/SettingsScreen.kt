@@ -31,6 +31,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
@@ -39,7 +40,9 @@ import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 
@@ -61,12 +64,13 @@ fun SettingsScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-
+        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
+                showButton1 = if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
