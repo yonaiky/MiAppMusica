@@ -59,6 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -160,7 +161,7 @@ fun QuickPicksNew(
     val playEventType  by rememberPreference(playEventsTypeKey, PlayEventsType.MostPlayed)
 
     var trending by persist<Song?>("home/trending")
-
+    var mediaItems by persistList<MediaItem>("home/relSongs")
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryAlbums")
@@ -225,6 +226,9 @@ fun QuickPicksNew(
 
             discoverPage = Innertube.discoverPage()
 
+            mediaItems =
+                binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))!!
+
         }.onFailure {
             //println("mediaItem refreshed failure")
         }
@@ -235,8 +239,8 @@ fun QuickPicksNew(
     }
 
 
-    val mediaItems =
-        binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))
+    //val mediaItems =
+    //    binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))
 
     //println("mediaItems quickpics ${mediaItems?.size}")
 
