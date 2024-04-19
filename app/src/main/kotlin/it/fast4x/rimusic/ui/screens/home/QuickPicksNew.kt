@@ -404,7 +404,7 @@ fun QuickPicksNew(
                         .padding(bottom = 8.dp)
                 )
 
-                relatedPageResult?.getOrNull()?.let { related ->
+                //relatedPageResult?.getOrNull()?.let { related ->
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
                         rows = GridCells.Fixed(3),
@@ -656,7 +656,7 @@ fun QuickPicksNew(
                             }
                         }
                     }
-
+                    /*
                     if (showRelatedAlbums)
                         related.albums?.let { albums ->
                             BasicText(
@@ -734,7 +734,7 @@ fun QuickPicksNew(
                                 }
                             }
                         }
-
+                    */
                     discoverPage?.getOrNull()?.let { page ->
                         if (page.moods.isNotEmpty()) {
 
@@ -775,7 +775,7 @@ fun QuickPicksNew(
 
                     Spacer(modifier = Modifier.height(100.dp))
 
-
+                /*
                 } ?: relatedPageResult?.exceptionOrNull()?.let {
                     BasicText(
                         text = stringResource(R.string.an_error_has_occurred),
@@ -824,6 +824,7 @@ fun QuickPicksNew(
                         }
                     }
                 }
+                */
             }
 
 
