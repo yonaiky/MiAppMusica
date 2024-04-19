@@ -229,7 +229,7 @@
     <string name="user_interface">Interface do utilizador</string>
     <string name="ui_tab">IU</string>
     <string name="system_language">Idioma del sistema</string>
-    <string name="biggest">Grande</string>
+    <string name="biggest">Maior</string>
     <string name="set_custom_cache">Definir cache personalizado</string>
     <string name="enter_value_in_mb">Insira o valor em MB</string>
     <string name="value_cannot_be_empty">Valor não pode ser vazio</string>
