@@ -772,7 +772,11 @@ fun Controls(
             Image(
                 painter = painterResource(R.drawable.play_skip_back),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                colorFilter = ColorFilter.tint(
+                    if (uiType == UiType.RiMusic)
+                        colorPalette.collapsedPlayerProgressBar
+                    else colorPalette.text
+                ),
                 modifier = Modifier
                     .combinedClickable(
                         indication = rememberRipple(bounded = false),
@@ -863,7 +867,11 @@ fun Controls(
                 Image(
                     painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar), //if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed) ColorFilter.tint(colorPalette.iconButtonPlayer) else ColorFilter.tint(colorPalette.text),
+                    colorFilter = ColorFilter.tint(
+                        if (uiType == UiType.RiMusic)
+                            colorPalette.collapsedPlayerProgressBar
+                        else colorPalette.text
+                    ), //if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed) ColorFilter.tint(colorPalette.iconButtonPlayer) else ColorFilter.tint(colorPalette.text),
                     modifier = Modifier
                         .rotate(rotationAngle)
                         .align(Alignment.Center)
@@ -895,7 +903,11 @@ fun Controls(
             Image(
                 painter = painterResource(R.drawable.play_skip_forward),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                colorFilter = ColorFilter.tint(
+                    if (uiType == UiType.RiMusic)
+                        colorPalette.collapsedPlayerProgressBar
+                    else colorPalette.text
+                ),
                 modifier = Modifier
                     .combinedClickable(
                         indication = rememberRipple(bounded = false),
