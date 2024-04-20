@@ -359,6 +359,7 @@ fun Controls(
                         if (effectRotationEnabled) isRotated = !isRotated
                     },
                     modifier = Modifier
+                        .padding(start = 5.dp)
                         .size(24.dp)
                 )
 
