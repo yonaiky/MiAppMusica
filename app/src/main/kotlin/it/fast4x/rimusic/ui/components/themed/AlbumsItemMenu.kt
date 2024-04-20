@@ -104,9 +104,9 @@ fun AlbumsItemMenu(
             onDownloadAlbumCover = onDownloadAlbumCover,
             onPlayNext = onPlayNext,
             onEnqueue = onEnqueue,
-            onAddToPlaylist = onAddToPlaylist
+            onAddToPlaylist = { isViewingPlaylists = true } //onAddToPlaylist
         )
-    } else {
+    } //else {
         AnimatedContent(
             targetState = isViewingPlaylists,
             transitionSpec = {
@@ -440,5 +440,5 @@ fun AlbumsItemMenu(
                 }
             }
         }
-    }
+    //}
 }
