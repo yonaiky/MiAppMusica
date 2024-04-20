@@ -21,6 +21,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
@@ -36,6 +37,7 @@ import it.fast4x.rimusic.ui.screens.history.HistoryScreen
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.home.QuickPicks
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
+import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
 import it.fast4x.rimusic.ui.screens.mood.MoodList
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
@@ -49,7 +51,8 @@ import it.fast4x.rimusic.utils.preferences
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
-    ExperimentalMaterialApi::class, ExperimentalTextApi::class, ExperimentalComposeUiApi::class
+    ExperimentalMaterialApi::class, ExperimentalTextApi::class, ExperimentalComposeUiApi::class,
+    KotlinCsvExperimental::class
 )
 @Composable
 fun AppNavigation(
@@ -283,6 +286,7 @@ fun AppNavigation(
                 LocalPlaylistScreen(
                     navController = navController,
                     playlistId = id,
+                    //onDelete = popDestination
                 )
             //}
         }

@@ -74,6 +74,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
@@ -176,6 +177,7 @@ import java.util.Date
 @UnstableApi
 @Composable
 fun LocalPlaylistSongs(
+    navController: NavController,
     playlistId: Long,
     onDelete: () -> Unit,
 ) {

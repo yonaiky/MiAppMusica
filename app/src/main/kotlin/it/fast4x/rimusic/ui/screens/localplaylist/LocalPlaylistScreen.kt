@@ -71,6 +71,7 @@ fun LocalPlaylistScreen(
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> LocalPlaylistSongs(
+                            navController = navController,
                             playlistId = playlistId,
                             onDelete = pop
                         )
