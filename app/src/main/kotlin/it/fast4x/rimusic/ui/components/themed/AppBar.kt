@@ -181,7 +181,7 @@ fun appBar(
                 HorizontalDivider()
                 DropdownMenuItem(
                     colors = menuItemColors(),
-                    text = { Text("Settings") },
+                    text = { Text(stringResource(R.string.settings)) },
                     leadingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.settings),

@@ -769,7 +769,7 @@ fun  UiSettings() {
 
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.show_statistics_in_navigation_bar).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.show_statistics_in_navigation_bar),
                 text = "",
