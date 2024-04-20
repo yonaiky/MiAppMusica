@@ -305,7 +305,7 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
                 continuation = otherSongsPage.continuation
             }
 
-            if (songs.size > 1000) break
+            if (songs.size > 5000) break
             //println("mediaItem 2 loop continuation ${continuation} songs ${songs.size}")
         }
     }
