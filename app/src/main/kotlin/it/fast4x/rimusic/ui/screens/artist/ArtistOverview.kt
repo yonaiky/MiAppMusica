@@ -578,7 +578,7 @@ fun ArtistOverview(
 
             if(uiType == UiType.ViMusic)
                 youtubeArtistPage?.radioEndpoint?.let { endpoint ->
-                    /*
+
                     MultiFloatingActionsContainer(
                         iconId = R.drawable.radio,
                         onClick = {
@@ -588,17 +588,17 @@ fun ArtistOverview(
                         onClickSettings = onSettingsClick,
                         onClickSearch = onSearchClick
                     )
-                     */
+                    /*
 
-                    FloatingActionsContainerWithScrollToTop(
-                        scrollState = scrollState,
-                        iconId = R.drawable.radio,
-                        onClick = {
-                            binder?.stopRadio()
-                            binder?.playRadio(endpoint)
-                        }
-                    )
-
+                   FloatingActionsContainerWithScrollToTop(
+                       scrollState = scrollState,
+                       iconId = R.drawable.radio,
+                       onClick = {
+                           binder?.stopRadio()
+                           binder?.playRadio(endpoint)
+                       }
+                   )
+                    */
                 }
 
 

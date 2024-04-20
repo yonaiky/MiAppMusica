@@ -579,18 +579,19 @@ fun HomeLibrary(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         if(uiType == UiType.ViMusic)
-            FloatingActionsContainerWithScrollToTop(
+            MultiFloatingActionsContainer(
+                iconId = R.drawable.search,
+                onClick = onSearchClick,
+                onClickSettings = onSettingsClick,
+                onClickSearch = onSearchClick
+            )
+
+            /*
+        FloatingActionsContainerWithScrollToTop(
                 lazyGridState = lazyGridState,
                 iconId = R.drawable.search,
                 onClick = onSearchClick
             )
-            /*
-        MultiFloatingActionsContainer(
-            iconId = R.drawable.search,
-            onClick = onSearchClick,
-            onClickSettings = onSettingsClick,
-            onClickSearch = onSearchClick
-        )
              */
 
 

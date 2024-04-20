@@ -540,18 +540,19 @@ fun HomeSongs(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         if(uiType == UiType.ViMusic)
-            FloatingActionsContainerWithScrollToTop(
+            MultiFloatingActionsContainer(
+                iconId = R.drawable.search,
+                onClick = onSearchClick,
+                onClickSettings = onSettingsClick,
+                onClickSearch = onSearchClick
+            )
+
+            /*
+        FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.search,
                 onClick = onSearchClick
             )
-            /*
-        MultiFloatingActionsContainer(
-            iconId = R.drawable.search,
-            onClick = onSearchClick,
-            onClickSettings = onSettingsClick,
-            onClickSearch = onSearchClick
-        )
 
              */
 

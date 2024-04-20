@@ -754,19 +754,6 @@ fun AlbumSongs(
 
 
             if(uiType == UiType.ViMusic)
-                FloatingActionsContainerWithScrollToTop(
-                    lazyListState = lazyListState,
-                    iconId = R.drawable.shuffle,
-                    onClick = {
-                        if (songs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Song::asMediaItem)
-                            )
-                        }
-                    }
-                )
-                /*
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {
@@ -779,6 +766,20 @@ fun AlbumSongs(
                     },
                     onClickSettings = onSettingsClick,
                     onClickSearch = onSearchClick
+                )
+
+                /*
+                FloatingActionsContainerWithScrollToTop(
+                    lazyListState = lazyListState,
+                    iconId = R.drawable.shuffle,
+                    onClick = {
+                        if (songs.isNotEmpty()) {
+                            binder?.stopRadio()
+                            binder?.player?.forcePlayFromBeginning(
+                                songs.shuffled().map(Song::asMediaItem)
+                            )
+                        }
+                    }
                 )
 
                  */

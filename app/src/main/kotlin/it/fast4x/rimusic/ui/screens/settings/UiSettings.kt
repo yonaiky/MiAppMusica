@@ -632,6 +632,9 @@ fun  UiSettings() {
                         playerVisualizerType = PlayerVisualizerType.Disabled
                         playerThumbnailSize = PlayerThumbnailSize.Medium
                         thumbnailTapEnabled = true
+                        showSearchTab = true
+                        showStatsInNavbar = true
+                        navigationBarPosition = NavigationBarPosition.Left
                     } else {
                         disablePlayerHorizontalSwipe = false
                         disableIconButtonOnTop = false

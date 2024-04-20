@@ -233,13 +233,6 @@ fun QuickPicks(
         loadData()
     }
 
-    /*
-    val mediaItems =
-        binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))
-
-    println("mediaItems quickpics ${mediaItems?.size}")
-    */
-
     var refreshing by remember { mutableStateOf(false) }
 
     fun refresh() {
@@ -822,21 +815,23 @@ fun QuickPicks(
             }
 
 
-            /*
-            MultiFloatingActionsContainer(
-                iconId = R.drawable.search,
-                onClick = onSearchClick,
-                onClickSettings = onSettingsClick,
-                onClickSearch = onSearchClick
-            )
-             */
+
 
             if(uiType == UiType.ViMusic)
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.search,
+                    onClick = onSearchClick,
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
+
+                /*
                 FloatingActionsContainerWithScrollToTop(
                     scrollState = scrollState,
                     iconId = R.drawable.search,
                     onClick = onSearchClick
                 )
+                 */
 
 
 
