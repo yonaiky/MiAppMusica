@@ -106,7 +106,7 @@ fun HomeAlbums(
         Database.albums(sortBy, sortOrder).collect { items = it }
     }
 
-    val thumbnailSizeDp = Dimensions.thumbnails.song * 2
+    val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val sortOrderIconRotation by animateFloatAsState(

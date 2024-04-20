@@ -99,7 +99,7 @@ fun HomeArtistList(
     }
 
 
-    val thumbnailSizeDp = Dimensions.thumbnails.song * 2
+    val thumbnailSizeDp = Dimensions.thumbnails.artist + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val sortOrderIconRotation by animateFloatAsState(
