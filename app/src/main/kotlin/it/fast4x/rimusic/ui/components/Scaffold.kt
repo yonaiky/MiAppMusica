@@ -67,6 +67,7 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.NavigationRail
 import it.fast4x.rimusic.ui.components.ScaffoldTB
+import it.fast4x.rimusic.ui.components.themed.appBar
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -139,178 +140,14 @@ fun Scaffold(
             Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         else Modifier
 
-        var expanded by remember { mutableStateOf(false) }
+        //var expanded by remember { mutableStateOf(false) }
 
         androidx.compose.material3.Scaffold(
             modifier = customModifier,
             containerColor = colorPalette.background0,
             topBar = {
                 if(uiType == UiType.RiMusic) {
-                    TopAppBar(
-                        navigationIcon = {
-                            //val currentRoute = navController.currentBackStackEntry?.destination?.route
-                            //println("navController current destination and route ${navController.currentDestination} $currentRoute")
-                            if (getCurrentRoute(navController) != "home")
-                                IconButton(
-                                    onClick = {
-                                        if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
-                                            navController.popBackStack()
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.chevron_back),
-                                        tint = colorPalette.favoritesIcon,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                        },
-                        title = {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.app_icon),
-                                    colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .clickable {
-                                            //onHomeClick()
-                                            navController.navigate(NavRoutes.home.name)
-                                        }
-                                )
-                                BasicText(
-                                    text = "Music",
-                                    style = TextStyle(
-                                        fontSize = typography.xxl.semiBold.fontSize,
-                                        fontWeight = typography.xxxl.semiBold.fontWeight,
-                                        color = colorPalette.text
-                                    ),
-                                    modifier = Modifier
-                                        .clickable {
-                                            //onHomeClick()
-                                            navController.navigate(NavRoutes.home.name)
-                                        }
-                                )
-                            }
-                        },
-                        actions = {
-                            //if (showTopActions == true) {
-                                IconButton(
-                                    onClick = {
-                                        //if (onSearchClick != null) {
-                                        //onSearchClick()
-                                        navController.navigate(NavRoutes.search.name)
-                                        //}
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.search),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                                IconButton(onClick = { expanded = !expanded }) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.burger),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                modifier = Modifier.background(colorPalette.background0)
-                            ) {
-                                DropdownMenuItem(
-                                    colors = menuItemColors(),
-                                    text = { Text(stringResource(R.string.history)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.history),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        //if (onHistoryClick != null) {
-                                        //onHistoryClick()
-                                        navController.navigate(NavRoutes.history.name)
-                                        //}
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    colors = menuItemColors(),
-                                    text = { Text(stringResource(R.string.statistics)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        //if (onStatisticsClick != null) {
-                                        //onStatisticsClick()
-                                        navController.navigate(NavRoutes.statistics.name)
-                                        //}
-                                    }
-                                )
-                                HorizontalDivider()
-                                DropdownMenuItem(
-                                    colors = menuItemColors(),
-                                    text = { Text("Settings") },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.settings),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        //if (onSettingsClick != null) {
-                                        //onSettingsClick()
-                                        navController.navigate(NavRoutes.settings.name)
-                                        //}
-                                    }
-                                )
-                            }
-
-                                    /*
-                                IconButton(onClick = { }) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.stats_chart),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                                if (onSettingsClick != null) {
-                                    IconButton(onClick = onSettingsClick) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.settings),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                }
-                                 */
-                            //}
-                        },
-                        scrollBehavior = scrollBehavior,
-                        colors = TopAppBarColors(
-                            containerColor = colorPalette.background0,
-                            titleContentColor = colorPalette.text,
-                            scrolledContainerColor = colorPalette.background0,
-                            navigationIconContentColor = colorPalette.background0,
-                            actionIconContentColor = colorPalette.text
-                        )
-                    )
+                    appBar(navController)
                 }
             },
 
