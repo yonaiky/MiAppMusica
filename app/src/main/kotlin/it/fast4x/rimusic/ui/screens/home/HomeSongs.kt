@@ -235,6 +235,7 @@ fun HomeSongs(
                     horizontalArrangement = Arrangement.SpaceBetween, //.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .padding(horizontal = 12.dp)
                         .fillMaxSize()
                 ) {
 

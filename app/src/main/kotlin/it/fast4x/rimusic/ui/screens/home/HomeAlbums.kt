@@ -180,7 +180,7 @@ fun HomeAlbums(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 12.dp)
                         .padding(bottom = 20.dp)
                         .fillMaxWidth()
                 ){

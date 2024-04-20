@@ -303,6 +303,7 @@ fun HomeLibrary(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
+                            .padding(horizontal = 12.dp)
                             .padding(top = 50.dp)
                             .fillMaxSize()
                     ) {
