@@ -307,7 +307,8 @@ fun Controls(
                         style = TextStyle(
                             color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
                             fontStyle = typography.l.bold.fontStyle,
-                            fontSize = typography.l.bold.fontSize
+                            fontSize = typography.l.bold.fontSize,
+                            fontFamily = typography.l.bold.fontFamily
                         ),
                         onClick = {
                             //if (albumId != null) onGoToAlbum(albumId)
@@ -322,7 +323,8 @@ fun Controls(
                         style = TextStyle(
                             color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
                             fontStyle = typography.l.bold.fontStyle,
-                            fontSize = typography.l.bold.fontSize
+                            fontSize = typography.l.bold.fontSize,
+                            fontFamily = typography.l.bold.fontFamily
                         ),
                         maxLines = 1,
                         modifier = Modifier
@@ -447,7 +449,8 @@ fun Controls(
                 style = TextStyle(
                     color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
                     fontStyle = typography.s.bold.fontStyle,
-                    fontSize = typography.s.bold.fontSize
+                    fontSize = typography.s.bold.fontSize,
+                    fontFamily = typography.s.bold.fontFamily
                 ),
                 onClick = {
                     if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
@@ -465,7 +468,8 @@ fun Controls(
             style = TextStyle(
                 color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
                 fontStyle = typography.s.bold.fontStyle,
-                fontSize = typography.s.bold.fontSize
+                fontSize = typography.s.bold.fontSize,
+                fontFamily = typography.s.bold.fontFamily
             ),
             maxLines = 1,
             modifier = Modifier
