@@ -253,7 +253,8 @@ fun BuiltInPlaylistSongs(
                      .filter {
                          downloads[it]?.state == Download.STATE_COMPLETED
                      }
-                     .toList().let { Database.getSongsList(it) }
+                     .toList()
+                     .let { Database.getSongsList(it) }
              }
 
              BuiltInPlaylist.Favorites -> Database
@@ -285,6 +286,36 @@ fun BuiltInPlaylistSongs(
         .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
         .take(4)
         .map { it.thumbnailUrl.thumbnail(playlistThumbnailSizePx / 2) }
+
+
+    if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
+        when (sortOrder) {
+            SortOrder.Ascending -> {
+                when (sortBy) {
+                    SongSortBy.Title -> songs = songs.sortedBy { it.title }
+                    SongSortBy.PlayTime -> songs = songs.sortedBy { it.totalPlayTimeMs }
+                    SongSortBy.Duration -> songs = songs.sortedBy { it.durationText }
+                    SongSortBy.Artist -> songs = songs.sortedBy { it.artistsText }
+                    SongSortBy.DatePlayed -> {}
+                    SongSortBy.DateLiked -> songs = songs.sortedBy { it.likedAt }
+                    SongSortBy.DateAdded -> {}
+                }
+            }
+            SortOrder.Descending -> {
+                when (sortBy) {
+                    SongSortBy.Title -> songs = songs.sortedByDescending { it.title }
+                    SongSortBy.PlayTime -> songs = songs.sortedByDescending { it.totalPlayTimeMs }
+                    SongSortBy.Duration -> songs = songs.sortedByDescending { it.durationText }
+                    SongSortBy.Artist -> songs = songs.sortedByDescending { it.artistsText }
+                    SongSortBy.DatePlayed -> {}
+                    SongSortBy.DateLiked -> songs = songs.sortedByDescending { it.likedAt }
+                    SongSortBy.DateAdded -> {}
+                }
+            }
+        }
+
+    }
+
 
 
     var filterCharSequence: CharSequence
@@ -809,7 +840,8 @@ fun BuiltInPlaylistSongs(
                 ) {
 
                     if ( builtInPlaylist == BuiltInPlaylist.Favorites ||
-                        builtInPlaylist == BuiltInPlaylist.Offline )  {
+                        builtInPlaylist == BuiltInPlaylist.Offline ||
+                        builtInPlaylist == BuiltInPlaylist.Downloaded )  {
                         HeaderIconButton(
                             icon = R.drawable.arrow_up,
                             color = colorPalette.text,

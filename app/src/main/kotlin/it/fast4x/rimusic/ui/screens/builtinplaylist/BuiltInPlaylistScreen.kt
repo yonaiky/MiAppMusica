@@ -50,6 +50,7 @@ import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -94,6 +95,7 @@ fun BuiltInPlaylistScreen(
     val showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
+    val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     PersistMapCleanup(tagPrefix = "${builtInPlaylist.name}/")
 
@@ -140,8 +142,8 @@ fun BuiltInPlaylistScreen(
                 showButton1 = if(uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
-                showBottomButton = showSearchTab,
+                showButton2 = if(uiType == UiType.RiMusic) false else showStatsInNavbar,
+                showBottomButton = if(uiType == UiType.RiMusic) false else showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
