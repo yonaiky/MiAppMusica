@@ -126,6 +126,9 @@ const val menuStyleKey = "menuStyle"
 const val shakeEventEnabledKey = "shakeEventEnabled"
 const val showStatsInNavbarKey = "showStatsInNavbar"
 const val showActionsBarKey = "showActionsBar"
+const val floatActionIconOffsetXkey = "floatActionIconOffsetX"
+const val floatActionIconOffsetYkey = "floatActionIconOffsetY"
+
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

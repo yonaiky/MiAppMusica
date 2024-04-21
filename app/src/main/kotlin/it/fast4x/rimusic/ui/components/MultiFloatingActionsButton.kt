@@ -60,6 +60,9 @@ import it.fast4x.rimusic.ui.components.themed.PrimaryButton
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.overlay
+import it.fast4x.rimusic.utils.floatActionIconOffsetXkey
+import it.fast4x.rimusic.utils.floatActionIconOffsetYkey
+import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -118,8 +121,11 @@ fun MultiFloatingActionsButton (
                 currentState = MultiFabState.Collapsed
             } else Modifier.fillMaxSize()
 
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    //var offsetX by remember { mutableStateOf(0f) }
+    //var offsetY by remember { mutableStateOf(0f) }
+
+    var offsetX = rememberPreference(floatActionIconOffsetXkey, 0F )
+    var offsetY = rememberPreference(floatActionIconOffsetYkey, 0F )
 
     Box(
         modifier = modifier,
@@ -161,7 +167,10 @@ fun MultiFloatingActionsButton (
 
                 Box(
                     modifier = Modifier
-                        .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                        .offset {
+                            //IntOffset(offsetX.roundToInt(), offsetY.roundToInt())
+                            IntOffset(offsetX.value.toInt(), offsetY.value.toInt())
+                        }
                         .pointerInput(Unit) {
                             /*
                             detectDragGestures { change, dragAmount ->
@@ -170,10 +179,11 @@ fun MultiFloatingActionsButton (
                                 offsetY += dragAmount.y
                             }
                              */
-                            detectDragGesturesAfterLongPress{ change, dragAmount ->
+                            detectDragGesturesAfterLongPress { change, dragAmount ->
                                 change.consume()
-                                offsetX += dragAmount.x
-                                offsetY += dragAmount.y
+                                offsetX.value += dragAmount.x
+                                offsetY.value += dragAmount.y
+
                             }
                         }
                         .clip(RoundedCornerShape(16.dp))
