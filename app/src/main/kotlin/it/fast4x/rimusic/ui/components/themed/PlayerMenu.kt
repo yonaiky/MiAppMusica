@@ -39,7 +39,7 @@ fun PlayerMenu(
     binder: PlayerService.Binder,
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
-
+    onClosePlayer: () -> Unit,
     ) {
 
     val menuStyle by rememberPreference(
@@ -105,6 +105,7 @@ fun PlayerMenu(
                 }
             },
             onHideFromDatabase = { isHiding = true },
+            onClosePlayer = onClosePlayer
         )
     } else {
         BaseMediaItemMenu(
@@ -130,7 +131,8 @@ fun PlayerMenu(
             },
             onShowSleepTimer = {},
             onHideFromDatabase = { isHiding = true },
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
+            onClosePlayer = onClosePlayer
         )
     }
 

@@ -1164,7 +1164,10 @@ fun Player(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = mediaItem,
-                                                binder = binder
+                                                binder = binder,
+                                                onClosePlayer = {
+                                                    layoutState.collapseSoft()
+                                                }
                                             )
                                         }
                                     }
@@ -1479,7 +1482,11 @@ fun Player(
                                             navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = mediaItem,
-                                            binder = binder
+                                            binder = binder,
+                                            onClosePlayer = {
+                                                layoutState.collapseSoft()
+                                            }
+
                                         )
                                     }
                                 },
@@ -1499,8 +1506,10 @@ fun Player(
                                             navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = mediaItem,
-                                            binder = binder
-
+                                            binder = binder,
+                                            onClosePlayer = {
+                                                layoutState.collapseSoft()
+                                            }
                                         )
                                     }
                                 },

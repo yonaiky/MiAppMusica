@@ -422,6 +422,7 @@ fun BaseMediaItemMenu(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
+    onClosePlayer: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -449,8 +450,18 @@ fun BaseMediaItemMenu(
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
-        onGoToAlbum = { navController.navigate(route = "${NavRoutes.album.name}/${it}") }, //albumRoute::global,
-        onGoToArtist = { navController.navigate(route = "${NavRoutes.artist.name}/${it}") }, //artistRoute::global,
+        onGoToAlbum = {
+            navController.navigate(route = "${NavRoutes.album.name}/${it}")
+            if (onClosePlayer != null) {
+                onClosePlayer()
+            }
+        }, //albumRoute::global,
+        onGoToArtist = {
+            navController.navigate(route = "${NavRoutes.artist.name}/${it}")
+            if (onClosePlayer != null) {
+                onClosePlayer()
+            }
+        }, //artistRoute::global,
         onShare = {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
