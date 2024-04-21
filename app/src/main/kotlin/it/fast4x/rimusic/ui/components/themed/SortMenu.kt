@@ -33,6 +33,7 @@ fun SortMenu (
     onPosition: (() -> Unit)? = null,
     onArtist: (() -> Unit)? = null,
     onArtistAndAlbum: (() -> Unit)? = null,
+    onAlbum: (() -> Unit)? = null,
     onAlbumYear: (() -> Unit)? = null,
     onYear: (() -> Unit)? = null,
     onDateAdded: (() -> Unit)? = null,
@@ -139,6 +140,16 @@ fun SortMenu (
                 onClick = {
                     onDismiss()
                     onArtist()
+                }
+            )
+        }
+        onAlbum?.let {
+            MenuEntry(
+                icon = R.drawable.album,
+                text = stringResource(R.string.sort_album),
+                onClick = {
+                    onDismiss()
+                    onAlbum()
                 }
             )
         }

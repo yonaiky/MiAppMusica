@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.enums
 
 enum class PlaylistSongSortBy {
+    Album,
     AlbumYear,
     Artist,
     ArtistAndAlbum,

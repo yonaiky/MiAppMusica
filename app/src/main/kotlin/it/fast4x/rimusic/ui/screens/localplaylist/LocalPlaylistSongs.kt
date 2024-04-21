@@ -958,6 +958,7 @@ fun LocalPlaylistSongs(
 
                     BasicText(
                         text = when (sortBy) {
+                            PlaylistSongSortBy.Album -> stringResource(R.string.sort_album)
                             PlaylistSongSortBy.AlbumYear -> stringResource(R.string.sort_album_year)
                             PlaylistSongSortBy.Position -> stringResource(R.string.sort_position)
                             PlaylistSongSortBy.Title -> stringResource(R.string.sort_title)
@@ -977,6 +978,7 @@ fun LocalPlaylistSongs(
                                         title = stringResource(R.string.sorting_order),
                                         onDismiss = menuState::hide,
                                         onTitle = { sortBy = PlaylistSongSortBy.Title },
+                                        onAlbum = { sortBy = PlaylistSongSortBy.Album },
                                         onAlbumYear = { sortBy = PlaylistSongSortBy.AlbumYear },
                                         onDatePlayed = { sortBy = PlaylistSongSortBy.DatePlayed },
                                         onPosition = { sortBy = PlaylistSongSortBy.Position },
