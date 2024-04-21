@@ -130,11 +130,14 @@ fun OtherSettings() {
                 navigationBarPosition == NavigationBarPosition.Bottom) 1f
             else Dimensions.contentWidthRightBar)
             .verticalScroll(rememberScrollState())
+            /*
             .padding(
                 LocalPlayerAwareWindowInsets.current
                     .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
                     .asPaddingValues()
             )
+
+             */
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.tab_miscellaneous),

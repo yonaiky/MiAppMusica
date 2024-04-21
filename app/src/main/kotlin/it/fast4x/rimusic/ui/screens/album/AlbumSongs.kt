@@ -74,7 +74,9 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -425,12 +427,23 @@ fun AlbumSongs(
                         .fillMaxSize()
                 ) {
                     item(
+                        key="title"
+                    ) {
+                        HeaderWithIcon(
+                            title = album?.title ?: "",
+                            iconId = R.drawable.album,
+                            enabled = false,
+                            showIcon = false,
+                            modifier = Modifier,
+                            onClick = {}
+                        )
+                    }
+                    item(
                         key = "header",
                         contentType = 0
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             headerContent {
-
                                 HeaderIconButton(
                                     icon = R.drawable.downloaded,
                                     color = colorPalette.text,
@@ -614,8 +627,6 @@ fun AlbumSongs(
 
                                     }
                                 )
-
-
                             }
 
                             if (!isLandscape) {

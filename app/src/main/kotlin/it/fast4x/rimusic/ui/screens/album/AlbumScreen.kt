@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -169,7 +170,11 @@ fun AlbumScreen(
                         val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
-                        Header(title = album?.title ?: "Unknown") {
+                        Header(
+                            //title = album?.title ?: "Unknown"
+                            title = "",
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        ) {
                             textButton?.invoke()
 
                             Spacer(

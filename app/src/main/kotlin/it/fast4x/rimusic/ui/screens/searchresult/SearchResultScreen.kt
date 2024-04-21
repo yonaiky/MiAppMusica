@@ -237,6 +237,7 @@ fun SearchResultScreen(
                                 headerContent = headerContent,
                                 itemContent = { album ->
                                     AlbumItem(
+                                        yearCentered = false,
                                         album = album,
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,

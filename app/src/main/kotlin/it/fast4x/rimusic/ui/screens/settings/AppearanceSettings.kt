@@ -169,11 +169,14 @@ fun AppearanceSettings() {
                 else Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
+            /*
             .padding(
                 LocalPlayerAwareWindowInsets.current
                     .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
                     .asPaddingValues()
             )
+
+             */
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.player_appearance),

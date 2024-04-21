@@ -74,8 +74,8 @@ fun Header(
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp)
-            .height(Dimensions.mediumheaderHeight)
+            //.padding(horizontal = 16.dp, vertical = 16.dp)
+            //.height(Dimensions.mediumheaderHeight)
             .fillMaxWidth()
     ) {
         titleContent()
@@ -173,7 +173,7 @@ fun HeaderWithIcon (
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .requiredHeight(Dimensions.halfheaderHeight)
+            //.requiredHeight(Dimensions.halfheaderHeight)
             .padding(all = 8.dp)
 
     ){

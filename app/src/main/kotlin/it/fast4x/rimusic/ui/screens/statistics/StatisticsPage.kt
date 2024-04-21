@@ -250,11 +250,14 @@ fun StatisticsPage(
                     navigationBarPosition == NavigationBarPosition.Bottom) 1f
                 else Dimensions.contentWidthRightBar)
                 .verticalScroll(scrollState)
+                /*
                 .padding(
                     windowInsets
                         .only(WindowInsetsSides.Vertical)
                         .asPaddingValues()
                 )
+
+                 */
         ) {
 
             HeaderWithIcon(
