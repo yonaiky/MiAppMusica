@@ -75,6 +75,7 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
@@ -275,6 +276,17 @@ fun ArtistOverview(
                                 }
                             )
                         }
+                        youtubeArtistPage?.songs?.let { songs ->
+                            HeaderIconButton(
+                                icon = R.drawable.enqueue,
+                                enabled = true,
+                                color = colorPalette.text,
+                                onClick = {
+                                    binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem))
+                                }
+                            )
+                        }
+
                     }
                 }
 

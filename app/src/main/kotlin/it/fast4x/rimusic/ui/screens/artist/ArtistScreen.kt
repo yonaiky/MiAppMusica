@@ -74,6 +74,7 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.artistScreenTabIndexKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
@@ -102,6 +103,9 @@ fun ArtistScreen(
     //val saveableStateHolder = rememberSaveableStateHolder()
 
     //var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
+
+    val binder = LocalPlayerServiceBinder.current
+
     var tabIndex by remember {
         mutableStateOf(0)
     }
@@ -153,6 +157,8 @@ fun ArtistScreen(
                 }
             }
     }
+
+    val listMediaItems = remember { mutableListOf<MediaItem>() }
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
@@ -278,6 +284,96 @@ fun ArtistScreen(
                         }
                     }
                 }
+
+            val localHeaderContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
+                { textButton ->
+                    if (artist?.timestamp == null) {
+                        HeaderPlaceholder(
+                            modifier = Modifier
+                                .shimmer()
+                        )
+                    } else {
+                        val (colorPalette) = LocalAppearance.current
+                        val context = LocalContext.current
+
+                        Header(title = artist?.name ?: "Unknown") {
+                            textButton?.invoke()
+
+
+                            listMediaItems.let { songs ->
+                                HeaderIconButton(
+                                    icon = R.drawable.enqueue,
+                                    enabled = true,
+                                    color = colorPalette.text,
+                                    onClick = {
+                                        binder?.player?.enqueue(songs)
+                                    }
+                                )
+                            }
+
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+
+                            SecondaryTextButton(
+                                text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
+                                    R.string.following
+                                ),
+                                onClick = {
+                                    val bookmarkedAt =
+                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+
+                                    query {
+                                        artist
+                                            ?.copy(bookmarkedAt = bookmarkedAt)
+                                            ?.let(Database::update)
+                                    }
+                                },
+                                alternative = if (artist?.bookmarkedAt == null) true else false
+                            )
+
+                            /*
+                            HeaderIconButton(
+                                icon = if (artist?.bookmarkedAt == null) {
+                                    R.drawable.bookmark_outline
+                                } else {
+                                    R.drawable.bookmark
+                                },
+                                color = colorPalette.accent,
+                                onClick = {
+                                    val bookmarkedAt =
+                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+
+                                    query {
+                                        artist
+                                            ?.copy(bookmarkedAt = bookmarkedAt)
+                                            ?.let(Database::update)
+                                    }
+                                }
+                            )
+                             */
+
+                            HeaderIconButton(
+                                icon = R.drawable.share_social,
+                                color = colorPalette.text,
+                                onClick = {
+                                    val sendIntent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        type = "text/plain"
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
+                                            "https://music.youtube.com/channel/$browseId"
+                                        )
+                                    }
+
+                                    context.startActivity(Intent.createChooser(sendIntent, null))
+                                }
+                            )
+                        }
+                    }
+                }
+
             val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
             Scaffold(
@@ -333,10 +429,10 @@ fun ArtistScreen(
                             val menuState = LocalMenuState.current
                             val thumbnailSizeDp = Dimensions.thumbnails.song
                             val thumbnailSizePx = thumbnailSizeDp.px
-                            val listMediaItems = remember { mutableListOf<MediaItem>() }
+                            //val listMediaItems = remember { mutableListOf<MediaItem>() }
                             ItemsPage(
                                 tag = "artist/$browseId/songs",
-                                headerContent = headerContent,
+                                headerContent = localHeaderContent,
                                 itemsPageProvider = artistPage?.let {
                                     ({ continuation ->
                                         continuation?.let {
