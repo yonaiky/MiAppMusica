@@ -21,6 +21,7 @@ object Dimensions {
     val navigationBarHeight = 64.dp
     val contentWidthRightBar = 0.88f
     val additionalVerticalSpaceForFloatingAction = 85.dp
+    val bottomSpacer = 100.dp
 
 
     object thumbnails {

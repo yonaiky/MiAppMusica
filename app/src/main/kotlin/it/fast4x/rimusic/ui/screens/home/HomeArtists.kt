@@ -246,7 +246,7 @@ fun HomeArtistList(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
             }
         }
 

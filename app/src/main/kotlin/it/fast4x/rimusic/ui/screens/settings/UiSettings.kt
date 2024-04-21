@@ -912,7 +912,7 @@ fun  UiSettings() {
             )
 
         SettingsGroupSpacer(
-            modifier = Modifier.height(100.dp)
+            modifier = Modifier.height(Dimensions.bottomSpacer)
         )
 
     }

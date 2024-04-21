@@ -487,7 +487,8 @@ fun ArtistOverview(
                             modifier = Modifier
                                 .padding(top = 16.dp)
                                 .padding(vertical = 16.dp, horizontal = 8.dp)
-                                .padding(endPaddingValues)
+                                //.padding(endPaddingValues)
+                                .padding(end = Dimensions.bottomSpacer)
                         ) {
                             IconButton(
                                 icon = R.drawable.translate,
@@ -589,6 +590,9 @@ fun ArtistOverview(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+
             }
 
             if(uiType == UiType.ViMusic)

@@ -41,7 +41,7 @@ fun BehindMotionSwipe(
                 DragAnchors.End at endActionSizePx
             },
             positionalThreshold = { distance: Float -> distance * 0.5f },
-            velocityThreshold = { with(density) { 100.dp.toPx() } },
+            velocityThreshold = { with(density) { 0.dp.toPx() } },
             animationSpec = tween(),
         )
     }

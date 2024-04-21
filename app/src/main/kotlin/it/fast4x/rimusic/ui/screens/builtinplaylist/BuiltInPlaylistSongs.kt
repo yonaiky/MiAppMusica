@@ -1247,7 +1247,7 @@ fun BuiltInPlaylistSongs(
                 key = "footer",
                 contentType = 0,
             ) {
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
             }
 
             }
