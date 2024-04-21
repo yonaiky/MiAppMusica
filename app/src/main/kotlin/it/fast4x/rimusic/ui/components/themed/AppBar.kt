@@ -63,7 +63,7 @@ fun appBar(
         navigationIcon = {
             //val currentRoute = navController.currentBackStackEntry?.destination?.route
             //println("navController current destination and route ${navController.currentDestination} $currentRoute")
-            if (getCurrentRoute(navController) != "home")
+            if (getCurrentRoute(navController) != NavRoutes.home.name)
                 androidx.compose.material3.IconButton(
                     onClick = {
                         if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
@@ -91,7 +91,8 @@ fun appBar(
                         .size(36.dp)
                         .clickable {
                             //onHomeClick()
-                            navController.navigate(NavRoutes.home.name)
+                            if (navController.currentDestination?.route != NavRoutes.home.name)
+                                navController.navigate(NavRoutes.home.name)
                         }
                 )
                 BasicText(
@@ -104,14 +105,17 @@ fun appBar(
                     modifier = Modifier
                         .clickable {
                             //onHomeClick()
-                            navController.navigate(NavRoutes.home.name)
+                            if (navController.currentDestination?.route != NavRoutes.home.name)
+                                navController.navigate(NavRoutes.home.name)
                         }
                 )
             }
         },
         actions = {
             //if (showTopActions == true) {
+            println("mediaItem nav ${navController.currentDestination?.route}")
             androidx.compose.material3.IconButton(
+                enabled = navController.currentDestination?.route?.startsWith(NavRoutes.search.name) == false,
                 onClick = {
                     //if (onSearchClick != null) {
                     //onSearchClick()
@@ -143,6 +147,7 @@ fun appBar(
                 )
             ) {
                 DropdownMenuItem(
+                    enabled = navController.currentDestination?.route != NavRoutes.history.name,
                     colors = menuItemColors(),
                     text = { Text(stringResource(R.string.history)) },
                     leadingIcon = {
@@ -161,6 +166,7 @@ fun appBar(
                     }
                 )
                 DropdownMenuItem(
+                    enabled = navController.currentDestination?.route != NavRoutes.statistics.name,
                     colors = menuItemColors(),
                     text = { Text(stringResource(R.string.statistics)) },
                     leadingIcon = {
@@ -180,6 +186,7 @@ fun appBar(
                 )
                 HorizontalDivider()
                 DropdownMenuItem(
+                    enabled = navController.currentDestination?.route != NavRoutes.settings.name,
                     colors = menuItemColors(),
                     text = { Text(stringResource(R.string.settings)) },
                     leadingIcon = {
