@@ -489,6 +489,7 @@ fun DeviceListSongs(
                                 OnDeviceSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                                 OnDeviceSongSortBy.Artist -> stringResource(R.string.sort_artist)
                                 OnDeviceSongSortBy.Duration -> stringResource(R.string.sort_duration)
+                                OnDeviceSongSortBy.Album -> stringResource(R.string.sort_album)
 
                             },
                             style = typography.xs.semiBold,
@@ -503,6 +504,7 @@ fun DeviceListSongs(
                                             onTitle = { sortBy = OnDeviceSongSortBy.Title },
                                             onDateAdded = { sortBy = OnDeviceSongSortBy.DateAdded },
                                             onArtist = { sortBy = OnDeviceSongSortBy.Artist },
+                                            onAlbum = { sortBy = OnDeviceSongSortBy.Album },
                                         )
                                     }
 
@@ -953,6 +955,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 OnDeviceSongSortBy.DateAdded -> "${MediaStore.Audio.Media.DATE_ADDED} $sortOrderSQL"
                 OnDeviceSongSortBy.Artist -> "${MediaStore.Audio.Media.ARTIST} COLLATE NOCASE $sortOrderSQL"
                 OnDeviceSongSortBy.Duration -> "${MediaStore.Audio.Media.DURATION} COLLATE NOCASE $sortOrderSQL"
+                OnDeviceSongSortBy.Album -> "${MediaStore.Audio.Media.ALBUM} COLLATE NOCASE $sortOrderSQL"
             }
 
             val albumUriBase = Uri.parse("content://media/external/audio/albumart")

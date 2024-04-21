@@ -4,5 +4,6 @@ enum class OnDeviceSongSortBy {
     Title,
     DateAdded,
     Artist,
-    Duration
+    Duration,
+    Album
 }
