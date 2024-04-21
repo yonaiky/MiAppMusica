@@ -259,7 +259,8 @@ fun AlbumsItemGridMenu(
                         AlbumItem(
                             album = album,
                             thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            yearCentered = false
                         )
                     }
                 ) {

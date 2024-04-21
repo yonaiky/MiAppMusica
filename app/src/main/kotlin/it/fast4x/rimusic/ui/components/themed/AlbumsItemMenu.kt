@@ -275,7 +275,8 @@ fun AlbumsItemMenu(
                         AlbumItem(
                             album = album,
                             thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            yearCentered = false
                         )
 
                         /*

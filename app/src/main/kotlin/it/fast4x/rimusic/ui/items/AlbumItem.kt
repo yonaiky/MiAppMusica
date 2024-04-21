@@ -29,13 +29,15 @@ fun AlbumItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false
+    alternative: Boolean = false,
+    yearCentered: Boolean? = true
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
         title = album.title,
         authors = album.authorsText,
         year = album.year,
+        yearCentered = yearCentered,
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
@@ -49,13 +51,15 @@ fun AlbumItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false
+    alternative: Boolean = false,
+    yearCentered: Boolean? = true
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
         title = album.info?.name,
         authors = album.authors?.joinToString("") { it.name ?: "" },
         year = album.year,
+        yearCentered = yearCentered,
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
@@ -69,6 +73,7 @@ fun AlbumItem(
     title: String?,
     authors: String?,
     year: String?,
+    yearCentered: Boolean? = true,
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
@@ -117,7 +122,8 @@ fun AlbumItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(top = 4.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .align(
+                        if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
             )
         }
     }
