@@ -51,10 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Info
@@ -97,6 +99,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(UnstableApi::class)
 @Composable
 fun NonQueuedMediaItemGridMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -108,6 +111,7 @@ fun NonQueuedMediaItemGridMenu(
     val binder = LocalPlayerServiceBinder.current
 
     BaseMediaItemGridMenu(
+        navController = navController,
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onStartRadio = {
@@ -132,6 +136,7 @@ fun NonQueuedMediaItemGridMenu(
 
     @Composable
 fun BaseMediaItemGridMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -172,8 +177,8 @@ fun BaseMediaItemGridMenu(
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
-        onGoToAlbum = albumRoute::global,
-        onGoToArtist = artistRoute::global,
+        onGoToAlbum =   { navController.navigate(route = "${NavRoutes.album.name}/${it}") }, //albumRoute::global,
+        onGoToArtist = { navController.navigate(route = "${NavRoutes.artist.name}/${it}") }, //artistRoute::global,
         /*
         onShare = {
             val sendIntent = Intent().apply {

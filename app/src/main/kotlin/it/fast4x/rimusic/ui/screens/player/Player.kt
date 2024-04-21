@@ -1161,6 +1161,7 @@ fun Player(
                                     .clickable {
                                         menuState.display {
                                             PlayerMenu(
+                                                navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = mediaItem,
                                                 binder = binder
@@ -1239,6 +1240,7 @@ fun Player(
 
 
         Queue(
+            navController = navController,
             layoutState = queueSheetState,
             content = {
 
@@ -1474,6 +1476,7 @@ fun Player(
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
+                                            navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = mediaItem,
                                             binder = binder
@@ -1493,6 +1496,7 @@ fun Player(
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
+                                            navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = mediaItem,
                                             binder = binder

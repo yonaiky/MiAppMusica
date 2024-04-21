@@ -46,6 +46,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -113,6 +114,7 @@ import java.util.Date
 @UnstableApi
 @Composable
 fun AlbumSongs(
+    navController: NavController,
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
@@ -697,6 +699,7 @@ fun AlbumSongs(
                                         onLongClick = {
                                             menuState.display {
                                                 NonQueuedMediaItemMenu(
+                                                    navController = navController,
                                                     onDismiss = menuState::hide,
                                                     mediaItem = song.asMediaItem,
                                                 )

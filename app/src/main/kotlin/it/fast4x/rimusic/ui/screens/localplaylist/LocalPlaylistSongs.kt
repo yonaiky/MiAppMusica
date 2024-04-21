@@ -1258,6 +1258,7 @@ fun LocalPlaylistSongs(
                                     onLongClick = {
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
+                                                navController = navController,
                                                 playlistId = playlistId,
                                                 positionInPlaylist = index,
                                                 song = song,

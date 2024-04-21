@@ -271,6 +271,7 @@ fun AlbumScreen(
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> AlbumSongs(
+                            navController = navController,
                             browseId = browseId,
                             headerContent = headerContent,
                             thumbnailContent = thumbnailContent,

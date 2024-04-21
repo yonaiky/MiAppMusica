@@ -153,6 +153,7 @@ fun DeviceListSongsScreen(
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> BuiltInPlaylistSongs(
+                            navController = navController,
                             builtInPlaylist = BuiltInPlaylist.Favorites,
                             onSearchClick = {
                                 //searchRoute("")
@@ -160,6 +161,7 @@ fun DeviceListSongsScreen(
                             }
                         )
                         1 -> BuiltInPlaylistSongs(
+                            navController = navController,
                             builtInPlaylist = BuiltInPlaylist.Offline,
                             onSearchClick = {
                                 //searchRoute("")
@@ -167,6 +169,7 @@ fun DeviceListSongsScreen(
                             }
                         )
                         2 -> BuiltInPlaylistSongs(
+                            navController = navController,
                             builtInPlaylist = BuiltInPlaylist.Downloaded,
                             onSearchClick = {
                                 //searchRoute("")
@@ -174,6 +177,7 @@ fun DeviceListSongsScreen(
                             }
                         )
                         3 -> BuiltInPlaylistSongs(
+                            navController = navController,
                             builtInPlaylist = BuiltInPlaylist.Top,
                             onSearchClick = {
                                 //searchRoute("")
@@ -181,6 +185,7 @@ fun DeviceListSongsScreen(
                             }
                         )
                         4 -> DeviceListSongs(
+                            navController = navController,
                             deviceLists = DeviceLists.LocalSongs,
                             onSearchClick = {
                                 //searchRoute("")

@@ -348,6 +348,7 @@ fun StatisticsPage(
 
                                             //when (builtInPlaylist) {
                                             NonQueuedMediaItemMenu(
+                                                navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
                                                 onDismiss = menuState::hide
                                             )

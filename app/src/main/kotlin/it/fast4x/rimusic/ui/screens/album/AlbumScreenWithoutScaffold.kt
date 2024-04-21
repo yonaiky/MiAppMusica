@@ -329,6 +329,7 @@ fun AlbumScreenWithoutScaffold(
 
                 if(!showAlternativePage) {
                     AlbumSongs(
+                        navController = navController,
                         browseId = browseId,
                         headerContent = headerContent,
                         thumbnailContent = thumbnailContent,

@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
@@ -34,6 +35,7 @@ import it.fast4x.rimusic.utils.toast
 @UnstableApi
 @Composable
 fun PlayerMenu(
+    navController: NavController,
     binder: PlayerService.Binder,
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
@@ -81,6 +83,7 @@ fun PlayerMenu(
 
     if (menuStyle == MenuStyle.Grid) {
         BaseMediaItemGridMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onStartRadio = {
@@ -105,6 +108,7 @@ fun PlayerMenu(
         )
     } else {
         BaseMediaItemMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onStartRadio = {
                 binder.stopRadio()

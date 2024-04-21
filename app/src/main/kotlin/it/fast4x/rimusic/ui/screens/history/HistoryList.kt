@@ -49,6 +49,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -114,7 +115,9 @@ import kotlin.time.Duration.Companion.days
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
-fun HistoryList() {
+fun HistoryList(
+    navController: NavController
+) {
     val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
@@ -306,6 +309,7 @@ fun HistoryList() {
                                         onLongClick = {
                                             menuState.display {
                                                 NonQueuedMediaItemMenuLibrary(
+                                                    navController = navController,
                                                     mediaItem = event.song.asMediaItem,
                                                     onDismiss = menuState::hide
                                                 )

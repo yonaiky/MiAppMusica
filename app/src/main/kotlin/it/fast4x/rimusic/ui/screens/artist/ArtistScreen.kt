@@ -306,6 +306,7 @@ fun ArtistScreen(
                     when (currentTabIndex) {
                         0 -> {
                             ArtistOverview(
+                                navController = navController,
                                 youtubeArtistPage = artistPage,
                                 thumbnailContent = thumbnailContent,
                                 headerContent = headerContent,
@@ -399,6 +400,7 @@ fun ArtistScreen(
                                                 onLongClick = {
                                                     menuState.display {
                                                         NonQueuedMediaItemMenu(
+                                                            navController = navController,
                                                             onDismiss = menuState::hide,
                                                             mediaItem = song.asMediaItem,
                                                         )
@@ -533,6 +535,7 @@ fun ArtistScreen(
 
                         4 -> {
                             ArtistLocalSongs(
+                                navController = navController,
                                 browseId = browseId,
                                 headerContent = headerContent,
                                 thumbnailContent = thumbnailContent,

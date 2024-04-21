@@ -72,7 +72,9 @@ fun HistoryScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> HistoryList()
+                        0 -> HistoryList(
+                            navController = navController,
+                        )
                     }
                 }
             }

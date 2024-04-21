@@ -193,6 +193,7 @@ fun SearchTypeScreen(
                         )
 
                         1 -> LocalSongSearch(
+                            navController = navController,
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
                             decorationBox = decorationBox,

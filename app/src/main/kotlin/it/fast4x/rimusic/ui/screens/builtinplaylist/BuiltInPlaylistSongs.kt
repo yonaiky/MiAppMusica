@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persist
@@ -166,6 +167,7 @@ import java.util.Date
 @UnstableApi
 @Composable
 fun BuiltInPlaylistSongs(
+    navController: NavController,
     builtInPlaylist: BuiltInPlaylist,
     onSearchClick: () -> Unit
 ) {
@@ -1125,11 +1127,13 @@ fun BuiltInPlaylistSongs(
                                                 BuiltInPlaylist.Favorites,
                                                 BuiltInPlaylist.Downloaded,
                                                 BuiltInPlaylist.Top -> NonQueuedMediaItemMenuLibrary(
+                                                    navController = navController,
                                                     mediaItem = song.asMediaItem,
                                                     onDismiss = menuState::hide
                                                 )
 
                                                 BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
+                                                    navController = navController,
                                                     song = song,
                                                     onDismiss = menuState::hide
                                                 )

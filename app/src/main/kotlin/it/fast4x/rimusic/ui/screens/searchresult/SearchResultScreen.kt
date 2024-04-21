@@ -194,8 +194,9 @@ fun SearchResultScreen(
                                                 onLongClick = {
                                                     menuState.display {
                                                         NonQueuedMediaItemMenu(
-                                        onDismiss = menuState::hide,
-                                        mediaItem = song.asMediaItem,
+                                                            navController = navController,
+                                                            onDismiss = menuState::hide,
+                                                            mediaItem = song.asMediaItem,
                                     )
                                                     }
                                                 },
@@ -325,6 +326,7 @@ fun SearchResultScreen(
                                                 onLongClick = {
                                                     menuState.display {
                                                         NonQueuedMediaItemMenu(
+                                                            navController = navController,
                                                             mediaItem = video.asMediaItem,
                                                             onDismiss = menuState::hide
                                                         )

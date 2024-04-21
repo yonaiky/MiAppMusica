@@ -70,6 +70,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.reordering.draggedItem
@@ -130,6 +131,7 @@ import java.util.Date
 @androidx.media3.common.util.UnstableApi
 @Composable
 fun Queue(
+    navController: NavController,
     backgroundColorProvider: () -> Color,
     layoutState: BottomSheetState,
     modifier: Modifier = Modifier,
@@ -499,6 +501,7 @@ fun Queue(
                                             onLongClick = {
                                                 menuState.display {
                                                     QueuedMediaItemMenu(
+                                                        navController = navController,
                                                         mediaItem = window.mediaItem,
                                                         indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
                                                         onDismiss = menuState::hide,

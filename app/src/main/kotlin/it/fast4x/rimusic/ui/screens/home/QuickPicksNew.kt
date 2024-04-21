@@ -465,6 +465,7 @@ fun QuickPicksNew(
                                             onLongClick = {
                                                 menuState.display {
                                                     NonQueuedMediaItemMenu(
+                                                        navController = navController,
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
@@ -556,6 +557,7 @@ fun QuickPicksNew(
                                         onLongClick = {
                                             menuState.display {
                                                 NonQueuedMediaItemMenu(
+                                                    navController = navController,
                                                     onDismiss = menuState::hide,
                                                     mediaItem = song,
                                                     onDownload = {

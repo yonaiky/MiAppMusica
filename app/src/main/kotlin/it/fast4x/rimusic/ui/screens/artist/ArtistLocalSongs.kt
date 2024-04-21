@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -69,6 +70,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 @UnstableApi
 @Composable
 fun ArtistLocalSongs(
+    navController: NavController,
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
@@ -289,6 +291,7 @@ fun ArtistLocalSongs(
                                     onLongClick = {
                                         menuState.display {
                                             NonQueuedMediaItemMenu(
+                                                navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
                                             )

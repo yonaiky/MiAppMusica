@@ -56,12 +56,14 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Artist
@@ -109,6 +111,7 @@ import java.time.format.DateTimeFormatter
 @androidx.media3.common.util.UnstableApi
 @Composable
 fun InHistoryMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     song: Song,
     onHideFromDatabase: (() -> Unit)? = {},
@@ -138,6 +141,7 @@ fun InHistoryMediaItemMenu(
      */
 
     NonQueuedMediaItemMenu(
+        navController = navController,
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onHideFromDatabase = onHideFromDatabase,
@@ -150,6 +154,7 @@ fun InHistoryMediaItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun InPlaylistMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     playlistId: Long,
     positionInPlaylist: Int,
@@ -157,6 +162,7 @@ fun InPlaylistMediaItemMenu(
     modifier: Modifier = Modifier
 ) {
     NonQueuedMediaItemMenu(
+        navController = navController,
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
@@ -174,6 +180,7 @@ fun InPlaylistMediaItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun NonQueuedMediaItemMenuLibrary(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -211,6 +218,7 @@ fun NonQueuedMediaItemMenuLibrary(
     if (menuStyle == MenuStyle.Grid) {
 
         BaseMediaItemGridMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onStartRadio = {
@@ -234,6 +242,7 @@ fun NonQueuedMediaItemMenuLibrary(
     } else {
 
         BaseMediaItemMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onStartRadio = {
@@ -262,6 +271,7 @@ fun NonQueuedMediaItemMenuLibrary(
 @ExperimentalAnimationApi
 @Composable
 fun NonQueuedMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -279,6 +289,7 @@ fun NonQueuedMediaItemMenu(
 
     if (menuStyle == MenuStyle.Grid) {
         BaseMediaItemGridMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onStartRadio = {
@@ -302,6 +313,7 @@ fun NonQueuedMediaItemMenu(
     } else {
 
         BaseMediaItemMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onStartRadio = {
@@ -330,6 +342,7 @@ fun NonQueuedMediaItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun QueuedMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     onDownload: (() -> Unit)?,
     mediaItem: MediaItem,
@@ -345,6 +358,7 @@ fun QueuedMediaItemMenu(
 
     if (menuStyle == MenuStyle.Grid) {
         BaseMediaItemGridMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onDownload = onDownload,
@@ -366,6 +380,7 @@ fun QueuedMediaItemMenu(
         )
     } else {
         BaseMediaItemMenu(
+            navController = navController,
             mediaItem = mediaItem,
             onDismiss = onDismiss,
             onDownload = onDownload,
@@ -393,6 +408,7 @@ fun QueuedMediaItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun BaseMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -433,8 +449,8 @@ fun BaseMediaItemMenu(
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
-        onGoToAlbum = albumRoute::global,
-        onGoToArtist = artistRoute::global,
+        onGoToAlbum = { navController.navigate(route = "${NavRoutes.album.name}/${it}") }, //albumRoute::global,
+        onGoToArtist = { navController.navigate(route = "${NavRoutes.artist.name}/${it}") }, //artistRoute::global,
         onShare = {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
