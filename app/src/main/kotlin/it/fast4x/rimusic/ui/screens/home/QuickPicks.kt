@@ -768,7 +768,7 @@ fun QuickPicks(
 
                 } ?: relatedPageResult?.exceptionOrNull()?.let {
                     BasicText(
-                        text = stringResource(R.string.an_error_has_occurred),
+                        text = stringResource(R.string.page_not_been_loaded),
                         style = typography.s.secondary.center,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
