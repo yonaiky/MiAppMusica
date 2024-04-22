@@ -5,7 +5,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -15,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +57,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -220,31 +227,39 @@ fun ArtistScreen(
                         val context = LocalContext.current
 
                         Header(title = artist?.name ?: "Unknown") {
-                            textButton?.invoke()
 
-                            Spacer(
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .weight(1f)
-                            )
+                                    .padding(top = 50.dp)
+                                    .padding(horizontal = 12.dp)
+                            ) {
+                                textButton?.invoke()
 
-                            SecondaryTextButton(
-                                text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
-                                    R.string.following
-                                ),
-                                onClick = {
-                                    val bookmarkedAt =
-                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+                                Spacer(
+                                    modifier = Modifier
+                                        .weight(0.2f)
+                                )
 
-                                    query {
-                                        artist
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
-                                    }
-                                },
-                                alternative = if (artist?.bookmarkedAt == null) true else false
-                            )
+                                SecondaryTextButton(
+                                    text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
+                                        R.string.following
+                                    ),
+                                    onClick = {
+                                        val bookmarkedAt =
+                                            if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
 
-                            /*
+                                        query {
+                                            artist
+                                                ?.copy(bookmarkedAt = bookmarkedAt)
+                                                ?.let(Database::update)
+                                        }
+                                    },
+                                    alternative = if (artist?.bookmarkedAt == null) true else false
+                                )
+
+                                /*
                             HeaderIconButton(
                                 icon = if (artist?.bookmarkedAt == null) {
                                     R.drawable.bookmark_outline
@@ -265,22 +280,28 @@ fun ArtistScreen(
                             )
                              */
 
-                            HeaderIconButton(
-                                icon = R.drawable.share_social,
-                                color = colorPalette.text,
-                                onClick = {
-                                    val sendIntent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        type = "text/plain"
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            "https://music.youtube.com/channel/$browseId"
+                                HeaderIconButton(
+                                    icon = R.drawable.share_social,
+                                    color = colorPalette.text,
+                                    onClick = {
+                                        val sendIntent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            type = "text/plain"
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
+                                                "https://music.youtube.com/channel/$browseId"
+                                            )
+                                        }
+
+                                        context.startActivity(
+                                            Intent.createChooser(
+                                                sendIntent,
+                                                null
+                                            )
                                         )
                                     }
-
-                                    context.startActivity(Intent.createChooser(sendIntent, null))
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
@@ -432,7 +453,7 @@ fun ArtistScreen(
                             //val listMediaItems = remember { mutableListOf<MediaItem>() }
                             ItemsPage(
                                 tag = "artist/$browseId/songs",
-                                headerContent = localHeaderContent,
+                                headerContent = headerContent,
                                 itemsPageProvider = artistPage?.let {
                                     ({ continuation ->
                                         continuation?.let {
