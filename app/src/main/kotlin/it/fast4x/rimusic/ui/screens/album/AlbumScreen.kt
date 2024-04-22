@@ -5,6 +5,9 @@ import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +50,7 @@ import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -177,24 +182,11 @@ fun AlbumScreen(
                         ) {
                             textButton?.invoke()
 
+
                             Spacer(
                                 modifier = Modifier
                                     .weight(1f)
                             )
-/*
-                            HeaderIconButton(
-                                icon = R.drawable.image,
-                                enabled = album?.thumbnailUrl?.isNotEmpty() == true,
-                                color = if (album?.thumbnailUrl?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                                onClick = {
-                                    if (album?.thumbnailUrl?.isNotEmpty() == true)
-                                        uriHandler.openUri(album?.thumbnailUrl.toString())
-                                    }
-                            )
- */
-
-
-
 
                             HeaderIconButton(
                                 icon = if (album?.bookmarkedAt == null) {
@@ -243,7 +235,7 @@ fun AlbumScreen(
                 adaptiveThumbnailContent(
                     album?.timestamp == null,
                     album?.thumbnailUrl,
-                    showIcon = albumPage?.otherVersions?.isNotEmpty(),
+                    showIcon = false, //albumPage?.otherVersions?.isNotEmpty(),
                     onOtherVersionAvailable = {
                         //println("mediaItem Click other version")
                     },

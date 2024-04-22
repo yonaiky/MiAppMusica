@@ -186,7 +186,7 @@ inline fun NavigationRailTB(
                         .fillMaxWidth()
                         .horizontalScroll(scrollState)
                         .padding(horizontal = 8.dp)
-                        .padding(top = 10.dp, bottom = 10.dp)
+                        .padding(top = 4.dp, bottom = 4.dp)
 
                 ) {
                     //if (listIconContent.size > 1) //hide if only one icon is present
