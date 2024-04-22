@@ -11,8 +11,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -597,11 +599,13 @@ fun LocalPlaylistSongs(
                         )
                     }
 
+
                     Column (
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
-                            .fillMaxHeight()
+                            //.fillMaxHeight()
+                            .fillMaxWidth(0.7f)
                             //.border(BorderStroke(1.dp, Color.White))
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -624,6 +628,47 @@ fun LocalPlaylistSongs(
                         Spacer(modifier = Modifier.height(30.dp))
                     }
 
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            //.fillMaxHeight()
+                        //.border(BorderStroke(1.dp, Color.White))
+                    ) {
+                        HeaderIconButton(
+                            icon = R.drawable.smart_shuffle,
+                            enabled = true,
+                            color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                isRecommendationEnabled = !isRecommendationEnabled
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HeaderIconButton(
+                            icon = R.drawable.shuffle,
+                            enabled = playlistSongs.isNotEmpty() == true,
+                            color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                playlistSongs.let { songs ->
+                                    if (songs.isNotEmpty()) {
+                                        val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayFromBeginning(
+                                            itemsLimited.shuffled().map(Song::asMediaItem)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
+                    }
 
 
                 }
@@ -631,7 +676,7 @@ fun LocalPlaylistSongs(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
@@ -739,6 +784,7 @@ fun LocalPlaylistSongs(
                         )
                     }
 
+                    /*
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
                         enabled = playlistSongs.isNotEmpty(),
@@ -751,7 +797,9 @@ fun LocalPlaylistSongs(
                                 }
                         }
                     )
+                     */
 
+                    /*
                     HeaderIconButton(
                         icon = R.drawable.smart_shuffle,
                         enabled = true,
@@ -777,7 +825,7 @@ fun LocalPlaylistSongs(
                             }
                         }
                     )
-
+                    */
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
                         color = colorPalette.text, //if (playlistWithSongs?.songs?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
@@ -967,6 +1015,7 @@ fun LocalPlaylistSongs(
                             PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}"
                             PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
+                            PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -985,7 +1034,8 @@ fun LocalPlaylistSongs(
                                         onArtist = { sortBy = PlaylistSongSortBy.Artist },
                                         onArtistAndAlbum = { sortBy = PlaylistSongSortBy.ArtistAndAlbum },
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
-                                        onDuration = { sortBy = PlaylistSongSortBy.Duration }
+                                        onDuration = { sortBy = PlaylistSongSortBy.Duration },
+                                        onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
                                     )
                                 }
 
@@ -1021,6 +1071,7 @@ fun LocalPlaylistSongs(
                                 lazyListState.scrollToItem(nowPlayingItem, 1)
                             scrollToNowPlaying = false
                         }
+                        /*
                         HeaderIconButton(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             onClick = { searching = !searching },
@@ -1028,6 +1079,7 @@ fun LocalPlaylistSongs(
                             color = colorPalette.text,
                             iconSize = 24.dp
                         )
+                         */
                     }
 
                 }

@@ -99,6 +99,9 @@ interface Database {
     @Query("SELECT id FROM Playlist WHERE name = :playlistName")
     fun playlistExistByName(playlistName: String): Long
 
+    @Query("UPDATE Playlist SET name = :playlistName WHERE id = :playlistId")
+    fun updatePlaylistName(playlistName: String, playlistId: Long): Int
+
     @Transaction
     @Query("UPDATE Song SET title = :title WHERE id = :id")
     fun updateSongTitle(id: String, title: String): Int
@@ -737,6 +740,14 @@ interface Database {
             "ORDER BY A.title COLLATE NOCASE DESC")
     fun songsPlaylistByAlbumDesc(id: Long): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.ROWID")
+    fun songsPlaylistByRowIdAsc(id: Long): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.ROWID DESC")
+    fun songsPlaylistByRowIdDesc(id: Long): Flow<List<Song>>
+
     fun songsPlaylist(id: Long, sortBy: PlaylistSongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             PlaylistSongSortBy.PlayTime -> when (sortOrder) {
@@ -775,6 +786,11 @@ interface Database {
                 SortOrder.Ascending -> songsPlaylistByAlbumAsc(id)
                 SortOrder.Descending -> songsPlaylistByAlbumDesc(id)
             }
+            PlaylistSongSortBy.DateAdded -> when (sortOrder) {
+                SortOrder.Ascending -> songsPlaylistByRowIdAsc(id)
+                SortOrder.Descending -> songsPlaylistByRowIdDesc(id)
+            }
+
         }
     }
 

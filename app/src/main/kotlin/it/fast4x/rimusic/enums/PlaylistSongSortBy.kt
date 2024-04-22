@@ -9,7 +9,8 @@ enum class PlaylistSongSortBy {
     PlayTime,
     Position,
     Title,
-    Duration;
+    Duration,
+    DateAdded;
 
     /*
     val index: Int

@@ -592,7 +592,8 @@ fun BuiltInPlaylistSongs(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
-                            .fillMaxHeight()
+                            //.fillMaxHeight()
+                            .fillMaxWidth(0.7f)
                         //.border(BorderStroke(1.dp, Color.White))
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -615,14 +616,52 @@ fun BuiltInPlaylistSongs(
                         Spacer(modifier = Modifier.height(30.dp))
                     }
 
-
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                        //.fillMaxHeight()
+                        //.border(BorderStroke(1.dp, Color.White))
+                    ) {
+                        HeaderIconButton(
+                            icon = R.drawable.smart_shuffle,
+                            enabled = true,
+                            color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                isRecommendationEnabled = !isRecommendationEnabled
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HeaderIconButton(
+                            icon = R.drawable.shuffle,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {
+                                if (songs.isNotEmpty()) {
+                                    val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayFromBeginning(
+                                        itemsLimited.shuffled().map(Song::asMediaItem)
+                                    )
+                                }
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
+                    }
 
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
@@ -706,6 +745,7 @@ fun BuiltInPlaylistSongs(
                     )
                      */
 
+                    /*
                     HeaderIconButton(
                         icon = R.drawable.smart_shuffle,
                         enabled = true,
@@ -715,6 +755,8 @@ fun BuiltInPlaylistSongs(
                         }
                     )
 
+                     */
+
                     if (builtInPlaylist == BuiltInPlaylist.Offline)
                         HeaderIconButton(
                             icon = R.drawable.trash,
@@ -723,6 +765,7 @@ fun BuiltInPlaylistSongs(
                             onClick = { cleanCacheOfflineSongs = true }
                         )
 
+                    /*
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = songs.isNotEmpty(),
@@ -737,6 +780,8 @@ fun BuiltInPlaylistSongs(
                             }
                         }
                     )
+
+                     */
 
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
@@ -914,6 +959,7 @@ fun BuiltInPlaylistSongs(
                                 lazyListState.scrollToItem(nowPlayingItem, 1)
                             scrollToNowPlaying = false
                         }
+                        /*
                         HeaderIconButton(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             onClick = { searching = !searching },
@@ -921,6 +967,7 @@ fun BuiltInPlaylistSongs(
                             color = colorPalette.text,
                             iconSize = 24.dp
                         )
+                         */
                     }
 
                     Spacer(
