@@ -68,6 +68,7 @@ fun adaptiveThumbnailContent(
         val modifier = Modifier
             //.padding(all = 16.dp)
             .padding(horizontal = playerThumbnailSize.size.dp)
+            .padding(top = 16.dp)
             .clip(shape ?: thumbnailShape)
             .clickable {
                 if (onClick != null) {

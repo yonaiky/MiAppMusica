@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
@@ -41,8 +43,12 @@ fun BehindMotionSwipe(
                 DragAnchors.End at endActionSizePx
             },
             positionalThreshold = { distance: Float -> distance * 0.5f },
-            velocityThreshold = { with(density) { 0.dp.toPx() } },
-            animationSpec = tween(),
+            velocityThreshold = { with(density) { 100.dp.toPx() } },
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+            //animationSpec = tween(),
         )
     }
 
