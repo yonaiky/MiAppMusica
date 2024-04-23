@@ -68,6 +68,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
@@ -391,6 +392,7 @@ fun PlaylistSongList(
                     onClick = {
                         menuState.display {
                             PlaylistsItemMenu(
+                                navController = navController,
                                 modifier = Modifier.fillMaxHeight(0.4f),
                                 onDismiss = menuState::hide,
                                 onImportOnlinePlaylist = {
@@ -420,6 +422,9 @@ fun PlaylistSongList(
                                     CoroutineScope(Dispatchers.Main).launch {
                                         context.toast(context.resources.getString(R.string.done))
                                     }
+                                },
+                                onGoToPlaylist = {
+                                    navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                 }
 
 

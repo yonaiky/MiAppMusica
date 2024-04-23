@@ -95,6 +95,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.RecommendationsNumber
@@ -836,6 +837,7 @@ fun LocalPlaylistSongs(
                             menuState.display {
                                 playlistPreview?.let { playlistPreview ->
                                     PlaylistsItemMenu(
+                                        navController = navController,
                                         onDismiss = menuState::hide,
                                         onSelectUnselect = {
                                             selectItems = !selectItems
@@ -960,6 +962,9 @@ fun LocalPlaylistSongs(
                                         onExport = {
                                             isExporting = true
                                         },
+                                        onGoToPlaylist = {
+                                            navController.navigate("${NavRoutes.localPlaylist.name}/$it")
+                                        }
                                         /*
                                         onImport = {
                                             try {

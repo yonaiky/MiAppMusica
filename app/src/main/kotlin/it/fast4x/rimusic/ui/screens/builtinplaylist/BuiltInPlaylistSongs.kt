@@ -87,6 +87,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SongSortBy
@@ -792,6 +793,7 @@ fun BuiltInPlaylistSongs(
                         onClick = {
                             menuState.display {
                                 PlaylistsItemMenu(
+                                    navController = navController,
                                     onDismiss = menuState::hide,
                                     onSelectUnselect = {
                                         selectItems = !selectItems
@@ -865,6 +867,9 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onExport = {
                                         isExporting = true
+                                    },
+                                    onGoToPlaylist = {
+                                        navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                     }
                                 )
                             }

@@ -86,7 +86,8 @@ fun PlaylistsItemGridMenu(
     showonListenToYT: Boolean = false,
     onListenToYT: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
-    onImport: (() -> Unit)? = null
+    onImport: (() -> Unit)? = null,
+    onGoToPlaylist: ((Long) -> Unit)? = null
     ) {
     val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
@@ -222,6 +223,20 @@ fun PlaylistsItemGridMenu(
                                             playlistPreview.songCount
                                         )
                                     )
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                    )
                                 }
                             )
                         }
@@ -250,6 +265,20 @@ fun PlaylistsItemGridMenu(
                                             playlistPreview.playlist,
                                             playlistPreview.songCount
                                         )
+                                    )
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
                                     )
                                 }
                             )

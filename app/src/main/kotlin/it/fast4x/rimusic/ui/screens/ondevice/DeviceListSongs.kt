@@ -82,6 +82,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.DeviceLists
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
@@ -604,6 +605,7 @@ fun DeviceListSongs(
                         onClick = {
                             menuState.display {
                                 PlaylistsItemMenu(
+                                    navController = navController,
                                     onDismiss = menuState::hide,
                                     onSelectUnselect = {
                                         selectItems = !selectItems
@@ -676,6 +678,9 @@ fun DeviceListSongs(
                                             selectItems = false
                                         }
                                     },
+                                    onGoToPlaylist = {
+                                        navController.navigate("${NavRoutes.localPlaylist.name}/$it")
+                                    }
                                 )
                             }
                         }

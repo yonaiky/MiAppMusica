@@ -1332,6 +1332,7 @@ fun Player(
                                 onClick = {
                                     menuState.display {
                                         PlaylistsItemMenu(
+                                            navController = navController,
                                             modifier = Modifier.fillMaxHeight(0.6f),
                                             onDismiss = menuState::hide,
                                             onAddToPlaylist = { playlistPreview ->
@@ -1348,6 +1349,10 @@ fun Player(
                                                         )
                                                     )
                                                 }
+                                            },
+                                            onGoToPlaylist = {
+                                                navController.navigate("${NavRoutes.localPlaylist.name}/$it")
+                                                layoutState.collapseSoft()
                                             }
                                         )
                                     }

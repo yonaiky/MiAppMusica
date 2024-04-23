@@ -79,6 +79,7 @@ import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -763,6 +764,7 @@ fun Queue(
                         onClick = {
                             menuState.display {
                                 PlaylistsItemMenu(
+                                    navController = navController,
                                     onDismiss = menuState::hide,
                                     onSelectUnselect = {
                                         selectQueueItems = !selectQueueItems
@@ -837,6 +839,9 @@ fun Queue(
                                     },
                                     onExport = {
                                         isExporting = true
+                                    },
+                                    onGoToPlaylist = {
+                                        navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                     }
                                 )
                             }

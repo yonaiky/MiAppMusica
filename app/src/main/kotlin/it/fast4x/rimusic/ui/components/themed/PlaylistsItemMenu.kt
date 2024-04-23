@@ -35,10 +35,12 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Playlist
@@ -62,6 +64,7 @@ import kotlinx.coroutines.Dispatchers
 @ExperimentalAnimationApi
 @Composable
 fun PlaylistsItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     onSelectUnselect: (() -> Unit)? = null,
     onSelect: (() -> Unit)? = null,
@@ -80,7 +83,8 @@ fun PlaylistsItemMenu(
     showonListenToYT: Boolean = false,
     onListenToYT: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
-    onImport: (() -> Unit)? = null
+    onImport: (() -> Unit)? = null,
+    onGoToPlaylist: ((Long) -> Unit)? = null
     ) {
     val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
@@ -116,7 +120,8 @@ fun PlaylistsItemMenu(
             showonListenToYT = showonListenToYT,
             onListenToYT = onListenToYT,
             onExport = onExport,
-            onImport = onImport
+            onImport = onImport,
+            onGoToPlaylist = onGoToPlaylist
         )
     } else {
 
@@ -235,6 +240,20 @@ fun PlaylistsItemMenu(
                                                 playlistPreview.songCount
                                             )
                                         )
+                                    },
+                                    trailingContent = {
+                                        IconButton(
+                                            icon = R.drawable.open,
+                                            color = colorPalette.text,
+                                            onClick = {
+                                              if (onGoToPlaylist != null) {
+                                                    onGoToPlaylist(playlistPreview.playlist.id)
+                                                    onDismiss()
+                                              }
+                                            },
+                                            modifier = Modifier
+                                                .size(24.dp)
+                                        )
                                     }
                                 )
                             }
@@ -263,6 +282,20 @@ fun PlaylistsItemMenu(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
+                                        )
+                                    },
+                                    trailingContent = {
+                                        IconButton(
+                                            icon = R.drawable.open,
+                                            color = colorPalette.text,
+                                            onClick = {
+                                                if (onGoToPlaylist != null) {
+                                                    onGoToPlaylist(playlistPreview.playlist.id)
+                                                    onDismiss()
+                                                }
+                                            },
+                                            modifier = Modifier
+                                                .size(24.dp)
                                         )
                                     }
                                 )
