@@ -588,7 +588,8 @@ fun ArtistScreen(
                                             .clickable(onClick = {
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                            })
+                                            }),
+                                        yearCentered = false
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -641,7 +642,8 @@ fun ArtistScreen(
                                             .clickable(onClick = {
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                            })
+                                            }),
+                                        yearCentered = false
                                     )
                                 },
                                 itemPlaceholderContent = {
