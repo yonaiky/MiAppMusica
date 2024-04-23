@@ -162,7 +162,7 @@ fun HomeLibrary(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    val thumbnailSizeDp = 108.dp
+    val thumbnailSizeDp = Dimensions.thumbnails.playlist + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
@@ -274,14 +274,17 @@ fun HomeLibrary(
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
-            columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
+            columns = GridCells.Adaptive(Dimensions.thumbnails.playlist + 24.dp),
+            ///columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
             //contentPadding = LocalPlayerAwareWindowInsets.current
             //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+            /*
             verticalArrangement = Arrangement.spacedBy(Dimensions.itemsVerticalPadding * 2),
             horizontalArrangement = Arrangement.spacedBy(
                 space = Dimensions.itemsVerticalPadding * 2,
                 alignment = Alignment.CenterHorizontally
             ),
+             */
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorPalette.background0)
@@ -296,52 +299,24 @@ fun HomeLibrary(
                     modifier = Modifier,
                     onClick = onSearchClick
                 )
-
-                Header(title = "") {
+            }
+            item(key = "filter", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
-                            .padding(top = 50.dp)
-                            .fillMaxSize()
+                            .padding(top = 10.dp, bottom = 16.dp)
+                            .fillMaxWidth()
+
                     ) {
 
-                        /*
-                        HeaderIconButton(
-                            icon = R.drawable.stats_chart,
-                            color = colorPalette.text,
-                            onClick = { onStatisticsClick() }
-                        )
-                         */
-
-                        /*
-                        HeaderInfo(
-                            title = "${items.size}",
-                            icon = painterResource(R.drawable.playlist),
-                            spacer = 0
-                        )
-
-                         */
-
                         Spacer(
                             modifier = Modifier
                                 .weight(1f)
                         )
 
-                        /*
-                        HeaderIconButton(
-                            icon = R.drawable.add_in_playlist,
-                            color = colorPalette.text,
-                            onClick = { isCreatingANewPlaylist = true }
-                        )
-
-                        Spacer(
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-                         */
 
                         BasicText(
                             text = when (sortBy) {
@@ -377,13 +352,13 @@ fun HomeLibrary(
                                 .graphicsLayer { rotationZ = sortOrderIconRotation }
                         )
                     }
-                }
             }
 
             if (showFavoritesPlaylist)
                 item(key = "favorites") {
                     PlaylistItem(
                         icon = R.drawable.heart,
+                        iconSize = 48.dp,
                         colorTint = colorPalette.favoritesIcon,
                         name = stringResource(R.string.favorites),
                         songCount = null,
@@ -401,6 +376,7 @@ fun HomeLibrary(
                 item(key = "offline") {
                     PlaylistItem(
                         icon = R.drawable.sync,
+                        iconSize = 48.dp,
                         colorTint = colorPalette.favoritesIcon,
                         name = stringResource(R.string.cached),
                         songCount = null,
@@ -417,6 +393,7 @@ fun HomeLibrary(
                 item(key = "downloaded") {
                     PlaylistItem(
                         icon = R.drawable.downloaded,
+                        iconSize = 48.dp,
                         colorTint = colorPalette.favoritesIcon,
                         name = stringResource(R.string.downloaded),
                         songCount = null,
@@ -433,6 +410,7 @@ fun HomeLibrary(
                 item(key = "top") {
                     PlaylistItem(
                         icon = R.drawable.trending,
+                        iconSize = 48.dp,
                         colorTint = colorPalette.favoritesIcon,
                         name = stringResource(R.string.my_playlist_top) + " ${maxTopPlaylistItems.number}",
                         songCount = null,
@@ -449,6 +427,7 @@ fun HomeLibrary(
                 item(key = "ondevice") {
                     PlaylistItem(
                         icon = R.drawable.musical_notes,
+                        iconSize = 48.dp,
                         colorTint = colorPalette.favoritesIcon,
                         name = stringResource(R.string.on_device),
                         songCount = null,
