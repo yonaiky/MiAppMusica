@@ -128,6 +128,9 @@ const val showStatsInNavbarKey = "showStatsInNavbar"
 const val showActionsBarKey = "showActionsBar"
 const val floatActionIconOffsetXkey = "floatActionIconOffsetX"
 const val floatActionIconOffsetYkey = "floatActionIconOffsetY"
+const val showBuiltinPlaylistsKey = "showBuiltinPlaylists"
+const val showPinnedPlaylistsKey = "showPinnedPlaylists"
+const val showPlaylistsListKey = "showPlaylistsList"
 
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(

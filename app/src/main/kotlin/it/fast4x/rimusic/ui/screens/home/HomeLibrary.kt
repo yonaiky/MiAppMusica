@@ -73,6 +73,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
+import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.statistics.StatisticsPage
@@ -89,12 +90,15 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showBuiltinPlaylistsKey
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
+import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
+import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.toast
 
@@ -260,17 +264,22 @@ fun HomeLibrary(
     val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     val showPlaylists by rememberPreference(showPlaylistsKey, true)
 
-
+    var showBuiltinPlaylists by rememberPreference(showBuiltinPlaylistsKey, true)
+    var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
+    var showPlaylistsList by rememberPreference(showPlaylistsListKey, true)
 
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
@@ -300,7 +309,107 @@ fun HomeLibrary(
                     onClick = onSearchClick
                 )
             }
-            item(key = "filter", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+
+            item(key = "titleBuiltinPlaylists", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+                Title(
+                    title = "Collections",
+                    onClick = { showBuiltinPlaylists = !showBuiltinPlaylists },
+                    icon = if (showBuiltinPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
+                )
+            }
+
+            if(showBuiltinPlaylists) {
+                if (showFavoritesPlaylist)
+                    item(key = "favorites") {
+                        PlaylistItem(
+                            icon = R.drawable.heart,
+                            iconSize = 48.dp,
+                            colorTint = colorPalette.favoritesIcon,
+                            name = stringResource(R.string.favorites),
+                            songCount = null,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            alternative = true,
+                            modifier = Modifier
+                                .clip(thumbnailShape)
+                                .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Favorites) })
+                                .animateItemPlacement()
+
+                        )
+                    }
+
+                if (showCachedPlaylist)
+                    item(key = "offline") {
+                        PlaylistItem(
+                            icon = R.drawable.sync,
+                            iconSize = 48.dp,
+                            colorTint = colorPalette.favoritesIcon,
+                            name = stringResource(R.string.cached),
+                            songCount = null,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            alternative = true,
+                            modifier = Modifier
+                                .clip(thumbnailShape)
+                                .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Offline) })
+                                .animateItemPlacement()
+                        )
+                    }
+
+                if (showDownloadedPlaylist)
+                    item(key = "downloaded") {
+                        PlaylistItem(
+                            icon = R.drawable.downloaded,
+                            iconSize = 48.dp,
+                            colorTint = colorPalette.favoritesIcon,
+                            name = stringResource(R.string.downloaded),
+                            songCount = null,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            alternative = true,
+                            modifier = Modifier
+                                .clip(thumbnailShape)
+                                .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Downloaded) })
+                                .animateItemPlacement()
+                        )
+                    }
+
+                if (showMyTopPlaylist)
+                    item(key = "top") {
+                        PlaylistItem(
+                            icon = R.drawable.trending,
+                            iconSize = 48.dp,
+                            colorTint = colorPalette.favoritesIcon,
+                            name = stringResource(R.string.my_playlist_top) + " ${maxTopPlaylistItems.number}",
+                            songCount = null,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            alternative = true,
+                            modifier = Modifier
+                                .clip(thumbnailShape)
+                                .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Top) })
+                                .animateItemPlacement()
+                        )
+                    }
+
+                if (showOnDevicePlaylist)
+                    item(key = "ondevice") {
+                        PlaylistItem(
+                            icon = R.drawable.musical_notes,
+                            iconSize = 48.dp,
+                            colorTint = colorPalette.favoritesIcon,
+                            name = stringResource(R.string.on_device),
+                            songCount = null,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            alternative = true,
+                            modifier = Modifier
+                                .clip(thumbnailShape)
+                                .clickable(onClick = { onDeviceListSongsClick() })
+                                .animateItemPlacement()
+                        )
+                    }
+            }
+            /*    */
+
+            if (showPlaylists) {
+
+                item(key = "filter", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -352,138 +461,79 @@ fun HomeLibrary(
                                 .graphicsLayer { rotationZ = sortOrderIconRotation }
                         )
                     }
-            }
-
-            if (showFavoritesPlaylist)
-                item(key = "favorites") {
-                    PlaylistItem(
-                        icon = R.drawable.heart,
-                        iconSize = 48.dp,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.favorites),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Favorites) })
-                            .animateItemPlacement()
-
-                    )
                 }
 
-            if(showCachedPlaylist)
-                item(key = "offline") {
-                    PlaylistItem(
-                        icon = R.drawable.sync,
-                        iconSize = 48.dp,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.cached),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Offline) })
-                            .animateItemPlacement()
-                    )
-                }
 
-            if(showDownloadedPlaylist)
-                item(key = "downloaded") {
-                    PlaylistItem(
-                        icon = R.drawable.downloaded,
-                        iconSize = 48.dp,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.downloaded),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Downloaded) })
-                            .animateItemPlacement()
-                    )
-                }
-
-            if (showMyTopPlaylist)
-                item(key = "top") {
-                    PlaylistItem(
-                        icon = R.drawable.trending,
-                        iconSize = 48.dp,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.my_playlist_top) + " ${maxTopPlaylistItems.number}",
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { onBuiltInPlaylist(BuiltInPlaylist.Top) })
-                            .animateItemPlacement()
-                    )
-                }
-
-            if (showOnDevicePlaylist)
-                item(key = "ondevice") {
-                    PlaylistItem(
-                        icon = R.drawable.musical_notes,
-                        iconSize = 48.dp,
-                        colorTint = colorPalette.favoritesIcon,
-                        name = stringResource(R.string.on_device),
-                        songCount = null,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .clickable(onClick = { onDeviceListSongsClick() })
-                            .animateItemPlacement()
-                    )
-                }
-
-            /*    */
-
-            if (showPlaylists) {
                 if (items.filter {
                         it.playlist.name.startsWith(PINNED_PREFIX,0,true)
-                    }.isNotEmpty())
-                item(
-                    key = "headerPinnedPlaylist",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }) {
-                    BasicText(
-                        text = "${stringResource(R.string.pinned_playlists)} (${items.filter {
-                            it.playlist.name.startsWith(PINNED_PREFIX,0,true)
-                        }.size})",
-                        style = typography.m.semiBold,
-                        modifier = sectionTextModifier
-                    )
+                    }.isNotEmpty()) {
+                    item(key = "headerPinnedPlaylist", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+                        Title(title = "${stringResource(R.string.pinned_playlists)} (${
+                            items.filter {
+                                it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                            }.size
+                        })", onClick = { showPinnedPlaylists = !showPinnedPlaylists },
+                            icon = if (showPinnedPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
+                        )
+                    }
+                    /*
+                    item(
+                        key = "headerPinnedPlaylist",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }) {
+                        BasicText(
+                            text = "${stringResource(R.string.pinned_playlists)} (${
+                                items.filter {
+                                    it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                                }.size
+                            })",
+                            style = typography.m.semiBold,
+                            modifier = sectionTextModifier
+                        )
+                    }
+                     */
+
+                    if (showPinnedPlaylists) {
+                        items(items = items.filter {
+                            it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                        }, key = { it.playlist.id }) { playlistPreview ->
+                            PlaylistItem(
+                                playlist = playlistPreview,
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                thumbnailSizePx = thumbnailSizePx,
+                                alternative = true,
+                                modifier = Modifier
+                                    .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                                    .animateItemPlacement()
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
                 }
 
-                items(items = items.filter {
-                    it.playlist.name.startsWith(PINNED_PREFIX,0,true)
-                }, key = { it.playlist.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
-                            .fillMaxSize()
+                item(key = "headerplaylistList", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+                    Title(
+                        title = "${stringResource(R.string.playlists)} (${
+                            items.filter {
+                                !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                            }.size
+                        })", onClick = { showPlaylistsList = !showPlaylistsList },
+                        icon = if (showPlaylistsList) R.drawable.arrow_down else R.drawable.arrow_forward
                     )
                 }
+                if (showPlaylistsList) {
+                    item(
+                        key = "headerplaylist",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
 
-                item(
-                    key = "headerplaylist",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }) {
-                    Row (
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
+                            /*
                         BasicText(
                             text = "${stringResource(R.string.playlists)} (${
                                 items.filter {
@@ -495,57 +545,63 @@ fun HomeLibrary(
                             modifier = Modifier
                                 .padding(15.dp)
                         )
+                         */
 
-                        Spacer(
-                            modifier = Modifier
-                                .weight(1f)
-                        )
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
 
-                        IconButton(
-                            icon = R.drawable.add_in_playlist,
-                            color = colorPalette.text,
-                            onClick = { isCreatingANewPlaylist = true },
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .size(20.dp)
-                        )
-                        IconButton(
-                            icon = R.drawable.resource_import,
-                            color = colorPalette.text,
-                            onClick = {
-                                try {
-                                    importLauncher.launch(
-                                        arrayOf(
-                                            "text/*"
+                            IconButton(
+                                icon = R.drawable.add_in_playlist,
+                                color = colorPalette.text,
+                                onClick = { isCreatingANewPlaylist = true },
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(20.dp)
+                            )
+                            IconButton(
+                                icon = R.drawable.resource_import,
+                                color = colorPalette.text,
+                                onClick = {
+                                    try {
+                                        importLauncher.launch(
+                                            arrayOf(
+                                                "text/*"
+                                            )
                                         )
-                                    )
-                                } catch (e: ActivityNotFoundException) {
-                                    context.toast(e.message ?: "Couldn't find an application to open documents")
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .size(20.dp)
-                        )
+                                    } catch (e: ActivityNotFoundException) {
+                                        context.toast(
+                                            e.message
+                                                ?: "Couldn't find an application to open documents"
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(20.dp)
+                            )
+
+                        }
 
                     }
 
+                    items(items = items.filter {
+                        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                    }, key = { it.playlist.id }) { playlistPreview ->
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                                .animateItemPlacement()
+                                .fillMaxSize()
+                        )
+                    }
                 }
 
-                items(items = items.filter {
-                    !it.playlist.name.startsWith(PINNED_PREFIX,0,true)
-                }, key = { it.playlist.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
-                            .fillMaxSize()
-                    )
-                }
                 item(
                     key = "footer",
                     contentType = 0,

@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -30,6 +31,7 @@ import it.fast4x.rimusic.utils.semiBold
 fun Title(
     title: String,
     modifier: Modifier = Modifier,
+    @DrawableRes icon: Int? = R.drawable.arrow_forward,
     onClick: (() -> Unit)? = null,
 ) {
     val (colorPalette, typography) = LocalAppearance.current
@@ -49,16 +51,16 @@ fun Title(
                 fontSize = typography.l.semiBold.fontSize,
                 fontWeight = typography.l.semiBold.fontWeight,
                 color = colorPalette.text,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Start
             ),
             modifier = Modifier.weight(1f)
         )
 
         if (onClick != null) {
             Icon(
-                painter = painterResource(R.drawable.arrow_forward),
+                painter = painterResource(icon ?: R.drawable.arrow_forward),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = colorPalette.text
             )
         }
     }
