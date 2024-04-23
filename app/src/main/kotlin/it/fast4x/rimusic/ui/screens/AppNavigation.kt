@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -73,10 +74,22 @@ fun AppNavigation(
     NavHost(
         navController = navController,
         startDestination = NavRoutes.home.name,
-        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn() },
-        popExitTransition = { fadeOut() }
+        enterTransition = {
+                fadeIn(animationSpec = tween(1000))
+            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(1000))
+            //fadeOut()
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(1000))
+            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(1000))
+            //fadeOut()
+        }
     ) {
         val navigateToAlbum =
             { browseId: String -> navController.navigate(route = "${NavRoutes.album.name}/$browseId") }
