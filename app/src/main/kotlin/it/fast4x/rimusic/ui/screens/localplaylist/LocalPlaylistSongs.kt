@@ -567,7 +567,7 @@ fun LocalPlaylistSongs(
                         title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
                         iconId = R.drawable.playlist,
                         enabled = true,
-                        showIcon = true,
+                        showIcon = false,
                         modifier = Modifier
                             .padding(bottom = 8.dp),
                         onClick = {}
