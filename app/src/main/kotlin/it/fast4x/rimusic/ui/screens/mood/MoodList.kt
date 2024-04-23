@@ -106,8 +106,8 @@ fun MoodList(
         moodPage?.getOrNull()?.let { moodResult ->
             LazyColumn(
                 state = lazyListState,
-                contentPadding = LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+                //contentPadding = LocalPlayerAwareWindowInsets.current
+                //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
                     .background(colorPalette.background0)
                     .fillMaxSize()
@@ -204,7 +204,7 @@ fun MoodList(
             }
         } ?: moodPage?.exceptionOrNull()?.let {
             BasicText(
-                text = stringResource(R.string.an_error_has_occurred),
+                text = stringResource(R.string.page_not_been_loaded),
                 style = typography.s.secondary.center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
