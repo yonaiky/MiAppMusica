@@ -7,6 +7,9 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -194,6 +197,10 @@ fun Scaffold(
                 AnimatedContent(
                     targetState = tabIndex,
                     transitionSpec = {
+                        fadeIn(animationSpec = tween(1000)).togetherWith(fadeOut(animationSpec = tween(1000)))
+                    },
+                    /*
+                    transitionSpec = {
                         val slideDirection = when (targetState > initialState) {
                             true -> AnimatedContentTransitionScope.SlideDirection.Up
                             false -> AnimatedContentTransitionScope.SlideDirection.Down
@@ -208,6 +215,7 @@ fun Scaffold(
                         slideIntoContainer(slideDirection, animationSpec) togetherWith
                                 slideOutOfContainer(slideDirection, animationSpec)
                     },
+                     */
                     content = content, label = "",
                     modifier = Modifier
                         //.fillMaxWidth()
