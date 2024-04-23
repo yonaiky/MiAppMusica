@@ -80,10 +80,7 @@ fun SearchScreen(
     }
 
     val applyFontPadding by rememberPreference(applyFontPaddingKey, false)
-
-    var clearClick by remember {
-        mutableStateOf(false)
-    }
+    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     PersistMapCleanup(tagPrefix = "search/")
 
@@ -93,27 +90,29 @@ fun SearchScreen(
 
         host {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
+
                 Box(
                     contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
                        // .weight(1f)
                         .padding(horizontal = 10.dp)
                 ) {
-                    Column (
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                       // if (applyFontPadding)
-                           Spacer(modifier = Modifier.padding(top = 5.dp))
-                            
-                        IconButton(
-                            onClick = {},
-                            icon = R.drawable.search,
-                            color = colorPalette.favoritesIcon,
-                            modifier = Modifier
-                                //.align(Alignment.CenterStart)
-                                .size(20.dp)
-                        )
-                    }
+                    if (uiType == UiType.ViMusic)
+                        Column (
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                           // if (applyFontPadding)
+                               Spacer(modifier = Modifier.padding(top = 5.dp))
+
+                            IconButton(
+                                onClick = {},
+                                icon = R.drawable.search,
+                                color = colorPalette.favoritesIcon,
+                                modifier = Modifier
+                                    //.align(Alignment.CenterStart)
+                                    .size(20.dp)
+                            )
+                        }
 
 
                 }
@@ -165,7 +164,7 @@ fun SearchScreen(
 
                 }
             }
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,

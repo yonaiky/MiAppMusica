@@ -11,10 +11,10 @@ fun menuItemColors(): MenuItemColors {
     return MenuItemColors(
         leadingIconColor =  colorPalette.favoritesIcon,
         trailingIconColor =  colorPalette.favoritesIcon,
-        textColor = colorPalette.text,
-        disabledTextColor = colorPalette.textDisabled,
-        disabledLeadingIconColor = colorPalette.textDisabled,
-        disabledTrailingIconColor = colorPalette.textDisabled,
+        textColor = colorPalette.textSecondary,
+        disabledTextColor = colorPalette.text,
+        disabledLeadingIconColor = colorPalette.text,
+        disabledTrailingIconColor = colorPalette.text,
     )
 
 }

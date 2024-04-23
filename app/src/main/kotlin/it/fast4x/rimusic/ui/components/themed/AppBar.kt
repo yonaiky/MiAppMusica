@@ -100,6 +100,7 @@ fun appBar(
                     style = TextStyle(
                         fontSize = typography.xxl.semiBold.fontSize,
                         fontWeight = typography.xxxl.semiBold.fontWeight,
+                        fontFamily = typography.xxl.semiBold.fontFamily,
                         color = colorPalette.text
                     ),
                     modifier = Modifier
