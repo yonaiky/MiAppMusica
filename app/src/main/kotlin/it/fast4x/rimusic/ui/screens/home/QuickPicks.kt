@@ -107,6 +107,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
@@ -162,6 +163,7 @@ fun QuickPicks(
     var trending by persist<Song?>("home/trending")
 
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
+    var related by persist<Innertube.RelatedPage?>(tag = "home/relatedPage")
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryAlbums")
 
@@ -393,15 +395,17 @@ fun QuickPicks(
                         .padding(bottom = 8.dp)
                 )
 
-                relatedPageResult?.getOrNull()?.let { related ->
+                //relatedPageResult?.getOrNull()?.let { related ->
+                related = relatedPageResult?.getOrNull()
+
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
-                        rows = GridCells.Fixed(3),
+                        rows = GridCells.Fixed(if(related != null) 3 else 1),
                         flingBehavior = ScrollableDefaults.flingBehavior(),
                         contentPadding = endPaddingValues,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(Dimensions.itemsVerticalPadding * 3 * 9)
+                            .height(if (related != null) Dimensions.itemsVerticalPadding * 3 * 9 else Dimensions.itemsVerticalPadding * 9)
                         //.height((songThumbnailSizeDp + Dimensions.itemsVerticalPadding * 2) * 4)
                     ) {
                         trending?.let { song ->
@@ -503,89 +507,101 @@ fun QuickPicks(
                         }
 
                         //if (!refreshing) {
-                        items(
-                            items = related.songs?.dropLast(if (trending == null) 0 else 1)
-                                ?: emptyList(),
-                            key = Innertube.SongItem::key
-                        ) { song ->
-                            val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                            downloadState = getDownloadState(song.asMediaItem.mediaId)
-                            val isDownloaded =
-                                if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                        if (related != null) {
+                            items(
+                                items = related?.songs?.dropLast(if (trending == null) 0 else 1)
+                                    ?: emptyList(),
+                                key = Innertube.SongItem::key
+                            ) { song ->
+                                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                                downloadState = getDownloadState(song.asMediaItem.mediaId)
+                                val isDownloaded =
+                                    if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
 
-                            SongItem(
-                                song = song,
-                                isDownloaded = isDownloaded,
-                                onDownloadClick = {
-                                    binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    query {
-                                        Database.insert(
-                                            Song(
-                                                id = song.asMediaItem.mediaId,
-                                                title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                thumbnailUrl = song.thumbnail?.url,
-                                                durationText = null
-                                            )
-                                        )
-                                    }
-                                    if (!isLocal)
-                                        manageDownload(
-                                            context = context,
-                                            songId = song.asMediaItem.mediaId,
-                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                            downloadState = isDownloaded
-                                        )
-
-                                },
-                                downloadState = downloadState,
-                                thumbnailSizePx = songThumbnailSizePx,
-                                thumbnailSizeDp = songThumbnailSizeDp,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
-                                                    onDownload = {
-                                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                        query {
-                                                            Database.insert(
-                                                                Song(
-                                                                    id = song.asMediaItem.mediaId,
-                                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                                    thumbnailUrl = song.thumbnail?.url,
-                                                                    durationText = null
-                                                                )
-                                                            )
-                                                        }
-                                                        manageDownload(
-                                                            context = context,
-                                                            songId = song.asMediaItem.mediaId,
-                                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                                            downloadState = isDownloaded
-                                                        )
-                                                    },
-
-                                                    )
-                                            }
-                                        },
-                                        onClick = {
-                                            val mediaItem = song.asMediaItem
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlay(mediaItem)
-                                            binder?.setupRadio(
-                                                NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                SongItem(
+                                    song = song,
+                                    isDownloaded = isDownloaded,
+                                    onDownloadClick = {
+                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                        query {
+                                            Database.insert(
+                                                Song(
+                                                    id = song.asMediaItem.mediaId,
+                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
+                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                                    thumbnailUrl = song.thumbnail?.url,
+                                                    durationText = null
+                                                )
                                             )
                                         }
-                                    )
-                                    .animateItemPlacement()
-                                    .width(itemInHorizontalGridWidth)
-                            )
+                                        if (!isLocal)
+                                            manageDownload(
+                                                context = context,
+                                                songId = song.asMediaItem.mediaId,
+                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = isDownloaded
+                                            )
+
+                                    },
+                                    downloadState = downloadState,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                menuState.display {
+                                                    NonQueuedMediaItemMenu(
+                                                        navController = navController,
+                                                        onDismiss = menuState::hide,
+                                                        mediaItem = song.asMediaItem,
+                                                        onDownload = {
+                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                            query {
+                                                                Database.insert(
+                                                                    Song(
+                                                                        id = song.asMediaItem.mediaId,
+                                                                        title = song.asMediaItem.mediaMetadata.title.toString(),
+                                                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                                                        thumbnailUrl = song.thumbnail?.url,
+                                                                        durationText = null
+                                                                    )
+                                                                )
+                                                            }
+                                                            manageDownload(
+                                                                context = context,
+                                                                songId = song.asMediaItem.mediaId,
+                                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                                                downloadState = isDownloaded
+                                                            )
+                                                        },
+
+                                                        )
+                                                }
+                                            },
+                                            onClick = {
+                                                val mediaItem = song.asMediaItem
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(mediaItem)
+                                                binder?.setupRadio(
+                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                                )
+                                            }
+                                        )
+                                        .animateItemPlacement()
+                                        .width(itemInHorizontalGridWidth)
+                                )
+                            }
                         }
+                    }
+
+                    if (related == null) {
+                        BasicText(
+                            text = stringResource(R.string.sorry_tips_are_not_available),
+                            style = typography.s.semiBold.center,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(all = 16.dp)
+                        )
                     }
 
 
@@ -657,7 +673,7 @@ fun QuickPicks(
                     }
 
                     if (showRelatedAlbums)
-                        related.albums?.let { albums ->
+                        related?.albums?.let { albums ->
                             BasicText(
                                 text = stringResource(R.string.related_albums),
                                 style = typography.m.semiBold,
@@ -682,7 +698,7 @@ fun QuickPicks(
                         }
 
                     if (showSimilarArtists)
-                        related.artists?.let { artists ->
+                        related?.artists?.let { artists ->
                             BasicText(
                                 text = stringResource(R.string.similar_artists),
                                 style = typography.m.semiBold,
@@ -707,7 +723,7 @@ fun QuickPicks(
                         }
 
                     if (showPlaylistMightLike)
-                        related.playlists?.let { playlists ->
+                        related?.playlists?.let { playlists ->
                             BasicText(
                                 text = stringResource(R.string.playlists_you_might_like),
                                 style = typography.m.semiBold,
@@ -782,7 +798,9 @@ fun QuickPicks(
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
 
-                } ?: relatedPageResult?.exceptionOrNull()?.let {
+                //} ?:
+
+                relatedPageResult?.exceptionOrNull()?.let {
                     BasicText(
                         text = stringResource(R.string.page_not_been_loaded),
                         style = typography.s.secondary.center,
@@ -790,46 +808,51 @@ fun QuickPicks(
                             .align(Alignment.CenterHorizontally)
                             .padding(all = 16.dp)
                     )
-                } ?: ShimmerHost {
-                    repeat(3) {
-                        SongItemPlaceholder(
-                            thumbnailSizeDp = songThumbnailSizeDp,
-                        )
-                    }
-
-                    TextPlaceholder(modifier = sectionTextModifier)
-
-                    Row {
-                        repeat(2) {
-                            AlbumItemPlaceholder(
-                                thumbnailSizeDp = albumThumbnailSizeDp,
-                                alternative = true
-                            )
-                        }
-                    }
-
-                    TextPlaceholder(modifier = sectionTextModifier)
-
-                    Row {
-                        repeat(2) {
-                            ArtistItemPlaceholder(
-                                thumbnailSizeDp = albumThumbnailSizeDp,
-                                alternative = true
-                            )
-                        }
-                    }
-
-                    TextPlaceholder(modifier = sectionTextModifier)
-
-                    Row {
-                        repeat(2) {
-                            PlaylistItemPlaceholder(
-                                thumbnailSizeDp = albumThumbnailSizeDp,
-                                alternative = true
-                            )
-                        }
-                    }
                 }
+
+                /*
+                if (related == null)
+                    ShimmerHost {
+                        repeat(3) {
+                            SongItemPlaceholder(
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                            )
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                AlbumItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                ArtistItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                PlaylistItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+                    }
+                 */
             }
 
 
