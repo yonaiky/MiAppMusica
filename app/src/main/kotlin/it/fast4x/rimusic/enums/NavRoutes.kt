@@ -13,5 +13,6 @@ enum class NavRoutes {
     search,
     searchResults,
     settings,
-    statistics
+    statistics,
+    newalbums
 }

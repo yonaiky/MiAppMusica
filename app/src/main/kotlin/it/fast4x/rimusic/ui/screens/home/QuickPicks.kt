@@ -74,6 +74,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.enums.UiType
@@ -600,6 +601,7 @@ fun QuickPicks(
 
                         if (showNewAlbumsArtists)
                             if (newReleaseAlbumsFiltered.isNotEmpty() && preferitesArtists.isNotEmpty()) {
+
                                 BasicText(
                                     text = stringResource(R.string.new_albums_of_your_artists),
                                     style = typography.m.semiBold,
@@ -625,10 +627,17 @@ fun QuickPicks(
                             }
 
                         if (showNewAlbums) {
+                            /*
                             BasicText(
                                 text = stringResource(R.string.new_albums),
                                 style = typography.m.semiBold,
                                 modifier = sectionTextModifier
+                            )
+                             */
+                            Title(
+                                title = stringResource(R.string.new_albums),
+                                onClick = { navController.navigate(NavRoutes.newalbums.name) },
+                                //modifier = Modifier.fillMaxWidth(0.7f)
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {

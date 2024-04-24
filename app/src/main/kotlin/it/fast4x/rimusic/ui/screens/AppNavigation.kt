@@ -41,6 +41,8 @@ import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
 import it.fast4x.rimusic.ui.screens.mood.MoodList
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
+import it.fast4x.rimusic.ui.screens.newreleases.NewAlbums
+import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
 import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.search.SearchScreen
@@ -327,6 +329,14 @@ fun AppNavigation(
                 deviceLists = DeviceLists.LocalSongs
             )
             //}
+        }
+
+        composable(
+            route = NavRoutes.newalbums.name
+        ) { navBackStackEntry ->
+            NewreleasesScreen(
+                navController = navController
+            )
         }
 
     }
