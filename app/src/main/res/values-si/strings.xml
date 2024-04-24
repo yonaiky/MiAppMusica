@@ -454,4 +454,5 @@ CC-BY-SA 3.0</string>
     <string name="settings">Settings</string>
     <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
     <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
+    <string name="library_collections">Collections</string>
 </resources>

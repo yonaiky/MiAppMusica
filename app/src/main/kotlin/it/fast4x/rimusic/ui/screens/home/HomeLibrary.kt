@@ -312,7 +312,7 @@ fun HomeLibrary(
 
             item(key = "titleBuiltinPlaylists", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
                 Title(
-                    title = "Collections",
+                    title = stringResource(R.string.library_collections),
                     onClick = { showBuiltinPlaylists = !showBuiltinPlaylists },
                     icon = if (showBuiltinPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
                 )
