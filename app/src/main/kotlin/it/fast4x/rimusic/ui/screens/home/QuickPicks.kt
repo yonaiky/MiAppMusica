@@ -279,7 +279,7 @@ fun QuickPicks(
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
-    val showActionsBar by rememberPreference(showActionsBarKey, true)
+    //val showActionsBar by rememberPreference(showActionsBarKey, true)
 
     PullToRefreshBox(
         refreshing = refreshing,
@@ -636,7 +636,7 @@ fun QuickPicks(
                              */
                             Title(
                                 title = stringResource(R.string.new_albums),
-                                onClick = { navController.navigate(NavRoutes.newalbums.name) },
+                                onClick = { navController.navigate(NavRoutes.newAlbums.name) },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
 
@@ -737,10 +737,17 @@ fun QuickPicks(
                     discoverPage?.getOrNull()?.let { page ->
                         if (page.moods.isNotEmpty()) {
 
+                            /*
                             BasicText(
                                 text = stringResource(R.string.moods_and_genres),
                                 style = typography.m.semiBold,
                                 modifier = sectionTextModifier
+                            )
+                             */
+                            Title(
+                                title = stringResource(R.string.moods_and_genres),
+                                onClick = { navController.navigate(NavRoutes.moodsPage.name) },
+                                //modifier = Modifier.fillMaxWidth(0.7f)
                             )
 
                             LazyHorizontalGrid(

@@ -30,6 +30,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
+import it.fast4x.rimusic.ui.components.SimpleScaffold
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
 import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutScaffold
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreen
@@ -41,6 +42,8 @@ import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
 import it.fast4x.rimusic.ui.screens.mood.MoodList
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
+import it.fast4x.rimusic.ui.screens.mood.MoodsPage
+import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
 import it.fast4x.rimusic.ui.screens.newreleases.NewAlbums
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
@@ -97,7 +100,7 @@ fun AppNavigation(
             { browseId: String -> navController.navigate(route = "${NavRoutes.album.name}/$browseId") }
         val navigateToArtist = { browseId: String -> navController.navigate("${NavRoutes.artist.name}/$browseId") }
         val navigateToPlaylist = { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
-        val popDestination = {
+        val pop = {
             if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) navController.popBackStack()
         }
 
@@ -136,13 +139,10 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-
-            //PlayerScaffold {
                 AlbumScreen(
                     navController = navController,
                     browseId = id,
                 )
-            //}
         }
 
         composable(
@@ -155,41 +155,32 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-
-            //PlayerScaffold {
                 PlaylistScreen(
                     navController = navController,
                     browseId = id,
                     params = null,
                 )
-            //}
         }
 
         composable(route = NavRoutes.settings.name) {
-            //PlayerScaffold {
                 SettingsScreen(
                     navController = navController,
                     //pop = popDestination,
                     //onGoToSettingsPage = { index -> navController.navigate("settingsPage/$index") }
                 )
-            //}
         }
 
         composable(route = NavRoutes.statistics.name) {
-            //PlayerScaffold {
             StatisticsScreen(
                 navController = navController,
                 statisticsType = StatisticsType.Today
             )
-            //}
         }
 
         composable(route = NavRoutes.history.name) {
-            //PlayerScaffold {
             HistoryScreen(
                 navController = navController
             )
-            //}
         }
 
         /*
@@ -228,7 +219,6 @@ fun AppNavigation(
             val context = LocalContext.current
             val text = navBackStackEntry.arguments?.getString("text") ?: ""
 
-            //PlayerScaffold {
                 SearchScreen(
                     navController = navController,
                     initialTextInput = text,
@@ -244,7 +234,6 @@ fun AppNavigation(
                         }
                     }
                 )
-            //}
         }
 
         composable(
@@ -258,13 +247,11 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val query = navBackStackEntry.arguments?.getString("query") ?: ""
 
-            //PlayerScaffold {
                 SearchResultScreen(
                     navController = navController,
                     query = query,
                     onSearchAgain = {}
                 )
-            //}
         }
 
         composable(
@@ -278,12 +265,10 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val index = navBackStackEntry.arguments?.getInt("index") ?: 0
 
-            //PlayerScaffold {
                 BuiltInPlaylistScreen(
                     navController = navController,
                     builtInPlaylist = BuiltInPlaylist.entries[index],
                 )
-            //}
         }
 
         composable(
@@ -297,42 +282,52 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getLong("id") ?: 0L
 
-            //PlayerScaffold {
                 LocalPlaylistScreen(
                     navController = navController,
                     playlistId = id,
                     //onDelete = popDestination
                 )
-            //}
         }
 
         composable(
             route = NavRoutes.mood.name,
         ) { navBackStackEntry ->
             val mood: Mood? = navController.previousBackStackEntry?.savedStateHandle?.get("mood")
-            //PlayerScaffold {
             if (mood != null) {
                 MoodScreen(
                     navController = navController,
                     mood = mood
                 )
             }
-            //}
+        }
+
+        composable(
+            route = NavRoutes.moodsPage.name
+        ) { navBackStackEntry ->
+            /*
+            SimpleScaffold(navController = navController) {
+                MoodsPage(
+                    navController = navController
+                )
+            }
+             */
+            MoodsPageScreen(
+                navController = navController
+            )
+
         }
 
         composable(
             route = NavRoutes.onDevice.name
         ) { navBackStackEntry ->
-            //PlayerScaffold {
-            DeviceListSongsScreen(
+              DeviceListSongsScreen(
                 navController = navController,
                 deviceLists = DeviceLists.LocalSongs
             )
-            //}
         }
 
         composable(
-            route = NavRoutes.newalbums.name
+            route = NavRoutes.newAlbums.name
         ) { navBackStackEntry ->
             NewreleasesScreen(
                 navController = navController

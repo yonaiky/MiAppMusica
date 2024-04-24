@@ -14,5 +14,6 @@ enum class NavRoutes {
     searchResults,
     settings,
     statistics,
-    newalbums
+    newAlbums,
+    moodsPage
 }

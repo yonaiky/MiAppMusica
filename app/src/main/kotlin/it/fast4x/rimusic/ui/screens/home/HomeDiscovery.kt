@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.graphics.Paint.Align
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -42,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -346,7 +349,7 @@ fun MoodItem(
         BasicText(
             text = mood.title,
             style =  TextStyle(
-                color = colorPalette.favoritesIcon,
+                color = colorPalette.text,
                 fontStyle = typography.xs.semiBold.fontStyle,
                 fontWeight = typography.xs.semiBold.fontWeight
             ), //typography.xs.semiBold,
@@ -357,6 +360,53 @@ fun MoodItem(
         }
     }
     }
+
+@Composable
+fun MoodGridItem(
+    mood: Innertube.Mood.Item,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    thumbnailSizeDp: Dp
+) {
+    val (colorPalette, typography) = LocalAppearance.current
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+
+
+    Column (
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .size(thumbnailSizeDp,thumbnailSizeDp)
+            //.background(colorPalette.background1)
+            .clip(thumbnailRoundness.shape())
+            .clickable { onClick() }
+
+    ) {
+        Box(
+            modifier = Modifier
+                .background(color = colorPalette.background4, shape = thumbnailRoundness.shape())
+                .fillMaxSize(0.9f)
+                .padding(horizontal = 10.dp)
+                .padding(vertical = 50.dp)
+        ) {
+            BasicText(
+                text = mood.title,
+                style = TextStyle(
+                    color = colorPalette.text,
+                    fontStyle = typography.xxl.semiBold.fontStyle,
+                    fontWeight = typography.xxl.semiBold.fontWeight,
+                    fontFamily = typography.xxl.fontFamily,
+                    textAlign = TextAlign.Start
+                ),
+                modifier = modifier.padding(start = 4.dp),
+                maxLines = 1
+            )
+        }
+    }
+}
 
 @Composable
 fun MoodItemPlaceholder(
