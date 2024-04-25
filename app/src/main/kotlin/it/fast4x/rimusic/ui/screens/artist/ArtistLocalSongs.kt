@@ -47,6 +47,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -158,9 +159,16 @@ fun ArtistLocalSongs(
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
                                 color = colorPalette.text,
-                                onClick = {
-                                    showConfirmDownloadAllDialog = true
-                                }
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            showConfirmDownloadAllDialog = true
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_download_all_songs))
+                                        }
+                                    )
                             )
 
                             if (showConfirmDownloadAllDialog) {
@@ -198,9 +206,16 @@ fun ArtistLocalSongs(
                             HeaderIconButton(
                                 icon = R.drawable.download,
                                 color = colorPalette.text,
-                                onClick = {
-                                    showConfirmDeleteDownloadDialog = true
-                                }
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            showConfirmDeleteDownloadDialog = true
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                        }
+                                    )
                             )
 
                             if (showConfirmDeleteDownloadDialog) {
@@ -228,22 +243,38 @@ fun ArtistLocalSongs(
                                 icon = R.drawable.enqueue,
                                 enabled = !songs.isNullOrEmpty(),
                                 color = if (!songs.isNullOrEmpty()) colorPalette.text else colorPalette.textDisabled,
-                                onClick = { binder?.player?.enqueue(songs!!.map(Song::asMediaItem)) }
+                                onClick = {  },
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            binder?.player?.enqueue(songs!!.map(Song::asMediaItem))
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_enqueue_songs))
+                                        }
+                                    )
                             )
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = !songs.isNullOrEmpty(),
                                 color = if (!songs.isNullOrEmpty()) colorPalette.text else colorPalette.textDisabled,
-                                onClick = {
-                                    songs?.let { songs ->
-                                        if (songs.isNotEmpty()) {
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayFromBeginning(
-                                                songs.shuffled().map(Song::asMediaItem)
-                                            )
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            songs?.let { songs ->
+                                                if (songs.isNotEmpty()) {
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayFromBeginning(
+                                                        songs.shuffled().map(Song::asMediaItem)
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_shuffle))
                                         }
-                                    }
-                                }
+                                    )
                             )
                         }
 

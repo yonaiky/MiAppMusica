@@ -62,6 +62,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -160,10 +161,13 @@ fun ArtistOverview(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if (navigationBarPosition == NavigationBarPosition.Left ||
+                        navigationBarPosition == NavigationBarPosition.Top ||
+                        navigationBarPosition == NavigationBarPosition.Bottom
+                    ) 1f
+                    else Dimensions.contentWidthRightBar
+                )
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -188,9 +192,16 @@ fun ArtistOverview(
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
                             color = colorPalette.text,
-                            onClick = {
-                                showConfirmDownloadAllDialog = true
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDownloadAllDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_download_all_songs))
+                                    }
+                                )
                         )
 
                         if (showConfirmDownloadAllDialog) {
@@ -228,9 +239,16 @@ fun ArtistOverview(
                         HeaderIconButton(
                             icon = R.drawable.download,
                             color = colorPalette.text,
-                            onClick = {
-                                showConfirmDeleteDownloadDialog = true
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDeleteDownloadDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                    }
+                                )
                         )
 
                         if (showConfirmDeleteDownloadDialog) {
@@ -259,10 +277,17 @@ fun ArtistOverview(
                                 icon = R.drawable.shuffle,
                                 enabled = true,
                                 color = colorPalette.text,
-                                onClick = {
-                                    binder?.stopRadio()
-                                    binder?.playRadio(endpoint)
-                                }
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            binder?.stopRadio()
+                                            binder?.playRadio(endpoint)
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_shuffle))
+                                        }
+                                    )
                             )
                         }
                         youtubeArtistPage?.radioEndpoint?.let { endpoint ->
@@ -270,10 +295,17 @@ fun ArtistOverview(
                                 icon = R.drawable.radio,
                                 enabled = true,
                                 color = colorPalette.text,
-                                onClick = {
-                                    binder?.stopRadio()
-                                    binder?.playRadio(endpoint)
-                                }
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            binder?.stopRadio()
+                                            binder?.playRadio(endpoint)
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_start_radio))
+                                        }
+                                    )
                             )
                         }
                         youtubeArtistPage?.songs?.let { songs ->
@@ -281,9 +313,16 @@ fun ArtistOverview(
                                 icon = R.drawable.enqueue,
                                 enabled = true,
                                 color = colorPalette.text,
-                                onClick = {
-                                    binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem))
-                                }
+                                onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem))
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_enqueue_songs))
+                                        }
+                                    )
                             )
                         }
 
@@ -494,12 +533,18 @@ fun ArtistOverview(
                                 icon = R.drawable.translate,
                                 color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
                                 enabled = true,
-                                onClick = {
-                                    translateEnabled = !translateEnabled
-                                },
+                                onClick = {},
                                 modifier = Modifier
                                     .padding(all = 8.dp)
                                     .size(18.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            translateEnabled = !translateEnabled
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_translation))
+                                        }
+                                    )
                             )
                             BasicText(
                                 text = "“",

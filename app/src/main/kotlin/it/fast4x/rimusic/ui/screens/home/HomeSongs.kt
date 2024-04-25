@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import com.coder.vincent.smart_toast.SmartToast
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -69,6 +71,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -78,6 +81,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.Popup
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -86,6 +90,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -201,7 +206,7 @@ fun HomeSongs(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-
+    val activity = LocalContext.current as Activity
 
     Box(
         modifier = Modifier
@@ -209,10 +214,13 @@ fun HomeSongs(
             //.fillMaxSize()
             .fillMaxHeight()
             //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else Dimensions.contentWidthRightBar)
-            .fillMaxWidth( if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = lazyListState,
@@ -256,38 +264,63 @@ fun HomeSongs(
                             .padding(horizontal = 5.dp)
                     )
                     HeaderIconButton(
-                        onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
+                        onClick = {},
                         icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
                         color = colorPalette.text,
                         //iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_show_hide_hidden_songs))
+                                }
+                            )
                     )
 
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = items.isNotEmpty(),
                         color = if (items.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            if (items.isNotEmpty()) {
-                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.shuffled().take(maxSongsInQueue.number.toInt()) else items
-                                binder?.stopRadio()
-                                binder?.player?.forcePlayFromBeginning(
-                                    itemsLimited.shuffled().map(Song::asMediaItem)
-                                )
-                            }
-                        },
+                        onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    if (items.isNotEmpty()) {
+                                        val itemsLimited =
+                                            if (items.size > maxSongsInQueue.number) items
+                                                .shuffled()
+                                                .take(maxSongsInQueue.number.toInt()) else items
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayFromBeginning(
+                                            itemsLimited
+                                                .shuffled()
+                                                .map(Song::asMediaItem)
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_shuffle))
+                                }
+                            )
                     )
 
                     HeaderIconButton(
-                        onClick = { includeLocalSongs = !includeLocalSongs },
+                        onClick = {  },
                         icon = R.drawable.devices,
                         color = if (includeLocalSongs) colorPalette.text else colorPalette.textDisabled,
                         //iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    includeLocalSongs = !includeLocalSongs
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_includes_excludes_songs_on_the_device))
+                                }
+                            )
                     )
 
                     Spacer(
@@ -528,7 +561,10 @@ fun HomeSongs(
                             onClick = {
                                 searching = false
                                 filter = null
-                                val itemsLimited = if (items.size > maxSongsInQueue.number)  items.take(maxSongsInQueue.number.toInt()) else items
+                                val itemsLimited =
+                                    if (items.size > maxSongsInQueue.number) items.take(
+                                        maxSongsInQueue.number.toInt()
+                                    ) else items
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex(
                                     itemsLimited.map(Song::asMediaItem),

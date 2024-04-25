@@ -114,7 +114,10 @@ fun Popup(
 
         LaunchedEffect(Unit) {
             coroutineScope.launch {
-                snackState.showSnackbar(message)
+                snackState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short
+                )
             }
         }
 
@@ -129,8 +132,8 @@ fun Popup(
         ) { snackbarData: SnackbarData ->
             CustomSnackBar(
                 when(type) {
-                    PopupType.Alert -> R.drawable.alert_circle
-                    PopupType.Help -> R.drawable.help_circle
+                    PopupType.Warning -> R.drawable.alert_circle
+                    PopupType.Error -> R.drawable.close
                     PopupType.Info -> R.drawable.information_circle
                 },
                 snackbarData.visuals.message,

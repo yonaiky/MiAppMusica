@@ -83,6 +83,7 @@ import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -447,17 +448,31 @@ fun AlbumSongs(
                                 HeaderIconButton(
                                     icon = R.drawable.downloaded,
                                     color = colorPalette.text,
-                                    onClick = {
-                                        showConfirmDownloadAllDialog = true
-                                    }
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                showConfirmDownloadAllDialog = true
+                                            },
+                                            onLongClick = {
+                                                SmartToast(context.getString(R.string.info_download_all_songs))
+                                            }
+                                        )
                                 )
 
                                 HeaderIconButton(
                                     icon = R.drawable.download,
                                     color = colorPalette.text,
-                                    onClick = {
-                                        showConfirmDeleteDownloadDialog = true
-                                    }
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                showConfirmDeleteDownloadDialog = true
+                                            },
+                                            onLongClick = {
+                                                SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                            }
+                                        )
                                 )
 
 
@@ -485,33 +500,49 @@ fun AlbumSongs(
                                     icon = R.drawable.shuffle,
                                     enabled = songs.isNotEmpty(),
                                     color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                                    onClick = {
-                                        if (songs.isNotEmpty()) {
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayFromBeginning(
-                                                songs.shuffled().map(Song::asMediaItem)
-                                            )
-                                        }
-                                    }
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                if (songs.isNotEmpty()) {
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayFromBeginning(
+                                                        songs.shuffled().map(Song::asMediaItem)
+                                                    )
+                                                }
+                                            },
+                                            onLongClick = {
+                                                SmartToast(context.getString(R.string.info_shuffle))
+                                            }
+                                        )
                                 )
 
                                 HeaderIconButton(
-                                    modifier = Modifier.padding(horizontal = 5.dp),
+                                    modifier = Modifier
+                                        .padding(horizontal = 5.dp)
+                                        .combinedClickable(
+                                            onClick = {
+                                                nowPlayingItem = -1
+                                                scrollToNowPlaying = false
+                                                songs
+                                                    .forEachIndexed { index, song ->
+                                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                            nowPlayingItem = index
+                                                    }
+
+                                                if (nowPlayingItem > -1)
+                                                    scrollToNowPlaying = true
+                                            },
+                                            onLongClick = {
+                                                SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                            }
+                                        ),
                                     icon = R.drawable.locate,
                                     enabled = songs.isNotEmpty(),
                                     color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                                    onClick = {
-                                        nowPlayingItem = -1
-                                        scrollToNowPlaying = false
-                                        songs
-                                            .forEachIndexed { index, song ->
-                                                if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                                    nowPlayingItem = index
-                                            }
+                                    onClick = {}
 
-                                        if (nowPlayingItem > -1)
-                                            scrollToNowPlaying = true
-                                    }
+
                                 )
 
 
