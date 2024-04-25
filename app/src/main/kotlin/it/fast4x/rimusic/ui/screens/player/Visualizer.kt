@@ -24,8 +24,10 @@ import androidx.media3.common.util.UnstableApi
 
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PlayerVisualizerType
+import it.fast4x.rimusic.enums.PopupType
 
 import it.fast4x.rimusic.extensions.visualizer.Visualizer
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 
@@ -40,6 +42,7 @@ fun ShowVisualizer(
     modifier: Modifier = Modifier
 ) {
 
+    val context = LocalContext.current
     var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     //Log.d("visualizer player","passato da qui")
 
@@ -56,7 +59,7 @@ fun ShowVisualizer(
             Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        LocalContext.current.toast(stringResource(R.string.require_mic_permission))
+        SmartToast(context.resources.getString(R.string.require_mic_permission), type = PopupType.Info)
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(Manifest.permission.RECORD_AUDIO), 42

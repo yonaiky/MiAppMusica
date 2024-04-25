@@ -60,6 +60,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Info
@@ -244,9 +245,9 @@ fun AlbumSongs(
                             outputStream.close()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            context.toast("Error")
+                            SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
                         }
-                    } else context.toast("Error")
+                    } else SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
                 }
 
         }
@@ -590,7 +591,7 @@ fun AlbumSongs(
                                                                 }"
                                                             )
                                                         } catch (e: ActivityNotFoundException) {
-                                                            context.toast("Couldn't find an application to create documents")
+                                                            SmartToast("Couldn't find an application to create documents", type = PopupType.Warning)
                                                         }
                                                     },
                                                     onPlayNext = {

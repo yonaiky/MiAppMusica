@@ -37,6 +37,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.internal
 import it.fast4x.rimusic.path
 import it.fast4x.rimusic.query
@@ -45,6 +46,7 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -148,7 +150,7 @@ fun DatabaseSettings() {
                 try {
                     backupLauncher.launch("rimusic_${dateFormat.format(Date())}.db")
                 } catch (e: ActivityNotFoundException) {
-                    context.toast("Couldn't find an application to create documents")
+                    SmartToast(context.resources.getString(R.string.info_not_find_app_create_doc), type = PopupType.Warning)
                 }
             }
         )
@@ -167,7 +169,7 @@ fun DatabaseSettings() {
                         )
                     )
                 } catch (e: ActivityNotFoundException) {
-                    context.toast("Couldn't find an application to open documents")
+                    SmartToast(context.resources.getString(R.string.info_not_find_app_open_doc), type = PopupType.Warning)
                 }
             }
         )

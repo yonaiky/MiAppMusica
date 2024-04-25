@@ -71,6 +71,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.LyricsFontSize
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
@@ -80,6 +81,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialogBody
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -740,7 +742,10 @@ fun Lyrics(
                                                         }
                                                     )
                                                 } catch (e: ActivityNotFoundException) {
-                                                    context.toast("Couldn't find an application to browse the Internet")
+                                                    SmartToast(
+                                                        context.getString(R.string.info_not_find_app_browse_internet),
+                                                        type = PopupType.Warning
+                                                    )
                                                 }
                                             }
                                         )

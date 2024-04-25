@@ -98,6 +98,7 @@ import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -121,6 +122,7 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
@@ -525,7 +527,7 @@ fun LocalPlaylistSongs(
                         val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
                         exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(Date())}")
                     } catch (e: ActivityNotFoundException) {
-                        context.toast("Couldn't find an application to create documents")
+                        SmartToast(context.resources.getString(R.string.info_not_find_app_create_doc), type = PopupType.Warning)
                     }
                 }
 
@@ -541,10 +543,13 @@ fun LocalPlaylistSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = reorderingState.lazyListState,
@@ -640,26 +645,40 @@ fun LocalPlaylistSongs(
                             icon = R.drawable.smart_shuffle,
                             enabled = true,
                             color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                isRecommendationEnabled = !isRecommendationEnabled
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        isRecommendationEnabled = !isRecommendationEnabled
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_smart_recommendation))
+                                    }
+                                )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = playlistSongs.isNotEmpty() == true,
                             color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                playlistSongs.let { songs ->
-                                    if (songs.isNotEmpty()) {
-                                        val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayFromBeginning(
-                                            itemsLimited.shuffled().map(Song::asMediaItem)
-                                        )
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        playlistSongs.let { songs ->
+                                            if (songs.isNotEmpty()) {
+                                                val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayFromBeginning(
+                                                    itemsLimited.shuffled().map(Song::asMediaItem)
+                                                )
+                                            }
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_shuffle))
                                     }
-                                }
-                            }
+                                )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
@@ -689,35 +708,57 @@ fun LocalPlaylistSongs(
                         enabled = playlistSongs.isNotEmpty(),
                         color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
                             colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            query {
-                                if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
-                                    Database.unPinPlaylist(playlistId) else
-                                    Database.pinPlaylist(playlistId)
-                            }
-                        }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    query {
+                                        if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                            Database.unPinPlaylist(playlistId) else
+                                            Database.pinPlaylist(playlistId)
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_pin_unpin_playlist))
+                                }
+                            )
                     )
 
                     HeaderIconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
                         enabled = playlistSongs.isNotEmpty() == true,
                         color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                                isReorderDisabled = !isReorderDisabled
-                            } else {
-                                context.toast("Playlist sorting only possible for ascending position")
-                            }
-                        }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                        isReorderDisabled = !isReorderDisabled
+                                    } else {
+                                        SmartToast("Reorder is possible only in ascending sort",
+                                            type = PopupType.Warning)
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_lock_unlock_reorder_songs))
+                                }
+                            )
                     )
 
                     HeaderIconButton(
                         icon = R.drawable.downloaded,
                         enabled = playlistSongs.isNotEmpty(),
                         color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            showConfirmDownloadAllDialog = true
-                        }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    showConfirmDownloadAllDialog = true
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_download_all_songs))
+                                }
+                            )
                     )
 
 
@@ -758,10 +799,16 @@ fun LocalPlaylistSongs(
                         icon = R.drawable.download,
                         enabled = playlistSongs.isNotEmpty(),
                         color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            showConfirmDeleteDownloadDialog = true
-
-                        }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    showConfirmDeleteDownloadDialog = true
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                }
+                            )
                     )
 
                     if (showConfirmDeleteDownloadDialog) {
@@ -1054,22 +1101,29 @@ fun LocalPlaylistSongs(
                             .fillMaxWidth()
                     ) {
                         HeaderIconButton(
-                            modifier = Modifier.padding(horizontal = 5.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        nowPlayingItem = -1
+                                        scrollToNowPlaying = false
+                                        playlistSongs
+                                            .forEachIndexed { index, song ->
+                                                if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                    nowPlayingItem = index
+                                            }
+
+                                        if (nowPlayingItem > -1)
+                                            scrollToNowPlaying = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                    }
+                                ),
                             icon = R.drawable.locate,
                             enabled = playlistSongs.isNotEmpty(),
                             color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                nowPlayingItem = -1
-                                scrollToNowPlaying = false
-                                playlistSongs
-                                    .forEachIndexed { index, song ->
-                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                            nowPlayingItem = index
-                                    }
-
-                                if (nowPlayingItem > -1)
-                                    scrollToNowPlaying = true
-                            }
+                            onClick = {}
                         )
                         LaunchedEffect(scrollToNowPlaying) {
                             if (scrollToNowPlaying)

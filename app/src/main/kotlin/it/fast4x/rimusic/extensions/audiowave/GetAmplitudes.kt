@@ -11,9 +11,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.extensions.visualizer.audio.VisualizerComputer
 import it.fast4x.rimusic.extensions.visualizer.audio.VisualizerData
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.utils.toast
 import kotlin.Int
 
@@ -29,7 +31,7 @@ fun getAmplitudes (
             Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        context.toast(context.resources.getString(R.string.require_mic_permission))
+        SmartToast(context.resources.getString(R.string.require_mic_permission), type = PopupType.Info)
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(Manifest.permission.RECORD_AUDIO), 42

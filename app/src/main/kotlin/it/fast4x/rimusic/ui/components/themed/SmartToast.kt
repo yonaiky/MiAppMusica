@@ -14,15 +14,17 @@ fun SmartToast(
     durationLong: Boolean? = false
 ) {
   var smartToast =  SmartToast.emotion()
-      backgroundColor?.let {
-          smartToast.config()
-              .backgroundColor(backgroundColor.hashCode())
-              .commit()
-      }
+
+  backgroundColor?.let {
+      smartToast.config()
+          .backgroundColor(backgroundColor.hashCode())
+          .commit()
+  }
     when(type) {
         PopupType.Info -> if (durationLong == true) smartToast.infoLong(message) else smartToast.info(message)
         PopupType.Error -> if (durationLong == true) smartToast.errorLong(message) else smartToast.error(message)
         PopupType.Warning -> if (durationLong == true) smartToast.warningLong(message) else smartToast.warning(message)
+        PopupType.Success -> if (durationLong == true) smartToast.successLong(message) else smartToast.success(message)
         else -> if (durationLong == true) smartToast.completeLong(message) else smartToast.complete(message)
     }
 

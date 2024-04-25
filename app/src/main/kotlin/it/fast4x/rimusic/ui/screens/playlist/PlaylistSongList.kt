@@ -70,6 +70,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
@@ -90,6 +91,7 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -248,7 +250,7 @@ fun PlaylistSongList(
                             }?.let(Database::insertSongPlaylistMaps)
                     }
                 }
-                context.toast(context.resources.getString(R.string.done))
+                SmartToast(context.resources.getString(R.string.done), PopupType.Success)
             }
         )
     }
@@ -312,48 +314,62 @@ fun PlaylistSongList(
                 HeaderIconButton(
                     icon = R.drawable.downloaded,
                     color = colorPalette.text,
-                    onClick = {
-                        downloadState = Download.STATE_DOWNLOADING
-                        if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
-                            playlistPage?.songsPage?.items?.forEach {
-                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                query {
-                                    Database.insert(
-                                        Song(
-                                            id = it.asMediaItem.mediaId,
-                                            title = it.asMediaItem.mediaMetadata.title.toString(),
-                                            artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = it.thumbnail?.url,
-                                            durationText = null
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                downloadState = Download.STATE_DOWNLOADING
+                                if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
+                                    playlistPage?.songsPage?.items?.forEach {
+                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                        query {
+                                            Database.insert(
+                                                Song(
+                                                    id = it.asMediaItem.mediaId,
+                                                    title = it.asMediaItem.mediaMetadata.title.toString(),
+                                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                                    thumbnailUrl = it.thumbnail?.url,
+                                                    durationText = null
+                                                )
+                                            )
+                                        }
+                                        manageDownload(
+                                            context = context,
+                                            songId = it.asMediaItem.mediaId,
+                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                            downloadState = false
                                         )
-                                    )
-                                }
-                                manageDownload(
-                                    context = context,
-                                    songId = it.asMediaItem.mediaId,
-                                    songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                    downloadState = false
-                                )
+                                    }
+                            },
+                            onLongClick = {
+                                SmartToast(context.getString(R.string.info_download_all_songs))
                             }
-                    }
+                        )
                 )
 
                 HeaderIconButton(
                     icon = R.drawable.download,
                     color = colorPalette.text,
-                    onClick = {
-                        downloadState = Download.STATE_DOWNLOADING
-                        if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
-                            playlistPage?.songsPage?.items?.forEach {
-                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                manageDownload(
-                                    context = context,
-                                    songId = it.asMediaItem.mediaId,
-                                    songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                    downloadState = true
-                                )
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                downloadState = Download.STATE_DOWNLOADING
+                                if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
+                                    playlistPage?.songsPage?.items?.forEach {
+                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                        manageDownload(
+                                            context = context,
+                                            songId = it.asMediaItem.mediaId,
+                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                            downloadState = true
+                                        )
+                                    }
+                            },
+                            onLongClick = {
+                                SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                             }
-                    }
+                        )
                 )
 
 
@@ -362,75 +378,96 @@ fun PlaylistSongList(
                     icon = R.drawable.enqueue,
                     enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
                     color =  if (playlistPage?.songsPage?.items?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                    onClick = {
-                        playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
-                            binder?.player?.enqueue(mediaItems)
-                        }
-                    }
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
+                                    binder?.player?.enqueue(mediaItems)
+                                }
+                            },
+                            onLongClick = {
+                                SmartToast(context.getString(R.string.info_enqueue_songs))
+                            }
+                        )
                 )
 
                 HeaderIconButton(
                     icon = R.drawable.shuffle,
                     enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
                     color = if (playlistPage?.songsPage?.items?.isNotEmpty() ==true) colorPalette.text else colorPalette.textDisabled,
-                    onClick = {
-                        if (playlistPage?.songsPage?.items?.isNotEmpty() == true) {
-                            binder?.stopRadio()
-                            playlistPage?.songsPage?.items?.shuffled()?.map(Innertube.SongItem::asMediaItem)
-                                ?.let {
-                                    binder?.player?.forcePlayFromBeginning(
-                                        it
-                                    )
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                if (playlistPage?.songsPage?.items?.isNotEmpty() == true) {
+                                    binder?.stopRadio()
+                                    playlistPage?.songsPage?.items?.shuffled()?.map(Innertube.SongItem::asMediaItem)
+                                        ?.let {
+                                            binder?.player?.forcePlayFromBeginning(
+                                                it
+                                            )
+                                        }
                                 }
-                        }
-                    }
+                            },
+                            onLongClick = {
+                                SmartToast(context.getString(R.string.info_shuffle))
+                            }
+                        )
                 )
 
                 HeaderIconButton(
                     icon = R.drawable.add_in_playlist,
                     color = colorPalette.text,
-                    onClick = {
-                        menuState.display {
-                            PlaylistsItemMenu(
-                                navController = navController,
-                                modifier = Modifier.fillMaxHeight(0.4f),
-                                onDismiss = menuState::hide,
-                                onImportOnlinePlaylist = {
-                                    isImportingPlaylist = true
-                                },
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                menuState.display {
+                                    PlaylistsItemMenu(
+                                        navController = navController,
+                                        modifier = Modifier.fillMaxHeight(0.4f),
+                                        onDismiss = menuState::hide,
+                                        onImportOnlinePlaylist = {
+                                            isImportingPlaylist = true
+                                        },
 
-                                //NOT NECESSARY IN ONLINE PLAYLIST USE IMPORT
-                                onAddToPlaylist = { playlistPreview ->
-                                    position =
-                                        playlistPreview.songCount.minus(1) ?: 0
-                                    if (position > 0) position++ else position = 0
+                                        //NOT NECESSARY IN ONLINE PLAYLIST USE IMPORT
+                                        onAddToPlaylist = { playlistPreview ->
+                                            position =
+                                                playlistPreview.songCount.minus(1) ?: 0
+                                            if (position > 0) position++ else position = 0
 
-                                    playlistPage!!.songsPage?.items?.forEachIndexed { index, song ->
-                                            runCatching {
-                                                Database.insert(song.asMediaItem)
-                                                Database.insert(
-                                                    SongPlaylistMap(
-                                                        songId = song.asMediaItem.mediaId,
-                                                        playlistId = playlistPreview.playlist.id,
-                                                        position = position + index
+                                            playlistPage!!.songsPage?.items?.forEachIndexed { index, song ->
+                                                runCatching {
+                                                    Database.insert(song.asMediaItem)
+                                                    Database.insert(
+                                                        SongPlaylistMap(
+                                                            songId = song.asMediaItem.mediaId,
+                                                            playlistId = playlistPreview.playlist.id,
+                                                            position = position + index
+                                                        )
                                                     )
-                                                )
-                                            }.onFailure {
-                                                context.toast(context.resources.getString(R.string.error))
+                                                }.onFailure {
+                                                    SmartToast(context.resources.getString(R.string.error))
+                                                }
                                             }
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                SmartToast(context.resources.getString(R.string.done), type = PopupType.Success)
+                                            }
+                                        },
+                                        onGoToPlaylist = {
+                                            navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                         }
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        context.toast(context.resources.getString(R.string.done))
-                                    }
-                                },
-                                onGoToPlaylist = {
-                                    navController.navigate("${NavRoutes.localPlaylist.name}/$it")
+
+
+                                    )
                                 }
-
-
-                            )
-                        }
-                    }
+                            },
+                            onLongClick = {
+                                SmartToast(context.getString(R.string.info_add_in_playlist))
+                            }
+                        )
                 )
 
                 /*
@@ -612,10 +649,13 @@ fun PlaylistSongList(
                 .background(colorPalette.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if (navigationBarPosition == NavigationBarPosition.Left ||
+                        navigationBarPosition == NavigationBarPosition.Top ||
+                        navigationBarPosition == NavigationBarPosition.Bottom
+                    ) 1f
+                    else Dimensions.contentWidthRightBar
+                )
         ) {
             LazyColumn(
                 state = lazyListState,

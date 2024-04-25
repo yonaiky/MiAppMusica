@@ -103,6 +103,7 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerVisualizerType
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
@@ -120,6 +121,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -1457,7 +1459,7 @@ fun Player(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        context.toast("Couldn't find an application to equalize audio")
+                                        SmartToast(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
                                     }
                                 },
                                 modifier = Modifier

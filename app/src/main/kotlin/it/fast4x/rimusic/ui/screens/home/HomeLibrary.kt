@@ -55,6 +55,7 @@ import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
@@ -72,6 +73,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -571,9 +573,8 @@ fun HomeLibrary(
                                             )
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        context.toast(
-                                            e.message
-                                                ?: "Couldn't find an application to open documents"
+                                        SmartToast(
+                                            context.getString(R.string.info_not_find_app_open_doc), type = PopupType.Warning
                                         )
                                     }
                                 },

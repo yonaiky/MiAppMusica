@@ -80,6 +80,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -96,6 +97,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -348,7 +350,7 @@ fun Queue(
                             Date()
                         )}")
                     } catch (e: ActivityNotFoundException) {
-                        context.toast("Couldn't find an application to create documents")
+                        SmartToast(context.resources.getString(R.string.info_not_find_app_create_doc), type = PopupType.Warning)
                     }
                 }
             )
@@ -613,7 +615,7 @@ fun Queue(
                             onHorizontalSwipeWhenActionDisabled = {
                                 if (!isReorderDisabled && !isSwipeToActionEnabled)
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
-                                else context.toast(context.resources.getString(R.string.locked))
+                                else SmartToast(context.resources.getString(R.string.locked), type = PopupType.Warning)
                             }
                         )
                     }

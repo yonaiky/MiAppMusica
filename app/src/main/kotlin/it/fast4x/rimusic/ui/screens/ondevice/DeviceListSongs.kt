@@ -106,6 +106,7 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -547,18 +548,25 @@ fun DeviceListSongs(
                         icon = R.drawable.locate,
                         enabled = filteredSongs.isNotEmpty(),
                         color = if (filteredSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            nowPlayingItem = -1
-                            scrollToNowPlaying = false
-                            filteredSongs
-                                .forEachIndexed{ index, song ->
-                                    if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                        nowPlayingItem = index
-                                }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    nowPlayingItem = -1
+                                    scrollToNowPlaying = false
+                                    filteredSongs
+                                        .forEachIndexed{ index, song ->
+                                            if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                nowPlayingItem = index
+                                        }
 
-                            if (nowPlayingItem > -1)
-                                scrollToNowPlaying = true
-                        }
+                                    if (nowPlayingItem > -1)
+                                        scrollToNowPlaying = true
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                }
+                            )
                     )
                     LaunchedEffect(scrollToNowPlaying) {
                         if (scrollToNowPlaying)
@@ -586,14 +594,21 @@ fun DeviceListSongs(
                         icon = R.drawable.shuffle,
                         enabled = filteredSongs.isNotEmpty(),
                         color = if (filteredSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {
-                            if (filteredSongs.isNotEmpty()) {
-                                binder?.stopRadio()
-                                binder?.player?.forcePlayFromBeginning(
-                                    songs.shuffled().map(Song::asMediaItem)
-                                )
-                            }
-                        }
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (filteredSongs.isNotEmpty()) {
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayFromBeginning(
+                                            songs.shuffled().map(Song::asMediaItem)
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_shuffle))
+                                }
+                            )
                     )
 
                     HeaderIconButton(

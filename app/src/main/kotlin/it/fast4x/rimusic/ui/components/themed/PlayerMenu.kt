@@ -22,6 +22,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.utils.menuStyleKey
@@ -101,7 +102,7 @@ fun PlayerMenu(
                         }
                     )
                 } catch (e: ActivityNotFoundException) {
-                    context.toast("Couldn't find an application to equalize audio")
+                    SmartToast(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
                 }
             },
             onHideFromDatabase = { isHiding = true },
@@ -126,7 +127,7 @@ fun PlayerMenu(
                         }
                     )
                 } catch (e: ActivityNotFoundException) {
-                    context.toast("Couldn't find an application to equalize audio")
+                    SmartToast(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
                 }
             },
             onShowSleepTimer = {},

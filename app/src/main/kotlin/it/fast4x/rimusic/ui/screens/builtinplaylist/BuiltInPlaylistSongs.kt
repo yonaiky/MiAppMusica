@@ -89,6 +89,7 @@ import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -143,6 +144,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.BehindMotionSwipe
@@ -464,7 +466,8 @@ fun BuiltInPlaylistSongs(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
-                    context.toast("Couldn't find an application to create documents")
+                    SmartToast("Couldn't find an application to create documents",
+                        type = PopupType.Warning)
                 }
             }
         )
@@ -479,10 +482,13 @@ fun BuiltInPlaylistSongs(
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = lazyListState,
@@ -628,24 +634,40 @@ fun BuiltInPlaylistSongs(
                             icon = R.drawable.smart_shuffle,
                             enabled = true,
                             color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                isRecommendationEnabled = !isRecommendationEnabled
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        isRecommendationEnabled = !isRecommendationEnabled
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_smart_recommendation))
+                                    }
+                                )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = songs.isNotEmpty(),
                             color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                if (songs.isNotEmpty()) {
-                                    val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlayFromBeginning(
-                                        itemsLimited.shuffled().map(Song::asMediaItem)
+                            onClick = {},
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (songs.isNotEmpty()) {
+                                                val itemsLimited =
+                                                    if (songs.size > maxSongsInQueue.number) songs.shuffled()
+                                                        .take(maxSongsInQueue.number.toInt()) else songs
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayFromBeginning(
+                                                    itemsLimited.shuffled().map(Song::asMediaItem)
+                                                )
+                                            }
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_shuffle))
+                                        }
                                     )
-                                }
-                            }
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
@@ -674,9 +696,16 @@ fun BuiltInPlaylistSongs(
                             icon = R.drawable.downloaded,
                             enabled = songs.isNotEmpty(),
                             color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                showConfirmDownloadAllDialog = true
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDownloadAllDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_download_all_songs))
+                                    }
+                                )
                         )
                     }
 
@@ -707,9 +736,16 @@ fun BuiltInPlaylistSongs(
                             icon = R.drawable.download,
                             enabled = songs.isNotEmpty(),
                             color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                showConfirmDeleteDownloadDialog = true
-                            }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDeleteDownloadDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                    }
+                                )
                         )
 
                         if (showConfirmDeleteDownloadDialog) {
@@ -763,7 +799,16 @@ fun BuiltInPlaylistSongs(
                             icon = R.drawable.trash,
                             enabled = true,
                             color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = { cleanCacheOfflineSongs = true }
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        cleanCacheOfflineSongs = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_clean_cached_congs))
+                                    }
+                                )
                         )
 
                     /*
@@ -942,22 +987,28 @@ fun BuiltInPlaylistSongs(
                             .fillMaxWidth()
                     ) {
                         HeaderIconButton(
-                            modifier = Modifier.padding(horizontal = 5.dp),
+                            modifier = Modifier.padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        nowPlayingItem = -1
+                                        scrollToNowPlaying = false
+                                        songs
+                                            .forEachIndexed { index, song ->
+                                                if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                    nowPlayingItem = index
+                                            }
+
+                                        if (nowPlayingItem > -1)
+                                            scrollToNowPlaying = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                    }
+                                ),
                             icon = R.drawable.locate,
                             enabled = songs.isNotEmpty(),
                             color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {
-                                nowPlayingItem = -1
-                                scrollToNowPlaying = false
-                                songs
-                                    .forEachIndexed { index, song ->
-                                        if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                            nowPlayingItem = index
-                                    }
-
-                                if (nowPlayingItem > -1)
-                                    scrollToNowPlaying = true
-                            }
+                            onClick = {}
                         )
                         LaunchedEffect(scrollToNowPlaying) {
                             if (scrollToNowPlaying)
@@ -1228,7 +1279,10 @@ fun BuiltInPlaylistSongs(
                                         if (!selectItems) {
                                             searching = false
                                             filter = null
-                                            val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.take(maxSongsInQueue.number.toInt()) else songs
+                                            val itemsLimited =
+                                                if (songs.size > maxSongsInQueue.number) songs.take(
+                                                    maxSongsInQueue.number.toInt()
+                                                ) else songs
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
                                                 itemsLimited.map(Song::asMediaItem),
