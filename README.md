@@ -198,8 +198,9 @@ WARNING, the custom version is not an official release, downloading only if invi
 - [**Rubik** Font](https://fonts.google.com/specimen/Rubik): Rubik is RiMusic's default font.
 - [**Poppins** Font](https://fonts.google.com/specimen/Poppins): Poppins is ViMusic's default font.
 - [**Translator**](https://github.com/therealbush/translator): A simple and free Google Translate library for Kotlin/JVM and Java.
-- [**KuGou**](https://www.kugou.com): Lyrics text
-- [**LrcLib**](https://lrclib.net): Lyrics text
+- [**KuGou**](https://www.kugou.com): Lyrics provider
+- [**LrcLib**](https://lrclib.net): Lyrics provider
+- [**Smart Show**](https://github.com/vincent-series/smart-show): Toast # Snackbar # Dialog
 
 
 ## ❗ Disclaimer

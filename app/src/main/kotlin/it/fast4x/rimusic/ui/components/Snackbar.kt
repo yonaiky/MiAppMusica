@@ -135,6 +135,7 @@ fun Popup(
                     PopupType.Warning -> R.drawable.alert_circle
                     PopupType.Error -> R.drawable.close
                     PopupType.Info -> R.drawable.information_circle
+                    PopupType.Success -> R.drawable.checkmark
                 },
                 snackbarData.visuals.message,
                 isRtl = true,
