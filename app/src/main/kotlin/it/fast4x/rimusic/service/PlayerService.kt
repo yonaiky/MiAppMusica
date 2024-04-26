@@ -451,8 +451,6 @@ class PlayerService : InvincibleService(),
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
-            .setHandleAudioBecomingNoisy(true)
-            .setWakeMode(C.WAKE_MODE_LOCAL)
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -460,6 +458,10 @@ class PlayerService : InvincibleService(),
                     .build(),
                 true
             )
+            .setWakeMode(C.WAKE_MODE_LOCAL)
+            .setHandleAudioBecomingNoisy(true)
+            .setSeekForwardIncrementMs(5000)
+            .setSeekBackIncrementMs(5000)
             .setUsePlatformDiagnostics(false)
             .build()
 
