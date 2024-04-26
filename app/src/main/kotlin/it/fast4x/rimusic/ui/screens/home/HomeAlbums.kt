@@ -33,7 +33,9 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,8 +50,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
+import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
@@ -58,13 +62,22 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Info
+import it.fast4x.rimusic.models.Playlist
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.query
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -72,13 +85,17 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlinx.coroutines.coroutineScope
 import kotlin.random.Random
 
 @ExperimentalTextApi
@@ -94,7 +111,7 @@ fun HomeAlbums(
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
-
+    val binder = LocalPlayerServiceBinder.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var sortBy by rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
@@ -133,6 +150,9 @@ fun HomeAlbums(
     )
 
     val lazyGridState = rememberLazyGridState()
+
+
+
 
     Box (
         modifier = Modifier
@@ -250,6 +270,73 @@ fun HomeAlbums(
                 items = items,
                 key = Album::id
             ) { album ->
+                var songs = remember { listOf<Song>() }
+                query {
+                    songs = Database.albumSongsList(album.id)
+                }
+
+                var showDialogChangeAlbumTitle by remember {
+                    mutableStateOf(false)
+                }
+                var showDialogChangeAlbumAuthors by remember {
+                    mutableStateOf(false)
+                }
+                var showDialogChangeAlbumCover by remember {
+                    mutableStateOf(false)
+                }
+
+                if (showDialogChangeAlbumTitle)
+                    InputTextDialog(
+                        onDismiss = { showDialogChangeAlbumTitle = false },
+                        title = stringResource(R.string.update_title),
+                        value = album.title.toString(),
+                        placeholder = stringResource(R.string.title),
+                        setValue = {
+                            if (it.isNotEmpty()) {
+                                query {
+                                    Database.updateAlbumTitle(album.id, it)
+                                }
+                                //context.toast("Album Saved $it")
+                            }
+                        }
+                    )
+                if (showDialogChangeAlbumAuthors)
+                    InputTextDialog(
+                        onDismiss = { showDialogChangeAlbumAuthors = false },
+                        title = stringResource(R.string.update_authors),
+                        value = album?.authorsText.toString(),
+                        placeholder = stringResource(R.string.authors),
+                        setValue = {
+                            if (it.isNotEmpty()) {
+                                query {
+                                    Database.updateAlbumAuthors(album.id, it)
+                                }
+                                //context.toast("Album Saved $it")
+                            }
+                        }
+                    )
+
+                if (showDialogChangeAlbumCover)
+                    InputTextDialog(
+                        onDismiss = { showDialogChangeAlbumCover = false },
+                        title = stringResource(R.string.update_cover),
+                        value = album?.thumbnailUrl.toString(),
+                        placeholder = stringResource(R.string.cover),
+                        setValue = {
+                            if (it.isNotEmpty()) {
+                                query {
+                                    Database.updateAlbumCover(album.id, it)
+                                }
+                                //context.toast("Album Saved $it")
+                            }
+                        }
+                    )
+
+                var position by remember {
+                    mutableIntStateOf(0)
+                }
+
+
                 AlbumItem(
                     alternative = true,
                     album = album,
@@ -257,16 +344,61 @@ fun HomeAlbums(
                     thumbnailSizeDp = thumbnailSizeDp,
                     modifier = Modifier
                         .combinedClickable(
-                            /*
+
                             onLongClick = {
                                 menuState.display {
                                     AlbumsItemMenu(
                                         onDismiss = menuState::hide,
-                                        album = album
+                                        album = album,
+                                        onChangeAlbumTitle = {
+                                            showDialogChangeAlbumTitle = true
+                                        },
+                                        onChangeAlbumAuthors = {
+                                            showDialogChangeAlbumAuthors = true
+                                        },
+                                        onChangeAlbumCover = {
+                                            showDialogChangeAlbumCover = true
+                                        },
+                                        onPlayNext = {
+                                            println("mediaItem ${songs}")
+                                            binder?.player?.addNext(
+                                                songs.map(Song::asMediaItem)
+                                            )
+
+                                        },
+                                        onEnqueue = {
+                                            println("mediaItem ${songs}")
+                                            binder?.player?.enqueue(
+                                                songs.map(Song::asMediaItem)
+                                            )
+
+                                        },
+                                        onAddToPlaylist = { playlistPreview ->
+                                            position =
+                                                playlistPreview.songCount.minus(1) ?: 0
+                                            //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
+                                            if (position > 0) position++ else position =
+                                                0
+                                            //Log.d("mediaItem", "next initial pos ${position}")
+                                            //if (listMediaItems.isEmpty()) {
+                                                songs.forEachIndexed { index, song ->
+                                                    transaction {
+                                                        Database.insert(song.asMediaItem)
+                                                        Database.insert(
+                                                            SongPlaylistMap(
+                                                                songId = song.asMediaItem.mediaId,
+                                                                playlistId = playlistPreview.playlist.id,
+                                                                position = position + index
+                                                            )
+                                                        )
+                                                    }
+                                                    //Log.d("mediaItemPos", "added position ${position + index}")
+                                                }
+                                            //}
+                                        }
                                     )
                                 }
                             },
-                             */
                             onClick = {
                                 onAlbumClick(album)
                             }
@@ -306,4 +438,10 @@ fun HomeAlbums(
 
 
     }
+}
+
+fun PlayNextAlbum(
+    album: Album
+){
+
 }

@@ -574,6 +574,11 @@ interface Database {
     fun albumTimestamp(id: String): Long?
 
     @Transaction
+    @Query("SELECT * FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId WHERE SongAlbumMap.albumId = :albumId ORDER BY position")
+    @RewriteQueriesToDropUnusedColumns
+    fun albumSongsList(albumId: String): List<Song>
+
+    @Transaction
     @Query("SELECT * FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId WHERE SongAlbumMap.albumId = :albumId AND position IS NOT NULL ORDER BY position")
     @RewriteQueriesToDropUnusedColumns
     fun albumSongs(albumId: String): Flow<List<Song>>
