@@ -447,7 +447,8 @@ fun DeviceListSongs(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
-                            .fillMaxHeight()
+                            //.fillMaxHeight()
+                            .fillMaxWidth(0.7f)
                         //.border(BorderStroke(1.dp, Color.White))
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -463,6 +464,42 @@ fun DeviceListSongs(
                         Spacer(modifier = Modifier.height(30.dp))
                     }
 
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                        //.fillMaxHeight()
+                        //.border(BorderStroke(1.dp, Color.White))
+                    ) {
+                        HeaderIconButton(
+                            icon = R.drawable.shuffle,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (filteredSongs.isNotEmpty()) {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayFromBeginning(
+                                                songs.shuffled().map(Song::asMediaItem)
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_shuffle))
+                                    }
+                                )
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HeaderIconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = { searching = !searching },
+                            icon = R.drawable.search_circle,
+                            color = colorPalette.text,
+                            iconSize = 24.dp
+                        )
+                    }
 
 
                 }
@@ -573,12 +610,15 @@ fun DeviceListSongs(
                             lazyListState.scrollToItem(nowPlayingItem,1)
                         scrollToNowPlaying = false
                     }
+                    /*
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
                         color = colorPalette.text,
                         iconSize = 24.dp
                     )
+
+                     */
                     /*
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
@@ -589,7 +629,7 @@ fun DeviceListSongs(
                         }
                     )
                      */
-
+                    /*
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = filteredSongs.isNotEmpty(),
@@ -610,6 +650,7 @@ fun DeviceListSongs(
                                 }
                             )
                     )
+                     */
 
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,

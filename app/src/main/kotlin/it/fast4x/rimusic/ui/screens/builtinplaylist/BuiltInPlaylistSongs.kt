@@ -830,6 +830,36 @@ fun BuiltInPlaylistSongs(
                      */
 
                     HeaderIconButton(
+                        modifier = Modifier.padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    nowPlayingItem = -1
+                                    scrollToNowPlaying = false
+                                    songs
+                                        .forEachIndexed { index, song ->
+                                            if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                nowPlayingItem = index
+                                        }
+
+                                    if (nowPlayingItem > -1)
+                                        scrollToNowPlaying = true
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                }
+                            ),
+                        icon = R.drawable.locate,
+                        enabled = songs.isNotEmpty(),
+                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {}
+                    )
+                    LaunchedEffect(scrollToNowPlaying) {
+                        if (scrollToNowPlaying)
+                            lazyListState.scrollToItem(nowPlayingItem, 1)
+                        scrollToNowPlaying = false
+                    }
+
+                    HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
                         color = if (songs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
                         enabled = songs.isNotEmpty() == true,
@@ -980,6 +1010,7 @@ fun BuiltInPlaylistSongs(
 
                     }
 
+                    /*
                     Row (
                         horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -1025,7 +1056,7 @@ fun BuiltInPlaylistSongs(
                         )
                          */
                     }
-
+                    */
                     Spacer(
                         modifier = Modifier
                             .width(30.dp)

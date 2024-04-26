@@ -131,6 +131,8 @@ const val floatActionIconOffsetYkey = "floatActionIconOffsetY"
 const val showBuiltinPlaylistsKey = "showBuiltinPlaylists"
 const val showPinnedPlaylistsKey = "showPinnedPlaylists"
 const val showPlaylistsListKey = "showPlaylistsList"
+const val showPlaylistsGeneralKey = "showPlaylistsGeneral"
+const val libraryItemSizeKey = "libraryItemSize"
 
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(

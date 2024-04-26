@@ -474,4 +474,6 @@ CC-BY-SA 3.0</string>
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
+    <string name="item_size">"Item size: "</string>
+    <string name="sort_by">Sort by</string>
 </resources>

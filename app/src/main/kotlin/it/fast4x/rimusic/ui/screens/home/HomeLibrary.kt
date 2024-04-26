@@ -52,6 +52,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
+import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -72,6 +73,8 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.Menu
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
@@ -86,6 +89,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
@@ -99,6 +103,7 @@ import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
+import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -168,7 +173,9 @@ fun HomeLibrary(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    val thumbnailSizeDp = Dimensions.thumbnails.playlist + 24.dp
+    var itemSize by rememberPreference(libraryItemSizeKey, LibraryItemSize.Medium.size)
+
+    val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
@@ -269,6 +276,7 @@ fun HomeLibrary(
     var showBuiltinPlaylists by rememberPreference(showBuiltinPlaylistsKey, true)
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     var showPlaylistsList by rememberPreference(showPlaylistsListKey, true)
+    var showPlaylistsGeneral by rememberPreference(showPlaylistsGeneralKey, true)
 
     Box(
         modifier = Modifier
@@ -285,7 +293,7 @@ fun HomeLibrary(
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
-            columns = GridCells.Adaptive(Dimensions.thumbnails.playlist + 24.dp),
+            columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             ///columns = GridCells.Adaptive(Dimensions.thumbnails.song * 2 + Dimensions.itemsVerticalPadding * 2),
             //contentPadding = LocalPlayerAwareWindowInsets.current
             //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
@@ -311,6 +319,72 @@ fun HomeLibrary(
                     onClick = onSearchClick
                 )
             }
+
+            item(key = "itemSize", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(top = 10.dp, bottom = 16.dp)
+                        .fillMaxWidth()
+
+                ) {
+
+                    /*
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+                     */
+
+
+                    BasicText(
+                        text = "${stringResource(R.string.item_size)} ${when (itemSize) {
+                            LibraryItemSize.Small.size -> stringResource(R.string.small)
+                            LibraryItemSize.Medium.size -> stringResource(R.string.medium)
+                            LibraryItemSize.Big.size -> stringResource(R.string.big)
+                            else -> stringResource(R.string.small)
+                        }}",
+                        style = typography.xs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .clickable {
+                                menuState.display {
+                                    Menu {
+                                        MenuEntry(
+                                            icon = R.drawable.arrow_forward,
+                                            text = stringResource(R.string.small),
+                                            onClick = {
+                                                itemSize = LibraryItemSize.Small.size
+                                                menuState.hide()
+                                            }
+                                        )
+                                        MenuEntry(
+                                            icon = R.drawable.arrow_forward,
+                                            text = stringResource(R.string.medium),
+                                            onClick = {
+                                                itemSize = LibraryItemSize.Medium.size
+                                                menuState.hide()
+                                            }
+                                        )
+                                        MenuEntry(
+                                            icon = R.drawable.arrow_forward,
+                                            text = stringResource(R.string.big),
+                                            onClick = {
+                                                itemSize = LibraryItemSize.Big.size
+                                                menuState.hide()
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                    )
+                }
+            }
+
 
             item(key = "titleBuiltinPlaylists", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
                 Title(
@@ -411,10 +485,19 @@ fun HomeLibrary(
 
             if (showPlaylists) {
 
+                item(key = "titlePlaylistsGeneral", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+                    Title(
+                        title = stringResource(R.string.playlists),
+                        onClick = { showPlaylistsGeneral = !showPlaylistsGeneral },
+                        icon = if (showPlaylistsGeneral) R.drawable.arrow_down else R.drawable.arrow_forward
+                    )
+                }
+
+            if (showPlaylistsGeneral) {
                 item(key = "filter", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
@@ -423,19 +506,21 @@ fun HomeLibrary(
 
                     ) {
 
+                        /*
                         Spacer(
                             modifier = Modifier
                                 .weight(1f)
                         )
+                         */
 
 
                         BasicText(
-                            text = when (sortBy) {
+                            text = "${stringResource(R.string.sort_by)}: ${when (sortBy) {
                                 PlaylistSortBy.Name -> stringResource(R.string.sort_name)
                                 PlaylistSortBy.SongCount -> stringResource(R.string.sort_songs_number)
                                 PlaylistSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                                 PlaylistSortBy.MostPlayed -> stringResource(R.string.most_played_playlists)
-                            },
+                            }}",
                             style = typography.xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -452,6 +537,7 @@ fun HomeLibrary(
                                         )
                                     }
                                 }
+                                .padding(end = 5.dp)
                         )
 
 
@@ -467,14 +553,18 @@ fun HomeLibrary(
 
 
                 if (items.filter {
-                        it.playlist.name.startsWith(PINNED_PREFIX,0,true)
+                        it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
                     }.isNotEmpty()) {
-                    item(key = "headerPinnedPlaylist", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-                        Title(title = "${stringResource(R.string.pinned_playlists)} (${
-                            items.filter {
-                                it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                            }.size
-                        })", onClick = { showPinnedPlaylists = !showPinnedPlaylists },
+                    item(
+                        key = "headerPinnedPlaylist",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }) {
+                        Title(
+                            title = "${stringResource(R.string.pinned_playlists)} (${
+                                items.filter {
+                                    it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                                }.size
+                            })", onClick = { showPinnedPlaylists = !showPinnedPlaylists },
                             icon = if (showPinnedPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
                         )
                     }
@@ -513,7 +603,10 @@ fun HomeLibrary(
                     }
                 }
 
-                item(key = "headerplaylistList", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
+                item(
+                    key = "headerplaylistList",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }) {
                     Title(
                         title = "${stringResource(R.string.playlists)} (${
                             items.filter {
@@ -574,7 +667,8 @@ fun HomeLibrary(
                                         )
                                     } catch (e: ActivityNotFoundException) {
                                         SmartToast(
-                                            context.getString(R.string.info_not_find_app_open_doc), type = PopupType.Warning
+                                            context.getString(R.string.info_not_find_app_open_doc),
+                                            type = PopupType.Warning
                                         )
                                     }
                                 },
@@ -602,7 +696,7 @@ fun HomeLibrary(
                         )
                     }
                 }
-
+            }
                 item(
                     key = "footer",
                     contentType = 0,
