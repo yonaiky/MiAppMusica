@@ -13,7 +13,7 @@
     <string name="remove_from_queue">從播放佇列中移除</string>
     <string name="remove_from_playlist">從播放清單中移除</string>
     <string name="hide">隱藏</string>
-    <string name="hide_from_quick_picks">從\"快速挑選\"中隱藏</string>
+    <string name="hide_from_quick_picks">從\"精選\"中隱藏</string>
     <string name="related_albums">相關的專輯</string>
     <string name="similar_artists">類似的藝人</string>
     <string name="playlists_you_might_like">你可能喜歡的播放清單</string>
@@ -22,8 +22,8 @@
     <string name="artists">藝人</string>
     <string name="enter_the_playlist_name">輸入播放清單名稱</string>
     <string name="playlists">播放清單</string>
-    <string name="favorites">已按讚的歌曲</string>
-    <string name="quick_picks">快速挑選</string>
+    <string name="favorites">已按讚</string>
+    <string name="quick_picks">精選</string>
     <string name="songs">歌曲</string>
     <string name="other_versions">其它版本</string>
     <string name="album_no_alternative_version">此專輯沒有其它版本</string>
@@ -48,7 +48,7 @@
     <string name="itag">iTag</string>
     <string name="bitrate">位元速率</string>
     <string name="size">大小</string>
-    <string name="cached">已暫存的歌曲</string>
+    <string name="cached">已暫存</string>
     <string name="loudness">音量</string>
     <string name="clear">清除</string>
     <string name="error">發生了一個錯誤.</string>
@@ -75,8 +75,8 @@
     <string name="image_cache">圖像暫存</string>
     <string name="max_size">容量上限</string>
     <string name="database">資料</string>
-    <string name="reset_quick_picks">重置快速挑選</string>
-    <string name="quick_picks_are_cleared">已清除快速挑選</string>
+    <string name="reset_quick_picks">重置精選</string>
+    <string name="quick_picks_are_cleared">已清除精選</string>
     <string name="backup">備份</string>
     <string name="personal_preference">個人偏好(例如主題模式) 和暫存被排除在外。</string>
     <string name="backup_1">備份</string>
@@ -140,7 +140,7 @@
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">返回影片ID與請求影片ID不相同</string>
     <string name="error_an_unknown_playback_error_has_occurred">出現未知播放錯誤</string>
     <string name="tips">推薦</string>
-    <string name="is_min_list_time_for_tips_or_quick_pics">這是最短聆聽時間, 才可將歌曲列入為可能的建議或快速挑選.</string>
+    <string name="is_min_list_time_for_tips_or_quick_pics">這是最短聆聽時間, 為了將歌曲列入為可能的建議或是精選.</string>
     <string name="min_listening_time">最短聆聽時間</string>
     <string name="player_thumbnail_size">縮圖尺寸</string>
     <string name="restarting_rimusic_is_required">需要重新啟動App</string>
@@ -184,7 +184,7 @@
     <string name="system">系统</string>
     <string name="unlimited">無限制</string>
     <string name="_light">淺色主題</string>
-    <string name="downloaded">已下載的歌曲</string>
+    <string name="downloaded">已下載</string>
     <string name="turn_off">關閉</string>
     <string name="download">下載</string>
     <string name="_default">預設</string>
@@ -200,7 +200,7 @@
     <string name="stop">停止</string>
     <string name="listen_on_youtube">在YouTube上收聽</string>
     <string name="listen_on_youtube_music">在YouTube Music上收聽</string>
-    <string name="on_device">裝置上的歌曲</string>
+    <string name="on_device">在裝置上</string>
     <string name="wavy_timeline">波浪樣式</string>
     <string name="play_next">播放下一首</string>
     <string name="toggle_lyrics">開關歌詞</string>
@@ -271,10 +271,10 @@
     <string name="hungarian">匈牙利語 (Magyar)</string>
     <string name="korean">韓語 (한국인)</string>
     <string name="background_player">"背景播放器 "</string>
-    <string name="show_favorite_button">顯示 \"已按讚的歌曲\" 按鈕</string>
-    <string name="show_favorite_button_in_lock_screen_and_notification_area">在鎖定螢幕和通知顯示 \"已按讚的歌曲\" 按鈕</string>
+    <string name="show_favorite_button">顯示 \"已按讚\" 的歌曲按鈕</string>
+    <string name="show_favorite_button_in_lock_screen_and_notification_area">在鎖定螢幕和通知顯示 \"已按讚\" 的歌曲按鈕</string>
     <string name="show_download_button">顯示 \"下載\" 按鈕</string>
-    <string name="show_download_button_in_lock_screen_and_notification_area">在鎖定螢幕和通知顯示 \"已下載\" 按鈕</string>
+    <string name="show_download_button_in_lock_screen_and_notification_area">在鎖定螢幕和通知顯示 \"已下載\" 的歌曲按鈕</string>
     <string name="by_most_played_song">最常播放的歌曲</string>
     <string name="by_last_played_song">播放次數最少的歌曲</string>
     <string name="audio_quality_automatic">自動</string>
@@ -355,7 +355,7 @@
     <string name="sort_date_added">新增日期</string>
     <string name="sorting_order">排列方式</string>
     <string name="sort_year">年</string>
-    <string name="sort_name">名稱</string>
+    <string name="sort_name">歌曲名稱</string>
     <string name="sort_songs_number">歌曲編號</string>
     <string name="follow">追隨</string>
     <string name="following">已追隨</string>
@@ -369,7 +369,7 @@
     <string name="ask">詢問</string>
     <string name="item_select">選擇</string>
     <string name="blacklisted_folders">列入黑名單的資料夾</string>
-    <string name="edit_blacklist_for_on_device_songs">編輯\"裝置上的歌曲\"黑名單</string>
+    <string name="edit_blacklist_for_on_device_songs">編輯\"在裝置上\"的歌曲黑名單</string>
     <string name="add_folder">新增資料夾</string>
     <string name="this_folder_already_exists">此資料夾已經存在.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">你確定要從黑名單中移除此資料夾嗎?</string>
@@ -423,7 +423,7 @@
     <string name="max_songs_in_queue">佇列歌曲上限</string>
     <string name="back">返回</string>
     <string name="folders">資料夾</string>
-    <string name="show_folders_in_on_device_page">在 \"裝置上的歌曲\" 頁面顯示資料夾</string>
+    <string name="show_folders_in_on_device_page">在 \"在裝置上\" 的歌曲頁面顯示資料夾</string>
     <string name="lang_danish">丹麥語 (Dansk)</string>
     <string name="lang_serbian_latin">塞爾維亞語 (Српски)</string>
     <string name="item_deselect">取消選取</string>
@@ -431,7 +431,7 @@
     <string name="show_remaining_song_time">顯示歌曲剩餘時間</string>
     <string name="full_screen">全螢幕顯示</string>
     <string name="click_lyrics_text">可點擊歌詞文字</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">在 \"\'裝置上的歌曲\" 頁面顯示的資料夾</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">在 \"\'在裝置上\" 的歌曲頁面顯示的資料夾</string>
     <string name="folder_was_not_found">找不到資料夾</string>
     <string name="direction_top">上方</string>
     <string name="pick_from">挑選</string>
@@ -449,4 +449,28 @@
     <string name="last_week">Last week</string>
     <string name="by_casual_played_song">By Casual played song</string>
     <string name="theme_material_you">Material You</string>
+    <string name="show_statistics_in_navigation_bar">Show statistics in navigation bar</string>
+    <string name="settings">Settings</string>
+    <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
+    <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
+    <string name="library_collections">Collections</string>
+    <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
+    <string name="info_shuffle">Shuffle</string>
+    <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
+    <string name="info_enqueue_songs">Enqueue songs</string>
+    <string name="info_download_all_songs">Download all songs</string>
+    <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
+    <string name="info_start_radio">Start radio</string>
+    <string name="info_translation">Translation</string>
+    <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
+    <string name="info_smart_recommendation">Smart recommendation</string>
+    <string name="info_clean_cached_congs">Clean cached congs</string>
+    <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
+    <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
+    <string name="info_add_in_playlist">Add in playlist</string>
+    <string name="info_not_find_application_audio">Couldn\'t find an application to equalize audio</string>
+    <string name="info_error">Error</string>
+    <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
+    <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
+    <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
 </resources>
