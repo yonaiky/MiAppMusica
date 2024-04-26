@@ -307,12 +307,12 @@
     <string name="paste_or_type_a_valid_url">Paste or type a valid url</string>
     <string name="you_can_put_a_complete_link">You can put a complete link of a playlist, an album, a channel or a single song on YouTube or YouTube Music</string>
     <string name="go_to_link">Go to link</string>
-    <string name="action_bar_show_download_button">Show Download Button</string>
-    <string name="action_bar_show_add_to_playlist_button">Show Add to playlist button</string>
-    <string name="action_bar_show_loop_button">Show Loop button</string>
-    <string name="action_bar_show_shuffle_button">Show Shuffle button</string>
-    <string name="action_bar_show_lyrics_button">Show Lyrics button</string>
-    <string name="action_bar_show_arrow_button">Show Arrow button</string>
+    <string name="action_bar_show_download_button">Download button</string>
+    <string name="action_bar_show_add_to_playlist_button">Add to playlist button</string>
+    <string name="action_bar_show_loop_button">Loop button</string>
+    <string name="action_bar_show_shuffle_button">Shuffle button</string>
+    <string name="action_bar_show_lyrics_button">Lyrics button</string>
+    <string name="action_bar_show_arrow_button">Arrow button</string>
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Playback duration</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Show total number of songs heard and playback duration</string>
@@ -345,7 +345,7 @@
     <string name="default_page">Default page</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="prevents_screen_timeout">Prevents screen timeout</string>
-    <string name="action_bar_show_sleep_timer_button">Show Sleep Timer button</string>
+    <string name="action_bar_show_sleep_timer_button">Sleep Timer button</string>
     <string name="sort_album_year">Album Year</string>
     <string name="sort_position">Position</string>
     <string name="sort_title">Title</string>
@@ -408,7 +408,7 @@
     <string name="icon_and_text">Icon and text</string>
     <string name="only_icon">Only icon</string>
     <string name="show_search_tab_in_home">Move search shortcut to navigation bar</string>
-    <string name="action_bar_show_menu_button">Show menu button</string>
+    <string name="action_bar_show_menu_button">Menu button</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Use gradient background</string>
     <string name="show_total_time_of_queue">Show total queue duration</string>
