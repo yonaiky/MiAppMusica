@@ -431,7 +431,7 @@
     <string name="show_remaining_song_time">Näytä kappaleen jäljellä oleva aika</string>
     <string name="full_screen">Kokonäyttö</string>
     <string name="click_lyrics_text">Napauta sanoitusta</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Kansio, joka näkyy, kun avaat Laitteella -sivun.</string>
     <string name="folder_was_not_found">Kansiota ei löydy</string>
     <string name="direction_top">Ylhäällä</string>
     <string name="pick_from">Pick from</string>
@@ -449,4 +449,28 @@
     <string name="last_week">Last week</string>
     <string name="by_casual_played_song">By Casual played song</string>
     <string name="theme_material_you">Material You</string>
+    <string name="show_statistics_in_navigation_bar">Show statistics in navigation bar</string>
+    <string name="settings">Settings</string>
+    <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
+    <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
+    <string name="library_collections">Collections</string>
+    <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
+    <string name="info_shuffle">Shuffle</string>
+    <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
+    <string name="info_enqueue_songs">Enqueue songs</string>
+    <string name="info_download_all_songs">Download all songs</string>
+    <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
+    <string name="info_start_radio">Start radio</string>
+    <string name="info_translation">Translation</string>
+    <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
+    <string name="info_smart_recommendation">Smart recommendation</string>
+    <string name="info_clean_cached_congs">Clean cached congs</string>
+    <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
+    <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
+    <string name="info_add_in_playlist">Add in playlist</string>
+    <string name="info_not_find_application_audio">Couldn\'t find an application to equalize audio</string>
+    <string name="info_error">Error</string>
+    <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
+    <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
+    <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
 </resources>
