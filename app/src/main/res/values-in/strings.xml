@@ -451,8 +451,8 @@
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Tampilkan statistik di bilah navigasi</string>
     <string name="settings">Pengaturan</string>
-    <string name="page_not_been_loaded">Halaman tidak dimuat dengan benar, coba untuk memuat ulang halaman.</string>
-    <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
+    <string name="page_not_been_loaded">Laman tidak dapat dimuat\nUsap ke bawah untuk memuat ulang</string>
+    <string name="sorry_tips_are_not_available">Maaf, saran tidak tersedia untuk saat ini.</string>
     <string name="library_collections">Koleksi</string>
     <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
     <string name="info_shuffle">Putar acak</string>
@@ -464,7 +464,7 @@
     <string name="info_translation">Terjemahan</string>
     <string name="info_find_the_song_that_is_playing">Cari lagu yang sedang diputar</string>
     <string name="info_smart_recommendation">Rekomendasi pintar</string>
-    <string name="info_clean_cached_congs">Clean cached congs</string>
+    <string name="info_clean_cached_congs">Hapus lagu yang disimpan (cache)</string>
     <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
     <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
     <string name="info_add_in_playlist">Tambahkan ke daftar putar</string>
