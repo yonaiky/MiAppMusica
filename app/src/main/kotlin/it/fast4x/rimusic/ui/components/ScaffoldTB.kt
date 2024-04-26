@@ -164,7 +164,7 @@ fun ScaffoldTB(
             AnimatedContent(
                 targetState = tabIndex,
                 transitionSpec = {
-                    fadeIn(animationSpec = tween(1000)).togetherWith(fadeOut(animationSpec = tween(1000)))
+                    fadeIn(animationSpec = tween(500)).togetherWith(fadeOut(animationSpec = tween(500)))
                 },
                 /*
                 transitionSpec = {

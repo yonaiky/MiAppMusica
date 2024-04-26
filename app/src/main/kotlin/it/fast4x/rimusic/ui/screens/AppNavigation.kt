@@ -80,19 +80,19 @@ fun AppNavigation(
         navController = navController,
         startDestination = NavRoutes.home.name,
         enterTransition = {
-                fadeIn(animationSpec = tween(1000))
+                fadeIn(animationSpec = tween(500))
             //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(1000))
+            fadeOut(animationSpec = tween(500))
             //fadeOut()
         },
         popEnterTransition = {
-            fadeIn(animationSpec = tween(1000))
+            fadeIn(animationSpec = tween(500))
             //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
         },
         popExitTransition = {
-            fadeOut(animationSpec = tween(1000))
+            fadeOut(animationSpec = tween(500))
             //fadeOut()
         }
     ) {

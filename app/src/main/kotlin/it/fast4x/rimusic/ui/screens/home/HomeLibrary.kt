@@ -173,7 +173,7 @@ fun HomeLibrary(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    var itemSize by rememberPreference(libraryItemSizeKey, LibraryItemSize.Medium.size)
+    var itemSize by rememberPreference(libraryItemSizeKey, LibraryItemSize.Small.size)
 
     val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
