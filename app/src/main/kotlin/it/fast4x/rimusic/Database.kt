@@ -629,6 +629,10 @@ interface Database {
     fun getSongMaxPositionToPlaylist(id: Long): Int
 
     @Transaction
+    @Query("SELECT PM.playlistId FROM SongPlaylistMap PM WHERE PM.songId = :id")
+    fun getPlaylistsWithSong(id: String): Flow<List<Long>>
+
+    @Transaction
     @Query("SELECT max(position) maxPos FROM SongPlaylistMap WHERE playlistId = :id")
     fun updateSongMaxPositionToPlaylist(id: Long): Int
 

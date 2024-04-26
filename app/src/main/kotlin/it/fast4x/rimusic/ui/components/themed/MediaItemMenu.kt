@@ -682,6 +682,10 @@ fun MediaItemMenu(
                 Database.playlistPreviews(sortBy, sortOrder)
             }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
+            val playlistIds by remember {
+                Database.getPlaylistsWithSong(mediaItem.mediaId)
+            }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
             }
@@ -760,7 +764,7 @@ fun MediaItemMenu(
                     onAddToPlaylist?.let { onAddToPlaylist ->
                         pinnedPlaylists.forEach { playlistPreview ->
                             MenuEntry(
-                                icon = R.drawable.add_in_playlist,
+                                icon = if (playlistIds.contains(playlistPreview.playlist.id)) R.drawable.checkmark else R.drawable.add_in_playlist,
                                 text = playlistPreview.playlist.name.substringAfter(PINNED_PREFIX),
                                 secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
@@ -782,7 +786,7 @@ fun MediaItemMenu(
                     onAddToPlaylist?.let { onAddToPlaylist ->
                         unpinnedPlaylists.forEach { playlistPreview ->
                             MenuEntry(
-                                icon = R.drawable.add_in_playlist,
+                                icon = if (playlistIds.contains(playlistPreview.playlist.id)) R.drawable.checkmark else R.drawable.add_in_playlist,
                                 text = playlistPreview.playlist.name,
                                 secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
