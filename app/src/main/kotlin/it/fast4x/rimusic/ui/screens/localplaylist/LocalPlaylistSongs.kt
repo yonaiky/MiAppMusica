@@ -724,26 +724,27 @@ fun LocalPlaylistSongs(
                             )
                     )
 
-                    HeaderIconButton(
-                        icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
-                        enabled = playlistSongs.isNotEmpty() == true,
-                        color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {},
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                                        isReorderDisabled = !isReorderDisabled
-                                    } else {
-                                        SmartToast("Reorder is possible only in ascending sort",
-                                            type = PopupType.Warning)
+                    if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending)
+                        HeaderIconButton(
+                            icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
+                            enabled = playlistSongs.isNotEmpty() == true,
+                            color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                            isReorderDisabled = !isReorderDisabled
+                                        } else {
+                                            SmartToast("Reorder is possible only in ascending sort",
+                                                type = PopupType.Warning)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_lock_unlock_reorder_songs))
                                     }
-                                },
-                                onLongClick = {
-                                    SmartToast(context.getString(R.string.info_lock_unlock_reorder_songs))
-                                }
-                            )
-                    )
+                                )
+                        )
 
                     HeaderIconButton(
                         icon = R.drawable.downloaded,
@@ -1325,7 +1326,7 @@ fun LocalPlaylistSongs(
                                     )
                                 else checkedState.value = false
 
-                                if (!isReorderDisabled) {
+                                if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
                                     IconButton(
                                         icon = R.drawable.reorder,
                                         color = colorPalette.textDisabled,
