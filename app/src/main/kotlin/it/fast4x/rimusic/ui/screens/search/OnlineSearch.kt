@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.core.text.htmlEncode
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -204,8 +205,8 @@ fun OnlineSearch(
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                             keyboardActions = KeyboardActions(
                                 onSearch = {
-                                    if (textFieldValue.text.isNotEmpty()) {
-                                        onSearch(textFieldValue.text)
+                                    if (textFieldValue.text.isNotEmpty() && textFieldValue.text != "/") {
+                                        onSearch(textFieldValue.text.replace("/","",true))
                                     }
                                 }
                             ),
@@ -315,7 +316,7 @@ fun OnlineSearch(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable(onClick = { onSearch(searchQuery.query) })
+                        .clickable(onClick = { onSearch(searchQuery.query.replace("/","",true)) })
                         .fillMaxWidth()
                         .padding(all = 16.dp)
                 ) {
@@ -392,7 +393,7 @@ fun OnlineSearch(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .clickable(onClick = { onSearch(suggestion) })
+                            .clickable(onClick = { onSearch(suggestion.replace("/","",true)) })
                             .fillMaxWidth()
                             .padding(all = 16.dp)
                     ) {

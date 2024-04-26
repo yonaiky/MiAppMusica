@@ -219,21 +219,21 @@ fun AppNavigation(
             val context = LocalContext.current
             val text = navBackStackEntry.arguments?.getString("text") ?: ""
 
-                SearchScreen(
-                    navController = navController,
-                    initialTextInput = text,
-                    onViewPlaylist = {},
-                    //pop = popDestination,
-                    onSearch = { query ->
-                        navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+            SearchScreen(
+                navController = navController,
+                initialTextInput = text,
+                onViewPlaylist = {},
+                //pop = popDestination,
+                onSearch = { query ->
+                    navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
 
-                        if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
-                            it.fast4x.rimusic.query {
-                                Database.insert(SearchQuery(query = query))
-                            }
+                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                        it.fast4x.rimusic.query {
+                            Database.insert(SearchQuery(query = query))
                         }
                     }
-                )
+                }
+            )
         }
 
         composable(
