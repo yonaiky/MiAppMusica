@@ -150,7 +150,8 @@ fun BaseMediaItemGridMenu(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onClosePlayer: (() -> Unit)? = null
+    onClosePlayer: (() -> Unit)? = null,
+    onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -205,6 +206,9 @@ fun BaseMediaItemGridMenu(
         },
          */
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+        onGoToPlaylist = {
+            navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
+        },
         modifier = modifier
     )
 }
@@ -213,6 +217,7 @@ fun BaseMediaItemGridMenu(
 fun MiniMediaItemGridMenu(
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
+    onGoToPlaylist: ((Long) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
 
@@ -231,6 +236,7 @@ fun MiniMediaItemGridMenu(
                 )
             }
         },
+        onGoToPlaylist = onGoToPlaylist,
         modifier = modifier
     )
 }
@@ -254,7 +260,8 @@ fun MediaItemGridMenu (
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
-    onRemoveFromQuickPicks: (() -> Unit)? = null
+    onRemoveFromQuickPicks: (() -> Unit)? = null,
+    onGoToPlaylist: ((Long) -> Unit)?
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
@@ -719,6 +726,20 @@ fun MediaItemGridMenu (
                                         playlistPreview.playlist,
                                         playlistPreview.songCount
                                     )
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                    )
                                 }
                             )
                         }
@@ -743,6 +764,20 @@ fun MediaItemGridMenu (
                                     onAddToPlaylist(
                                         playlistPreview.playlist,
                                         playlistPreview.songCount
+                                    )
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
                                     )
                                 }
                             )

@@ -376,7 +376,10 @@ fun QueuedMediaItemMenu(
                     )
                 )
             },
-            modifier = modifier
+            modifier = modifier,
+            onGoToPlaylist = {
+                navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
+            }
         )
     } else {
         BaseMediaItemMenu(
@@ -398,7 +401,10 @@ fun QueuedMediaItemMenu(
                     )
                 )
             },
-            modifier = modifier
+            modifier = modifier,
+            onGoToPlaylist = {
+                navController.navigate(route = "${NavRoutes.playlist.name}/$it")
+            }
         )
     }
 }
@@ -422,7 +428,8 @@ fun BaseMediaItemMenu(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onClosePlayer: (() -> Unit)? = null
+    onClosePlayer: (() -> Unit)? = null,
+    onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -475,6 +482,7 @@ fun BaseMediaItemMenu(
             context.startActivity(Intent.createChooser(sendIntent, null))
         },
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+        onGoToPlaylist = onGoToPlaylist,
         modifier = modifier
     )
 }
@@ -590,7 +598,8 @@ fun MediaItemMenu(
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
@@ -718,8 +727,6 @@ fun MediaItemMenu(
                 Database.getPlaylistsWithSong(mediaItem.mediaId)
             }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
-            println("mediaItem mediaItem ${mediaItem.mediaId} playlistIds $playlistIds")
-
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
             }
@@ -804,6 +811,20 @@ fun MediaItemMenu(
                                 onClick = {
                                     onDismiss()
                                     onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                    )
                                 }
                             )
                         }
@@ -826,6 +847,20 @@ fun MediaItemMenu(
                                 onClick = {
                                     onDismiss()
                                     onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        icon = R.drawable.open,
+                                        color = colorPalette.text,
+                                        onClick = {
+                                            if (onGoToPlaylist != null) {
+                                                onGoToPlaylist(playlistPreview.playlist.id)
+                                                onDismiss()
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                    )
                                 }
                             )
                         }
