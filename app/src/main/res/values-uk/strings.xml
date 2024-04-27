@@ -391,7 +391,7 @@
     <string name="export_playlist">Експортувати список відтворення</string>
     <string name="lang_afrikaans">Африканська</string>
     <string name="playlist_top">Топ списку відтворення</string>
-    <string name="my_playlist_top">Мій Топ</string>
+    <string name="my_playlist_top">Мій Топ %s</string>
     <string name="navigation_bar_position">Позиція панелі навігації</string>
     <string name="direction_left">Ліворуч</string>
     <string name="direction_right">Праворуч</string>
@@ -476,4 +476,9 @@
     <string name="item_size">"Item size: "</string>
     <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_equalizer">Show equalizer</string>
+    <string name="theme_pure_black">Pure Black</string>
+    <string name="theme_modern_black">Modern Black</string>
+    <string name="theme_mode_pitch_black">Pitch Black</string>
+    <string name="show_actions_bar">Show actions bar</string>
 </resources>

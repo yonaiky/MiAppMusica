@@ -110,7 +110,7 @@ fun  QuickPicsSettings() {
         //SettingsGroupSpacer()
 
         SwitchSettingEntry(
-            title = "Show actions bar",
+            title = stringResource(R.string.show_actions_bar),
             text = "",
             isChecked = showActionsBar,
             onCheckedChange = {
@@ -193,7 +193,7 @@ fun  QuickPicsSettings() {
                 isEnabledDiscoveryLangCode = it
             }
         )
-        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
 
         SettingsEntry(
             title = stringResource(R.string.reset_quick_picks),

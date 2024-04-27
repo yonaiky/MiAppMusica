@@ -539,9 +539,9 @@ fun AppearanceSettings() {
                 onCheckedChange = { showButtonPlayerSleepTimer = it }
             )
 
-        if (filter.isNullOrBlank() || ("${stringResource(R.string.show)} ${stringResource(R.string.equalizer)}").contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.show_equalizer).contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.equalizer)}",
+                title = stringResource(R.string.show_equalizer),
                 text = "",
                 isChecked = showButtonPlayerSystemEqualizer,
                 onCheckedChange = { showButtonPlayerSystemEqualizer = it }

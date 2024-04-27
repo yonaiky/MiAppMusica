@@ -391,7 +391,7 @@
     <string name="export_playlist">प्लेलिस्ट निर्यात करें</string>
     <string name="lang_afrikaans">अफ्रीकांस</string>
     <string name="playlist_top">प्लेलिस्ट शीर्ष</string>
-    <string name="my_playlist_top">मेरे टॉप</string>
+    <string name="my_playlist_top">मेरे टॉप %s</string>
     <string name="navigation_bar_position">नेविगेशन बार स्थिति</string>
     <string name="direction_left">बाएं</string>
     <string name="direction_right">दाएँ</string>
@@ -476,4 +476,9 @@
     <string name="item_size">"Item size: "</string>
     <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_equalizer">Show equalizer</string>
+    <string name="theme_pure_black">Pure Black</string>
+    <string name="theme_modern_black">Modern Black</string>
+    <string name="theme_mode_pitch_black">Pitch Black</string>
+    <string name="show_actions_bar">Show actions bar</string>
 </resources>

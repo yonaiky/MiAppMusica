@@ -673,8 +673,8 @@ fun  UiSettings() {
                     when (it) {
                         ColorPaletteName.Default -> stringResource(R.string._default)
                         ColorPaletteName.Dynamic -> stringResource(R.string.dynamic)
-                        ColorPaletteName.PureBlack -> ColorPaletteName.PureBlack.name
-                        ColorPaletteName.ModernBlack -> ColorPaletteName.ModernBlack.name
+                        ColorPaletteName.PureBlack -> stringResource(R.string.theme_pure_black)
+                        ColorPaletteName.ModernBlack -> stringResource(R.string.theme_modern_black)
                         ColorPaletteName.MaterialYou -> stringResource(R.string.theme_material_you)
                     }
                 }
@@ -698,7 +698,7 @@ fun  UiSettings() {
                         ColorPaletteMode.Dark -> stringResource(R.string.dark)
                         ColorPaletteMode.Light -> stringResource(R.string._light)
                         ColorPaletteMode.System -> stringResource(R.string.system)
-                        ColorPaletteMode.PitchBlack -> "Pitch Black"
+                        ColorPaletteMode.PitchBlack -> stringResource(R.string.theme_mode_pitch_black)
                     }
                 }
             )
@@ -762,24 +762,33 @@ fun  UiSettings() {
                 }
             )
 
-
-        if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_search_tab_in_home),
-                text = "",
-                isChecked = showSearchTab,
-                onCheckedChange = { showSearchTab = it }
+        if (uiType == UiType.ViMusic) {
+            if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(
+                    filterCharSequence,
+                    true
+                )
             )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_search_tab_in_home),
+                    text = "",
+                    isChecked = showSearchTab,
+                    onCheckedChange = { showSearchTab = it }
+                )
 
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_statistics_in_navigation_bar).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_statistics_in_navigation_bar),
-                text = "",
-                isChecked = showStatsInNavbar,
-                onCheckedChange = { showStatsInNavbar = it }
+            if (filter.isNullOrBlank() || stringResource(R.string.show_statistics_in_navigation_bar).contains(
+                    filterCharSequence,
+                    true
+                )
             )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_statistics_in_navigation_bar),
+                    text = "",
+                    isChecked = showStatsInNavbar,
+                    onCheckedChange = { showStatsInNavbar = it }
+                )
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_floating_icon).contains(filterCharSequence,true))
             SwitchSettingEntry(

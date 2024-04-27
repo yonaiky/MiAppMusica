@@ -391,7 +391,7 @@
     <string name="export_playlist">Exportar playlist</string>
     <string name="lang_afrikaans">Africâner</string>
     <string name="playlist_top">Topo da Playlist</string>
-    <string name="my_playlist_top">Meu Top da Playlist</string>
+    <string name="my_playlist_top">Meu Top da Playlist %s</string>
     <string name="navigation_bar_position">Posição da barra de navegação</string>
     <string name="direction_left">Esquerda</string>
     <string name="direction_right">Direita</string>
@@ -476,4 +476,9 @@
     <string name="item_size">"Item size: "</string>
     <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_equalizer">Show equalizer</string>
+    <string name="theme_pure_black">Pure Black</string>
+    <string name="theme_modern_black">Modern Black</string>
+    <string name="theme_mode_pitch_black">Pitch Black</string>
+    <string name="show_actions_bar">Show actions bar</string>
 </resources>

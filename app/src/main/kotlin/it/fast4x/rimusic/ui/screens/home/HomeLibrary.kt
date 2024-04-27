@@ -488,7 +488,7 @@ fun HomeLibrary(
                             icon = R.drawable.trending,
                             iconSize = 48.dp,
                             colorTint = colorPalette.favoritesIcon,
-                            name = stringResource(R.string.my_playlist_top) + " ${maxTopPlaylistItems.number}",
+                            name = String.format(stringResource(R.string.my_playlist_top),maxTopPlaylistItems.number),
                             songCount = null,
                             thumbnailSizeDp = thumbnailSizeDp,
                             alternative = true,

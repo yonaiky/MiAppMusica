@@ -391,7 +391,7 @@
     <string name="export_playlist">Oynatma listesini dışa aktar</string>
     <string name="lang_afrikaans">Afrikaans</string>
     <string name="playlist_top">En İyi Oynatma Listesi</string>
-    <string name="my_playlist_top">En Sevdiğim</string>
+    <string name="my_playlist_top">En Sevdiğim %s</string>
     <string name="navigation_bar_position">Gezinti çubuğu konumu</string>
     <string name="direction_left">Sol</string>
     <string name="direction_right">Sağ</string>
@@ -476,4 +476,9 @@
     <string name="item_size">"Item size: "</string>
     <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_equalizer">Show equalizer</string>
+    <string name="theme_pure_black">Pure Black</string>
+    <string name="theme_modern_black">Modern Black</string>
+    <string name="theme_mode_pitch_black">Pitch Black</string>
+    <string name="show_actions_bar">Show actions bar</string>
 </resources>
