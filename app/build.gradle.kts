@@ -5,6 +5,13 @@ plugins {
 }
 
 android {
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     android.buildFeatures.buildConfig=true
     compileSdk = 34
 
