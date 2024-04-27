@@ -138,3 +138,35 @@ fun PlayerMenu(
     }
 
 }
+
+
+@ExperimentalTextApi
+@ExperimentalAnimationApi
+@UnstableApi
+@Composable
+fun MiniPlayerMenu(
+    navController: NavController,
+    binder: PlayerService.Binder,
+    mediaItem: MediaItem,
+    onDismiss: () -> Unit,
+    onClosePlayer: () -> Unit,
+) {
+
+    val menuStyle by rememberPreference(
+        menuStyleKey,
+        MenuStyle.List
+    )
+
+    if (menuStyle == MenuStyle.Grid) {
+        MiniMediaItemGridMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss
+        )
+    } else {
+        MiniMediaItemMenu(
+            mediaItem = mediaItem,
+            onDismiss = onDismiss
+        )
+    }
+
+}

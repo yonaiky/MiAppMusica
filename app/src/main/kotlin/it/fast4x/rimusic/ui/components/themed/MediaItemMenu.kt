@@ -479,6 +479,38 @@ fun BaseMediaItemMenu(
     )
 }
 
+@ExperimentalTextApi
+@UnstableApi
+@ExperimentalAnimationApi
+@Composable
+fun MiniMediaItemMenu(
+    onDismiss: () -> Unit,
+    mediaItem: MediaItem,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+
+    MediaItemMenu(
+        mediaItem = mediaItem,
+        onDismiss = onDismiss,
+        onAddToPlaylist = { playlist, position ->
+            transaction {
+                Database.insert(mediaItem)
+                Database.insert(
+                    SongPlaylistMap(
+                        songId = mediaItem.mediaId,
+                        playlistId = Database.insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                        position = position
+                    )
+                )
+            }
+        },
+        onShare = {},
+        modifier = modifier
+    )
+}
+
+
 @UnstableApi
 @Composable
 fun FolderItemMenu(
@@ -685,6 +717,8 @@ fun MediaItemMenu(
             val playlistIds by remember {
                 Database.getPlaylistsWithSong(mediaItem.mediaId)
             }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+
+            println("mediaItem mediaItem ${mediaItem.mediaId} playlistIds $playlistIds")
 
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)

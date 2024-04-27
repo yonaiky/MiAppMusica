@@ -118,6 +118,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
@@ -1333,6 +1334,16 @@ fun Player(
                                 color = colorPalette.text,
                                 onClick = {
                                     menuState.display {
+                                        MiniPlayerMenu(
+                                            navController = navController,
+                                            onDismiss = menuState::hide,
+                                            mediaItem = mediaItem,
+                                            binder = binder,
+                                            onClosePlayer = {
+                                                layoutState.collapseSoft()
+                                            }
+                                        )
+                                        /*
                                         PlaylistsItemMenu(
                                             navController = navController,
                                             modifier = Modifier.fillMaxHeight(0.6f),
@@ -1357,6 +1368,7 @@ fun Player(
                                                 layoutState.collapseSoft()
                                             }
                                         )
+                                        */
                                     }
                                 },
                                 modifier = Modifier

@@ -134,7 +134,7 @@ fun NonQueuedMediaItemGridMenu(
     )
 }
 
-    @Composable
+@Composable
 fun BaseMediaItemGridMenu(
     navController: NavController,
     onDismiss: () -> Unit,
@@ -209,6 +209,31 @@ fun BaseMediaItemGridMenu(
     )
 }
 
+@Composable
+fun MiniMediaItemGridMenu(
+    onDismiss: () -> Unit,
+    mediaItem: MediaItem,
+    modifier: Modifier = Modifier,
+) {
+
+    MediaItemGridMenu(
+        mediaItem = mediaItem,
+        onDismiss = onDismiss,
+        onAddToPlaylist = { playlist, position ->
+            transaction {
+                Database.insert(mediaItem)
+                Database.insert(
+                    SongPlaylistMap(
+                        songId = mediaItem.mediaId,
+                        playlistId = Database.insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                        position = position
+                    )
+                )
+            }
+        },
+        modifier = modifier
+    )
+}
 
 @kotlin.OptIn(ExperimentalTextApi::class)
 @OptIn(UnstableApi::class)
