@@ -127,6 +127,7 @@ import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
@@ -240,6 +241,7 @@ fun  UiSettings() {
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
+    var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
 
     var menuStyle by rememberPreference(
         menuStyleKey,
@@ -777,6 +779,14 @@ fun  UiSettings() {
                 text = "",
                 isChecked = showStatsInNavbar,
                 onCheckedChange = { showStatsInNavbar = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.show_floating_icon).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_floating_icon),
+                text = "",
+                isChecked = showFloatingIcon,
+                onCheckedChange = { showFloatingIcon = it }
             )
 
 

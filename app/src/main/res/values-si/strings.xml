@@ -476,4 +476,5 @@ CC-BY-SA 3.0</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
     <string name="item_size">"Item size: "</string>
     <string name="sort_by">Sort by</string>
+    <string name="show_floating_icon">Show floating icon</string>
 </resources>

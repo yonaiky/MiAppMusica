@@ -99,6 +99,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import kotlinx.coroutines.coroutineScope
 import kotlin.random.Random
@@ -459,7 +460,8 @@ fun HomeAlbums(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        if(uiType == UiType.ViMusic)
+        val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+        if(uiType == UiType.ViMusic || showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

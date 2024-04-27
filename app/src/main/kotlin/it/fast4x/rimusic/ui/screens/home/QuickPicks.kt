@@ -119,6 +119,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showActionsBarKey
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -855,9 +856,8 @@ fun QuickPicks(
             }
 
 
-
-
-            if(uiType == UiType.ViMusic)
+            val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+            if(uiType == UiType.ViMusic || showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

@@ -100,6 +100,7 @@ import it.fast4x.rimusic.utils.showBuiltinPlaylistsKey
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
@@ -743,7 +744,8 @@ fun HomeLibrary(
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-        if(uiType == UiType.ViMusic)
+        val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+        if(uiType == UiType.ViMusic || showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

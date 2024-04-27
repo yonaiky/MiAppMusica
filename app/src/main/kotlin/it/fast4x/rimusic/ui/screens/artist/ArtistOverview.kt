@@ -88,6 +88,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
@@ -640,7 +641,8 @@ fun ArtistOverview(
 
             }
 
-            if(uiType == UiType.ViMusic)
+            val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+            if(uiType == UiType.ViMusic || showFloatingIcon)
                 youtubeArtistPage?.radioEndpoint?.let { endpoint ->
 
                     MultiFloatingActionsContainer(

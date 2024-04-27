@@ -160,6 +160,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.toast
@@ -1467,7 +1468,8 @@ fun LocalPlaylistSongs(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        if(uiType == UiType.ViMusic)
+        val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+        if(uiType == UiType.ViMusic || showFloatingIcon)
         FloatingActionsContainerWithScrollToTop(
             lazyListState = lazyListState,
             iconId = R.drawable.shuffle,
