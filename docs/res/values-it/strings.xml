@@ -13,6 +13,6 @@
     <string name="download_rimusic_now">Scarica RiMusic Adesso.</string>
     <string name="repository">Sorgenti</string>
     <string name="releases">Versioni</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="issue_tracker">Tracker degli errori</string>
+    <string name="custom_version">Versione personalizzata</string>
 </resources>
