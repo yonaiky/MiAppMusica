@@ -205,7 +205,7 @@ fun BoxScope.FloatingActions(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val playerSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
+    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer else bottomDp
 
 
     Row(
@@ -213,8 +213,8 @@ fun BoxScope.FloatingActions(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .align(Alignment.BottomEnd)
-            .padding(end = 16.dp)
-            .padding(bottom = bottomPadding)
+            //.padding(end = 16.dp)
+            //.padding(bottom = bottomPadding)
             /*
             .padding(
                 windowInsets
@@ -239,9 +239,9 @@ fun BoxScope.FloatingActions(
                     },
                     enabled = transition.targetState?.isScrollingDown == false,
                     modifier = Modifier
-                        .padding(bottom = 16.dp)
+                        //.padding(bottom = 16.dp)
                         //.padding(bottomPaddingValues)
-                        .padding(bottom = bottomPadding)
+                        .padding(bottom = bottomDp)
                 )
                 /*
                 SecondaryCircleButton(

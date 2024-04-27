@@ -20,7 +20,7 @@ object Dimensions {
     val collapsedPlayer = 64.dp
     val navigationBarHeight = 64.dp
     val contentWidthRightBar = 0.88f
-    val additionalVerticalSpaceForFloatingAction = 85.dp
+    val additionalVerticalSpaceForFloatingAction = 40.dp
     val bottomSpacer = 100.dp
 
 
