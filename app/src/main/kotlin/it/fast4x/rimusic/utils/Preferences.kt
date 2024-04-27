@@ -133,6 +133,8 @@ const val showPinnedPlaylistsKey = "showPinnedPlaylists"
 const val showPlaylistsListKey = "showPlaylistsList"
 const val showPlaylistsGeneralKey = "showPlaylistsGeneral"
 const val libraryItemSizeKey = "libraryItemSize"
+const val albumsItemSizeKey = "albumsItemSize"
+const val artistsItemSizeKey = "artistsItemSize"
 
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(

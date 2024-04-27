@@ -57,6 +57,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
+import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
@@ -76,6 +77,8 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.Menu
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SortMenu
@@ -88,8 +91,10 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
+import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -123,7 +128,8 @@ fun HomeAlbums(
         Database.albums(sortBy, sortOrder).collect { items = it }
     }
 
-    val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
+    var itemSize by rememberPreference(albumsItemSizeKey, LibraryItemSize.Small.size)
+    val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -168,7 +174,7 @@ fun HomeAlbums(
 
         LazyVerticalGrid(
             state = lazyGridState,
-            columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
+            columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
                 .background(colorPalette.background0)
@@ -189,6 +195,7 @@ fun HomeAlbums(
                 )
 
             }
+
             item(
                 key = "filter",
                 contentType = 0,
@@ -223,6 +230,41 @@ fun HomeAlbums(
                             ))
                         },
                         iconSize = 16.dp
+                    )
+
+                    HeaderIconButton(
+                        onClick = {
+                            menuState.display {
+                                Menu {
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.small),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Small.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.medium),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Medium.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.big),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Big.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                }
+                            }
+                        },
+                        icon = R.drawable.resize,
+                        color = colorPalette.text
                     )
 
                     Spacer(

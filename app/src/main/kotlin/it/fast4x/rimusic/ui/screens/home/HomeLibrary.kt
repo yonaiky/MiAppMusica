@@ -323,7 +323,7 @@ fun HomeLibrary(
             item(key = "itemSize", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
                 Row(
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
@@ -339,7 +339,41 @@ fun HomeLibrary(
                     )
                      */
 
-
+                    HeaderIconButton(
+                        onClick = {
+                            menuState.display {
+                                Menu {
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.small),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Small.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.medium),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Medium.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.arrow_forward,
+                                        text = stringResource(R.string.big),
+                                        onClick = {
+                                            itemSize = LibraryItemSize.Big.size
+                                            menuState.hide()
+                                        }
+                                    )
+                                }
+                            }
+                        },
+                        icon = R.drawable.resize,
+                        color = colorPalette.text
+                    )
+                    /*
                     BasicText(
                         text = "${stringResource(R.string.item_size)} ${when (itemSize) {
                             LibraryItemSize.Small.size -> stringResource(R.string.small)
@@ -381,7 +415,7 @@ fun HomeLibrary(
                                     }
                                 }
                             }
-                    )
+                    )*/
                 }
             }
 
@@ -515,12 +549,12 @@ fun HomeLibrary(
 
 
                         BasicText(
-                            text = "${stringResource(R.string.sort_by)}: ${when (sortBy) {
+                            text = when (sortBy) {
                                 PlaylistSortBy.Name -> stringResource(R.string.sort_name)
                                 PlaylistSortBy.SongCount -> stringResource(R.string.sort_songs_number)
                                 PlaylistSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                                 PlaylistSortBy.MostPlayed -> stringResource(R.string.most_played_playlists)
-                            }}",
+                            },
                             style = typography.xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
