@@ -464,7 +464,7 @@
     <string name="info_translation">Tradução</string>
     <string name="info_find_the_song_that_is_playing">Encontre a música que está tocando</string>
     <string name="info_smart_recommendation">Recomendação inteligente</string>
-    <string name="info_clean_cached_congs">Clean cached congs</string>
+    <string name="info_clean_cached_congs">Clean cached songs</string>
     <string name="info_pin_unpin_playlist">Fixar/Desafixar playlist</string>
     <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
     <string name="info_add_in_playlist">Adicionar à playlist</string>
