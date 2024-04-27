@@ -447,7 +447,7 @@
     <string name="yesterday">Yesterday</string>
     <string name="this_week">This week</string>
     <string name="last_week">Last week</string>
-    <string name="by_casual_played_song">By Casual played song</string>
+    <string name="by_casual_played_song">Random</string>
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Show statistics in navigation bar</string>
     <string name="settings">Settings</string>
@@ -468,7 +468,7 @@
     <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
     <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
     <string name="info_add_in_playlist">Add in playlist</string>
-    <string name="info_not_find_application_audio">Couldn\'t find an application to equalize audio</string>
+    <string name="info_not_find_application_audio">Couldn\'t find audio equalizer application</string>
     <string name="info_error">Error</string>
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
