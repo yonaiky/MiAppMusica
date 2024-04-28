@@ -3,13 +3,20 @@ class Multilingual {
   defaultValues = {};
   selectedValues = {};
   constructor(supported) {
-    const user = (navigator.language || navigator.userLanguage).split("-")[0]
+    const user = (navigator.language || navigator.userLanguage).split("-")[0];
     if (supported.includes(user)) {
-      this.language = localStorage.getItem("language") || user || "en"
+      this.language = localStorage.getItem("language") || user || "en";
+    } else {
+      this.language = localStorage.getItem("language") || "en";
     }
-    else {
-      this.language = localStorage.getItem("language") || "en"
-    }
+  }
+  _decode(string) {
+    return string
+      .replace(/\\n/g, "\n")
+      .replaceAll("\\'", "'")
+      .replaceAll('\\"', '"')
+      .replaceAll("\\\\", "\\")
+      .replaceAll("\\t", "\t");
   }
   async loadStrings() {
     const defaultValuesResponse = await fetch("res/values/strings.xml");
@@ -32,7 +39,7 @@ class Multilingual {
     const stringsDefault = xmlDocDefault.getElementsByTagName("string");
     for (const string of stringsDefault) {
       const name = string.getAttribute("name");
-      const value = string.textContent.replace(/\\n/g, "\n");
+      const value = this._decode(string.textContent);
       this.defaultValues[name] = value;
     }
 
@@ -46,7 +53,7 @@ class Multilingual {
 
     for (const string of stringsSelected) {
       const name = string.getAttribute("name");
-      const value = string.textContent.replace(/\\n/g, "\n");
+      const value = this._decode(string.textContent);
       this.selectedValues[name] = value;
     }
   }
@@ -87,6 +94,6 @@ class Multilingual {
     }
   }
   setAttribute(el) {
-    el.setAttribute("lang", this.language)
+    el.setAttribute("lang", this.language);
   }
 }
