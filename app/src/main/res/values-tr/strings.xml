@@ -447,7 +447,7 @@
     <string name="yesterday">Dün</string>
     <string name="this_week">Bu hafta</string>
     <string name="last_week">Geçen hafta</string>
-    <string name="by_casual_played_song">By Casual played song</string>
+    <string name="by_casual_played_song">Rastgele oynatılan şarkıya göre</string>
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Gezinti çubuğunda istatistikleri göster</string>
     <string name="settings">Ayarlar</string>
@@ -465,12 +465,12 @@
     <string name="info_find_the_song_that_is_playing">Çalmakta olan şarkıyı bul</string>
     <string name="info_smart_recommendation">Akıllı öneri</string>
     <string name="info_clean_cached_congs">Önbelleğe alınmış şarkıları temizle</string>
-    <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
-    <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
-    <string name="info_add_in_playlist">Add in playlist</string>
-    <string name="info_not_find_application_audio">Couldn\'t find an application to equalize audio</string>
-    <string name="info_error">Error</string>
-    <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
-    <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
-    <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
+    <string name="info_pin_unpin_playlist">Oynatma listesini sabitle/sabitleme</string>
+    <string name="info_lock_unlock_reorder_songs">Şarkıları yeniden sıralamayı kilitle/kilidi aç</string>
+    <string name="info_add_in_playlist">Oynatma listesine ekle</string>
+    <string name="info_not_find_application_audio">Ekolayzer ayarı için bir uygulama bulunamadı</string>
+    <string name="info_error">Hata</string>
+    <string name="info_not_find_app_open_doc">Belgeleri açmak için bir uygulama bulunamadı</string>
+    <string name="info_not_find_app_create_doc">Belge oluşturmak için bir uygulama bulunamadı</string>
+    <string name="info_not_find_app_browse_internet">İnternette gezinmek için bir uygulama bulunamadı</string>
 </resources>
