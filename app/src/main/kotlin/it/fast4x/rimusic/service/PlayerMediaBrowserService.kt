@@ -17,6 +17,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.offline.Download
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
@@ -25,6 +26,7 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongWithContentLength
+import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -105,7 +107,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         extras: Bundle?,
         result: Result<List<MediaItem>>
     ) {
-        println("RiMusicMediaBrowse ${extras}")
         runBlocking(Dispatchers.IO) {
             val resultsList =
                 Database
@@ -163,9 +164,11 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         }
 
                     MediaId.playlists -> Database
-                        .playlistPreviewsByDateAddedDesc()
+                        .playlistPreviewsByNameAsc()
                         .first()
                         .map { it.asBrowserMediaItem }
+                        .sortedBy { it.description.title.toString() }
+                        .map { it.asCleanMediaItem }
                         .toMutableList()
                         .apply {
                             add(0, favoritesBrowserMediaItem)
@@ -173,7 +176,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                             add(2, downloadedBrowserMediaItem)
                             add(3, topBrowserMediaItem)
                             add(4, ondeviceBrowserMediaItem)
-
                         }
 
                     MediaId.albums -> Database
@@ -320,9 +322,22 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.forPlaylist(playlist.id))
-                .setTitle(playlist.name)
+                //.setTitle(playlist.name.substringAfter(PINNED_PREFIX))
+                .setTitle(playlist.name.replace(PINNED_PREFIX,"0:",true))
                 .setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
-                .setIconUri(uriFor(R.drawable.playlist))
+                .setIconUri(uriFor(if (playlist.name.startsWith(PINNED_PREFIX)) R.drawable.pin else R.drawable.playlist))
+                .build(),
+            MediaItem.FLAG_PLAYABLE
+        )
+
+    private val MediaItem.asCleanMediaItem
+        inline get() = MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(mediaId)
+                .setTitle(description.title.toString().substringAfter("0:"))
+                //.setTitle(playlist.name.replace(PINNED_PREFIX,"0:",true))
+                //.setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
+                .setIconUri(uriFor(if (description.title.toString().startsWith("0:")) R.drawable.pin else R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
@@ -381,6 +396,16 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 binder.toggleDownload()
                 binder.refreshPlayer()
             }
+            if (action == "PLAYRADIO") {
+                coroutineScope.launch {
+                    withContext(Dispatchers.Main) {
+                        binder.stopRadio()
+                        binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
+                    }
+                }
+
+            }
+
 
             super.onCustomAction(action, extras)
         }
@@ -459,6 +484,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.let(Database::artistSongsByname)
                         ?.first()
                     }
+
 
                     else -> emptyList()
                 }?.map(Song::asMediaItem) ?: return@launch

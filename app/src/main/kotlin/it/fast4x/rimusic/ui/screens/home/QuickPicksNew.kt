@@ -227,7 +227,7 @@ fun QuickPicksNew(
             discoverPage = Innertube.discoverPage()
 
             mediaItems =
-                binder?.getRadioSongs(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))!!
+                binder?.getRadioMediaItems(NavigationEndpoint.Endpoint.Watch(videoId = trending?.id))!!
 
         }.onFailure {
             //println("mediaItem refreshed failure")

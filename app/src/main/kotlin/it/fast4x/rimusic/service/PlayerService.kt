@@ -102,6 +102,8 @@ import it.fast4x.rimusic.utils.RingBuffer
 import it.fast4x.rimusic.utils.TimerJob
 import it.fast4x.rimusic.utils.YouTubeRadio
 import it.fast4x.rimusic.utils.activityPendingIntent
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
@@ -223,10 +225,16 @@ class PlayerService : InvincibleService(),
             "Download",
             if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download
 
-        ).addCustomAction(
+        )
+        .addCustomAction(
             "LIKE",
             "Like",
             if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
+        )
+        .addCustomAction(
+            "PLAYRADIO",
+            "Play radio",
+            R.drawable.radio
         )
 
     @ExperimentalCoroutinesApi
@@ -240,6 +248,11 @@ class PlayerService : InvincibleService(),
             if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download
 
         )
+        .addCustomAction(
+            "PLAYRADIO",
+            "Play radio",
+            R.drawable.radio
+        )
 
     @ExperimentalCoroutinesApi
     @FlowPreview
@@ -250,6 +263,11 @@ class PlayerService : InvincibleService(),
             "LIKE",
             "Like",
             if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline
+        )
+        .addCustomAction(
+            "PLAYRADIO",
+            "Play radio",
+            R.drawable.radio
         )
 
     private val playbackStateMutex = Mutex()
@@ -588,6 +606,7 @@ class PlayerService : InvincibleService(),
             addAction(Action.previous.value)
             addAction(Action.like.value)
             addAction(Action.download.value)
+            addAction(Action.playradio.value)
         }
 
         ContextCompat.registerReceiver(
@@ -1265,6 +1284,7 @@ class PlayerService : InvincibleService(),
         val prevIntent = Action.previous.pendingIntent
         val likeIntent = Action.like.pendingIntent
         val downloadIntent = Action.download.pendingIntent
+        val playradioIntent = Action.playradio.pendingIntent
 
         val mediaMetadata = player.mediaMetadata
 
@@ -1318,6 +1338,11 @@ class PlayerService : InvincibleService(),
                     "Like",
                     likeIntent
                 )
+                .addAction(
+                    R.drawable.radio,
+                    "Play radio",
+                    playradioIntent
+                )
         }
         //Prior Android 11
         if (showLikeButton && !showDownloadButton) {
@@ -1327,6 +1352,11 @@ class PlayerService : InvincibleService(),
                     "Like",
                     likeIntent
                 )
+                .addAction(
+                    R.drawable.radio,
+                    "Play radio",
+                    playradioIntent
+                )
         }
         //Prior Android 11
         if (!showLikeButton && showDownloadButton) {
@@ -1334,6 +1364,11 @@ class PlayerService : InvincibleService(),
                 .addAction(
                     if (isDownloadedState.value || isCachedState.value) R.drawable.downloaded else R.drawable.download,
                     "Download", downloadIntent
+                )
+                .addAction(
+                    R.drawable.radio,
+                    "Play radio",
+                    playradioIntent
                 )
         }
 
@@ -1803,7 +1838,7 @@ class PlayerService : InvincibleService(),
             startRadio(endpoint = endpoint, justAdd = false)
 
         @UnstableApi
-        fun getRadioSongs(endpoint: NavigationEndpoint.Endpoint.Watch?): List<MediaItem> {
+        fun getRadioMediaItems(endpoint: NavigationEndpoint.Endpoint.Watch?): List<MediaItem> {
             YouTubeRadio(
                 endpoint?.videoId,
                 endpoint?.playlistId,
@@ -1816,6 +1851,23 @@ class PlayerService : InvincibleService(),
                     return@runBlocking mediaItems
                 }
                 return mediaItems
+            }
+        }
+
+        @UnstableApi
+        fun getRadioSongs(endpoint: NavigationEndpoint.Endpoint.Watch?): List<Song> {
+            YouTubeRadio(
+                endpoint?.videoId,
+                endpoint?.playlistId,
+                endpoint?.playlistSetVideoId,
+                endpoint?.params
+            ).let {
+                var songs = listOf<Song>()
+                runBlocking {
+                    songs =  it.process().map ( MediaItem::asSong )
+                    return@runBlocking songs
+                }
+                return songs
             }
         }
 
@@ -1990,6 +2042,7 @@ class PlayerService : InvincibleService(),
         @FlowPreview
         override fun onCustomAction(action: String, extras: Bundle?) {
             super.onCustomAction(action, extras)
+            println("mediaItem $action")
             if (action == "LIKE") {
                 binder.toggleLike()
                 refreshPlayer()
@@ -1997,6 +2050,15 @@ class PlayerService : InvincibleService(),
             if (action == "DOWNLOAD") {
                 binder.toggleDownload()
                 refreshPlayer()
+            }
+            if (action == "PLAYRADIO") {
+                coroutineScope.launch {
+                    binder.stopRadio()
+                    binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
+                    //refreshPlayer()
+                    println("mediaItem $action")
+                }
+
             }
             updatePlaybackState()
         }
@@ -2039,10 +2101,14 @@ class PlayerService : InvincibleService(),
                     binder.toggleLike()
                     refreshPlayer()
                 }
-
                 Action.download.value -> {
                     binder.toggleDownload()
                     refreshPlayer()
+                }
+                Action.playradio.value -> {
+                    println("mediaItem playradio")
+                    binder.stopRadio()
+                    binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
                 }
             }
 
@@ -2081,6 +2147,7 @@ class PlayerService : InvincibleService(),
             val previous = Action("it.fast4x.rimusic.previous")
             val like = Action("it.fast4x.rimusic.like")
             val download = Action("it.fast4x.rimusic.download")
+            val playradio = Action("it.fast4x.rimusic.playradio")
 
         }
     }

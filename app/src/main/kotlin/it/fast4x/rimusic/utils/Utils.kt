@@ -204,6 +204,17 @@ val Song.asMediaItem: MediaItem
         .setCustomCacheKey(id)
         .build()
 
+val MediaItem.asSong: Song
+    @UnstableApi
+    get() = Song (
+        id = mediaId,
+        title = mediaMetadata.title.toString(),
+        artistsText = mediaMetadata.artist.toString(),
+        durationText = "",
+        thumbnailUrl = mediaMetadata.artworkUri.toString()
+    )
+
+
 fun String?.thumbnail(size: Int): String? {
     return when {
         this?.startsWith("https://lh3.googleusercontent.com") == true -> "$this-w$size-h$size"

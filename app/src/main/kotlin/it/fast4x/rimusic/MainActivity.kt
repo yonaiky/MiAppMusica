@@ -169,6 +169,8 @@ import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
+import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
+import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -489,7 +491,8 @@ class MainActivity :
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
                             showButtonPlayerSystemEqualizerKey,
-                            transitionEffectKey -> {
+                            transitionEffectKey
+                            -> {
                                 this@MainActivity.recreate()
                             }
 
