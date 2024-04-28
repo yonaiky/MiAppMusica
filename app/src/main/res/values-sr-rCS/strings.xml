@@ -455,8 +455,8 @@
     <string name="sorry_tips_are_not_available">Žao nam je, saveti trenutno nisu dostupni.</string>
     <string name="library_collections">Kolekcije</string>
     <string name="info_show_hide_hidden_songs">Prikaži/sakrij skrivene pesme</string>
-    <string name="info_shuffle">Shuffle</string>
-    <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
+    <string name="info_shuffle">Nasumično</string>
+    <string name="info_includes_excludes_songs_on_the_device">Uključuje/Isključuje pesme na uređaju</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Download all songs</string>
     <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
