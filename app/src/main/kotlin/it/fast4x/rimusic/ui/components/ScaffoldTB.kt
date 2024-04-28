@@ -204,35 +204,7 @@ fun ScaffoldTB(
                                     slideOutOfContainer(slideDirection, animationSpec)
                         }
                     }
-                    //fadeIn(animationSpec = tween(500)).togetherWith(fadeOut(animationSpec = tween(500)))
-                    //scaleIn(animationSpec = tween(350)).togetherWith(scaleOut(animationSpec = tween(350)))
-                    //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left).togetherWith(slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right))
                 },
-                /*
-                transitionSpec = {
-                    val slideDirection = when (targetState > initialState) {
-                        true -> when (navigationBarPosition) {
-                            NavigationBarPosition.Left, NavigationBarPosition.Right -> AnimatedContentTransitionScope.SlideDirection.Up
-                            NavigationBarPosition.Top, NavigationBarPosition.Bottom -> AnimatedContentTransitionScope.SlideDirection.Left
-                        }
-
-                        false -> when (navigationBarPosition) {
-                            NavigationBarPosition.Left, NavigationBarPosition.Right -> AnimatedContentTransitionScope.SlideDirection.Down
-                            NavigationBarPosition.Top, NavigationBarPosition.Bottom -> AnimatedContentTransitionScope.SlideDirection.Right
-                        }
-                    }
-
-                    val animationSpec = spring(
-                        dampingRatio = 0.9f,
-                        stiffness = Spring.StiffnessLow,
-                        visibilityThreshold = IntOffset.VisibilityThreshold
-                    )
-
-                    slideIntoContainer(slideDirection, animationSpec) togetherWith
-                            slideOutOfContainer(slideDirection, animationSpec)
-                },
-
-                 */
                 content = content,
                 label = "",
                 modifier = Modifier

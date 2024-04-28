@@ -103,10 +103,6 @@ fun AppNavigation(
                 TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
                 TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             }
-            //fadeIn(animationSpec = tween(500))
-            //scaleIn(animationSpec = tween(350))
-            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
         },
         exitTransition = {
             when (transitionEffect) {
@@ -116,10 +112,6 @@ fun AppNavigation(
                 TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
                 TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
-            //fadeOut(animationSpec = tween(500))
-            //scaleOut(animationSpec = tween(350))
-            //slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            //fadeOut()
         },
         popEnterTransition = {
             when (transitionEffect) {
@@ -129,10 +121,6 @@ fun AppNavigation(
                 TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
                 TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             }
-            //fadeIn(animationSpec = tween(500))
-            //scaleIn(animationSpec = tween(350))
-            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
         },
         popExitTransition = {
             when (transitionEffect) {
@@ -142,10 +130,6 @@ fun AppNavigation(
                 TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
                 TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
-            //fadeOut(animationSpec = tween(500))
-            //scaleOut(animationSpec = tween(350))
-            //slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            //fadeOut()
         }
     ) {
         val navigateToAlbum =
