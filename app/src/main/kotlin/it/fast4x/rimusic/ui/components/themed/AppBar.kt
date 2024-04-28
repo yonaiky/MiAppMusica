@@ -114,9 +114,9 @@ fun appBar(
         },
         actions = {
             //if (showTopActions == true) {
-            println("mediaItem nav ${navController.currentDestination?.route}")
+            //println("mediaItem nav ${navController.currentDestination?.route}")
             androidx.compose.material3.IconButton(
-                enabled = navController.currentDestination?.route?.startsWith(NavRoutes.search.name) == false,
+                //enabled = navController.currentDestination?.route?.startsWith(NavRoutes.search.name) == false,
                 onClick = {
                     //if (onSearchClick != null) {
                     //onSearchClick()
