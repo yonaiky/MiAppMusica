@@ -102,6 +102,7 @@ import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
@@ -171,6 +172,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -486,7 +488,8 @@ class MainActivity :
                             navigationBarTypeKey,
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
-                            showButtonPlayerSystemEqualizerKey -> {
+                            showButtonPlayerSystemEqualizerKey,
+                            transitionEffectKey -> {
                                 this@MainActivity.recreate()
                             }
 

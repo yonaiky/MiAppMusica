@@ -2,19 +2,30 @@ package it.fast4x.rimusic.ui.screens
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.slideIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
@@ -28,6 +39,7 @@ import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
+import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.SimpleScaffold
@@ -54,6 +66,8 @@ import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
 import it.fast4x.rimusic.ui.screens.statistics.StatisticsScreen
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.transitionEffectKey
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -64,6 +78,8 @@ import it.fast4x.rimusic.utils.preferences
 fun AppNavigation(
     navController: NavHostController
 ) {
+    val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
+
     @Composable
     fun customScaffold(content: @Composable () -> Unit) {
         Scaffold(
@@ -80,19 +96,55 @@ fun AppNavigation(
         navController = navController,
         startDestination = NavRoutes.home.name,
         enterTransition = {
-                fadeIn(animationSpec = tween(500))
+            when (transitionEffect) {
+                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            }
+            //fadeIn(animationSpec = tween(500))
+            //scaleIn(animationSpec = tween(350))
+            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(500))
+            when (transitionEffect) {
+                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+            //fadeOut(animationSpec = tween(500))
+            //scaleOut(animationSpec = tween(350))
+            //slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             //fadeOut()
         },
         popEnterTransition = {
-            fadeIn(animationSpec = tween(500))
+            when (transitionEffect) {
+                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            }
+            //fadeIn(animationSpec = tween(500))
+            //scaleIn(animationSpec = tween(350))
+            //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
         },
         popExitTransition = {
-            fadeOut(animationSpec = tween(500))
+            when (transitionEffect) {
+                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+            //fadeOut(animationSpec = tween(500))
+            //scaleOut(animationSpec = tween(350))
+            //slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             //fadeOut()
         }
     ) {
@@ -139,10 +191,10 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-                AlbumScreen(
-                    navController = navController,
-                    browseId = id,
-                )
+            AlbumScreen(
+                navController = navController,
+                browseId = id,
+            )
         }
 
         composable(
@@ -155,11 +207,11 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-                PlaylistScreen(
-                    navController = navController,
-                    browseId = id,
-                    params = null,
-                )
+            PlaylistScreen(
+                navController = navController,
+                browseId = id,
+                params = null,
+            )
         }
 
         composable(route = NavRoutes.settings.name) {

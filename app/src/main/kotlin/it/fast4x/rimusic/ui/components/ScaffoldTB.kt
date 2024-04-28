@@ -4,12 +4,18 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -63,6 +69,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.ui.components.themed.appBar
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -71,6 +78,7 @@ import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.transitionEffectKey
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,6 +134,7 @@ fun ScaffoldTB(
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     //var expanded by remember { mutableStateOf(false) }
+    val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -164,7 +173,40 @@ fun ScaffoldTB(
             AnimatedContent(
                 targetState = tabIndex,
                 transitionSpec = {
-                    fadeIn(animationSpec = tween(500)).togetherWith(fadeOut(animationSpec = tween(500)))
+                    when (transitionEffect) {
+                        TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart).togetherWith(
+                            shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
+                        )
+                        TransitionEffect.Fade -> fadeIn(animationSpec = tween(350)).togetherWith(fadeOut(animationSpec = tween(350)))
+                        TransitionEffect.Scale -> scaleIn(animationSpec = tween(350)).togetherWith(scaleOut(animationSpec = tween(350)))
+                        TransitionEffect.SlideHorizontal, TransitionEffect.SlideVertical -> {
+                            val slideDirection = when (targetState > initialState) {
+                                true -> {
+                                    if (transitionEffect == TransitionEffect.SlideHorizontal)
+                                        AnimatedContentTransitionScope.SlideDirection.Left
+                                    else AnimatedContentTransitionScope.SlideDirection.Up
+                                }
+
+                                false -> {
+                                    if (transitionEffect == TransitionEffect.SlideHorizontal)
+                                        AnimatedContentTransitionScope.SlideDirection.Right
+                                    else AnimatedContentTransitionScope.SlideDirection.Down
+                                }
+                            }
+
+                            val animationSpec = spring(
+                                dampingRatio = 0.9f,
+                                stiffness = Spring.StiffnessLow,
+                                visibilityThreshold = IntOffset.VisibilityThreshold
+                            )
+
+                            slideIntoContainer(slideDirection, animationSpec) togetherWith
+                                    slideOutOfContainer(slideDirection, animationSpec)
+                        }
+                    }
+                    //fadeIn(animationSpec = tween(500)).togetherWith(fadeOut(animationSpec = tween(500)))
+                    //scaleIn(animationSpec = tween(350)).togetherWith(scaleOut(animationSpec = tween(350)))
+                    //slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left).togetherWith(slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right))
                 },
                 /*
                 transitionSpec = {

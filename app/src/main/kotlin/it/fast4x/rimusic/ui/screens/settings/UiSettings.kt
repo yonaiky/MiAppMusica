@@ -76,6 +76,7 @@ import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -138,6 +139,7 @@ import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.toast
+import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
@@ -242,11 +244,8 @@ fun  UiSettings() {
     var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-
-    var menuStyle by rememberPreference(
-        menuStyleKey,
-        MenuStyle.List
-    )
+    var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
+    var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
 
     Column(
         modifier = Modifier
@@ -758,6 +757,22 @@ fun  UiSettings() {
                         HomeScreenTabs.Artists -> stringResource(R.string.artists)
                         HomeScreenTabs.Library -> stringResource(R.string.library)
                         //HomeScreenTabs.Discovery -> stringResource(R.string.discovery)
+                    }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.menu_style).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = "Transition effect",
+                selectedValue = transitionEffect,
+                onValueSelected = { transitionEffect = it },
+                valueText = {
+                    when (it) {
+                        TransitionEffect.Expand -> "Expand"
+                        TransitionEffect.Fade -> "Fade"
+                        TransitionEffect.Scale -> "Scale"
+                        TransitionEffect.SlideVertical -> "Slide Vertical"
+                        TransitionEffect.SlideHorizontal -> "Slide Horizontal"
                     }
                 }
             )

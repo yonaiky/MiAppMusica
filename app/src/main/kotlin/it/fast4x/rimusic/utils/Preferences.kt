@@ -136,7 +136,7 @@ const val libraryItemSizeKey = "libraryItemSize"
 const val albumsItemSizeKey = "albumsItemSize"
 const val artistsItemSizeKey = "artistsItemSize"
 const val showFloatingIconKey = "showFloatingIcon"
-
+const val transitionEffectKey = "transitionEffect"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
