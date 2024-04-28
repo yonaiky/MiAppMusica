@@ -761,18 +761,18 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.menu_style).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.transition_effect).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
-                title = "Transition effect",
+                title = stringResource(R.string.transition_effect),
                 selectedValue = transitionEffect,
                 onValueSelected = { transitionEffect = it },
                 valueText = {
                     when (it) {
-                        TransitionEffect.Expand -> "Expand"
-                        TransitionEffect.Fade -> "Fade"
-                        TransitionEffect.Scale -> "Scale"
-                        TransitionEffect.SlideVertical -> "Slide Vertical"
-                        TransitionEffect.SlideHorizontal -> "Slide Horizontal"
+                        TransitionEffect.Expand -> stringResource(R.string.te_expand)
+                        TransitionEffect.Fade -> stringResource(R.string.te_fade)
+                        TransitionEffect.Scale -> stringResource(R.string.te_scale)
+                        TransitionEffect.SlideVertical -> stringResource(R.string.te_slide_vertical)
+                        TransitionEffect.SlideHorizontal -> stringResource(R.string.te_slide_horizontal)
                     }
                 }
             )
