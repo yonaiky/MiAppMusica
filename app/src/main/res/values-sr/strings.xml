@@ -455,7 +455,7 @@
     <string name="sorry_tips_are_not_available">Жао нам је, савети тренутно нису доступни.</string>
     <string name="library_collections">Колекције</string>
     <string name="info_show_hide_hidden_songs">Прикажи/сакриј скривене песме</string>
-    <string name="info_shuffle">Shuffle</string>
+    <string name="info_shuffle">Насумично</string>
     <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Download all songs</string>
