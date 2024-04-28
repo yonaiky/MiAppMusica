@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -156,7 +157,8 @@ fun AlbumsItemGridMenu(
 
                 Menu(
                     modifier = modifier
-                        .requiredHeight(height)
+                        //.requiredHeight(height)
+                        .fillMaxHeight(0.5f)
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,6 +250,8 @@ fun AlbumsItemGridMenu(
             } else {
                 val selectText = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}"
                 GridMenu(
+                    modifier = modifier
+                        .onPlaced { height = with(density) { it.size.height.toDp() } },
                     contentPadding = PaddingValues(
                         start = 8.dp,
                         top = 8.dp,
