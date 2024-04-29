@@ -7,16 +7,16 @@
 ## ✨ Features
 - **Multilingual support:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
 - UI Mode, change style from RiMusic to classic ViMusic style and viceversa
-- Play song from YouTube Music
+- Play songs from YouTube Music
 - Change your favorite language from settings
-- Auto cache songs for offline playback with custom cache size
-- Download songs or entire playlist for offline playback (not cache) 
-- Background playback with stop while app swipe out from task manager
+- Auto cache songs for offline playback with a custom cache size
+- Download songs or entire playlists for offline playback (not cache) 
+- Background playback with stop when app swipe out from task manager
 - Minimized player optimizations
 - Listening statistics
-- Audio visualizer on player with many type of effects. THIS FEATURE REQUIRE MIC PERMISSION, ONLY IF ACTIVATE IT FROM SETTINGS. BY DEFAULT IS DISABLED [Full list of permissions](https://github.com/fast4x/RiMusic/wiki/FAQs#-what-permissions-are-used)
+- Audio visualizer on player with many type of effects. THIS FEATURES REQUIRE MIC PERMISSION, ONLY AVAILABLE IF ACTIVATED FROM SETTINGS. BY DEFAULT IT IS DISABLED [Full list of permissions](https://github.com/fast4x/RiMusic/wiki/FAQs#-what-permissions-are-used)
 - News, mood and musical genres
-- New albums from preferites artists
+- New albums from favourite artists
 - Search for songs, albums, artists and playlists
 - Bookmark artists and albums
 - Import online playlists 
@@ -25,15 +25,15 @@
 - Reorder songs in playlist or queue
 - Persistent queue
 - Clear queue
-- Share menu support for YouTube and YouTube Music links
+- Share menu with support for YouTube and YouTube Music links
 - Fetch, display, edit and translate synchronized, or not, songs lyrics
 - Light, Dark, Dynamic, PureBlack and ModernBack themes
-- Sleep timer with custom time
+- Sleep timer with customizable time
 - Audio normalization
-- Audio skip silence
+- Audio auto-skip silence
 - Android Auto support
 - Android TV support
-- Check for Updates, enable/disable it by settings
+- Check for Updates, which can be enabled or disabled in settings
 
 ## 📷 Screenshots
 <div align="center">
@@ -90,7 +90,7 @@
 [<img src="./assets/images/getItf-droid.png" alt="F-Droid" height="80">](https://f-droid.org/it/packages/it.fast4x.rimusic/)
 
 ## ❗ CUSTOM VERSION
-WARNING, the custom version is not an official release, downloading only if invited by the developer!
+WARNING, the custom version is not an official release, download only if invited by the developer!
 [Go to custom version](https://github.com/fast4x/RiMusic/tree/master/customVersion)
 
 ## ❓ FAQs
