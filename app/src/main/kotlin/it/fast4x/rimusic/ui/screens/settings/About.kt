@@ -146,6 +146,7 @@ fun About() {
                     "fast4x \n"+
                     "Fausta Ahmad \n"+
                     "Get100percent \n"+
+                    "Glich440 \n"+
                     "HelloZebra1133 \n"+
                     "Ikanakova \n"+
                     "iOSStarWorld \n"+
