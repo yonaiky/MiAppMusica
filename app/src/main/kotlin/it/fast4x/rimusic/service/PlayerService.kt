@@ -1539,19 +1539,20 @@ class PlayerService : InvincibleService(),
 
                     if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                    val format = body.streamingData?.highestQualityFormat
+                    //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
+                    //val format = body.streamingData?.highestQualityFormat
+                    val format = when (audioQualityFormat) {
+                        AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
+                        AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
+                        AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
+                        AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
+                    }
+
                     val url = when (val status = body.playabilityStatus?.status) {
-                        "OK" -> when (audioQualityFormat) {
-                            AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
-                            AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
-                            AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
-                            AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
-                        }?.let { format ->
-
+                        "OK" -> format?.let { formatIn ->
                             val mediaItem = findMediaItem(videoId)
-
                             if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
-                                format.approxDurationMs?.div(1000)
+                                formatIn.approxDurationMs?.div(1000)
                                     ?.let(DateUtils::formatElapsedTime)?.removePrefix("0")
                                     ?.let { durationText ->
                                         mediaItem?.mediaMetadata?.extras?.putString(
@@ -1567,17 +1568,17 @@ class PlayerService : InvincibleService(),
                                 Database.insert(
                                     it.fast4x.rimusic.models.Format(
                                         songId = videoId,
-                                        itag = format.itag,
-                                        mimeType = format.mimeType,
-                                        bitrate = format.bitrate,
+                                        itag = formatIn.itag,
+                                        mimeType = formatIn.mimeType,
+                                        bitrate = formatIn.bitrate,
                                         loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                        contentLength = format.contentLength,
-                                        lastModified = format.lastModified
+                                        contentLength = formatIn.contentLength,
+                                        lastModified = formatIn.lastModified
                                     )
                                 )
                             }
 
-                            format.url
+                            formatIn.url
                         } ?: throw PlayableFormatNotFoundException()
 
                         "UNPLAYABLE" -> throw UnplayableException()
@@ -1596,7 +1597,7 @@ class PlayerService : InvincibleService(),
                         .setUri(url.toUri())
                         .build()
                         .let { spec ->
-                            (chunkLength ?: format?.contentLength)?.let {
+                            (chunkLength ?: format.contentLength)?.let {
                                 spec.subrange(dataSpec.uriPositionOffset, it)
                             } ?: spec
                         }
