@@ -13,6 +13,6 @@
     <string name="download_rimusic_now">Stáhněte RiMusic nyní.</string>
     <string name="repository">Repozitář</string>
     <string name="releases">Vydání</string>
-    <string name="issue_tracker">Issue tracker</string>
+    <string name="issue_tracker">Sledování problémů</string>
     <string name="custom_version">Vlastní verze</string>
 </resources>

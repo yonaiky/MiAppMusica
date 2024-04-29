@@ -11,8 +11,8 @@
     <string name="rimusic_is_multilingual_modern_powerful">RiMusic è multilingua, moderno, potente, attraente, bello ed è tradotto in vari linguaggi dai collaboratori.</string>
     <string name="listen_to_your_favourite_music">Ascolta la tua musica preferita</string>
     <string name="download_rimusic_now">Scarica RiMusic Adesso.</string>
-    <string name="repository">Repository</string>
+    <string name="repository">Sorgenti</string>
     <string name="releases">Versioni</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="issue_tracker">Tracker degli errori</string>
+    <string name="custom_version">Versione personalizzata</string>
 </resources>
