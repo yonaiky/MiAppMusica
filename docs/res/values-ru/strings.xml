@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">Многоязычное Android приложение с открытым исходным кодом для воспроизведения музыки из YouTube Music</string>
+    <string name="opensource_multilingual_application">Многоязычное Android приложение с открытым исходным кодом для стриминга музыки из YouTube Music</string>
     <string name="your_library">Ваша библиотека.</string>
     <string name="organized_in_one_place">Всё собрано в одном месте: любимые, загруженные, прослушанные песни и все ваши плейлисты.</string>
     <string name="beautiful_player">Красивый плеер.</string>
