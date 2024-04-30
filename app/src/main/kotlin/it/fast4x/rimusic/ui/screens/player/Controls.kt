@@ -133,7 +133,6 @@ fun Controls(
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
 
-    val context = LocalContext.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
