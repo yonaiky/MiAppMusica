@@ -488,4 +488,5 @@ CC-BY-SA 3.0</string>
     <string name="te_scale">Scale</string>
     <string name="te_slide_vertical">Slide Vertical</string>
     <string name="te_slide_horizontal">Slide Horizontal</string>
+    <string name="info_wait_it_may_take_a_few_minutes">Wait, it may take a few minutes...</string>
 </resources>

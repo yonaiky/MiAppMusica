@@ -83,6 +83,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -331,17 +332,17 @@ fun ArtistOverview(
                 }
 
                 thumbnailContent()
-
-                youtubeArtistPage?.subscriberCountText ?.let {
-                    BasicText(
-                        text = String.format(stringResource(R.string.artist_subscribers),it),
-                        style = typography.xs.semiBold,
-                        maxLines = 1,
-                        modifier = Modifier.padding(top = 10.dp)
-                    )
-                }
-
                 if (youtubeArtistPage != null) {
+                    youtubeArtistPage?.subscriberCountText ?.let {
+                        BasicText(
+                            text = String.format(stringResource(R.string.artist_subscribers),it),
+                            style = typography.xs.semiBold,
+                            maxLines = 1,
+                            modifier = Modifier.padding(top = 10.dp)
+                        )
+                    }
+
+
                     youtubeArtistPage.songs?.let { songs ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
@@ -621,6 +622,12 @@ fun ArtistOverview(
                                 thumbnailSizeDp = songThumbnailSizeDp,
                             )
                         }
+
+                        BasicText(
+                            text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
+                            style = typography.xxs.medium,
+                            maxLines = 1
+                        )
 
                         repeat(2) {
                             TextPlaceholder(modifier = sectionTextModifier)

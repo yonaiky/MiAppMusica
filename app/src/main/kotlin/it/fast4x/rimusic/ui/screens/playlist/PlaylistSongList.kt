@@ -674,20 +674,28 @@ fun PlaylistSongList(
                         headerContent()
                         if (!isLandscape) thumbnailContent()
 
-                        playlistPage?.title?.let {
+                        if (playlistPage != null) {
+                            playlistPage?.title?.let {
+                                BasicText(
+                                    text = it,
+                                    style = typography.xs.semiBold,
+                                    maxLines = 1
+                                )
+                            }
                             BasicText(
-                                text = it,
-                                style = typography.xs.semiBold,
+                                text = playlistPage?.songsPage?.items?.size.toString() + " "
+                                        + stringResource(R.string.songs)
+                                        + " - " + formatAsTime(totalPlayTimes),
+                                style = typography.xxs.medium,
+                                maxLines = 1
+                            )
+                        } else {
+                            BasicText(
+                                text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
+                                style = typography.xxs.medium,
                                 maxLines = 1
                             )
                         }
-                        BasicText(
-                            text = playlistPage?.songsPage?.items?.size.toString() + " "
-                                    +stringResource(R.string.songs)
-                                    + " - " + formatAsTime(totalPlayTimes),
-                            style = typography.xxs.medium,
-                            maxLines = 1
-                        )
                     }
                 }
 
