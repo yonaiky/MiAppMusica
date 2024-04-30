@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">低</string>
     <string name="audio_quality_format_unknown">未知的</string>
     <string name="do_you_really_want_to_delete_download">你真的想要删除下载吗？</string>
-    <string name="remove_all">全部删除</string>
-    <string name="remove_selected">删除所选内容</string>
-    <string name="clear_queue">清空队列</string>
     <string name="enqueue_all">将所有加入队列</string>
     <string name="enqueue_selected">已选择队列</string>
     <string name="greek">Greek</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">简体中文</string>
     <string name="chinese_traditional">繁體中文</string>
     <string name="do_you_really_want_to_download_all">您真的要全部下载吗？</string>
-    <string name="add_all_in_playlist">将全部添加到播放列表中</string>
-    <string name="add_in_playlist">添加到播放列表</string>
     <string name="import_playlist">导入播放列表</string>
     <string name="lang_ukrainian">Ukrainian</string>
     <string name="proxy">代理</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">显示队列的总时间</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">需要媒体许可，请批准。</string>
-    <string name="grant_permission">授予许可</string>
     <string name="open_permission_settings">打开权限设置</string>
-    <string name="show_background_progress_bar">显示背景进度条</string>
     <string name="background_progress_bar">背景进度条</string>
     <string name="minimized_player">最小化播放器</string>
     <string name="both">两者</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

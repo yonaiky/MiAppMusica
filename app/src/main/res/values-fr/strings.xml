@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Bas</string>
     <string name="audio_quality_format_unknown">Inconnu</string>
     <string name="do_you_really_want_to_delete_download">Voulez-vous vraiment supprimer le téléchargement ?</string>
-    <string name="remove_all">Tout supprimer</string>
-    <string name="remove_selected">Supprimer la sélection</string>
-    <string name="clear_queue">Effacer la file d’attente</string>
     <string name="enqueue_all">Tout mettre en file d’attente</string>
     <string name="enqueue_selected">Mettre en file d\'attente ce qui est sélectionné</string>
     <string name="greek">Grecque (Ελληνικά)</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chinois Simplifié (简体中文)</string>
     <string name="chinese_traditional">Chinois traditionnel (繁體中文)</string>
     <string name="do_you_really_want_to_download_all">Voulez-vous vraiment tout télécharger ?</string>
-    <string name="add_all_in_playlist">Ajouter tout dans la playlist</string>
-    <string name="add_in_playlist">Ajouter à la playlist</string>
     <string name="import_playlist">Importer une playlist</string>
     <string name="lang_ukrainian">Ukrainien (українська)</string>
     <string name="proxy">PROXY</string>
@@ -416,9 +411,7 @@
     <string name="show_total_time_of_queue">Afficher la durée totale de la file d\'attente</string>
     <string name="lang_telugu">Télougou (తెలుగు)</string>
     <string name="media_permission_required_please_grant">Autorisation du média requise, veuillez l\'accorder.</string>
-    <string name="grant_permission">Accorder l’autorisation</string>
     <string name="open_permission_settings">Ouvrir les paramètres d\'autorisation</string>
-    <string name="show_background_progress_bar">Afficher la barre de progression en arrière plan</string>
     <string name="background_progress_bar">Barre de progression en arrière-plan</string>
     <string name="minimized_player">Lecteur minimisé</string>
     <string name="both">Les deux</string>
@@ -477,8 +470,6 @@
     <string name="info_not_find_app_open_doc">Impossible de trouver une application pour ouvrir les documents</string>
     <string name="info_not_find_app_create_doc">Impossible de trouver une application pour créer des documents</string>
     <string name="info_not_find_app_browse_internet">Impossible de trouver une application pour naviguer sur Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

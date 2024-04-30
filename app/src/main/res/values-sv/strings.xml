@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Låg</string>
     <string name="audio_quality_format_unknown">Okänt</string>
     <string name="do_you_really_want_to_delete_download">Vill du verkligen ta bort hämtning?</string>
-    <string name="remove_all">Ta bort allt</string>
-    <string name="remove_selected">Ta bort markerade</string>
-    <string name="clear_queue">Rensa kö</string>
     <string name="enqueue_all">Köa alla</string>
     <string name="enqueue_selected">Köa markerade</string>
     <string name="greek">Grekiska</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Kinesiska (förenklad)</string>
     <string name="chinese_traditional">Kinesiska (Traditionell)</string>
     <string name="do_you_really_want_to_download_all">Vill du verkligen ladda ner alla?</string>
-    <string name="add_all_in_playlist">Lägg till alla i spellista</string>
-    <string name="add_in_playlist">Lägg till i spellista</string>
     <string name="import_playlist">Importera spellista</string>
     <string name="lang_ukrainian">Ukrainska</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Visa total tid för kön</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Tillstånd till media krävs, vänligen bevilja.</string>
-    <string name="grant_permission">Bevilja åtkomst</string>
     <string name="open_permission_settings">Öppna behörighetsinställningar</string>
-    <string name="show_background_progress_bar">Visa förloppsindikator i bakgrunden</string>
     <string name="background_progress_bar">Förloppsindikator i bakgrunden</string>
     <string name="minimized_player">Minimerad spelare</string>
     <string name="both">Båda</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

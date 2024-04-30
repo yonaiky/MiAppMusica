@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Bassa</string>
     <string name="audio_quality_format_unknown">Sconosciuta</string>
     <string name="do_you_really_want_to_delete_download">Vuoi eliminare il download?</string>
-    <string name="remove_all">Rimuovi tutto</string>
-    <string name="remove_selected">Rimuovi selezionati</string>
-    <string name="clear_queue">Pulisci coda</string>
     <string name="enqueue_all">Metti in coda tutto</string>
     <string name="enqueue_selected">Metti in coda selezionati</string>
     <string name="greek">Greco</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Cinese Semplificato</string>
     <string name="chinese_traditional">Cinese Tradizionale</string>
     <string name="do_you_really_want_to_download_all">Vuoi veramente scaricare tutto?</string>
-    <string name="add_all_in_playlist">Aggiungi tutto nella playlist</string>
-    <string name="add_in_playlist">Aggiungi alla playlist</string>
     <string name="import_playlist">Importa playlist</string>
     <string name="lang_ukrainian">Ucraino</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Mostra il tempo totale della coda</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Autorizzazione per i media richiesta, concedila.</string>
-    <string name="grant_permission">Concedi l\'autorizzazione</string>
     <string name="open_permission_settings">Apri le impostazioni dei permessi</string>
-    <string name="show_background_progress_bar">Mostra la barra di avanzamento sullo sfondo</string>
     <string name="background_progress_bar">Sfondo barra avanzamento</string>
     <string name="minimized_player">Lettore minimizzato</string>
     <string name="both">Entrambi</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Impossibile trovare un\'applicazione per aprire i documenti</string>
     <string name="info_not_find_app_create_doc">Impossibile trovare un\'applicazione per creare documenti</string>
     <string name="info_not_find_app_browse_internet">Impossibile trovare un\'applicazione per navigare in Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

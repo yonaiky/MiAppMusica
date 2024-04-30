@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">कम</string>
     <string name="audio_quality_format_unknown">अनजान</string>
     <string name="do_you_really_want_to_delete_download">क्या आप वाकई इस प्रविष्टि को हटाना चाहते हैं?</string>
-    <string name="remove_all">सभी हटाएँ</string>
-    <string name="remove_selected">चुने हुओं को हटाएँ</string>
-    <string name="clear_queue">सूची क्लियर करें</string>
     <string name="enqueue_all">सभी को कतारबद्ध करें</string>
     <string name="enqueue_selected">पंक्ति चयनित</string>
     <string name="greek">ग्रीक</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">सरलीकृत चीनी</string>
     <string name="chinese_traditional">चीनी पारंपरिक</string>
     <string name="do_you_really_want_to_download_all">क्या आप सचमुच सभी डाउनलोड करना चाहते हैं?</string>
-    <string name="add_all_in_playlist">सभी को प्लेलिस्ट में जोड़ें</string>
-    <string name="add_in_playlist">प्‍लेलिस्‍ट में जोड़ें</string>
     <string name="import_playlist">प्लेलिस्ट आयात करें</string>
     <string name="lang_ukrainian">युक्रेनियन</string>
     <string name="proxy">प्रतिनिधि</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">कतार का संपूर्ण समय दिखाए</string>
     <string name="lang_telugu">तेलुगू</string>
     <string name="media_permission_required_please_grant">मीडिया अनुमति आवश्यक है, कृपया प्रदान करें।</string>
-    <string name="grant_permission">अनुमति दें</string>
     <string name="open_permission_settings">अनुमति सेटिंग खोलें</string>
-    <string name="show_background_progress_bar">पीछे की प्रगति पट्टी दिखाए</string>
     <string name="background_progress_bar">पीछे की प्रगति पट्टी</string>
     <string name="minimized_player">छोटा प्लेयर</string>
     <string name="both">दोनों</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

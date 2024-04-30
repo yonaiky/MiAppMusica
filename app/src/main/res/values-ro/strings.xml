@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Scăzut</string>
     <string name="audio_quality_format_unknown">Necunoscut</string>
     <string name="do_you_really_want_to_delete_download">Ești sigur că vrei să ștergi descărcările?</string>
-    <string name="remove_all">Elimină tot</string>
-    <string name="remove_selected">Elimină selecția</string>
-    <string name="clear_queue">Șterge coada</string>
     <string name="enqueue_all">Adaugă tot în coadă</string>
     <string name="enqueue_selected">Adaugă selecția în coadă</string>
     <string name="greek">Ελληνικά</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">简体中文</string>
     <string name="chinese_traditional">中國傳統的</string>
     <string name="do_you_really_want_to_download_all">Sigur doriți să descărcați tot?</string>
-    <string name="add_all_in_playlist">Adaugă tot în playlist</string>
-    <string name="add_in_playlist">Adaugă în playlist</string>
     <string name="import_playlist">Importă playlist-ul</string>
     <string name="lang_ukrainian">Yкраїнська</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Arată timpul total al cozii</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Permisiunea media este necesară, vă rugăm săl acordați.</string>
-    <string name="grant_permission">Acordă permisiunea</string>
     <string name="open_permission_settings">Deschideți setările permisiunilor</string>
-    <string name="show_background_progress_bar">Arată bara de progres a fundal</string>
     <string name="background_progress_bar">Bara de progres fundal</string>
     <string name="minimized_player">Player minimizat</string>
     <string name="both">Ambele</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Nu s-a putut găsi o aplicație pentru a deschide documentele</string>
     <string name="info_not_find_app_create_doc">Nu s-a putut găsi o aplicație pentru a crea documente</string>
     <string name="info_not_find_app_browse_internet">Nu s-a putut găsi o aplicație pentru navigarea pe Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

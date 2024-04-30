@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Low</string>
     <string name="audio_quality_format_unknown">Unknown</string>
     <string name="do_you_really_want_to_delete_download">Do you really want to delete download?</string>
-    <string name="remove_all">Remove all</string>
-    <string name="remove_selected">Remove selected</string>
-    <string name="clear_queue">Clear queue</string>
     <string name="enqueue_all">Enqueue all</string>
     <string name="enqueue_selected">Enqueue selected</string>
     <string name="greek">Greek</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chinese Simplified</string>
     <string name="chinese_traditional">Chinese Traditional</string>
     <string name="do_you_really_want_to_download_all">Do you really want to download all?</string>
-    <string name="add_all_in_playlist">Add all in playlist</string>
-    <string name="add_in_playlist">Add in playlist</string>
     <string name="import_playlist">Import playlist</string>
     <string name="lang_ukrainian">Ukrainian</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Show total time of queue</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
     <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
     <string name="background_progress_bar">Background progress bar</string>
     <string name="minimized_player">Minimized player</string>
     <string name="both">Both</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Nízká</string>
     <string name="audio_quality_format_unknown">Neznámá</string>
     <string name="do_you_really_want_to_delete_download">Opravdu chcete odstranit stahování?</string>
-    <string name="remove_all">Odebrat vše</string>
-    <string name="remove_selected">Odebrat vybrané</string>
-    <string name="clear_queue">Vyčistit frontu</string>
     <string name="enqueue_all">Zařadit vše do fronty</string>
     <string name="enqueue_selected">Zařadit vybrané do fronty</string>
     <string name="greek">Řečtina (Ελληνικά)</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Zjednodušená čínština (汉语)</string>
     <string name="chinese_traditional">Tradiční čínština (漢語)</string>
     <string name="do_you_really_want_to_download_all">Opravdu chcete stahovat vše?</string>
-    <string name="add_all_in_playlist">Přidat vše do playlistu</string>
-    <string name="add_in_playlist">Přidat do playlistu</string>
     <string name="import_playlist">Importovat playlist</string>
     <string name="lang_ukrainian">Ukrajinština (Украї́нська)</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Zobrazit celkový čas fronty</string>
     <string name="lang_telugu">Telugština (తెలుగు)</string>
     <string name="media_permission_required_please_grant">Je vyžadováno oprávnění k médiím, prosím udělte je.</string>
-    <string name="grant_permission">Udělit oprávnění</string>
     <string name="open_permission_settings">Otevřít nastavení oprávnění</string>
-    <string name="show_background_progress_bar">Zobrazit ukazatel průběhu na pozadí</string>
     <string name="background_progress_bar">Ukazatel průběhu na pozadí</string>
     <string name="minimized_player">Minimalizovaný přehrávač</string>
     <string name="both">Oba</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Nepodařilo se najít aplikaci pro otevírání dokumentů</string>
     <string name="info_not_find_app_create_doc">Nepodařilo se najít aplikaci pro vytváření dokumentů</string>
     <string name="info_not_find_app_browse_internet">Nepodařilo se najít aplikaci pro procházení Internetu</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

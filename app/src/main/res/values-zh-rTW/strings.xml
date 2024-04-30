@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">低</string>
     <string name="audio_quality_format_unknown">未知的</string>
     <string name="do_you_really_want_to_delete_download">你真的要移除下載嗎?</string>
-    <string name="remove_all">移除全部</string>
-    <string name="remove_selected">移除所選内容</string>
-    <string name="clear_queue">清除佇列</string>
     <string name="enqueue_all">全部加入佇列</string>
     <string name="enqueue_selected">已選擇的佇列</string>
     <string name="greek">希臘語 (Ελληνικά)</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">簡體中文 (简体中文)</string>
     <string name="chinese_traditional">繁體中文</string>
     <string name="do_you_really_want_to_download_all">你真的要全部下載嗎?</string>
-    <string name="add_all_in_playlist">將全部新增至播放清單中</string>
-    <string name="add_in_playlist">加入播放清單</string>
     <string name="import_playlist">匯入播放清單</string>
     <string name="lang_ukrainian">烏克蘭語 (українська)</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">顯示佇列的總時間長度</string>
     <string name="lang_telugu">泰盧固語 (తెలుగు)</string>
     <string name="media_permission_required_please_grant">需要音樂和音訊權限, 請授予.</string>
-    <string name="grant_permission">授予權限</string>
     <string name="open_permission_settings">開啟權限設定</string>
-    <string name="show_background_progress_bar">在背景顯示進度條</string>
     <string name="background_progress_bar">背景進度條</string>
     <string name="minimized_player">最小化播放器</string>
     <string name="both">兩者</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">ନିମ୍ନ</string>
     <string name="audio_quality_format_unknown">ଅଜ୍ଞାତ</string>
     <string name="do_you_really_want_to_delete_download">ଆପଣ ପ୍ରକୃତରେ ଡାଉନଲୋଡ୍ ଡିଲିଟ୍ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?</string>
-    <string name="remove_all">ସମସ୍ତ ଅପସାରଣ କରନ୍ତୁ</string>
-    <string name="remove_selected">ମନୋନୀତ ଅପସାରଣ କରନ୍ତୁ</string>
-    <string name="clear_queue">ଧାଡି ସଫା କରନ୍ତୁ</string>
     <string name="enqueue_all">ସମସ୍ତଙ୍କୁ ଉତ୍ସାହିତ କର</string>
     <string name="enqueue_selected">ବଚ୍ଛିତକୁ ସଂଗୁପ୍ତ କରନ୍ତୁ</string>
     <string name="greek">ଗ୍ରୀକ</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">ଚାଇନିଜ୍ ସରଳୀକୃତ</string>
     <string name="chinese_traditional">ଚାଇନିଜ୍ ପାରମ୍ପାରିକ</string>
     <string name="do_you_really_want_to_download_all">ଆପଣ ପ୍ରକୃତରେ ସମସ୍ତ ଡାଉନଲୋଡ୍ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?</string>
-    <string name="add_all_in_playlist">ସମସ୍ତ ପ୍ଲେଲିଷ୍ଟରେ ଯୋଡନ୍ତୁ</string>
-    <string name="add_in_playlist">ପ୍ଲେ ଲିଷ୍ଟରେ ଯୋଡନ୍ତୁ</string>
     <string name="import_playlist">ପ୍ଲେଲିଷ୍ଟ ଆମଦାନୀ କରନ୍ତୁ</string>
     <string name="lang_ukrainian">ୟୁକ୍ରେନ୍</string>
     <string name="proxy">ପ୍ରୋକ୍ସି</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Show total time of queue</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="grant_permission">Grant permission</string>
     <string name="open_permission_settings">Open permission settings</string>
-    <string name="show_background_progress_bar">Show background progress bar</string>
     <string name="background_progress_bar">Background progress bar</string>
     <string name="minimized_player">Minimized player</string>
     <string name="both">Both</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

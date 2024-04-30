@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Low</string>
     <string name="audio_quality_format_unknown">不明</string>
     <string name="do_you_really_want_to_delete_download">本当にダウンロードを削除しますか？</string>
-    <string name="remove_all">全て除去</string>
-    <string name="remove_selected">選択項目を除去</string>
-    <string name="clear_queue">キューを消去</string>
     <string name="enqueue_all">全てキューに入れる</string>
     <string name="enqueue_selected">選択したものをキューに追加</string>
     <string name="greek">ギリシャ語</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">簡体字中国語</string>
     <string name="chinese_traditional">繁体中国語</string>
     <string name="do_you_really_want_to_download_all">全てダウンロードしてもよろしいですか？</string>
-    <string name="add_all_in_playlist">プレイリストに全て追加</string>
-    <string name="add_in_playlist">プレイリストに追加</string>
     <string name="import_playlist">プレイリストをインポート</string>
     <string name="lang_ukrainian">ウクライナ語</string>
     <string name="proxy">プロキシ</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">キューの合計時間を表示</string>
     <string name="lang_telugu">テルグ語</string>
     <string name="media_permission_required_please_grant">メディアへのアクセス権限が必要です。許可してください。</string>
-    <string name="grant_permission">アクセス権限を与える</string>
     <string name="open_permission_settings">権限設定を開く</string>
-    <string name="show_background_progress_bar">バックグラウンドの進捗バーを表示</string>
     <string name="background_progress_bar">バックグラウンドの進行バー</string>
     <string name="minimized_player">最小化したプレイヤー</string>
     <string name="both">両方</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

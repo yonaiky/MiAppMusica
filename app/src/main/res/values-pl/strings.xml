@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Niska</string>
     <string name="audio_quality_format_unknown">Nieznana</string>
     <string name="do_you_really_want_to_delete_download">Chcesz usunąć pobraną piosenkę?</string>
-    <string name="remove_all">Usuń wszystkie</string>
-    <string name="remove_selected">Usuń zaznaczone</string>
-    <string name="clear_queue">Wyczyść kolejkę</string>
     <string name="enqueue_all">Dodaj do kolejki wszystkie</string>
     <string name="enqueue_selected">Dodaj do kolejki zaznaczone</string>
     <string name="greek">Grecki</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chiński Uproszczony</string>
     <string name="chinese_traditional">Chiński Tradycyjny</string>
     <string name="do_you_really_want_to_download_all">Czy na pewno chcesz pobrać wszystkie?</string>
-    <string name="add_all_in_playlist">Dodaj wszystko w playliście</string>
-    <string name="add_in_playlist">Dodaj w playliście</string>
     <string name="import_playlist">Importuj playlistę</string>
     <string name="lang_ukrainian">Ukraiński</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Pokaż całkowity czas kolejki</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Wymagane jest uprawnienie mediów, proszę przyznać.</string>
-    <string name="grant_permission">Przyznaj uprawnienia</string>
     <string name="open_permission_settings">Otwórz ustawienia uprawnień</string>
-    <string name="show_background_progress_bar">Pokaż pasek postępu w tle</string>
     <string name="background_progress_bar">Pasek postępu w tle</string>
     <string name="minimized_player">Zminimalizowany odtwarzacz</string>
     <string name="both">Oba</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

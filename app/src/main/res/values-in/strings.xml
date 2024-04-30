@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Rendah</string>
     <string name="audio_quality_format_unknown">Tidak diketahui</string>
     <string name="do_you_really_want_to_delete_download">Apakah anda yakin ingin menghapus unduhan?</string>
-    <string name="remove_all">Hapus semua</string>
-    <string name="remove_selected">Hapus terpilih</string>
-    <string name="clear_queue">Hapus antrean</string>
     <string name="enqueue_all">Antrekan semua</string>
     <string name="enqueue_selected">Antrekan terpilih</string>
     <string name="greek">Ελληνικά</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">简体中文</string>
     <string name="chinese_traditional">繁體中文</string>
     <string name="do_you_really_want_to_download_all">Apakah anda yakin ingin mengunduh semua?</string>
-    <string name="add_all_in_playlist">Tambahkan semua ke daftar putar yang ada</string>
-    <string name="add_in_playlist">Tambahkan ke daftar putar yang ada</string>
     <string name="import_playlist">Impor daftar putar</string>
     <string name="lang_ukrainian">Ukrainan</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Tampilkan total durasi antrean lagu</string>
     <string name="lang_telugu">తెలుగు</string>
     <string name="media_permission_required_please_grant">Izin media diperlukan, mohon izinkan.</string>
-    <string name="grant_permission">Berikan izin</string>
     <string name="open_permission_settings">Buka setelan perizinan</string>
-    <string name="show_background_progress_bar">Tampilkan bilah waktu latar belakang</string>
     <string name="background_progress_bar">Bilah waktu latar belakang</string>
     <string name="minimized_player">Pemutar mini</string>
     <string name="both">Semua</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Tidak dapat menemukan aplikasi untuk membuka dokumen</string>
     <string name="info_not_find_app_create_doc">Tidak dapat menemukan aplikasi untuk membuat dokumen</string>
     <string name="info_not_find_app_browse_internet">Tidak dapat menemukan aplikasi untuk menelusuri internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

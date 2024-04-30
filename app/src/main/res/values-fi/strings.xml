@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Matala</string>
     <string name="audio_quality_format_unknown">Tuntematon</string>
     <string name="do_you_really_want_to_delete_download">Haluatko varmasti poistaa latauksen?</string>
-    <string name="remove_all">Poista kaikki</string>
-    <string name="remove_selected">Poista valitut</string>
-    <string name="clear_queue">Tyhjennä jono</string>
     <string name="enqueue_all">Lisää kaikki jonoon</string>
     <string name="enqueue_selected">Lisää valitut jonoon</string>
     <string name="greek">kreikka</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">kiina yksinkertaistettu</string>
     <string name="chinese_traditional">kiina perinteinen</string>
     <string name="do_you_really_want_to_download_all">Haluatko varmasti ladata kaikki?</string>
-    <string name="add_all_in_playlist">Lisää kaikki soittolistaan</string>
-    <string name="add_in_playlist">Lisää soittolistaan</string>
     <string name="import_playlist">Tuo soittolista</string>
     <string name="lang_ukrainian">ukraina</string>
     <string name="proxy">VÄLITYSPALVELIN</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Näytä jonon kokonaiskesto</string>
     <string name="lang_telugu">telugu</string>
     <string name="media_permission_required_please_grant">Median käyttöoikeus vaaditaan. Myönnä se.</string>
-    <string name="grant_permission">Myönnä käyttöoikeus</string>
     <string name="open_permission_settings">Avaa käyttöoikeusasetukset</string>
-    <string name="show_background_progress_bar">Näytä taustan etenemispalkki</string>
     <string name="background_progress_bar">Taustan etenemispalkki</string>
     <string name="minimized_player">Pienennetty soitin</string>
     <string name="both">Molemmat</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

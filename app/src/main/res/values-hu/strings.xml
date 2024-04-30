@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Alacsony</string>
     <string name="audio_quality_format_unknown">Ismeretlen</string>
     <string name="do_you_really_want_to_delete_download">Biztosan törölni szeretnéd a letöltést?</string>
-    <string name="remove_all">Az összes eltávolítása</string>
-    <string name="remove_selected">Kijelölt elemek eltávolítása</string>
-    <string name="clear_queue">Lejátszási sor törlése</string>
     <string name="enqueue_all">Sorba állítani az összeset</string>
     <string name="enqueue_selected">Sor kiválasztva</string>
     <string name="greek">Görög</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Kínai egyszerűsített</string>
     <string name="chinese_traditional">Hagyományos kínai</string>
     <string name="do_you_really_want_to_download_all">Biztosan le akarod tölteni az összeset?</string>
-    <string name="add_all_in_playlist">Az összes hozzáadása a lejátszási listához</string>
-    <string name="add_in_playlist">Hozzáadás a lejátszási listához</string>
     <string name="import_playlist">Lejátszási lista importálása</string>
     <string name="lang_ukrainian">Ukrán</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Mutassa a sorban állás teljes idejét</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Médiaengedély szükséges, kérjük, add meg.</string>
-    <string name="grant_permission">Engedély megadása</string>
     <string name="open_permission_settings">Nyissa meg az engedélybeállításokat</string>
-    <string name="show_background_progress_bar">Háttér folyamatjelző sáv megjelenítése</string>
     <string name="background_progress_bar">Háttér folyamatjelző sáv</string>
     <string name="minimized_player">Minimalizált lejátszó</string>
     <string name="both">Mindkettő</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

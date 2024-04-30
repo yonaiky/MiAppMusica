@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">낮게</string>
     <string name="audio_quality_format_unknown">알 수 없음</string>
     <string name="do_you_really_want_to_delete_download">정말로 다운로드를 삭제하실건가요?</string>
-    <string name="remove_all">모두 삭제</string>
-    <string name="remove_selected">선택 삭제</string>
-    <string name="clear_queue">대기열 지우기</string>
     <string name="enqueue_all">대기열에 모두 추가</string>
     <string name="enqueue_selected">대기열에 선택 추가</string>
     <string name="greek">그리스어</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">중국어(간체)</string>
     <string name="chinese_traditional">중국어(번체)</string>
     <string name="do_you_really_want_to_download_all">정말로 모든 곡을 다운로드하실 건가요?</string>
-    <string name="add_all_in_playlist">재생목록에 모두 추가</string>
-    <string name="add_in_playlist">재생목록에 추가</string>
     <string name="import_playlist">재생목록 가져오기</string>
     <string name="lang_ukrainian">우크라이나어</string>
     <string name="proxy">프록시</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">재생목록 전체시간 표시</string>
     <string name="lang_telugu">텔루구어</string>
     <string name="media_permission_required_please_grant">미디어 접근 권한이 필요하니, 허용해주세요.</string>
-    <string name="grant_permission">권한 허용</string>
     <string name="open_permission_settings">권한 설정 열기</string>
-    <string name="show_background_progress_bar">백그라운드 진행률 표시줄 표시</string>
     <string name="background_progress_bar">백그라운드 진행률 표시줄</string>
     <string name="minimized_player">플레이어 최소화</string>
     <string name="both">둘다</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

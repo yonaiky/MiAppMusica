@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Низкий</string>
     <string name="audio_quality_format_unknown">Неизвестен</string>
     <string name="do_you_really_want_to_delete_download">Вы действительно хотите удалить загрузку?</string>
-    <string name="remove_all">Удалить всё</string>
-    <string name="remove_selected">Удалить выделенные</string>
-    <string name="clear_queue">Очистить очередь</string>
     <string name="enqueue_all">Добавить все в очередь</string>
     <string name="enqueue_selected">Вставить в очередь выбранные</string>
     <string name="greek">Greek</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chinese Simplified</string>
     <string name="chinese_traditional">Chinese Traditional</string>
     <string name="do_you_really_want_to_download_all">Вы действительно хотите загрузить все?</string>
-    <string name="add_all_in_playlist">Добавить все в плейлист</string>
-    <string name="add_in_playlist">Добавить в плейлист</string>
     <string name="import_playlist">Импортировать плейлист</string>
     <string name="lang_ukrainian">Ukrainian</string>
     <string name="proxy">ПРОКСИ</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Показывать общее время очереди</string>
     <string name="lang_telugu">Телугу (తెలుగు)</string>
     <string name="media_permission_required_please_grant">Необходим доступ к медиа. Пожалуйста, предоставьте его.</string>
-    <string name="grant_permission">Дать разрешение</string>
     <string name="open_permission_settings">Открыть настройки разрешений</string>
-    <string name="show_background_progress_bar">Показать фоновый прогресс бар</string>
     <string name="background_progress_bar">Фоновый прогресс бар</string>
     <string name="minimized_player">Свернутый плеер</string>
     <string name="both">Оба</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Не удалось найти приложение для открытия документов</string>
     <string name="info_not_find_app_create_doc">Не удалось найти приложение для создания документов</string>
     <string name="info_not_find_app_browse_internet">Не удалось найти браузер для выхода в Интернета</string>
-   <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

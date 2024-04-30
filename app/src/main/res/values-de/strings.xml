@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Niedrig</string>
     <string name="audio_quality_format_unknown">Unbekannt</string>
     <string name="do_you_really_want_to_delete_download">Möchtest Du den Download wirklich löschen?</string>
-    <string name="remove_all">Alle entfernen</string>
-    <string name="remove_selected">Ausgewählte entfernen</string>
-    <string name="clear_queue">Warteschlange leeren</string>
     <string name="enqueue_all">Alle in die Warteschlange</string>
     <string name="enqueue_selected">Ausgewählte einreihen</string>
     <string name="greek">Griechisch (Ελληνική)</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chinesisch vereinfacht (汉字)</string>
     <string name="chinese_traditional">Chinesisch traditionell (繁體字)</string>
     <string name="do_you_really_want_to_download_all">Willst du wirklich alle herunterladen?</string>
-    <string name="add_all_in_playlist">Alle zur Wiedergabeliste hinzufügen</string>
-    <string name="add_in_playlist">Zur Wiedergabeliste hinzufügen</string>
     <string name="import_playlist">Wiedergabeliste importieren</string>
     <string name="lang_ukrainian">Ukrainisch (українська)</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Gesamtzeit der Warteschlange anzeigen</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Medienberechtigung erforderlich, bitte erteilen.</string>
-    <string name="grant_permission">Berechtigungen erteilen</string>
     <string name="open_permission_settings">Berechtigungseinstellungen öffnen</string>
-    <string name="show_background_progress_bar">Zeige Fortschrittsbalken im Hintergrund</string>
     <string name="background_progress_bar">Hintergrund-Fortschrittsbalken</string>
     <string name="minimized_player">Minimierter Player</string>
     <string name="both">Beides</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Konnte keine Anwendung zum Öffnen von Dokumenten finden</string>
     <string name="info_not_find_app_create_doc">Konnte keine Anwendung zum Erstellen von Dokumenten finden</string>
     <string name="info_not_find_app_browse_internet">Keine Anwendung zum Surfen im Internet gefunden</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

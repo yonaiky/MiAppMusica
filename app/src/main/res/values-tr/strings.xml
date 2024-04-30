@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Düşük</string>
     <string name="audio_quality_format_unknown">Bilinmeyen</string>
     <string name="do_you_really_want_to_delete_download">İndirilen dosyayı silmek istediğine emin misin?</string>
-    <string name="remove_all">Hepsini sil</string>
-    <string name="remove_selected">Seçilenleri kaldır</string>
-    <string name="clear_queue">Sırayı temizle</string>
     <string name="enqueue_all">Hepsini sıraya ekle</string>
     <string name="enqueue_selected">Seçilenleri sıraya ekle</string>
     <string name="greek">Yunanca (Greek)</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Basitleştirilmiş Çince (Chinese Simplified)</string>
     <string name="chinese_traditional">Geleneksel Çince (Chinese Traditional)</string>
     <string name="do_you_really_want_to_download_all">Tümünü indirmek istediğine emin misin?</string>
-    <string name="add_all_in_playlist">Tümünü oynatma listesine ekle</string>
-    <string name="add_in_playlist">Oynatma listesine ekle</string>
     <string name="import_playlist">Oynatma listesini içe aktar</string>
     <string name="lang_ukrainian">Ukraynaca (Ukrainian)</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Çalma sırasının toplam süresini göster</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Medyaya erişim izni gereklidir, lütfen izin verin.</string>
-    <string name="grant_permission">Erişim izni ver</string>
     <string name="open_permission_settings">İzin ayarlarını aç</string>
-    <string name="show_background_progress_bar">Arka planda ilerleme çubuğunu göster</string>
     <string name="background_progress_bar">Arka plan ilerleme çubuğu</string>
     <string name="minimized_player">Küçültümüş oynatıcı</string>
     <string name="both">Her ikisi de</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Belgeleri açmak için bir uygulama bulunamadı</string>
     <string name="info_not_find_app_create_doc">Belge oluşturmak için bir uygulama bulunamadı</string>
     <string name="info_not_find_app_browse_internet">İnternette gezinmek için bir uygulama bulunamadı</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

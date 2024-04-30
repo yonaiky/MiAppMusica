@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Laag</string>
     <string name="audio_quality_format_unknown">Onbekend</string>
     <string name="do_you_really_want_to_delete_download">Wil je de download echt verwijderen?</string>
-    <string name="remove_all">Alles verwijderen</string>
-    <string name="remove_selected">Verwijder geselecteerde</string>
-    <string name="clear_queue">Wachtrij wissen</string>
     <string name="enqueue_all">Plaats alles in wachtrij</string>
     <string name="enqueue_selected">Plaats geselectie in wachtrij</string>
     <string name="greek">Grieks</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Chinees (vereenvoudigd)</string>
     <string name="chinese_traditional">Chinees (traditioneel)</string>
     <string name="do_you_really_want_to_download_all">Wil je echt alles downloaden?</string>
-    <string name="add_all_in_playlist">Alles toevoegen aan afspeellijst</string>
-    <string name="add_in_playlist">Toevoegen aan afspeellijst</string>
     <string name="import_playlist">Afspeellijst importeren</string>
     <string name="lang_ukrainian">Oekraïens</string>
     <string name="proxy">PROXY</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Toon totale tijd van de wachtrij</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Mediamachtiging vereist, geef toestemming.</string>
-    <string name="grant_permission">Geef toestemming</string>
     <string name="open_permission_settings">Open toestemmingsinstellingen</string>
-    <string name="show_background_progress_bar">Achtergrondvoortgangsbalk weergeven</string>
     <string name="background_progress_bar">Achtergrondvoortgangsbalk</string>
     <string name="minimized_player">Geminimaliseerde speler</string>
     <string name="both">Beide</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>

@@ -257,9 +257,6 @@
     <string name="audio_quality_format_low">Низак</string>
     <string name="audio_quality_format_unknown">Непознат</string>
     <string name="do_you_really_want_to_delete_download">Да ли сте сигурни да желите да обришете преузимање?</string>
-    <string name="remove_all">Уклони све</string>
-    <string name="remove_selected">Уклони изабрано</string>
-    <string name="clear_queue">Обриши ред</string>
     <string name="enqueue_all">Стави све у ред</string>
     <string name="enqueue_selected">Ред изабран</string>
     <string name="greek">Грчки</string>
@@ -285,8 +282,6 @@
     <string name="chinese_simplified">Кинески поједностављени</string>
     <string name="chinese_traditional">Кинески традиционални</string>
     <string name="do_you_really_want_to_download_all">Да ли заиста желите да преузмете све?</string>
-    <string name="add_all_in_playlist">Додајте све на листу за репродукцију</string>
-    <string name="add_in_playlist">Додајте на листу за репродукцију</string>
     <string name="import_playlist">Увези плејлисту</string>
     <string name="lang_ukrainian">Украјински</string>
     <string name="proxy">Прокси</string>
@@ -414,9 +409,7 @@
     <string name="show_total_time_of_queue">Прикажи укупно време реда чекања</string>
     <string name="lang_telugu">Телугу</string>
     <string name="media_permission_required_please_grant">Потребна је медијска дозвола, молим вас дајте.</string>
-    <string name="grant_permission">Дајте дозволу</string>
     <string name="open_permission_settings">Отворите подешавања дозвола</string>
-    <string name="show_background_progress_bar">Прикажи позадинску траку напретка</string>
     <string name="background_progress_bar">Позадинска трака напретка</string>
     <string name="minimized_player">Умањени плејер</string>
     <string name="both">Оба</string>
@@ -473,8 +466,6 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="item_size">"Item size: "</string>
-    <string name="sort_by">Sort by</string>
     <string name="show_floating_icon">Show floating icon</string>
     <string name="show_equalizer">Show equalizer</string>
     <string name="theme_pure_black">Pure Black</string>
