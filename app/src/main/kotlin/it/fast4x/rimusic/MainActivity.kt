@@ -287,9 +287,8 @@ class MainActivity :
 
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class,
-        ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
-        ExperimentalComposeUiApi::class
+    @OptIn(ExperimentalTextApi::class,
+        ExperimentalFoundationApi::class, ExperimentalAnimationApi::class
     )
     fun startApp() {
 
