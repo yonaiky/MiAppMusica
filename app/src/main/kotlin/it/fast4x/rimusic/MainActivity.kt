@@ -281,8 +281,8 @@ class MainActivity :
         onNewIntent(intent)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        Objects.requireNonNull(sensorManager)!!
-            .registerListener(sensorListener, sensorManager!!
+        Objects.requireNonNull(sensorManager)
+            ?.registerListener(sensorListener, sensorManager!!
                 .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
 
     }
@@ -886,7 +886,7 @@ class MainActivity :
                     val browseId = "VL$playlistId"
 
                     if (playlistId.startsWith("OLAK5uy_")) {
-                        Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let {
+                        Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
                             it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
                                 albumRoute.ensureGlobal(browseId)
                             }
