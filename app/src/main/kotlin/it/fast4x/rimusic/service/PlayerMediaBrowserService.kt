@@ -415,11 +415,11 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             val data = mediaId?.split('/') ?: return
             var index = 0
 
-            //println("RiMusicMediaBrowser data $data ")
+            println("RiMusicMediaBrowser mediaId ${mediaId} data $data ")
 
             coroutineScope.launch {
                 val mediaItems = when (data.getOrNull(0)) {
-                    MediaId.shuffle -> lastSongs
+                    MediaId.shuffle -> lastSongs.shuffled()
 
                     MediaId.songs ->  data
                         .getOrNull(1)
@@ -431,7 +431,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.favorites -> Database
                         .favorites()
                         .first()
-                        .shuffled()
+                        //.shuffled()
 
                     MediaId.offline -> Database
                         .songsWithContentLength()
@@ -442,12 +442,12 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                             } ?: false
                         }
                         .map(SongWithContentLength::song)
-                        .shuffled()
+                        //.shuffled()
 
                     MediaId.ondevice -> Database
                         .songsOnDevice()
                         .first()
-                        .shuffled()
+                        //.shuffled()
 
                     MediaId.downloaded -> {
                         val downloads = DownloadUtil.downloads.value
@@ -471,7 +471,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.let(Database::playlistWithSongs)
                         ?.first()
                         ?.songs
-                        ?.shuffled()
+                        //?.shuffled()
 
                     MediaId.albums -> data
                         .getOrNull(1)
