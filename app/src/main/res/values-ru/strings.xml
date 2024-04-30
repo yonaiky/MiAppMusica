@@ -95,7 +95,7 @@
     <string name="history_is_empty">История пуста</string>
     <string name="service_lifetime">СРОК СЛУЖБЫ</string>
     <string name="battery_optimizations_applied">Если включена экономия батареи, уведомление плеера может внезапно исчезнуть.</string>
-    <string name="is_android12">Андроид 12+: Обезательно отключите экономию батареи, прежде чем включять опцию \"Инвинцибле сервице\"!</string>
+    <string name="is_android12">Андроид 12+: Обязательно отключите экономию батареи, прежде чем включать опцию \"Невидимый сервис\".</string>
     <string name="ignore_battery_optimizations">Игнор. экономии батареи</string>
     <string name="already_unrestricted">Уже неограничено</string>
     <string name="disable_background_restrictions">Отключить ограничения на фоне</string>
@@ -455,9 +455,9 @@
     <string name="sorry_tips_are_not_available">К сожалению, на данный момент рекомендации недоступны.</string>
     <string name="library_collections">Коллекции</string>
     <string name="info_show_hide_hidden_songs">Показать/скрыть скрытые песни</string>
-    <string name="info_shuffle">Shuffle</string>
+    <string name="info_shuffle">Перемешать</string>
     <string name="info_includes_excludes_songs_on_the_device">Включить/исключить песни на устройстве</string>
-    <string name="info_enqueue_songs">В очередь</string>
+    <string name="info_enqueue_songs">Добавить песни в очередь</string>
     <string name="info_download_all_songs">Скачать все песни</string>
     <string name="info_remove_all_downloaded_songs">Удалить все скачанные песни</string>
     <string name="info_start_radio">Включить радио</string>
@@ -466,7 +466,7 @@
     <string name="info_smart_recommendation">Умные рекомендации</string>
     <string name="info_clean_cached_congs">Очистить кэш песен</string>
     <string name="info_pin_unpin_playlist">Закрепить/Открепить плейлист</string>
-    <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
+    <string name="info_lock_unlock_reorder_songs">Блокировать/разблокировать изменение порядка песен</string>
     <string name="info_add_in_playlist">Добавить в плейлист</string>
     <string name="info_not_find_application_audio">Не удалось найти приложение эквалайзера</string>
     <string name="info_error">Ошибка</string>
