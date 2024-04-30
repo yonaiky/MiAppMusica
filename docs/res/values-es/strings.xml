@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
-    <string name="beautiful_player">A beautiful player.</string>
-    <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
-    <string name="many_effects">Many effects.</string>
-    <string name="visualizer_preview_timeline">Visualizer, preview, timeline, play button, apply the effects you prefer..</string>
-    <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic is multilingual, modern, powerful, attractive, beautiful and is translated into various languages by project collaborators.</string>
-    <string name="listen_to_your_favourite_music">Listen to your favorite music</string>
-    <string name="download_rimusic_now">Download RiMusic Now.</string>
-    <string name="repository">Repository</string>
-    <string name="releases">Releases</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="opensource_multilingual_application">Una aplicación para Android de código abierto y multilingüe para reproducir música de YouTube Music</string>
+    <string name="your_library">Tu biblioteca.</string>
+    <string name="organized_in_one_place">Todo organizado en un solo lugar: canciones favoritas, canciones descargadas, canciones escuchadas y todas tus listas de reproducción.</string>
+    <string name="beautiful_player">Un reproductor precioso.</string>
+    <string name="listen_songs_sing_lyrics">Escucha las canciones, canta con las letras y traduce las palabras con el traductor integrado.</string>
+    <string name="many_effects">Muchos efectos.</string>
+    <string name="visualizer_preview_timeline">Visualizador, vista previa, línea de progreso y botón de reproducción; aplica los efectos que prefieras.</string>
+    <string name="modern">Moderno.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">RiMusic es multilingüe, moderno, potente, atractivo, bonito y está traducido a varios idiomas por los colaboradores del proyecto.</string>
+    <string name="listen_to_your_favourite_music">Escucha tu música favorita</string>
+    <string name="download_rimusic_now">Descarga RiMusic ahora.</string>
+    <string name="repository">Repositorio</string>
+    <string name="releases">Lanzamientos</string>
+    <string name="issue_tracker">Registro de propuestas</string>
+    <string name="custom_version">Versión personalizada</string>
 </resources>
