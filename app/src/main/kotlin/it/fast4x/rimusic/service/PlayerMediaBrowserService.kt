@@ -415,7 +415,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             val data = mediaId?.split('/') ?: return
             var index = 0
 
-            println("RiMusicMediaBrowser mediaId ${mediaId} data $data ")
+            //println("RiMusicMediaBrowser mediaId ${mediaId} data $data ")
 
             coroutineScope.launch {
                 val mediaItems = when (data.getOrNull(0)) {
