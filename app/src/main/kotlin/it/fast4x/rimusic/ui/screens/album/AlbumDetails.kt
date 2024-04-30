@@ -812,12 +812,11 @@ fun AlbumDetails(
 
                     item(key = "alternateVersionsTitle") {
                         BasicText(
-                            text = "Alternative versions",
+                            text = stringResource(R.string.album_alternative_versions),
                             style = typography.m.semiBold,
                             maxLines = 1,
                             modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 16.dp)
+                                .padding(all = 16.dp)
 
                         )
 

@@ -412,7 +412,7 @@ fun ArtistOverview(
                                         onClick = {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
-                                                listMediaItems,
+                                                listMediaItems.distinct(),
                                                 index
                                             )
                                             /*
