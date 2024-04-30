@@ -451,7 +451,7 @@
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Näytä tilastoja navigointipalkissa</string>
     <string name="settings">Asetukset</string>
-    <string name="page_not_been_loaded">Sivua ei ole ladattu oikein, yritä päivittää sivu.</string>
+    <string name="page_not_been_loaded">Sivu ei latautunut oikein, yritä päivittää sivu.</string>
     <string name="sorry_tips_are_not_available">Valitettavasti vinkkejä ei ole saatavilla.</string>
     <string name="library_collections">Kokoelmat</string>
     <string name="info_show_hide_hidden_songs">Näytä/piilota piilotetut kappaleet</string>
