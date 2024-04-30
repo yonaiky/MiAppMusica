@@ -283,11 +283,11 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val query = navBackStackEntry.arguments?.getString("query") ?: ""
 
-                SearchResultScreen(
-                    navController = navController,
-                    query = query,
-                    onSearchAgain = {}
-                )
+            SearchResultScreen(
+                navController = navController,
+                query = query,
+                onSearchAgain = {}
+            )
         }
 
         composable(
@@ -301,10 +301,10 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val index = navBackStackEntry.arguments?.getInt("index") ?: 0
 
-                BuiltInPlaylistScreen(
-                    navController = navController,
-                    builtInPlaylist = BuiltInPlaylist.entries[index],
-                )
+            BuiltInPlaylistScreen(
+                navController = navController,
+                builtInPlaylist = BuiltInPlaylist.entries[index],
+            )
         }
 
         composable(
@@ -318,11 +318,11 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getLong("id") ?: 0L
 
-                LocalPlaylistScreen(
-                    navController = navController,
-                    playlistId = id,
-                    //onDelete = popDestination
-                )
+            LocalPlaylistScreen(
+                navController = navController,
+                playlistId = id,
+                //onDelete = popDestination
+            )
         }
 
         composable(

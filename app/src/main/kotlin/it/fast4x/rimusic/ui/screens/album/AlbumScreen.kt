@@ -261,13 +261,14 @@ fun AlbumScreen(
                     navController.navigate(NavRoutes.home.name)
                 },
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                    Item(1, stringResource(R.string.other_versions), R.drawable.alternative_version)
+                    Item(0,
+                        stringResource(R.string.album_and_alternative_versions), R.drawable.album)
+                    //Item(1, stringResource(R.string.other_versions), R.drawable.alternative_version)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> AlbumSongs(
+                        0 -> AlbumDetails(
                             navController = navController,
                             browseId = browseId,
                             headerContent = headerContent,
