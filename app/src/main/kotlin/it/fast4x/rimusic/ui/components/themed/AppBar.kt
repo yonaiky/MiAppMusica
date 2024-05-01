@@ -40,8 +40,10 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.getCurrentRoute
+import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,9 +100,9 @@ fun appBar(
                 BasicText(
                     text = "Music",
                     style = TextStyle(
-                        fontSize = typography.xxl.semiBold.fontSize,
-                        fontWeight = typography.xxxl.semiBold.fontWeight,
-                        fontFamily = typography.xxl.semiBold.fontFamily,
+                        fontSize = typography.xxxl.semiBold.fontSize,
+                        //fontWeight = typography.xxl.semiBold.fontWeight,
+                        fontFamily = typography.xxxl.semiBold.fontFamily,
                         color = colorPalette.text
                     ),
                     modifier = Modifier
