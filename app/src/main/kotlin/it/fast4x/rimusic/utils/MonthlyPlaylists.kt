@@ -39,7 +39,7 @@ fun monthlyPLaylists(playlist: String? = ""): State<List<PlaylistWithSongs?>?> {
 @Composable
 fun CreateMonthlyPlaylist() //: State<PlaylistWithSongs?>
 {
-    val ym = getCalculatedMonths(3)
+    val ym = getCalculatedMonths(1)
     val y = ym?.substring(0,4)?.toLong()
     val m = ym?.substring(5,7)?.toLong()
     println("mediaItem ym $ym y $y m $m")
