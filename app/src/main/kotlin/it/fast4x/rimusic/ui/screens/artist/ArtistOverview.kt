@@ -524,12 +524,19 @@ fun ArtistOverview(
                     youtubeArtistPage.description?.let { description ->
                         val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
 
+                        BasicText(
+                            text = stringResource(R.string.information),
+                            style = typography.m.semiBold.align(TextAlign.Start),
+                            modifier = sectionTextModifier
+                                .fillMaxWidth()
+                        )
+
                         Row(
                             modifier = Modifier
-                                .padding(top = 16.dp)
+                                //.padding(top = 16.dp)
                                 .padding(vertical = 16.dp, horizontal = 8.dp)
                                 //.padding(endPaddingValues)
-                                .padding(end = Dimensions.bottomSpacer)
+                                //.padding(end = Dimensions.bottomSpacer)
                         ) {
                             IconButton(
                                 icon = R.drawable.translate,
@@ -587,7 +594,7 @@ fun ArtistOverview(
 
                             BasicText(
                                 text = translatedText,
-                                style = typography.xxs.secondary,
+                                style = typography.xxs.secondary.align(TextAlign.Justify),
                                 modifier = Modifier
                                     .padding(horizontal = 8.dp)
                                     .weight(1f)
@@ -605,13 +612,14 @@ fun ArtistOverview(
                         if (attributionsIndex != -1) {
                             BasicText(
                                 text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography.xxs.color(colorPalette.textDisabled).align(TextAlign.End),
+                                style = typography.xxs.color(colorPalette.textDisabled).align(TextAlign.Start),
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(bottom = 16.dp)
-                                    .padding(endPaddingValues)
+                                //.padding(endPaddingValues)
                             )
                         }
+
                     }
                 } else {
                     ShimmerHost {

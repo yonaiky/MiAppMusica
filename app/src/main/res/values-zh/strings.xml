@@ -498,4 +498,5 @@
     <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
     <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
+    <string name="information">Information</string>
 </resources>
