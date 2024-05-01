@@ -10,6 +10,7 @@ sourceSets.all {
 
 dependencies {
     implementation(libs.kotlin.coroutines)
+    implementation(projects.ktorClientBrotli)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)

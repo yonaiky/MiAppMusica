@@ -41,7 +41,6 @@ fun CreateMonthlyPlaylist() {
     val ym = getCalculatedMonths(1)
     val y = ym?.substring(0,4)?.toLong()
     val m = ym?.substring(5,7)?.toLong()
-    println("mediaItem ym $ym y $y m $m")
 
     val monthlyPlaylist = remember {
         Database.playlistWithSongs("${MONTHLY_PREFIX}${ym}")

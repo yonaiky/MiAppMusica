@@ -147,9 +147,6 @@ fun AlbumDetails(
     var album by persist<Album?>("album/$browseId")
     val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
 
-    println("mediaItem otherversions ${albumPage?.otherVersions}")
-
-
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect { songs = it }
     }

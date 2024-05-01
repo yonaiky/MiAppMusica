@@ -13,7 +13,6 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.utils.from
-import it.fast4x.lrclib.utils.runCatchingCancellable
 
 suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
     val response = client.post(browse) {

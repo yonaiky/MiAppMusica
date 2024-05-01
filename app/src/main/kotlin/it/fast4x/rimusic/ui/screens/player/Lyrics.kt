@@ -290,7 +290,7 @@ fun Lyrics(
 
         if (isPicking && isShowingSynchronizedLyrics) {
             var loading by remember { mutableStateOf(true) }
-            //if (loading)
+            if (loading)
                 DefaultDialog(
                     onDismiss = {
                         isPicking = false
@@ -302,7 +302,7 @@ fun Lyrics(
 
                     LaunchedEffect(Unit) {
                         val mediaMetadata = mediaMetadataProvider()
-
+                        println("mediaItem artist ${mediaMetadata.artist} title ${mediaMetadata.title} ")
                         LrcLib.lyrics(
                             artist = mediaMetadata.artist?.toString().orEmpty(),
                             title = mediaMetadata.title?.toString().orEmpty()
@@ -312,6 +312,7 @@ fun Lyrics(
                             loading = false
                             error = false
                         }?.onFailure {
+                            println("mediaItem error ${it.message}")
                             loading = false
                             error = true
                         } ?: run { loading = false }
