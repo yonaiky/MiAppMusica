@@ -482,4 +482,21 @@ CC-BY-SA 3.0</string>
     <string name="info_wait_it_may_take_a_few_minutes">Wait, it may take a few minutes...</string>
     <string name="album_and_alternative_versions">Album and alternative versions</string>
     <string name="album_alternative_versions">Alternative versions</string>
+    <string name="monthly_playlists">Monthly playlists</string>
+    <string name="month_january_s">January %s</string>
+    <string name="month_february_s">February %s</string>
+    <string name="month_march_s">March %s</string>
+    <string name="month_april_s">April %s</string>
+    <string name="month_may_s">May %s</string>
+    <string name="month_june_s">June %s</string>
+    <string name="month_july_s">July %s</string>
+    <string name="month_august_s">August %s</string>
+    <string name="month_september_s">September %s</string>
+    <string name="month_october_s">October %s</string>
+    <string name="month_november_s">November %s</string>
+    <string name="month_december_s">December %s</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumbering a monthly playlist</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
+    <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
 </resources>

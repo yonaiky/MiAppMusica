@@ -54,6 +54,7 @@ fun Title(
                 textAlign = TextAlign.Start
             ),
             modifier = Modifier.weight(1f)
+
         )
 
         if (onClick != null) {

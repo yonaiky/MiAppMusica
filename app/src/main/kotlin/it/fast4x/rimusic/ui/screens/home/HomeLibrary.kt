@@ -87,8 +87,11 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.CreateMonthlyPlaylist
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.getCalculatedMonths
 import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
@@ -101,6 +104,7 @@ import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
@@ -278,6 +282,10 @@ fun HomeLibrary(
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     var showPlaylistsList by rememberPreference(showPlaylistsListKey, true)
     var showPlaylistsGeneral by rememberPreference(showPlaylistsGeneralKey, true)
+    var showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+
+    //println("mediaItem ${getCalculatedMonths(0)} ${getCalculatedMonths(1)}")
+    CreateMonthlyPlaylist()
 
     Box(
         modifier = Modifier
@@ -425,7 +433,9 @@ fun HomeLibrary(
                 Title(
                     title = stringResource(R.string.library_collections),
                     onClick = { showBuiltinPlaylists = !showBuiltinPlaylists },
-                    icon = if (showBuiltinPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
+                    icon = if (showBuiltinPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward,
+                    modifier = Modifier
+                        .background(colorPalette.background2)
                 )
             }
 
@@ -518,13 +528,45 @@ fun HomeLibrary(
             }
             /*    */
 
+
             if (showPlaylists) {
+
+                item(
+                    key = "headerMonthlyPlaylists",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }) {
+                    Title(
+                        title = stringResource(R.string.monthly_playlists),
+                        onClick = { showMonthlyPlaylists = !showMonthlyPlaylists },
+                        icon = if (showMonthlyPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward,
+                        modifier = Modifier
+                            .background(colorPalette.background2)
+                    )
+                }
+
+                if (showMonthlyPlaylists) {
+                    items(items = items.filter {
+                        it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                    }, key = { "M${it.playlist.id}" }) { playlistPreview ->
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                                .animateItemPlacement()
+                                .fillMaxSize()
+                        )
+                    }
+                }
 
                 item(key = "titlePlaylistsGeneral", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
                     Title(
                         title = stringResource(R.string.playlists),
                         onClick = { showPlaylistsGeneral = !showPlaylistsGeneral },
-                        icon = if (showPlaylistsGeneral) R.drawable.arrow_down else R.drawable.arrow_forward
+                        icon = if (showPlaylistsGeneral) R.drawable.arrow_down else R.drawable.arrow_forward,
+                        modifier = Modifier.background(colorPalette.background2)
                     )
                 }
 
@@ -600,7 +642,8 @@ fun HomeLibrary(
                                     it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
                                 }.size
                             })", onClick = { showPinnedPlaylists = !showPinnedPlaylists },
-                            icon = if (showPinnedPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward
+                            icon = if (showPinnedPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward,
+                            modifier = Modifier.background(colorPalette.background1)
                         )
                     }
                     /*
@@ -648,7 +691,8 @@ fun HomeLibrary(
                                 !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
                             }.size
                         })", onClick = { showPlaylistsList = !showPlaylistsList },
-                        icon = if (showPlaylistsList) R.drawable.arrow_down else R.drawable.arrow_forward
+                        icon = if (showPlaylistsList) R.drawable.arrow_down else R.drawable.arrow_forward,
+                        modifier = Modifier.background(colorPalette.background1)
                     )
                 }
                 if (showPlaylistsList) {
@@ -717,7 +761,8 @@ fun HomeLibrary(
                     }
 
                     items(items = items.filter {
-                        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
+                        !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
                     }, key = { it.playlist.id }) { playlistPreview ->
                         PlaylistItem(
                             playlist = playlistPreview,

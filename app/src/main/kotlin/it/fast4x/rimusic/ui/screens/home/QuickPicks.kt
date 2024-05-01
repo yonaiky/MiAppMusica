@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -80,6 +81,8 @@ import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.PlaylistWithSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
@@ -113,6 +116,7 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.monthlyPLaylists
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -120,6 +124,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -171,6 +176,12 @@ fun QuickPicks(
 
     var preferitesArtists by persistList<Artist>("home/artists")
 
+    //val localMonthlyPlaylists = monthlyPLaylists()
+    var localMonthlyPlaylists by persistList<PlaylistPreview>("home/monthlyPlaylists")
+    LaunchedEffect(Unit) {
+        Database.monthlyPlaylistsPreview("").collect{ localMonthlyPlaylists = it }
+    }
+
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -183,6 +194,7 @@ fun QuickPicks(
     val showNewAlbumsArtists by rememberPreference(showNewAlbumsArtistsKey, true)
     val showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
     val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
+    val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
@@ -794,6 +806,34 @@ fun QuickPicks(
                         }
                     }
 
+                if (showMonthlyPlaylistInQuickPicks)
+                    localMonthlyPlaylists.let { playlists ->
+                        BasicText(
+                            text = stringResource(R.string.monthly_playlists),
+                            style = typography.m.semiBold,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 24.dp, bottom = 8.dp)
+                        )
+
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = playlists,
+                                key = {it.playlist.id }
+                            ) { playlist ->
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizeDp = playlistThumbnailSizeDp,
+                                    thumbnailSizePx = playlistThumbnailSizePx,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
+                                        .animateItemPlacement()
+                                        .fillMaxSize()
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 

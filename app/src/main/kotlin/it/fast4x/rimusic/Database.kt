@@ -59,6 +59,7 @@ import it.fast4x.rimusic.models.SortedSongPlaylistMap
 import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import kotlin.jvm.Throws
 import kotlinx.coroutines.flow.Flow
 
@@ -175,6 +176,13 @@ interface Database {
             "(:to - Event.timestamp) <= :from GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun songsMostPlayedByPeriod(from: Long, to: Long, limit:Long = Long.MAX_VALUE): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE " +
+            "CAST(strftime('%m',timestamp / 1000,'unixepoch') AS INTEGER) = :month AND CAST(strftime('%Y',timestamp / 1000,'unixepoch') as INTEGER) = :year " +
+            "GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsMostPlayedByYearMonth(year: Long, month: Long, limit:Long = Long.MAX_VALUE): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
@@ -639,6 +647,18 @@ interface Database {
     @Transaction
     @Query("SELECT * FROM Playlist WHERE id = :id")
     fun playlistWithSongs(id: Long): Flow<PlaylistWithSongs?>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE name = :name")
+    fun playlistWithSongs(name: String): Flow<PlaylistWithSongs?>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
+    fun monthlyPlaylists(name: String?): Flow<List<PlaylistWithSongs?>>
+
+    @Transaction
+    @Query("SELECT id, name, browseId, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
+    fun monthlyPlaylistsPreview(name: String?): Flow<List<PlaylistPreview>>
 
     @RewriteQueriesToDropUnusedColumns
     @Transaction

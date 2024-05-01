@@ -134,11 +134,13 @@ import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.LeftAction
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -149,6 +151,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
@@ -513,7 +516,7 @@ fun LocalPlaylistSongs(
                 isExporting = false
             },
             title = stringResource(R.string.enter_the_playlist_name),
-            value = playlistPreview?.playlist?.name ?: "",
+            value = playlistPreview?.playlist?.name?.let { cleanPrefix(it) } ?: "",
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
                 if (isRenaming) {
@@ -538,6 +541,9 @@ fun LocalPlaylistSongs(
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+
+    val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false
+
 
     Box(
         modifier = Modifier
@@ -570,8 +576,13 @@ fun LocalPlaylistSongs(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+
                     HeaderWithIcon(
-                        title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
+                        //title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
+                        title = playlistPreview?.playlist?.name?.let {
+                            if (playlistNotMonthlyType) cleanPrefix(it)
+                            else getTitleMonthlyPlaylist(cleanPrefix(it))
+                        } ?: "Unknown",
                         iconId = R.drawable.playlist,
                         enabled = true,
                         showIcon = false,
@@ -704,26 +715,27 @@ fun LocalPlaylistSongs(
                         .fillMaxWidth()
                 ) {
 
-                    HeaderIconButton(
-                        icon = R.drawable.pin,
-                        enabled = playlistSongs.isNotEmpty(),
-                        color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
-                            colorPalette.text else colorPalette.textDisabled,
-                        onClick = {},
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    query {
-                                        if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
-                                            Database.unPinPlaylist(playlistId) else
-                                            Database.pinPlaylist(playlistId)
+                    if (playlistNotMonthlyType)
+                        HeaderIconButton(
+                            icon = R.drawable.pin,
+                            enabled = playlistSongs.isNotEmpty(),
+                            color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        query {
+                                            if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                                Database.unPinPlaylist(playlistId) else
+                                                Database.pinPlaylist(playlistId)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_pin_unpin_playlist))
                                     }
-                                },
-                                onLongClick = {
-                                    SmartToast(context.getString(R.string.info_pin_unpin_playlist))
-                                }
-                            )
-                    )
+                                )
+                        )
 
                     if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending)
                         HeaderIconButton(
@@ -737,7 +749,8 @@ fun LocalPlaylistSongs(
                                         if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
                                             isReorderDisabled = !isReorderDisabled
                                         } else {
-                                            SmartToast("Reorder is possible only in ascending sort",
+                                            SmartToast(
+                                                context.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
                                                 type = PopupType.Warning)
                                         }
                                     },
@@ -950,7 +963,10 @@ fun LocalPlaylistSongs(
                                                 }
                                         },
                                         onRename = {
-                                            isRenaming = true
+                                            if (playlistNotMonthlyType)
+                                                isRenaming = true
+                                            else
+                                                SmartToast(context.getString(R.string.info_cannot_rename_a_monthly_playlist))
                                         },
                                         onAddToPlaylist = { playlistPreview ->
                                             position =
@@ -992,10 +1008,16 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         onRenumberPositions = {
-                                            isRenumbering = true
+                                            if (playlistNotMonthlyType)
+                                                isRenumbering = true
+                                            else
+                                                SmartToast(context.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
                                         },
                                         onDelete = {
-                                            isDeleting = true
+                                            if (playlistNotMonthlyType)
+                                                isDeleting = true
+                                            else
+                                                SmartToast(context.getString(R.string.info_cannot_delete_a_monthly_playlist))
                                         },
                                         showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                         onListenToYT = {

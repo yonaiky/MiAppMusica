@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.pm.PackageManager
@@ -35,6 +36,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
+import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,10 +50,19 @@ import java.net.InetSocketAddress
 import java.net.Proxy
 import java.text.SimpleDateFormat
 import java.time.Duration
+import java.util.Calendar
 import java.util.Date
 import java.util.Formatter
+import java.util.GregorianCalendar
 import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
+
+
+fun cleanPrefix(text: String): String {
+    var cleanText = text.substringAfter(PINNED_PREFIX)
+    cleanText = cleanText.substringAfter(MONTHLY_PREFIX)
+    return cleanText
+}
 
 fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
     try {
@@ -273,6 +284,13 @@ fun TimeToString(timeMs: Int): String {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
+fun getCalculatedMonths( month: Int): String? {
+    val c: Calendar = GregorianCalendar()
+    c.add(Calendar.MONTH, -month)
+    val sdfr = SimpleDateFormat("yyyy-MM")
+    return sdfr.format(c.time).toString()
+}
 
 // NEW RESULT PLAYLIST OR ALBUM PAGE WITH TEMPORARILY WORKING WORKAROUND
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(

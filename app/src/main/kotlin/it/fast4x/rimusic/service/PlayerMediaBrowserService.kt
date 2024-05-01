@@ -27,12 +27,15 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
+import it.fast4x.rimusic.utils.getTitleMonthlyPlaylistFromContext
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
@@ -323,9 +326,12 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.forPlaylist(playlist.id))
                 //.setTitle(playlist.name.substringAfter(PINNED_PREFIX))
-                .setTitle(playlist.name.replace(PINNED_PREFIX,"0:",true))
+                .setTitle(if (playlist.name.startsWith(PINNED_PREFIX)) playlist.name.replace(PINNED_PREFIX,"0:",true) else
+                    if (playlist.name.startsWith(MONTHLY_PREFIX)) playlist.name.replace(
+                        MONTHLY_PREFIX,"1:",true) else playlist.name)
                 .setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
-                .setIconUri(uriFor(if (playlist.name.startsWith(PINNED_PREFIX)) R.drawable.pin else R.drawable.playlist))
+                .setIconUri(uriFor(if (playlist.name.startsWith(PINNED_PREFIX)) R.drawable.pin else
+                    if (playlist.name.startsWith(MONTHLY_PREFIX)) R.drawable.stat_month else R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
@@ -334,10 +340,10 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(mediaId)
-                .setTitle(description.title.toString().substringAfter("0:"))
-                //.setTitle(playlist.name.replace(PINNED_PREFIX,"0:",true))
-                //.setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
-                .setIconUri(uriFor(if (description.title.toString().startsWith("0:")) R.drawable.pin else R.drawable.playlist))
+                .setTitle(if (description.title.toString().startsWith("0:")) description.title.toString().substringAfter("0:") else
+                    if (description.title.toString().startsWith("1:")) getTitleMonthlyPlaylistFromContext(description.title.toString().substringAfter("1:"), this@PlayerMediaBrowserService) else description.title.toString())
+                .setIconUri(uriFor(if (description.title.toString().startsWith("0:")) R.drawable.pin else
+                    if (description.title.toString().startsWith("1:")) R.drawable.stat_month else R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
@@ -365,7 +371,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         )
 
     private inner class SessionCallback @OptIn(UnstableApi::class) constructor(
-       // private val player: Player,
         private val binder: PlayerService.Binder,
         private val cache: Cache
     ) :
@@ -431,7 +436,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.favorites -> Database
                         .favorites()
                         .first()
-                        //.shuffled()
 
                     MediaId.offline -> Database
                         .songsWithContentLength()
@@ -442,12 +446,10 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                             } ?: false
                         }
                         .map(SongWithContentLength::song)
-                        //.shuffled()
 
                     MediaId.ondevice -> Database
                         .songsOnDevice()
                         .first()
-                        //.shuffled()
 
                     MediaId.downloaded -> {
                         val downloads = DownloadUtil.downloads.value
@@ -471,7 +473,6 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.let(Database::playlistWithSongs)
                         ?.first()
                         ?.songs
-                        //?.shuffled()
 
                     MediaId.albums -> data
                         .getOrNull(1)

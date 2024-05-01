@@ -75,6 +75,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
@@ -653,7 +654,8 @@ fun MediaItemGridMenu (
             }
 
             val unpinnedPlaylists = playlistPreviews.filter {
-                !it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
+                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
             }
 
             var isCreatingNewPlaylist by rememberSaveable {

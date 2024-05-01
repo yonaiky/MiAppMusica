@@ -37,7 +37,9 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -233,6 +235,17 @@ fun PlaylistItem(
                         contentScale = ContentScale.Fit
                     )
                 }
+                if (it.startsWith(MONTHLY_PREFIX,0,true)) {
+                    Image(
+                        painter = painterResource(R.drawable.stat_month),
+                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(all = 5.dp),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.Fit
+                    )
+                }
             }
 
 
@@ -262,7 +275,11 @@ fun PlaylistItem(
             if (showName)
                 if (name != null) {
                     BasicText(
-                        text = name.substringAfter(PINNED_PREFIX) ?: "",
+                        //text = name.substringAfter(PINNED_PREFIX) ?: "",
+                        text = if (name.startsWith(PINNED_PREFIX,0,true))
+                            name.substringAfter(PINNED_PREFIX) else
+                            if (name.startsWith(MONTHLY_PREFIX,0,true))
+                                getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else name,
                         style = typography.xs.semiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
