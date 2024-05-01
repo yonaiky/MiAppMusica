@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,6 +71,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SongSortBy
@@ -77,6 +79,7 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
@@ -90,6 +93,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
@@ -120,6 +124,9 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @ExperimentalTextApi
@@ -207,7 +214,9 @@ fun HomeSongs(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    val activity = LocalContext.current as Activity
+    var position by remember {
+        mutableIntStateOf(0)
+    }
 
     Box(
         modifier = Modifier
@@ -320,6 +329,56 @@ fun HomeSongs(
                                 },
                                 onLongClick = {
                                     SmartToast(context.getString(R.string.info_includes_excludes_songs_on_the_device))
+                                }
+                            )
+                    )
+
+                    HeaderIconButton(
+                        icon = R.drawable.ellipsis_horizontal,
+                        color = colorPalette.text,
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    menuState.display {
+                                        PlaylistsItemMenu(
+                                            navController = navController,
+                                            modifier = Modifier.fillMaxHeight(0.4f),
+                                            onDismiss = menuState::hide,
+                                            onAddToPlaylist = { playlistPreview ->
+                                                position =
+                                                    playlistPreview.songCount.minus(1) ?: 0
+                                                if (position > 0) position++ else position = 0
+
+                                                items.forEachIndexed { index, song ->
+                                                    runCatching {
+                                                        Database.insert(song.asMediaItem)
+                                                        Database.insert(
+                                                            SongPlaylistMap(
+                                                                songId = song.asMediaItem.mediaId,
+                                                                playlistId = playlistPreview.playlist.id,
+                                                                position = position + index
+                                                            )
+                                                        )
+                                                    }.onFailure {
+                                                        SmartToast(context.resources.getString(R.string.error))
+                                                    }
+                                                }
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    SmartToast(context.resources.getString(R.string.done), type = PopupType.Success)
+                                                }
+                                            },
+                                            onGoToPlaylist = {
+                                                navController.navigate("${NavRoutes.localPlaylist.name}/$it")
+                                            }
+
+
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_add_in_playlist))
                                 }
                             )
                     )
