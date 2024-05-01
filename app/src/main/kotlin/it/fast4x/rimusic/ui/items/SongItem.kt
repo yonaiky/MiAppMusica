@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -27,9 +28,14 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.favoritesOverlay
+import it.fast4x.rimusic.ui.styling.primaryButton
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
@@ -109,6 +115,7 @@ fun SongItem(
 ) {
     SongItem(
         thumbnailUrl = song.thumbnailUrl?.thumbnail(thumbnailSizePx),
+        totalPlayTimeMs = song.totalPlayTimeMs,
         title = song.title,
         authors = song.artistsText,
         duration = song.durationText,
@@ -127,6 +134,7 @@ fun SongItem(
 @Composable
 fun SongItem(
     thumbnailUrl: String?,
+    totalPlayTimeMs: Long? = 0,
     title: String?,
     authors: String?,
     duration: String?,
@@ -143,6 +151,7 @@ fun SongItem(
 ) {
     SongItem(
         title = title,
+        totalPlayTimeMs = totalPlayTimeMs,
         authors = authors,
         duration = duration,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -257,6 +266,7 @@ fun SongItem(
 @Composable
 fun SongItem(
     thumbnailContent: @Composable BoxScope.() -> Unit,
+    totalPlayTimeMs: Long? = 0,
     title: String?,
     authors: String?,
     duration: String?,
@@ -282,6 +292,28 @@ fun SongItem(
                 .size(thumbnailSizeDp)
         ) {
             thumbnailContent()
+
+            if (totalPlayTimeMs != null) {
+                if (totalPlayTimeMs <= 0 ) {
+                    HeaderIconButton(
+                        onClick = {},
+                        icon = R.drawable.eye_off,
+                        color = colorPalette.favoritesIcon,
+                        iconSize = 32.dp,
+                        modifier = Modifier
+                            .padding(all = 10.dp)
+                    )
+                }
+            }
+            /*
+            BasicText(
+                text = totalPlayTimeMs.toString() ?: "",
+                style = typography.xs.semiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(all = 16.dp)
+            )
+             */
         }
 
         ItemInfoContainer {

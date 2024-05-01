@@ -552,6 +552,7 @@ fun HomeSongs(
                             query {
                                 menuState.hide()
                                 binder?.cache?.removeResource(song.id)
+                                binder?.downloadCache?.removeResource(song.id)
                                 Database.incrementTotalPlayTimeMs(song.id, -song.totalPlayTimeMs)
                             }
                         }
