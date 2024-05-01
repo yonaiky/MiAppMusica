@@ -58,6 +58,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -79,6 +81,7 @@ import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Song
@@ -102,17 +105,20 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.RightActions
+import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
@@ -125,6 +131,7 @@ import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.absoluteValue
 
 
 @ExperimentalTextApi
@@ -660,16 +667,30 @@ fun Queue(
 
             }
 
-
+            val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
+            val positionAndDuration by binder.player.positionAndDurationState()
             Box(
                 modifier = Modifier
                     //.clip(shape)
                     .clickable(onClick = layoutState::collapseSoft)
                     .background(colorPalette.background1)
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                    //.padding(horizontal = 8.dp)
                     .padding(horizontalBottomPaddingValues)
                     .height(60.dp) //bottom bar queue
+                    .drawBehind {
+                        if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
+                            drawRect(
+                                color = colorPalette.favoritesOverlay,
+                                topLeft = Offset.Zero,
+                                size = Size(
+                                    width = positionAndDuration.first.toFloat() /
+                                            positionAndDuration.second.absoluteValue * size.width,
+                                    height = size.maxDimension
+                                )
+                            )
+                        }
+                    }
             ) {
                 if (!showButtonPlayerArrow)
                     Image(
