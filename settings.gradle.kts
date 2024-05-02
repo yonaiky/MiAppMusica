@@ -37,9 +37,10 @@ dependencyResolutionManagement {
             version("media3", "1.2.1")
             library("exoplayer", "androidx.media3", "media3-exoplayer").versionRef("media3")
 
-            version("ktor", "2.3.0")
+            version("ktor", "2.3.10")
             library("ktor-client-core", "io.ktor", "ktor-client-core").versionRef("ktor")
-            library("ktor-client-cio", "io.ktor", "ktor-client-okhttp").versionRef("ktor")
+            library("ktor-client-cio", "io.ktor", "ktor-client-cio").versionRef("ktor")
+            library("ktor-client-okhttp", "io.ktor", "ktor-client-okhttp").versionRef("ktor")
             library("ktor-client-content-negotiation", "io.ktor", "ktor-client-content-negotiation").versionRef("ktor")
             library("ktor-client-encoding", "io.ktor", "ktor-client-encoding").versionRef("ktor")
             library("ktor-client-serialization", "io.ktor", "ktor-client-serialization").versionRef("ktor")

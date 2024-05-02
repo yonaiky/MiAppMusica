@@ -1,20 +1,16 @@
 package it.fast4x.lrclib
 
-import it.fast4x.lrclib.models.Track
-import it.fast4x.lrclib.models.bestMatchingFor
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.compression.ContentEncoding
-import io.ktor.client.plugins.compression.brotli
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import it.fast4x.lrclib.models.Track
 import it.fast4x.lrclib.utils.ProxyPreferences
 import it.fast4x.lrclib.utils.runCatchingCancellable
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -24,71 +20,55 @@ import java.net.Proxy
 import kotlin.time.Duration
 
 object LrcLib {
-    val client = HttpClient(OkHttp) {
-        BrowserUserAgent()
-
-        expectSuccess = true
-
-        install(ContentNegotiation) {
-            @OptIn(ExperimentalSerializationApi::class)
-            json(Json {
-                ignoreUnknownKeys = true
-                explicitNulls = false
-                encodeDefaults = true
-            })
-        }
-
-
-        install(ContentEncoding) {
-            brotli()
-        }
-
-
-        ProxyPreferences.preference?.let {
-            engine {
-                proxy = Proxy(
-                    it.proxyMode,
-                    InetSocketAddress(
-                        it.proxyHost,
-                        it.proxyPort
-                    )
-                )
-            }
-        }
-
-        defaultRequest {
-            url("https://lrclib.net")
-        }
-    }
-
-    /*
+    @OptIn(ExperimentalSerializationApi::class)
     private val client by lazy {
         HttpClient(OkHttp) {
+            BrowserUserAgent()
+
+            expectSuccess = true
 
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    }
-                )
+                val feature = Json {
+                    ignoreUnknownKeys = true
+                    explicitNulls = false
+                    encodeDefaults = true
+                }
+
+                json(feature)
+                //json(feature, ContentType.Text.Html)
+                //json(feature, ContentType.Text.Plain)
+            }
+
+            install(ContentEncoding) {
+                gzip()
+                deflate()
+            }
+
+            ProxyPreferences.preference?.let {
+                engine {
+                    proxy = Proxy(
+                        it.proxyMode,
+                        InetSocketAddress(
+                            it.proxyHost,
+                            it.proxyPort
+                        )
+                    )
+                }
             }
 
             defaultRequest {
                 url("https://lrclib.net")
             }
-
-            expectSuccess = true
         }
     }
-     */
+
 
     private suspend fun queryLyrics(artist: String, title: String, album: String? = null) =
         client.get("/api/search") {
             parameter("track_name", title)
             parameter("artist_name", artist)
             if (album != null) parameter("album_name", album)
-        }.body<List<Track>>().filter { it.syncedLyrics != null }
+        }.body<List<Track>>() //.filter { it.syncedLyrics != null }
 
     suspend fun lyrics(
         artist: String,
@@ -97,8 +77,9 @@ object LrcLib {
         album: String? = null
     ) = runCatchingCancellable {
         val tracks = queryLyrics(artist, title, album)
-
-        tracks.bestMatchingFor(title, duration)?.syncedLyrics?.let(LrcLib::Lyrics)
+        //println("mediaItem get queryLyrics tracks ${tracks}")
+        //tracks.bestMatchingFor(title, duration)?.syncedLyrics?.let(LrcLib::Lyrics)
+        tracks.first().syncedLyrics?.let(LrcLib::Lyrics)
     }
 
     suspend fun lyrics(artist: String, title: String) = runCatchingCancellable {

@@ -20,6 +20,10 @@ fun SmartToast(
           .backgroundColor(backgroundColor.hashCode())
           .commit()
   }
+    smartToast.config()
+        .messageStyle(Color.White.hashCode(),15f,true)
+        .commit()
+
 
     when(type) {
         PopupType.Info -> if (durationLong == true) smartToast.infoLong(message) else smartToast.info(message)

@@ -40,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -106,9 +107,11 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.verticalFadingEdge
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -137,6 +140,7 @@ fun Lyrics(
         enter = fadeIn(),
         exit = fadeOut(),
     ) {
+        val coroutineScope = rememberCoroutineScope()
         val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
         val context = LocalContext.current
         val menuState = LocalMenuState.current
@@ -213,6 +217,12 @@ fun Lyrics(
                             duration = duration.milliseconds,
                             album = mediaMetadata.albumTitle?.toString()
                         )?.onSuccess {
+                            coroutineScope.launch {
+                                SmartToast(
+                                    context.getString(R.string.info_lyrics_found_on_s).format("LrcLib.net"),
+                                    type = PopupType.Success
+                                )
+                            }
                             isError = false
                             Database.upsert(
                                 Lyrics(
@@ -222,11 +232,24 @@ fun Lyrics(
                                 )
                             )
                         }?.onFailure {
+                            coroutineScope.launch {
+                                SmartToast(
+                                    context.getString(R.string.info_lyrics_not_found_on_s_try_on_s).format("LrcLib.net", "KuGou.com"),
+                                    type = PopupType.Error,
+                                    durationLong = true
+                                )
+                            }
                             KuGou.lyrics(
                                 artist = mediaMetadata.artist?.toString() ?: "",
                                 title = mediaMetadata.title?.toString() ?: "",
                                 duration = duration / 1000
                             )?.onSuccess {
+                                coroutineScope.launch {
+                                    SmartToast(
+                                        context.getString(R.string.info_lyrics_found_on_s).format("KuGou.com"),
+                                        type = PopupType.Success
+                                    )
+                                }
                                 isError = false
                                 Database.upsert(
                                     Lyrics(
@@ -236,6 +259,13 @@ fun Lyrics(
                                     )
                                 )
                             }?.onFailure {
+                                coroutineScope.launch {
+                                    SmartToast(
+                                        context.getString(R.string.info_lyrics_not_found_on_s).format("KuGou.com"),
+                                        type = PopupType.Error,
+                                        durationLong = true
+                                    )
+                                }
                                 isError = true
                             }
                         }
@@ -290,57 +320,53 @@ fun Lyrics(
 
         if (isPicking && isShowingSynchronizedLyrics) {
             var loading by remember { mutableStateOf(true) }
+            val tracks = remember { mutableStateListOf<Track>() }
+            var error by remember { mutableStateOf(false) }
+
+            LaunchedEffect(Unit) {
+                val mediaMetadata = mediaMetadataProvider()
+                LrcLib.lyrics(
+                    artist = mediaMetadata.artist?.toString().orEmpty(),
+                    title = mediaMetadata.title?.toString().orEmpty()
+                )?.onSuccess {
+                    coroutineScope.launch {
+                        SmartToast(
+                            context.getString(R.string.info_lyrics_tracks_found_on_s).format("LrcLib.net"),
+                            type = PopupType.Success
+                        )
+                    }
+                    tracks.clear()
+                    tracks.addAll(it)
+                    loading = false
+                    error = false
+                }?.onFailure {
+                    coroutineScope.launch {
+                        SmartToast(
+                            context.getString(R.string.info_lyrics_tracks_not_found_on_s).format("LrcLib.net"),
+                            type = PopupType.Error,
+                            durationLong = true
+                        )
+                    }
+                    loading = false
+                    error = true
+                } ?: run { loading = false }
+            }
+
             if (loading)
                 DefaultDialog(
                     onDismiss = {
                         isPicking = false
-                    },
-                    //horizontalPadding = 0.dp
+                    }
                 ) {
-                    val tracks = remember { mutableStateListOf<Track>() }
-                    var error by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(Unit) {
-                        val mediaMetadata = mediaMetadataProvider()
-                        println("mediaItem artist ${mediaMetadata.artist} title ${mediaMetadata.title} ")
-                        LrcLib.lyrics(
-                            artist = mediaMetadata.artist?.toString().orEmpty(),
-                            title = mediaMetadata.title?.toString().orEmpty()
-                        )?.onSuccess {
-                            tracks.clear()
-                            tracks.addAll(it)
-                            loading = false
-                            error = false
-                        }?.onFailure {
-                            println("mediaItem error ${it.message}")
-                            loading = false
-                            error = true
-                        } ?: run { loading = false }
-                    }
-
-                    when {
-                        loading -> CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-
-                        error || tracks.isEmpty() -> BasicText(
-                            text = "No lyrics found",
-                            style = typography.s.semiBold.center,
-                            modifier = Modifier
-                                .padding(all = 24.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
-
-                        else ->{
-                            lyrics?.let {
-                                SelectLyricFromTrack(tracks = tracks, mediaId = mediaId , lyrics = it)
-                                isPicking = false
-                            }
-                        }
-
-                    }
+                   CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
+
+            if (tracks.isNotEmpty()) {
+                SelectLyricFromTrack(tracks = tracks, mediaId = mediaId, lyrics = lyrics)
+                isPicking = false
+            }
         }
+
 
 
 
@@ -797,7 +823,7 @@ fun Lyrics(
 fun SelectLyricFromTrack (
     tracks: List<Track>,
     mediaId: String,
-    lyrics: Lyrics
+    lyrics: Lyrics?
 ) {
     val menuState = LocalMenuState.current
 
@@ -823,7 +849,7 @@ fun SelectLyricFromTrack (
                             Database.upsert(
                                 Lyrics(
                                     songId = mediaId,
-                                    fixed = lyrics.fixed,
+                                    fixed = lyrics?.fixed,
                                     synced = it.syncedLyrics.orEmpty()
                                 )
                             )
