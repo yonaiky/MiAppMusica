@@ -93,7 +93,6 @@ fun appBar(
                     modifier = Modifier
                         .size(36.dp)
                         .clickable {
-                            //onHomeClick()
                             if (navController.currentDestination?.route != NavRoutes.home.name)
                                 navController.navigate(NavRoutes.home.name)
                         }
@@ -105,7 +104,6 @@ fun appBar(
                     modifier = Modifier
                         .size(100.dp)
                         .clickable {
-                            //onHomeClick()
                             if (navController.currentDestination?.route != NavRoutes.home.name)
                                 navController.navigate(NavRoutes.home.name)
                         }
