@@ -87,6 +87,10 @@ interface Database {
 
     @Transaction
     @Query("SELECT * FROM Song")
+    fun listAllSongsAsFlow(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM Song")
     fun listAllSongs(): List<Song>
 
     @Transaction

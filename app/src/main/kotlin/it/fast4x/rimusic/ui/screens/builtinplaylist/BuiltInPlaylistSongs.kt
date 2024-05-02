@@ -158,6 +158,8 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.songToggleLike
 import it.fast4x.rimusic.utils.toast
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -246,18 +248,13 @@ fun BuiltInPlaylistSongs(
          when (builtInPlaylist) {
 
              BuiltInPlaylist.Downloaded -> {
-                 /*
-                 DownloadUtil.getDownloadManager(context)
-                 DownloadUtil.getDownloads()
-                 DownloadUtil.downloads.value.keys.toList().let { Database.getSongsList(it) }
-                  */
                  val downloads = DownloadUtil.downloads.value
-                 downloads.keys
-                     .filter {
-                         downloads[it]?.state == Download.STATE_COMPLETED
+                 Database.listAllSongsAsFlow()
+                     .map {
+                         it.filter {song ->
+                            downloads[song.id]?.state == Download.STATE_COMPLETED
+                         }
                      }
-                     .toList()
-                     .let { Database.getSongsList(it) }
              }
 
              BuiltInPlaylist.Favorites -> Database
