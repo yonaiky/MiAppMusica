@@ -31,6 +31,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.enableQuickPicksPageKey
 import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
@@ -60,6 +61,7 @@ fun  QuickPicsSettings() {
     var showNewAlbums by rememberPreference(showNewAlbumsKey, true)
     var showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
     var showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
+    var enableQuickPicksPage by rememberPreference(enableQuickPicksPageKey, true)
     val eventsCount by remember {
         Database.eventsCount().distinctUntilChanged()
     }.collectAsState(initial = 0)
@@ -74,7 +76,7 @@ fun  QuickPicsSettings() {
 
     var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
 
-    var showActionsBar by rememberPreference(showActionsBarKey, true)
+    //var showActionsBar by rememberPreference(showActionsBarKey, true)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
@@ -109,8 +111,17 @@ fun  QuickPicsSettings() {
             onClick = {}
         )
 
-        //SettingsGroupSpacer()
+        SwitchSettingEntry(
+            title = "Enable Quick Picks page",
+            text = "",
+            isChecked = enableQuickPicksPage,
+            onCheckedChange = {
+                enableQuickPicksPage = it
+            }
+        )
 
+        //SettingsGroupSpacer()
+        /*
         SwitchSettingEntry(
             title = stringResource(R.string.show_actions_bar),
             text = "",
@@ -119,6 +130,7 @@ fun  QuickPicsSettings() {
                 showActionsBar = it
             }
         )
+         */
 
         EnumValueSelectorSettingsEntry(
             title = stringResource(R.string.tips),

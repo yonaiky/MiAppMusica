@@ -61,6 +61,7 @@ import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.utils.CheckAvailableNewVersion
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.checkUpdateStateKey
+import it.fast4x.rimusic.utils.enableQuickPicksPageKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.homeScreenTabIndexKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
@@ -97,6 +98,7 @@ fun HomeScreen(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+    val enableQuickPicksPage by rememberPreference(enableQuickPicksPageKey, true)
 
     PersistMapCleanup("home/")
 
@@ -221,7 +223,7 @@ fun HomeScreen(
                         mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                     }
 
-
+            if (!enableQuickPicksPage && tabIndex==0) tabIndex = 1
 
             Scaffold(
                 navController = navController,
@@ -263,7 +265,8 @@ fun HomeScreen(
                     navController.navigate(NavRoutes.search.name)
                 },
                 tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
+                    if (enableQuickPicksPage)
+                        Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(2, stringResource(R.string.artists), R.drawable.artists)
                     Item(3, stringResource(R.string.albums), R.drawable.album)
