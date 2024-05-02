@@ -293,18 +293,21 @@ fun SongItem(
         ) {
             thumbnailContent()
 
+
             if (totalPlayTimeMs != null) {
                 if (totalPlayTimeMs <= 0 ) {
                     HeaderIconButton(
                         onClick = {},
-                        icon = R.drawable.eye_off,
+                        icon = R.drawable.noteslashed,
                         color = colorPalette.favoritesIcon,
-                        iconSize = 32.dp,
+                        iconSize = 12.dp,
                         modifier = Modifier
-                            .padding(all = 10.dp)
+                            .padding(start = 4.dp)
+                            .align(Alignment.BottomStart)
                     )
                 }
             }
+
             /*
             BasicText(
                 text = totalPlayTimeMs.toString() ?: "",
