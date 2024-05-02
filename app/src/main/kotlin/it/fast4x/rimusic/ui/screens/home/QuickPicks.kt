@@ -42,6 +42,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -85,6 +86,7 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.PlaylistWithSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.Popup
@@ -294,6 +296,22 @@ fun QuickPicks(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     //val showActionsBar by rememberPreference(showActionsBarKey, true)
+
+    val downloadedSongs = remember {
+        DownloadUtil.downloads.value.filter {
+            it.value.state == Download.STATE_COMPLETED
+        }.keys.toList()
+    }
+
+    var cachedSongs = remember {
+        binder?.cache?.keys?.toMutableList()
+    }
+    if (cachedSongs != null) {
+        cachedSongs.addAll(downloadedSongs)
+    }
+
+
+
 
     PullToRefreshBox(
         refreshing = refreshing,
@@ -518,11 +536,15 @@ fun QuickPicks(
                             }
                         }
 
-                        //if (!refreshing) {
                         if (related != null) {
                             items(
-                                items = related?.songs?.dropLast(if (trending == null) 0 else 1)
-                                    ?: emptyList(),
+                                items = related?.songs?.filter {
+                                    if (cachedSongs != null) {
+                                        if (cachedSongs.indexOf(it.asMediaItem.mediaId) < 0) true else false
+                                    } else true
+                                }
+                                ?.dropLast(if (trending == null) 0 else 1)
+                                ?: emptyList(),
                                 key = Innertube.SongItem::key
                             ) { song ->
                                 val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
