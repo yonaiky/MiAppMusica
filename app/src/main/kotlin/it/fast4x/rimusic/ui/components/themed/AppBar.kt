@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -97,6 +98,19 @@ fun appBar(
                                 navController.navigate(NavRoutes.home.name)
                         }
                 )
+                Image(
+                    painter = painterResource(R.drawable.app_logo_text),
+                    colorFilter = ColorFilter.tint(Color.White),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clickable {
+                            //onHomeClick()
+                            if (navController.currentDestination?.route != NavRoutes.home.name)
+                                navController.navigate(NavRoutes.home.name)
+                        }
+                )
+                /*
                 BasicText(
                     text = "Music",
                     style = TextStyle(
@@ -112,6 +126,7 @@ fun appBar(
                                 navController.navigate(NavRoutes.home.name)
                         }
                 )
+                 */
             }
         },
         actions = {
