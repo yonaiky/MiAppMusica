@@ -696,7 +696,7 @@ fun AlbumDetails(
                                     text = songs.size.toString() + " "
                                             + stringResource(R.string.songs)
                                             + " - " + formatAsTime(totalPlayTimes),
-                                    style = typography.xxs.medium,
+                                    style = typography.xs.medium,
                                     maxLines = 1,
                                     modifier = Modifier
                                         .padding(all = 5.dp)
@@ -704,7 +704,7 @@ fun AlbumDetails(
                             } else {
                                 BasicText(
                                     text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                    style = typography.xxs.medium,
+                                    style = typography.xs.medium,
                                     maxLines = 1
                                 )
                             }
