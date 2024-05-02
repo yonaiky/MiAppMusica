@@ -302,13 +302,10 @@ fun QuickPicks(
             it.value.state == Download.STATE_COMPLETED
         }.keys.toList()
     }
-
     var cachedSongs = remember {
         binder?.cache?.keys?.toMutableList()
     }
-    if (cachedSongs != null) {
-        cachedSongs.addAll(downloadedSongs)
-    }
+    cachedSongs?.addAll(downloadedSongs)
 
 
 
