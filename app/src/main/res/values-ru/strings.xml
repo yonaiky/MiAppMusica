@@ -482,11 +482,11 @@
     <string name="album_and_alternative_versions">Album and alternative versions</string>
     <string name="album_alternative_versions">Alternative versions</string>
     <string name="monthly_playlists">Monthly playlists</string>
-    <string name="month_january_s">January %s</string>
-    <string name="month_february_s">February %s</string>
-    <string name="month_march_s">March %s</string>
-    <string name="month_april_s">April %s</string>
-    <string name="month_may_s">May %s</string>
+    <string name="month_january_s">Январь %s</string>
+    <string name="month_february_s">Февраль %s</string>
+    <string name="month_march_s">Март %s</string>
+    <string name="month_april_s">Апрель %s</string>
+    <string name="month_may_s">Май %s</string>
     <string name="month_june_s">June %s</string>
     <string name="month_july_s">July %s</string>
     <string name="month_august_s">August %s</string>
