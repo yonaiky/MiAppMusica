@@ -55,7 +55,7 @@
 - **Czech:** thanks to [ikanakova](https://github.com/ikanakova) and [JZITNIK-github](https://github.com/JZITNIK-github)
 - **Danish** thanks to [cultcats](https://crowdin.com/profile/cultcats)
 - **Dutch:** thanks to [BabyBenefactor](https://crowdin.com/profile/BabyBenefactor)
-- **English:** thanks to [Glich440](https://github.com/Glich440) and [fast4x](https://github.com/fast4x)
+- **English:** thanks to [koliwan](https://crowdin.com/profile/koliwan) and [Glich440](https://github.com/Glich440) and [fast4x](https://github.com/fast4x)
 - **Esperanto:** thanks to [kefiiris](https://github.com/kefiiris)
 - **Finnish:** thanks to [rikalaj](https://crowdin.com/profile/rikalaj)
 - **French:** thanks to [NEVARLeVrai](https://github.com/NEVARLeVrai)
