@@ -1,14 +1,24 @@
 package it.fast4x.innertube.requests
 
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.Url
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.BrowseResponse
+import it.fast4x.innertube.models.MusicCarouselShelfRenderer
+import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.utils.from
 
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
         playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
             album.copy(songsPage = playlist.songsPage)
+        }
+        albumPageDetails(BrowseBody(browseId = body.browseId))?.getOrNull()?.let { album ->
+            album.copy(description = album.description, otherInfo = album.otherInfo)
         }
     } ?: album
 }?.map { album ->
@@ -33,34 +43,30 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
     )
 }
 
-/*
-suspend fun Innertube.albumPage(body: BrowseBody): Result<Innertube.PlaylistOrAlbumPage> {
-    return playlistPage(body)?.map { album ->
-        album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
-            playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
-                album.copy(songsPage = playlist.songsPage)
-            }
-        } ?: album
-    }?.map { album ->
-        val albumInfo = Innertube.Info(
-            name = album.title,
-            endpoint = NavigationEndpoint.Endpoint.Browse(
-                browseId = body.browseId,
-                params = body.params
-            )
-        )
+suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
+    val response = client.post(browse) {
+        setBody(body)
+        body.context.apply()
+    }.body<BrowseResponse>()
 
-        album.copy(
-            songsPage = album.songsPage?.copy(
-                items = album.songsPage.items?.map { song ->
-                    song.copy(
-                        authors = song.authors ?: album.authors,
-                        album = albumInfo,
-                        thumbnail = album.thumbnail
-                    )
-                }
-            )
-        )
-    } ?:
+    val musicDetailHeaderRenderer = response
+        .header
+        ?.musicDetailHeaderRenderer
+
+    Innertube.PlaylistOrAlbumPage(
+        title = null,
+        description = musicDetailHeaderRenderer
+            ?.description
+            ?.text,
+        thumbnail = null,
+        authors = null,
+        year = null,
+        url = null,
+        songsPage = null,
+        otherVersions = null,
+        otherInfo = musicDetailHeaderRenderer
+            ?.secondSubtitle
+            ?.text
+    )
+
 }
-*/

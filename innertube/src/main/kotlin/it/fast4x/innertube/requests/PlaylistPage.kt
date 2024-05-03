@@ -43,6 +43,15 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         ?.getOrNull(1)
         ?.musicCarouselShelfRenderer
 
+
+    println("mediaItem des ${musicDetailHeaderRenderer
+        ?.description
+        ?.text} other ${musicDetailHeaderRenderer
+        ?.secondSubtitle
+        ?.text}")
+
+    println("mediaItem response ${response.contents}")
+
     Innertube.PlaylistOrAlbumPage(
         title = musicDetailHeaderRenderer
             ?.title
