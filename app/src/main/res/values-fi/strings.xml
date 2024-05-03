@@ -448,7 +448,7 @@
     <string name="sorry_tips_are_not_available">Valitettavasti vinkkejä ei ole saatavilla.</string>
     <string name="library_collections">Kokoelmat</string>
     <string name="info_show_hide_hidden_songs">Näytä/piilota piilotetut kappaleet</string>
-    <string name="info_shuffle">Shuffle</string>
+    <string name="info_shuffle">Sekoitus</string>
     <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Lataa kaikki kappaleet</string>

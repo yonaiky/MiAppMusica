@@ -456,11 +456,11 @@
     <string name="info_start_radio">Start radio</string>
     <string name="info_translation">Translation</string>
     <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
-    <string name="info_smart_recommendation">Smart recommendation</string>
+    <string name="info_smart_recommendation">Smart recommendations</string>
     <string name="info_clean_cached_congs">Clean cached songs</string>
     <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
     <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
-    <string name="info_add_in_playlist">Add in playlist</string>
+    <string name="info_add_in_playlist">Add to playlist</string>
     <string name="info_not_find_application_audio">Couldn\'t find audio equalizer application</string>
     <string name="info_error">Error</string>
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
