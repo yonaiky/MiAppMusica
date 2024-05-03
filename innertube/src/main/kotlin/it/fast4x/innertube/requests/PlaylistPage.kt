@@ -14,6 +14,7 @@ import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.utils.from
 
+
 suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
         setBody(body)
@@ -42,15 +43,6 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
     val musicCarouselShelfRenderer = sectionListRendererContents
         ?.getOrNull(1)
         ?.musicCarouselShelfRenderer
-
-
-    println("mediaItem des ${musicDetailHeaderRenderer
-        ?.description
-        ?.text} other ${musicDetailHeaderRenderer
-        ?.secondSubtitle
-        ?.text}")
-
-    println("mediaItem response ${response.contents}")
 
     Innertube.PlaylistOrAlbumPage(
         title = musicDetailHeaderRenderer
@@ -102,7 +94,7 @@ suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatching {
         parameter("ctoken", body.continuation)
         parameter("type", "next")
         body.context.apply()
-     }.body<ContinuationResponse>()
+    }.body<ContinuationResponse>()
 
     response
         .continuationContents

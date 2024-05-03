@@ -6,22 +6,24 @@ import io.ktor.client.request.setBody
 import io.ktor.http.Url
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseResponse
-import it.fast4x.innertube.models.MusicCarouselShelfRenderer
-import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.utils.from
 
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
         playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
             album.copy(songsPage = playlist.songsPage)
+        } /*
+        albumPageDetails(BrowseBody(browseId = body.browseId)).getOrNull()?.let {
+            println("mediaItem albumPage pre songsPage ${it.songsPage?.items?.size} ")
+            album.copy(description = it.description, otherInfo = it.otherInfo)
         }
-        albumPageDetails(BrowseBody(browseId = body.browseId))?.getOrNull()?.let { album ->
-            album.copy(description = album.description, otherInfo = album.otherInfo)
-        }
+        */
     } ?: album
 }?.map { album ->
+
+    //println("mediaItem albumPage post songsPage ${album.songsPage?.items?.size} des ${album.description} browseId ${body.browseId}")
+
     val albumInfo = Innertube.Info(
         name = album.title,
         endpoint = NavigationEndpoint.Endpoint.Browse(
@@ -29,6 +31,8 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
             params = body.params
         )
     )
+
+
 
     album.copy(
         songsPage = album.songsPage?.copy(
@@ -41,11 +45,13 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
             }
         )
     )
+
 }
 
 suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
         setBody(body)
+        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),musicCarouselShelfRenderer.contents.$musicTwoRowItemRendererMask),header.musicDetailHeaderRenderer(title,subtitle,thumbnail),microformat")
         body.context.apply()
     }.body<BrowseResponse>()
 

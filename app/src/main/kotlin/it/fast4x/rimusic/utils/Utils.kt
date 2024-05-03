@@ -141,6 +141,16 @@ val Innertube.SongItem.asMediaItem: MediaItem
         )
         .build()
 
+val Innertube.SongItem.asSong: Song
+    @UnstableApi
+    get() = Song (
+        id = key,
+        title = info?.name ?: "",
+        artistsText = authors?.joinToString("") { it.name ?: "" },
+        durationText = durationText,
+        thumbnailUrl = thumbnail?.url
+    )
+
 val Innertube.VideoItem.asMediaItem: MediaItem
     @UnstableApi
     get() = MediaItem.Builder()
