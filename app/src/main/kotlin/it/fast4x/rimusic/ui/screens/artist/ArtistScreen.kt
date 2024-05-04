@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -108,7 +109,7 @@ fun ArtistScreen(
     navController: NavController,
     browseId: String
 ) {
-    //val saveableStateHolder = rememberSaveableStateHolder()
+    val saveableStateHolder = rememberSaveableStateHolder()
 
     //var tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
 
@@ -427,7 +428,7 @@ fun ArtistScreen(
                     Item(4, stringResource(R.string.library), R.drawable.library)
                 },
             ) { currentTabIndex ->
-                //saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
+                saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> {
                             ArtistOverview(
@@ -677,7 +678,7 @@ fun ArtistScreen(
                             )
                         }
                     }
-                //}
+                }
             }
         }
     }

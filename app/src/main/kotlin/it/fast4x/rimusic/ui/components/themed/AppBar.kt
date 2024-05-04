@@ -35,11 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.getCurrentRoute
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuItemColors
@@ -53,6 +55,7 @@ fun appBar(
     navController: NavController
 ) {
     val (colorPalette, typography) = LocalAppearance.current
+    var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var expanded by remember { mutableStateOf(false) }
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -99,7 +102,12 @@ fun appBar(
                 )
                 Image(
                     painter = painterResource(R.drawable.app_logo_text),
-                    colorFilter = ColorFilter.tint(Color.White),
+                    colorFilter = ColorFilter.tint(
+                        when(colorPaletteMode) {
+                            ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
+                            else -> Color.White
+                        }
+                    ),
                     contentDescription = null,
                     modifier = Modifier
                         .size(100.dp)
