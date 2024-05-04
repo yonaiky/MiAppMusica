@@ -24,12 +24,12 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
 }
     ?.map { album ->
         albumPageDetails(BrowseBody(browseId = body.browseId)).getOrNull()?.let {
-            println("mediaItem albumPage pre songsPage ${album.songsPage?.items?.size} ")
+            //println("mediaItem albumPage pre songsPage ${album.songsPage?.items?.size} ")
             album.copy(description = it.description, otherInfo = it.otherInfo)
         }
 }
     ?.map { album ->
-    println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
+    //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
 
     val albumInfo = Innertube.Info(
         name = album?.title,
@@ -105,9 +105,11 @@ suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
         .header
         ?.musicDetailHeaderRenderer
 
+    /*
     println("mediaItem albumPageDetails des ${musicDetailHeaderRenderer
         ?.description
         ?.text} browseId ${body.browseId}")
+     */
 
     Innertube.PlaylistOrAlbumPage(
         title = null,

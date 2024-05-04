@@ -114,13 +114,13 @@ fun AlbumScreen(
                 if (albumPage == null
                     //&& (currentAlbum?.timestamp == null || tabIndex == 1)
                     ) {
-                    println("mediaItem home album launch start")
+                    //println("mediaItem home album launch start")
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-                                println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description}")
+                                //println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description}")
                                 Database.clearAlbum(browseId)
 
                                 Database.upsert(
@@ -149,9 +149,11 @@ fun AlbumScreen(
                                         } ?: emptyList()
                                 )
                             }
+                            /*
                             ?.onFailure {
                                 println("mediaItem error home artist ${it.message}")
                             }
+                             */
                     }
 
                 }
@@ -164,8 +166,8 @@ fun AlbumScreen(
                 ?.onSuccess { currentAlbumPage ->
                     albumPage = currentAlbumPage
                 }
-            println("mediaItem home albumscreen albumPage des ${albumPage?.description} albumPage ${albumPage?.otherVersions?.size}")
-            println("mediaItem home albumscreen albumPage songPage ${albumPage?.songsPage}")
+            //println("mediaItem home albumscreen albumPage des ${albumPage?.description} albumPage ${albumPage?.otherVersions?.size}")
+            //println("mediaItem home albumscreen albumPage songPage ${albumPage?.songsPage}")
         }
     }
 
