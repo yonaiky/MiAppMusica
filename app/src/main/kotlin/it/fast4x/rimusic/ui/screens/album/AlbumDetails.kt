@@ -44,7 +44,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -56,6 +58,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -757,6 +760,7 @@ fun AlbumDetails(
                         val checkedState = remember { mutableStateOf(false) }
                         SongItem(
                             title = song.title,
+                            totalPlayTimeMs = 1,
                             isDownloaded = isDownloaded,
                             downloadState = downloadState,
                             onDownloadClick = {
@@ -784,6 +788,16 @@ fun AlbumDetails(
                             duration = song.durationText,
                             thumbnailSizeDp = thumbnailSizeDp,
                             thumbnailContent = {
+                                /*
+                                AsyncImage(
+                                    model = song.thumbnailUrl,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .clip(LocalAppearance.current.thumbnailShape)
+                                        .fillMaxSize()
+                                )
+                                 */
                                 BasicText(
                                     text = "${index + 1}",
                                     style = typography.s.semiBold.center.color(colorPalette.textDisabled),
