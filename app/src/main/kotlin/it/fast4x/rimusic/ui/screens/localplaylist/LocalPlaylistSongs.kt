@@ -1014,10 +1014,14 @@ fun LocalPlaylistSongs(
                                                 SmartToast(context.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
                                         },
                                         onDelete = {
+                                            isDeleting = true
+                                            /*
                                             if (playlistNotMonthlyType)
                                                 isDeleting = true
                                             else
                                                 SmartToast(context.getString(R.string.info_cannot_delete_a_monthly_playlist))
+
+                                             */
                                         },
                                         showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                         onListenToYT = {

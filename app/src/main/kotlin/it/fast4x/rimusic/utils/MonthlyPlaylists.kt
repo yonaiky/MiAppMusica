@@ -45,32 +45,35 @@ fun CreateMonthlyPlaylist() {
     val monthlyPlaylist = remember {
         Database.playlistWithSongs("${MONTHLY_PREFIX}${ym}")
     }.collectAsState(initial = null, context = Dispatchers.IO)
+        .let {
+            if (it.value == null && y != null && m != null) {
+                val songsMostPlayed = remember {
+                    Database.songsMostPlayedByYearMonth(y, m)
+                }.collectAsState(initial = null, context = Dispatchers.IO)
 
-    if (monthlyPlaylist.value == null && y != null && m != null) {
-        val songsMostPlayed = remember {
-            Database.songsMostPlayedByYearMonth(y, m)
-        }.collectAsState(initial = null, context = Dispatchers.IO)
+                if (songsMostPlayed.value?.isNotEmpty() == true) {
+                    transaction {
+                        val playlistId = Database.insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
+                        playlistId.let {
+                            songsMostPlayed.value!!.forEachIndexed{ position, song ->
+                                Database.insert(
+                                    SongPlaylistMap(
+                                        songId = song.id,
+                                        playlistId = it,
+                                        position = position
+                                    )
+                                )
+                            }
+                        }
 
-        if (songsMostPlayed.value?.isNotEmpty() == true) {
-            transaction {
-                val playlistId = Database.insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
-                playlistId.let {
-                    songsMostPlayed.value!!.forEachIndexed{ position, song ->
-                        Database.insert(
-                            SongPlaylistMap(
-                                songId = song.id,
-                                playlistId = it,
-                                position = position
-                            )
-                        )
                     }
+
                 }
 
             }
-
         }
 
-    }
+
 
 }
 
