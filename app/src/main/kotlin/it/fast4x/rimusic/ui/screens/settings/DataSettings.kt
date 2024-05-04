@@ -720,5 +720,8 @@ fun DataSettings() {
             isEnabled = queriesCount > 0,
             onClick = { query(Database::clearQueries) }
         )
+        SettingsGroupSpacer(
+            modifier = Modifier.height(Dimensions.bottomSpacer)
+        )
     }
 }

@@ -603,5 +603,8 @@ fun AppearanceSettings() {
                 onCheckedChange = { isShowingThumbnailInLockscreen = it }
             )
         }
+        SettingsGroupSpacer(
+            modifier = Modifier.height(Dimensions.bottomSpacer)
+        )
     }
 }
