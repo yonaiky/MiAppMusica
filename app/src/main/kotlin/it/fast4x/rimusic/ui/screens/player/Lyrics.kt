@@ -668,7 +668,7 @@ fun Lyrics(
                     modifier = Modifier
                         .padding(all = 8.dp)
                         .align(Alignment.BottomStart)
-                        .size(24.dp)
+                        .size(20.dp)
                 )
 
                 IconButton(
