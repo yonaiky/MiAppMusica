@@ -386,7 +386,7 @@
     <string name="export_playlist">Export playlist</string>
     <string name="lang_afrikaans">Afrikaans (Afrikaans)</string>
     <string name="playlist_top">Playlist Top</string>
-    <string name="my_playlist_top">My Top %s</string>
+    <string name="my_playlist_top">My Top</string>
     <string name="navigation_bar_position">Navigation bar position</string>
     <string name="direction_left">Left</string>
     <string name="direction_right">Right</string>
@@ -449,7 +449,7 @@
     <string name="library_collections">Collections</string>
     <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
     <string name="info_shuffle">Shuffle</string>
-    <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
+    <string name="info_includes_excludes_songs_on_the_device">Includes/excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Download all songs</string>
     <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
