@@ -466,11 +466,11 @@
     <string name="info_not_find_app_open_doc">Не удалось найти приложение для открытия документов</string>
     <string name="info_not_find_app_create_doc">Не удалось найти приложение для создания документов</string>
     <string name="info_not_find_app_browse_internet">Не удалось найти браузер для выхода в Интернета</string>
-    <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_floating_icon">Показывать плавающую кнопку поиска</string>
     <string name="show_equalizer">Показывать кнопку эквалайзера</string>
     <string name="theme_pure_black">Pure Black</string>
     <string name="theme_modern_black">Modern Black</string>
-    <string name="theme_mode_pitch_black">Pitch Black</string>
+    <string name="theme_mode_pitch_black"> Чёрный</string>
     <string name="show_actions_bar">Show actions bar</string>
     <string name="transition_effect">Эффект перехода между страницами</string>
     <string name="te_expand">Expand</string>
@@ -481,7 +481,7 @@
     <string name="info_wait_it_may_take_a_few_minutes">Подождите, это может занять несколько минут...</string>
     <string name="album_and_alternative_versions">Альбом и альтернативные версии</string>
     <string name="album_alternative_versions">Альтернативные версии</string>
-    <string name="monthly_playlists">Плейлисты по месяцам</string>
+    <string name="monthly_playlists">Ежемесячные плейлисты</string>
     <string name="month_january_s">Январь %s</string>
     <string name="month_february_s">Февраль %s</string>
     <string name="month_march_s">Март %s</string>
@@ -494,14 +494,14 @@
     <string name="month_october_s">Октябрь %s</string>
     <string name="month_november_s">Ноябрь %s</string>
     <string name="month_december_s">Декабрь %s</string>
-    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumbering a monthly playlist</string>
-    <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
-    <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
-    <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Невозможно изменить нумерацию ежемесячного плейлиста</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Невозможно переименовать ежемесячный плейлист</string>
+    <string name="info_cannot_delete_a_monthly_playlist">Невозможно удалить ежемесячный плейлист</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Изменение порядка возможно только при сортировке в порядке возрастания</string>
     <string name="information">Информация</string>
     <string name="info_lyrics_found_on_s">Текст песни найден на %s</string>
     <string name="info_lyrics_not_found_on_s_try_on_s">Текст песни не найден на %s, ищу на %s</string>
-    <string name="info_lyrics_not_found_on_s">Lyrics not found on %s</string>
+    <string name="info_lyrics_not_found_on_s">Текст песни не найден на %s</string>
     <string name="info_lyrics_tracks_found_on_s">Lyrics tracks found on %s</string>
     <string name="info_lyrics_tracks_not_found_on_s">Lyrics tracks not found on %s</string>
 </resources>
