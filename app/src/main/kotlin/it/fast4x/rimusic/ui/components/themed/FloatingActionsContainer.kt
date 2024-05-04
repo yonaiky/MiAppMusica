@@ -176,6 +176,7 @@ fun BoxScope.FloatingActionsContainerWithScrollToTop(
         MutableTransitionState<ScrollingInfo?>(ScrollingInfo())
     }.apply { targetState = if (visible) scrollState.scrollingInfo() else null }
 
+
     FloatingActions(
         transitionState = transitionState,
         iconId = iconId,
@@ -239,9 +240,10 @@ fun BoxScope.FloatingActions(
                     },
                     enabled = transition.targetState?.isScrollingDown == false,
                     modifier = Modifier
-                        //.padding(bottom = 16.dp)
+                        .padding(bottom = 16.dp)
                         //.padding(bottomPaddingValues)
-                        .padding(bottom = bottomDp)
+                        //.padding(bottom = bottomDp)
+                        .padding(bottom = bottomPadding)
                 )
                 /*
                 SecondaryCircleButton(
