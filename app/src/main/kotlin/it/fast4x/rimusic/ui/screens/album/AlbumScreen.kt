@@ -103,6 +103,7 @@ fun AlbumScreen(
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
+
     LaunchedEffect(Unit) {
         Database
             .album(browseId)
@@ -110,28 +111,32 @@ fun AlbumScreen(
             .collect { (currentAlbum, tabIndex) ->
                 album = currentAlbum
 
-                if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
+                if (albumPage == null
+                    //&& (currentAlbum?.timestamp == null || tabIndex == 1)
+                    ) {
+                    println("mediaItem home album launch start")
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
+                                println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description}")
                                 Database.clearAlbum(browseId)
 
                                 Database.upsert(
                                     Album(
                                         id = browseId,
-                                        title = currentAlbumPage.title,
-                                        thumbnailUrl = currentAlbumPage.thumbnail?.url,
-                                        year = currentAlbumPage.year,
-                                        authorsText = currentAlbumPage.authors
+                                        title = currentAlbumPage?.title,
+                                        thumbnailUrl = currentAlbumPage?.thumbnail?.url,
+                                        year = currentAlbumPage?.year,
+                                        authorsText = currentAlbumPage?.authors
                                             ?.joinToString("") { it.name ?: "" },
-                                        shareUrl = currentAlbumPage.url,
+                                        shareUrl = currentAlbumPage?.url,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = album?.bookmarkedAt
                                     ),
                                     currentAlbumPage
-                                        .songsPage
+                                        ?.songsPage
                                         ?.items
                                         ?.map(Innertube.SongItem::asMediaItem)
                                         ?.onEach(Database::insert)
@@ -143,6 +148,9 @@ fun AlbumScreen(
                                             )
                                         } ?: emptyList()
                                 )
+                            }
+                            ?.onFailure {
+                                println("mediaItem error home artist ${it.message}")
                             }
                     }
 
@@ -156,9 +164,11 @@ fun AlbumScreen(
                 ?.onSuccess { currentAlbumPage ->
                     albumPage = currentAlbumPage
                 }
-            //println("mediaItem albumPage ${albumPage?.otherVersions?.size}")
+            println("mediaItem home albumscreen albumPage des ${albumPage?.description} albumPage ${albumPage?.otherVersions?.size}")
+            println("mediaItem home albumscreen albumPage songPage ${albumPage?.songsPage}")
         }
     }
+
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
