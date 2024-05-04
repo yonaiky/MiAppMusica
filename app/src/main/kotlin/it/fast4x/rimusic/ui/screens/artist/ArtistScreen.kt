@@ -535,7 +535,7 @@ fun ArtistScreen(
                                                 onClick = {
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
-                                                        listMediaItems,
+                                                        listMediaItems.distinct(),
                                                         listMediaItems.indexOf(song.asMediaItem)
                                                     )
                                                     /*
