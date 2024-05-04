@@ -891,6 +891,10 @@ fun Queue(
                 }
             }
         }
-        FloatingActionsContainerWithScrollToTop(lazyListState = reorderingState.lazyListState)
+
+        FloatingActionsContainerWithScrollToTop(
+            lazyListState = reorderingState.lazyListState,
+            modifier = Modifier.padding(bottom = Dimensions.collapsedPlayer)
+            )
     }
 }
