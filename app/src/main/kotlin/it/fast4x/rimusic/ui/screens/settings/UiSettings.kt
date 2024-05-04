@@ -878,7 +878,7 @@ fun  UiSettings() {
             )
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}",
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top).format(maxTopPlaylistItems)}",
                 text = "",
                 isChecked = showMyTopPlaylist,
                 onCheckedChange = { showMyTopPlaylist = it }
