@@ -217,12 +217,22 @@ fun Lyrics(
                             duration = duration.milliseconds,
                             album = mediaMetadata.albumTitle?.toString()
                         )?.onSuccess {
-                            coroutineScope.launch {
-                                SmartToast(
-                                    context.getString(R.string.info_lyrics_found_on_s).format("LrcLib.net"),
-                                    type = PopupType.Success
-                                )
-                            }
+                            if (it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                coroutineScope.launch {
+                                    SmartToast(
+                                        context.getString(R.string.info_lyrics_found_on_s).format("LrcLib.net"),
+                                        type = PopupType.Success
+                                    )
+                                }
+                            else
+                                coroutineScope.launch {
+                                    SmartToast(
+                                        context.getString(R.string.info_lyrics_not_found_on_s).format("LrcLib.net"),
+                                        type = PopupType.Error,
+                                        durationLong = true
+                                    )
+                                }
+
                             isError = false
                             Database.upsert(
                                 Lyrics(
@@ -244,12 +254,22 @@ fun Lyrics(
                                 title = mediaMetadata.title?.toString() ?: "",
                                 duration = duration / 1000
                             )?.onSuccess {
-                                coroutineScope.launch {
-                                    SmartToast(
-                                        context.getString(R.string.info_lyrics_found_on_s).format("KuGou.com"),
-                                        type = PopupType.Success
-                                    )
-                                }
+                                if (it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                    coroutineScope.launch {
+                                        SmartToast(
+                                            context.getString(R.string.info_lyrics_found_on_s).format("KuGou.com"),
+                                            type = PopupType.Success
+                                        )
+                                    }
+                                else
+                                    coroutineScope.launch {
+                                        SmartToast(
+                                            context.getString(R.string.info_lyrics_not_found_on_s).format("KuGou.com"),
+                                            type = PopupType.Error,
+                                            durationLong = true
+                                        )
+                                    }
+
                                 isError = false
                                 Database.upsert(
                                     Lyrics(
@@ -329,12 +349,21 @@ fun Lyrics(
                     artist = mediaMetadata.artist?.toString().orEmpty(),
                     title = mediaMetadata.title?.toString().orEmpty()
                 )?.onSuccess {
-                    coroutineScope.launch {
-                        SmartToast(
-                            context.getString(R.string.info_lyrics_tracks_found_on_s).format("LrcLib.net"),
-                            type = PopupType.Success
-                        )
-                    }
+                    if (it.isNotEmpty())
+                        coroutineScope.launch {
+                            SmartToast(
+                                context.getString(R.string.info_lyrics_tracks_found_on_s).format("LrcLib.net"),
+                                type = PopupType.Success
+                            )
+                        }
+                    else
+                        coroutineScope.launch {
+                            SmartToast(
+                                context.getString(R.string.info_lyrics_tracks_not_found_on_s).format("LrcLib.net"),
+                                type = PopupType.Error,
+                                durationLong = true
+                            )
+                        }
                     tracks.clear()
                     tracks.addAll(it)
                     loading = false
@@ -342,7 +371,7 @@ fun Lyrics(
                 }?.onFailure {
                     coroutineScope.launch {
                         SmartToast(
-                            context.getString(R.string.info_lyrics_tracks_not_found_on_s).format("LrcLib.net"),
+                            context.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics).format("LrcLib.net"),
                             type = PopupType.Error,
                             durationLong = true
                         )
