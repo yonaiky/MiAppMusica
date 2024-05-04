@@ -505,7 +505,7 @@ fun BuiltInPlaylistSongs(
                         BuiltInPlaylist.Favorites -> stringResource(R.string.favorites)
                         BuiltInPlaylist.Downloaded -> stringResource(R.string.downloaded)
                         BuiltInPlaylist.Offline -> stringResource(R.string.cached)
-                        BuiltInPlaylist.Top -> stringResource(R.string.my_playlist_top) + " ${maxTopPlaylistItems.number}"
+                        BuiltInPlaylist.Top -> stringResource(R.string.my_playlist_top).format(maxTopPlaylistItems.number)
                     },
                     iconId = R.drawable.search,
                     enabled = true,

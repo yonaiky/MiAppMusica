@@ -302,9 +302,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.top)
-                .setTitle("${(this as Context).resources.getString(R.string.my_playlist_top)} " +
-                        "${preferences.getEnum(MaxTopPlaylistItemsKey,
-                            MaxTopPlaylistItems.`10`).number}")
+                .setTitle((this as Context).resources.getString(R.string.my_playlist_top)
+                    .format((this as Context).preferences.getEnum(MaxTopPlaylistItemsKey,
+                            MaxTopPlaylistItems.`10`).number))
                 .setIconUri(uriFor(R.drawable.trending))
                 .build(),
             MediaItem.FLAG_PLAYABLE
