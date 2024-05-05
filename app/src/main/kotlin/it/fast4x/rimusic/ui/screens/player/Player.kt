@@ -69,6 +69,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -98,8 +99,10 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PopupType
@@ -122,11 +125,13 @@ import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
+import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
@@ -144,6 +149,7 @@ import it.fast4x.rimusic.utils.getDynamicColorPaletteFromBitmap
 import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.positionAndDurationState
@@ -835,18 +841,23 @@ fun Player(
         )
 
         val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
-        val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
-        val context = LocalContext.current
-        var dynamicColorPalette = colorPalette.copy()
+        val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
+        //val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+        val isGradientBackgroundEnabled = playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
+                playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
+        var dynamicColorPalette by remember{ mutableStateOf(colorPalette) }
 
-        if (isGradientBackgroundEnabled && colorPaletteName != ColorPaletteName.MaterialYou) {
+        if (colorPaletteName != ColorPaletteName.MaterialYou &&
+            (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+                    playerBackgroundColors== PlayerBackgroundColors.CoverColor)
+            ) {
+            val context = LocalContext.current
             LaunchedEffect(mediaItem.mediaId) {
                 dynamicColorPalette = getDynamicColorPaletteFromBitmap(
                     getBitmapFromUrl(
                         context,
                         binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                    ),
-                    false, false
+                    )
                 )
             }
         }
@@ -855,8 +866,9 @@ fun Player(
         val containerModifier =
             if (!isGradientBackgroundEnabled)
                 Modifier
-                    //.clip(shape)
-                    .background(colorPalette.background1)
+                    .background(
+                        dynamicColorPalette.background1
+                    )
                     .padding(
                         windowInsets
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)

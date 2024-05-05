@@ -140,6 +140,7 @@ const val transitionEffectKey = "transitionEffect"
 const val showMonthlyPlaylistsKey = "showMonthlyPlaylists"
 const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
+const val playerBackgroundColorsKey = "playerBackgroundColors"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

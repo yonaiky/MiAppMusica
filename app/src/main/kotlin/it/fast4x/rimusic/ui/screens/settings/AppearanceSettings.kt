@@ -52,6 +52,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
@@ -92,6 +93,7 @@ import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
@@ -139,7 +141,7 @@ fun AppearanceSettings() {
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
 
-    var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+    //var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     var backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
@@ -155,6 +157,7 @@ fun AppearanceSettings() {
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+    var playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
 
     Column(
         modifier = Modifier
@@ -334,6 +337,9 @@ fun AppearanceSettings() {
                 }
             )
 
+
+        /*
+
         if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.use_gradient_background),
@@ -341,7 +347,24 @@ fun AppearanceSettings() {
                 isChecked = isGradientBackgroundEnabled,
                 onCheckedChange = { isGradientBackgroundEnabled = it }
             )
+         */
 
+        if (filter.isNullOrBlank() || stringResource(R.string.background_colors).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.background_colors),
+                selectedValue = playerBackgroundColors,
+                onValueSelected = {
+                    playerBackgroundColors = it
+                },
+                valueText = {
+                    when (it) {
+                        PlayerBackgroundColors.CoverColor -> stringResource(R.string.bg_colors_background_from_cover)
+                        PlayerBackgroundColors.ThemeColor -> stringResource(R.string.bg_colors_background_from_theme)
+                        PlayerBackgroundColors.CoverColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_cover)
+                        PlayerBackgroundColors.ThemeColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_theme)
+                    }
+                },
+            )
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(filterCharSequence,true))
             SwitchSettingEntry(
