@@ -377,7 +377,7 @@
     <string name="save_to_backup">Guardar una copia de seguridad</string>
     <string name="restore_from_backup">Restaurar desde una copia de seguridad</string>
     <string name="tab_miscellaneous">Misceláneo</string>
-    <string name="swipe_to_action">Desliza para accionar</string>
+    <string name="swipe_to_action">Desliza para ejecutar acciones</string>
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activa el menú de acciones deslizando la canción hacia la izquierda o derecha</string>
     <string name="smart_recommendations">RECOMENDACIONES INTELIGENTES</string>
     <string name="player_collapsed_disable_swiping_down">Deshabilitar deslizar hacia abajo</string>
@@ -418,7 +418,7 @@
     <string name="folders">Carpetas</string>
     <string name="show_folders_in_on_device_page">Mostrar las carpetas en la página En el dispositivo</string>
     <string name="lang_danish">Danés</string>
-    <string name="lang_serbian_latin">Serbio (Latín)</string>
+    <string name="lang_serbian_latin">Serbio latino</string>
     <string name="item_deselect">Deseleccionar</string>
     <string name="show_next_songs_in_player">Mostrar las siguientes canciones en el reproductor</string>
     <string name="show_remaining_song_time">Mostrar el tiempo restante de las canciones</string>
@@ -472,12 +472,12 @@
     <string name="theme_modern_black">Negro Moderno</string>
     <string name="theme_mode_pitch_black">Negro intenso</string>
     <string name="show_actions_bar">Mostrar barra de acción</string>
-    <string name="transition_effect">Efectos de transición</string>
+    <string name="transition_effect">Efecto de transición</string>
     <string name="te_expand">Expandir</string>
     <string name="te_fade">Transición</string>
     <string name="te_scale">Escala</string>
-    <string name="te_slide_vertical">Deslizar Verticalmente</string>
-    <string name="te_slide_horizontal">Deslizar Horizontalmente</string>
+    <string name="te_slide_vertical">Deslizar verticalmente</string>
+    <string name="te_slide_horizontal">Deslizar horizontalmente</string>
     <string name="info_wait_it_may_take_a_few_minutes">Espere, puede tomar unos minutos...</string>
     <string name="album_and_alternative_versions">Álbum y versiones alternativas</string>
     <string name="album_alternative_versions">Versiones alternativas</string>
@@ -487,7 +487,7 @@
     <string name="month_march_s">Marzo %s</string>
     <string name="month_april_s">Abril %s</string>
     <string name="month_may_s">Mayo %s</string>
-    <string name="month_june_s">Julio %s</string>
+    <string name="month_june_s">Junio %s</string>
     <string name="month_july_s">Julio %s</string>
     <string name="month_august_s">Agosto %s</string>
     <string name="month_september_s">Septiembre %s</string>
@@ -497,10 +497,10 @@
     <string name="info_cannot_renumbering_a_monthly_playlist">No se puede eliminar una lista de reproducción mensual</string>
     <string name="info_cannot_rename_a_monthly_playlist">No se puede renombrar una lista de reproducción mensual</string>
     <string name="info_cannot_delete_a_monthly_playlist">No se puede eliminar una lista de reproducción mensual</string>
-    <string name="info_reorder_is_possible_only_in_ascending_sort">Reordenar solo es posible en orden ascendente</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Solo es posible reordenar en orden ascendente</string>
     <string name="information">Información</string>
     <string name="info_lyrics_found_on_s">Letra encontrada en %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Letra no encontrada en %s, intente en %s</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Letra no encontrada en %s, intenta en %s</string>
     <string name="info_lyrics_not_found_on_s">Letra no encontrada en %s</string>
     <string name="info_lyrics_tracks_found_on_s">Letra encontrada en %s</string>
     <string name="info_lyrics_tracks_not_found_on_s">Letra no encontrada en %s</string>
