@@ -359,7 +359,7 @@
     <string name="sleeptimer_stop">stop</string>
     <string name="player_keep_minimized">Mantieni minimizzato</string>
     <string name="when_click_on_a_song_player_start_minimized">Quando si clicca su una canzone, il player si avvia minimizzato</string>
-    <string name="settings_use_font_type">Use tipo font</string>
+    <string name="settings_use_font_type">Stile font</string>
     <string name="enabled">Abilitato</string>
     <string name="ask">Chiedi</string>
     <string name="item_select">Seleziona</string>
