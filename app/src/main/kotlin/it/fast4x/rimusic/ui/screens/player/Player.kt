@@ -94,12 +94,11 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import it.fast4x.compose.routing.OnGlobalRoute
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.LocalPlayerSheetState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerVisualizerType
@@ -107,10 +106,8 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.rememberBottomSheetState
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
@@ -120,10 +117,8 @@ import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
-import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartToast
-import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
@@ -131,6 +126,9 @@ import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -140,7 +138,9 @@ import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
+import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getDynamicColorPaletteFromBitmap
 import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
@@ -158,14 +158,12 @@ import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
-import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
-import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.CoroutineScope
@@ -175,7 +173,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
-
 
 
 @ExperimentalTextApi
@@ -210,7 +207,6 @@ fun Player(
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-    //val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -838,7 +834,24 @@ fun Player(
             layoutState.expandedBound
         )
 
+        val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
         val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+        val context = LocalContext.current
+        var dynamicColorPalette = colorPalette.copy()
+
+        if (isGradientBackgroundEnabled && colorPaletteName != ColorPaletteName.MaterialYou) {
+            LaunchedEffect(mediaItem.mediaId) {
+                dynamicColorPalette = getDynamicColorPaletteFromBitmap(
+                    getBitmapFromUrl(
+                        context,
+                        binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                    ),
+                    false, false
+                )
+            }
+        }
+
+
         val containerModifier =
             if (!isGradientBackgroundEnabled)
                 Modifier
@@ -855,8 +868,8 @@ fun Player(
                     //.clip(shape)
                     .background(
                         Brush.verticalGradient(
-                            0.0f to colorPalette.textSecondary,
-                            1.0f to colorPalette.background2,
+                            0.0f to dynamicColorPalette.background0,
+                            1.0f to dynamicColorPalette.background2,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1691,7 +1704,7 @@ fun PlayerSheet(
                         if (disableVerticalDrag == false) {
                             velocityTracker.addPointerInputChange(change)
                             //if (disableDismiss == false)
-                                state.dispatchRawDelta(dragAmount)
+                            state.dispatchRawDelta(dragAmount)
                         }
                     },
                     onDragCancel = {
@@ -1936,3 +1949,4 @@ fun rememberPlayerSheetState(
         )
     }
 }
+

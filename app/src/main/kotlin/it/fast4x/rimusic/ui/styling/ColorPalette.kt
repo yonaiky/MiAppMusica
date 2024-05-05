@@ -145,8 +145,8 @@ fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean, isPitchBlack: Boolean
             .sortedByDescending(FloatArray::component2)
             .find { it[1] != 0f }
             ?: hsl
-
         dynamicColorPaletteOf(newHsl, isDark, isPitchBlack)
+
     } else {
         dynamicColorPaletteOf(hsl, isDark, isPitchBlack)
     }
