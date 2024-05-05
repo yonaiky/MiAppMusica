@@ -7,6 +7,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 
 data class Appearance(
     val colorPalette: ColorPalette,
@@ -23,18 +24,20 @@ data class Appearance(
             )
         }
 
-        override fun SaverScope.save(value: Appearance) =
-            listOf(
-                with (ColorPalette.Companion) { save(value.colorPalette) },
-                with (Typography.Companion) { save(value.typography) },
+        override fun SaverScope.save(value: Appearance): List<Any> {
+            println("mediaItem value.thumbnailShape ${value.thumbnailShape}")
+            return listOf(
+                with(ColorPalette.Companion) { save(value.colorPalette) },
+                with(Typography.Companion) { save(value.typography) },
                 when (value.thumbnailShape) {
-                    RoundedCornerShape(4.dp) -> 4
                     RoundedCornerShape(8.dp) -> 8
+                    RoundedCornerShape(12.dp) -> 12
                     RoundedCornerShape(16.dp) -> 16
                     else -> 0
                 }
 
             )
+        }
     }
 }
 

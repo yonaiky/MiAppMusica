@@ -40,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -115,7 +116,7 @@ fun HomeAlbums(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
+    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
@@ -446,6 +447,7 @@ fun HomeAlbums(
                                 onAlbumClick(album)
                             }
                         )
+                        .clip(thumbnailShape)
                         .animateItemPlacement()
                 )
             }

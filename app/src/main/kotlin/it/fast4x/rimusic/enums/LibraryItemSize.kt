@@ -9,7 +9,7 @@ enum class LibraryItemSize {
         get() = when (this) {
             Small -> 80
             Medium -> 108
-            Big -> 128
+            Big -> 140
         }
 
 }
