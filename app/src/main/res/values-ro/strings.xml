@@ -37,7 +37,6 @@
     <string name="artist_no_release_album">Acest artist nu a scos niciun album</string>
     <string name="artist_no_release_single">Acest artist nu a scos niciun single</string>
     <string name="delete_playlist">Vrei cu adevărat să ștergi acest playlist?</string>
-    <string name="delete_playlist">Do you really want to delete this playlist?</string>
     <string name="sync">Sincronizează</string>
     <string name="rename">Redenumește</string>
     <string name="delete">Șterge</string>

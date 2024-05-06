@@ -41,9 +41,6 @@
     <string name="rename">Исемен үҙгәртергә</string>
     <string name="delete">Юйырға</string>
     <string name="enter_the_lyrics">Йырҙың текстын индерегеҙ</string>
-    <string name="rename">Rename</string>
-    <string name="delete">Delete</string>
-    <string name="enter_the_lyrics">Enter the lyrics</string>
     <string name="edit_lyrics">Йырҙың текстың үҙгәртегеҙ</string>
     <string name="search_lyrics_online">Интернетта йырҙың текстың эҙләргә</string>
     <string name="fetch_lyrics_again">Йырҙың текстың тағы ла йөкләргә</string>

@@ -9,9 +9,6 @@
     <string name="stop_sleep_timer">Da li želite da zaustavite tajmer za spavanje?</string>
     <string name="set_sleep_timer">Podesi tajmer za spavanje</string>
     <string name="add_to_playlist">Dodaj na plejlistu</string>
-    <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
-    <string name="set_sleep_timer">Set sleep timer</string>
-    <string name="add_to_playlist">Add to playlist</string>
     <string name="go_to_album">Idi na album</string>
     <string name="remove_from_queue">Ukloni iz redosleda</string>
     <string name="remove_from_playlist">Ukloni sa plejliste</string>

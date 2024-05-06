@@ -52,9 +52,6 @@
     <string name="loudness">Intensidade do som</string>
     <string name="clear">Limpar</string>
     <string name="error">Ocorreu um erro.</string>
-    <string name="loudness">Loudness</string>
-    <string name="clear">Clear</string>
-    <string name="error">An error has occurred.</string>
     <string name="online">Online</string>
     <string name="no_results_found">Nenhum resultado encontrado. Por favor, tente uma consulta ou categoria diferente</string>
     <string name="videos">Vídeos</string>

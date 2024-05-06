@@ -54,7 +54,6 @@
     <string name="error">Une erreur est survenue</string>
     <string name="online">En ligne</string>
     <string name="no_results_found">Aucun résultat trouvé.\nVeuillez essayer une autre recherche ou une autre catégorie</string>
-    <string name="no_results_found">No results found. Please try a different query or category</string>
     <string name="videos">Vidéos</string>
     <string name="featured">En vedette</string>
     <string name="view_the_source_code">Afficher le code source</string>

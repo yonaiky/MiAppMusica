@@ -27,7 +27,6 @@
     <string name="songs">Τραγούδια</string>
     <string name="other_versions">Άλλες εκδόσεις</string>
     <string name="album_no_alternative_version">Αυτό το άλμπουμ δεν έχει άλλες εκδόσεις</string>
-    <string name="album_no_alternative_version">other_versions</string>
     <string name="enqueue">Προσθήκη στη λίστα αναπαραγωγής</string>
     <string name="shuffle">Τυχαία σειρά</string>
     <string name="view_all">Εμφάνιση όλων</string>
