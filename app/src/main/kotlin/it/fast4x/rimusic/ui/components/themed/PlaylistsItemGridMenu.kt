@@ -40,10 +40,12 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Playlist
@@ -69,6 +71,7 @@ import kotlinx.coroutines.Dispatchers
 @ExperimentalAnimationApi
 @Composable
 fun PlaylistsItemGridMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     onSelectUnselect: (() -> Unit)? = null,
     onSelect: (() -> Unit)? = null,
@@ -235,6 +238,7 @@ fun PlaylistsItemGridMenu(
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)
@@ -278,6 +282,7 @@ fun PlaylistsItemGridMenu(
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)

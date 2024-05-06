@@ -157,6 +157,7 @@ fun BaseMediaItemGridMenu(
     val context = LocalContext.current
 
     MediaItemGridMenu(
+        navController = navController,
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onGoToEqualizer = onGoToEqualizer,
@@ -216,6 +217,7 @@ fun BaseMediaItemGridMenu(
 
 @Composable
 fun MiniMediaItemGridMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
@@ -223,6 +225,7 @@ fun MiniMediaItemGridMenu(
 ) {
 
     MediaItemGridMenu(
+        navController = navController,
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onAddToPlaylist = { playlist, position ->
@@ -237,7 +240,12 @@ fun MiniMediaItemGridMenu(
                 )
             }
         },
-        onGoToPlaylist = onGoToPlaylist,
+        onGoToPlaylist = {
+            navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
+            if (onGoToPlaylist != null) {
+                onGoToPlaylist(it)
+            }
+        },
         modifier = modifier
     )
 }
@@ -246,6 +254,7 @@ fun MiniMediaItemGridMenu(
 @OptIn(UnstableApi::class)
 @Composable
 fun MediaItemGridMenu (
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -738,6 +747,7 @@ fun MediaItemGridMenu (
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)
@@ -777,6 +787,7 @@ fun MediaItemGridMenu (
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)

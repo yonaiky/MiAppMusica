@@ -105,6 +105,7 @@ fun PlaylistsItemMenu(
 
     if (menuStyle == MenuStyle.Grid) {
         PlaylistsItemGridMenu(
+            navController = navController,
             onDismiss = onDismiss,
             modifier = modifier,
             playlist = playlist,
@@ -252,6 +253,7 @@ fun PlaylistsItemMenu(
                                                     onGoToPlaylist(playlistPreview.playlist.id)
                                                     onDismiss()
                                               }
+                                                navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                             },
                                             modifier = Modifier
                                                 .size(24.dp)
@@ -295,6 +297,7 @@ fun PlaylistsItemMenu(
                                                     onGoToPlaylist(playlistPreview.playlist.id)
                                                     onDismiss()
                                                 }
+                                                navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                             },
                                             modifier = Modifier
                                                 .size(24.dp)

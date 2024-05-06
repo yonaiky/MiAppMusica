@@ -159,12 +159,20 @@ fun MiniPlayerMenu(
 
     if (menuStyle == MenuStyle.Grid) {
         MiniMediaItemGridMenu(
+            navController = navController,
             mediaItem = mediaItem,
+            onGoToPlaylist = {
+                onClosePlayer()
+            },
             onDismiss = onDismiss
         )
     } else {
         MiniMediaItemMenu(
+            navController = navController,
             mediaItem = mediaItem,
+            onGoToPlaylist = {
+                onClosePlayer()
+            },
             onDismiss = onDismiss
         )
     }

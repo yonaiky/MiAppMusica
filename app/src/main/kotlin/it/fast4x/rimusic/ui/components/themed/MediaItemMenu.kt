@@ -435,6 +435,7 @@ fun BaseMediaItemMenu(
     val context = LocalContext.current
 
     MediaItemMenu(
+        navController = navController,
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onGoToEqualizer = onGoToEqualizer,
@@ -483,7 +484,9 @@ fun BaseMediaItemMenu(
             context.startActivity(Intent.createChooser(sendIntent, null))
         },
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
-        onGoToPlaylist = onGoToPlaylist,
+        onGoToPlaylist = {
+            navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
+        },
         modifier = modifier
     )
 }
@@ -493,13 +496,16 @@ fun BaseMediaItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun MiniMediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
+    onGoToPlaylist: ((Long) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     MediaItemMenu(
+        navController = navController,
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onAddToPlaylist = { playlist, position ->
@@ -512,6 +518,12 @@ fun MiniMediaItemMenu(
                         position = position
                     )
                 )
+            }
+        },
+        onGoToPlaylist = {
+            navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
+            if (onGoToPlaylist != null) {
+                onGoToPlaylist(it)
             }
         },
         onShare = {},
@@ -583,6 +595,7 @@ fun FolderItemMenu(
 @ExperimentalAnimationApi
 @Composable
 fun MediaItemMenu(
+    navController: NavController,
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     modifier: Modifier = Modifier,
@@ -823,6 +836,7 @@ fun MediaItemMenu(
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)
@@ -859,6 +873,7 @@ fun MediaItemMenu(
                                                 onGoToPlaylist(playlistPreview.playlist.id)
                                                 onDismiss()
                                             }
+                                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
                                         },
                                         modifier = Modifier
                                             .size(24.dp)
