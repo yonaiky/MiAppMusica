@@ -55,6 +55,7 @@
     <string name="online">在線</string>
     <string name="no_results_found">找不到结果, 請嘗試不同的關鍵詞或類別.</string>
     <string name="videos">影片</string>
+    <string name="videos">Videos</string>
     <string name="featured">精選歌曲</string>
     <string name="view_the_source_code">檢視原始程式</string>
     <string name="report_an_issue">回報問題</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">導覽列樣式</string>
     <string name="icon_and_text">圖示與文字</string>
     <string name="only_icon">只有圖示</string>
-    <string name="show_search_tab_in_home">在首頁顯示搜尋鈕</string>
     <string name="action_bar_show_menu_button">顯示清單按鈕</string>
     <string name="sort_album">專輯</string>
     <string name="use_gradient_background">使用漸層背景</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

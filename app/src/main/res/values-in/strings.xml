@@ -26,6 +26,7 @@
     <string name="quick_picks">Pilihan cepat</string>
     <string name="songs">Lagu</string>
     <string name="other_versions">Versi lainnya</string>
+    <string name="other_versions">other_versions</string>
     <string name="album_no_alternative_version">Album ini tidak memiliki versi alternatif</string>
     <string name="enqueue">Antrekan</string>
     <string name="shuffle">Putar acak</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">Tipe bilah navigasi</string>
     <string name="icon_and_text">Ikon dan teks</string>
     <string name="only_icon">Ikon saja</string>
-    <string name="show_search_tab_in_home">Pindah pintasan penelusuran kedalam bilah navigasi</string>
     <string name="action_bar_show_menu_button">Tombol Menu</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Latar belakang gradien</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

@@ -54,6 +54,7 @@
     <string name="error">Une erreur est survenue</string>
     <string name="online">En ligne</string>
     <string name="no_results_found">Aucun résultat trouvé.\nVeuillez essayer une autre recherche ou une autre catégorie</string>
+    <string name="no_results_found">No results found. Please try a different query or category</string>
     <string name="videos">Vidéos</string>
     <string name="featured">En vedette</string>
     <string name="view_the_source_code">Afficher le code source</string>
@@ -402,9 +403,6 @@
     <string name="navigation_bar_type">Type de barre de navigation</string>
     <string name="icon_and_text">Texte et icône</string>
     <string name="only_icon">Icône uniquement</string>
-    <string name="show_search_tab_in_home">Afficher l\'onglet de recherche sur la barre de navigation
-
-(Uniquement avec l\'interface de ViMusic, avec la barre de navigation gauche ou droite !)</string>
     <string name="action_bar_show_menu_button">Afficher le bouton menu</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Utiliser le dégradé d\'arrière-plan</string>
@@ -513,4 +511,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

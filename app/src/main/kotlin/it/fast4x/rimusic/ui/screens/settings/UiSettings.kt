@@ -778,14 +778,14 @@ fun  UiSettings() {
             )
 
         if (uiType == UiType.ViMusic) {
-            if (filter.isNullOrBlank() || stringResource(R.string.show_search_tab_in_home).contains(
+            if (filter.isNullOrBlank() || stringResource(R.string.vimusic_show_search_button_in_navigation_bar).contains(
                     filterCharSequence,
                     true
                 )
             )
                 SwitchSettingEntry(
-                    title = stringResource(R.string.show_search_tab_in_home),
-                    text = "",
+                    title = stringResource(R.string.vimusic_show_search_button_in_navigation_bar),
+                    text = stringResource(R.string.vismusic_only_in_left_right_navigation_bar),
                     isChecked = showSearchTab,
                     onCheckedChange = { showSearchTab = it }
                 )

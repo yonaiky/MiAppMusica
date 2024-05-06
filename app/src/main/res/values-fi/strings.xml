@@ -44,6 +44,7 @@
     <string name="edit_lyrics">Muokkaa sanoituksia</string>
     <string name="search_lyrics_online">Etsi sanoituksia Internetistä</string>
     <string name="fetch_lyrics_again">Nouda sanoitukset uudelleen</string>
+    <string name="fetch_lyrics_again">Fetch lyrics again</string>
     <string name="id">Tunnus</string>
     <string name="itag">Itag</string>
     <string name="bitrate">Bittinopeus</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">Navigointipalkin tyyli</string>
     <string name="icon_and_text">Kuvake ja teksti</string>
     <string name="only_icon">Vain kuvake</string>
-    <string name="show_search_tab_in_home">Näytä hakuvälilehti kotinäkymässä</string>
     <string name="action_bar_show_menu_button">Näytä Menu -nappi</string>
     <string name="sort_album">Albumi</string>
     <string name="use_gradient_background">Käytä liukuväritaustaa</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

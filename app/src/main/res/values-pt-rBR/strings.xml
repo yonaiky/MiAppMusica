@@ -49,9 +49,12 @@
     <string name="bitrate">Taxa de Bits</string>
     <string name="size">Tamanho</string>
     <string name="cached">Em cache</string>
-    <string name="loudness">intensidade do som</string>
+    <string name="loudness">Intensidade do som</string>
     <string name="clear">Limpar</string>
     <string name="error">Ocorreu um erro.</string>
+    <string name="loudness">Loudness</string>
+    <string name="clear">Clear</string>
+    <string name="error">An error has occurred.</string>
     <string name="online">Online</string>
     <string name="no_results_found">Nenhum resultado encontrado. Por favor, tente uma consulta ou categoria diferente</string>
     <string name="videos">Vídeos</string>
@@ -402,7 +405,6 @@
     <string name="navigation_bar_type">Tipo de barra de navegação</string>
     <string name="icon_and_text">Ícone e texto</string>
     <string name="only_icon">Somente ícones</string>
-    <string name="show_search_tab_in_home">Exibir Aba de Busca na Tela Inicial</string>
     <string name="action_bar_show_menu_button">Mostrar botão de menu</string>
     <string name="sort_album">Álbum</string>
     <string name="use_gradient_background">Usar fundo em gradiente</string>
@@ -509,4 +511,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

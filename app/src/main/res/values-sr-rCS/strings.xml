@@ -9,6 +9,9 @@
     <string name="stop_sleep_timer">Da li želite da zaustavite tajmer za spavanje?</string>
     <string name="set_sleep_timer">Podesi tajmer za spavanje</string>
     <string name="add_to_playlist">Dodaj na plejlistu</string>
+    <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
+    <string name="set_sleep_timer">Set sleep timer</string>
+    <string name="add_to_playlist">Add to playlist</string>
     <string name="go_to_album">Idi na album</string>
     <string name="remove_from_queue">Ukloni iz redosleda</string>
     <string name="remove_from_playlist">Ukloni sa plejliste</string>
@@ -402,7 +405,6 @@
     <string name="navigation_bar_type">Tip trake za navigaciju</string>
     <string name="icon_and_text">Ikona i tekst</string>
     <string name="only_icon">Samo ikona</string>
-    <string name="show_search_tab_in_home">Prikaži Karticu Za Pretragu na Početnoj stranici</string>
     <string name="action_bar_show_menu_button">Prikaži dugme za meni</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Koristi prelaznu boju pozadine</string>
@@ -509,4 +511,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

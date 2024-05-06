@@ -18,6 +18,8 @@
     <string name="similar_artists">Схожі артисти</string>
     <string name="playlists_you_might_like">Плейлисти які можуть вам сподобатися</string>
     <string name="an_error_has_occurred">Сталася помилка</string>
+    <string name="playlists_you_might_like">Playlists you might like</string>
+    <string name="an_error_has_occurred">an_error_has_occurred</string>
     <string name="albums">Альбоми</string>
     <string name="artists">Виконавці</string>
     <string name="enter_the_playlist_name">Введіть назву плейлиста</string>
@@ -402,7 +404,6 @@
     <string name="navigation_bar_type">Тип панелі навігації</string>
     <string name="icon_and_text">Іконка та текст</string>
     <string name="only_icon">Тільки іконка</string>
-    <string name="show_search_tab_in_home">Показати панель пошуку на домашній сторінці</string>
     <string name="action_bar_show_menu_button">Показати кнопку меню</string>
     <string name="sort_album">Альбом</string>
     <string name="use_gradient_background">Використовувати градієнт для фону</string>
@@ -509,4 +510,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

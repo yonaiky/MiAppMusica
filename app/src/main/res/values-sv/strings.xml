@@ -15,6 +15,7 @@
     <string name="hide">Dölj</string>
     <string name="hide_from_quick_picks">Dölj från \"Snabbval\"</string>
     <string name="related_albums">Relaterade album</string>
+    <string name="related_albums">Related albums</string>
     <string name="similar_artists">Liknande artister</string>
     <string name="playlists_you_might_like">Spellistor du kanske gillar</string>
     <string name="an_error_has_occurred">Ett fel har inträffat</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">Typ av navigeringsfält</string>
     <string name="icon_and_text">Ikoner och text</string>
     <string name="only_icon">Endast ikoner</string>
-    <string name="show_search_tab_in_home">Visa sökfliken på startsidan</string>
     <string name="action_bar_show_menu_button">Visa menyknapp</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Använd gradient bakgrund</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

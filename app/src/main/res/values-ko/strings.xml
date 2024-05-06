@@ -402,7 +402,6 @@
     <string name="navigation_bar_type">내비게이션 바 유형</string>
     <string name="icon_and_text">아이콘&amp;텍스트</string>
     <string name="only_icon">아이콘만</string>
-    <string name="show_search_tab_in_home">사이드바에 검색 탭 표시</string>
     <string name="action_bar_show_menu_button">메뉴 버튼 표시</string>
     <string name="sort_album">앨범</string>
     <string name="use_gradient_background">그라데이션 색상 배경 사용</string>
@@ -509,4 +508,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

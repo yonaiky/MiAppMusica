@@ -32,6 +32,7 @@
     <string name="view_all">Alles bekijken</string>
     <string name="from_wikipedia_cca">Van Wikipedia onder Creative Commons Attribution CC-BY-SA 3.0</string>
     <string name="overview">Overzicht</string>
+    <string name="overview">overview</string>
     <string name="singles">Singles</string>
     <string name="library">Bibliotheek</string>
     <string name="artist_no_release_album">Deze artiest heeft geen album vrijgegeven</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">Type navigatiebalk</string>
     <string name="icon_and_text">Icoon en tekst</string>
     <string name="only_icon">Alleen icoon</string>
-    <string name="show_search_tab_in_home">Toon Zoektabblad in startscherm</string>
     <string name="action_bar_show_menu_button">Menuknop weergeven</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Gradiëntachtergrond gebruiken</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>

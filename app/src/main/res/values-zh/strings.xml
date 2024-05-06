@@ -21,6 +21,7 @@
     <string name="albums">专辑</string>
     <string name="artists">艺术家</string>
     <string name="enter_the_playlist_name">输入播放列表名称</string>
+    <string name="enter_the_playlist_name">enter_the_playlist_name</string>
     <string name="playlists">播放列表</string>
     <string name="favorites">收藏夹</string>
     <string name="quick_picks">快速选择</string>
@@ -402,7 +403,6 @@
     <string name="navigation_bar_type">Navigation bar type</string>
     <string name="icon_and_text">Icon and text</string>
     <string name="only_icon">Only icon</string>
-    <string name="show_search_tab_in_home">Show Search Tab in Home</string>
     <string name="action_bar_show_menu_button">Show menu button</string>
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Use gradient background</string>
@@ -509,4 +509,6 @@
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
 </resources>
