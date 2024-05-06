@@ -25,7 +25,6 @@ data class Appearance(
         }
 
         override fun SaverScope.save(value: Appearance): List<Any> {
-            println("mediaItem value.thumbnailShape ${value.thumbnailShape}")
             return listOf(
                 with(ColorPalette.Companion) { save(value.colorPalette) },
                 with(Typography.Companion) { save(value.typography) },
