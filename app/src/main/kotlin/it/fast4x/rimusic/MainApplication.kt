@@ -4,6 +4,7 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.kieronquinn.monetcompat.core.MonetCompat
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
@@ -20,6 +21,11 @@ class MainApplication : Application(), ImageLoaderFactory {
         return ImageLoader.Builder(this)
             .crossfade(true)
             .respectCacheHeaders(false)
+            .memoryCache(
+                MemoryCache.Builder(this)
+                    .maxSizePercent(0.25)
+                    .build()
+            )
             .diskCache(
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("coil"))

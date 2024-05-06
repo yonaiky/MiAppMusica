@@ -383,7 +383,7 @@ class PlayerService : InvincibleService(),
         super.onCreate()
 
         bitmapProvider = BitmapProvider(
-            bitmapSize = (256 * resources.displayMetrics.density).roundToInt(),
+            bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
             colorProvider = { isSystemInDarkMode ->
                 if (isSystemInDarkMode) Color.BLACK else Color.WHITE
             }

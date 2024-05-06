@@ -16,7 +16,7 @@ import it.fast4x.rimusic.ui.styling.hsl
 suspend fun getBitmapFromUrl(context: Context, url: String): Bitmap {
     val loading = ImageLoader(context)
     val request = ImageRequest.Builder(context).data(url).allowHardware(false).build()
-    val result = (loading .execute(request) as SuccessResult).drawable
+    val result = (loading.execute(request) as SuccessResult).drawable
     return (result as BitmapDrawable).bitmap
 }
 
