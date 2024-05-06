@@ -152,6 +152,7 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
@@ -623,8 +624,8 @@ fun LocalPlaylistSongs(
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
                             //.fillMaxHeight()
-                            .fillMaxWidth(0.7f)
-                            //.border(BorderStroke(1.dp, Color.White))
+                            .padding(end = 10.dp)
+                            .fillMaxWidth( if (isLandscape) 0.90f else 0.80f )
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
@@ -648,10 +649,7 @@ fun LocalPlaylistSongs(
 
                     Column (
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            //.fillMaxHeight()
-                        //.border(BorderStroke(1.dp, Color.White))
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         HeaderIconButton(
                             icon = R.drawable.smart_shuffle,

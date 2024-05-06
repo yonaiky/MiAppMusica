@@ -11,8 +11,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -152,6 +154,7 @@ import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
@@ -596,8 +599,8 @@ fun BuiltInPlaylistSongs(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
-                            //.fillMaxHeight()
-                            .fillMaxWidth(0.7f)
+                            .padding(end = 10.dp)
+                            .fillMaxWidth( if (isLandscape) 0.90f else 0.80f )
                         //.border(BorderStroke(1.dp, Color.White))
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -622,10 +625,7 @@ fun BuiltInPlaylistSongs(
 
                     Column (
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                        //.fillMaxHeight()
-                        //.border(BorderStroke(1.dp, Color.White))
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         HeaderIconButton(
                             icon = R.drawable.smart_shuffle,
