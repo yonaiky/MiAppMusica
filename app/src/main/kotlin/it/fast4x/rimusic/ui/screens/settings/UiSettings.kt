@@ -96,6 +96,7 @@ import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
@@ -246,6 +247,7 @@ fun  UiSettings() {
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
+    var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
 
     Column(
         modifier = Modifier
@@ -896,6 +898,19 @@ fun  UiSettings() {
                 text = "",
                 isChecked = showPlaylists,
                 onCheckedChange = { showPlaylists = it }
+            )
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(stringResource(R.string.monthly_playlists).uppercase())
+
+        if (filter.isNullOrBlank() || stringResource(R.string.monthly_playlists).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "Enable monthly playlists creation",
+                text = "",
+                isChecked = enableCreateMonthlyPlaylists,
+                onCheckedChange = {
+                    enableCreateMonthlyPlaylists = it
+                }
             )
 
         SettingsGroupSpacer()

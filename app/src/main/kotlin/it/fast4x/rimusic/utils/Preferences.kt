@@ -141,6 +141,7 @@ const val showMonthlyPlaylistsKey = "showMonthlyPlaylists"
 const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
+const val enableCreateMonthlyPlaylistsKey = "enableCreateMonthlyPlaylists"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
