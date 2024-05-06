@@ -10,6 +10,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -45,6 +46,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,12 +103,15 @@ import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
@@ -219,6 +224,7 @@ class MainActivity :
     }
 
     private var binder by mutableStateOf<PlayerService.Binder?>(null)
+    private var intentUriData by mutableStateOf<Uri?>(null)
 
     override lateinit var persistMap: PersistMap
 
@@ -278,7 +284,7 @@ class MainActivity :
             }
         }
          */
-        onNewIntent(intent)
+        //onNewIntent(intent)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         Objects.requireNonNull(sensorManager)
@@ -303,6 +309,8 @@ class MainActivity :
 
         val launchedFromNotification =
             intent?.extras?.getBoolean("expandPlayerBottomSheet") == true
+
+        intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 
         with(preferences) {
             if (getBoolean(isKeepScreenOnEnabledKey, false)) {
@@ -356,6 +364,7 @@ class MainActivity :
 
             val coroutineScope = rememberCoroutineScope()
             val isSystemInDarkTheme = isSystemInDarkTheme()
+            val navController = rememberNavController()
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
@@ -679,7 +688,7 @@ class MainActivity :
                     }
                 }
 
-                val navController = rememberNavController()
+
 
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
@@ -805,6 +814,55 @@ class MainActivity :
                 InitDownloader()
 
             }
+
+            LaunchedEffect(intentUriData) {
+                val uri = intentUriData ?: return@LaunchedEffect
+
+                SmartToast( message ="${"RiMusic "}${getString(R.string.opening_url)}", durationLong = true)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    when (val path = uri.pathSegments.firstOrNull()) {
+                        "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
+                            val browseId = "VL$playlistId"
+
+                            if (playlistId.startsWith("OLAK5uy_")) {
+                                Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
+                                    it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
+                                        navController.navigate(route = "${NavRoutes.album.name}/$browseId")
+
+                                    }
+                                }
+                            } else {
+                                //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
+                                navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
+                            }
+                        }
+
+                        "channel", "c" -> uri.lastPathSegment?.let { channelId ->
+                            try {
+                                navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
+                            } catch (e:Exception) {
+                                //println("mediaItem error $e.message")
+                            }
+                        }
+
+                        else -> when {
+                            path == "watch" -> uri.getQueryParameter("v")
+                            uri.host == "youtu.be" -> path
+                            else -> null
+                        }?.let { videoId ->
+                            Innertube.song(videoId)?.getOrNull()?.let { song ->
+                                val binder = snapshotFlow { binder }.filterNotNull().first()
+                                withContext(Dispatchers.Main) {
+                                    binder.player.forcePlay(song.asMediaItem)
+                                }
+                            }
+                        }
+                    }
+                }
+                intentUriData = null
+            }
+
         }
     }
 
@@ -858,6 +916,7 @@ class MainActivity :
     @UnstableApi
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 
 /*
                val action = intent.action
@@ -869,7 +928,7 @@ class MainActivity :
                    Log.d("ShareActionTextExtra", intent.getStringExtra("android.intent.extra.TEXT")!!)
                }
 */
-
+/*
         //val uri = intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
         val uri = intent.data ?: intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
         //val uri = intent?.data ?: return
@@ -887,7 +946,9 @@ class MainActivity :
                     if (playlistId.startsWith("OLAK5uy_")) {
                         Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
                             it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
-                                albumRoute.ensureGlobal(browseId)
+                                //albumRoute.ensureGlobal(browseId)
+
+
                             }
                         }
                     } else {
@@ -916,6 +977,8 @@ class MainActivity :
                 }
             }
         }
+        */
+
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
