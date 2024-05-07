@@ -36,6 +36,8 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -175,14 +177,33 @@ fun Thumbnail(
 
             if(artImageAvailable)
                 AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                            thumbnailSizePx
+                        ))
+                        .memoryCachePolicy(CachePolicy.ENABLED)
+                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .diskCacheKey(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                            thumbnailSizePx
+                        ).toString())
+                        .memoryCacheKey(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                            thumbnailSizePx
+                        ).toString())
+                        .crossfade(true)
+                        .build(),
+                    /*
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
                         thumbnailSizePx
                     ),
+
+                     */
                     onSuccess = {
                         artImageAvailable = true
+                        println("mediaItem artImageAvailable = true")
                     },
                     onError = {
                         artImageAvailable = false
+                        println("mediaItem error artImageAvailable = false")
                     },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,

@@ -66,6 +66,8 @@ class BitmapProvider(
             ImageRequest.Builder(applicationContext)
                 .data(uri.thumbnail(bitmapSize))
                 .allowHardware(false)
+                .diskCacheKey(uri.thumbnail(bitmapSize).toString())
+                .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
                 .listener(
                     onError = { _, _ ->
                         lastBitmap = null
