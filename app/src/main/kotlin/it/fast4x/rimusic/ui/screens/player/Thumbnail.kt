@@ -177,33 +177,14 @@ fun Thumbnail(
 
             if(artImageAvailable)
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                            thumbnailSizePx
-                        ))
-                        .memoryCachePolicy(CachePolicy.ENABLED)
-                        .diskCachePolicy(CachePolicy.ENABLED)
-                        .diskCacheKey(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                            thumbnailSizePx
-                        ).toString())
-                        .memoryCacheKey(currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                            thumbnailSizePx
-                        ).toString())
-                        .crossfade(true)
-                        .build(),
-                    /*
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
                         thumbnailSizePx
                     ),
-
-                     */
                     onSuccess = {
                         artImageAvailable = true
-                        println("mediaItem artImageAvailable = true")
                     },
                     onError = {
                         artImageAvailable = false
-                        println("mediaItem error artImageAvailable = false")
                     },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
