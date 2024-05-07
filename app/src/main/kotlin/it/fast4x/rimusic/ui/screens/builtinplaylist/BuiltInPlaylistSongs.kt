@@ -154,6 +154,7 @@ import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -163,6 +164,7 @@ import it.fast4x.rimusic.utils.songToggleLike
 import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.shareIn
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -188,6 +190,7 @@ fun BuiltInPlaylistSongs(
 
     var sortBy by rememberPreference(songSortByKey, SongSortBy.DateAdded)
     var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
+    var autoShuffle by rememberPreference(autoShuffleKey, false)
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
@@ -247,7 +250,7 @@ fun BuiltInPlaylistSongs(
     }
 
 
-     LaunchedEffect(Unit, sortBy, sortOrder, filter, reloadSongs) {
+     LaunchedEffect(Unit, sortBy, sortOrder, filter, reloadSongs, autoShuffle) {
          when (builtInPlaylist) {
 
              BuiltInPlaylist.Downloaded -> {
@@ -277,8 +280,11 @@ fun BuiltInPlaylistSongs(
              BuiltInPlaylist.Top ->
                  Database.trending(maxTopPlaylistItems.number.toInt())
 
-         }.collect { songs = it }
-
+         }.collect { songs =
+             if (autoShuffle && builtInPlaylist == BuiltInPlaylist.Favorites)
+                 it.shuffled()
+             else it
+         }
     }
 
     val thumbnailSizeDp = Dimensions.thumbnails.song
@@ -317,6 +323,10 @@ fun BuiltInPlaylistSongs(
             }
         }
 
+    }
+
+    if (builtInPlaylist == BuiltInPlaylist.Favorites) {
+        songs.shuffled()
     }
 
 
@@ -791,6 +801,7 @@ fun BuiltInPlaylistSongs(
 
                      */
 
+
                     if (builtInPlaylist == BuiltInPlaylist.Offline)
                         HeaderIconButton(
                             icon = R.drawable.trash,
@@ -807,6 +818,24 @@ fun BuiltInPlaylistSongs(
                                     }
                                 )
                         )
+
+                    if (builtInPlaylist == BuiltInPlaylist.Favorites)
+                        HeaderIconButton(
+                            icon = R.drawable.random,
+                            enabled = true,
+                            color = if (autoShuffle) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        autoShuffle = !autoShuffle
+                                    },
+                                    onLongClick = {
+                                        SmartToast("Random sorting")
+                                    }
+                                )
+                        )
+
 
                     /*
                     HeaderIconButton(
