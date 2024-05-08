@@ -105,6 +105,7 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -188,7 +189,7 @@ fun ArtistOverviewModern(
 
     val artist by persist<Artist?>("artist/$browseId/artist")
 
-    //LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
+    LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
                 .background(colorPalette.background0)
@@ -217,24 +218,26 @@ fun ArtistOverviewModern(
                      */
             ) {
 
+                val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().aspectRatio(4f / 3)
+
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3)
+                    modifier = modifierArt
                 ) {
                     if (youtubeArtistPage != null) {
-                        AsyncImage(
-                            model = youtubeArtistPage?.thumbnail?.url?.resize(1200, 900),
-                            contentDescription = "loading...",
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .fadingEdge(
-                                    top = WindowInsets.systemBars
-                                        .asPaddingValues()
-                                        .calculateTopPadding() + 64.dp,
-                                    bottom = 100.dp
-                                )
-                        )
+                        if(!isLandscape)
+                            AsyncImage(
+                                model = youtubeArtistPage?.thumbnail?.url?.resize(1200, 900),
+                                contentDescription = "loading...",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.Center)
+                                    .fadingEdge(
+                                        top = WindowInsets.systemBars
+                                            .asPaddingValues()
+                                            .calculateTopPadding() + 64.dp,
+                                        bottom = 100.dp
+                                    )
+                            )
 
                         AutoResizeText(
                             text = youtubeArtistPage.name.toString(),
@@ -864,5 +867,5 @@ fun ArtistOverviewModern(
 
 
         }
-    //}
+    }
 }

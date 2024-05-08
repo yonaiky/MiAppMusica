@@ -280,7 +280,7 @@ fun AlbumScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> AlbumDetails(
+                        0 -> AlbumDetailsModern(
                             navController = navController,
                             browseId = browseId,
                             headerContent = headerContent,

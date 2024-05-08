@@ -8,8 +8,11 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -84,6 +87,7 @@ import it.fast4x.rimusic.utils.artistScreenTabIndexKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
@@ -214,7 +218,7 @@ fun ArtistScreen(
                     artist?.thumbnailUrl,
                     //CircleShape
                     onClick = { changeShape = !changeShape },
-                    shape = if (!changeShape) CircleShape else thumbnailRoundness.shape(),
+                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
