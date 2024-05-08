@@ -105,6 +105,7 @@ import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showMonthlyPlaylistInLibraryKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
@@ -285,6 +286,7 @@ fun HomeLibrary(
     var showPlaylistsGeneral by rememberPreference(showPlaylistsGeneralKey, true)
     var showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
     val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
+    val showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
 
     //println("mediaItem ${getCalculatedMonths(0)} ${getCalculatedMonths(1)}")
     if (enableCreateMonthlyPlaylists)
@@ -534,33 +536,35 @@ fun HomeLibrary(
 
             if (showPlaylists) {
 
-                item(
-                    key = "headerMonthlyPlaylists",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }) {
-                    Title(
-                        title = stringResource(R.string.monthly_playlists),
-                        onClick = { showMonthlyPlaylists = !showMonthlyPlaylists },
-                        icon = if (showMonthlyPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward,
-                        modifier = Modifier
-                            .background(colorPalette.background2)
-                    )
-                }
-
-                if (showMonthlyPlaylists) {
-                    items(items = items.filter {
-                        it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                    }, key = { "M${it.playlist.id}" }) { playlistPreview ->
-                        PlaylistItem(
-                            playlist = playlistPreview,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSizePx,
-                            alternative = true,
+                if (showMonthlyPlaylistInLibrary) {
+                    item(
+                        key = "headerMonthlyPlaylists",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }) {
+                        Title(
+                            title = stringResource(R.string.monthly_playlists),
+                            onClick = { showMonthlyPlaylists = !showMonthlyPlaylists },
+                            icon = if (showMonthlyPlaylists) R.drawable.arrow_down else R.drawable.arrow_forward,
                             modifier = Modifier
-                                .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                                .animateItemPlacement()
-                                .fillMaxSize()
+                                .background(colorPalette.background2)
                         )
+                    }
+
+                    if (showMonthlyPlaylists) {
+                        items(items = items.filter {
+                            it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                        }, key = { "M${it.playlist.id}" }) { playlistPreview ->
+                            PlaylistItem(
+                                playlist = playlistPreview,
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                thumbnailSizePx = thumbnailSizePx,
+                                alternative = true,
+                                modifier = Modifier
+                                    .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                                    .animateItemPlacement()
+                                    .fillMaxSize()
+                            )
+                        }
                     }
                 }
 
