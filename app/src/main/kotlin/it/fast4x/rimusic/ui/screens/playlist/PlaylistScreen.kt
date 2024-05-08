@@ -63,7 +63,7 @@ fun PlaylistScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> PlaylistSongList(
+                        0 -> PlaylistSongListModern(
                             navController = navController,
                             browseId = browseId,
                             params = params,

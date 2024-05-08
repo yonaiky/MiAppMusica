@@ -483,25 +483,26 @@ fun AlbumDetailsModern(
                         key = "header"
                     ) {
 
+                        val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().aspectRatio(4f / 3)
+
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(4f / 3)
+                            modifier = modifierArt
                         ) {
                             if (album != null) {
-                                AsyncImage(
-                                    model = album?.thumbnailUrl?.resize(1200, 900),
-                                    contentDescription = "loading...",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.Center)
-                                        .fadingEdge(
-                                            top = WindowInsets.systemBars
-                                                .asPaddingValues()
-                                                .calculateTopPadding() + 64.dp,
-                                            bottom = 100.dp
-                                        )
-                                )
+                                if(!isLandscape)
+                                    AsyncImage(
+                                        model = album?.thumbnailUrl?.resize(1200, 900),
+                                        contentDescription = "loading...",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.Center)
+                                            .fadingEdge(
+                                                top = WindowInsets.systemBars
+                                                    .asPaddingValues()
+                                                    .calculateTopPadding() + 64.dp,
+                                                bottom = 100.dp
+                                            )
+                                    )
 
                                 AutoResizeText(
                                     text = album?.title ?: "",
@@ -519,33 +520,24 @@ fun AlbumDetailsModern(
                                         .padding(bottom = 20.dp)
                                 )
 
-                                if (album != null) {
-                                    BasicText(
-                                        text = songs.size.toString() + " "
-                                                + stringResource(R.string.songs)
-                                                + " - " + formatAsTime(totalPlayTimes),
-                                        style = typography.xs.medium,
-                                        maxLines = 1,
-                                        modifier = Modifier
-                                            //.padding(top = 10.dp)
-                                            .align(Alignment.BottomCenter)
-                                    )
-                                } else {
-                                    BasicText(
-                                        text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                        style = typography.xs.medium,
-                                        maxLines = 1,
-                                        modifier = Modifier
-                                            //.padding(top = 10.dp)
-                                            .align(Alignment.BottomCenter)
-                                    )
-                                }
+                                BasicText(
+                                    text = songs.size.toString() + " "
+                                            + stringResource(R.string.songs)
+                                            + " - " + formatAsTime(totalPlayTimes),
+                                    style = typography.xs.medium,
+                                    maxLines = 1,
+                                    modifier = Modifier
+                                        //.padding(top = 10.dp)
+                                        .align(Alignment.BottomCenter)
+                                )
 
                                 HeaderIconButton(
                                     icon = R.drawable.share_social,
                                     color = colorPalette.text,
                                     iconSize = 24.dp,
-                                    modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(top = 5.dp, end= 5.dp),
                                     onClick = {
                                         album?.shareUrl?.let { url ->
                                             val sendIntent = Intent().apply {
@@ -576,6 +568,14 @@ fun AlbumDetailsModern(
                                         AlbumItemPlaceholder(
                                             thumbnailSizeDp = 200.dp,
                                             alternative = true
+                                        )
+                                        BasicText(
+                                            text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
+                                            style = typography.xs.medium,
+                                            maxLines = 1,
+                                            modifier = Modifier
+                                            //.padding(top = 10.dp)
+
                                         )
                                     }
                                 }
@@ -816,42 +816,6 @@ fun AlbumDetailsModern(
 
                                     }
                                 )
-                            //}
-
-                            /*
-                            if (!isLandscape) {
-                                thumbnailContent()
-                            }
-                             */
-
-                            /*
-                            album?.title?.let {
-                                BasicText(
-                                    text = it,
-                                    style = typography.xs.semiBold,
-                                    maxLines = 1
-                                )
-                            }
-                             */
-                            /*
-                            if (album != null) {
-                                BasicText(
-                                    text = songs.size.toString() + " "
-                                            + stringResource(R.string.songs)
-                                            + " - " + formatAsTime(totalPlayTimes),
-                                    style = typography.xs.medium,
-                                    maxLines = 1,
-                                    modifier = Modifier
-                                        .padding(all = 5.dp)
-                                )
-                            } else {
-                                BasicText(
-                                    text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                    style = typography.xs.medium,
-                                    maxLines = 1
-                                )
-                            }
-                            */
 
                         }
                     }

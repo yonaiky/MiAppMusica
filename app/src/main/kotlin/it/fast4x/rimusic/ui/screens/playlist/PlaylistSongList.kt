@@ -274,6 +274,7 @@ fun PlaylistSongList(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                /*
                 HeaderWithIcon(
                     title = playlistPage?.title ?: "Unknown",
                     iconId = R.drawable.playlist,
@@ -283,8 +284,10 @@ fun PlaylistSongList(
                         .padding(bottom = 8.dp),
                     onClick = {}
                 ) //{
-
+ */
             }
+
+
 
             //Header(title = playlistPage?.title ?: "Unknown") {
             Row(
@@ -294,6 +297,7 @@ fun PlaylistSongList(
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth()
             ) {
+                /*
                 HeaderInfo(
                     title = "${playlistPage?.songsPage?.items?.size}",
                     icon = painterResource(R.drawable.musical_notes),
@@ -304,7 +308,7 @@ fun PlaylistSongList(
                     modifier = Modifier
                         .weight(1f)
                 )
-
+                */
                 HeaderIconButton(
                     onClick = { searching = !searching },
                     icon = R.drawable.search_circle,
@@ -660,8 +664,8 @@ fun PlaylistSongList(
         ) {
             LazyColumn(
                 state = lazyListState,
-                contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+                //contentPadding = LocalPlayerAwareWindowInsets.current
+                //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
                     .background(colorPalette.background0)
                     .fillMaxSize()
@@ -671,10 +675,11 @@ fun PlaylistSongList(
                     contentType = 0
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        headerContent()
+
                         if (!isLandscape) thumbnailContent()
 
                         if (playlistPage != null) {
+                            headerContent()
                             playlistPage?.title?.let {
                                 BasicText(
                                     text = it,

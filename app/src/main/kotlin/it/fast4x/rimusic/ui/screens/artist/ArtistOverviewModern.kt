@@ -218,7 +218,9 @@ fun ArtistOverviewModern(
                      */
             ) {
 
-                val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().aspectRatio(4f / 3)
+                val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(4f / 3)
 
                 Box(
                     modifier = modifierArt
@@ -272,7 +274,9 @@ fun ArtistOverviewModern(
                             icon = R.drawable.share_social,
                             color = colorPalette.text,
                             iconSize = 24.dp,
-                            modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(top = 5.dp, end = 5.dp),
                             onClick = {
                                 val sendIntent = Intent().apply {
                                     action = Intent.ACTION_SEND
@@ -286,26 +290,6 @@ fun ArtistOverviewModern(
                                 context.startActivity(Intent.createChooser(sendIntent, null))
                             }
                         )
-
-                        /*
-                        SecondaryTextButton(
-                            text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
-                                R.string.following
-                            ),
-                            onClick = {
-                                val bookmarkedAt =
-                                    if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                query {
-                                    artist
-                                        ?.copy(bookmarkedAt = bookmarkedAt)
-                                        ?.let(Database::update)
-                                }
-                            },
-                            alternative = if (artist?.bookmarkedAt == null) true else false,
-                            modifier = Modifier.align(Alignment.TopEnd).padding(end = 5.dp, top = 5.dp)
-                        )
-                         */
 
                     } else {
                         Column(
@@ -508,26 +492,11 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     if (youtubeArtistPage.songsEndpoint?.browseId != null) {
                                         onViewAllSongsClick()
-                                    } else SmartToast("No songs yet")
+                                    } else SmartToast(context.getString(R.string.info_no_songs_yet))
                                 },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
-                            /*
-                            BasicText(
-                                text = stringResource(R.string.songs),
-                                style = typography.m.semiBold,
-                                modifier = sectionTextModifier
-                            )
 
-                            youtubeArtistPage.songsEndpoint?.let {
-                                BasicText(
-                                    text = stringResource(R.string.view_all),
-                                    style = typography.xs.semiBold,
-                                    modifier = sectionTextModifier
-                                        .clickable(onClick = onViewAllSongsClick),
-                                )
-                            }
-                             */
                         }
 
                         songs.forEachIndexed { index, song ->
@@ -606,7 +575,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                         onViewAllAlbumsClick()
-                                    } else SmartToast("No albums yet")
+                                    } else SmartToast(context.getString(R.string.info_no_albums_yet))
                                 }
                             )
                             /*
@@ -661,7 +630,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
                                         onViewAllSinglesClick()
-                                    } else SmartToast("No singles yet")
+                                    } else SmartToast(context.getString(R.string.info_no_singles_yet))
                                 }
                             )
                             /*
