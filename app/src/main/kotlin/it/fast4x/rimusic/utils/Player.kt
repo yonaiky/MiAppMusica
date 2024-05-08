@@ -65,8 +65,6 @@ fun Player.forcePlay(mediaItem: MediaItem) {
 fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
     if (mediaItems.isEmpty()) return
 
-    //Log.d("mediaItem-forcePlayAtIndex",mediaItemIndex.toString())
-
     setMediaItems(mediaItems, mediaItemIndex, C.TIME_UNSET)
     playWhenReady = true
     prepare()
