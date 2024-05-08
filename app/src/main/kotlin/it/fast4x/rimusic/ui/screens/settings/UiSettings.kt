@@ -165,7 +165,7 @@ fun  UiSettings() {
     )
     var persistentQueue by rememberPreference(persistentQueueKey, false)
     var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
-    var closeWithBackButton by rememberPreference(closeWithBackButtonKey, false)
+    var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
     var resumePlaybackWhenDeviceConnected by rememberPreference(
         resumePlaybackWhenDeviceConnectedKey,
         false
