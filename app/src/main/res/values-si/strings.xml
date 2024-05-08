@@ -511,4 +511,5 @@ CC-BY-SA 3.0</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient background from theme</string>
     <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
     <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
+    <string name="enable_monthly_playlists_creation">Enable monthly playlists creation</string>
 </resources>

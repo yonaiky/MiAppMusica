@@ -914,7 +914,7 @@ fun  UiSettings() {
 
         if (filter.isNullOrBlank() || stringResource(R.string.monthly_playlists).contains(filterCharSequence,true))
             SwitchSettingEntry(
-                title = "Enable monthly playlists creation",
+                title = stringResource(R.string.enable_monthly_playlists_creation),
                 text = "",
                 isChecked = enableCreateMonthlyPlaylists,
                 onCheckedChange = {
