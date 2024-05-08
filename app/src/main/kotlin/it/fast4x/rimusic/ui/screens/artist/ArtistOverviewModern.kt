@@ -236,8 +236,8 @@ fun ArtistOverviewModern(
                                     .fadingEdge(
                                         top = WindowInsets.systemBars
                                             .asPaddingValues()
-                                            .calculateTopPadding() + 64.dp,
-                                        bottom = 100.dp
+                                            .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                        bottom = Dimensions.fadeSpacingBottom
                                     )
                             )
 

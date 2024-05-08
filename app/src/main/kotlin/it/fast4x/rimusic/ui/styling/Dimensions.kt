@@ -22,6 +22,8 @@ object Dimensions {
     val contentWidthRightBar = 0.88f
     val additionalVerticalSpaceForFloatingAction = 40.dp
     val bottomSpacer = 100.dp
+    val fadeSpacingTop = 30.dp
+    val fadeSpacingBottom = 64.dp
 
 
     object thumbnails {
