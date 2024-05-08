@@ -541,7 +541,7 @@ fun ArtistScreen(
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
                                                         listMediaItems.distinct(),
-                                                        listMediaItems.indexOf(song.asMediaItem)
+                                                        listMediaItems.distinct().indexOf(song.asMediaItem)
                                                     )
                                                     /*
                                                     binder?.stopRadio()
