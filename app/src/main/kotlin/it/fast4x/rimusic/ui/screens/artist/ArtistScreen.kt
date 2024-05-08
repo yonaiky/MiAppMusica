@@ -431,8 +431,9 @@ fun ArtistScreen(
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> {
-                            ArtistOverview(
+                            ArtistOverviewModern(
                                 navController = navController,
+                                browseId = browseId,
                                 youtubeArtistPage = artistPage,
                                 thumbnailContent = thumbnailContent,
                                 headerContent = headerContent,
