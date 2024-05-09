@@ -459,7 +459,7 @@ fun ButtonBarSettingEntry(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
 ) {
-
+    val (colorPalette, _) = LocalAppearance.current
     SettingsEntry(
         title = title,
         text = text,
@@ -468,7 +468,7 @@ fun ButtonBarSettingEntry(
         trailingContent = {
             Image(
                 painter = painterResource(icon),
-                //colorFilter = ColorFilter.tint(colorPalette.background1),
+                colorFilter = ColorFilter.tint(colorPalette.text),
                 modifier = modifier,
                 contentDescription = null,
                 contentScale = ContentScale.Fit
