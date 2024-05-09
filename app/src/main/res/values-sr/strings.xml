@@ -440,7 +440,7 @@
     <string name="yesterday">Јуче</string>
     <string name="this_week">Ове недеље</string>
     <string name="last_week">Претходне недељe</string>
-    <string name="by_casual_played_song">By Casual played song</string>
+    <string name="by_casual_played_song">Повремено пуштана песма</string>
     <string name="theme_material_you">Материјал Ти</string>
     <string name="show_statistics_in_navigation_bar">Прикажи статистику на траци за навигацију</string>
     <string name="settings">Подешавања</string>
@@ -449,12 +449,12 @@
     <string name="library_collections">Колекције</string>
     <string name="info_show_hide_hidden_songs">Прикажи/сакриј скривене песме</string>
     <string name="info_shuffle">Насумично</string>
-    <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
-    <string name="info_enqueue_songs">Enqueue songs</string>
-    <string name="info_download_all_songs">Download all songs</string>
-    <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
-    <string name="info_start_radio">Start radio</string>
-    <string name="info_translation">Translation</string>
+    <string name="info_includes_excludes_songs_on_the_device">Укључује/Искључује песме на уређају</string>
+    <string name="info_enqueue_songs">Песме у реду</string>
+    <string name="info_download_all_songs">Преузми све песме</string>
+    <string name="info_remove_all_downloaded_songs">Уклони све преузете песме</string>
+    <string name="info_start_radio">Покрени радио</string>
+    <string name="info_translation">Превод</string>
     <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
     <string name="info_smart_recommendation">Smart recommendation</string>
     <string name="info_clean_cached_congs">Clean cached congs</string>
