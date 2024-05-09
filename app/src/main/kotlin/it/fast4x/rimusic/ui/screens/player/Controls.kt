@@ -822,7 +822,8 @@ fun Controls(
                     .clip(RoundedCornerShape(playPauseRoundness))
                     .background(
                         when (colorPaletteName) {
-                            ColorPaletteName.Dynamic, ColorPaletteName.Default, ColorPaletteName.MaterialYou -> {
+                            ColorPaletteName.Dynamic, ColorPaletteName.Default,
+                            ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> {
                                 when (playerPlayButtonType) {
                                     PlayerPlayButtonType.CircularRibbed -> {
                                         if (isGradientBackgroundEnabled) colorPalette.background2

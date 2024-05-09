@@ -514,4 +514,26 @@
     <string name="info_no_singles_yet">No singles yet</string>
     <string name="info_no_albums_yet">No albums yet</string>
     <string name="info_no_songs_yet">No songs yet</string>
+    <string name="theme_customized">Customized</string>
+    <string name="do_you_really_want_to_reset_the_custom_light_theme_colors">Do you really want to reset the custom light theme colors?</string>
+    <string name="do_you_really_want_to_reset_the_custom_dark_theme_colors">Do you really want to reset the custom dark theme colors</string>
+    <string name="info_reset_custom_light_theme_colors">Reset custom light theme colors</string>
+    <string name="info_reset_custom_dark_theme_colors">Reset custom dark theme colors</string>
+    <string name="title_customized_light_theme_colors">Customized light theme colors</string>
+    <string name="title_reset_customized_light_colors">Reset customized light colors</string>
+    <string name="info_click_to_reset_default_light_colors">Click to reset default light colors</string>
+    <string name="color_background_1">Background 1</string>
+    <string name="color_background_2">Background 2</string>
+    <string name="color_background_3">Background 3</string>
+    <string name="color_background_4">Background 4</string>
+    <string name="color_background_5">Background 5</string>
+    <string name="color_text">Text</string>
+    <string name="color_text_secondary">Text secondary</string>
+    <string name="color_text_disabled">Text disabled</string>
+    <string name="color_icon_button_player">Icon button player</string>
+    <string name="color_accent">Accent</string>
+    <string name="title_customized_dark_theme_colors">Customized dark theme colors</string>
+    <string name="title_reset_customized_dark_colors">Reset customized dark colors</string>
+    <string name="click_to_reset_default_dark_colors">Click to reset default dark colors</string>
+    <string name="info_color_s_applied">Color %s applied</string>
 </resources>

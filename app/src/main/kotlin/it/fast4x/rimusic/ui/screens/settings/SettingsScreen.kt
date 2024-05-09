@@ -2,15 +2,22 @@ package it.fast4x.rimusic.ui.screens.settings
 
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -24,6 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
@@ -31,9 +44,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
@@ -395,4 +411,70 @@ fun TextDialogSettingEntry(
         trailingContent = { },
         modifier = modifier
     )
+}
+
+@Composable
+fun ColorSettingEntry(
+    title: String,
+    text: String,
+    color: Color,
+    onColorSelected: (Color) -> Unit,
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
+) {
+    var showColorPicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    SettingsEntry(
+        title = title,
+        text = text,
+        isEnabled = isEnabled,
+        onClick = { showColorPicker = true },
+        trailingContent = {
+            Box(
+                modifier = Modifier
+                    .size(20.dp)
+                    .background(color)
+                    .border(BorderStroke(1.dp, Color.LightGray))
+            )
+        },
+        modifier = modifier
+    )
+
+    if (showColorPicker)
+        DialogColorPicker(onDismiss = { showColorPicker = false }) {
+            onColorSelected(it)
+            showColorPicker = false
+            SmartToast(context.getString(R.string.info_color_s_applied).format(title))
+        }
+
+}
+
+@Composable
+fun ButtonBarSettingEntry(
+    title: String,
+    text: String,
+    icon: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
+) {
+
+    SettingsEntry(
+        title = title,
+        text = text,
+        isEnabled = isEnabled,
+        onClick = onClick,
+        trailingContent = {
+            Image(
+                painter = painterResource(icon),
+                //colorFilter = ColorFilter.tint(colorPalette.background1),
+                modifier = modifier,
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+        },
+        modifier = modifier
+    )
+
 }

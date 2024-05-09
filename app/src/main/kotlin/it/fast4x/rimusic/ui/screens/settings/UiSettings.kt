@@ -11,17 +11,18 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -52,7 +54,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import androidx.media3.exoplayer.offline.Download
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
@@ -78,21 +81,48 @@ import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.query
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.Title
+import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
+import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.customThemeDark_Background0Key
+import it.fast4x.rimusic.utils.customThemeDark_Background1Key
+import it.fast4x.rimusic.utils.customThemeDark_Background2Key
+import it.fast4x.rimusic.utils.customThemeDark_Background3Key
+import it.fast4x.rimusic.utils.customThemeDark_Background4Key
+import it.fast4x.rimusic.utils.customThemeDark_TextKey
+import it.fast4x.rimusic.utils.customThemeDark_accentKey
+import it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
+import it.fast4x.rimusic.utils.customThemeLight_Background0Key
+import it.fast4x.rimusic.utils.customThemeLight_Background1Key
+import it.fast4x.rimusic.utils.customThemeLight_Background2Key
+import it.fast4x.rimusic.utils.customThemeLight_Background3Key
+import it.fast4x.rimusic.utils.customThemeLight_Background4Key
+import it.fast4x.rimusic.utils.customThemeLight_TextKey
+import it.fast4x.rimusic.utils.customThemeLight_accentKey
+import it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
@@ -108,6 +138,7 @@ import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lastPlayerThumbnailSizeKey
 import it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
 import it.fast4x.rimusic.utils.lastPlayerVisualizerTypeKey
+import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.menuStyleKey
@@ -119,7 +150,6 @@ import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
@@ -140,13 +170,13 @@ import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
-import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
@@ -250,6 +280,31 @@ fun  UiSettings() {
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
     var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
+
+    var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
+    var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
+    var customThemeLight_Background2 by rememberPreference(customThemeLight_Background2Key, DefaultLightColorPalette.background2.hashCode())
+    var customThemeLight_Background3 by rememberPreference(customThemeLight_Background3Key, DefaultLightColorPalette.background3.hashCode())
+    var customThemeLight_Background4 by rememberPreference(customThemeLight_Background4Key, DefaultLightColorPalette.background4.hashCode())
+    var customThemeLight_Text by rememberPreference(customThemeLight_TextKey, DefaultLightColorPalette.text.hashCode())
+    var customThemeLight_TextSecondary by rememberPreference(customThemeLight_textSecondaryKey, DefaultLightColorPalette.textSecondary.hashCode())
+    var customThemeLight_TextDisabled by rememberPreference(customThemeLight_textDisabledKey, DefaultLightColorPalette.textDisabled.hashCode())
+    var customThemeLight_IconButtonPlayer by rememberPreference(customThemeLight_iconButtonPlayerKey, DefaultLightColorPalette.iconButtonPlayer.hashCode())
+    var customThemeLight_Accent by rememberPreference(customThemeLight_accentKey, DefaultLightColorPalette.accent.hashCode())
+
+    var customThemeDark_Background0 by rememberPreference(customThemeDark_Background0Key, DefaultDarkColorPalette.background0.hashCode())
+    var customThemeDark_Background1 by rememberPreference(customThemeDark_Background1Key, DefaultDarkColorPalette.background1.hashCode())
+    var customThemeDark_Background2 by rememberPreference(customThemeDark_Background2Key, DefaultDarkColorPalette.background2.hashCode())
+    var customThemeDark_Background3 by rememberPreference(customThemeDark_Background3Key, DefaultDarkColorPalette.background3.hashCode())
+    var customThemeDark_Background4 by rememberPreference(customThemeDark_Background4Key, DefaultDarkColorPalette.background4.hashCode())
+    var customThemeDark_Text by rememberPreference(customThemeDark_TextKey, DefaultDarkColorPalette.text.hashCode())
+    var customThemeDark_TextSecondary by rememberPreference(customThemeDark_textSecondaryKey, DefaultDarkColorPalette.textSecondary.hashCode())
+    var customThemeDark_TextDisabled by rememberPreference(customThemeDark_textDisabledKey, DefaultDarkColorPalette.textDisabled.hashCode())
+    var customThemeDark_IconButtonPlayer by rememberPreference(customThemeDark_iconButtonPlayerKey, DefaultDarkColorPalette.iconButtonPlayer.hashCode())
+    var customThemeDark_Accent by rememberPreference(customThemeDark_accentKey, DefaultDarkColorPalette.accent.hashCode())
+
+    var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
+    var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -376,6 +431,49 @@ fun  UiSettings() {
             }
         }
         /*  Search  */
+
+
+        if (resetCustomLightThemeDialog) {
+            ConfirmationDialog(
+                text = stringResource(R.string.do_you_really_want_to_reset_the_custom_light_theme_colors),
+                onDismiss = { resetCustomLightThemeDialog = false },
+                onConfirm = {
+                    resetCustomLightThemeDialog = false
+                    customThemeLight_Background0 = DefaultLightColorPalette.background0.hashCode()
+                    customThemeLight_Background1 = DefaultLightColorPalette.background1.hashCode()
+                    customThemeLight_Background2 = DefaultLightColorPalette.background2.hashCode()
+                    customThemeLight_Background3 = DefaultLightColorPalette.background3.hashCode()
+                    customThemeLight_Background4 = DefaultLightColorPalette.background4.hashCode()
+                    customThemeLight_Text = DefaultLightColorPalette.text.hashCode()
+                    customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary.hashCode()
+                    customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled.hashCode()
+                    customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer.hashCode()
+                    customThemeLight_Accent = DefaultLightColorPalette.accent.hashCode()
+                }
+            )
+        }
+
+        if (resetCustomDarkThemeDialog) {
+            ConfirmationDialog(
+                text = stringResource(R.string.do_you_really_want_to_reset_the_custom_dark_theme_colors),
+                onDismiss = { resetCustomDarkThemeDialog = false },
+                onConfirm = {
+                    resetCustomDarkThemeDialog = false
+                    customThemeDark_Background0 = DefaultDarkColorPalette.background0.hashCode()
+                    customThemeDark_Background1 = DefaultDarkColorPalette.background1.hashCode()
+                    customThemeDark_Background2 = DefaultDarkColorPalette.background2.hashCode()
+                    customThemeDark_Background3 = DefaultDarkColorPalette.background3.hashCode()
+                    customThemeDark_Background4 = DefaultDarkColorPalette.background4.hashCode()
+                    customThemeDark_Text = DefaultDarkColorPalette.text.hashCode()
+                    customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary.hashCode()
+                    customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled.hashCode()
+                    customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer.hashCode()
+                    customThemeDark_Accent = DefaultDarkColorPalette.accent.hashCode()
+                }
+            )
+        }
+
+
 
         //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.languages))
@@ -679,9 +777,190 @@ fun  UiSettings() {
                         ColorPaletteName.PureBlack -> stringResource(R.string.theme_pure_black)
                         ColorPaletteName.ModernBlack -> stringResource(R.string.theme_modern_black)
                         ColorPaletteName.MaterialYou -> stringResource(R.string.theme_material_you)
+                        ColorPaletteName.Customized -> stringResource(R.string.theme_customized)
                     }
                 }
             )
+
+        AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.Customized) {
+            Column {
+                SettingsEntryGroupText(stringResource(R.string.title_customized_light_theme_colors))
+                ButtonBarSettingEntry(
+                    title = stringResource(R.string.title_reset_customized_light_colors),
+                    text = stringResource(R.string.info_click_to_reset_default_light_colors),
+                    icon = R.drawable.trash,
+                    onClick = { resetCustomLightThemeDialog = true }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_1),
+                    text = "",
+                    color = Color(customThemeLight_Background0),
+                    onColorSelected = {
+                        customThemeLight_Background0 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_2),
+                    text = "",
+                    color = Color(customThemeLight_Background1),
+                    onColorSelected = {
+                        customThemeLight_Background1 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_3),
+                    text = "",
+                    color = Color(customThemeLight_Background2),
+                    onColorSelected = {
+                        customThemeLight_Background2 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_4),
+                    text = "",
+                    color = Color(customThemeLight_Background3),
+                    onColorSelected = {
+                        customThemeLight_Background3 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_5),
+                    text = "",
+                    color = Color(customThemeLight_Background4),
+                    onColorSelected = {
+                        customThemeLight_Background4 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text),
+                    text = "",
+                    color = Color(customThemeLight_Text),
+                    onColorSelected = {
+                        customThemeLight_Text= it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_secondary),
+                    text = "",
+                    color = Color(customThemeLight_TextSecondary),
+                    onColorSelected = {
+                        customThemeLight_TextSecondary = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_disabled),
+                    text = "",
+                    color = Color(customThemeLight_TextDisabled),
+                    onColorSelected = {
+                        customThemeLight_TextDisabled = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_icon_button_player),
+                    text = "",
+                    color = Color(customThemeLight_IconButtonPlayer),
+                    onColorSelected = {
+                        customThemeLight_IconButtonPlayer = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_accent),
+                    text = "",
+                    color = Color(customThemeLight_Accent),
+                    onColorSelected = {
+                        customThemeLight_Accent = it.hashCode()
+                    }
+                )
+
+                SettingsEntryGroupText(stringResource(R.string.title_customized_dark_theme_colors))
+                ButtonBarSettingEntry(
+                    title = stringResource(R.string.title_reset_customized_dark_colors),
+                    text = stringResource(R.string.click_to_reset_default_dark_colors),
+                    icon = R.drawable.trash,
+                    onClick = { resetCustomDarkThemeDialog = true }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_1),
+                    text = "",
+                    color = Color(customThemeDark_Background0),
+                    onColorSelected = {
+                        customThemeDark_Background0 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_2),
+                    text = "",
+                    color = Color(customThemeDark_Background1),
+                    onColorSelected = {
+                        customThemeDark_Background1 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_3),
+                    text = "",
+                    color = Color(customThemeDark_Background2),
+                    onColorSelected = {
+                        customThemeDark_Background2 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_4),
+                    text = "",
+                    color = Color(customThemeDark_Background3),
+                    onColorSelected = {
+                        customThemeDark_Background3 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_5),
+                    text = "",
+                    color = Color(customThemeDark_Background4),
+                    onColorSelected = {
+                        customThemeDark_Background4 = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text),
+                    text = "",
+                    color = Color(customThemeDark_Text),
+                    onColorSelected = {
+                        customThemeDark_Text= it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_secondary),
+                    text = "",
+                    color = Color(customThemeDark_TextSecondary),
+                    onColorSelected = {
+                        customThemeDark_TextSecondary = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_disabled),
+                    text = "",
+                    color = Color(customThemeDark_TextDisabled),
+                    onColorSelected = {
+                        customThemeDark_TextDisabled = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_icon_button_player),
+                    text = "",
+                    color = Color(customThemeDark_IconButtonPlayer),
+                    onColorSelected = {
+                        customThemeDark_IconButtonPlayer = it.hashCode()
+                    }
+                )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_accent),
+                    text = "",
+                    color = Color(customThemeDark_Accent),
+                    onColorSelected = {
+                        customThemeDark_Accent = it.hashCode()
+                    }
+                )
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.theme_mode).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(

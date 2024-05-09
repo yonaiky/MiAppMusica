@@ -5,5 +5,6 @@ enum class ColorPaletteName {
     Dynamic,
     PureBlack,
     ModernBlack,
-    MaterialYou
+    MaterialYou,
+    Customized
 }

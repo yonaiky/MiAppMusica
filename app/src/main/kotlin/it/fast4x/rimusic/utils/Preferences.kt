@@ -7,6 +7,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 
@@ -144,6 +145,29 @@ const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
 const val enableCreateMonthlyPlaylistsKey = "enableCreateMonthlyPlaylists"
 const val autoShuffleKey = "autoShuffle"
+/**** CUSTOM THEME **** */
+const val customThemeLight_Background0Key = "customThemeLight_Background0"
+const val customThemeLight_Background1Key = "customThemeLight_Background1"
+const val customThemeLight_Background2Key = "customThemeLight_Background2"
+const val customThemeLight_Background3Key = "customThemeLight_Background3"
+const val customThemeLight_Background4Key = "customThemeLight_Background4"
+const val customThemeLight_TextKey = "customThemeLight_Text"
+const val customThemeLight_textSecondaryKey = "customThemeLight_textSecondary"
+const val customThemeLight_textDisabledKey = "customThemeLight_textDisabled"
+const val customThemeLight_iconButtonPlayerKey = "customThemeLight_iconButtonPlayer"
+const val customThemeLight_accentKey = "customThemeLight_accent"
+
+const val customThemeDark_Background0Key = "customThemeDark_Background0"
+const val customThemeDark_Background1Key = "customThemeDark_Background1"
+const val customThemeDark_Background2Key = "customThemeDark_Background2"
+const val customThemeDark_Background3Key = "customThemeDark_Background3"
+const val customThemeDark_Background4Key = "customThemeDark_Background4"
+const val customThemeDark_TextKey = "customThemeDark_Text"
+const val customThemeDark_textSecondaryKey = "customThemeDark_textSecondary"
+const val customThemeDark_textDisabledKey = "customThemeDark_textDisabled"
+const val customThemeDark_iconButtonPlayerKey = "customThemeDark_iconButtonPlayer"
+const val customThemeDark_accentKey = "customThemeDark_accent"
+/**** CUSTOM THEME **** */
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
@@ -185,6 +209,8 @@ fun rememberPreference(key: String, defaultValue: Int): MutableState<Int> {
         }
     }
 }
+
+
 
 @Composable
 fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {

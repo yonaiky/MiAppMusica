@@ -2,14 +2,29 @@ package it.fast4x.rimusic.ui.styling
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.utils.customThemeLight_Background0Key
+import it.fast4x.rimusic.utils.customThemeLight_Background1Key
+import it.fast4x.rimusic.utils.customThemeLight_Background2Key
+import it.fast4x.rimusic.utils.customThemeLight_Background3Key
+import it.fast4x.rimusic.utils.customThemeLight_Background4Key
+import it.fast4x.rimusic.utils.customThemeLight_TextKey
+import it.fast4x.rimusic.utils.customThemeLight_accentKey
+import it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
+import it.fast4x.rimusic.utils.rememberPreference
+import kotlinx.coroutines.GlobalScope.coroutineContext
 
 
 @Immutable
@@ -102,14 +117,14 @@ val ModernBlackColorPalette = DefaultDarkColorPalette.copy(
     background3 = DefaultDarkColorPalette.accent
 )
 
-
 fun colorPaletteOf(
     colorPaletteName: ColorPaletteName,
     colorPaletteMode: ColorPaletteMode,
     isSystemInDarkMode: Boolean
 ): ColorPalette {
     return when (colorPaletteName) {
-        ColorPaletteName.Default, ColorPaletteName.Dynamic, ColorPaletteName.MaterialYou -> when (colorPaletteMode) {
+        ColorPaletteName.Default, ColorPaletteName.Dynamic,
+        ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> when (colorPaletteMode) {
             ColorPaletteMode.Light -> DefaultLightColorPalette
             ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack -> DefaultDarkColorPalette
             ColorPaletteMode.System -> when (isSystemInDarkMode) {

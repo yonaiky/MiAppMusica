@@ -122,9 +122,12 @@ import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Appearance
 import it.fast4x.rimusic.ui.styling.ColorPalette
+import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
+import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
+import it.fast4x.rimusic.ui.styling.customColorPalette
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.hsl
 import it.fast4x.rimusic.ui.styling.typographyOf
@@ -140,6 +143,26 @@ import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.customThemeDark_Background0Key
+import it.fast4x.rimusic.utils.customThemeDark_Background1Key
+import it.fast4x.rimusic.utils.customThemeDark_Background2Key
+import it.fast4x.rimusic.utils.customThemeDark_Background3Key
+import it.fast4x.rimusic.utils.customThemeDark_Background4Key
+import it.fast4x.rimusic.utils.customThemeDark_TextKey
+import it.fast4x.rimusic.utils.customThemeDark_accentKey
+import it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
+import it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_Background0Key
+import it.fast4x.rimusic.utils.customThemeLight_Background1Key
+import it.fast4x.rimusic.utils.customThemeLight_Background2Key
+import it.fast4x.rimusic.utils.customThemeLight_Background3Key
+import it.fast4x.rimusic.utils.customThemeLight_Background4Key
+import it.fast4x.rimusic.utils.customThemeLight_TextKey
+import it.fast4x.rimusic.utils.customThemeLight_accentKey
+import it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
@@ -504,7 +527,28 @@ class MainActivity :
                                 this@MainActivity.recreate()
                             }
 
-                            colorPaletteNameKey, colorPaletteModeKey -> {
+                            colorPaletteNameKey, colorPaletteModeKey,
+                            customThemeLight_Background0Key,
+                            customThemeLight_Background1Key,
+                            customThemeLight_Background2Key,
+                            customThemeLight_Background3Key,
+                            customThemeLight_Background4Key,
+                            customThemeLight_TextKey,
+                            customThemeLight_textSecondaryKey,
+                            customThemeLight_textDisabledKey,
+                            customThemeLight_iconButtonPlayerKey,
+                            customThemeLight_accentKey,
+                            customThemeDark_Background0Key,
+                            customThemeDark_Background1Key,
+                            customThemeDark_Background2Key,
+                            customThemeDark_Background3Key,
+                            customThemeDark_Background4Key,
+                            customThemeDark_TextKey,
+                            customThemeDark_textSecondaryKey,
+                            customThemeDark_textDisabledKey,
+                            customThemeDark_iconButtonPlayerKey,
+                            customThemeDark_accentKey,
+                            -> {
                                 val colorPaletteName =
                                     sharedPreferences.getEnum(
                                         colorPaletteNameKey,
@@ -535,6 +579,10 @@ class MainActivity :
                                             colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme),
                                             colorPaletteMode == ColorPaletteMode.PitchBlack
                                         )
+                                    }
+
+                                    if (colorPaletteName == ColorPaletteName.Customized) {
+                                        colorPalette = customColorPalette(colorPalette, this@MainActivity, isSystemInDarkTheme)
                                     }
 
                                     setSystemBarAppearance(colorPalette.isDark)
@@ -626,6 +674,16 @@ class MainActivity :
                         Color.Unspecified.copy(alpha = 0.25f),
                     ),
                 )
+            }
+
+            LaunchedEffect(Unit) {
+                val colorPaletteName =
+                    preferences.getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+                if (colorPaletteName == ColorPaletteName.Customized) {
+                    appearance = appearance.copy(
+                        colorPalette = customColorPalette(appearance.colorPalette, this@MainActivity, isSystemInDarkTheme)
+                    )
+                }
             }
 
             BoxWithConstraints(
