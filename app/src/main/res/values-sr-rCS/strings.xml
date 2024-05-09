@@ -440,7 +440,7 @@
     <string name="yesterday">Juče</string>
     <string name="this_week">Ove nedelje</string>
     <string name="last_week">Prethodne nedelje</string>
-    <string name="by_casual_played_song">By Casual played song</string>
+    <string name="by_casual_played_song">Povremeno puštana pesma</string>
     <string name="theme_material_you">Materijal Ti</string>
     <string name="show_statistics_in_navigation_bar">Prikaži statistiku na traci za navigaciju</string>
     <string name="settings">Podešavanja</string>
@@ -450,11 +450,11 @@
     <string name="info_show_hide_hidden_songs">Prikaži/sakrij skrivene pesme</string>
     <string name="info_shuffle">Nasumično</string>
     <string name="info_includes_excludes_songs_on_the_device">Uključuje/Isključuje pesme na uređaju</string>
-    <string name="info_enqueue_songs">Enqueue songs</string>
-    <string name="info_download_all_songs">Download all songs</string>
-    <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
-    <string name="info_start_radio">Start radio</string>
-    <string name="info_translation">Translation</string>
+    <string name="info_enqueue_songs">Pesme u redu</string>
+    <string name="info_download_all_songs">Preuzmi sve pesme</string>
+    <string name="info_remove_all_downloaded_songs">Uklonite sve preuzete pesme</string>
+    <string name="info_start_radio">Pokreni radio</string>
+    <string name="info_translation">Prevod</string>
     <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
     <string name="info_smart_recommendation">Smart recommendation</string>
     <string name="info_clean_cached_congs">Clean cached congs</string>
