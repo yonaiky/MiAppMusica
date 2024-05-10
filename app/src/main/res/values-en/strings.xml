@@ -368,7 +368,7 @@
     <string name="add_folder">Add folder</string>
     <string name="this_folder_already_exists">This folder already exists.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
-    <string name="player_appearance">Appearance</string>
+    <string name="player_appearance">Player Appearance</string>
     <string name="player_action_bar">PLAYER ACTION BAR</string>
     <string name="tab_data">Data</string>
     <string name="image_cache_max_size">Image cache max size</string>
@@ -428,7 +428,7 @@
     <string name="direction_top">Top</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Download cover</string>
-    <string name="menu_style">Menu style</string>
+    <string name="menu_style">Navigation bar style</string>
     <string name="style_grid">Grid</string>
     <string name="style_list">List</string>
     <string name="click_to_switch_to">Click this to switch to</string>
