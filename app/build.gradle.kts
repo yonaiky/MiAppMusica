@@ -19,8 +19,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 31
-        versionName = "0.6.33"
+        versionCode = 32
+        versionName = "0.6.34"
         //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 
