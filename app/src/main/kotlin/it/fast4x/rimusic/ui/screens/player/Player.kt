@@ -250,19 +250,26 @@ fun Player(
     )
 
     val playbackCrossfadeDuration by rememberPreference(playbackCrossfadeDurationKey, DurationInSeconds.Disabled)
+    var fadeInOut by remember { mutableStateOf(true) }
+    //var fade by remember { mutableStateOf(false) }
 
     binder.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
                 //println("mediaItem onMediaItemTransition")
-                if (playbackCrossfadeDuration != DurationInSeconds.Disabled)
+                if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
+                    fadeInOut = true
+                }
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
-                //println("mediaItem onPlayWhenReadyChanged")
+                //println("mediaItem onPlayWhenReadyChanged $playWhenReady")
+                //if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
+                //    fadeInOut = false
+                //}
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -282,18 +289,29 @@ fun Player(
             ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
                 .toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
         //val songProgressInt = songProgressFloat.toInt()
-        if (songProgressFloat in playbackCrossfadeDuration.fadeOutRange) {
-            //println("mediaItem volume startFadeOut")
+        if (songProgressFloat in playbackCrossfadeDuration.fadeOutRange && !fadeInOut) {
+            //println("mediaItem volume startFadeOut $fadeInOut")
+            fadeInOut = true
             startFadeOut(binder, playbackCrossfadeDuration.seconds)
-        }
-        if (songProgressFloat <= 0.25) {
-            binder.player.volume = 0f
-            //println("mediaItem volume startFadeIn")
-            startFadeIn(binder, playbackCrossfadeDuration.seconds)
+            //fade = !fade
         }
 
+        if (songProgressFloat <= 0.20 && fadeInOut) {
+            binder.player.volume = 0f
+            //println("mediaItem volume startFadeIn $fadeInOut")
+            fadeInOut = false
+            startFadeIn(binder, playbackCrossfadeDuration.seconds)
+            //fade = !fade
+        }
+        /*
+        LaunchedEffect(fade) {
+            println("mediaItem launcheffect startFade")
+            startFade(binder, playbackCrossfadeDuration.seconds, fadeInOut)
+        }
+         */
+
         //println("mediaItem positionAndDuration $positionAndDuration % ${(positionAndDuration.first.toInt()*100) / positionAndDuration.second.toInt()}")
-        //println("mediaItem progress float $songProgressFloat int $songProgressInt playbackCrossfadeDuration ${playbackCrossfadeDuration}")
+        //println("mediaItem progress float $songProgressFloat playbackCrossfadeDuration ${playbackCrossfadeDuration} $fadeInOut")
     }
 
 
