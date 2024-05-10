@@ -126,6 +126,7 @@ import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey

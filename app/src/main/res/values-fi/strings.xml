@@ -536,4 +536,6 @@
     <string name="title_reset_customized_dark_colors">Reset customized dark colors</string>
     <string name="click_to_reset_default_dark_colors">Click to reset default dark colors</string>
     <string name="info_color_s_applied">Color %s applied</string>
+    <string name="effect_crossfade_songs">Crossfade songs</string>
+    <string name="time_seconds">seconds</string>
 </resources>

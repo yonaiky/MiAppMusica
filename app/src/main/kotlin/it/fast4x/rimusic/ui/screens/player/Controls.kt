@@ -92,6 +92,7 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
+import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
 import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey

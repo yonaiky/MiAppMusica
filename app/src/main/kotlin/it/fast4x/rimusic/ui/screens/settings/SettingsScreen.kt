@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -455,6 +456,7 @@ fun ButtonBarSettingEntry(
     title: String,
     text: String,
     icon: Int,
+    iconSize: Dp = 24.dp,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
@@ -469,7 +471,7 @@ fun ButtonBarSettingEntry(
             Image(
                 painter = painterResource(icon),
                 colorFilter = ColorFilter.tint(colorPalette.text),
-                modifier = modifier,
+                modifier = Modifier.size(iconSize),
                 contentDescription = null,
                 contentScale = ContentScale.Fit
             )

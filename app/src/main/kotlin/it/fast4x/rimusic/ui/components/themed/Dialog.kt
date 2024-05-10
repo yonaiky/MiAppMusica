@@ -79,6 +79,7 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
 import it.fast4x.rimusic.utils.playbackPitchKey
 import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -991,19 +992,22 @@ fun NewVersionDialog (
     )
 }
 
+
+
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaybackParamsDialog(
     onDismiss: () -> Unit,
     speedValue: (Float) -> Unit,
-    pitchValue: (Float) -> Unit,
+    pitchValue: (Float) -> Unit
 ) {
     val (colorPalette) = LocalAppearance.current
     val defaultSpeed = 1f
     val defaultPitch = 1f
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
+
     val binder = LocalPlayerServiceBinder.current
 
     DefaultDialog(

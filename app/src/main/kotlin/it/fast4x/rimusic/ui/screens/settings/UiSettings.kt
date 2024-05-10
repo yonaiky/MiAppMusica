@@ -61,6 +61,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.DurationInSeconds
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.Languages
@@ -146,6 +147,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
@@ -305,6 +307,8 @@ fun  UiSettings() {
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
+    var playbackCrossfadeDuration by rememberPreference(playbackCrossfadeDurationKey, DurationInSeconds.Disabled)
+
 
     Column(
         modifier = Modifier
@@ -589,6 +593,30 @@ fun  UiSettings() {
                     }
                 }
             )
+
+
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_crossfade_songs).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.effect_crossfade_songs),
+                selectedValue = playbackCrossfadeDuration,
+                onValueSelected = { playbackCrossfadeDuration = it },
+                valueText = {
+                    when (it) {
+                        DurationInSeconds.Disabled -> stringResource(R.string.vt_disabled)
+                        DurationInSeconds.`3` -> "3 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`4` -> "4 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`5` -> "5 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`6` -> "6 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`7` -> "7 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`8` -> "8 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`9` -> "9 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`10` -> "10 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`11` -> "11 %s".format(stringResource(R.string.time_seconds))
+                        DurationInSeconds.`12` -> "12 %s".format(stringResource(R.string.time_seconds))
+                    }
+                }
+            )
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))
             SwitchSettingEntry(

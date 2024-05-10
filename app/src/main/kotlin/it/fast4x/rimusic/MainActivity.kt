@@ -180,6 +180,7 @@ import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
+import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.preferences
@@ -522,7 +523,8 @@ class MainActivity :
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
                             showButtonPlayerSystemEqualizerKey,
-                            transitionEffectKey
+                            transitionEffectKey,
+                            playbackCrossfadeDurationKey
                             -> {
                                 this@MainActivity.recreate()
                             }

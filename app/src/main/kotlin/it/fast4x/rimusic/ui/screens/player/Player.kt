@@ -101,6 +101,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.DurationInSeconds
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
@@ -149,6 +150,7 @@ import it.fast4x.rimusic.utils.getDynamicColorPaletteFromBitmap
 import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -168,6 +170,8 @@ import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.shuffleQueue
+import it.fast4x.rimusic.utils.startFadeIn
+import it.fast4x.rimusic.utils.startFadeOut
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
@@ -178,6 +182,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.RoundingMode
 import kotlin.math.absoluteValue
 
 
@@ -244,18 +249,25 @@ fun Player(
         PlayerVisualizerType.Disabled
     )
 
+    val playbackCrossfadeDuration by rememberPreference(playbackCrossfadeDurationKey, DurationInSeconds.Disabled)
+
     binder.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
+                //println("mediaItem onMediaItemTransition")
+                if (playbackCrossfadeDuration != DurationInSeconds.Disabled)
+                    binder.player.volume = 0f
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
+                //println("mediaItem onPlayWhenReadyChanged")
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
+                //println("mediaItem onPlaybackStateChanged")
             }
         }
     }
@@ -263,6 +275,30 @@ fun Player(
     val mediaItem = nullableMediaItem ?: return
 
     val positionAndDuration by binder.player.positionAndDurationState()
+
+
+    if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
+        val songProgressFloat =
+            ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
+                .toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
+        //val songProgressInt = songProgressFloat.toInt()
+        if (songProgressFloat in playbackCrossfadeDuration.fadeOutRange) {
+            //println("mediaItem volume startFadeOut")
+            startFadeOut(binder, playbackCrossfadeDuration.seconds)
+        }
+        if (songProgressFloat <= 0.25) {
+            binder.player.volume = 0f
+            //println("mediaItem volume startFadeIn")
+            startFadeIn(binder, playbackCrossfadeDuration.seconds)
+        }
+
+        //println("mediaItem positionAndDuration $positionAndDuration % ${(positionAndDuration.first.toInt()*100) / positionAndDuration.second.toInt()}")
+        //println("mediaItem progress float $songProgressFloat int $songProgressInt playbackCrossfadeDuration ${playbackCrossfadeDuration}")
+    }
+
+
+    var timeRemaining by remember { mutableIntStateOf(0) }
+    timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
 
     val windowInsets = WindowInsets.systemBars
 
@@ -409,10 +445,6 @@ fun Player(
     val sleepTimerMillisLeft by (binder?.sleepTimerMillisLeft
         ?: flowOf(null))
         .collectAsState(initial = null)
-
-    var timeRemaining by remember { mutableIntStateOf(0) }
-
-    timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
 
     var showCircularSlider by remember {
         mutableStateOf(false)
