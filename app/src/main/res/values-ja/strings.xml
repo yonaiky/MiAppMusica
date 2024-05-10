@@ -386,7 +386,7 @@
     <string name="export_playlist">プレイリストのエクスポート</string>
     <string name="lang_afrikaans">アフリカーンス語</string>
     <string name="playlist_top">プレイリストトップ</string>
-    <string name="my_playlist_top">My Top %s</string>
+    <string name="my_playlist_top">My Top</string>
     <string name="navigation_bar_position">ナビゲーションバーの位置</string>
     <string name="direction_left">左</string>
     <string name="direction_right">右</string>
