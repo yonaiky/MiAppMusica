@@ -386,7 +386,7 @@
     <string name="export_playlist">Izvezi plejlistu</string>
     <string name="lang_afrikaans">Afrički</string>
     <string name="playlist_top">Vrh Plejliste</string>
-    <string name="my_playlist_top">Najbolje %s</string>
+    <string name="my_playlist_top">Moja Najbolja %s</string>
     <string name="navigation_bar_position">Položaj trake za navigaciju</string>
     <string name="direction_left">Levo</string>
     <string name="direction_right">Desno</string>
@@ -440,7 +440,7 @@
     <string name="yesterday">Juče</string>
     <string name="this_week">Ove nedelje</string>
     <string name="last_week">Prethodne nedelje</string>
-    <string name="by_casual_played_song">Povremeno puštana pesma</string>
+    <string name="by_casual_played_song">Po Povremeno puštanoj pesmi</string>
     <string name="theme_material_you">Materijal Ti</string>
     <string name="show_statistics_in_navigation_bar">Prikaži statistiku na traci za navigaciju</string>
     <string name="settings">Podešavanja</string>
