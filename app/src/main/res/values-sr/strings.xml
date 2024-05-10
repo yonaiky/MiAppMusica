@@ -494,8 +494,8 @@
     <string name="month_october_s">Октобар %s</string>
     <string name="month_november_s">Новембар %s</string>
     <string name="month_december_s">Децембар %s</string>
-    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumbering a monthly playlist</string>
-    <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Није могуће променити нумерацију месечне плејлисте</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Није могуће преименовати месечну плејлисту</string>
     <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
     <string name="information">Information</string>
