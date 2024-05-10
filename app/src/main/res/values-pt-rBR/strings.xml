@@ -49,7 +49,7 @@
     <string name="bitrate">Taxa de Bits</string>
     <string name="size">Tamanho</string>
     <string name="cached">Em cache</string>
-    <string name="loudness">Intensidade do som</string>
+    <string name="loudness">intensidade do som</string>
     <string name="clear">Limpar</string>
     <string name="error">Ocorreu um erro.</string>
     <string name="online">Online</string>
