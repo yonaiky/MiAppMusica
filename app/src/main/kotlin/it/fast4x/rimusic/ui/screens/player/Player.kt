@@ -151,7 +151,7 @@ import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
+import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -251,7 +251,7 @@ fun Player(
         PlayerVisualizerType.Disabled
     )
 
-    val playbackCrossfadeDuration by rememberPreference(playbackCrossfadeDurationKey, DurationInSeconds.Disabled)
+    val playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var fadeInOut by remember { mutableStateOf(true) }
     //var fade by remember { mutableStateOf(false) }
 
@@ -260,7 +260,7 @@ fun Player(
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
                 //println("mediaItem onMediaItemTransition")
-                if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
+                if (playbackFadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
                     fadeInOut = true
                 }
@@ -269,7 +269,7 @@ fun Player(
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
                 //println("mediaItem onPlayWhenReadyChanged $playWhenReady")
-                //if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
+                //if (playbackFadeDuration != DurationInSeconds.Disabled) {
                 //    fadeInOut = false
                 //}
             }
@@ -286,15 +286,15 @@ fun Player(
     val positionAndDuration by binder.player.positionAndDurationState()
 
 
-    if (playbackCrossfadeDuration != DurationInSeconds.Disabled) {
+    if (playbackFadeDuration != DurationInSeconds.Disabled) {
         val songProgressFloat =
             ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
                 .toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
         //val songProgressInt = songProgressFloat.toInt()
-        if (songProgressFloat in playbackCrossfadeDuration.fadeOutRange && !fadeInOut) {
+        if (songProgressFloat in playbackFadeDuration.fadeOutRange && !fadeInOut) {
             //println("mediaItem volume startFadeOut $fadeInOut")
             fadeInOut = true
-            startFadeOut(binder, playbackCrossfadeDuration.seconds)
+            startFadeOut(binder, playbackFadeDuration.seconds)
             //fade = !fade
         }
 
@@ -302,18 +302,18 @@ fun Player(
             binder.player.volume = 0f
             //println("mediaItem volume startFadeIn $fadeInOut")
             fadeInOut = false
-            startFadeIn(binder, playbackCrossfadeDuration.seconds)
+            startFadeIn(binder, playbackFadeDuration.seconds)
             //fade = !fade
         }
         /*
         LaunchedEffect(fade) {
             println("mediaItem launcheffect startFade")
-            startFade(binder, playbackCrossfadeDuration.seconds, fadeInOut)
+            startFade(binder, playbackFadeDuration.seconds, fadeInOut)
         }
          */
 
         //println("mediaItem positionAndDuration $positionAndDuration % ${(positionAndDuration.first.toInt()*100) / positionAndDuration.second.toInt()}")
-        //println("mediaItem progress float $songProgressFloat playbackCrossfadeDuration ${playbackCrossfadeDuration} $fadeInOut")
+        //println("mediaItem progress float $songProgressFloat playbackFadeDuration ${playbackFadeDuration} $fadeInOut")
     }
 
 
@@ -1222,34 +1222,6 @@ fun Player(
                                 .size(24.dp)
 
                         )
-
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(colorPalette.background1)
-                                .border(BorderStroke(2.dp, Color.LightGray))
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(dynamicColorPalette.background1)
-                                .border(BorderStroke(4.dp, Color.LightGray))
-                        )
-                        println("mediaItem dyn $dynamicColorPalette")
-                        println("mediaItem col $colorPalette")
-                        /*
-                        IconButton(
-                            icon = R.drawable.app_icon,
-                            color = colorPalette.text,
-                            enabled = true,
-                            onClick = {
-                                onGoToHome()
-                            },
-                            modifier = Modifier
-                                //.padding(horizontal = 4.dp)
-                                .size(24.dp)
-                        )
-                         */
 
                         if(!showButtonPlayerMenu)
                             Image(

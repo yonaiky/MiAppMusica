@@ -147,7 +147,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.persistentQueueKey
-import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
+import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
@@ -307,7 +307,7 @@ fun  UiSettings() {
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
-    var playbackCrossfadeDuration by rememberPreference(playbackCrossfadeDurationKey, DurationInSeconds.Disabled)
+    var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
 
 
     Column(
@@ -595,11 +595,11 @@ fun  UiSettings() {
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.effect_crossfade_songs).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_songs).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.effect_crossfade_songs),
-                selectedValue = playbackCrossfadeDuration,
-                onValueSelected = { playbackCrossfadeDuration = it },
+                title = stringResource(R.string.effect_fade_songs),
+                selectedValue = playbackFadeDuration,
+                onValueSelected = { playbackFadeDuration = it },
                 valueText = {
                     when (it) {
                         DurationInSeconds.Disabled -> stringResource(R.string.vt_disabled)
