@@ -517,7 +517,7 @@
     <string name="theme_customized">Пользовательская</string>
     <string name="do_you_really_want_to_reset_the_custom_light_theme_colors">Вы действительно хотите сбросить пользовательские цвета светлой темы?</string>
     <string name="do_you_really_want_to_reset_the_custom_dark_theme_colors">Вы действительно хотите сбросить пользовательские цвета тёмной темы?</string>
-    <string name="info_reset_custom_light_theme_colors">Сбросить выбранные цвета светлой темы</string>
+    <string name="info_reset_custom_light_theme_colors">Сбросить выбранные цвета для светлой темы</string>
     <string name="info_reset_custom_dark_theme_colors">Сбросить выбранные цвета тёмной темы</string>
     <string name="title_customized_light_theme_colors">Пользовательские цвета светлой темы</string>
     <string name="title_reset_customized_light_colors">Сбросить пользовательские цвета светлой темы</string>
