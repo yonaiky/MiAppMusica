@@ -111,7 +111,7 @@
     <string name="loudness_normalization">Loudness normalization</string>
     <string name="autoadjust_the_volume">Adjust the volume to a fixed level</string>
     <string name="interact_with_the_system_equalizer">Interact with the system equalizer</string>
-    <string name="about">About</string>
+    <string name="about">حول</string>
     <string name="more_of">More of</string>
     <string name="sleep_timer">Sleep timer</string>
     <string name="left">%1$s left</string>
