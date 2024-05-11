@@ -646,6 +646,10 @@ fun  UiSettings() {
                 valueText = {
                     when (it) {
                         MaxSongs.Unlimited -> stringResource(R.string.unlimited)
+                        MaxSongs.`50` -> MaxSongs.`50`.name
+                        MaxSongs.`100` -> MaxSongs.`100`.name
+                        MaxSongs.`200` -> MaxSongs.`200`.name
+                        MaxSongs.`300` -> MaxSongs.`300`.name
                         MaxSongs.`500` -> MaxSongs.`500`.name
                         MaxSongs.`1000` -> MaxSongs.`1000`.name
                         MaxSongs.`2000` -> MaxSongs.`2000`.name
