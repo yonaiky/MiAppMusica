@@ -11,6 +11,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -300,6 +301,7 @@ fun Controls(
                     )
                 }
 
+                /*
                 if (disableScrollingText == false) {
                     ScrollText(
                         text = title ?: "",
@@ -317,6 +319,16 @@ fun Controls(
 
                     )
                 } else {
+                */
+                var modifierTitle = Modifier
+                        .clickable {
+                            if (albumId != null) {
+                                navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                                layoutState.collapseSoft()
+                            }
+                        }
+                if (disableScrollingText == false) modifierTitle = modifierTitle.basicMarquee()
+
                     BasicText(
                         text = title ?: "",
                         style = TextStyle(
@@ -326,14 +338,9 @@ fun Controls(
                             fontFamily = typography.l.bold.fontFamily
                         ),
                         maxLines = 1,
-                        modifier = Modifier
-                            .clickable {
-                                //if (albumId != null) onGoToAlbum(albumId)
-                                navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
-                                layoutState.collapseSoft()
-                            }
+                        modifier = modifierTitle
                     )
-                }
+                //}
             }
 
             if (uiType != UiType.ViMusic) {
@@ -442,6 +449,7 @@ fun Controls(
             )
         }
 
+            /*
             if (disableScrollingText == false) {
             ScrollText(
                 text = artist ?: "",
@@ -461,27 +469,32 @@ fun Controls(
                     }
 
                 }
-            ) } else {
-        BasicText(
-            text = artist ?: "",
-            style = TextStyle(
-                color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
-                fontStyle = typography.s.bold.fontStyle,
-                fontSize = typography.s.bold.fontSize,
-                fontFamily = typography.s.bold.fontFamily
-            ),
-            maxLines = 1,
-            modifier = Modifier
-                .clickable {
-                    if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
-                        showSelectDialog = true
-                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
-                        //onGoToArtist( artistIds[0].id )
-                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
-                        layoutState.collapseSoft()
+            )
+            } else {
+             */
+            var modifierArtist = Modifier
+                    .clickable {
+                        if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
+                            showSelectDialog = true
+                        if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                            navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                            layoutState.collapseSoft()
+                        }
                     }
-                }
-        )}
+            if (disableScrollingText == false) modifierArtist = modifierArtist.basicMarquee()
+                BasicText(
+                    text = artist ?: "",
+                    style = TextStyle(
+                        color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                        fontStyle = typography.s.bold.fontStyle,
+                        fontSize = typography.s.bold.fontSize,
+                        fontFamily = typography.s.bold.fontFamily
+                    ),
+                    maxLines = 1,
+                    modifier = modifierArtist
+
+                )
+            //}
 
         }
 
