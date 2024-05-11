@@ -104,6 +104,7 @@ import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.TransitionEffect
@@ -181,6 +182,7 @@ import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.preferences
@@ -524,7 +526,8 @@ class MainActivity :
                             backgroundProgressKey,
                             showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
-                            playbackCrossfadeDurationKey
+                            playbackCrossfadeDurationKey,
+                            playerBackgroundColorsKey
                             -> {
                                 this@MainActivity.recreate()
                             }

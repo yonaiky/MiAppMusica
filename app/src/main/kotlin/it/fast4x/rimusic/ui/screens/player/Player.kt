@@ -18,13 +18,16 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -146,8 +149,6 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.getDynamicColorPaletteFromBitmap
-import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.playbackCrossfadeDurationKey
@@ -218,6 +219,7 @@ fun Player(
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -614,6 +616,28 @@ fun Player(
         mutableIntStateOf(0)
     }
 
+    var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Light)
+    val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
+    val isGradientBackgroundEnabled = playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
+            playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
+
+    if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+        playerBackgroundColors== PlayerBackgroundColors.CoverColor) {
+        val context = LocalContext.current
+        val isSystemDarkMode = isSystemInDarkTheme()
+        LaunchedEffect(mediaItem.mediaId) {
+            dynamicColorPalette = dynamicColorPaletteOf(
+                getBitmapFromUrl(
+                    context,
+                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                ),
+                isSystemDarkMode,
+                colorPaletteMode == ColorPaletteMode.PitchBlack
+            ) ?: colorPalette
+        }
+    }
+
     /*
     OnGlobalRoute {
         layoutState.collapseSoft()
@@ -890,27 +914,7 @@ fun Player(
             layoutState.expandedBound
         )
 
-        val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
-        val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
-        //val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
-        val isGradientBackgroundEnabled = playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
-        var dynamicColorPalette by remember{ mutableStateOf(colorPalette) }
 
-        if (colorPaletteName != ColorPaletteName.MaterialYou &&
-            (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-                    playerBackgroundColors== PlayerBackgroundColors.CoverColor)
-            ) {
-            val context = LocalContext.current
-            LaunchedEffect(mediaItem.mediaId) {
-                dynamicColorPalette = getDynamicColorPaletteFromBitmap(
-                    getBitmapFromUrl(
-                        context,
-                        binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                    )
-                )
-            }
-        }
 
 
         val containerModifier =
@@ -918,6 +922,7 @@ fun Player(
                 Modifier
                     .background(
                         dynamicColorPalette.background1
+                        //colorPalette.background1
                     )
                     .padding(
                         windowInsets
@@ -927,11 +932,12 @@ fun Player(
                     .padding(bottom = playerSheetState.collapsedBound)
             else
                 Modifier
-                    //.clip(shape)
                     .background(
                         Brush.verticalGradient(
-                            0.0f to dynamicColorPalette.background0,
-                            1.0f to dynamicColorPalette.background2,
+                            0.5f to dynamicColorPalette.background2,
+                            1.0f to colorPalette.background2,
+                            //0.0f to colorPalette.background0,
+                            //1.0f to colorPalette.background2,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1216,6 +1222,21 @@ fun Player(
                                 .size(24.dp)
 
                         )
+
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(colorPalette.background1)
+                                .border(BorderStroke(2.dp, Color.LightGray))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(dynamicColorPalette.background1)
+                                .border(BorderStroke(4.dp, Color.LightGray))
+                        )
+                        println("mediaItem dyn $dynamicColorPalette")
+                        println("mediaItem col $colorPalette")
                         /*
                         IconButton(
                             icon = R.drawable.app_icon,
