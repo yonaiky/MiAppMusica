@@ -327,7 +327,7 @@ fun Controls(
                                 layoutState.collapseSoft()
                             }
                         }
-                if (disableScrollingText == false) modifierTitle = modifierTitle.basicMarquee()
+                if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
                     BasicText(
                         text = title ?: "",
@@ -481,7 +481,7 @@ fun Controls(
                             layoutState.collapseSoft()
                         }
                     }
-            if (disableScrollingText == false) modifierArtist = modifierArtist.basicMarquee()
+            if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
                 BasicText(
                     text = artist ?: "",
                     style = TextStyle(
