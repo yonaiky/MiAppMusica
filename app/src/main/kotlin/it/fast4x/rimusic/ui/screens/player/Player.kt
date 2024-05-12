@@ -134,6 +134,8 @@ import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.audioFadeIn
+import it.fast4x.rimusic.utils.audioFadeOut
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
@@ -254,6 +256,7 @@ fun Player(
     val playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var fadeInOut by remember { mutableStateOf(true) }
     //var fade by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     binder.player.DisposableListener {
         object : Player.Listener {
@@ -262,7 +265,9 @@ fun Player(
                 //println("mediaItem onMediaItemTransition")
                 if (playbackFadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
-                    fadeInOut = true
+                    //fadeInOut = true
+                    //println("mediaItem volume startFadeIn initial volume ${binder.player.volume}")
+                    audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
                 }
             }
 
@@ -284,31 +289,33 @@ fun Player(
     val mediaItem = nullableMediaItem ?: return
 
     val positionAndDuration by binder.player.positionAndDurationState()
-
+    var timeRemaining by remember { mutableIntStateOf(0) }
+    timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
+    //println("mediaItem timeRemaining $timeRemaining")
 
     if (playbackFadeDuration != DurationInSeconds.Disabled) {
         val songProgressFloat =
             ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
                 .toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
         //val songProgressInt = songProgressFloat.toInt()
-        if (songProgressFloat in playbackFadeDuration.fadeOutRange && !fadeInOut) {
+        if (songProgressFloat in playbackFadeDuration.fadeOutRange && binder.player.shouldBePlaying) {
+        //if (timeRemaining in playbackFadeDuration.fadeOutRange) {
             //println("mediaItem volume startFadeOut $fadeInOut")
-            fadeInOut = true
-            startFadeOut(binder, playbackFadeDuration.seconds)
+            audioFadeOut(binder.player, playbackFadeDuration.seconds, context)
+            //fadeInOut = true
+            //startFadeOut(binder, playbackFadeDuration.seconds)
             //fade = !fade
         }
 
-        if (songProgressFloat <= 0.20 && fadeInOut) {
-            binder.player.volume = 0f
-            //println("mediaItem volume startFadeIn $fadeInOut")
-            fadeInOut = false
-            startFadeIn(binder, playbackFadeDuration.seconds)
-            //fade = !fade
-        }
+
         /*
-        LaunchedEffect(fade) {
-            println("mediaItem launcheffect startFade")
-            startFade(binder, playbackFadeDuration.seconds, fadeInOut)
+        if (songProgressFloat in playbackFadeDuration.fadeInRange && binder.player.shouldBePlaying) {
+            //binder.player.volume = 0f
+            println("mediaItem volume startFadeIn")
+            audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
+            //fadeInOut = false
+            //startFadeIn(binder, playbackFadeDuration.seconds)
+            //fade = !fade
         }
          */
 
@@ -317,8 +324,6 @@ fun Player(
     }
 
 
-    var timeRemaining by remember { mutableIntStateOf(0) }
-    timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
 
     val windowInsets = WindowInsets.systemBars
 
