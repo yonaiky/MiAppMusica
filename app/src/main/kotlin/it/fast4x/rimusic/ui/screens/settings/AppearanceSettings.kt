@@ -363,6 +363,8 @@ fun AppearanceSettings() {
                         PlayerBackgroundColors.ThemeColor -> stringResource(R.string.bg_colors_background_from_theme)
                         PlayerBackgroundColors.CoverColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_cover)
                         PlayerBackgroundColors.ThemeColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_theme)
+                        PlayerBackgroundColors.FluidThemeColorGradient -> "Fluid gradient background from theme"
+                        PlayerBackgroundColors.FluidCoverColorGradient -> "Fluid gradient background from cover"
                     }
                 },
             )

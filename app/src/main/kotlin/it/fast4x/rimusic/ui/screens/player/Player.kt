@@ -71,9 +71,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -82,6 +84,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -126,6 +129,7 @@ import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
@@ -620,10 +624,13 @@ fun Player(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Light)
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
     val isGradientBackgroundEnabled = playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
-            playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
+            playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+            playerBackgroundColors == PlayerBackgroundColors.FluidThemeColorGradient ||
+            playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
 
     if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-        playerBackgroundColors== PlayerBackgroundColors.CoverColor) {
+        playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
+        playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient) {
         val context = LocalContext.current
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
@@ -637,6 +644,45 @@ fun Player(
             ) ?: colorPalette
         }
     }
+
+   /*  */
+        var size by remember { mutableStateOf(Size.Zero) }
+
+        val shaderA = LinearGradientShader(
+            Offset(size.width / 2f, 0f),
+            Offset(size.width / 2f, size.height),
+            listOf(
+                dynamicColorPalette.background2,
+                colorPalette.background2,
+            ),
+            listOf(0f, 1f)
+        )
+
+        val shaderB = LinearGradientShader(
+            Offset(size.width / 2f, 0f),
+            Offset(size.width / 2f, size.height),
+            listOf(
+                colorPalette.background1,
+                dynamicColorPalette.accent,
+            ),
+            listOf(0f, 1f)
+        )
+
+        val shaderMask = LinearGradientShader(
+            Offset(size.width / 2f, 0f),
+            Offset(size.width / 2f, size.height),
+            listOf(
+                //Color.White,
+                colorPalette.background2,
+                Color.Transparent,
+            ),
+            listOf(0f, 1f)
+        )
+
+        val brushA by animateBrushRotation(shaderA, size, 20_000, true)
+        val brushB by animateBrushRotation(shaderB, size, 12_000, false)
+        val brushMask by animateBrushRotation(shaderMask, size, 15_000, true)
+    /*  */
 
     /*
     OnGlobalRoute {
@@ -917,37 +963,52 @@ fun Player(
 
 
 
-        val containerModifier =
+        var containerModifier = Modifier
+            .padding(
+                windowInsets
+                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                    .asPaddingValues()
+            )
+            .padding(bottom = playerSheetState.collapsedBound)
+
             if (!isGradientBackgroundEnabled)
-                Modifier
+                containerModifier = containerModifier
                     .background(
                         dynamicColorPalette.background1
                         //colorPalette.background1
                     )
-                    .padding(
-                        windowInsets
-                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                            .asPaddingValues()
-                    )
-                    .padding(bottom = playerSheetState.collapsedBound)
-            else
-                Modifier
-                    .background(
-                        Brush.verticalGradient(
-                            0.5f to dynamicColorPalette.background2,
-                            1.0f to colorPalette.background2,
-                            //0.0f to colorPalette.background0,
-                            //1.0f to colorPalette.background2,
-                            startY = 0.0f,
-                            endY = 1500.0f
-                        )
-                    )
-                    .padding(
-                        windowInsets
-                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                            .asPaddingValues()
-                    )
-                    .padding(bottom = playerSheetState.collapsedBound)
+
+            else {
+                when (playerBackgroundColors) {
+                    PlayerBackgroundColors.FluidThemeColorGradient,
+                    PlayerBackgroundColors.FluidCoverColorGradient -> {
+                        containerModifier = containerModifier
+                            .onSizeChanged {
+                                size = Size(it.width.toFloat(), it.height.toFloat())
+                            }
+                            .drawBehind {
+                                drawRect(brush = brushA)
+                                drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
+                                drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
+                            }
+                    }
+                    else -> {
+                        containerModifier = containerModifier
+                            .background(
+                                Brush.verticalGradient(
+                                    0.5f to dynamicColorPalette.background2,
+                                    1.0f to colorPalette.background2,
+                                    //0.0f to colorPalette.background0,
+                                    //1.0f to colorPalette.background2,
+                                    startY = 0.0f,
+                                    endY = 1500.0f
+                                )
+                            )
+
+                    }
+                }
+
+            }
 
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }
