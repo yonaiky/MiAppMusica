@@ -254,8 +254,7 @@ fun Player(
     )
 
     val playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
-    var fadeInOut by remember { mutableStateOf(true) }
-    //var fade by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     binder.player.DisposableListener {
@@ -265,7 +264,6 @@ fun Player(
                 //println("mediaItem onMediaItemTransition")
                 if (playbackFadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
-                    //fadeInOut = true
                     //println("mediaItem volume startFadeIn initial volume ${binder.player.volume}")
                     audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
                 }
@@ -275,7 +273,6 @@ fun Player(
                 shouldBePlaying = binder.player.shouldBePlaying
                 //println("mediaItem onPlayWhenReadyChanged $playWhenReady")
                 //if (playbackFadeDuration != DurationInSeconds.Disabled) {
-                //    fadeInOut = false
                 //}
             }
 
