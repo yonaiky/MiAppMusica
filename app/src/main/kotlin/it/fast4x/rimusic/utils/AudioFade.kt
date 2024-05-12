@@ -46,7 +46,7 @@ fun audioFadeOut(player: ExoPlayer, duration: Int, context: Context) {
 }
 
 fun audioFadeIn(player: ExoPlayer, duration: Int, context: Context) {
-    val deviceVolume = getDeviceVolume(context);
+    //val deviceVolume = getDeviceVolume(context);
     val handler = Handler(Looper.getMainLooper())
     handler.postDelayed({
         var time = 0
