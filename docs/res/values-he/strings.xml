@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
+    <string name="opensource_multilingual_application">אפליקציית אנדרואיד בקוד פתוח ורב לשונית להזרמת מוזיקה מיוטיוב מיוזיק</string>
+    <string name="your_library">הספרייה שלך.</string>
+    <string name="organized_in_one_place">הכל מאורגן במקום אחד, שירים אהובים, שירים שהורדת, וכל הפלייליסטים שלך.</string>
     <string name="beautiful_player">A beautiful player.</string>
-    <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
-    <string name="many_effects">Many effects.</string>
+    <string name="listen_songs_sing_lyrics">האזן לשירים, לשיר עם מילים, תרגם מילים עם מתרגם מובנה.</string>
+    <string name="many_effects">אפקטים רבים.</string>
     <string name="visualizer_preview_timeline">Visualizer, preview, timeline, play button, apply the effects you prefer..</string>
-    <string name="modern">Modern.</string>
+    <string name="modern">מודרני.</string>
     <string name="rimusic_is_multilingual_modern_powerful">RiMusic is multilingual, modern, powerful, attractive, beautiful and is translated into various languages by project collaborators.</string>
     <string name="listen_to_your_favourite_music">Listen to your favorite music</string>
     <string name="download_rimusic_now">Download RiMusic Now.</string>
