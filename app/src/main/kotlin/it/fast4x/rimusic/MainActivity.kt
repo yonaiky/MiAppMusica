@@ -181,6 +181,7 @@ import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
@@ -917,7 +918,10 @@ class MainActivity :
                             Innertube.song(videoId)?.getOrNull()?.let { song ->
                                 val binder = snapshotFlow { binder }.filterNotNull().first()
                                 withContext(Dispatchers.Main) {
-                                    binder.player.forcePlay(song.asMediaItem)
+                                    if (!song.explicit && !preferences.getBoolean(parentalControlEnabledKey, false))
+                                        binder.player.forcePlay(song.asMediaItem)
+                                    else
+                                        SmartToast("Parental control is enabled", PopupType.Warning)
                                 }
                             }
                         }

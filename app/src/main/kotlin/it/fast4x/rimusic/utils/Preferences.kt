@@ -170,6 +170,8 @@ const val customThemeDark_iconButtonPlayerKey = "customThemeDark_iconButtonPlaye
 const val customThemeDark_accentKey = "customThemeDark_accent"
 /**** CUSTOM THEME **** */
 
+const val parentalControlEnabledKey = "parentalControlEnabled"
+
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
     defaultValue: T
