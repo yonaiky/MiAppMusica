@@ -46,7 +46,7 @@ fun CreateMonthlyPlaylist() {
         Database.playlistWithSongs("${MONTHLY_PREFIX}${ym}")
     }.collectAsState(initial = null, context = Dispatchers.IO)
         .let {
-            if (it.value == null && y != null && m != null) {
+            if (it.value?.playlist == null && y != null && m != null) {
                 val songsMostPlayed = remember {
                     Database.songsMostPlayedByYearMonth(y, m)
                 }.collectAsState(initial = null, context = Dispatchers.IO)
