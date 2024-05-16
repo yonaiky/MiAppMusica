@@ -149,6 +149,7 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.formatAsDuration

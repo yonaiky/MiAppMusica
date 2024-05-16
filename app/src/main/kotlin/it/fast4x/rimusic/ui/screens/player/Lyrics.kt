@@ -536,7 +536,6 @@ fun Lyrics(
                     }
 
                     var modifierBG = Modifier.verticalFadingEdge()
-
                     if (showBackgroundLyrics) modifierBG = modifierBG.background(colorPalette.accent)
 
                     LazyColumn(

@@ -73,6 +73,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.SeekBar
 import it.fast4x.rimusic.ui.components.SeekBarCustom
 import it.fast4x.rimusic.ui.components.SeekBarWaved
+import it.fast4x.rimusic.ui.components.themed.CustomElevatedButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlaybackParamsDialog
 import it.fast4x.rimusic.ui.components.themed.ScrollText
@@ -501,7 +502,7 @@ fun Controls(
 
         Spacer(
             modifier = Modifier
-                .height(20.dp)
+                .height(15.dp)
         )
 
 
@@ -749,7 +750,7 @@ fun Controls(
 
         Spacer(
             modifier = Modifier
-                .weight(0.5f)
+                .weight(0.2f)
         )
 
         Row(
@@ -759,7 +760,7 @@ fun Controls(
                 .fillMaxWidth()
         ) {
 
-            if (uiType != UiType.RiMusic)
+            if (uiType != UiType.RiMusic) {
                 IconButton(
                     color = colorPalette.favoritesIcon,
                     icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
@@ -788,11 +789,7 @@ fun Controls(
             Image(
                 painter = painterResource(R.drawable.play_skip_back),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(
-                    if (uiType == UiType.RiMusic)
-                        colorPalette.collapsedPlayerProgressBar
-                    else colorPalette.text
-                ),
+                colorFilter = ColorFilter.tint( colorPalette.text ),
                 modifier = Modifier
                     .combinedClickable(
                         indication = rememberRipple(bounded = false),
@@ -812,119 +809,119 @@ fun Controls(
 
             )
 
-            Box(
-                modifier = Modifier
-                    .combinedClickable(
-                        indication = rememberRipple(bounded = false),
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = {
-                            if (shouldBePlaying) {
-                                binder.player.pause()
-                            } else {
-                                if (binder.player.playbackState == Player.STATE_IDLE) {
-                                    binder.player.prepare()
-                                }
-                                binder.player.play()
-                            }
-                            if (effectRotationEnabled) isRotated = !isRotated
-                        },
-                        onLongClick = {
-                            showSpeedPlayerDialog = true
-                        }
-                    )
-                    .clip(RoundedCornerShape(playPauseRoundness))
-                    .background(
-                        when (colorPaletteName) {
-                            ColorPaletteName.Dynamic, ColorPaletteName.Default,
-                            ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> {
-                                when (playerPlayButtonType) {
-                                    PlayerPlayButtonType.CircularRibbed -> {
-                                        if (isGradientBackgroundEnabled) colorPalette.background2
-                                        else colorPalette.background1
-                                    }
 
-                                    PlayerPlayButtonType.Disabled -> colorPalette.background1
-                                    else -> {
-                                        if (isGradientBackgroundEnabled) colorPalette.background1
-                                        else colorPalette.background2
-                                    }
-                                }
-                            }
 
-                            ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
-                                if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                                    colorPalette.background1 else
-                                    if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
-                                        colorPalette.background4 else colorPalette.background0
-                        }
-                    )
-                    .width(playerPlayButtonType.width.dp)
-                    .height(playerPlayButtonType.height.dp)
-                    //.width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
-                    //.height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
-            ) {
-                //if (uiType == UiType.RiMusic && playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                Image(
-                    painter = painterResource(R.drawable.a13shape),
-                    colorFilter = ColorFilter.tint(
-                        when (colorPaletteName) {
-                            ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
-                            else -> if (isGradientBackgroundEnabled) colorPalette.background1
-                            else colorPalette.background2
-                        }
-                    ),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .rotate(rotationAngle),
-                    contentDescription = "Background Image",
-                    contentScale = ContentScale.Fit
-                )
+           Box(
+               modifier = Modifier
+                   .combinedClickable(
+                       indication = rememberRipple(bounded = false),
+                       interactionSource = remember { MutableInteractionSource() },
+                       onClick = {
+                           if (shouldBePlaying) {
+                               binder.player.pause()
+                           } else {
+                               if (binder.player.playbackState == Player.STATE_IDLE) {
+                                   binder.player.prepare()
+                               }
+                               binder.player.play()
+                           }
+                           if (effectRotationEnabled) isRotated = !isRotated
+                       },
+                       onLongClick = {
+                           showSpeedPlayerDialog = true
+                       }
+                   )
+                   .clip(RoundedCornerShape(playPauseRoundness))
+                   .background(
+                       when (colorPaletteName) {
+                           ColorPaletteName.Dynamic, ColorPaletteName.Default,
+                           ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> {
+                               when (playerPlayButtonType) {
+                                   PlayerPlayButtonType.CircularRibbed -> {
+                                       if (isGradientBackgroundEnabled) colorPalette.background2
+                                       else colorPalette.background1
+                                   }
 
-                Image(
-                    painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(
-                        if (uiType == UiType.RiMusic)
-                            colorPalette.collapsedPlayerProgressBar
-                        else colorPalette.text
-                    ), //if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed) ColorFilter.tint(colorPalette.iconButtonPlayer) else ColorFilter.tint(colorPalette.text),
-                    modifier = Modifier
-                        .rotate(rotationAngle)
-                        .align(Alignment.Center)
-                        .size(30.dp)
-                )
+                                   PlayerPlayButtonType.Disabled -> colorPalette.background1
+                                   else -> {
+                                       if (isGradientBackgroundEnabled) colorPalette.background1
+                                       else colorPalette.background2
+                                   }
+                               }
+                           }
 
-                val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",",".")
-                if (fmtSpeed != "1.0x")
-                    Box(
-                        modifier = Modifier
-                        .align(Alignment.BottomCenter)
+                           ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
+                               if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
+                                   colorPalette.background1 else
+                                   if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
+                                       colorPalette.background4 else colorPalette.background0
+                       }
+                   )
+                   .width(playerPlayButtonType.width.dp)
+                   .height(playerPlayButtonType.height.dp)
+                   //.width(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.width.dp else playerPlayButtonType.width.dp)
+                   //.height(if (uiType != UiType.RiMusic) PlayerPlayButtonType.Default.height.dp else playerPlayButtonType.height.dp)
+           ) {
+               //if (uiType == UiType.RiMusic && playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
+               if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
+               Image(
+                   painter = painterResource(R.drawable.a13shape),
+                   colorFilter = ColorFilter.tint(
+                       when (colorPaletteName) {
+                           ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
+                           else -> if (isGradientBackgroundEnabled) colorPalette.background1
+                           else colorPalette.background2
+                       }
+                   ),
+                   modifier = Modifier
+                       .fillMaxSize()
+                       .rotate(rotationAngle),
+                   contentDescription = "Background Image",
+                   contentScale = ContentScale.Fit
+               )
 
-                    ) {
-                        BasicText(
-                            text = fmtSpeed,
-                            style = TextStyle(
-                                color = colorPalette.collapsedPlayerProgressBar,
-                                fontStyle = typography.xxxs.semiBold.fontStyle,
-                                fontSize = typography.xxxs.semiBold.fontSize
-                            ),
-                            maxLines = 1,
-                            modifier = Modifier
-                                .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
-                        )
-                    }
-            }
+               Image(
+                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                   contentDescription = null,
+                   colorFilter = ColorFilter.tint(
+                       if (uiType == UiType.RiMusic)
+                           colorPalette.collapsedPlayerProgressBar
+                       else colorPalette.text
+                   ), //if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed) ColorFilter.tint(colorPalette.iconButtonPlayer) else ColorFilter.tint(colorPalette.text),
+                   modifier = Modifier
+                       .rotate(rotationAngle)
+                       .align(Alignment.Center)
+                       .size(30.dp)
+               )
+
+               val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",",".")
+               if (fmtSpeed != "1.0x")
+                   Box(
+                       modifier = Modifier
+                       .align(Alignment.BottomCenter)
+
+                   ) {
+                       BasicText(
+                           text = fmtSpeed,
+                           style = TextStyle(
+                               color = colorPalette.collapsedPlayerProgressBar,
+                               fontStyle = typography.xxxs.semiBold.fontStyle,
+                               fontSize = typography.xxxs.semiBold.fontSize
+                           ),
+                           maxLines = 1,
+                           modifier = Modifier
+                               .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                       )
+                   }
+           }
+
+
 
 
             Image(
                 painter = painterResource(R.drawable.play_skip_forward),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(
-                    if (uiType == UiType.RiMusic)
-                        colorPalette.collapsedPlayerProgressBar
-                    else colorPalette.text
-                ),
+                colorFilter = ColorFilter.tint( colorPalette.text ),
                 modifier = Modifier
                     .combinedClickable(
                         indication = rememberRipple(bounded = false),
@@ -944,24 +941,161 @@ fun Controls(
             )
 
 
-            if (uiType != UiType.RiMusic)
-            IconButton(
-                icon = R.drawable.repeat,
-                color = if (trackLoopEnabled) colorPalette.iconButtonPlayer else colorPalette.textDisabled,
-                onClick = {
-                    trackLoopEnabled = !trackLoopEnabled
-                },
-                modifier = Modifier
-                    .padding(10.dp)
-                    .size(26.dp)
-            )
 
+                IconButton(
+                    icon = R.drawable.repeat,
+                    color = if (trackLoopEnabled) colorPalette.iconButtonPlayer else colorPalette.textDisabled,
+                    onClick = {
+                        trackLoopEnabled = !trackLoopEnabled
+                    },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(26.dp)
+                )
+            }
+
+
+            if (uiType == UiType.RiMusic) {
+                CustomElevatedButton(
+                    backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+                    onClick = {},
+                    modifier = Modifier
+                        .size(55.dp)
+                        .combinedClickable(
+                            indication = rememberRipple(bounded = true),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                //binder.player.forceSeekToPrevious()
+                                binder.player.seekToPrevious()
+                                if (effectRotationEnabled) isRotated = !isRotated
+                            },
+                            onLongClick = {
+                                binder.player.seekTo(position - 5000)
+                            }
+                        )
+
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.play_skip_back),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(26.dp)
+                            .rotate(rotationAngle)
+                    )
+                }
+
+                CustomElevatedButton(
+                    backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+                    onClick = {},
+                    modifier = Modifier
+                        .combinedClickable(
+                            indication = rememberRipple(bounded = true),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                if (shouldBePlaying) {
+                                    binder.player.pause()
+                                } else {
+                                    if (binder.player.playbackState == Player.STATE_IDLE) {
+                                        binder.player.prepare()
+                                    }
+                                    binder.player.play()
+                                }
+                                if (effectRotationEnabled) isRotated = !isRotated
+                            },
+                            onLongClick = {
+                                showSpeedPlayerDialog = true
+                            }
+                        )
+                        .width(playerPlayButtonType.width.dp)
+                        .height(playerPlayButtonType.height.dp)
+
+                ) {
+                    if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
+                        Image(
+                            painter = painterResource(R.drawable.a13shape),
+                            colorFilter = ColorFilter.tint(
+                                when (colorPaletteName) {
+                                    ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
+                                    else -> if (isGradientBackgroundEnabled) colorPalette.background1
+                                    else colorPalette.background2
+                                }
+                            ),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .rotate(rotationAngle),
+                            contentDescription = "Background Image",
+                            contentScale = ContentScale.Fit
+                        )
+
+                    Image(
+                        painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint( colorPalette.collapsedPlayerProgressBar ), //if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed) ColorFilter.tint(colorPalette.iconButtonPlayer) else ColorFilter.tint(colorPalette.text),
+                        modifier = Modifier
+                            .rotate(rotationAngle)
+                            .align(Alignment.Center)
+                            .size(30.dp)
+                    )
+
+                    val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
+                    if (fmtSpeed != "1.0x")
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+
+                        ) {
+                            BasicText(
+                                text = fmtSpeed,
+                                style = TextStyle(
+                                    color = colorPalette.collapsedPlayerProgressBar,
+                                    fontStyle = typography.xxxs.semiBold.fontStyle,
+                                    fontSize = typography.xxxs.semiBold.fontSize
+                                ),
+                                maxLines = 1,
+                                modifier = Modifier
+                                    .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                            )
+                        }
+                }
+
+                CustomElevatedButton(
+                    backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+                    onClick = {},
+                    modifier = Modifier
+                        .size(55.dp)
+                        .combinedClickable(
+                            indication = rememberRipple(bounded = true),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                binder.player.forceSeekToNext()
+                                if (effectRotationEnabled) isRotated = !isRotated
+                            },
+                            onLongClick = {
+                                binder.player.seekTo(position + 5000)
+                            }
+                        )
+
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.play_skip_forward),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(26.dp)
+                            .rotate(rotationAngle)
+                    )
+                }
+            }
 
         }
 
+
         Spacer(
             modifier = Modifier
-                .weight(0.8f)
+                .weight(0.2f)
         )
 
         }
