@@ -1004,7 +1004,8 @@ fun Player(
             if (!isGradientBackgroundEnabled) {
                 if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                     containerModifier = containerModifier
-                    .paint(painter, contentScale = ContentScale.Crop)
+                        .background(dynamicColorPalette.background1)
+                        .paint(painter = painter, contentScale = ContentScale.Crop, sizeToIntrinsics = false)
                 } else {
                     containerModifier = containerModifier
                         .background(
