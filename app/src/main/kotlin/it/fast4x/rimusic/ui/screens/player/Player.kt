@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.player
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.audiofx.AudioEffect
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -68,6 +69,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -101,6 +103,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -136,6 +141,7 @@ import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.audioFadeIn
@@ -685,6 +691,29 @@ fun Player(
         val brushMask by animateBrushRotation(shaderMask, size, 15_000, true)
     /*  */
 
+    val (thumbnailSizeDp, thumbnailSizePx) = Dimensions.thumbnails.player.song.let {
+        it to (it - 64.dp).px
+    }
+
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(mediaItem.mediaMetadata.artworkUri.thumbnail(
+                thumbnailSizePx
+            ))
+            .size(coil.size.Size.ORIGINAL)
+            .transformations(
+                listOf(
+                    BlurTransformation(
+                        scale = 0.5f,
+                        radius = 25
+                    )
+                )
+            )
+            .build()
+    )
+
+    //val imageState = painter.state
+
     /*
     OnGlobalRoute {
         layoutState.collapseSoft()
@@ -972,14 +1001,18 @@ fun Player(
             )
             .padding(bottom = playerSheetState.collapsedBound)
 
-            if (!isGradientBackgroundEnabled)
-                containerModifier = containerModifier
-                    .background(
-                        dynamicColorPalette.background1
-                        //colorPalette.background1
-                    )
-
-            else {
+            if (!isGradientBackgroundEnabled) {
+                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+                    containerModifier = containerModifier
+                    .paint(painter, contentScale = ContentScale.Crop)
+                } else {
+                    containerModifier = containerModifier
+                        .background(
+                            dynamicColorPalette.background1
+                            //colorPalette.background1
+                        )
+                }
+            } else {
                 when (playerBackgroundColors) {
                     PlayerBackgroundColors.FluidThemeColorGradient,
                     PlayerBackgroundColors.FluidCoverColorGradient -> {
@@ -1186,6 +1219,7 @@ fun Player(
             var deltaX by remember { mutableStateOf(0f) }
             var direction by remember { mutableStateOf(-1)}
              */
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = containerModifier
@@ -1203,6 +1237,7 @@ fun Player(
                             )
                         }
                     }
+
                     /*
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(

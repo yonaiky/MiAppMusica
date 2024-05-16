@@ -6,5 +6,6 @@ enum class PlayerBackgroundColors {
     FluidThemeColorGradient,
     FluidCoverColorGradient,
     CoverColor,
+    BlurredCoverColor,
     ThemeColor
 }

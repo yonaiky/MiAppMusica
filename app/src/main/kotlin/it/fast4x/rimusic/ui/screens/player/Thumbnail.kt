@@ -238,6 +238,7 @@ fun Thumbnail(
                         .fillMaxSize()
                         .clip(LocalAppearance.current.thumbnailShape)
 
+
                 )
 
             if(!artImageAvailable)
