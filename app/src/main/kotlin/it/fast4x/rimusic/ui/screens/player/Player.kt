@@ -653,11 +653,11 @@ fun Player(
     }
 
    /*  */
-        var size by remember { mutableStateOf(Size.Zero) }
+        var sizeShader by remember { mutableStateOf(Size.Zero) }
 
         val shaderA = LinearGradientShader(
-            Offset(size.width / 2f, 0f),
-            Offset(size.width / 2f, size.height),
+            Offset(sizeShader.width / 2f, 0f),
+            Offset(sizeShader.width / 2f, sizeShader.height),
             listOf(
                 dynamicColorPalette.background2,
                 colorPalette.background2,
@@ -666,8 +666,8 @@ fun Player(
         )
 
         val shaderB = LinearGradientShader(
-            Offset(size.width / 2f, 0f),
-            Offset(size.width / 2f, size.height),
+            Offset(sizeShader.width / 2f, 0f),
+            Offset(sizeShader.width / 2f, sizeShader.height),
             listOf(
                 colorPalette.background1,
                 dynamicColorPalette.accent,
@@ -676,8 +676,8 @@ fun Player(
         )
 
         val shaderMask = LinearGradientShader(
-            Offset(size.width / 2f, 0f),
-            Offset(size.width / 2f, size.height),
+            Offset(sizeShader.width / 2f, 0f),
+            Offset(sizeShader.width / 2f, sizeShader.height),
             listOf(
                 //Color.White,
                 colorPalette.background2,
@@ -686,9 +686,9 @@ fun Player(
             listOf(0f, 1f)
         )
 
-        val brushA by animateBrushRotation(shaderA, size, 20_000, true)
-        val brushB by animateBrushRotation(shaderB, size, 12_000, false)
-        val brushMask by animateBrushRotation(shaderMask, size, 15_000, true)
+        val brushA by animateBrushRotation(shaderA, sizeShader, 20_000, true)
+        val brushB by animateBrushRotation(shaderB, sizeShader, 12_000, false)
+        val brushMask by animateBrushRotation(shaderMask, sizeShader, 15_000, true)
     /*  */
 
     val (thumbnailSizeDp, thumbnailSizePx) = Dimensions.thumbnails.player.song.let {
@@ -994,11 +994,13 @@ fun Player(
 
 
         var containerModifier = Modifier
+            /*
             .padding(
                 windowInsets
                     .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                     .asPaddingValues()
             )
+             */
             .padding(bottom = playerSheetState.collapsedBound)
 
             if (!isGradientBackgroundEnabled) {
@@ -1019,7 +1021,7 @@ fun Player(
                     PlayerBackgroundColors.FluidCoverColorGradient -> {
                         containerModifier = containerModifier
                             .onSizeChanged {
-                                size = Size(it.width.toFloat(), it.height.toFloat())
+                                sizeShader = Size(it.width.toFloat(), it.height.toFloat())
                             }
                             .drawBehind {
                                 drawRect(brush = brushA)
@@ -1275,6 +1277,11 @@ fun Player(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
+                            .padding(
+                                windowInsets
+                                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
                             .fillMaxWidth(0.9f)
                             .height(30.dp)
                     ) {
