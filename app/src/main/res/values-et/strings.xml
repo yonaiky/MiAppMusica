@@ -89,7 +89,7 @@
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Luba Android Auto tugi</string>
     <string name="search_history">OTSINGU AJALUGU</string>
-    <string name="pause_search_history">Pause search history</string>
+    <string name="pause_search_history">Pane otsingu ajalugu pausile</string>
     <string name="neither_save_new_searched_query">Neither save new searched queries nor show history</string>
     <string name="clear_search_history">Tühjenda otsingu ajalugu</string>
     <string name="history_is_empty">Ajalugu on tühi</string>
@@ -102,7 +102,7 @@
     <string name="invincible_service">Invincible service</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Kui aku optimeerimise välja lülitamisest ei piisa</string>
     <string name="player">Pleier</string>
-    <string name="persistent_queue">Persistent queue</string>
+    <string name="persistent_queue">Püsiv järjekord</string>
     <string name="save_and_restore_playing_songs">Salvesta ja taasta esitatavad lood</string>
     <string name="resume_playback">Jätka taasesitust</string>
     <string name="when_device_is_connected">Kui juhtmega või bluetoothiga seade on ühendatud</string>
