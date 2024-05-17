@@ -289,8 +289,8 @@ fun HomeLibrary(
     val showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
 
     //println("mediaItem ${getCalculatedMonths(0)} ${getCalculatedMonths(1)}")
-    if (enableCreateMonthlyPlaylists)
-        CreateMonthlyPlaylist()
+    //if (enableCreateMonthlyPlaylists)
+    //    CreateMonthlyPlaylist()
 
     Box(
         modifier = Modifier

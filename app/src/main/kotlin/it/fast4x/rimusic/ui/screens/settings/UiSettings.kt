@@ -503,6 +503,7 @@ fun  UiSettings() {
                         Languages.Dutch -> stringResource(R.string.lang_dutch)
                         Languages.English -> stringResource(R.string.english)
                         Languages.Esperanto -> stringResource(R.string.esperanto)
+                        Languages.Estonian -> stringResource(R.string.lang_estonian)
                         Languages.Finnish -> stringResource(R.string.lang_finnish)
                         Languages.French -> stringResource(R.string.french)
                         Languages.German -> stringResource(R.string.german)
