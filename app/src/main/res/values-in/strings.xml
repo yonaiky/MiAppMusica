@@ -536,7 +536,6 @@
     <string name="title_reset_customized_dark_colors">Atur ulang kustomisasi warna tema gelap</string>
     <string name="click_to_reset_default_dark_colors">Tekan untuk mengatur ulang warna tema gelap</string>
     <string name="info_color_s_applied">Warna %s diterapkan</string>
-    <string name="effect_crossfade_songs">Efek Crossfade lagu</string>
     <string name="time_seconds">detik</string>
     <string name="info_bookmark_album">Bookmark album</string>
     <string name="effect_fade_songs">Fade songs</string>
