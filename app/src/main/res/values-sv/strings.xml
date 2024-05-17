@@ -386,7 +386,7 @@
     <string name="export_playlist">Exportera spellista</string>
     <string name="lang_afrikaans">Afrikaans</string>
     <string name="playlist_top">Playlist Top</string>
-    <string name="my_playlist_top">My Top %s</string>
+    <string name="my_playlist_top">My Top</string>
     <string name="navigation_bar_position">Navigeringsfältets position</string>
     <string name="direction_left">Vänster</string>
     <string name="direction_right">Höger</string>
