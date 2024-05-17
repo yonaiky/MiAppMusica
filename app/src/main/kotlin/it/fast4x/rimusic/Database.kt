@@ -654,6 +654,10 @@ interface Database {
 
     @Transaction
     @Query("SELECT * FROM Playlist WHERE trim(name) COLLATE NOCASE = trim(:name) COLLATE NOCASE")
+    fun playlistWithSongsNoFlow(name: String): PlaylistWithSongs?
+
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE trim(name) COLLATE NOCASE = trim(:name) COLLATE NOCASE")
     fun playlistWithSongs(name: String): Flow<PlaylistWithSongs?>
 
     @Transaction

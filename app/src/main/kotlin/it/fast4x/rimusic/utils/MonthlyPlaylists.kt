@@ -42,6 +42,46 @@ fun monthlyPLaylists(playlist: String? = ""): State<List<PlaylistWithSongs?>?> {
 }
 
 @Composable
+fun CheckMonthlyPlaylist() {
+    val ym = getCalculatedMonths(1)
+    val y = ym?.substring(0,4)?.toLong() ?: 0
+    val m = ym?.substring(5,7)?.toLong() ?: 0
+    val monthlyPlaylist by remember { mutableStateOf(
+        transaction {
+            Database.playlistWithSongsNoFlow("${MONTHLY_PREFIX}${ym}")
+        }
+    ) }
+
+        if (monthlyPlaylist == null) {
+                val songsMostPlayed = remember {
+                    Database.songsMostPlayedByYearMonth(y, m)
+                }.collectAsState(initial = null, context = Dispatchers.IO)
+
+                if (songsMostPlayed.value?.isNotEmpty() == true) {
+                    transaction {
+                        val playlistId = Database.insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
+                        playlistId.let {
+                            songsMostPlayed.value!!.forEachIndexed{ position, song ->
+                                Database.insert(
+                                    SongPlaylistMap(
+                                        songId = song.id,
+                                        playlistId = it,
+                                        position = position
+                                    )
+                                )
+                            }
+                        }
+
+                    }
+
+                }
+
+
+        }
+    //println("mediaItem internal $monthlyPlaylist")
+}
+
+@Composable
 fun CreateMonthlyPlaylist() {
     val ym = getCalculatedMonths(1)
     val y = ym?.substring(0,4)?.toLong() ?: 0

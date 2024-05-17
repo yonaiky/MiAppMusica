@@ -87,6 +87,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.CreateMonthlyPlaylist
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
@@ -289,8 +290,8 @@ fun HomeLibrary(
     val showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
 
     //println("mediaItem ${getCalculatedMonths(0)} ${getCalculatedMonths(1)}")
-    //if (enableCreateMonthlyPlaylists)
-    //    CreateMonthlyPlaylist()
+    if (enableCreateMonthlyPlaylists)
+        CheckMonthlyPlaylist()
 
     Box(
         modifier = Modifier
