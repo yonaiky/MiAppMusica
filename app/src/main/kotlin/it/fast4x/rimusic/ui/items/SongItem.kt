@@ -294,6 +294,7 @@ fun SongItem(
             thumbnailContent()
 
 
+            /*
             if (totalPlayTimeMs != null) {
                 if (totalPlayTimeMs <= 0 ) {
                     HeaderIconButton(
@@ -307,6 +308,7 @@ fun SongItem(
                     )
                 }
             }
+             */
 
             /*
             BasicText(
