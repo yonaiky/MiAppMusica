@@ -534,7 +534,7 @@
     <string name="color_accent">Rõhuvärv</string>
     <string name="title_customized_dark_theme_colors">Kohandatud tumeda teema värvid</string>
     <string name="title_reset_customized_dark_colors">Lähtesta kohandatud tumedad värvid</string>
-    <string name="click_to_reset_default_dark_colors">Click to reset default dark colors</string>
+    <string name="click_to_reset_default_dark_colors">Klõpsa vaikimisi tumedate värvide lähetamiseks</string>
     <string name="info_color_s_applied">%s värv lisatud</string>
     <string name="time_seconds">sekundit</string>
     <string name="info_bookmark_album">Lisa album järjehoidjatesse</string>
