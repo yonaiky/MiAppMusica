@@ -148,6 +148,7 @@ const val playerBackgroundColorsKey = "playerBackgroundColors"
 const val playerControlsTypeKey = "playerControlsType"
 const val enableCreateMonthlyPlaylistsKey = "enableCreateMonthlyPlaylists"
 const val autoShuffleKey = "autoShuffle"
+const val builtInPlaylistKey = "builtInPlaylist"
 /**** CUSTOM THEME **** */
 const val customThemeLight_Background0Key = "customThemeLight_Background0"
 const val customThemeLight_Background1Key = "customThemeLight_Background1"

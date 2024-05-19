@@ -258,7 +258,7 @@ fun HalfHeader(
 fun HeaderInfo (
     title: String,
     icon: Painter,
-    spacer: Int
+    spacer: Int = 5
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Image(
@@ -266,13 +266,15 @@ fun HeaderInfo (
         contentDescription = null,
         colorFilter = ColorFilter.tint(colorPalette.shimmer),
         modifier = Modifier
-            .size(20.dp)
+            .size(16.dp)
     )
     BasicText(
         text = title,
         style = TextStyle(
             color = colorPalette.shimmer,
-            fontStyle = typography.xxs.semiBold.fontStyle
+            fontStyle = typography.xxxs.semiBold.fontStyle,
+            fontWeight = typography.xxxs.semiBold.fontWeight,
+            fontSize = typography.xxxs.semiBold.fontSize
         ),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

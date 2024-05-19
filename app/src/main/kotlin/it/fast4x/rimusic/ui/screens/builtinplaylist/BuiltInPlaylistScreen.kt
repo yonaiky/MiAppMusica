@@ -72,6 +72,8 @@ fun BuiltInPlaylistScreen(
             BuiltInPlaylist.Offline -> 1
             BuiltInPlaylist.Downloaded -> 2
             BuiltInPlaylist.Top -> 3
+            BuiltInPlaylist.OnDevice -> 4
+            else -> 5
         })
     }
 
