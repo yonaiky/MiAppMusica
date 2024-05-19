@@ -94,7 +94,7 @@
     <string name="clear_search_history">Tühjenda otsingu ajalugu</string>
     <string name="history_is_empty">Ajalugu on tühi</string>
     <string name="service_lifetime">TEENUSE ELUIGA</string>
-    <string name="battery_optimizations_applied">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
+    <string name="battery_optimizations_applied">Kui aku optimeerimine on rakendatud, siis võib pausile pannes taasesituse teavitus järsku kaduda.</string>
     <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invincible service\" option to take effect.</string>
     <string name="ignore_battery_optimizations">Eira aku optimiseerimist</string>
     <string name="already_unrestricted">Juba on piiramatu</string>
@@ -502,14 +502,14 @@
     <string name="info_lyrics_not_found_on_s_try_on_s">Laulusõnu ei leitud %s\'st, proovige %s\'st</string>
     <string name="info_lyrics_not_found_on_s">Laulusõnu ei leitud %s\'st</string>
     <string name="info_lyrics_tracks_found_on_s">Laulusõnad leiti %s\'st</string>
-    <string name="info_lyrics_tracks_not_found_on_s">Lyrics tracks not found on %s</string>
+    <string name="info_lyrics_tracks_not_found_on_s">Laulusõnu ei leitud %s\'st</string>
     <string name="background_colors">Taustavärvid</string>
     <string name="bg_colors_background_from_cover">Taust kaanelt</string>
     <string name="bg_colors_background_from_theme">Taust teemalt</string>
     <string name="bg_colors_gradient_background_from_cover">Gradientne taust kaanelt</string>
     <string name="bg_colors_gradient_background_from_theme">Gradientne taust teemalt</string>
     <string name="vimusic_show_search_button_in_navigation_bar">Kuva otsing navigatsiooniribal</string>
-    <string name="vismusic_only_in_left_right_navigation_bar">Only for ViMusic ui mode in left/right navigation bar</string>
+    <string name="vismusic_only_in_left_right_navigation_bar">Ainult ViMusic kasutajaliidese režiimis, vasakul/paremal navigatsiooniribal</string>
     <string name="enable_monthly_playlists_creation">Luba igakuine esitusloendite loomine</string>
     <string name="info_no_singles_yet">Singlid puuduvad</string>
     <string name="info_no_albums_yet">Albumid puuduvad</string>
@@ -520,7 +520,7 @@
     <string name="info_reset_custom_light_theme_colors">Lähtesta kohandatud heleda teema värvid</string>
     <string name="info_reset_custom_dark_theme_colors">Lähtesta kohandatud tumeda teema värvid</string>
     <string name="title_customized_light_theme_colors">Kohandatud heleda teema värvid</string>
-    <string name="title_reset_customized_light_colors">Reset customized light colors</string>
+    <string name="title_reset_customized_light_colors">Lähtesta kohandatud heledad värvid</string>
     <string name="info_click_to_reset_default_light_colors">Click to reset default light colors</string>
     <string name="color_background_1">Taust 1</string>
     <string name="color_background_2">Taust 2</string>
@@ -541,7 +541,7 @@
     <string name="effect_fade_songs">Hääbuvad lood</string>
     <string name="bg_colors_fluid_gradient_background_from_theme">Fluid gradient background from theme</string>
     <string name="bg_colors_fluid_gradient_background_from_cover">Fluid gradient background from cover</string>
-    <string name="show_background_in_lyrics">Show background color in Lyrics</string>
-    <string name="bg_colors_blurred_cover_background">Blurred cover background</string>
+    <string name="show_background_in_lyrics">Kuva laulusõnadel taustavärv</string>
+    <string name="bg_colors_blurred_cover_background">Hägune kaanetaust</string>
     <string name="lang_estonian">Eesti</string>
 </resources>
