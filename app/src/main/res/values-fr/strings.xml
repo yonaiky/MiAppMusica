@@ -546,4 +546,7 @@
     <string name="show_background_in_lyrics">Afficher la couleur d\'arrière-plan dans les paroles</string>
     <string name="bg_colors_blurred_cover_background">Arrière-plan de la pochette d\'album floue</string>
     <string name="lang_estonian">Estonien (eesti keel)</string>
+    <string name="pcontrols_modern">Modern</string>
+    <string name="pcontrols_essential">Essential</string>
+    <string name="pcontrols_type">Controls type</string>
 </resources>

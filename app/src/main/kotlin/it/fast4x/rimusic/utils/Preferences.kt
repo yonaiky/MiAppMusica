@@ -145,6 +145,7 @@ const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val showMonthlyPlaylistInLibraryKey = "showMonthlyPlaylistInLibrary"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
+const val playerControlsTypeKey = "playerControlsType"
 const val enableCreateMonthlyPlaylistsKey = "enableCreateMonthlyPlaylists"
 const val autoShuffleKey = "autoShuffle"
 /**** CUSTOM THEME **** */

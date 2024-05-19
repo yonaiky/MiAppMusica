@@ -544,4 +544,7 @@
     <string name="show_background_in_lyrics">Mostra colore di sfondo nel Testo</string>
     <string name="bg_colors_blurred_cover_background">Sfondo copertina sfocata</string>
     <string name="lang_estonian">Estone</string>
+    <string name="pcontrols_modern">Modern</string>
+    <string name="pcontrols_essential">Essential</string>
+    <string name="pcontrols_type">Controls type</string>
 </resources>

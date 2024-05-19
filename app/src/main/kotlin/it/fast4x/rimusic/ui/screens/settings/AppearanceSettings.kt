@@ -53,6 +53,7 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
+import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
@@ -96,6 +97,7 @@ import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.showBackgroundLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
@@ -161,6 +163,7 @@ fun AppearanceSettings() {
         ThumbnailRoundness.Heavy
     )
     var playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.ThemeColor)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
 
     Column(
         modifier = Modifier
@@ -339,7 +342,49 @@ fun AppearanceSettings() {
                 }
             )
 
+        if (filter.isNullOrBlank() || stringResource(R.string.pcontrols_type).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.pcontrols_type),
+                selectedValue = playerControlsType,
+                onValueSelected = {
+                    playerControlsType = it
+                },
+                valueText = {
+                    when (it) {
+                        PlayerControlsType.Modern -> stringResource(R.string.pcontrols_modern)
+                        PlayerControlsType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
+            )
 
+            AnimatedVisibility(
+                visible = playerControlsType == PlayerControlsType.Essential,
+                enter = fadeIn(tween(100)),
+                exit = fadeOut(tween(100)),
+            ) {
+                if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.play_button),
+                        selectedValue = playerPlayButtonType,
+                        onValueSelected = {
+                            playerPlayButtonType = it
+                            lastPlayerPlayButtonType = it
+                        },
+                        valueText = {
+                            when (it) {
+                                PlayerPlayButtonType.Disabled -> stringResource(R.string.vt_disabled)
+                                PlayerPlayButtonType.Default -> stringResource(R.string._default)
+                                PlayerPlayButtonType.Rectangular -> stringResource(R.string.rectangular)
+                                PlayerPlayButtonType.Square -> stringResource(R.string.square)
+                                PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
+                            }
+                        },
+                    )
+            }
         /*
 
         if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
@@ -481,25 +526,6 @@ fun AppearanceSettings() {
                         PlayerTimelineType.PinBar -> stringResource(R.string.pin_bar)
                     }
                 }
-            )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(filterCharSequence,true))
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.play_button),
-                selectedValue = playerPlayButtonType,
-                onValueSelected = {
-                    playerPlayButtonType = it
-                    lastPlayerPlayButtonType = it
-                },
-                valueText = {
-                    when (it) {
-                        PlayerPlayButtonType.Disabled -> stringResource(R.string.vt_disabled)
-                        PlayerPlayButtonType.Default -> stringResource(R.string._default)
-                        PlayerPlayButtonType.Rectangular -> stringResource(R.string.rectangular)
-                        PlayerPlayButtonType.Square -> stringResource(R.string.square)
-                        PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
-                    }
-                },
             )
 
 

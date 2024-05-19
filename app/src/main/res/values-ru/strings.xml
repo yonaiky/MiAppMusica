@@ -544,4 +544,7 @@
     <string name="show_background_in_lyrics">Показывать цвет фона в текстах песен</string>
     <string name="bg_colors_blurred_cover_background">Размытая обложка на фоне</string>
     <string name="lang_estonian">Эстонский (eesti keel)</string>
+    <string name="pcontrols_modern">Modern</string>
+    <string name="pcontrols_essential">Essential</string>
+    <string name="pcontrols_type">Controls type</string>
 </resources>

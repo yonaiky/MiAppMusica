@@ -51,6 +51,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
+import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
@@ -74,6 +75,7 @@ import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnail
 import java.net.UnknownHostException
@@ -186,9 +188,9 @@ fun Thumbnail(
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
 
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+        val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
         var modifierUiType by remember { mutableStateOf(modifier) }
-        if (uiType == UiType.RiMusic)
+        if (playerControlsType == PlayerControlsType.Modern)
             modifierUiType = modifier
                 .aspectRatio(1f)
                 //.size(thumbnailSizeDp)
