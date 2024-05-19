@@ -140,7 +140,7 @@
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">Tagastatud video ID ei vasta taotletule</string>
     <string name="error_an_unknown_playback_error_has_occurred">Tundmatu esitamise tõrge</string>
     <string name="tips">Vihjed</string>
-    <string name="is_min_list_time_for_tips_or_quick_pics">It\'s the minimum listening time, to include the song as a possible Tips or Quick Pics</string>
+    <string name="is_min_list_time_for_tips_or_quick_pics">Minimaalne kuulamise aeg, mis on vajalik loo võimalikuks Vihjed või Kiirvalikud alla lisamiseks</string>
     <string name="min_listening_time">Min. kuulamisaeg</string>
     <string name="player_thumbnail_size">Pisipildi suurus</string>
     <string name="restarting_rimusic_is_required">Taaskäivitamine on vajalik</string>
