@@ -618,6 +618,7 @@ fun HomeSongsModern(
                         color = colorPalette.text,
                         onClick = {},
                         modifier = Modifier
+                            .padding(horizontal = 2.dp)
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
                             .combinedClickable(
                                 onClick = {
@@ -740,7 +741,7 @@ fun HomeSongsModern(
                         )
 
                     HeaderIconButton(
-                        icon = R.drawable.ellipsis_horizontal,
+                        icon = R.drawable.add_in_playlist,
                         color = colorPalette.text,
                         onClick = {
                             menuState.display {

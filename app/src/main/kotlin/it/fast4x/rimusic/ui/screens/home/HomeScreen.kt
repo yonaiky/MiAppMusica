@@ -270,7 +270,7 @@ fun HomeScreen(
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(2, stringResource(R.string.artists), R.drawable.artists)
                     Item(3, stringResource(R.string.albums), R.drawable.album)
-                    Item(4, stringResource(R.string.playlists), R.drawable.playlist)
+                    Item(4, stringResource(R.string.playlists), R.drawable.library)
                     //Item(5, stringResource(R.string.discovery), R.drawable.megaphone)
                     //if (showSearchTab)
                     //Item(6, stringResource(R.string.search), R.drawable.search)
@@ -280,7 +280,7 @@ fun HomeScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> QuickPicks(
+                        0 -> QuickPicksModern(
                             onAlbumClick = {
                                 //albumRoute(it)
                                 navController.navigate(route = "${NavRoutes.album.name}/$it")
@@ -330,7 +330,7 @@ fun HomeScreen(
                             }
                         )
 
-                        2 -> HomeArtistList(
+                        2 -> HomeArtistsModern(
                             onArtistClick = {
                                 //artistRoute(it.id)
                                 navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
@@ -345,7 +345,7 @@ fun HomeScreen(
                             }
                         )
 
-                        3 -> HomeAlbums(
+                        3 -> HomeAlbumsModern(
                             onAlbumClick = {
                                 //albumRoute(it.id)
                                 navController.navigate(route = "${NavRoutes.album.name}/${it.id}")

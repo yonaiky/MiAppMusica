@@ -338,6 +338,7 @@ fun HomeLibraryModern(
                         color = colorPalette.text,
                         onClick = {},
                         modifier = Modifier
+                            .padding(horizontal = 4.dp)
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
                             .combinedClickable(
                                 onClick = { sortOrder = !sortOrder },
@@ -363,7 +364,7 @@ fun HomeLibraryModern(
                         color = colorPalette.text,
                         onClick = { isCreatingANewPlaylist = true },
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(horizontal = 4.dp)
                             .size(20.dp)
                     )
                     IconButton(
@@ -384,7 +385,7 @@ fun HomeLibraryModern(
                             }
                         },
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(horizontal = 4.dp)
                             .size(20.dp)
                     )
 

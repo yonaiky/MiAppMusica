@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -64,6 +66,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SortMenu
+import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -87,7 +90,7 @@ import kotlin.random.Random
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun HomeArtists(
+fun HomeArtistsModern(
     onArtistClick: (Artist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
@@ -148,30 +151,33 @@ fun HomeArtists(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                HeaderWithIcon(
-                    title = stringResource(R.string.artists),
-                    iconId = R.drawable.search,
-                    enabled = true,
-                    showIcon = !showSearchTab,
-                    modifier = Modifier,
-                    onClick = onSearchClick
-                )
+                if (uiType == UiType.ViMusic)
+                    HeaderWithIcon(
+                        title = stringResource(R.string.artists),
+                        iconId = R.drawable.search,
+                        enabled = true,
+                        showIcon = !showSearchTab,
+                        modifier = Modifier,
+                        onClick = onSearchClick
+                    )
             }
 
             item(
-                key = "filter",
+                key = "headerNew",
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
 
                 Row (
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
-                        .padding(bottom = 20.dp)
+                        .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
                 ){
+                    if (uiType == UiType.RiMusic)
+                        TitleSection(title = stringResource(R.string.artists))
 
                     HeaderInfo(
                         title = "${items.size}",
@@ -179,11 +185,37 @@ fun HomeArtists(
                         spacer = 0
                     )
 
-                    var randomGenerator = Random(System.currentTimeMillis())
-                    var result = randomGenerator.nextInt(30, 50)
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                    )
 
                     HeaderIconButton(
-                        modifier = Modifier.rotate(rotationAngle),
+                        icon = R.drawable.arrow_up,
+                        color = colorPalette.text,
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 2.dp)
+                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                            .combinedClickable(
+                                onClick = { sortOrder = !sortOrder },
+                                onLongClick = {
+                                    menuState.display{
+                                        SortMenu(
+                                            title = stringResource(R.string.sorting_order),
+                                            onDismiss = menuState::hide,
+                                            onName= { sortBy = ArtistSortBy.Name },
+                                            onDateAdded = { sortBy = ArtistSortBy.DateAdded },
+                                        )
+                                    }
+                                }
+                            )
+                    )
+
+                    HeaderIconButton(
+                        modifier = Modifier
+                            .padding(horizontal = 2.dp)
+                            .rotate(rotationAngle),
                         icon = R.drawable.dice,
                         enabled = items.isNotEmpty() ,
                         color = colorPalette.text,
@@ -232,11 +264,8 @@ fun HomeArtists(
                         color = colorPalette.text
                     )
 
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
 
+                    /*
                     BasicText(
                         text = when (sortBy) {
                             ArtistSortBy.Name -> stringResource(R.string.sort_name)
@@ -258,15 +287,7 @@ fun HomeArtists(
                                 //showSortTypeSelectDialog = true
                             }
                     )
-
-
-                    HeaderIconButton(
-                        icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
-                        onClick = { sortOrder = !sortOrder },
-                        modifier = Modifier
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
-                    )
+                     */
 
             }
 
