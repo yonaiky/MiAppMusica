@@ -270,7 +270,7 @@ fun HomeScreen(
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
                     Item(2, stringResource(R.string.artists), R.drawable.artists)
                     Item(3, stringResource(R.string.albums), R.drawable.album)
-                    Item(4, stringResource(R.string.library), R.drawable.library)
+                    Item(4, stringResource(R.string.playlists), R.drawable.playlist)
                     //Item(5, stringResource(R.string.discovery), R.drawable.megaphone)
                     //if (showSearchTab)
                     //Item(6, stringResource(R.string.search), R.drawable.search)
@@ -360,7 +360,7 @@ fun HomeScreen(
                             }
                         )
 
-                        4 -> HomeLibrary(
+                        4 -> HomeLibraryModern(
                             onBuiltInPlaylist = {
                                 //builtInPlaylistRoute(it)
                                 navController.navigate(route = "${NavRoutes.builtInPlaylist.name}/${it.ordinal}")

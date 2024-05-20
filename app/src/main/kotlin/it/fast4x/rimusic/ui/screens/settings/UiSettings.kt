@@ -1169,7 +1169,7 @@ fun  UiSettings() {
             )
 
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.library).uppercase())
+        SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())
 
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
@@ -1206,6 +1206,11 @@ fun  UiSettings() {
                 isChecked = showOnDevicePlaylist,
                 onCheckedChange = { showOnDevicePlaylist = it }
             )
+
+        /*
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.playlists).uppercase())
+
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists)}",
@@ -1220,6 +1225,7 @@ fun  UiSettings() {
                 isChecked = showMonthlyPlaylistInLibrary,
                 onCheckedChange = { showMonthlyPlaylistInLibrary = it }
             )
+         */
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.monthly_playlists).uppercase())
