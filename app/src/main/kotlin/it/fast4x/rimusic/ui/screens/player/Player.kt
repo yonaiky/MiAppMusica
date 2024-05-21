@@ -211,7 +211,8 @@ fun Player(
     shape: RoundedCornerShape = RoundedCornerShape(
         topStart = 12.dp,
         topEnd = 12.dp
-    )
+    ),
+    onDismiss: () -> Unit,
 ) {
     val menuState = LocalMenuState.current
 
@@ -725,6 +726,7 @@ fun Player(
     PlayerSheet(
         state = layoutState,
         modifier = modifier,
+        onCollapse = onDismiss,
         disableDismiss = disableClosingPlayerSwipingDown,
         onDismiss = {
             //if (disableClosingPlayerSwipingDown) {
@@ -736,6 +738,7 @@ fun Player(
             //}
         },
         collapsedContent = {
+            /*
             var deltaX by remember { mutableStateOf(0f) }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -926,6 +929,7 @@ fun Player(
                         .width(2.dp)
                 )
             }
+            */
         }
     ) {
 
@@ -970,6 +974,7 @@ fun Player(
         val showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
 
         val playerBottomHeight = if (showNextSongsInPlayer) 80.dp else 50.dp
+        //val playerBottomHeight = 0.dp
         /*
         val playerBottomSheetState = rememberBottomSheetState(
             playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
@@ -1291,7 +1296,10 @@ fun Player(
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                             modifier = Modifier
-                                .clickable { layoutState.collapseSoft() }
+                                .clickable {
+                                    onDismiss()
+                                    layoutState.collapseSoft()
+                                }
                                 .rotate(rotationAngle)
                                 //.padding(10.dp)
                                 .size(24.dp)
@@ -1320,6 +1328,7 @@ fun Player(
                                 .clickable {
                                     //onGoToHome()
                                     navController.navigate(NavRoutes.home.name)
+                                    onDismiss()
                                     layoutState.collapseSoft()
                                 }
                                 .rotate(rotationAngle)
@@ -1342,6 +1351,7 @@ fun Player(
                                                 mediaItem = mediaItem,
                                                 binder = binder,
                                                 onClosePlayer = {
+                                                    onDismiss()
                                                     layoutState.collapseSoft()
                                                 }
                                             )
@@ -1513,6 +1523,7 @@ fun Player(
                                             mediaItem = mediaItem,
                                             binder = binder,
                                             onClosePlayer = {
+                                                onDismiss()
                                                 layoutState.collapseSoft()
                                             }
                                         )
@@ -1676,6 +1687,7 @@ fun Player(
                                             mediaItem = mediaItem,
                                             binder = binder,
                                             onClosePlayer = {
+                                                onDismiss()
                                                 layoutState.collapseSoft()
                                             }
 
@@ -1700,6 +1712,7 @@ fun Player(
                                             mediaItem = mediaItem,
                                             binder = binder,
                                             onClosePlayer = {
+                                                onDismiss()
                                                 layoutState.collapseSoft()
                                             }
                                         )
@@ -1838,6 +1851,7 @@ fun PlayerSheet(
     disableDismiss: Boolean? = false,
     modifier: Modifier = Modifier,
     onDismiss: (() -> Unit)? = null,
+    onCollapse: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -1879,6 +1893,8 @@ fun PlayerSheet(
                                 velocity,
                                 if (disableDismiss == false) onDismiss else null
                             )
+                            onCollapse?.invoke()
+                            println("mediaItem verticalDrag")
                         }
                     }
                 )

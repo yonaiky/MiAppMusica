@@ -84,6 +84,7 @@ const val PINNED_PREFIX = "pinned:"
 fun HomeScreen(
     navController: NavController,
     onPlaylistUrl: (String) -> Unit,
+    playerEssential: @Composable () -> Unit = {},
     openTabFromShortcut: Int
 ) {
     var showNewversionDialog by remember {
@@ -227,6 +228,7 @@ fun HomeScreen(
 
             Scaffold(
                 navController = navController,
+                playerEssential = playerEssential,
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = {
                     //settingsRoute()

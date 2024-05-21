@@ -118,6 +118,7 @@ import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.player.Player
+import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
@@ -392,6 +393,7 @@ class MainActivity :
             val coroutineScope = rememberCoroutineScope()
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
+            var showPlayer by rememberSaveable { mutableStateOf(false) }
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
@@ -767,10 +769,6 @@ class MainActivity :
                     LocalMonetCompat provides monet
                 ) {
 
-                    AppNavigation(
-                        navController = navController
-                    )
-
                     /*
                     HomeScreen(
                         onPlaylistUrl = { url ->
@@ -787,12 +785,36 @@ class MainActivity :
                         .align(Alignment.BottomCenter)
                 )
                  */
-                    Player(
+
+
+
+                    AppNavigation(
                         navController = navController,
-                        layoutState = playerSheetState,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
+                        playerEssential = {
+                            PlayerEssential(
+                                showPlayer = { showPlayer = true },
+                                hidePlayer = { showPlayer = false }
+                            )
+                        }
                     )
+
+                    if (showPlayer) {
+                        Player(
+                            navController = navController,
+                            layoutState = playerSheetState,
+                            onDismiss = {
+                                showPlayer = false
+                                println("mediaItem hidePlayer")
+                            },
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                        )
+
+                        if (showPlayer && (playerSheetState.isCollapsed || playerSheetState.isDismissed))
+                            playerSheetState.expandSoft()
+                        println("mediaItem showPlayer")
+                    }
+
 
                     BottomSheetMenu(
                         state = LocalMenuState.current,

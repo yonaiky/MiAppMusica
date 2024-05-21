@@ -26,15 +26,20 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.BottomNavigationDefaults.windowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
@@ -94,6 +99,7 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 @Composable
 fun Scaffold(
     navController: NavController,
+    playerEssential: @Composable (() -> Unit)? = null,
     topIconButtonId: Int,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = false,
@@ -124,6 +130,7 @@ fun Scaffold(
     if (navigationBarPosition == NavigationBarPosition.Top || navigationBarPosition == NavigationBarPosition.Bottom) {
             ScaffoldTB(
                 navController = navController,
+                playerEssential = playerEssential,
                 topIconButtonId = topIconButtonId,
                 onTopIconButtonClick = onTopIconButtonClick,
                 showButton1 = showButton1,
@@ -164,7 +171,21 @@ fun Scaffold(
             },
 
             bottomBar = {
+                if (playerEssential != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            //.background(colorPalette.background0)
+                            .padding(
+                                windowInsets
+                                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
+                    ) {
+                        playerEssential()
+                    }
 
+                }
             }
 
         ) {

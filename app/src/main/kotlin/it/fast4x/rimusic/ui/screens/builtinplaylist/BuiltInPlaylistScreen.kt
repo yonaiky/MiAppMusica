@@ -62,7 +62,8 @@ import it.fast4x.rimusic.utils.showStatsInNavbarKey
 @Composable
 fun BuiltInPlaylistScreen(
     navController: NavController,
-    builtInPlaylist: BuiltInPlaylist
+    builtInPlaylist: BuiltInPlaylist,
+    playerEssential: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -139,6 +140,7 @@ fun BuiltInPlaylistScreen(
         host {
             Scaffold(
                 navController = navController,
+                playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = if(uiType == UiType.RiMusic) false else true,
