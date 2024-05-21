@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -102,7 +103,9 @@ inline fun NavigationRailTB(
             //.padding(top = 30.dp)
             .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
             //.background(colorPalette.background0)
-            .background(colorPalette.background1)
+            //.background(colorPalette.background1)
+            //.background(Color.Transparent)
+
 
 
     ) {
@@ -180,7 +183,15 @@ inline fun NavigationRailTB(
                    }
 
                 val scrollState = rememberScrollState()
-
+                val roundedCornerShape = if (navigationBarPosition == NavigationBarPosition.Bottom)
+                    RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+                else RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(roundedCornerShape)
+                        .background(colorPalette.background1)
+                ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -191,47 +202,48 @@ inline fun NavigationRailTB(
                         .padding(top = 4.dp, bottom = 4.dp)
 
                 ) {
-                    //if (listIconContent.size > 1) //hide if only one icon is present
+
+                        //if (listIconContent.size > 1) //hide if only one icon is present
                         listIconContent.forEach {
                             it()
                         }
 
-                   if (showButton1)
-                       Image(
-                           painter = painterResource(topIconButtonId),
-                           contentDescription = null,
-                           colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
-                           modifier = Modifier
-                               .clip(CircleShape)
-                               .clickable(onClick = onTopIconButtonClick)
-                               .padding(all = 4.dp)
-                               .size(24.dp)
-                       )
+                        if (showButton1)
+                            Image(
+                                painter = painterResource(topIconButtonId),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable(onClick = onTopIconButtonClick)
+                                    .padding(all = 4.dp)
+                                    .size(24.dp)
+                            )
 
-                    if (showButton2)
-                        Image(
-                            painter = painterResource(topIconButton2Id),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .clickable(onClick = onTopIconButton2Click)
-                                .padding(all = 4.dp)
-                                .size(24.dp)
-                        )
+                        if (showButton2)
+                            Image(
+                                painter = painterResource(topIconButton2Id),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable(onClick = onTopIconButton2Click)
+                                    .padding(all = 4.dp)
+                                    .size(24.dp)
+                            )
 
 
-                    if (showBottomButton == true)
-                        Image(
-                            painter = painterResource(bottomIconButtonId ?: R.drawable.search ),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textSecondary),
-                            modifier = Modifier
-                                .clickable(onClick = onBottomIconButtonClick)
-                                .padding(all = 4.dp)
-                                .size(24.dp)
-                        )
-
+                        if (showBottomButton == true)
+                            Image(
+                                painter = painterResource(bottomIconButtonId ?: R.drawable.search),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                                modifier = Modifier
+                                    .clickable(onClick = onBottomIconButtonClick)
+                                    .padding(all = 4.dp)
+                                    .size(24.dp)
+                            )
+                    }
                 }
 
             }

@@ -158,7 +158,7 @@ fun PlayerEssential(
 
     SwipeToDismissBox(
         modifier = Modifier
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp)),
         state = dismissState,
         backgroundContent = {
