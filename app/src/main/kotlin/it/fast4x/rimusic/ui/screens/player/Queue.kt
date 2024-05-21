@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -115,6 +116,7 @@ import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -644,6 +646,12 @@ fun Queue(
                             }
                         }
                     }
+                    item(
+                        key = "footer",
+                        contentType = 0
+                    ) {
+                        Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+                    }
                 }
 
                 /*
@@ -665,10 +673,12 @@ fun Queue(
 
                 //FloatingActionsContainerWithScrollToTop(lazyListState = reorderingState.lazyListState)
 
+
+
             }
 
-            val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
-            val positionAndDuration by binder.player.positionAndDurationState()
+            //val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
+            //val positionAndDuration by binder.player.positionAndDurationState()
             Box(
                 modifier = Modifier
                     //.clip(shape)
@@ -678,6 +688,7 @@ fun Queue(
                     //.padding(horizontal = 8.dp)
                     .padding(horizontalBottomPaddingValues)
                     .height(60.dp) //bottom bar queue
+                    /*
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
                             drawRect(
@@ -691,7 +702,19 @@ fun Queue(
                             )
                         }
                     }
+                     */
             ) {
+
+                if (!isLandscape)
+                    Box(
+                        modifier = Modifier
+                            .absoluteOffset(0.dp, -65.dp)
+                            .align(Alignment.TopCenter)
+                    ){
+                        PlayerEssential(showPlayer = {}, hidePlayer = {})
+                    }
+
+
                 if (!showButtonPlayerArrow)
                     Image(
                         painter = painterResource(R.drawable.horizontal_bold_line_rounded),
