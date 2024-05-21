@@ -76,6 +76,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.ui.components.themed.appBar
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -83,6 +84,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.getCurrentRoute
 import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.transitionEffectKey
@@ -143,12 +145,14 @@ fun ScaffoldTB(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     //var expanded by remember { mutableStateOf(false) }
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
+    val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
        containerColor = colorPalette.background0,
         topBar = {
             Column(
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 appBar(navController)
@@ -156,6 +160,16 @@ fun ScaffoldTB(
                 if (navigationBarPosition == NavigationBarPosition.Top)
                     navigationRailTB()
 
+                if (playerEssential != null && playerPosition == PlayerPosition.Top) {
+                    val modifierBottomPadding = Modifier
+                        .padding(bottom = 5.dp)
+
+                    Row (
+                        modifier = modifierBottomPadding
+                    ) {
+                        playerEssential()
+                    }
+                }
             }
         },
 
@@ -167,7 +181,7 @@ fun ScaffoldTB(
                         .fillMaxWidth()
                         .background(colorPalette.background0)
                 ){
-                    if (playerEssential != null) {
+                    if (playerEssential != null && playerPosition == PlayerPosition.Bottom) {
                         val modifierBottomPadding = if (navigationBarPosition != NavigationBarPosition.Bottom)
                             Modifier.padding( windowInsets
                                 .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)

@@ -74,6 +74,7 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
+import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
@@ -149,6 +150,7 @@ import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -308,6 +310,7 @@ fun  UiSettings() {
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
     var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
+    var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
 
     Column(
@@ -1042,6 +1045,19 @@ fun  UiSettings() {
                     when (it) {
                         NavigationBarType.IconAndText -> stringResource(R.string.icon_and_text)
                         NavigationBarType.IconOnly -> stringResource(R.string.only_icon)
+                    }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_position).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.player_position),
+                selectedValue = playerPosition,
+                onValueSelected = { playerPosition = it },
+                valueText = {
+                    when (it) {
+                        PlayerPosition.Top -> stringResource(R.string.position_top)
+                        PlayerPosition.Bottom -> stringResource(R.string.position_bottom)
                     }
                 }
             )

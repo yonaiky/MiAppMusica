@@ -549,4 +549,7 @@ CC-BY-SA 3.0</string>
     <string name="pcontrols_essential">Essential</string>
     <string name="pcontrols_type">Controls type</string>
     <string name="player_swiping_down_is_disabled">Player swiping down is disabled</string>
+    <string name="player_position">Player position</string>
+    <string name="position_top">Top</string>
+    <string name="position_bottom">Bottom</string>
 </resources>

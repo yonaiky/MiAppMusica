@@ -175,6 +175,7 @@ const val customThemeDark_accentKey = "customThemeDark_accent"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
+const val playerPositionKey = "playerPosition"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

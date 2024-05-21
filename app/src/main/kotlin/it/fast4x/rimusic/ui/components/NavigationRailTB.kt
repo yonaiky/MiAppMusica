@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -89,6 +90,7 @@ inline fun NavigationRailTB(
         if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
     else 0.dp
      */
+    val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) bottomDp else 5.dp
 
     //val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
     val topPadding = 0.dp
@@ -98,7 +100,7 @@ inline fun NavigationRailTB(
         modifier = modifier
             //.border(BorderStroke(1.dp, Color.Yellow))
             //.padding(top = 30.dp)
-            .padding(top = topPadding, bottom = bottomDp) //bottom navigation
+            .padding(top = topPadding, bottom = bottomPadding) //bottom navigation
             //.background(colorPalette.background0)
             .background(colorPalette.background1)
 
@@ -112,6 +114,7 @@ inline fun NavigationRailTB(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimensions.navigationBarHeight)
+                    .padding(horizontal = 5.dp)
             ) {
                 val transition = updateTransition(targetState = tabIndex, label = null)
 
@@ -137,7 +140,7 @@ inline fun NavigationRailTB(
                                     colorFilter = ColorFilter.tint(textColor),
                                     modifier = Modifier
                                         .padding(all = 12.dp)
-                                        .size(24.dp)
+                                        .size(20.dp)
                                 )
                             } else {
                                 Column (
@@ -158,8 +161,9 @@ inline fun NavigationRailTB(
                                         BasicText(
                                             text = text,
                                             style = TextStyle(
-                                                fontSize = typography.s.semiBold.fontSize,
-                                                fontWeight = typography.s.semiBold.fontWeight,
+                                                fontSize = typography.xs.semiBold.fontSize,
+                                                fontWeight = typography.xs.semiBold.fontWeight,
+                                                fontFamily = typography.xs.semiBold.fontFamily,
                                                 color = textColor,
                                             ),
                                             maxLines = 2,
@@ -183,7 +187,7 @@ inline fun NavigationRailTB(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(scrollState)
-                        .padding(horizontal = 8.dp)
+                        //.padding(horizontal = 5.dp)
                         .padding(top = 4.dp, bottom = 4.dp)
 
                 ) {
