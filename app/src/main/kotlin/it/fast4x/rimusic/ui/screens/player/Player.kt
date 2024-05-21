@@ -1193,6 +1193,7 @@ fun Player(
         val controlsContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             Controls(
                 navController = navController,
+                onCollapse = onDismiss,
                 layoutState = layoutState,
                 media = mediaItem.toUiMedia(positionAndDuration.second),
                 mediaId = mediaItem.mediaId,

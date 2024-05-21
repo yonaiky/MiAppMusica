@@ -115,6 +115,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Controls(
     navController: NavController,
+    onCollapse: () -> Unit,
     layoutState: PlayerSheetState,
     media: UiMedia,
     mediaId: String,
@@ -297,6 +298,7 @@ fun Controls(
                                 //onGoToAlbum(albumId)
                                 navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                                 layoutState.collapseSoft()
+                                onCollapse()
                             }
                         },
                         modifier = Modifier
@@ -333,6 +335,7 @@ fun Controls(
                         if (albumId != null) {
                             navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                             layoutState.collapseSoft()
+                            onCollapse()
                         }
                     }
                 if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
@@ -429,6 +432,7 @@ fun Controls(
                         navController.navigate(route = "${NavRoutes.artist.name}/${it}")
                         showSelectDialog = false
                         layoutState.collapseSoft()
+                        onCollapse()
                     }
                 )
 
@@ -444,6 +448,7 @@ fun Controls(
                             //onGoToArtist( artistIds[0].id )
                             navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
                             layoutState.collapseSoft()
+                            onCollapse()
                         }
                     },
                     modifier = Modifier
@@ -487,6 +492,7 @@ fun Controls(
                     if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
                         navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
                         layoutState.collapseSoft()
+                        onCollapse()
                     }
                 }
             if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
