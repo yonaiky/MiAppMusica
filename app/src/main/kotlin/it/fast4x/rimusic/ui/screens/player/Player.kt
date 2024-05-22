@@ -1932,7 +1932,6 @@ fun PlayerSheet(
                                 if (disableDismiss == false) onDismiss else null
                             )
                             onCollapse?.invoke()
-                            println("mediaItem verticalDrag")
                         }
                     }
                 )
