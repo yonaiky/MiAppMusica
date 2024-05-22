@@ -317,6 +317,7 @@ fun SongItem(
                         //.padding(start = 4.dp)
                         .align(Alignment.BottomStart)
                         .absoluteOffset(-8.dp,0.dp)
+
                 )
             /*
             if (totalPlayTimeMs != null) {
