@@ -18,9 +18,11 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -1453,18 +1455,32 @@ fun Player(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        //.border(BorderStroke(1.dp, Color.Green))
                         .fillMaxHeight()
+
+
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.SpaceEvenly,
                         modifier = Modifier
                             //.align(Alignment.Center)
-                            .padding(horizontal = 12.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f)
-
+                            //.padding(horizontal = 12.dp)
+                            //.fillMaxWidth()
+                            .fillMaxSize()
+                            //.fillMaxHeight(0.5f)
+                            .drawBehind {
+                                if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
+                                    drawRect(
+                                        color = colorPalette.favoritesOverlay,
+                                        topLeft = Offset.Zero,
+                                        size = Size(
+                                            width = positionAndDuration.first.toFloat() /
+                                                    positionAndDuration.second.absoluteValue * size.width,
+                                            height = size.maxDimension
+                                        )
+                                    )
+                                }
+                            }
                     ) {
                         //if (uiType != UiType.ViMusic) {
 
@@ -1483,7 +1499,7 @@ fun Player(
                                     )
                                 },
                                 modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
+                                    .padding(start = 12.dp)
                                     .size(24.dp)
                             )
 
@@ -1689,6 +1705,7 @@ fun Player(
                                     queueSheetState.expandSoft()
                                 },
                                 modifier = Modifier
+                                    .padding(end = 12.dp)
                                     .size(24.dp),
                             )
 
@@ -1712,7 +1729,7 @@ fun Player(
                                     }
                                 },
                                 modifier = Modifier
-                                    //.padding(horizontal = 15.dp)
+                                    .padding(end = 12.dp)
                                     .size(24.dp)
                             )
 
@@ -1736,7 +1753,7 @@ fun Player(
                                     }
                                 },
                                 modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
+                                    .padding(end = 12.dp)
                                     .size(24.dp)
                             )
                         }
