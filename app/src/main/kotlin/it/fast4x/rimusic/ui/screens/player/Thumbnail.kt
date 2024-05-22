@@ -47,11 +47,14 @@ import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import coil.size.Scale
+import coil.size.Size
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
@@ -77,6 +80,7 @@ import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.thumbnail
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -212,9 +216,16 @@ fun Thumbnail(
         ) {
             if(artImageAvailable)
                 AsyncImage(
+                    /*
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
                         thumbnailSizePx
                     ),
+                     */
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                        .size(Size.ORIGINAL)
+                        .scale(Scale.FIT)
+                        .build(),
                     onSuccess = {
                         artImageAvailable = true
                     },
@@ -222,7 +233,7 @@ fun Thumbnail(
                         artImageAvailable = false
                     },
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .pointerInput(Unit) {
                             detectTapGestures(

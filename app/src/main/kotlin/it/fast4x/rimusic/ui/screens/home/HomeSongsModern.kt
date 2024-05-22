@@ -316,7 +316,7 @@ fun HomeSongsModern(
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
-            LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, autoShuffle) {
+            LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
                         val downloads = DownloadUtil.downloads.value
@@ -722,6 +722,23 @@ fun HomeSongsModern(
                                 }
                             )
                     )
+
+                    if (builtInPlaylist == BuiltInPlaylist.Favorites)
+                        HeaderIconButton(
+                            icon = R.drawable.random,
+                            enabled = true,
+                            color = if (autoShuffle) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        autoShuffle = !autoShuffle
+                                    },
+                                    onLongClick = {
+                                        SmartToast("Random sorting")
+                                    }
+                                )
+                        )
 
                     if (builtInPlaylist != BuiltInPlaylist.OnDevice)
                         HeaderIconButton(

@@ -278,6 +278,7 @@ fun AppNavigation(
 
             SearchScreen(
                 navController = navController,
+                playerEssential = playerEssential,
                 initialTextInput = text,
                 onViewPlaylist = {},
                 //pop = popDestination,
@@ -289,7 +290,8 @@ fun AppNavigation(
                             Database.insert(SearchQuery(query = query))
                         }
                     }
-                }
+                },
+
             )
         }
 
@@ -306,6 +308,7 @@ fun AppNavigation(
 
             SearchResultScreen(
                 navController = navController,
+                playerEssential = playerEssential,
                 query = query,
                 onSearchAgain = {}
             )
