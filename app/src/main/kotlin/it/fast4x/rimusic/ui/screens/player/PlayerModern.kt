@@ -942,7 +942,7 @@ fun PlayerModern(
                     .requiredHeight(if (showNextSongsInPlayer) 80.dp else 50.dp)
                     .fillMaxWidth()
                     .clickable { queueSheetState.expandSoft() }
-                    .background(colorPalette.background2.copy(alpha = 0.5f))
+                    .background(colorPalette.background2.copy(alpha = 0.8f))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
