@@ -763,7 +763,7 @@ fun Controls(
 
         Spacer(
             modifier = Modifier
-                .weight(0.1f)
+                .weight(0.2f)
         )
 
         Row(

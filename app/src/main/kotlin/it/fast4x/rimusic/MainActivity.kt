@@ -933,17 +933,20 @@ class MainActivity :
                  */
                     if (player.currentMediaItem == null) {
                         if (!playerSheetState.isDismissed) {
-                            playerSheetState.dismiss()
+                            //playerSheetState.dismiss()
+                            showPlayer = false
                         }
                     } else {
                         //if (playerSheetState.isDismissed) {
                         if (launchedFromNotification) {
                             intent.replaceExtras(Bundle())
                             if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                playerSheetState.collapse(tween(700))
-                            else playerSheetState.expand(tween(500))
+                                //playerSheetState.collapse(tween(700))
+                                showPlayer = false
+                            else showPlayer = true //playerSheetState.expand(tween(500))
                         } else {
-                            playerSheetState.collapse(tween(700))
+                            //playerSheetState.collapse(tween(700))
+                            showPlayer = false
                         }
                         //}
                     }
@@ -953,10 +956,12 @@ class MainActivity :
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
                                     if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                        playerSheetState.collapse(tween(700))
-                                    else playerSheetState.expand(tween(500))
+                                        //playerSheetState.collapse(tween(700))
+                                        showPlayer = false
+                                    else showPlayer = true //playerSheetState.expand(tween(500))
                                 } else {
-                                    playerSheetState.collapse(tween(700))
+                                    //playerSheetState.collapse(tween(700))
+                                    showPlayer = false
                                 }
                             }
                         }
