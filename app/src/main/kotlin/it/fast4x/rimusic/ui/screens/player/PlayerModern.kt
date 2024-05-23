@@ -1311,6 +1311,7 @@ fun PlayerModern(
 
                         thumbnailContent(
                             modifier = Modifier
+                                .padding(all = 12.dp)
                                 //.padding(horizontal = 10.dp)
                         )
                     }
