@@ -802,7 +802,7 @@ fun PlayerModern(
          */
         //.padding(bottom = playerSheetState.collapsedBound)
         //.padding(bottom = horizontalBottomPaddingValues.calculateBottomPadding())
-        .padding(bottom = bottomDp+20.dp)
+        .padding(bottom = bottomDp)
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
@@ -1286,7 +1286,7 @@ fun PlayerModern(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = 20.dp)
+                    .padding(top = 40.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
@@ -1301,11 +1301,15 @@ fun PlayerModern(
                         }
                     }
             ) {
-                Column {
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    //modifier = Modifier.fillMaxHeight()
+                       // .border(BorderStroke(1.dp, Color.Blue))
+                ) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(0.7f)
                             //.padding(bottom = 10.dp)
                     ) {
 
@@ -1316,7 +1320,9 @@ fun PlayerModern(
                         )
                     }
                 }
-                Column {
+                Column (
+                    verticalArrangement = Arrangement.Center
+                ) {
                     controlsContent(
                         modifier = Modifier
                             .padding(vertical = 8.dp)

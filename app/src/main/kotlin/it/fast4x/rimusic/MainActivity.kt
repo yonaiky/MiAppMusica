@@ -127,6 +127,7 @@ import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TitleSection
@@ -839,8 +840,9 @@ class MainActivity :
                     val playerState =
                         rememberModalBottomSheetState(skipPartiallyExpanded = true)
                     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-                    if (showPlayer) {
-                        ModalBottomSheet(
+                    //if (showPlayer) {
+                        CustomModalBottomSheet(
+                            showSheet = showPlayer,
                             onDismissRequest = { showPlayer = false },
                             containerColor = colorPalette.background2,
                             contentColor = colorPalette.background2,
@@ -864,7 +866,7 @@ class MainActivity :
                                 }
                             )
                         }
-                    }
+                    //}
 
 
                     /*
@@ -876,8 +878,9 @@ class MainActivity :
                      */
 
                     val menuState = LocalMenuState.current
-                    if (menuState.isDisplayed) {
-                        ModalBottomSheet(
+                    //if (menuState.isDisplayed) {
+                        CustomModalBottomSheet(
+                            showSheet = menuState.isDisplayed,
                             onDismissRequest = menuState::hide,
                             containerColor = Color.Transparent,
                             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -891,7 +894,7 @@ class MainActivity :
                         ) {
                             menuState.content()
                         }
-                    }
+                    //}
 
 
                 }
