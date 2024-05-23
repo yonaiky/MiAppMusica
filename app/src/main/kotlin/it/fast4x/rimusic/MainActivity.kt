@@ -31,18 +31,33 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -67,6 +82,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -113,12 +129,14 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.PlayerEssential
+import it.fast4x.rimusic.ui.screens.player.PlayerModern
 import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
@@ -322,7 +340,8 @@ class MainActivity :
     }
 
     @OptIn(ExperimentalTextApi::class,
-        ExperimentalFoundationApi::class, ExperimentalAnimationApi::class
+        ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
+        ExperimentalMaterial3Api::class
     )
     fun startApp() {
 
@@ -798,6 +817,7 @@ class MainActivity :
                         }
                     )
 
+                    /*
                     if (showPlayer) {
                         Player(
                             navController = navController,
@@ -814,13 +834,65 @@ class MainActivity :
                             playerSheetState.expandSoft()
                         println("mediaItem showPlayer")
                     }
+                     */
+
+                    val playerState =
+                        rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+                    if (showPlayer) {
+                        ModalBottomSheet(
+                            onDismissRequest = { showPlayer = false },
+                            containerColor = colorPalette.background2,
+                            contentColor = colorPalette.background2,
+                            modifier = Modifier.fillMaxWidth(),
+                            sheetState = playerState,
+                            dragHandle = {
+                                Surface(
+                                    modifier = Modifier.padding(vertical = 0.dp),
+                                    color = colorPalette.background0,
+                                    shape = thumbnailShape
+                                ) {}
+                            }
+                        ) {
+                            PlayerModern(
+                                navController = navController,
+                                layoutState = playerSheetState,
+                                playerState = playerState,
+                                onDismiss = {
+                                    showPlayer = false
+                                    println("mediaItem hidePlayer")
+                                }
+                            )
+                        }
+                    }
 
 
+                    /*
                     BottomSheetMenu(
                         state = LocalMenuState.current,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                     )
+                     */
+
+                    val menuState = LocalMenuState.current
+                    if (menuState.isDisplayed) {
+                        ModalBottomSheet(
+                            onDismissRequest = menuState::hide,
+                            containerColor = Color.Transparent,
+                            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                            dragHandle = {
+                                Surface(
+                                    modifier = Modifier.padding(vertical = 0.dp),
+                                    color = Color.Transparent,
+                                    //shape = thumbnailShape
+                                ) {}
+                            }
+                        ) {
+                            menuState.content()
+                        }
+                    }
+
 
                 }
 
