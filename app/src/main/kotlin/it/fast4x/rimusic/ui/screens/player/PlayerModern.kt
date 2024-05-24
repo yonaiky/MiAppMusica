@@ -793,7 +793,8 @@ fun PlayerModern(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     var containerModifier = Modifier
-        .padding(bottom = bottomDp)
+        //.padding(bottom = bottomDp)
+        .padding(bottom = 0.dp)
         /*
         .padding(
             windowInsets
@@ -939,15 +940,16 @@ fun PlayerModern(
         modifier = Modifier
             //.navigationBarsPadding()
             .fillMaxSize()
+            .border(BorderStroke(1.dp, colorPalette.red))
     ) {
         val actionsBarContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             Row(
                 modifier = Modifier
-                    .align( if(isLandscape) Alignment.BottomEnd else Alignment.BottomCenter )
+                    .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                     .requiredHeight(if (showNextSongsInPlayer) 80.dp else 50.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { queueSheetState.expandSoft() }
-                    .background(colorPalette.background2.copy(alpha = 0.8f))
+                    .background(colorPalette.background2.copy(alpha = 0.5f))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
@@ -961,11 +963,14 @@ fun PlayerModern(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
+                            //.padding(top = 4.dp)
                             .padding(horizontal = 8.dp)
+                            //.padding(bottom = 4.dp)
                             .fillMaxWidth()
                     ) {
                         if (showButtonPlayerDownload)
@@ -1181,108 +1186,107 @@ fun PlayerModern(
                     }
 
                     if (showNextSongsInPlayer) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        //Row(verticalAlignment = Alignment.CenterVertically) {
 
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier
-                                    .padding(horizontal = 12.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                                val nextMediaItem = if (binder.player.hasNextMediaItem())
-                                    binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
-                                else MediaItem.EMPTY
-                                val nextNextMediaItem = try {
-                                    binder.player.getMediaItemAt(nextMediaItemIndex + 1)
-                                } catch (e: Exception) {
-                                    MediaItem.EMPTY
-                                }
-
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .height(Dimensions.collapsedPlayer)
-                                ) {
-                                    AsyncImage(
-                                        model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                            Dimensions.thumbnails.song.px / 2
-                                        ),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .padding(end = 5.dp)
-                                            .clip(thumbnailShape)
-                                            .size(30.dp)
-                                    )
-                                }
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .height(Dimensions.collapsedPlayer)
-                                        .weight(1f)
-                                ) {
-
-                                    BasicText(
-                                        text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
-                                        style = typography.xxxs.semiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-
-                                    BasicText(
-                                        text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
-                                        style = typography.xxxs.semiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .height(Dimensions.collapsedPlayer)
-                                ) {
-                                    AsyncImage(
-                                        model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                            Dimensions.thumbnails.song.px / 2
-                                        ),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .padding(end = 5.dp)
-                                            .clip(thumbnailShape)
-                                            .size(30.dp)
-                                    )
-                                }
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .height(Dimensions.collapsedPlayer)
-                                        .weight(1f)
-                                ) {
-
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                            ?: "",
-                                        style = typography.xxxs.semiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.artist?.toString()
-                                            ?: "",
-                                        style = typography.xxxs.semiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            val nextMediaItemIndex = binder.player.nextMediaItemIndex
+                            val nextMediaItem = if (binder.player.hasNextMediaItem())
+                                binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
+                            else MediaItem.EMPTY
+                            val nextNextMediaItem = try {
+                                binder.player.getMediaItemAt(nextMediaItemIndex + 1)
+                            } catch (e: Exception) {
+                                MediaItem.EMPTY
                             }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                // .height(Dimensions.collapsedPlayer)
+                            ) {
+                                AsyncImage(
+                                    model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    //.height(Dimensions.collapsedPlayer)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                //.height(Dimensions.collapsedPlayer)
+                            ) {
+                                AsyncImage(
+                                    model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    //.height(Dimensions.collapsedPlayer)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.title?.toString()
+                                        ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.artist?.toString()
+                                        ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            //}
                         }
                     }
-
                 }
             }
         }
@@ -1308,14 +1312,14 @@ fun PlayerModern(
             ) {
                 Column (
                     verticalArrangement = Arrangement.Center,
-                    //modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .weight(0.7f)
-                            //.padding(bottom = 10.dp)
+                            .weight(1f)
+                            //.padding(vertical = 10.dp)
                     ) {
 
                         thumbnailContent(
@@ -1326,7 +1330,8 @@ fun PlayerModern(
                     }
                 }
                 Column (
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     controlsContent(
                         modifier = Modifier
@@ -1445,8 +1450,7 @@ fun PlayerModern(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        //.weight(0.5f)
-                        .fillMaxHeight(0.55f)
+                        .weight(1.2f)
                 ) {
                     thumbnailContent(
                         modifier = Modifier
@@ -1494,10 +1498,12 @@ fun PlayerModern(
                     modifier = Modifier
                         .padding(vertical = 4.dp)
                         .fillMaxWidth()
+                        .weight(1f)
                 )
 
                 actionsBarContent(
                     modifier = Modifier
+                        .padding(vertical = 10.dp)
                 )
             }
         }
