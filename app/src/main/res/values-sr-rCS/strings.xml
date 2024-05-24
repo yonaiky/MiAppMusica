@@ -117,8 +117,8 @@
     <string name="left">%1$s ostalo</string>
     <string name="confirm">Potvrdi</string>
     <string name="show">Prikaži</string>
-    <string name="unsynchronized_lyrics">nesinhronizovani stihovi</string>
-    <string name="synchronized_lyrics">sinhronizovani stihovi</string>
+    <string name="unsynchronized_lyrics">nesinhronizovane stihove</string>
+    <string name="synchronized_lyrics">sinhronizovane stihove</string>
     <string name="provided_by">Obezbeđuje</string>
     <string name="delete_playback_events">Izbriši %1$s događaje reprodukcije</string>
     <string name="existing_data_will_be_overwritten">Postojeći podaci će biti prepisani.\n%1$s će se automatski zatvoriti nakon vraćanja baze podataka.</string>

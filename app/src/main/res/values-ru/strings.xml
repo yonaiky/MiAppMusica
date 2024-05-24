@@ -547,10 +547,10 @@
     <string name="pcontrols_modern">Modern</string>
     <string name="pcontrols_essential">Essential</string>
     <string name="pcontrols_type">Controls type</string>
-    <string name="player_swiping_down_is_disabled">Player swiping down is disabled</string>
-    <string name="player_position">Player position</string>
-    <string name="position_top">Top</string>
-    <string name="position_bottom">Bottom</string>
-    <string name="added_to_favorites">Added to favorites</string>
-    <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="player_swiping_down_is_disabled">Смахивание плеера вниз отключено</string>
+    <string name="player_position">Расположение плеера</string>
+    <string name="position_top">Сверху</string>
+    <string name="position_bottom">Снизу</string>
+    <string name="added_to_favorites">Добавлено в избранное</string>
+    <string name="removed_from_favorites">Удалено из избранного</string>
 </resources>
