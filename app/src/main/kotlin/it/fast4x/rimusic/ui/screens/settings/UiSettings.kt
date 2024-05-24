@@ -1177,6 +1177,7 @@ fun  UiSettings() {
                 onCheckedChange = { applyFontPadding = it }
             )
 
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.swipe_to_action).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.swipe_to_action),
@@ -1184,6 +1185,7 @@ fun  UiSettings() {
                 isChecked = isSwipeToActionEnabled,
                 onCheckedChange = { isSwipeToActionEnabled = it }
             )
+         */
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())
