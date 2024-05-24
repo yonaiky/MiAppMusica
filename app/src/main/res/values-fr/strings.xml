@@ -553,4 +553,6 @@
     <string name="player_position">Player position</string>
     <string name="position_top">Top</string>
     <string name="position_bottom">Bottom</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
 </resources>

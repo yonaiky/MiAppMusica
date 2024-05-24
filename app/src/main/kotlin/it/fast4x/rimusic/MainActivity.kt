@@ -806,8 +806,6 @@ class MainActivity :
                 )
                  */
 
-
-
                     AppNavigation(
                         navController = navController,
                         playerEssential = {
@@ -840,7 +838,6 @@ class MainActivity :
                     val playerState =
                         rememberModalBottomSheetState(skipPartiallyExpanded = true)
                     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-                    //if (showPlayer) {
                         CustomModalBottomSheet(
                             showSheet = showPlayer,
                             onDismissRequest = { showPlayer = false },
@@ -860,13 +857,9 @@ class MainActivity :
                                 navController = navController,
                                 layoutState = playerSheetState,
                                 playerState = playerState,
-                                onDismiss = {
-                                    showPlayer = false
-                                    println("mediaItem hidePlayer")
-                                }
+                                onDismiss = { showPlayer = false }
                             )
                         }
-                    //}
 
 
                     /*
@@ -878,7 +871,6 @@ class MainActivity :
                      */
 
                     val menuState = LocalMenuState.current
-                    //if (menuState.isDisplayed) {
                         CustomModalBottomSheet(
                             showSheet = menuState.isDisplayed,
                             onDismissRequest = menuState::hide,
@@ -894,46 +886,12 @@ class MainActivity :
                         ) {
                             menuState.content()
                         }
-                    //}
-
 
                 }
 
                 DisposableEffect(binder?.player) {
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
-                    /*
-                if (player.currentMediaItem == null) {
-                    if (!playerBottomSheetState.isDismissed) {
-                        playerBottomSheetState.dismiss()
-                    }
-                } else {
-                    //if (playerBottomSheetState.isDismissed) {
-                        if (launchedFromNotification) {
-                            intent.replaceExtras(Bundle())
-                            if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                playerBottomSheetState.collapse(tween(700))
-                            else playerBottomSheetState.expand(tween(500))
-                        } else {
-                            playerBottomSheetState.collapse(tween(700))
-                        }
-                    //}
-                }
-
-                val listener = object : Player.Listener {
-                    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
-                            if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
-                                if (preferences.getBoolean(keepPlayerMinimizedKey, true))
-                                playerBottomSheetState.collapse(tween(700))
-                                else playerBottomSheetState.expand(tween(500))
-                            } else {
-                                playerBottomSheetState.collapse(tween(700))
-                            }
-                        }
-                    }
-                }
-                 */
                     if (player.currentMediaItem == null) {
                         if (!playerSheetState.isDismissed) {
                             //playerSheetState.dismiss()

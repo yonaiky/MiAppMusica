@@ -43,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
@@ -70,6 +71,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
@@ -84,11 +86,13 @@ import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
+import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 import kotlin.math.absoluteValue
 
@@ -129,11 +133,31 @@ fun PlayerEssential(
     }
 
     val mediaItem = nullableMediaItem ?: return
+
+    println("mediaItem PlayerEssential ${mediaItem.mediaId}")
+    var likedAt by rememberSaveable {
+        mutableStateOf<Long?>(null)
+    }
+    LaunchedEffect(mediaItem.mediaId) {
+        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
+    }
+
+    var updateLike by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(updateLike) {
+        if (updateLike) {
+            mediaItemToggleLike(mediaItem)
+            updateLike = false
+            if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites)) 
+            else SmartToast(context.getString(R.string.removed_from_favorites))
+        }
+    }
+
     val positionAndDuration by binder.player.positionAndDurationState()
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) binder.player.forceSeekToPrevious()
+            if (value == SwipeToDismissBoxValue.StartToEnd) updateLike = true
             else if (value == SwipeToDismissBoxValue.EndToStart) binder.player.forceSeekToNext()
 
             return@rememberSwipeToDismissBoxState false
@@ -187,7 +211,10 @@ fun PlayerEssential(
             ) {
                 Icon(
                     imageVector = when (dismissState.targetValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(R.drawable.play_skip_back)
+                        SwipeToDismissBoxValue.StartToEnd -> { if (likedAt == null)
+                            ImageVector.vectorResource(R.drawable.heart_outline)
+                            else ImageVector.vectorResource(R.drawable.heart)
+                        }
                         SwipeToDismissBoxValue.EndToStart ->  ImageVector.vectorResource(R.drawable.play_skip_forward)
                         SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
                     },
@@ -349,123 +376,5 @@ fun PlayerEssential(
         }
         /*****  */
 
-        /*
-        Surface(
-            modifier = Modifier
-                .clickable(onClick = openPlayer)
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures(
-                        onVerticalDrag = { _, dragAmount ->
-                            if (dragAmount < 0) openPlayer()
-                            else if (dragAmount > 20) {
-                                binder.stopRadio()
-                                binder.player.clearMediaItems()
-                            }
-                        }
-                    )
-                },
-            color = Color.Transparent, //MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-        ) {
-            Column {
-
-                LinearProgressIndicator(
-                    progress = { positionAndDuration.first.toFloat() / positionAndDuration.second.absoluteValue },
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = mediaItem.mediaMetadata.title?.toString() ?: "",
-                            fontFamily = typography.xxs.semiBold.fontFamily,
-                            fontWeight = typography.xxs.semiBold.fontWeight,
-                            fontSize = typography.xxs.semiBold.fontSize,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = mediaItem.mediaMetadata.artist?.toString() ?: "",
-                            fontFamily = typography.xxs.semiBold.fontFamily,
-                            fontWeight = typography.xxs.semiBold.fontWeight,
-                            fontSize = typography.xxs.semiBold.fontSize,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    leadingContent = {
-                        AsyncImage(
-                            model = mediaItem.mediaMetadata.artworkUri.thumbnail(Dimensions.thumbnails.song.px),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .clip(thumbnailShape)
-                                .size(48.dp)
-                        )
-                    },
-                    trailingContent = {
-                        Row {
-
-                            IconButton(
-                                onClick = {
-                                    binder.player.forceSeekToPrevious()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.play_skip_back),
-                                    contentDescription = null,
-                                )
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    if (shouldBePlaying) {
-                                        binder.player.pause()
-                                    } else {
-                                        if (binder.player.playbackState == Player.STATE_IDLE) {
-                                            binder.player.prepare()
-                                        }
-                                        binder.player.play()
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
-                                    contentDescription = null,
-                                )
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    binder.player.forceSeekToNext()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.play_skip_forward),
-                                    contentDescription = null,
-                                )
-                            }
-
-                            /*
-                            IconButton(
-                                onClick = {
-                                    binder.stopRadio()
-                                    binder.player.clearMediaItems()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Clear,
-                                    contentDescription = null,
-                                )
-                            }
-                             */
-                        }
-                    }
-                )
-            }
-        }
-         */
     }
 }
