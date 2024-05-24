@@ -792,7 +792,8 @@ fun PlayerModern(
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-    var containerModifier = Modifier.padding(top = 0.dp)
+    var containerModifier = Modifier
+        .padding(bottom = bottomDp)
         /*
         .padding(
             windowInsets
@@ -802,7 +803,7 @@ fun PlayerModern(
          */
         //.padding(bottom = playerSheetState.collapsedBound)
         //.padding(bottom = horizontalBottomPaddingValues.calculateBottomPadding())
-        //.padding(bottom = bottomDp)
+
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
@@ -934,7 +935,11 @@ fun PlayerModern(
         )
     }
 
-    Box(modifier = Modifier.navigationBarsPadding()) {
+    Box(
+        modifier = Modifier
+            //.navigationBarsPadding()
+            .fillMaxSize()
+    ) {
         val actionsBarContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             Row(
                 modifier = Modifier
