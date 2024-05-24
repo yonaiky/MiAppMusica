@@ -1220,8 +1220,8 @@ fun BuiltInPlaylistSongs(
                     }
                 }
 
-                BehindMotionSwipe(
-                    content = {
+                //BehindMotionSwipe(
+                //    content = {
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded =
@@ -1361,6 +1361,7 @@ fun BuiltInPlaylistSongs(
                                 .background(color = colorPalette.background0)
                                 .animateItemPlacement()
                         )
+                    /*
                     },
                     leftActionsContent = {
                             LeftAction(
@@ -1415,6 +1416,7 @@ fun BuiltInPlaylistSongs(
                     },
                     onHorizontalSwipeWhenActionDisabled = {}
                 )
+                */
             }
 
             item(

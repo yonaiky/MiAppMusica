@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -763,7 +764,7 @@ fun Controls(
 
         Spacer(
             modifier = Modifier
-                .weight(0.2f)
+                .weight(0.4f)
         )
 
         Row(
@@ -805,7 +806,7 @@ fun Controls(
                     colorFilter = ColorFilter.tint(colorPalette.text),
                     modifier = Modifier
                         .combinedClickable(
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 //binder.player.forceSeekToPrevious()
@@ -827,7 +828,7 @@ fun Controls(
                 Box(
                     modifier = Modifier
                         .combinedClickable(
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 if (shouldBePlaying) {
@@ -937,7 +938,7 @@ fun Controls(
                     colorFilter = ColorFilter.tint(colorPalette.text),
                     modifier = Modifier
                         .combinedClickable(
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 binder.player.forceSeekToNext()
@@ -975,7 +976,7 @@ fun Controls(
                     modifier = Modifier
                         .size(55.dp)
                         .combinedClickable(
-                            indication = rememberRipple(bounded = true),
+                            indication = ripple(bounded = true),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 //binder.player.forceSeekToPrevious()
@@ -1004,7 +1005,7 @@ fun Controls(
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
-                            indication = rememberRipple(bounded = true),
+                            indication = ripple(bounded = true),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 if (shouldBePlaying) {
@@ -1079,7 +1080,7 @@ fun Controls(
                     modifier = Modifier
                         .size(55.dp)
                         .combinedClickable(
-                            indication = rememberRipple(bounded = true),
+                            indication = ripple(bounded = true),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 binder.player.forceSeekToNext()
@@ -1108,7 +1109,7 @@ fun Controls(
 
         Spacer(
             modifier = Modifier
-                .weight(0.2f)
+                .weight(0.5f)
         )
 
     }

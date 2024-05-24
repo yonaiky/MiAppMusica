@@ -792,7 +792,7 @@ fun PlayerModern(
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-    var containerModifier = Modifier
+    var containerModifier = Modifier.padding(top = 0.dp)
         /*
         .padding(
             windowInsets
@@ -802,7 +802,7 @@ fun PlayerModern(
          */
         //.padding(bottom = playerSheetState.collapsedBound)
         //.padding(bottom = horizontalBottomPaddingValues.calculateBottomPadding())
-        .padding(bottom = bottomDp)
+        //.padding(bottom = bottomDp)
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
@@ -1362,15 +1362,12 @@ fun PlayerModern(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        /*
                         .padding(
                             windowInsets
                                 .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                                 .asPaddingValues()
                         )
-
-                         */
-                        .padding(top = 5.dp)
+                        //.padding(top = 5.dp)
                         .fillMaxWidth(0.9f)
                         .height(30.dp)
                 ) {

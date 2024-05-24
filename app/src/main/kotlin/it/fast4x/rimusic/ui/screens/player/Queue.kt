@@ -44,6 +44,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults.colors
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -248,7 +249,7 @@ fun Queue(
             extraItemCount = 0
         )
 
-        val rippleIndication = rememberRipple(bounded = false)
+        val rippleIndication = ripple(bounded = false)
 
         val musicBarsTransition = updateTransition(targetState = mediaItemIndex, label = "")
 
@@ -410,8 +411,8 @@ fun Queue(
                     ) { window ->
                         val currentItem by rememberUpdatedState(window)
                         val checkedState = remember { mutableStateOf(false) }
-                        BehindMotionSwipe(
-                            content = {
+                        //BehindMotionSwipe(
+                        //    content = {
                                 var deltaX by remember { mutableStateOf(0f) }
                                 val isPlayingThisMediaItem =
                                     mediaItemIndex == window.firstPeriodIndex
@@ -568,6 +569,7 @@ fun Queue(
                                         .background(color = colorPalette.background0)
 
                                 )
+                            /*
                             },
                             leftActionsContent = {
                                 if (!reorderingState.isDragging)
@@ -627,6 +629,7 @@ fun Queue(
                                 else SmartToast(context.resources.getString(R.string.locked), type = PopupType.Warning)
                             }
                         )
+                        */
                     }
 
                     item {

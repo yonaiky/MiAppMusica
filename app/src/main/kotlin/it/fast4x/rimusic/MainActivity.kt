@@ -50,14 +50,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
+//import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -668,8 +671,10 @@ class MainActivity :
                 }
             }
 
-            val rippleTheme =
+            val rippleConfiguration =
                 remember(appearance.colorPalette.text, appearance.colorPalette.isDark) {
+                        RippleConfiguration(color = appearance.colorPalette.text)
+                    /*
                     object : RippleTheme {
                         @Composable
                         override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
@@ -684,6 +689,7 @@ class MainActivity :
                                 lightTheme = !appearance.colorPalette.isDark
                             )
                     }
+                     */
                 }
 
             val shimmerTheme = remember {
@@ -778,8 +784,9 @@ class MainActivity :
 
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
-                    LocalIndication provides rememberRipple(bounded = true),
-                    LocalRippleTheme provides rippleTheme,
+                    LocalIndication provides ripple(bounded = true),
+                    //LocalRippleTheme provides rippleTheme,
+                    LocalRippleConfiguration provides rippleConfiguration,
                     LocalShimmerTheme provides shimmerTheme,
                     LocalPlayerServiceBinder provides binder,
                     LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
