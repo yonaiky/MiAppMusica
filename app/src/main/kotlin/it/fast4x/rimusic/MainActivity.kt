@@ -838,28 +838,28 @@ class MainActivity :
                     val playerState =
                         rememberModalBottomSheetState(skipPartiallyExpanded = true)
                     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-                        CustomModalBottomSheet(
-                            showSheet = showPlayer,
-                            onDismissRequest = { showPlayer = false },
-                            containerColor = colorPalette.background2,
-                            contentColor = colorPalette.background2,
-                            modifier = Modifier.fillMaxWidth(),
-                            sheetState = playerState,
-                            dragHandle = {
-                                Surface(
-                                    modifier = Modifier.padding(vertical = 0.dp),
-                                    color = colorPalette.background0,
-                                    shape = thumbnailShape
-                                ) {}
-                            }
-                        ) {
-                            PlayerModern(
-                                navController = navController,
-                                layoutState = playerSheetState,
-                                playerState = playerState,
-                                onDismiss = { showPlayer = false }
-                            )
+                    CustomModalBottomSheet(
+                        showSheet = showPlayer,
+                        onDismissRequest = { showPlayer = false },
+                        containerColor = colorPalette.background2,
+                        contentColor = colorPalette.background2,
+                        modifier = Modifier.fillMaxWidth(),
+                        sheetState = playerState,
+                        dragHandle = {
+                            Surface(
+                                modifier = Modifier.padding(vertical = 0.dp),
+                                color = colorPalette.background0,
+                                shape = thumbnailShape
+                            ) {}
                         }
+                    ) {
+                        PlayerModern(
+                            navController = navController,
+                            layoutState = playerSheetState,
+                            playerState = playerState,
+                            onDismiss = { showPlayer = false }
+                        )
+                    }
 
 
                     /*
