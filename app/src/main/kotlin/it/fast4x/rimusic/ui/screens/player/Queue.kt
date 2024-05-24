@@ -176,7 +176,7 @@ fun Queue(
                         //.clip(shape)
                         .drawBehind { drawRect(backgroundColorProvider()) }
                         .fillMaxSize()
-                        .padding(horizontalBottomPaddingValues)
+                        //.padding(horizontalBottomPaddingValues)
                 ) {
                     if (!showButtonPlayerArrow)
                         Image(
@@ -689,7 +689,7 @@ fun Queue(
                     .background(colorPalette.background1)
                     .fillMaxWidth()
                     //.padding(horizontal = 8.dp)
-                    .padding(horizontalBottomPaddingValues)
+                    //.padding(horizontalBottomPaddingValues)
                     .height(60.dp) //bottom bar queue
                     /*
                     .drawBehind {

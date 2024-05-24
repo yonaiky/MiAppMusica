@@ -439,6 +439,7 @@ fun Lyrics(
                 }
                 .fillMaxSize()
                 .background(Color.Black.copy(0.8f))
+                .clip(thumbnailShape)
 
         ) {
             AnimatedVisibility(

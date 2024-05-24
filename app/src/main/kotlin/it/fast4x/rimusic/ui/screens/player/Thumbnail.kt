@@ -201,15 +201,16 @@ fun Thumbnail(
                 .fillMaxSize()
                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                //.clip(LocalAppearance.current.thumbnailShape)
                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
+                .clip(LocalAppearance.current.thumbnailShape)
                 //.padding(14.dp)
         else modifierUiType = modifier
             .aspectRatio(1f)
             //.size(thumbnailSizeDp)
+            .padding(14.dp)
             .fillMaxSize()
             .clip(LocalAppearance.current.thumbnailShape)
-            .padding(14.dp)
+
 
         Box(
             modifier = modifierUiType
