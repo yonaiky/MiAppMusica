@@ -1025,7 +1025,7 @@ fun BlurParamsDialog(
                 onClick = {
                     blurStrength = blurDarkenFactor
                 },
-                icon = R.drawable.slow_motion,
+                icon = R.drawable.droplet,
                 color = colorPalette.favoritesIcon,
                 modifier = Modifier
                     .size(24.dp)
@@ -1039,7 +1039,7 @@ fun BlurParamsDialog(
                 onValueChange = {
                     blurStrength = it
                 },
-                valueRange = 0f..50f,
+                valueRange = 1f..50f,
                 gap = 5,
                 showIndicator = true,
                 thumb = { thumbValue ->
@@ -1089,7 +1089,7 @@ fun BlurParamsDialog(
                 onClick = {
                     blurDarkenFactor = defaultDarkenFactor
                 },
-                icon = R.drawable.equalizer,
+                icon = R.drawable.moon,
                 color = colorPalette.favoritesIcon,
                 modifier = Modifier
                     .size(20.dp)
