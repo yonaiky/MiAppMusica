@@ -203,9 +203,6 @@ fun PlayerModern(
 ) {
     val menuState = LocalMenuState.current
 
-    //val localSheetState = LocalPlayerSheetState.current
-    //println("mediaItem localsheetstate collapsed ${localSheetState.isCollapsed}")
-
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     val effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -262,24 +259,18 @@ fun PlayerModern(
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
-                //println("mediaItem onMediaItemTransition")
                 if (playbackFadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
-                    //println("mediaItem volume startFadeIn initial volume ${binder.player.volume}")
                     audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
                 }
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
-                //println("mediaItem onPlayWhenReadyChanged $playWhenReady")
-                //if (playbackFadeDuration != DurationInSeconds.Disabled) {
-                //}
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
-                //println("mediaItem onPlaybackStateChanged")
             }
         }
     }
@@ -289,7 +280,6 @@ fun PlayerModern(
     val positionAndDuration by binder.player.positionAndDurationState()
     var timeRemaining by remember { mutableIntStateOf(0) }
     timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
-    //println("mediaItem timeRemaining $timeRemaining")
 
     if (playbackFadeDuration != DurationInSeconds.Disabled) {
         val songProgressFloat =
