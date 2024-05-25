@@ -938,15 +938,13 @@ fun PlayerModern(
 
     Box(
         modifier = Modifier
-            //.navigationBarsPadding()
             .fillMaxSize()
-            .border(BorderStroke(1.dp, colorPalette.red))
     ) {
         val actionsBarContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             Row(
                 modifier = Modifier
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
-                    .requiredHeight(if (showNextSongsInPlayer) 80.dp else 50.dp)
+                    .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { queueSheetState.expandSoft() }
                     .background(colorPalette.background2.copy(alpha = 0.5f))
@@ -960,17 +958,113 @@ fun PlayerModern(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
                 ) {
+                    if (showNextSongsInPlayer) {
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .background(colorPalette.background2.copy(alpha = 0.3f))
+                                .padding(horizontal = 12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            val nextMediaItemIndex = binder.player.nextMediaItemIndex
+                            val nextMediaItem = if (binder.player.hasNextMediaItem())
+                                binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
+                            else MediaItem.EMPTY
+                            val nextNextMediaItem = try {
+                                binder.player.getMediaItemAt(nextMediaItemIndex + 1)
+                            } catch (e: Exception) {
+                                MediaItem.EMPTY
+                            }
 
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                            ) {
+                                AsyncImage(
+                                    model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(all = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                            ) {
+                                AsyncImage(
+                                    model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(all = 5.dp)
+                                        .clip(thumbnailShape)
+                                        .size(30.dp)
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .weight(1f)
+                            ) {
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.title?.toString()
+                                        ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                BasicText(
+                                    text = nextNextMediaItem.mediaMetadata.artist?.toString()
+                                        ?: "",
+                                    style = typography.xxxs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                        }
+                    }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            //.padding(top = 4.dp)
                             .padding(horizontal = 8.dp)
-                            //.padding(bottom = 4.dp)
                             .fillMaxWidth()
                     ) {
                         if (showButtonPlayerDownload)
@@ -979,7 +1073,6 @@ fun PlayerModern(
                                 color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
                                 downloadState = downloadState,
                                 onClick = {
-                                    //if (!isLocal)
                                     manageDownload(
                                         context = context,
                                         songId = mediaItem.mediaId,
@@ -1185,108 +1278,7 @@ fun PlayerModern(
                         }
                     }
 
-                    if (showNextSongsInPlayer) {
-                        //Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .padding(horizontal = 12.dp)
-                                .fillMaxWidth()
-                        ) {
-                            val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                            val nextMediaItem = if (binder.player.hasNextMediaItem())
-                                binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
-                            else MediaItem.EMPTY
-                            val nextNextMediaItem = try {
-                                binder.player.getMediaItemAt(nextMediaItemIndex + 1)
-                            } catch (e: Exception) {
-                                MediaItem.EMPTY
-                            }
-
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                // .height(Dimensions.collapsedPlayer)
-                            ) {
-                                AsyncImage(
-                                    model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                        Dimensions.thumbnails.song.px / 2
-                                    ),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .padding(end = 5.dp)
-                                        .clip(thumbnailShape)
-                                        .size(30.dp)
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    //.height(Dimensions.collapsedPlayer)
-                                    .weight(1f)
-                            ) {
-
-                                BasicText(
-                                    text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
-                                    style = typography.xxxs.semiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-
-                                BasicText(
-                                    text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
-                                    style = typography.xxxs.semiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                //.height(Dimensions.collapsedPlayer)
-                            ) {
-                                AsyncImage(
-                                    model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                        Dimensions.thumbnails.song.px / 2
-                                    ),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .padding(end = 5.dp)
-                                        .clip(thumbnailShape)
-                                        .size(30.dp)
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    //.height(Dimensions.collapsedPlayer)
-                                    .weight(1f)
-                            ) {
-
-                                BasicText(
-                                    text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                        ?: "",
-                                    style = typography.xxxs.semiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-
-                                BasicText(
-                                    text = nextNextMediaItem.mediaMetadata.artist?.toString()
-                                        ?: "",
-                                    style = typography.xxxs.semiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-                            //}
-                        }
-                    }
                 }
             }
         }
