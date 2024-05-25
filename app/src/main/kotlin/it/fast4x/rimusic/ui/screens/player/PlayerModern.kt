@@ -49,6 +49,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -110,6 +111,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.BottomSheetState
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.rememberBottomSheetState
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
@@ -777,6 +779,7 @@ fun PlayerModern(
      */
 
     //val queueSheetBottomHeight = 0.dp
+    /*
     val queueSheetState = rememberBottomSheetState(
         horizontalBottomPaddingValues.calculateBottomPadding(),
         layoutState.expandedBound
@@ -787,6 +790,10 @@ fun PlayerModern(
         horizontalBottomPaddingValues.calculateBottomPadding(),
         layoutState.expandedBound
     )
+    */
+
+    var showQueue by rememberSaveable { mutableStateOf(false) }
+    var showFullLyrics by rememberSaveable { mutableStateOf(false) }
 
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -867,7 +874,7 @@ fun PlayerModern(
             isShowingEqualizer = isShowingEqualizer,
             onShowEqualizer = { isShowingEqualizer = it },
             onMaximize = {
-                    lyricsBottomSheetState.expandSoft()
+                    showFullLyrics = true
             },
             onDoubleTap = {
                 val currentMediaItem = binder.player.currentMediaItem
@@ -946,12 +953,12 @@ fun PlayerModern(
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .clickable { queueSheetState.expandSoft() }
+                    .clickable { showQueue = true }
                     .background(colorPalette.background2.copy(alpha = 0.5f))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
-                                if (dragAmount < 0) queueSheetState.expandSoft()
+                                if (dragAmount < 0) showQueue = true
                             }
                         )
                     },
@@ -1221,7 +1228,7 @@ fun PlayerModern(
                                 color = colorPalette.text,
                                 enabled = true,
                                 onClick = {
-                                    queueSheetState.expandSoft()
+                                    showQueue = true
                                 },
                                 modifier = Modifier
                                     .padding(end = 12.dp)
@@ -1501,8 +1508,7 @@ fun PlayerModern(
         }
 
 
-
-
+        /*
         Queue(
             navController = navController,
             layoutState = queueSheetState,
@@ -1512,9 +1518,31 @@ fun PlayerModern(
                 .align(Alignment.BottomCenter),
             shape = shape
         )
+         */
+        CustomModalBottomSheet(
+            showSheet = showQueue,
+            onDismissRequest = { showQueue = false },
+            containerColor = colorPalette.background2,
+            contentColor = colorPalette.background2,
+            modifier = Modifier.fillMaxWidth(),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = {
+                Surface(
+                    modifier = Modifier.padding(vertical = 0.dp),
+                    color = colorPalette.background0,
+                    shape = thumbnailShape
+                ) {}
+            }
+        ) {
+            QueueModern(
+                navController = navController,
+                onDismiss = { showQueue = false },
+            )
+        }
 
 
 
+        /*
         FullLyricsSheet(
             layoutState = lyricsBottomSheetState,
             content = {},
@@ -1525,7 +1553,28 @@ fun PlayerModern(
                 lyricsBottomSheetState.expand(tween(50))
             }
         )
+         */
 
+        CustomModalBottomSheet(
+            showSheet = showFullLyrics,
+            onDismissRequest = { showFullLyrics = false },
+            containerColor = colorPalette.background2,
+            contentColor = colorPalette.background2,
+            modifier = Modifier.fillMaxWidth(),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = {
+                Surface(
+                    modifier = Modifier.padding(vertical = 0.dp),
+                    color = colorPalette.background0,
+                    shape = thumbnailShape
+                ) {}
+            }
+        ) {
+            FullLyricsSheetModern(
+                onMaximize = { showFullLyrics = false },
+                onRefresh = {}
+            )
+        }
 
     }
 
