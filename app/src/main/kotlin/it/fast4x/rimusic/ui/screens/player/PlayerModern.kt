@@ -1061,7 +1061,7 @@ fun PlayerModern(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
+                            .padding(horizontal = 12.dp)
                             .fillMaxWidth()
                     ) {
                         if (showButtonPlayerDownload)
@@ -1078,7 +1078,7 @@ fun PlayerModern(
                                     )
                                 },
                                 modifier = Modifier
-                                    .padding(start = 12.dp)
+                                    //.padding(start = 12.dp)
                                     .size(24.dp)
                             )
 
@@ -1221,7 +1221,7 @@ fun PlayerModern(
                                     showQueue = true
                                 },
                                 modifier = Modifier
-                                    .padding(end = 12.dp)
+                                    //.padding(end = 12.dp)
                                     .size(24.dp),
                             )
 
@@ -1245,7 +1245,7 @@ fun PlayerModern(
                                     }
                                 },
                                 modifier = Modifier
-                                    .padding(end = 12.dp)
+                                    //.padding(end = 12.dp)
                                     .size(24.dp)
                             )
 
