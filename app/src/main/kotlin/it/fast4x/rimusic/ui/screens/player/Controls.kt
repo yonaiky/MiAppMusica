@@ -347,9 +347,10 @@ fun Controls(
                     text = title ?: "",
                     style = TextStyle(
                         color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
-                        fontStyle = typography.l.bold.fontStyle,
-                        fontSize = typography.l.bold.fontSize,
-                        fontFamily = typography.l.bold.fontFamily
+                        fontStyle = typography.xl.bold.fontStyle,
+                        fontWeight = typography.xl.bold.fontWeight,
+                        fontSize = typography.xl.bold.fontSize,
+                        fontFamily = typography.xl.bold.fontFamily
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
@@ -503,9 +504,10 @@ fun Controls(
                 text = artist ?: "",
                 style = TextStyle(
                     color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
-                    fontStyle = typography.s.bold.fontStyle,
-                    fontSize = typography.s.bold.fontSize,
-                    fontFamily = typography.s.bold.fontFamily
+                    fontStyle = typography.m.bold.fontStyle,
+                    fontSize = typography.m.bold.fontSize,
+                    fontWeight = typography.m.bold.fontWeight,
+                    fontFamily = typography.m.bold.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
