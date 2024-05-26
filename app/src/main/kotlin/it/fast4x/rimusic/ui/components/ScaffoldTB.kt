@@ -162,6 +162,7 @@ fun ScaffoldTB(
                 if (navigationBarPosition == NavigationBarPosition.Top)
                     navigationRailTB()
 
+                /*
                 if (playerEssential != null && playerPosition == PlayerPosition.Top) {
                     val modifierBottomPadding = Modifier
                         .padding(bottom = 5.dp)
@@ -172,6 +173,7 @@ fun ScaffoldTB(
                         playerEssential()
                     }
                 }
+                 */
             }
         },
 
@@ -183,6 +185,7 @@ fun ScaffoldTB(
                         .fillMaxWidth()
                         .background(colorPalette.background0)
                 ){
+                    /*
                     if (playerEssential != null && playerPosition == PlayerPosition.Bottom) {
                         val modifierBottomPadding = if (navigationBarPosition != NavigationBarPosition.Bottom)
                             Modifier.padding( windowInsets
@@ -199,6 +202,7 @@ fun ScaffoldTB(
                             playerEssential()
                         }
                     }
+                     */
 
                     if (navigationBarPosition == NavigationBarPosition.Bottom)
                         navigationRailTB()
@@ -206,12 +210,17 @@ fun ScaffoldTB(
         }
 
     ) {
-
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .border(BorderStroke(1.dp, Color.Red))
+                .fillMaxSize()
+        ) {
         Row(
             modifier = modifier
                 //.border(BorderStroke(1.dp, Color.Red))
                 //.padding(top = 50.dp)
-                .padding(it)
+                //.padding(it)
                 .background(colorPalette.background0)
                 .fillMaxSize()
         ) {
@@ -260,5 +269,14 @@ fun ScaffoldTB(
                     //.padding(top = topPadding) //only with top navigation
             )
         }
+        Box(
+            modifier = Modifier
+                .padding(vertical = 5.dp)
+                .align(if (playerPosition == PlayerPosition.Top) Alignment.TopCenter
+                else Alignment.BottomCenter)
+        ) {
+            playerEssential?.invoke()
+        }
+    }
     }
 }
