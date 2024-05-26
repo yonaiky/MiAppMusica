@@ -179,6 +179,7 @@ import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
+import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -807,6 +808,8 @@ fun PlayerModern(
     var showQueue by rememberSaveable { mutableStateOf(false) }
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
 
+    val transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
+
     /*
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -993,7 +996,9 @@ fun PlayerModern(
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { showQueue = true }
-                    .background(colorPalette.background2.copy(alpha = 0.5f))
+                    .background(colorPalette.background2.copy(
+                        alpha = if (transparentBackgroundActionBarPlayer) 0.1f else 0.7f
+                    ))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->

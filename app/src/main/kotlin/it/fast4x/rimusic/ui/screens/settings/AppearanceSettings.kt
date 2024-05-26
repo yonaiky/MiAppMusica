@@ -95,6 +95,7 @@ import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
+import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 
 
 @ExperimentalAnimationApi
@@ -184,6 +185,7 @@ fun AppearanceSettings() {
         PlayerBackgroundColors.ThemeColor
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
 
     Column(
         modifier = Modifier
@@ -636,6 +638,18 @@ fun AppearanceSettings() {
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))
+
+        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = "Transparent background", //stringResource(R.string.action_bar_transparent_background),
+                text = "",
+                isChecked = transparentBackgroundActionBarPlayer,
+                onCheckedChange = { transparentBackgroundActionBarPlayer = it }
+            )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
                 filterCharSequence,
