@@ -639,13 +639,13 @@ fun AppearanceSettings() {
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_transparent_background).contains(
                 filterCharSequence,
                 true
             )
         )
             SwitchSettingEntry(
-                title = "Transparent background", //stringResource(R.string.action_bar_transparent_background),
+                title = stringResource(R.string.action_bar_transparent_background),
                 text = "",
                 isChecked = transparentBackgroundActionBarPlayer,
                 onCheckedChange = { transparentBackgroundActionBarPlayer = it }

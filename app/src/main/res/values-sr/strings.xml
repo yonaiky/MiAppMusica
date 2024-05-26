@@ -554,4 +554,5 @@
     <string name="added_to_favorites">Додато у омиљене</string>
     <string name="removed_from_favorites">Уклоњено из омиљених</string>
     <string name="lang_filipino">Filipino</string>
+    <string name="action_bar_transparent_background">Transparent background</string>
 </resources>

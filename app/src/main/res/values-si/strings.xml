@@ -555,4 +555,5 @@ CC-BY-SA 3.0</string>
     <string name="added_to_favorites">Added to favorites</string>
     <string name="removed_from_favorites">Removed from favorites</string>
     <string name="lang_filipino">Filipino</string>
+    <string name="action_bar_transparent_background">Transparent background</string>
 </resources>

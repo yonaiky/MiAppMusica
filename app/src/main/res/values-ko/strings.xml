@@ -554,4 +554,5 @@
     <string name="added_to_favorites">즐겨찾기에 추가</string>
     <string name="removed_from_favorites">즐겨찾기에서 제거됨</string>
     <string name="lang_filipino">Filipino</string>
+    <string name="action_bar_transparent_background">Transparent background</string>
 </resources>
