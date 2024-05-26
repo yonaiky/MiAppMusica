@@ -806,9 +806,11 @@ fun PlayerModern(
     var showQueue by rememberSaveable { mutableStateOf(false) }
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
 
+    /*
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
+     */
 
     var containerModifier = Modifier
         //.padding(bottom = bottomDp)

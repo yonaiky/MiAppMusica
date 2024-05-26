@@ -142,7 +142,6 @@ fun ScaffoldTB(
         )
     }
 
-    //val topPadding =  if (navigationBarPosition == NavigationBarPosition.Top) 60.dp else 10.dp
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     //var expanded by remember { mutableStateOf(false) }
@@ -210,17 +209,25 @@ fun ScaffoldTB(
         }
 
     ) {
-        Box(
-            modifier = Modifier
+        val modifierBoxPadding =  if (navigationBarPosition != NavigationBarPosition.Top)
+            Modifier
                 .padding(it)
-                .border(BorderStroke(1.dp, Color.Red))
                 .fillMaxSize()
+            else Modifier
+                .padding(it)
+                .padding(
+                    windowInsets
+                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                        .asPaddingValues()
+                )
+                .fillMaxSize()
+
+        Box(
+            modifier = modifierBoxPadding
         ) {
+
         Row(
             modifier = modifier
-                //.border(BorderStroke(1.dp, Color.Red))
-                //.padding(top = 50.dp)
-                //.padding(it)
                 .background(colorPalette.background0)
                 .fillMaxSize()
         ) {
@@ -263,10 +270,7 @@ fun ScaffoldTB(
                 content = content,
                 label = "",
                 modifier = Modifier
-                    //.border(BorderStroke(1.dp, Color.Blue))
-                    //.fillMaxWidth()
                     .fillMaxHeight()
-                    //.padding(top = topPadding) //only with top navigation
             )
         }
         Box(

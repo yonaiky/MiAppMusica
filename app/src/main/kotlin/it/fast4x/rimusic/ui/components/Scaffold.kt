@@ -164,7 +164,6 @@ fun Scaffold(
             Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         else Modifier
 
-        //var expanded by remember { mutableStateOf(false) }
 
         androidx.compose.material3.Scaffold(
             modifier = customModifier,
@@ -197,21 +196,16 @@ fun Scaffold(
             }
 
         ) {
-            //it.calculateTopPadding()
+
             //**
             Box(
                 modifier = Modifier
                     .padding(it)
-                    .border(BorderStroke(1.dp, Color.Red))
                     .fillMaxSize()
             ) {
 
                 Row(
-                    //horizontalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = modifier
-                        //.border(BorderStroke(1.dp, Color.Red))
-                        //.padding(top = 50.dp)
-                        //.padding(it)
                         .background(colorPalette.background0)
                         .fillMaxSize()
                 ) {
