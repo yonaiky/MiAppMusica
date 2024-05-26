@@ -268,7 +268,7 @@ fun BoxScope.FloatingActions(
                             onScrollToTop()
                         }
                     },
-                    enabled = transition.targetState?.isScrollingDown == false,
+                    enabled = transition.targetState?.isScrollingDown == false && transition.targetState?.isFar == true, //transition.targetState?.isScrollingDown == false,
                     modifier = modifierActions
                 )
                 /*
