@@ -553,4 +553,5 @@
     <string name="position_bottom">아래</string>
     <string name="added_to_favorites">즐겨찾기에 추가</string>
     <string name="removed_from_favorites">즐겨찾기에서 제거됨</string>
+    <string name="lang_filipino">Filipino</string>
 </resources>

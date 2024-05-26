@@ -553,4 +553,5 @@
     <string name="position_bottom">Дно</string>
     <string name="added_to_favorites">Додато у омиљене</string>
     <string name="removed_from_favorites">Уклоњено из омиљених</string>
+    <string name="lang_filipino">Filipino</string>
 </resources>

@@ -136,6 +136,7 @@ fun About() {
                     "AntoniNowak \n" +
                     "beez276 \n"+
                     "CiccioDerole \n"+
+                    "Clyde6790p_PH \n"+
                     "Conk \n"+
                     "Corotyest \n" +
                     "Crayz310 \n"+

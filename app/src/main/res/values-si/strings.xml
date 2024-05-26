@@ -554,4 +554,5 @@ CC-BY-SA 3.0</string>
     <string name="position_bottom">Bottom</string>
     <string name="added_to_favorites">Added to favorites</string>
     <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="lang_filipino">Filipino</string>
 </resources>
