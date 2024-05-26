@@ -923,12 +923,6 @@ fun QuickPicksModern(
 
         }
 
-        /*
-        PullRefreshIndicator(
-            refreshing, refreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
-         */
     }
 }
 
