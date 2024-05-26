@@ -197,6 +197,8 @@ fun About() {
         SettingsTopDescription( text ="Developer / Designer:")
         SettingsTopDescription( text =
             "25huizengek1 \n"+
+                    "821938089 \n"+
+                    "bbyeen \n"+
                 "Craeckie \n"+
                 "DanielSevillano \n"+
                 "Fast4x \n"+
