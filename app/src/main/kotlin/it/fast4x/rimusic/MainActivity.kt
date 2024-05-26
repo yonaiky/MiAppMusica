@@ -513,7 +513,7 @@ class MainActivity :
                         when (key) {
 
                             languageAppKey -> {
-                                var lang = sharedPreferences.getEnum(
+                                val lang = sharedPreferences.getEnum(
                                     languageAppKey,
                                     Languages.English
                                 )

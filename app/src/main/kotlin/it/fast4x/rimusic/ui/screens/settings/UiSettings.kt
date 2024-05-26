@@ -190,9 +190,6 @@ fun  UiSettings() {
 
     var languageApp  by rememberPreference(languageAppKey, Languages.English)
     val systemLocale = LocaleListCompat.getDefault().get(0).toString()
-    languageApp.code = systemLocale
-
-    //Log.d("LanguageSystem",systemLocale.toString() +"  "+ languageApp.name)
 
     var exoPlayerMinTimeForEvent by rememberPreference(
         exoPlayerMinTimeForEventKey,
