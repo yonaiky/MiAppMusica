@@ -20,6 +20,7 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .crossfade(true)
+            .placeholder(R.drawable.app_icon)
             .respectCacheHeaders(false)
             .memoryCache(
                 MemoryCache.Builder(this)
