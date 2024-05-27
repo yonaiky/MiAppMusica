@@ -62,6 +62,7 @@ import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
@@ -96,6 +97,7 @@ import it.fast4x.rimusic.utils.isGradientBackgroundEnabledKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
@@ -265,6 +267,7 @@ fun Controls(
         )
     }
 
+    val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
 
     Column(
@@ -274,7 +277,7 @@ fun Controls(
             .padding(horizontal = playerThumbnailSize.size.dp)
     ) {
 
-        if (playerControlsType == PlayerControlsType.Modern)
+        if (playerInfoType == PlayerInfoType.Modern)
             InfoAlbumAndArtistModern(
                 binder = binder,
                 navController = navController,
@@ -289,7 +292,7 @@ fun Controls(
                 artistIds = artistIds,
             )
 
-        if (playerControlsType == PlayerControlsType.Essential)
+        if (playerInfoType == PlayerInfoType.Essential)
             InfoAlbumAndArtistEssential(
                 binder = binder,
                 navController = navController,

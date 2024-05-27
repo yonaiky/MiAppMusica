@@ -174,6 +174,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
+import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.thumbnail
@@ -809,6 +810,7 @@ fun PlayerModern(
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
 
     val transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
+    val showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
 
     /*
     val density = LocalDensity.current
@@ -1425,8 +1427,7 @@ fun PlayerModern(
                         .height(30.dp)
                 ) {
 
-                    if (uiType != UiType.ViMusic) {
-
+                    if (showTopActionsBar) {
                         Image(
                             painter = painterResource(R.drawable.chevron_down),
                             contentDescription = null,

@@ -49,6 +49,7 @@ import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
@@ -71,6 +72,7 @@ import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
@@ -92,6 +94,7 @@ import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
+import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
@@ -184,7 +187,10 @@ fun AppearanceSettings() {
         playerBackgroundColorsKey,
         PlayerBackgroundColors.ThemeColor
     )
+
+    var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
 
     Column(
@@ -319,6 +325,18 @@ fun AppearanceSettings() {
         //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player))
 
+        if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_player_top_actions_bar),
+                text = "",
+                isChecked = showTopActionsBar,
+                onCheckedChange = { showTopActionsBar = it }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                 filterCharSequence,
                 true
@@ -368,6 +386,45 @@ fun AppearanceSettings() {
                         ThumbnailRoundness.Light -> stringResource(R.string.light)
                         ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
                         ThumbnailRoundness.Medium -> stringResource(R.string.medium)
+                    }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.pinfo_type),
+                titleSecondary = stringResource(R.string.pinfo_album_and_artist_name),
+                selectedValue = playerInfoType,
+                onValueSelected = {
+                    playerInfoType = it
+                },
+                valueText = {
+                    when (it) {
+                        PlayerInfoType.Modern -> stringResource(R.string.pcontrols_modern)
+                        PlayerInfoType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.timeline),
+                selectedValue = playerTimelineType,
+                onValueSelected = { playerTimelineType = it },
+                valueText = {
+                    when (it) {
+                        PlayerTimelineType.Default -> stringResource(R.string._default)
+                        PlayerTimelineType.Wavy -> stringResource(R.string.wavy_timeline)
+                        PlayerTimelineType.BodiedBar -> stringResource(R.string.bodied_bar)
+                        PlayerTimelineType.PinBar -> stringResource(R.string.pin_bar)
                     }
                 }
             )
@@ -589,25 +646,6 @@ fun AppearanceSettings() {
                         BackgroundProgress.Disabled -> stringResource(R.string.vt_disabled)
                     }
                 },
-            )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
-                filterCharSequence,
-                true
-            )
-        )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.timeline),
-                selectedValue = playerTimelineType,
-                onValueSelected = { playerTimelineType = it },
-                valueText = {
-                    when (it) {
-                        PlayerTimelineType.Default -> stringResource(R.string._default)
-                        PlayerTimelineType.Wavy -> stringResource(R.string.wavy_timeline)
-                        PlayerTimelineType.BodiedBar -> stringResource(R.string.bodied_bar)
-                        PlayerTimelineType.PinBar -> stringResource(R.string.pin_bar)
-                    }
-                }
             )
 
 
