@@ -1428,13 +1428,12 @@ fun PlayerModern(
                     if (uiType != UiType.ViMusic) {
 
                         Image(
-                            painter = painterResource(R.drawable.settings),
+                            painter = painterResource(R.drawable.chevron_down),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                             modifier = Modifier
                                 .clickable {
                                     onDismiss()
-                                    navController.navigate(NavRoutes.settings.name)
                                 }
                                 .rotate(rotationAngle)
                                 //.padding(10.dp)
