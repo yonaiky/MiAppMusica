@@ -47,6 +47,7 @@ import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.UiType
@@ -65,6 +66,9 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.getLikedIcon
+import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
@@ -215,13 +219,12 @@ fun ControlsEssential(
         label = "playPauseRoundness",
         targetValueByState = { if (it) 32.dp else 16.dp }
     )
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
 
     IconButton(
         color = colorPalette.favoritesIcon,
-        icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+        icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
         onClick = {
             val currentMediaItem = binder.player.currentMediaItem
             query {

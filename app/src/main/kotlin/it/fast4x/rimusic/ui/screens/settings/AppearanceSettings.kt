@@ -46,6 +46,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
+import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
@@ -66,6 +67,7 @@ import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
@@ -192,6 +194,7 @@ fun AppearanceSettings() {
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
+    var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
 
     Column(
         modifier = Modifier
@@ -476,6 +479,31 @@ fun AppearanceSettings() {
                     },
                 )
         }
+
+        if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.icon_like_button),
+                selectedValue = iconLikeType,
+                onValueSelected = {
+                    iconLikeType = it
+                },
+                valueText = {
+                    when (it) {
+                        IconLikeType.Essential -> stringResource(R.string.pcontrols_essential)
+                        IconLikeType.Apple -> stringResource(R.string.icon_like_apple)
+                        IconLikeType.Breaked -> stringResource(R.string.icon_like_breaked)
+                        IconLikeType.Gift -> stringResource(R.string.icon_like_gift)
+                        IconLikeType.Shape -> stringResource(R.string.icon_like_shape)
+                        IconLikeType.Striped -> stringResource(R.string.icon_like_striped)
+                        IconLikeType.Brilliant -> stringResource(R.string.icon_like_brilliant)
+                    }
+                },
+            )
+
         /*
 
         if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))

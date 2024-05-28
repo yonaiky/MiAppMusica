@@ -56,6 +56,8 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.getLikedIcon
+import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 
@@ -142,10 +144,8 @@ fun InfoAlbumAndArtistModern(
         }
 
             IconButton(
-                //color = if (likedAt == null) colorPalette.textDisabled else colorPalette.text,
                 color = colorPalette.favoritesIcon,
-                //icon = R.drawable.heart,
-                icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
                 onClick = {
                     val currentMediaItem = binder.player.currentMediaItem
                     query {

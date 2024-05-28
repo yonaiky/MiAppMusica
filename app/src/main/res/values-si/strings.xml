@@ -559,4 +559,11 @@ CC-BY-SA 3.0</string>
     <string name="pinfo_type">Info type</string>
     <string name="pinfo_album_and_artist_name">Album and artist name</string>
     <string name="show_player_top_actions_bar">Show top actions bar</string>
+    <string name="icon_like_button">Like button</string>
+    <string name="icon_like_apple">Apple</string>
+    <string name="icon_like_breaked">Breaked</string>
+    <string name="icon_like_gift">Gift</string>
+    <string name="icon_like_shape">Shape</string>
+    <string name="icon_like_striped">Striped</string>
+    <string name="icon_like_brilliant">Brilliant</string>
 </resources>
