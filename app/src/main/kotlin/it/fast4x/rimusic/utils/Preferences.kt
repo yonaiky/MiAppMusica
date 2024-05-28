@@ -71,6 +71,7 @@ const val showDownloadButtonBackgroundPlayerKey = "showDownloadButtonBackgroundP
 const val playEventsTypeKey = "playEventsType"
 const val fontTypeKey = "fontType"
 const val playlistSongSortByKey = "playlistSongSortBy"
+const val showTipsKey = "showTips"
 const val showRelatedAlbumsKey = "showRelatedAlbums"
 const val showSimilarArtistsKey = "showSimilarArtists"
 const val showNewAlbumsArtistsKey = "showNewAlbumsArtists"
