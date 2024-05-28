@@ -176,7 +176,7 @@ fun InfoAlbumAndArtistEssential(
                 color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
                 fontStyle = typography.m.bold.fontStyle,
                 fontSize = typography.m.bold.fontSize,
-                fontWeight = typography.m.bold.fontWeight,
+                //fontWeight = typography.m.bold.fontWeight,
                 fontFamily = typography.m.bold.fontFamily
             ),
             maxLines = 1,
