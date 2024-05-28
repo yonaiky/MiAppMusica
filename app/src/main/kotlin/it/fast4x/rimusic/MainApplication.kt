@@ -29,7 +29,7 @@ class MainApplication : Application(), ImageLoaderFactory {
             )
             .diskCache(
                 DiskCache.Builder()
-                    .directory(cacheDir.resolve("coil"))
+                    .directory(filesDir.resolve("coil"))
                     .maxSizeBytes(
                         preferences.getEnum(
                             coilDiskCacheMaxSizeKey,
