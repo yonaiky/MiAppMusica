@@ -84,6 +84,7 @@ import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtis
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteNameKey
@@ -249,14 +250,14 @@ fun Controls(
     }
      */
 
-    val pauseBetweenSongs by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+
 
     var playbackSpeed by rememberPreference(playbackSpeedKey, 1f)
     var showSpeedPlayerDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
-    val showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+
 
 
     if (showSpeedPlayerDialog) {
@@ -312,248 +313,12 @@ fun Controls(
                 .height(25.dp)
         )
 
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth()
-        ) {
-
-            /*
-            val visualizerData = remember {
-                mutableStateOf(VisualizerData())
-            }
-            val amp = getAmplitudes(
-                binder = binder,
-                context = context,
-                visualizerData = visualizerData
-            )
-            //println("mediaItem Controls amplitudes ${amp}")
-
-            AudioWaveform(
-                amplitudes = amp,
-                progress = position.toFloat(),
-                onProgressChange = {},
-                amplitudeType = AmplitudeType.Avg,
-                waveformBrush = SolidColor(colorPalette.text),
-                progressBrush = SolidColor(colorPalette.favoritesIcon)
-
-            )
-             */
-
-            if (playerTimelineType != PlayerTimelineType.Default && playerTimelineType != PlayerTimelineType.Wavy)
-                SeekBarCustom(
-                    type = playerTimelineType,
-                    value = scrubbingPosition ?: position,
-                    minimumValue = 0,
-                    maximumValue = duration,
-                    onDragStart = {
-                        scrubbingPosition = it
-                    },
-                    onDrag = { delta ->
-                        scrubbingPosition = if (duration != C.TIME_UNSET) {
-                            scrubbingPosition?.plus(delta)?.coerceIn(0, duration)
-                        } else {
-                            null
-                        }
-                    },
-                    onDragEnd = {
-                        scrubbingPosition?.let(binder.player::seekTo)
-                        scrubbingPosition = null
-                    },
-                    color = colorPalette.collapsedPlayerProgressBar,
-                    backgroundColor = colorPalette.textSecondary,
-                    shape = RoundedCornerShape(8.dp)
-                )
-
-            if (playerTimelineType == PlayerTimelineType.Default)
-                SeekBar(
-                    value = scrubbingPosition ?: position,
-                    minimumValue = 0,
-                    maximumValue = duration,
-                    onDragStart = {
-                        scrubbingPosition = it
-                    },
-                    onDrag = { delta ->
-                        scrubbingPosition = if (duration != C.TIME_UNSET) {
-                            scrubbingPosition?.plus(delta)?.coerceIn(0, duration)
-                        } else {
-                            null
-                        }
-                    },
-                    onDragEnd = {
-                        scrubbingPosition?.let(binder.player::seekTo)
-                        scrubbingPosition = null
-                    },
-                    color = colorPalette.collapsedPlayerProgressBar,
-                    backgroundColor = colorPalette.textSecondary,
-                    shape = RoundedCornerShape(8.dp),
-                )
-
-
-
-
-            if (playerTimelineType == PlayerTimelineType.Wavy) {
-                SeekBarWaved(
-                    position = { animatedPosition.value },
-                    range = 0f..media.duration.toFloat(),
-                    onSeekStarted = {
-                        scrubbingPosition = it.toLong()
-
-                        //isSeeking = true
-                        scope.launch {
-                            animatedPosition.animateTo(it)
-                        }
-
-                    },
-                    onSeek = { delta ->
-                        scrubbingPosition = if (duration != C.TIME_UNSET) {
-                            scrubbingPosition?.plus(delta)?.coerceIn(0F, duration.toFloat())
-                                ?.toLong()
-                        } else {
-                            null
-                        }
-
-                        if (media.duration != C.TIME_UNSET) {
-                            //isSeeking = true
-                            scope.launch {
-                                animatedPosition.snapTo(
-                                    animatedPosition.value.plus(delta)
-                                        .coerceIn(0f, media.duration.toFloat())
-                                )
-                            }
-                        }
-
-                    },
-                    onSeekFinished = {
-                        scrubbingPosition?.let(binder.player::seekTo)
-                        scrubbingPosition = null
-                        /*
-                    isSeeking = false
-                    animatedPosition.let {
-                        binder.player.seekTo(it.targetValue.toLong())
-                    }
-                     */
-                    },
-                    color = colorPalette.collapsedPlayerProgressBar,
-                    isActive = binder.player.isPlaying,
-                    backgroundColor = colorPalette.textSecondary,
-                    shape = RoundedCornerShape(8.dp)
-                )
-            }
-        }
-
-
-
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
+        GetSeekBar(
+            position = position,
+            duration = duration,
+            media = media,
+            mediaId = mediaId
         )
-
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth()
-        ) {
-            BasicText(
-                text = formatAsDuration(scrubbingPosition ?: position),
-                style = typography.xxs.semiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-
-            if (duration != C.TIME_UNSET) {
-                val positionAndDuration = binder.player.positionAndDurationState()
-                var timeRemaining by remember { mutableIntStateOf(0) }
-                timeRemaining =
-                    positionAndDuration.value.second.toInt() - positionAndDuration.value.first.toInt()
-                var paused by remember { mutableStateOf(false) }
-
-                if (pauseBetweenSongs != PauseBetweenSongs.`0`)
-                    LaunchedEffect(timeRemaining) {
-                        if (
-                        //formatAsDuration(timeRemaining.toLong()) == "0:00"
-                            timeRemaining.toLong() < 500
-                        ) {
-                            paused = true
-                            binder.player.pause()
-                            delay(pauseBetweenSongs.number)
-                            //binder.player.seekTo(position+2000)
-                            binder.player.play()
-                            paused = false
-                        }
-                    }
-
-                if (!paused) {
-
-                    if (showRemainingSongTime)
-                        BasicText(
-                            text = "-${formatAsDuration(timeRemaining.toLong())}",
-                            style = typography.xxs.semiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                        )
-
-                    /*
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.time),
-                            colorFilter = ColorFilter.tint(colorPalette.accent),
-                            modifier = Modifier
-                                .size(20.dp)
-                                .padding(horizontal = 5.dp),
-                            contentDescription = "Background Image",
-                            contentScale = ContentScale.Fit
-                        )
-                        BasicText(
-                            text = " ${formatAsTime(totalPlayTimes)}",
-                            style = typography.xxs.semiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                     */
-
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.pause),
-                        colorFilter = ColorFilter.tint(colorPalette.accent),
-                        modifier = Modifier
-                            .size(20.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                }
-
-                /*
-                BasicText(
-                    text = "-${formatAsDuration(timeRemaining.toLong())} / ${formatAsDuration(duration)}",
-                    style = typography.xxs.semiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                 */
-
-                BasicText(
-                    text = formatAsDuration(duration),
-                    style = typography.xxs.semiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-            }
-        }
 
         Spacer(
             modifier = Modifier
