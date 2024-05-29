@@ -426,12 +426,12 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Теки, які показуватимуться, коли ви відкриєте на сторінці пристрою.</string>
     <string name="folder_was_not_found">Тека не знайдена</string>
     <string name="direction_top">Direction Top</string>
-    <string name="pick_from">Pick from</string>
-    <string name="download_cover">Download cover</string>
+    <string name="pick_from">Вибрати із</string>
+    <string name="download_cover">Завантажити обкладинку</string>
     <string name="menu_style">Стиль меню</string>
     <string name="style_grid">Сітка</string>
     <string name="style_list">Список</string>
-    <string name="click_to_switch_to">Click to switch to</string>
+    <string name="click_to_switch_to">Натисніть аби перемкнути на</string>
     <string name="direction_bottom">Direction bottom</string>
     <string name="event_shake">Потрясти</string>
     <string name="shake_to_change_song">Потрусити, щоб змінити пісню</string>
