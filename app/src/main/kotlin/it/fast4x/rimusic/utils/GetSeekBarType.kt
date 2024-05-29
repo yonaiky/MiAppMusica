@@ -38,6 +38,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.SeekBar
+import it.fast4x.rimusic.ui.components.SeekBarColored
 import it.fast4x.rimusic.ui.components.SeekBarCustom
 import it.fast4x.rimusic.ui.components.SeekBarWaved
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -110,7 +111,10 @@ fun GetSeekBar(
         )
          */
 
-        if (playerTimelineType != PlayerTimelineType.Default && playerTimelineType != PlayerTimelineType.Wavy)
+        if (playerTimelineType != PlayerTimelineType.Default
+            && playerTimelineType != PlayerTimelineType.Wavy
+            //&& playerTimelineType != PlayerTimelineType.ColoredBar
+            )
             SeekBarCustom(
                 type = playerTimelineType,
                 value = scrubbingPosition ?: position,
@@ -158,9 +162,6 @@ fun GetSeekBar(
                 backgroundColor = colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
             )
-
-
-
 
         if (playerTimelineType == PlayerTimelineType.Wavy) {
             SeekBarWaved(
@@ -210,6 +211,35 @@ fun GetSeekBar(
                 shape = RoundedCornerShape(8.dp)
             )
         }
+
+
+        /*
+        if (playerTimelineType == PlayerTimelineType.ColoredBar)
+            SeekBarColored(
+                alphaType = false,
+                value = scrubbingPosition ?: position,
+                minimumValue = 0,
+                maximumValue = duration,
+                onDragStart = {
+                    scrubbingPosition = it
+                },
+                onDrag = { delta ->
+                    scrubbingPosition = if (duration != C.TIME_UNSET) {
+                        scrubbingPosition?.plus(delta)?.coerceIn(0, duration)
+                    } else {
+                        null
+                    }
+                },
+                onDragEnd = {
+                    scrubbingPosition?.let(binder.player::seekTo)
+                    scrubbingPosition = null
+                },
+                color = colorPalette.collapsedPlayerProgressBar,
+                backgroundColor = colorPalette.textSecondary,
+                shape = RoundedCornerShape(8.dp),
+            )
+         */
+
     }
 
     Spacer(

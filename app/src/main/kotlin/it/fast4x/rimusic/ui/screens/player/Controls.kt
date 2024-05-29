@@ -84,6 +84,7 @@ import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtis
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.GetControls
 import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
@@ -100,6 +101,7 @@ import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.positionAndDurationState
@@ -163,18 +165,12 @@ fun Controls(
         nextmediaItemtitle = binder.player.getMediaItemAt(nextmediaItemIndex).mediaMetadata.title.toString()
     */
 
-    var isRotated by rememberSaveable { mutableStateOf(false) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (isRotated) 360F else 0f,
-        animationSpec = tween(durationMillis = 200), label = ""
-    )
+
+
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var playerPlayButtonType by rememberPreference(
-        playerPlayButtonTypeKey,
-        PlayerPlayButtonType.Rectangular
-    )
+
 
     val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
@@ -219,7 +215,7 @@ fun Controls(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Medium
     )
-    val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
+
 
     /*
     var windows by remember {
@@ -249,27 +245,9 @@ fun Controls(
         mutableStateOf(false)
     }
      */
-
-
-
-    var playbackSpeed by rememberPreference(playbackSpeedKey, 1f)
-    var showSpeedPlayerDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-
-
-
-    if (showSpeedPlayerDialog) {
-        PlaybackParamsDialog(
-            onDismiss = { showSpeedPlayerDialog = false },
-            speedValue = { playbackSpeed = it },
-            pitchValue = {}
-        )
-    }
-
     val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
-    val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
+
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -313,56 +291,51 @@ fun Controls(
                 .height(25.dp)
         )
 
-        GetSeekBar(
-            position = position,
-            duration = duration,
-            media = media,
-            mediaId = mediaId
-        )
-
-        Spacer(
-            modifier = Modifier
-                .weight(0.4f)
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-
-            if (playerControlsType == PlayerControlsType.Essential)
-                ControlsEssential(
-                    binder = binder,
-                    position = position,
-                    playbackSpeed = playbackSpeed,
-                    shouldBePlaying = shouldBePlaying,
-                    likedAt = likedAt,
-                    mediaId = mediaId,
-                    playerPlayButtonType = playerPlayButtonType,
-                    rotationAngle = rotationAngle,
-                    isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                    onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true }
-                )
-
-            if (playerControlsType == PlayerControlsType.Modern)
-                ControlsModern(
-                    binder = binder,
-                    position = position,
-                    playbackSpeed = playbackSpeed,
-                    shouldBePlaying = shouldBePlaying,
-                    playerPlayButtonType = playerPlayButtonType,
-                    rotationAngle = rotationAngle,
-                    isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                    onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true }
-                )
+        if (!playerSwapControlsWithTimeline) {
+            GetSeekBar(
+                position = position,
+                duration = duration,
+                media = media,
+                mediaId = mediaId
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(0.4f)
+            )
+            GetControls(
+                binder = binder,
+                position = position,
+                shouldBePlaying = shouldBePlaying,
+                likedAt = likedAt,
+                mediaId = mediaId
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+            )
+        } else {
+            GetControls(
+                binder = binder,
+                position = position,
+                shouldBePlaying = shouldBePlaying,
+                likedAt = likedAt,
+                mediaId = mediaId
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+            )
+            GetSeekBar(
+                position = position,
+                duration = duration,
+                media = media,
+                mediaId = mediaId
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(0.4f)
+            )
         }
-
-        Spacer(
-            modifier = Modifier
-                .weight(0.5f)
-        )
 
     }
 

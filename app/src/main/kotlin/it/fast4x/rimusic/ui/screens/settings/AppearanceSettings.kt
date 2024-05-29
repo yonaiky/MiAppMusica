@@ -76,6 +76,7 @@ import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -195,6 +196,7 @@ fun AppearanceSettings() {
     var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
+    var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
 
     Column(
         modifier = Modifier
@@ -413,6 +415,14 @@ fun AppearanceSettings() {
                 },
             )
 
+        if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_swap_controls_with_timeline),
+                text = "",
+                isChecked = playerSwapControlsWithTimeline,
+                onCheckedChange = { playerSwapControlsWithTimeline = it }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
                 filterCharSequence,
                 true
@@ -428,6 +438,7 @@ fun AppearanceSettings() {
                         PlayerTimelineType.Wavy -> stringResource(R.string.wavy_timeline)
                         PlayerTimelineType.BodiedBar -> stringResource(R.string.bodied_bar)
                         PlayerTimelineType.PinBar -> stringResource(R.string.pin_bar)
+                        //PlayerTimelineType.ColoredBar -> "Colored bar"
                     }
                 }
             )

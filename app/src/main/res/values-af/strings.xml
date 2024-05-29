@@ -565,4 +565,5 @@
     <string name="icon_like_shape">Shape</string>
     <string name="icon_like_striped">Striped</string>
     <string name="icon_like_brilliant">Brilliant</string>
+    <string name="player_swap_controls_with_timeline">Swap controls with timeline</string>
 </resources>
