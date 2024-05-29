@@ -58,6 +58,7 @@ fun appBar(
     var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var expanded by remember { mutableStateOf(false) }
+    var countForReveal by remember { mutableStateOf(0) }
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val customModifier = if(uiType == UiType.RiMusic)
@@ -96,8 +97,13 @@ fun appBar(
                     modifier = Modifier
                         .size(36.dp)
                         .clickable {
-                            if (navController.currentDestination?.route != NavRoutes.home.name)
-                                navController.navigate(NavRoutes.home.name)
+                            countForReveal++
+                            if (countForReveal > 3) {
+                                SmartToast("Press again to continue")
+                                countForReveal = 0
+                            }
+                            //if (navController.currentDestination?.route != NavRoutes.home.name)
+                            //    navController.navigate(NavRoutes.home.name)
                         }
                 )
                 Image(
