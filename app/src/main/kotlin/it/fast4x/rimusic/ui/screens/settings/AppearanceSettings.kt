@@ -74,6 +74,7 @@ import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
@@ -197,6 +198,7 @@ fun AppearanceSettings() {
     var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
     var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
+    var playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
 
     Column(
         modifier = Modifier
@@ -415,7 +417,7 @@ fun AppearanceSettings() {
                 },
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.player_swap_controls_with_timeline),
                 text = "",
@@ -664,6 +666,18 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = showBackgroundLyrics,
                 onCheckedChange = { showBackgroundLyrics = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_enable_lyrics_popup_message),
+                text = "",
+                isChecked = playerEnableLyricsPopupMessage,
+                onCheckedChange = { playerEnableLyricsPopupMessage = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(
