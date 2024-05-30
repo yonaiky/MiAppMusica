@@ -27,7 +27,7 @@ class VisualizerComputer {
 
         val CAPTURE_SIZE = Visualizer.getCaptureSizeRange()[1]
 
-        const val SAMPLING_INTERVAL = 100
+        const val SAMPLING_INTERVAL = 500
     }
 
     private var visualizer: Visualizer? = null
@@ -43,6 +43,15 @@ class VisualizerComputer {
                 //Check
                 //Timber.e("FFT - samplingRate=$samplingRate, waveform=${fft.joinToString()} thread=" + Thread.currentThread())
                 //onData(VisualizerData(bytes = process(fft), resolution = resolution))
+                onData(
+                    VisualizerData(
+                        rawWaveform = fft.clone(),
+                        captureSize = CAPTURE_SIZE,
+                        samplingRate = samplingRate,
+                        durationSinceLastData = 0
+                        //if (durationSinceLastData < 200) durationSinceLastData else 0
+                    )
+                )
             }
 
             //var captureCounter = 0
@@ -55,7 +64,7 @@ class VisualizerComputer {
                 waveform: ByteArray,
                 samplingRate: Int
             ) {
-                //val now = System.currentTimeMillis()
+                val now = System.currentTimeMillis()
                 //Check
 
                 //if (start == null) start = now
@@ -69,19 +78,20 @@ class VisualizerComputer {
                  */
 
                 //Timber.e("Wave - samplingRate=$samplingRate, waveform=${waveform.joinToString()} thread=" + Thread.currentThread())
-                //val durationSinceLastData = lastDataTimestamp?.let { now - it } ?: 0
-                //if (lastDataTimestamp == null || durationSinceLastData > SAMPLING_INTERVAL) {
+                val durationSinceLastData = lastDataTimestamp?.let { now - it } ?: 0
+                if (lastDataTimestamp == null || durationSinceLastData > SAMPLING_INTERVAL) {
+                    println("mediaItem ${samplingRate}")
                     onData(
                         VisualizerData(
                             rawWaveform = waveform.clone(),
-                            captureSize = CAPTURE_SIZE,
-                            samplingRate = samplingRate,
+                            captureSize = 128,
+                            samplingRate = samplingRate / 2,
                             durationSinceLastData = 0
                             //if (durationSinceLastData < 200) durationSinceLastData else 0
                         )
                     )
-                    //lastDataTimestamp = now
-                //}
+                    lastDataTimestamp = now
+                }
             }
         }
 
@@ -97,7 +107,7 @@ class VisualizerComputer {
                     visualizerCallback(onData),
                     Visualizer.getMaxCaptureRate(),
                     true,
-                    true
+                    false
                 )
                 enabled = true // Configuration is done, can enable now...
             }
