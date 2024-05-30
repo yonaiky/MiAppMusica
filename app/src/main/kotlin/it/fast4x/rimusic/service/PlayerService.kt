@@ -90,6 +90,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.extensions.exovisualizer.FFTAudioProcessor
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
@@ -379,6 +380,8 @@ class PlayerService : InvincibleService(),
     private var showDownloadButton = true
 
     private var shuffleModeEnabled = false
+
+    private val fftAudioProcessor = FFTAudioProcessor()
 
     override fun onBind(intent: Intent?): AndroidBinder {
         super.onBind(intent)
@@ -1488,10 +1491,10 @@ class PlayerService : InvincibleService(),
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
             .setAudioProcessorChain(
                 DefaultAudioProcessorChain(
-                    arrayOf(),
+                    arrayOf(fftAudioProcessor),
                     SilenceSkippingAudioProcessor(
-                        2_000_000, //minimumSilenceDuration,
-                        20_000, //minimumSilenceDuration / 100L,
+                        2_000_000,
+                        20_000,
                          256
                     ),
                     SonicAudioProcessor()
