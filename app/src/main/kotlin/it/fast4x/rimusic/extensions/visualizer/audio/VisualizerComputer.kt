@@ -97,7 +97,7 @@ class VisualizerComputer {
                     visualizerCallback(onData),
                     Visualizer.getMaxCaptureRate(),
                     true,
-                    false
+                    true
                 )
                 enabled = true // Configuration is done, can enable now...
             }
