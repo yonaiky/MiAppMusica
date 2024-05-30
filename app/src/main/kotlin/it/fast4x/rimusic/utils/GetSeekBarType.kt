@@ -89,28 +89,6 @@ fun GetSeekBar(
             .fillMaxWidth()
     ) {
 
-        /*
-        val visualizerData = remember {
-            mutableStateOf(VisualizerData())
-        }
-        val amp = getAmplitudes(
-            binder = binder,
-            context = context,
-            visualizerData = visualizerData
-        )
-        //println("mediaItem Controls amplitudes ${amp}")
-
-        AudioWaveform(
-            amplitudes = amp,
-            progress = position.toFloat(),
-            onProgressChange = {},
-            amplitudeType = AmplitudeType.Avg,
-            waveformBrush = SolidColor(colorPalette.text),
-            progressBrush = SolidColor(colorPalette.favoritesIcon)
-
-        )
-         */
-
         if (playerTimelineType != PlayerTimelineType.Default
             && playerTimelineType != PlayerTimelineType.Wavy
             //&& playerTimelineType != PlayerTimelineType.ColoredBar

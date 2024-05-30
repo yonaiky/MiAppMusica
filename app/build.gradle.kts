@@ -125,14 +125,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics-android:1.6.7")
     implementation("com.github.therealbush:translator:1.0.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
-    implementation("com.github.lincollincol:compose-audiowaveform:1.1.1")
-    //implementation("com.github.lincollincol:amplituda:2.2.2")
     implementation("com.github.KieronQuinn:MonetCompat:0.4.1")
     implementation("androidx.palette:palette:1.0.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.github.vincent-series:smart-toast:4.1.6")
-    implementation("com.github.paramsen:noise:2.0.0")
     
     //End
     coreLibraryDesugaring(libs.desugaring)
