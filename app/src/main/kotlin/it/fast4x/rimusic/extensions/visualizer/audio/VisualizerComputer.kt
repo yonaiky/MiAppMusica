@@ -85,9 +85,9 @@ class VisualizerComputer {
                         VisualizerData(
                             rawWaveform = waveform.clone(),
                             captureSize = 128,
-                            samplingRate = samplingRate / 2,
-                            durationSinceLastData = 0
-                            //if (durationSinceLastData < 200) durationSinceLastData else 0
+                            samplingRate = samplingRate,
+                            //durationSinceLastData = 0
+                            if (durationSinceLastData < 510) durationSinceLastData else 0
                         )
                     )
                     lastDataTimestamp = now
