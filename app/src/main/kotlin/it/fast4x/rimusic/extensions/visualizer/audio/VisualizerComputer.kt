@@ -26,6 +26,7 @@ class VisualizerComputer {
         }
 
         val CAPTURE_SIZE = Visualizer.getCaptureSizeRange()[1]
+        //val fixedAmplitudes = IntArray(1024) { i -> -128 }
 
         const val SAMPLING_INTERVAL = 300
     }
@@ -80,11 +81,12 @@ class VisualizerComputer {
                 //Timber.e("Wave - samplingRate=$samplingRate, waveform=${waveform.joinToString()} thread=" + Thread.currentThread())
                 val durationSinceLastData = lastDataTimestamp?.let { now - it } ?: 0
                 if (lastDataTimestamp == null || durationSinceLastData > SAMPLING_INTERVAL) {
-                    println("mediaItem ${samplingRate}")
+                    println("mediaItem waveform size ${waveform.size} array ${waveform.joinToString()}")
+                    //println("mediaItem fixedAmplitudes size ${fixedAmplitudes.size} array ${fixedAmplitudes.joinToString()}")
                     onData(
                         VisualizerData(
                             rawWaveform = waveform.clone(),
-                            captureSize = 128,
+                            captureSize = CAPTURE_SIZE,
                             samplingRate = samplingRate,
                             //durationSinceLastData = 0
                             if (durationSinceLastData < 510) durationSinceLastData else 0
