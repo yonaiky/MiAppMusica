@@ -27,7 +27,7 @@ class VisualizerComputer {
 
         val CAPTURE_SIZE = Visualizer.getCaptureSizeRange()[1]
 
-        const val SAMPLING_INTERVAL = 500
+        const val SAMPLING_INTERVAL = 300
     }
 
     private var visualizer: Visualizer? = null
