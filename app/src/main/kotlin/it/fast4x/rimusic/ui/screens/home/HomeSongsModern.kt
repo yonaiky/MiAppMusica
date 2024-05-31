@@ -465,7 +465,7 @@ fun HomeSongsModern(
     )
 
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val lazyListState = rememberLazyListState()
 
@@ -560,6 +560,14 @@ fun HomeSongsModern(
             }
         )
     }
+
+    var showConfirmDeleteDownloadDialog by remember {
+        mutableStateOf(false)
+    }
+    var showConfirmDownloadAllDialog by remember {
+        mutableStateOf(false)
+    }
+
 
 
     Box(
@@ -679,6 +687,86 @@ fun HomeSongsModern(
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
                     )
+
+                    if (builtInPlaylist == BuiltInPlaylist.Favorites) {
+                        HeaderIconButton(
+                            icon = R.drawable.downloaded,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDownloadAllDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_download_all_songs))
+                                    }
+                                )
+                        )
+                    }
+
+                    if (showConfirmDownloadAllDialog) {
+                        ConfirmationDialog(
+                            text = stringResource(R.string.do_you_really_want_to_download_all),
+                            onDismiss = { showConfirmDownloadAllDialog = false },
+                            onConfirm = {
+                                showConfirmDownloadAllDialog = false
+                                //isRecommendationEnabled = false
+                                downloadState = Download.STATE_DOWNLOADING
+                                if (songs.isNotEmpty() == true)
+                                    songs.forEach {
+                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                        manageDownload(
+                                            context = context,
+                                            songId = it.asMediaItem.mediaId,
+                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                            downloadState = false
+                                        )
+                                    }
+                            }
+                        )
+                    }
+
+                    if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded) {
+                        HeaderIconButton(
+                            icon = R.drawable.download,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDeleteDownloadDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                    }
+                                )
+                        )
+
+                        if (showConfirmDeleteDownloadDialog) {
+                            ConfirmationDialog(
+                                text = stringResource(R.string.do_you_really_want_to_delete_download),
+                                onDismiss = { showConfirmDeleteDownloadDialog = false },
+                                onConfirm = {
+                                    showConfirmDeleteDownloadDialog = false
+                                    downloadState = Download.STATE_DOWNLOADING
+                                    if (songs.isNotEmpty() == true)
+                                        songs.forEach {
+                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            manageDownload(
+                                                context = context,
+                                                songId = it.asMediaItem.mediaId,
+                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = true
+                                            )
+                                        }
+                                }
+                            )
+                        }
+                    }
+
                     if (builtInPlaylist != BuiltInPlaylist.OnDevice)
                         HeaderIconButton(
                             onClick = {},
@@ -828,47 +916,6 @@ fun HomeSongsModern(
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
                     )
-
-                    /*
-                    Spacer(
-                        modifier = Modifier
-                            .weight(0.3f)
-                    )
-
-                    BasicText(
-                        text = when (sortBy) {
-                            SongSortBy.Title -> stringResource(R.string.sort_title)
-                            SongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
-                            SongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
-                            SongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                            SongSortBy.DateLiked -> stringResource(R.string.sort_date_liked)
-                            SongSortBy.Artist -> stringResource(R.string.sort_artist)
-                            SongSortBy.Duration -> stringResource(R.string.sort_duration)
-                        },
-                        style = typography.xs.semiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .clickable {
-                                menuState.display{
-                                    SortMenu(
-                                        title = stringResource(R.string.sorting_order),
-                                        onDismiss = menuState::hide,
-                                        onDatePlayed = { sortBy = SongSortBy.DatePlayed },
-                                        onTitle = { sortBy = SongSortBy.Title },
-                                        onDateAdded = { sortBy = SongSortBy.DateAdded },
-                                        onPlayTime = { sortBy = SongSortBy.PlayTime },
-                                        onDateLiked = { sortBy = SongSortBy.DateLiked },
-                                        onArtist = { sortBy = SongSortBy.Artist },
-                                        onDuration = { sortBy = SongSortBy.Duration }
-                                    )
-                                }
-
-                            }
-                    )
-                    */
-
-
 
                 }
 

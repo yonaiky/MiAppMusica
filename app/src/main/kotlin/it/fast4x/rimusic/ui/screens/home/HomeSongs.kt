@@ -207,7 +207,7 @@ fun HomeSongs(
     )
 
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val lazyListState = rememberLazyListState()
 

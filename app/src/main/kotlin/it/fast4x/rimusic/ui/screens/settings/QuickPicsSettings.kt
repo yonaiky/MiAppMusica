@@ -85,7 +85,7 @@ fun  QuickPicsSettings() {
 
     //var showActionsBar by rememberPreference(showActionsBarKey, true)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Column(
         modifier = Modifier

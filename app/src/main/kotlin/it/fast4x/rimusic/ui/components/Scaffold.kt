@@ -127,7 +127,7 @@ fun Scaffold(
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)

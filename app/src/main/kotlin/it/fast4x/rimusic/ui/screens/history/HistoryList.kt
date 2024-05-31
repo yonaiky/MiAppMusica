@@ -184,7 +184,7 @@ fun HistoryList(
         ThumbnailRoundness.Heavy
     )
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Column (
         modifier = Modifier

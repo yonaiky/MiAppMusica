@@ -122,7 +122,7 @@ fun HomeStatistics(
     val lazyGridState = rememberLazyGridState()
 
     val context = LocalContext.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 

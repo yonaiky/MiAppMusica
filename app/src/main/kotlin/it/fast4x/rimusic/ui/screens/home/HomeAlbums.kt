@@ -139,7 +139,7 @@ fun HomeAlbums(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 /*
     var showSortTypeSelectDialog by remember {
         mutableStateOf(false)

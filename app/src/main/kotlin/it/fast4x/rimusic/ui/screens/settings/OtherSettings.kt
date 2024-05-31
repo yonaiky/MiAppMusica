@@ -113,7 +113,7 @@ fun OtherSettings() {
 
     var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 

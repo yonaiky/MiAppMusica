@@ -85,7 +85,7 @@ inline fun <T : Innertube.Item> ItemsPage(
             }
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Box(
         modifier = Modifier

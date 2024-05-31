@@ -150,9 +150,9 @@ fun OnlineSearch(
 
     val lazyListState = rememberLazyListState()
 
-    //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Box(
         modifier = Modifier

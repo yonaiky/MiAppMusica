@@ -183,7 +183,7 @@ fun ArtistOverviewModern(
     val translator = Translator(getHttpClient())
     val languageDestination = languageDestination()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val listMediaItems = remember { mutableListOf<MediaItem>() }
 

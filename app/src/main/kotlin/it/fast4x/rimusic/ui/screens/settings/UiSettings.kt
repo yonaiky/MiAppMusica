@@ -254,7 +254,7 @@ fun  UiSettings() {
         MaxTopPlaylistItems.`10`
     )
 
-    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Top)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)

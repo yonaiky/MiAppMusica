@@ -246,7 +246,7 @@ fun DataSettings() {
         Database.queriesCount().distinctUntilChanged()
     }.collectAsState(initial = 0)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     var cleanCacheOfflineSongs by remember {
         mutableStateOf(false)

@@ -167,7 +167,7 @@ fun HeaderWithIcon (
     val colorPalette = LocalAppearance.current.colorPalette
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     //val disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Row (
         horizontalArrangement = Arrangement.End,

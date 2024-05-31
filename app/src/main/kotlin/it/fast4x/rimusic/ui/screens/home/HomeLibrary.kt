@@ -268,7 +268,7 @@ fun HomeLibrary(
         MaxTopPlaylistItems.`10`
     )
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val lazyGridState = rememberLazyGridState()
 

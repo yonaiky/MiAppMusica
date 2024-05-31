@@ -203,7 +203,7 @@ fun QuickPicksModern(
     val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
     val showTips by rememberPreference(showTipsKey, true)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val refreshScope = rememberCoroutineScope()
 

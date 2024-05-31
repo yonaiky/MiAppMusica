@@ -105,7 +105,7 @@ fun AlbumScreenWithoutScaffold(
     var changeShape by remember {
         mutableStateOf(false)
     }
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 

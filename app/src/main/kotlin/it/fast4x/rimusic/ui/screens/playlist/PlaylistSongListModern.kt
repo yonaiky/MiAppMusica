@@ -275,7 +275,7 @@ fun PlaylistSongListModern(
 
     val lazyListState = rememberLazyListState()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(

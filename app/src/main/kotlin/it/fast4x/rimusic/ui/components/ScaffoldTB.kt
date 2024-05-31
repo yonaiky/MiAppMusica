@@ -121,7 +121,7 @@ fun ScaffoldTB(
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val navigationRailTB: @Composable () -> Unit = {
         NavigationRailTB(
@@ -178,12 +178,16 @@ fun ScaffoldTB(
 
         bottomBar = {
 
+        /*
+
                 Column(
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(colorPalette.background0)
                 ){
+
+         */
                     /*
                     if (playerEssential != null && playerPosition == PlayerPosition.Bottom) {
                         val modifierBottomPadding = if (navigationBarPosition != NavigationBarPosition.Bottom)
@@ -204,8 +208,9 @@ fun ScaffoldTB(
                      */
 
                     if (navigationBarPosition == NavigationBarPosition.Bottom)
-                        navigationRailTB()
-                }
+                            navigationRailTB()
+
+                //}
         }
 
     ) {

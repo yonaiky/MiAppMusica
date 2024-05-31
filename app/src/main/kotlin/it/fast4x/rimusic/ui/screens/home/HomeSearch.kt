@@ -53,7 +53,7 @@ fun HomeSearch(
 
     val lazyGridState = rememberLazyGridState()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Box(
         modifier = Modifier

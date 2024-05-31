@@ -541,7 +541,7 @@ fun LocalPlaylistSongs(
         )
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false

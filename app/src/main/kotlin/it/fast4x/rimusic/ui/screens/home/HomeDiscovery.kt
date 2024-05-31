@@ -123,7 +123,7 @@ fun HomeDiscovery(
         Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 

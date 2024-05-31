@@ -97,7 +97,7 @@ fun CacheSettings() {
     //if (sdkVersion.toShort() < 29) exoPlayerAlternateCacheLocation=""
     //Log.d("SystemInfo","Android SDK: " + sdkVersion + " (" + release +")")
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     Column(
         modifier = Modifier

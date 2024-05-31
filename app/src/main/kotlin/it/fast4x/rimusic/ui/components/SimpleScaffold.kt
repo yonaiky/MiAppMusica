@@ -29,7 +29,7 @@ fun SimpleScaffold(
     content: @Composable () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val customModifier = if(uiType == UiType.RiMusic)

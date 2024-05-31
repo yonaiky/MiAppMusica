@@ -485,7 +485,7 @@ fun BuiltInPlaylistSongs(
         )
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 

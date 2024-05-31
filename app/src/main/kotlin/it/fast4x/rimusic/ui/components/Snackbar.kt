@@ -100,7 +100,7 @@ fun Popup(
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
         Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
     val playerSheetState = LocalPlayerSheetState.current
