@@ -714,8 +714,8 @@ fun HomeSongsModern(
                                 showConfirmDownloadAllDialog = false
                                 //isRecommendationEnabled = false
                                 downloadState = Download.STATE_DOWNLOADING
-                                if (songs.isNotEmpty() == true)
-                                    songs.forEach {
+                                if (items.isNotEmpty() == true)
+                                    items.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                         manageDownload(
                                             context = context,
@@ -752,8 +752,8 @@ fun HomeSongsModern(
                                 onConfirm = {
                                     showConfirmDeleteDownloadDialog = false
                                     downloadState = Download.STATE_DOWNLOADING
-                                    if (songs.isNotEmpty() == true)
-                                        songs.forEach {
+                                    if (items.isNotEmpty() == true)
+                                        items.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                             manageDownload(
                                                 context = context,
