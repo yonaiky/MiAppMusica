@@ -191,6 +191,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [iscle](https://github.com/iscle)
 - [JZITNIK-github](https://github.com/JZITNIK-github)
 - [locxter](https://github.com/locxter)
+- [ov1d1u ](https://github.com/ov1d1u)
 - [roklc](https://github.com/roklc)
 - [sharunkumar](https://github.com/sharunkumar/sharunkumar)
 - [SuhasDissa](https://github.com/SuhasDissa)
