@@ -425,8 +425,8 @@ class MainActivity :
             ) {
                 with(preferences) {
                     val colorPaletteName =
-                        getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
-                    val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.System)
+                        getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
+                    val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
                     val thumbnailRoundness =
                         getEnum(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
                     val useSystemFont = getBoolean(useSystemFontKey, false)
@@ -657,9 +657,9 @@ class MainActivity :
                     registerOnSharedPreferenceChangeListener(listener)
 
                     val colorPaletteName =
-                        getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+                        getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     if (colorPaletteName == ColorPaletteName.Dynamic) {
-                        setDynamicPalette(getEnum(colorPaletteModeKey, ColorPaletteMode.System))
+                        setDynamicPalette(getEnum(colorPaletteModeKey, ColorPaletteMode.Dark))
                     }
 
                     onDispose {
@@ -711,7 +711,7 @@ class MainActivity :
 
             LaunchedEffect(Unit) {
                 val colorPaletteName =
-                    preferences.getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+                    preferences.getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                 if (colorPaletteName == ColorPaletteName.Customized) {
                     appearance = appearance.copy(
                         colorPalette = customColorPalette(appearance.colorPalette, this@MainActivity, isSystemInDarkTheme)
@@ -1168,7 +1168,7 @@ class MainActivity :
         isInitialChange: Boolean
     ) {
         val colorPaletteName =
-            preferences.getEnum(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+            preferences.getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
         if (!isInitialChange && colorPaletteName == ColorPaletteName.MaterialYou) {
             /*
             monet.updateMonetColors()

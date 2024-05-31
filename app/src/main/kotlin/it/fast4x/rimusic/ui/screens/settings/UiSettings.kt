@@ -229,7 +229,7 @@ fun  UiSettings() {
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
 
     var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
-    var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
+    var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     var indexNavigationTab by rememberPreference(
         indexNavigationTabKey,
         HomeScreenTabs.Default

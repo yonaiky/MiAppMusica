@@ -56,7 +56,7 @@ fun appBar(
     navController: NavController
 ) {
     val (colorPalette, typography) = LocalAppearance.current
-    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var expanded by remember { mutableStateOf(false) }
     var countForReveal by remember { mutableStateOf(0) }

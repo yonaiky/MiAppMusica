@@ -36,7 +36,7 @@ import it.fast4x.rimusic.utils.preferences
 
 
 fun customColorPalette(colorPalette: ColorPalette, context: Context, isSystemInDarkTheme: Boolean): ColorPalette {
-    val colorPaletteMode = context.preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.System)
+    val colorPaletteMode = context.preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
 
     val customThemeLight = colorPalette.copy(
         background0 = Color(context.preferences.getInt(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())),
