@@ -17,17 +17,23 @@ import androidx.compose.animation.slideIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
@@ -42,8 +48,10 @@ import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.TransitionEffect
+import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.SimpleScaffold
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
 import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutScaffold
@@ -74,7 +82,7 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
     ExperimentalMaterialApi::class, ExperimentalTextApi::class, ExperimentalComposeUiApi::class,
-    KotlinCsvExperimental::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun AppNavigation(
@@ -94,6 +102,30 @@ fun AppNavigation(
             )
         }
     }
+
+    @Composable
+    fun modalBottomSheedPage(content: @Composable () -> Unit) {
+        var showSheet by rememberSaveable { mutableStateOf(true) }
+        CustomModalBottomSheet(
+            showSheet = showSheet,
+            onDismissRequest = {
+                if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+                    navController.popBackStack()
+            },
+            containerColor = Color.Transparent,
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = {
+                Surface(
+                    modifier = Modifier.padding(vertical = 0.dp),
+                    color = Color.Transparent,
+                    //shape = thumbnailShape
+                ) {}
+            }
+        ) {
+            content()
+        }
+    }
+
     @Composable
     fun PlayerEssentialScaffold(content: @Composable () -> Unit) {
         Scaffold(
@@ -167,6 +199,13 @@ fun AppNavigation(
                 playerEssential = playerEssential,
                 openTabFromShortcut = 0
             )
+        }
+
+        composable(route = "games") {
+            modalBottomSheedPage {
+                Pacman()
+            }
+
         }
 
         composable(

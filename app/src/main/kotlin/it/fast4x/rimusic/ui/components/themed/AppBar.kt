@@ -38,6 +38,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -59,11 +60,16 @@ fun appBar(
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var expanded by remember { mutableStateOf(false) }
     var countForReveal by remember { mutableStateOf(0) }
+    var showGames by remember { mutableStateOf(false) }
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val customModifier = if(uiType == UiType.RiMusic)
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
+
+    if (showGames) {
+        Pacman()
+    }
 
     val appBar =
     TopAppBar(
@@ -98,10 +104,21 @@ fun appBar(
                         .size(36.dp)
                         .clickable {
                             countForReveal++
-                            if (countForReveal > 3) {
-                                SmartToast("Press again to continue")
-                                countForReveal = 0
+                            if (countForReveal == 3) {
+                                SmartToast("Do you like clicking? Then continue...", durationLong = true)
                             }
+                            if (countForReveal == 6) {
+                                SmartToast("Okay, you’re looking for something, keep...", durationLong = true)
+                            }
+                            if (countForReveal == 9) {
+                                SmartToast("You are a number one, click and enjoy the surprise", durationLong = true)
+                            }
+                            if (countForReveal == 10) {
+                                countForReveal = 0
+                                navController.navigate("games")
+                            }
+
+
                             //if (navController.currentDestination?.route != NavRoutes.home.name)
                             //    navController.navigate(NavRoutes.home.name)
                         }
