@@ -210,7 +210,7 @@ fun ControlsEssential(
 
 
     val (colorPalette, typography) = LocalAppearance.current
-    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")

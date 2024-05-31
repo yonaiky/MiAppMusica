@@ -228,7 +228,7 @@ fun  UiSettings() {
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
 
-    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var indexNavigationTab by rememberPreference(
         indexNavigationTabKey,
@@ -254,7 +254,7 @@ fun  UiSettings() {
         MaxTopPlaylistItems.`10`
     )
 
-    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Top)
+    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)

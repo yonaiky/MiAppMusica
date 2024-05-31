@@ -116,7 +116,7 @@ fun FullLyricsSheet(
         mutableStateOf(binder?.player?.currentMediaItem?.mediaId ?: "")
     }
 
-    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.ModernBlack)
+    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
 
     BottomSheet(

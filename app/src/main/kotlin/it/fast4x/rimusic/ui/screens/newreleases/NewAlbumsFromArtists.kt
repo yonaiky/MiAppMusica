@@ -74,7 +74,7 @@ fun NewAlbumsFromArtists(
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
-        NavigationBarPosition.Left
+        NavigationBarPosition.Bottom
     )
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)

@@ -253,7 +253,7 @@ fun HomeLibraryModern(
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
-        NavigationBarPosition.Left
+        NavigationBarPosition.Bottom
     )
 
     val lazyGridState = rememberLazyGridState()

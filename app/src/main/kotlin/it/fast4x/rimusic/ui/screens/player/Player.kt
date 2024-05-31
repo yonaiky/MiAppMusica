@@ -633,7 +633,7 @@ fun Player(
     }
 
     var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
-    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Light)
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
         PlayerBackgroundColors.ThemeColor

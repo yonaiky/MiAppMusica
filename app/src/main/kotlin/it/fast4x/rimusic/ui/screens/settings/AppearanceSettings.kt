@@ -165,7 +165,7 @@ fun AppearanceSettings() {
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
-        NavigationBarPosition.Left
+        NavigationBarPosition.Bottom
     )
 
     //var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)

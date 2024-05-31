@@ -86,7 +86,7 @@ inline fun NavigationRailTB(
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Left)
+    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val localSheetState = LocalPlayerSheetState.current
     /*
     val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
