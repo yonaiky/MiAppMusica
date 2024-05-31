@@ -817,7 +817,8 @@ class MainActivity :
                         playerEssential = {
                             PlayerEssential(
                                 showPlayer = { showPlayer = true },
-                                hidePlayer = { showPlayer = false }
+                                hidePlayer = { showPlayer = false },
+                                navController = navController
                             )
                         }
                     )

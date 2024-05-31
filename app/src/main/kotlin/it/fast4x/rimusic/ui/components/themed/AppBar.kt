@@ -115,7 +115,7 @@ fun appBar(
                             }
                             if (countForReveal == 10) {
                                 countForReveal = 0
-                                navController.navigate("games")
+                                navController.navigate(NavRoutes.games.name)
                             }
 
 
