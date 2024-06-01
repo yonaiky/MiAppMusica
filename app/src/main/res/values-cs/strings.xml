@@ -558,7 +558,7 @@
     <string name="pinfo_type">Typ informací</string>
     <string name="pinfo_album_and_artist_name">Název alba a interpreta</string>
     <string name="show_player_top_actions_bar">Zobrazit horní panel akcí</string>
-    <string name="icon_like_button">Tlačítko \"To se mi líbí“</string>
+    <string name="icon_like_button">Tlačítko Oblíbené</string>
     <string name="icon_like_apple">Jablko</string>
     <string name="icon_like_breaked">Zlomený</string>
     <string name="icon_like_gift">Dárek</string>
