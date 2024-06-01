@@ -804,11 +804,11 @@ fun QuickPicksModern(
                                     items = page.moods.sortedBy { it.title },
                                     key = { it.endpoint.params ?: it.title }
                                 ) {
-                                    MoodItem(
+                                    MoodItemColored(
                                         mood = it,
                                         onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
                                         modifier = Modifier
-                                            .width(itemWidth)
+                                            //.width(itemWidth)
                                             .padding(4.dp)
                                     )
                                 }

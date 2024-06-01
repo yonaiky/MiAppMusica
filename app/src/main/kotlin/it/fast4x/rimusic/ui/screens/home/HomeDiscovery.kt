@@ -34,13 +34,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -316,6 +321,67 @@ fun HomeDiscovery(
 }
 
 @Composable
+fun MoodItemColored(
+    mood: Innertube.Mood.Item,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val (colorPalette, typography) = LocalAppearance.current
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+
+    val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
+
+    Column (
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .clip(thumbnailRoundness.shape())
+            .clickable { onClick() }
+
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(color = moodColor)
+                .padding(start = 10.dp)
+                .fillMaxHeight(0.9f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .requiredWidth(150.dp)
+                    .background(color = colorPalette.background4)
+                    /*
+                    .background(
+                        color = colorPalette.background4,
+                        shape = thumbnailRoundness.shape()
+                    )
+                     */
+                    .fillMaxSize()
+            ) {
+
+                BasicText(
+                    text = mood.title,
+                    style = TextStyle(
+                        color = colorPalette.text,
+                        fontStyle = typography.xs.semiBold.fontStyle,
+                        fontWeight = typography.xs.semiBold.fontWeight
+                    ), //typography.xs.semiBold,
+                    modifier = Modifier.padding(start = 10.dp).align(Alignment.CenterStart),
+                    maxLines = 2,
+
+                    )
+            }
+        }
+    }
+}
+
+@Composable
 fun MoodItem(
     mood: Innertube.Mood.Item,
     onClick: () -> Unit,
@@ -359,7 +425,7 @@ fun MoodItem(
         )
         }
     }
-    }
+}
 
 @Composable
 fun MoodGridItem(
