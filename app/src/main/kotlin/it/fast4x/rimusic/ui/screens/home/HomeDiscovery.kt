@@ -356,12 +356,6 @@ fun MoodItemColored(
                 modifier = Modifier
                     .requiredWidth(150.dp)
                     .background(color = colorPalette.background4)
-                    /*
-                    .background(
-                        color = colorPalette.background4,
-                        shape = thumbnailRoundness.shape()
-                    )
-                     */
                     .fillMaxSize()
             ) {
 
@@ -371,11 +365,74 @@ fun MoodItemColored(
                         color = colorPalette.text,
                         fontStyle = typography.xs.semiBold.fontStyle,
                         fontWeight = typography.xs.semiBold.fontWeight
-                    ), //typography.xs.semiBold,
+                    ),
                     modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart),
                     maxLines = 2,
 
                     )
+            }
+        }
+    }
+}
+
+@Composable
+fun MoodGridItemColored(
+    mood: Innertube.Mood.Item,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    thumbnailSizeDp: Dp
+) {
+    val (colorPalette, typography) = LocalAppearance.current
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+
+    val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
+
+    Column (
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .size(thumbnailSizeDp,thumbnailSizeDp)
+            .padding(5.dp)
+            .clickable { onClick() }
+
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxSize(0.9f)
+                .clip(thumbnailRoundness.shape())
+
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(color = moodColor)
+                    .padding(start = 10.dp)
+                    .fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = colorPalette.background4)
+                        .fillMaxSize()
+                ) {
+
+                    BasicText(
+                        text = mood.title,
+                        style = TextStyle(
+                            color = colorPalette.text,
+                            fontStyle = typography.xs.semiBold.fontStyle,
+                            fontWeight = typography.xs.semiBold.fontWeight
+                        ),
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                            .align(Alignment.CenterStart),
+                        maxLines = 2,
+                    )
+                }
             }
         }
     }

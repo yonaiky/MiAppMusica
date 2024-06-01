@@ -63,7 +63,9 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.MoodGridItem
+import it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
 import it.fast4x.rimusic.ui.screens.home.MoodItem
+import it.fast4x.rimusic.ui.screens.home.MoodItemColored
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -143,7 +145,7 @@ fun MoodsPage(
                                 items = page.moods.sortedBy { it.title },
                                 key = { it.endpoint.params ?: it.title }
                             ) {
-                                MoodGridItem(
+                                MoodGridItemColored(
                                     mood = it,
                                     onClick = { it.endpoint.browseId?.let { _ ->
                                         navController.currentBackStackEntry?.savedStateHandle?.set("mood", it.toUiMood())
