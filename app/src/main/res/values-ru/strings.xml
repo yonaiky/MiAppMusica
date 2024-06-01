@@ -553,12 +553,12 @@
     <string name="position_bottom">Снизу</string>
     <string name="added_to_favorites">Добавлено в избранное</string>
     <string name="removed_from_favorites">Удалено из избранного</string>
-    <string name="lang_filipino">Filipino</string>
+    <string name="lang_filipino">Филиппинский (Wikang Filipino)</string>
     <string name="action_bar_transparent_background">Transparent background</string>
     <string name="pinfo_type">Info type</string>
     <string name="pinfo_album_and_artist_name">Album and artist name</string>
-    <string name="show_player_top_actions_bar">Show top actions bar</string>
-    <string name="icon_like_button">Like button</string>
+    <string name="show_player_top_actions_bar">Показать верхнюю панель действий</string>
+    <string name="icon_like_button">Кнопка \"Мне нравится\"</string>
     <string name="icon_like_apple">Apple</string>
     <string name="icon_like_breaked">Breaked</string>
     <string name="icon_like_gift">Gift</string>
