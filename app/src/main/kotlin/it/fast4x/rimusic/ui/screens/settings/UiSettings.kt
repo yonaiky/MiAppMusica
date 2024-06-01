@@ -596,7 +596,7 @@ fun  UiSettings() {
                 }
             )
 
-
+/*
         if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_songs).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_songs),
@@ -618,6 +618,8 @@ fun  UiSettings() {
                     }
                 }
             )
+
+ */
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))

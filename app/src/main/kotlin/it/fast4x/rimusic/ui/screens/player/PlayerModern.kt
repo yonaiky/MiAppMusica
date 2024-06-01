@@ -255,10 +255,12 @@ fun PlayerModern(
         PlayerVisualizerType.Disabled
     )
 
+    /*
     val playbackFadeDuration by rememberPreference(
         playbackFadeDurationKey,
         DurationInSeconds.Disabled
     )
+     */
 
     val defaultStrength = 25f
     val defaultDarkenFactor = 0.2f
@@ -282,10 +284,12 @@ fun PlayerModern(
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
+                /*
                 if (playbackFadeDuration != DurationInSeconds.Disabled) {
                     binder.player.volume = 0f
                     audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
                 }
+                 */
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -304,6 +308,7 @@ fun PlayerModern(
     var timeRemaining by remember { mutableIntStateOf(0) }
     timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
 
+    /*
     if (playbackFadeDuration != DurationInSeconds.Disabled) {
         val songProgressFloat =
             ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
@@ -333,7 +338,7 @@ fun PlayerModern(
         //println("mediaItem positionAndDuration $positionAndDuration % ${(positionAndDuration.first.toInt()*100) / positionAndDuration.second.toInt()}")
         //println("mediaItem progress float $songProgressFloat playbackFadeDuration ${playbackFadeDuration} $fadeInOut")
     }
-
+    */
 
     val windowInsets = WindowInsets.systemBars
 
