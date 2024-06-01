@@ -372,7 +372,7 @@ fun MoodItemColored(
                         fontStyle = typography.xs.semiBold.fontStyle,
                         fontWeight = typography.xs.semiBold.fontWeight
                     ), //typography.xs.semiBold,
-                    modifier = Modifier.padding(start = 10.dp).align(Alignment.CenterStart),
+                    modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart),
                     maxLines = 2,
 
                     )
