@@ -553,7 +553,7 @@
     <string name="position_bottom">Em baixo</string>
     <string name="added_to_favorites">Adicionado aos favoritos</string>
     <string name="removed_from_favorites">Removido dos favoritos</string>
-    <string name="lang_filipino">Filipino</string>
+    <string name="lang_filipino">Filipino (Filipino)</string>
     <string name="action_bar_transparent_background">Fundo transparente</string>
     <string name="pinfo_type">Maneira em que as informações serão exibidas</string>
     <string name="pinfo_album_and_artist_name">Título e nome do artista</string>
@@ -565,6 +565,6 @@
     <string name="icon_like_shape">Estilizado</string>
     <string name="icon_like_striped">Listrado</string>
     <string name="icon_like_brilliant">Brilhante</string>
-    <string name="player_swap_controls_with_timeline">Trocar a posição da Timeline e dos Controles do Player</string>
-    <string name="player_enable_lyrics_popup_message">Habilitar mensagem popup ao buscar letras</string>
+    <string name="player_swap_controls_with_timeline">Trocar a posição da timeline e dos controles do player</string>
+    <string name="player_enable_lyrics_popup_message">Habilitar mensagem flutuante ao buscar letras</string>
 </resources>
