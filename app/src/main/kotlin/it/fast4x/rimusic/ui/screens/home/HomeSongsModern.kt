@@ -688,6 +688,36 @@ fun HomeSongsModern(
                             .padding(horizontal = 2.dp)
                     )
 
+                    HeaderIconButton(
+                        modifier = Modifier.padding(horizontal = 5.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    nowPlayingItem = -1
+                                    scrollToNowPlaying = false
+                                    items
+                                        .forEachIndexed { index, song ->
+                                            if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                                nowPlayingItem = index
+                                        }
+
+                                    if (nowPlayingItem > -1)
+                                        scrollToNowPlaying = true
+                                },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                }
+                            ),
+                        icon = R.drawable.locate,
+                        enabled = songs.isNotEmpty(),
+                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {}
+                    )
+                    LaunchedEffect(scrollToNowPlaying) {
+                        if (scrollToNowPlaying)
+                            lazyListState.scrollToItem(nowPlayingItem, 1)
+                        scrollToNowPlaying = false
+                    }
+
                     if (builtInPlaylist == BuiltInPlaylist.Favorites) {
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
@@ -828,6 +858,7 @@ fun HomeSongsModern(
                                 )
                         )
 
+                    /*
                     if (builtInPlaylist != BuiltInPlaylist.OnDevice)
                         HeaderIconButton(
                             onClick = {  },
@@ -844,6 +875,7 @@ fun HomeSongsModern(
                                     }
                                 )
                         )
+                     */
 
                     HeaderIconButton(
                         icon = R.drawable.add_in_playlist,
@@ -1279,6 +1311,10 @@ fun HomeSongsModern(
                                         .align(Alignment.BottomCenter)
                                 )
                             }
+
+                            if (nowPlayingItem > -1)
+                                NowPlayingShow(song.asMediaItem.mediaId)
+
                             if (builtInPlaylist == BuiltInPlaylist.Top)
                                 BasicText(
                                     text = (index + 1).toString(),
