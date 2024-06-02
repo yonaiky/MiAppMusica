@@ -259,6 +259,7 @@ fun AlbumDetailsModern(
         mutableStateOf(-1)
     }
 
+    /*
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(album?.thumbnailUrl)
@@ -291,6 +292,8 @@ fun AlbumDetailsModern(
                 }
 
         }
+
+     */
 
     if (showSelectCustomizeAlbumDialog)
         SelectorDialog(
@@ -758,6 +761,7 @@ fun AlbumDetailsModern(
                                                     onChangeAlbumCover = {
                                                         showDialogChangeAlbumCover = true
                                                     },
+                                                    /*
                                                     onDownloadAlbumCover = {
                                                         try {
                                                             @SuppressLint("SimpleDateFormat")
@@ -777,6 +781,7 @@ fun AlbumDetailsModern(
                                                             )
                                                         }
                                                     },
+                                                     */
                                                     onPlayNext = {
                                                         if (listMediaItems.isEmpty()) {
                                                             binder?.player?.addNext(songs.map(Song::asMediaItem))

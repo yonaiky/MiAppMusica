@@ -220,16 +220,19 @@ fun Thumbnail(
         ) {
             if(artImageAvailable)
                 AsyncImage(
+                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
                     /*
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
                         thumbnailSizePx
                     ),
                      */
+                    /*
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
                         .size(Size.ORIGINAL)
                         .scale(Scale.FIT)
                         .build(),
+                     */
                     onSuccess = {
                         artImageAvailable = true
                     },
