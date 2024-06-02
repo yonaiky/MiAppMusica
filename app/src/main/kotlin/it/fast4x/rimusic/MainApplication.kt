@@ -5,6 +5,7 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import coil.request.CachePolicy
 import com.kieronquinn.monetcompat.core.MonetCompat
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
@@ -21,12 +22,15 @@ class MainApplication : Application(), ImageLoaderFactory {
         return ImageLoader.Builder(this)
             .crossfade(true)
             .placeholder(R.drawable.loader)
-            .respectCacheHeaders(false)
+            .error(R.drawable.app_icon)
+            .fallback(R.drawable.app_icon)
+            .memoryCachePolicy(CachePolicy.ENABLED)
             .memoryCache(
                 MemoryCache.Builder(this)
                     .maxSizePercent(0.25)
                     .build()
             )
+            .diskCachePolicy(CachePolicy.ENABLED)
             .diskCache(
                 DiskCache.Builder()
                     .directory(filesDir.resolve("coil"))
@@ -38,6 +42,7 @@ class MainApplication : Application(), ImageLoaderFactory {
                     )
                     .build()
             )
+            .respectCacheHeaders(false)
             .build()
     }
 }

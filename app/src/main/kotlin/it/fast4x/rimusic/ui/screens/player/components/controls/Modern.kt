@@ -132,10 +132,10 @@ fun InfoAlbumAndArtistModern(
                 text = title ?: "",
                 style = TextStyle(
                     color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
-                    fontStyle = typography.xl.bold.fontStyle,
-                    fontWeight = typography.xl.bold.fontWeight,
-                    fontSize = typography.xl.bold.fontSize,
-                    fontFamily = typography.xl.bold.fontFamily
+                    fontStyle = typography.l.bold.fontStyle,
+                    fontWeight = typography.l.bold.fontWeight,
+                    fontSize = typography.l.bold.fontSize,
+                    fontFamily = typography.l.bold.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierTitle
