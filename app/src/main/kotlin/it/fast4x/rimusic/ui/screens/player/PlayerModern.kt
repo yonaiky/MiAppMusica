@@ -664,14 +664,20 @@ fun PlayerModern(
         val context = LocalContext.current
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
-            dynamicColorPalette = dynamicColorPaletteOf(
-                getBitmapFromUrl(
-                    context,
-                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                ),
-                isSystemDarkMode,
-                colorPaletteMode == ColorPaletteMode.PitchBlack
-            ) ?: colorPalette
+            try {
+                dynamicColorPalette = dynamicColorPaletteOf(
+                    getBitmapFromUrl(
+                        context,
+                        binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                    ),
+                    isSystemDarkMode,
+                    colorPaletteMode == ColorPaletteMode.PitchBlack
+                ) ?: colorPalette
+            } catch (e: Exception) {
+                dynamicColorPalette = colorPalette
+                e.printStackTrace()
+            }
+
         }
     }
 
