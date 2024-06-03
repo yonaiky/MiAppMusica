@@ -388,7 +388,7 @@ fun PlaylistSongList(
                         .combinedClickable(
                             onClick = {
                                 playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
-                                    binder?.player?.enqueue(mediaItems)
+                                    binder?.player?.enqueue(mediaItems, context)
                                 }
                             },
                             onLongClick = {

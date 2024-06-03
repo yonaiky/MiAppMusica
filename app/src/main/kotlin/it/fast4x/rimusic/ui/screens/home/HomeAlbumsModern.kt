@@ -406,7 +406,7 @@ fun HomeAlbumsModern(
                 var position by remember {
                     mutableIntStateOf(0)
                 }
-
+                val context = LocalContext.current
 
                 AlbumItem(
                     alternative = true,
@@ -433,14 +433,14 @@ fun HomeAlbumsModern(
                                         onPlayNext = {
                                             println("mediaItem ${songs}")
                                             binder?.player?.addNext(
-                                                songs.map(Song::asMediaItem)
+                                                songs.map(Song::asMediaItem), context
                                             )
 
                                         },
                                         onEnqueue = {
                                             println("mediaItem ${songs}")
                                             binder?.player?.enqueue(
-                                                songs.map(Song::asMediaItem)
+                                                songs.map(Song::asMediaItem), context
                                             )
 
                                         },

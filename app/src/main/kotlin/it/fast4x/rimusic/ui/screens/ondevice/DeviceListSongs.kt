@@ -679,18 +679,18 @@ fun DeviceListSongs(
                                      */
                                     onPlayNext = {
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.addNext(filteredSongs.map(Song::asMediaItem))
+                                            binder?.player?.addNext(filteredSongs.map(Song::asMediaItem), context)
                                         } else {
-                                            binder?.player?.addNext(listMediaItems)
+                                            binder?.player?.addNext(listMediaItems, context)
                                             listMediaItems.clear()
                                             selectItems = false
                                         }
                                     },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem))
+                                            binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem), context)
                                         } else {
-                                            binder?.player?.enqueue(listMediaItems)
+                                            binder?.player?.enqueue(listMediaItems, context)
                                             listMediaItems.clear()
                                             selectItems = false
                                         }
@@ -869,7 +869,7 @@ fun DeviceListSongs(
                                                     onEnqueue = {
                                                         val allSongs = folder.getAllSongs()
                                                             .map { it.toSong().asMediaItem }
-                                                        binder?.player?.enqueue(allSongs)
+                                                        binder?.player?.enqueue(allSongs, context)
                                                     },
                                                     thumbnailSizeDp = thumbnailSizeDp
                                                 )

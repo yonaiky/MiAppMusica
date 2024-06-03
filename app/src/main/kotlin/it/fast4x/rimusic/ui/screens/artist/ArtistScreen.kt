@@ -337,7 +337,7 @@ fun ArtistScreen(
                                     modifier = Modifier
                                         .combinedClickable(
                                             onClick = {
-                                                binder?.player?.enqueue(songs)
+                                                binder?.player?.enqueue(songs, context)
                                             },
                                             onLongClick = {
                                                 SmartToast(context.getString(R.string.info_enqueue_songs))

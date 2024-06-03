@@ -567,4 +567,6 @@
     <string name="icon_like_brilliant">Muhteşem</string>
     <string name="player_swap_controls_with_timeline">Kontrolleri zaman çizelgesiyle yer değiştir</string>
     <string name="player_enable_lyrics_popup_message">Şarkı sözleri açılır mesajını etkinleştir</string>
+    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
+    <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
 </resources>

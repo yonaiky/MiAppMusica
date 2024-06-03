@@ -467,7 +467,7 @@ fun ArtistOverviewModern(
                                 .padding(horizontal = 5.dp)
                                 .combinedClickable(
                                     onClick = {
-                                        binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem))
+                                        binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem), context)
                                     },
                                     onLongClick = {
                                         SmartToast(context.getString(R.string.info_enqueue_songs))

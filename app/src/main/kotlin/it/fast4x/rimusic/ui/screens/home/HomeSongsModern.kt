@@ -86,6 +86,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
+import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
@@ -146,7 +147,9 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
@@ -175,6 +178,7 @@ import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -308,6 +312,8 @@ fun HomeSongsModern(
     if (showOnDevicePlaylist) buttonsList +=
         BuiltInPlaylist.OnDevice to stringResource(R.string.on_device)
 
+    val excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
@@ -358,9 +364,18 @@ fun HomeSongsModern(
                 }
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
                     Database.trending(maxTopPlaylistItems.number.toInt())
+                        //.collect { items = it }
                         .collect {
-                            items = it
+                            items = it.filter {
+                                if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
+                                    true
+                                else
+                                it.durationText?.let { it1 ->
+                                    durationTextToMillis(it1)
+                                }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                            }
                         }
+
                 }
 
 
@@ -456,6 +471,19 @@ fun HomeSongsModern(
     }
     /******** */
 
+    //var totalPlayTimes = 0L
+    items.forEach {
+        println("mediaItem ${it.id} ${it.durationText} 1m ${durationTextToMillis("1:00")} ${
+            it.durationText?.let { it1 ->
+                durationTextToMillis(it1)
+            }
+        }")
+        /*
+        totalPlayTimes += it.durationText?.let { it1 ->
+            durationTextToMillis(it1)
+        }?.toLong() ?: 0
+         */
+    }
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
@@ -895,9 +923,9 @@ fun HomeSongsModern(
                                     onPlayNext = {
                                         if (builtInPlaylist == BuiltInPlaylist.OnDevice) items = filteredSongs
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.addNext(items.map(Song::asMediaItem))
+                                            binder?.player?.addNext(items.map(Song::asMediaItem), context)
                                         } else {
-                                            binder?.player?.addNext(listMediaItems)
+                                            binder?.player?.addNext(listMediaItems, context)
                                             listMediaItems.clear()
                                             selectItems = false
                                         }
@@ -905,9 +933,9 @@ fun HomeSongsModern(
                                     onEnqueue = {
                                         if (builtInPlaylist == BuiltInPlaylist.OnDevice) items = filteredSongs
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.enqueue(items.map(Song::asMediaItem))
+                                            binder?.player?.enqueue(items.map(Song::asMediaItem), context)
                                         } else {
-                                            binder?.player?.enqueue(listMediaItems)
+                                            binder?.player?.enqueue(listMediaItems, context)
                                             listMediaItems.clear()
                                             selectItems = false
                                         }
@@ -1141,7 +1169,7 @@ fun HomeSongsModern(
                                                         onEnqueue = {
                                                             val allSongs = folder.getAllSongs()
                                                                 .map { it.toSong().asMediaItem }
-                                                            binder?.player?.enqueue(allSongs)
+                                                            binder?.player?.enqueue(allSongs, context)
                                                         },
                                                         thumbnailSizeDp = thumbnailSizeDp
                                                     )

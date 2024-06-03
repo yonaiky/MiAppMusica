@@ -45,3 +45,28 @@ enum class DurationInSeconds {
         get() = 00.00f..00.00f
 
 }
+
+enum class DurationInMinutes {
+    Disabled,
+    `3`,
+    `5`,
+    `10`,
+    `15`,
+    `20`,
+    `25`,
+    `30`,
+    `60`;
+
+    val minutesInMilliSeconds: Long get() =
+        when (this) {
+            Disabled -> 0
+            `3` -> 3
+            `5` -> 5
+            `10` -> 10
+            `15` -> 15
+            `20` -> 20
+            `25` -> 25
+            `30` -> 30
+            `60` -> 60
+        } * 3600000L
+}

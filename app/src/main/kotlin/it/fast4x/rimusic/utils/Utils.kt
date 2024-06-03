@@ -20,6 +20,7 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.UserAgent
@@ -31,6 +32,7 @@ import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.plus
 //import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -652,7 +654,6 @@ fun getVersionCode(): Int {
     }
     return 0
 }
-
 
 
 inline val isAtLeastAndroid6

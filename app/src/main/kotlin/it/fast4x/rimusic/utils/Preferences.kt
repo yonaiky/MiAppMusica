@@ -187,6 +187,7 @@ const val customThemeDark_accentKey = "customThemeDark_accent"
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
 const val playerPositionKey = "playerPosition"
+const val excludeSongsWithDurationLimitKey = "excludeSongsWithDurationLimit"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

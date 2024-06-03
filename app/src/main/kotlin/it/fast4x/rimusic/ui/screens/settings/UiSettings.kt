@@ -61,6 +61,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.DurationInSeconds
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.FontType
@@ -129,6 +130,7 @@ import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
+import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
@@ -308,6 +310,7 @@ fun  UiSettings() {
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
     var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
+    var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
 
 
     Column(
@@ -574,6 +577,28 @@ fun  UiSettings() {
                 }
             )
             SettingsDescription(text = stringResource(R.string.is_min_list_time_for_tips_or_quick_pics))
+        }
+
+        if (filter.isNullOrBlank() || stringResource(R.string.min_listening_time).contains(filterCharSequence,true)) {
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.exclude_songs_with_duration_limit),
+                selectedValue = excludeSongWithDurationLimit,
+                onValueSelected = { excludeSongWithDurationLimit = it },
+                valueText = {
+                    when (it) {
+                        DurationInMinutes.Disabled -> stringResource(R.string.vt_disabled)
+                        DurationInMinutes.`3` -> "3m"
+                        DurationInMinutes.`5` -> "5m"
+                        DurationInMinutes.`10` -> "10m"
+                        DurationInMinutes.`15` -> "15m"
+                        DurationInMinutes.`20` -> "20m"
+                        DurationInMinutes.`25` -> "25m"
+                        DurationInMinutes.`30` -> "30m"
+                        DurationInMinutes.`60` -> "60m"
+                    }
+                }
+            )
+            SettingsDescription(text = stringResource(R.string.exclude_songs_with_duration_limit_description))
         }
 
         if (filter.isNullOrBlank() || stringResource(R.string.pause_between_songs).contains(filterCharSequence,true))

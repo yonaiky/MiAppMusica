@@ -784,18 +784,21 @@ fun AlbumDetailsModern(
                                                      */
                                                     onPlayNext = {
                                                         if (listMediaItems.isEmpty()) {
-                                                            binder?.player?.addNext(songs.map(Song::asMediaItem))
+                                                            binder?.player?.addNext(songs.map(Song::asMediaItem), context)
                                                         } else {
-                                                            binder?.player?.addNext(listMediaItems)
+                                                            binder?.player?.addNext(listMediaItems, context)
                                                             listMediaItems.clear()
                                                             selectItems = false
                                                         }
                                                     },
                                                     onEnqueue = {
                                                         if (listMediaItems.isEmpty()) {
-                                                            binder?.player?.enqueue(songs.map(Song::asMediaItem))
+                                                            binder?.player?.enqueue(
+                                                                songs.map(Song::asMediaItem),
+                                                                context
+                                                            )
                                                         } else {
-                                                            binder?.player?.enqueue(listMediaItems)
+                                                            binder?.player?.enqueue(listMediaItems, context)
                                                             listMediaItems.clear()
                                                             selectItems = false
                                                         }

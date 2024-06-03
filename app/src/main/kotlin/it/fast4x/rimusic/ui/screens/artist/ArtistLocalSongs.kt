@@ -249,7 +249,7 @@ fun ArtistLocalSongs(
                                 modifier = Modifier
                                     .combinedClickable(
                                         onClick = {
-                                            binder?.player?.enqueue(songs!!.map(Song::asMediaItem))
+                                            binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context)
                                         },
                                         onLongClick = {
                                             SmartToast(context.getString(R.string.info_enqueue_songs))

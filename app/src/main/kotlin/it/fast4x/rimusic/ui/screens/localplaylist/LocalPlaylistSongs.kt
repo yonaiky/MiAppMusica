@@ -916,18 +916,18 @@ fun LocalPlaylistSongs(
                                         playlist = playlistPreview,
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.enqueue(playlistSongs.map(Song::asMediaItem))
+                                                binder?.player?.enqueue(playlistSongs.map(Song::asMediaItem), context)
                                             } else {
-                                                binder?.player?.enqueue(listMediaItems)
+                                                binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
                                                 selectItems = false
                                             }
                                         },
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.addNext(playlistSongs.map(Song::asMediaItem))
+                                                binder?.player?.addNext(playlistSongs.map(Song::asMediaItem), context)
                                             } else {
-                                                binder?.player?.addNext(listMediaItems)
+                                                binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
                                                 selectItems = false
                                             }

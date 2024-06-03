@@ -2,12 +2,17 @@ package it.fast4x.rimusic.utils
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.enums.DurationInMinutes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 val Player.currentWindow: Timeline.Window?
@@ -85,7 +90,9 @@ fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
 @UnstableApi
-fun Player.addNext(mediaItem: MediaItem) {
+fun Player.addNext(mediaItem: MediaItem, context: Context? = null) {
+    if (context != null && excludeMediaItem(mediaItem, context)) return
+
     val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
     if (itemIndex == 0) return
     if (itemIndex > -1) removeMediaItem(itemIndex)
@@ -98,34 +105,46 @@ fun Player.addNext(mediaItem: MediaItem) {
 }
 
 @UnstableApi
-fun Player.addNext(mediaItems: List<MediaItem>) {
-    mediaItems.forEach { mediaItem ->
+fun Player.addNext(mediaItems: List<MediaItem>, context: Context? = null) {
+    val filteredMediaItems = if (context != null) excludeMediaItems(mediaItems, context)
+    else mediaItems
+
+    filteredMediaItems.forEach { mediaItem ->
         val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
         if (itemIndex > -1) removeMediaItem(itemIndex)
     }
 
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
-        forcePlay(mediaItems.first())
+        forcePlay(filteredMediaItems.first())
     } else {
-        addMediaItems(currentMediaItemIndex + 1, mediaItems)
+        addMediaItems(currentMediaItemIndex + 1, filteredMediaItems)
     }
 
 }
 
 
-fun Player.enqueue(mediaItem: MediaItem) {
+fun Player.enqueue(mediaItem: MediaItem, context: Context? = null) {
+     if (context != null && excludeMediaItem(mediaItem, context)) return
+
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
         forcePlay(mediaItem)
     } else {
         addMediaItem(mediaItemCount, mediaItem)
     }
 }
+
+
 @UnstableApi
-fun Player.enqueue(mediaItems: List<MediaItem>) {
+fun Player.enqueue(mediaItems: List<MediaItem>, context: Context? = null) {
+    val filteredMediaItems = if (context != null) excludeMediaItems(mediaItems, context)
+    else mediaItems
+
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
-        forcePlayFromBeginning(mediaItems)
+        //forcePlayFromBeginning(mediaItems)
+        forcePlayFromBeginning(filteredMediaItems)
     } else {
-        addMediaItems(mediaItemCount, mediaItems)
+        //addMediaItems(mediaItemCount, mediaItems)
+        addMediaItems(mediaItemCount, filteredMediaItems)
     }
 }
 
@@ -145,4 +164,43 @@ fun Player.findMediaItemIndexById(mediaId: String): Int {
         }
     }
     return -1
+}
+
+fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): List<MediaItem> {
+    var filteredMediaItems = mediaItems
+        runCatching {
+            val preferences = context.preferences
+            val excludeSongWithDurationLimit =
+                preferences.getEnum(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+
+            if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
+                filteredMediaItems = mediaItems.filter {
+                    it.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
+                        durationTextToMillis(it1)
+                    }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
+        }
+
+    return filteredMediaItems
+}
+fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
+    runCatching {
+        val preferences = context.preferences
+        val excludeSongWithDurationLimit =
+            preferences.getEnum(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+        if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
+            return if(mediaItem.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
+                    durationTextToMillis(it1)
+                }!! < excludeSongWithDurationLimit.minutesInMilliSeconds) true else false
+        }
+    }.onFailure {
+        it.printStackTrace()
+        return false
+    }
+
+    return true
+
 }
