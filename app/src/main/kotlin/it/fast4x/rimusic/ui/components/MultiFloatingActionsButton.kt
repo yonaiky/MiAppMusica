@@ -62,6 +62,8 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.utils.floatActionIconOffsetXkey
 import it.fast4x.rimusic.utils.floatActionIconOffsetYkey
+import it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
+import it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -124,8 +126,8 @@ fun MultiFloatingActionsButton (
     //var offsetX by remember { mutableStateOf(0f) }
     //var offsetY by remember { mutableStateOf(0f) }
 
-    var offsetX = rememberPreference(floatActionIconOffsetXkey, 0F )
-    var offsetY = rememberPreference(floatActionIconOffsetYkey, 0F )
+    var offsetX = rememberPreference(multiFloatActionIconOffsetXkey, 0F )
+    var offsetY = rememberPreference(multiFloatActionIconOffsetYkey, 0F )
 
     Box(
         modifier = modifier,
