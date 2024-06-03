@@ -1398,6 +1398,11 @@ fun HomeSongsModern(
                     )
                 }
             }
+
+            item(key = "bottom") {
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+            }
+
         }
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
