@@ -187,7 +187,8 @@ fun MultiFloatingActionsButton (
                             }
                         }
                         .clip(RoundedCornerShape(16.dp))
-                        .background(colorPalette.favoritesIcon)
+                        //.background(colorPalette.favoritesIcon)
+                        .background(colorPalette.background2)
                         //.padding(all = 20.dp)
                         //.padding(horizontal = 20.dp)
                         .height(64.dp)
