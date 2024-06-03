@@ -471,20 +471,6 @@ fun HomeSongsModern(
     }
     /******** */
 
-    //var totalPlayTimes = 0L
-    items.forEach {
-        println("mediaItem ${it.id} ${it.durationText} 1m ${durationTextToMillis("1:00")} ${
-            it.durationText?.let { it1 ->
-                durationTextToMillis(it1)
-            }
-        }")
-        /*
-        totalPlayTimes += it.durationText?.let { it1 ->
-            durationTextToMillis(it1)
-        }?.toLong() ?: 0
-         */
-    }
-
     var searching by rememberSaveable { mutableStateOf(false) }
 
     val sortOrderIconRotation by animateFloatAsState(
