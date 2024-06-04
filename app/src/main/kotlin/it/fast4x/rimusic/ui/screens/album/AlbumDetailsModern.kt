@@ -146,6 +146,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -384,16 +385,35 @@ fun AlbumDetailsModern(
             onConfirm = {
                 showConfirmDeleteDownloadDialog = false
                 downloadState = Download.STATE_DOWNLOADING
-                if (songs.isNotEmpty() == true)
-                    songs.forEach {
-                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                        manageDownload(
-                            context = context,
-                            songId = it.asMediaItem.mediaId,
-                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                            downloadState = true
-                        )
+                if (listMediaItems.isEmpty()) {
+                    if (songs.isNotEmpty() == true)
+                        songs.forEach {
+                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                            manageDownload(
+                                context = context,
+                                songId = it.asMediaItem.mediaId,
+                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                downloadState = true
+                            )
+                        }
+                } else {
+                    runCatching {
+                        listMediaItems.forEach {
+                            binder?.cache?.removeResource(it.mediaId)
+                            manageDownload(
+                                context = context,
+                                songId = it.mediaId,
+                                songTitle = it.mediaMetadata.title.toString(),
+                                downloadState = true
+                            )
+                            //listMediaItems.clear()
+                            selectItems = false
+                        }
+                    }.onFailure {
+                        //it.printStackTrace()
+                        //println("mediaItem error ${it.message}")
                     }
+                }
             }
         )
     }
@@ -405,27 +425,57 @@ fun AlbumDetailsModern(
             onConfirm = {
                 showConfirmDownloadAllDialog = false
                 downloadState = Download.STATE_DOWNLOADING
-                if (songs.isNotEmpty() == true)
-                    songs.forEach {
-                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                        query {
-                            Database.insert(
-                                Song(
-                                    id = it.asMediaItem.mediaId,
-                                    title = it.asMediaItem.mediaMetadata.title.toString(),
-                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                    thumbnailUrl = it.thumbnailUrl,
-                                    durationText = null
+                if (listMediaItems.isEmpty()) {
+                    if (songs.isNotEmpty() == true)
+                        songs.forEach {
+                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                            query {
+                                Database.insert(
+                                    Song(
+                                        id = it.asMediaItem.mediaId,
+                                        title = it.asMediaItem.mediaMetadata.title.toString(),
+                                        artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = it.thumbnailUrl,
+                                        durationText = null
+                                    )
                                 )
+                            }
+                            manageDownload(
+                                context = context,
+                                songId = it.asMediaItem.mediaId,
+                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                downloadState = false
                             )
                         }
-                        manageDownload(
-                            context = context,
-                            songId = it.asMediaItem.mediaId,
-                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                            downloadState = false
-                        )
+                } else {
+                    runCatching {
+                        listMediaItems.forEach {
+                            binder?.cache?.removeResource(it.mediaId)
+                            query {
+                                Database.insert(
+                                    Song(
+                                        id = it.mediaId,
+                                        title = it.mediaMetadata.title.toString(),
+                                        artistsText = it.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = it.mediaMetadata.artworkUri.toString(),
+                                        durationText = null
+                                    )
+                                )
+                            }
+                            manageDownload(
+                                context = context,
+                                songId = it.mediaId,
+                                songTitle = it.mediaMetadata.title.toString(),
+                                downloadState = false
+                            )
+                            //listMediaItems.clear()
+                            selectItems = false
+                        }
+                    }.onFailure {
+                        //it.printStackTrace()
+                        //println("mediaItem error ${it.message}")
                     }
+                }
             }
         )
     }
@@ -938,6 +988,7 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onClick = {
+                                        Timber.e("Song click ${song.title}")
                                         if (!selectItems) {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(

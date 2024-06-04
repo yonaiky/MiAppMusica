@@ -11,6 +11,7 @@ import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.preferences
 import timber.log.Timber
 import java.io.File
@@ -19,12 +20,6 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         DatabaseInitializer()
-        val dir = filesDir.resolve("logs").also {
-            if (it.exists()) return@also
-            it.mkdir()
-        }
-        //Timber.plant(FileLoggingTree(File(dir, "log.txt")))
-        //Timber.d("Application created")
     }
 
     override fun newImageLoader(): ImageLoader {

@@ -154,6 +154,7 @@ import it.fast4x.rimusic.ui.styling.customColorPalette
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.hsl
 import it.fast4x.rimusic.ui.styling.typographyOf
+import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
@@ -201,6 +202,7 @@ import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -241,6 +243,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import timber.log.Timber
 import java.io.File
 import java.net.Proxy
 import java.util.Locale
@@ -312,7 +315,6 @@ class MainActivity :
         installSplashScreen().setKeepOnScreenCondition { splashScreenStays }
         Handler(Looper.getMainLooper()).postDelayed({ splashScreenStays = false }, delayTime)
 
-
         MonetCompat.setup(this)
         _monet = MonetCompat.getInstance()
         monet.setDefaultPalette()
@@ -347,6 +349,22 @@ class MainActivity :
         ExperimentalMaterial3Api::class
     )
     fun startApp() {
+
+        /**** LOG *********/
+        val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
+        println("mediaItem LogEnabled: $logEnabled")
+        if (logEnabled) {
+            val dir = filesDir.resolve("logs").also {
+                if (it.exists()) return@also
+                it.mkdir()
+            }
+            Timber.plant(FileLoggingTree(File(dir, "RiMusic_log.txt")))
+            Timber.d("Log enabled at ${dir.absolutePath}")
+        } else {
+            Timber.uprootAll()
+            Timber.plant(Timber.DebugTree())
+        }
+        /**** LOG *********/
 
         if (!preferences.getBoolean(closeWithBackButtonKey, false))
             if (Build.VERSION.SDK_INT >= 33) {
@@ -552,7 +570,8 @@ class MainActivity :
                             showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
                             playbackFadeDurationKey,
-                            playerBackgroundColorsKey
+                            playerBackgroundColorsKey,
+                            logDebugEnabledKey
                             -> {
                                 this@MainActivity.recreate()
                             }

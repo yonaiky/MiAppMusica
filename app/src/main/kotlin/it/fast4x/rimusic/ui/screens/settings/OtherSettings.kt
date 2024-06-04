@@ -52,6 +52,7 @@ import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
+import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.preferences
@@ -127,6 +128,7 @@ fun OtherSettings() {
     }
 
     var parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    var logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
 
     Column(
         modifier = Modifier
@@ -324,7 +326,16 @@ fun OtherSettings() {
             onCheckedChange = { parentalControlEnabled = it }
         )
 
+        SettingsGroupSpacer()
 
+        SettingsEntryGroupText(title = "DEBUG")
+
+        SwitchSettingEntry(
+            title = "Enable log debug",
+            text = "If enabled, create a log file to highlight errors",
+            isChecked = logDebugEnabled,
+            onCheckedChange = { logDebugEnabled = it }
+        )
 
         Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 

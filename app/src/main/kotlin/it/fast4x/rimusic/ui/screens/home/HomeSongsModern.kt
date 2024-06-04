@@ -822,7 +822,7 @@ fun HomeSongsModern(
                         }
                     }
 
-                    if (builtInPlaylist != BuiltInPlaylist.OnDevice)
+                    if (builtInPlaylist == BuiltInPlaylist.All)
                         HeaderIconButton(
                             onClick = {},
                             icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
