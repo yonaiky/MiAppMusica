@@ -410,7 +410,7 @@ fun Queue(
                         key = { it.uid.hashCode() }
                     ) { window ->
                         val currentItem by rememberUpdatedState(window)
-                        val checkedState = remember { mutableStateOf(false) }
+                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         //BehindMotionSwipe(
                         //    content = {
                                 var deltaX by remember { mutableStateOf(0f) }

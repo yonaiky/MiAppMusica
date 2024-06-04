@@ -1299,7 +1299,7 @@ fun LocalPlaylistSongs(
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                        val checkedState = remember { mutableStateOf(false) }
+                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         //if (isDownloaded && !listDownloadedMedia.contains(song)) listDownloadedMedia.add(song)
                         //if (!isDownloaded) listDownloadedMedia.dropWhile {  it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                         //Log.d("mediaItem", "loop items listDownloadedMedia ${listDownloadedMedia.distinct().size} ${listDownloadedMedia.distinct()}")
@@ -1348,7 +1348,7 @@ fun LocalPlaylistSongs(
                                             uncheckedColor = colorPalette.text
                                         ),
                                         modifier = Modifier
-                                            .scale(0.6f)
+                                            .scale(0.7f)
                                     )
                                 else checkedState.value = false
 

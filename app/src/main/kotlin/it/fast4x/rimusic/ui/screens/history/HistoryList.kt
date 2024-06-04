@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -254,7 +255,7 @@ fun HistoryList(
                             downloadState = getDownloadState(event.song.asMediaItem.mediaId)
                             val isDownloaded =
                                 if (!isLocal) downloadedStateMedia(event.song.asMediaItem.mediaId) else true
-                            val checkedState = remember { mutableStateOf(false) }
+                            val checkedState = rememberSaveable { mutableStateOf(false) }
                             SongItem(
                                 song = event.song,
                                 isDownloaded = isDownloaded,

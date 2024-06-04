@@ -1226,7 +1226,7 @@ fun BuiltInPlaylistSongs(
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded =
                             if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                        val checkedState = remember { mutableStateOf(false) }
+                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         SongItem(
                             song = song,
                             isDownloaded = isDownloaded,

@@ -671,7 +671,8 @@ fun HomeSongsModern(
                                                         sortByOnDevice = OnDeviceSongSortBy.Title
                                                     },
                                                     onDateAdded = {
-                                                        sortByOnDevice = OnDeviceSongSortBy.DateAdded
+                                                        sortByOnDevice =
+                                                            OnDeviceSongSortBy.DateAdded
                                                     },
                                                     onArtist = {
                                                         sortByOnDevice = OnDeviceSongSortBy.Artist
@@ -684,9 +685,18 @@ fun HomeSongsModern(
                                                 SortMenu(
                                                     title = stringResource(R.string.sorting_order),
                                                     onDismiss = menuState::hide,
-                                                    onTitle = { sortByFolderOnDevice = OnDeviceFolderSortBy.Title },
-                                                    onArtist = { sortByFolderOnDevice = OnDeviceFolderSortBy.Artist },
-                                                    onDuration = { sortByFolderOnDevice = OnDeviceFolderSortBy.Duration },
+                                                    onTitle = {
+                                                        sortByFolderOnDevice =
+                                                            OnDeviceFolderSortBy.Title
+                                                    },
+                                                    onArtist = {
+                                                        sortByFolderOnDevice =
+                                                            OnDeviceFolderSortBy.Artist
+                                                    },
+                                                    onDuration = {
+                                                        sortByFolderOnDevice =
+                                                            OnDeviceFolderSortBy.Duration
+                                                    },
                                                 )
                                         }
                                     }
@@ -703,7 +713,8 @@ fun HomeSongsModern(
                     )
 
                     HeaderIconButton(
-                        modifier = Modifier.padding(horizontal = 5.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
                             .combinedClickable(
                                 onClick = {
                                     nowPlayingItem = -1
@@ -819,7 +830,9 @@ fun HomeSongsModern(
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
                                 .combinedClickable(
-                                    onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
+                                    onClick = {
+                                        showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
+                                    },
                                     onLongClick = {
                                         SmartToast(context.getString(R.string.info_show_hide_hidden_songs))
                                     }
@@ -835,7 +848,8 @@ fun HomeSongsModern(
                             .padding(horizontal = 2.dp)
                             .combinedClickable(
                                 onClick = {
-                                    if (builtInPlaylist == BuiltInPlaylist.OnDevice) items = filteredSongs
+                                    if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
+                                        filteredSongs
                                     if (items.isNotEmpty()) {
                                         val itemsLimited =
                                             if (items.size > maxSongsInQueue.number) items
@@ -1196,7 +1210,7 @@ fun HomeSongsModern(
                                     NowPlayingShow(song.asMediaItem.mediaId)
                             },
                             trailingContent = {
-                                val checkedState = remember { mutableStateOf(false) }
+                                val checkedState = rememberSaveable { mutableStateOf(false) }
                                 if (selectItems)
                                     androidx.compose.material3.Checkbox(
                                         checked = checkedState.value,
@@ -1208,7 +1222,9 @@ fun HomeSongsModern(
                                         colors = androidx.compose.material3.CheckboxDefaults.colors(
                                             checkedColor = colorPalette.accent,
                                             uncheckedColor = colorPalette.text
-                                        )
+                                        ),
+                                        modifier = Modifier
+                                            .scale(0.7f)
                                     )
                                 else checkedState.value = false
                             },
@@ -1217,9 +1233,9 @@ fun HomeSongsModern(
                                     onLongClick = {
                                         menuState.display {
                                             InHistoryMediaItemMenu(
-                                                    navController = navController,
-                                                    song = song,
-                                                    onDismiss = menuState::hide
+                                                navController = navController,
+                                                song = song,
+                                                onDismiss = menuState::hide
                                             )
                                         }
                                     },
@@ -1274,7 +1290,7 @@ fun HomeSongsModern(
                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                     val isDownloaded =
                         if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                    val checkedState = remember { mutableStateOf(false) }
+                    val checkedState = rememberSaveable { mutableStateOf(false) }
 
                     SongItem(
                         song = song,
