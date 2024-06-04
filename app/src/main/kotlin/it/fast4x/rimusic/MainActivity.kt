@@ -352,7 +352,6 @@ class MainActivity :
 
         /**** LOG *********/
         val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
-        println("mediaItem LogEnabled: $logEnabled")
         if (logEnabled) {
             val dir = filesDir.resolve("logs").also {
                 if (it.exists()) return@also
