@@ -8,6 +8,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import com.kieronquinn.monetcompat.core.MonetCompat
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
+import it.fast4x.rimusic.utils.CaptureCrash
 import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
@@ -28,6 +29,9 @@ class MainApplication : Application(), ImageLoaderFactory {
                 if (it.exists()) return@also
                 it.mkdir()
             }
+
+            Thread.setDefaultUncaughtExceptionHandler(CaptureCrash(dir.absolutePath))
+
             Timber.plant(FileLoggingTree(File(dir, "RiMusic_log.txt")))
             Timber.d("Log enabled at ${dir.absolutePath}")
         } else {

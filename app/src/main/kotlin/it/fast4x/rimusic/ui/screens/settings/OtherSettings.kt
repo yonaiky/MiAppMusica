@@ -342,6 +342,8 @@ fun OtherSettings() {
             copyToClipboard = false
         }
 
+        val noLogAvailable = stringResource(R.string.no_log_available)
+
         SettingsEntryGroupText(title = "DEBUG")
         SwitchSettingEntry(
             title = "Enable log debug",
@@ -359,8 +361,25 @@ fun OtherSettings() {
             text = "",
             icon = R.drawable.copy,
             onClick = {
-                text = File(context.filesDir.resolve("logs"),"RiMusic_log.txt").readText()
-                copyToClipboard = true
+                val file = File(context.filesDir.resolve("logs"),"RiMusic_log.txt")
+                if (file.exists()) {
+                    text = file.readText()
+                    copyToClipboard = true
+                } else
+                    SmartToast(noLogAvailable, type = PopupType.Info)
+            }
+        )
+        ButtonBarSettingEntry(
+            title = "Copy crash log to clipboard",
+            text = "",
+            icon = R.drawable.copy,
+            onClick = {
+                val file = File(context.filesDir.resolve("logs"),"RiMusic_crash_log.txt")
+                if (file.exists()) {
+                    text = file.readText()
+                    copyToClipboard = true
+                } else
+                    SmartToast(noLogAvailable, type = PopupType.Info)
             }
         )
 

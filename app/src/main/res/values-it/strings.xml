@@ -569,4 +569,5 @@
     <string name="player_enable_lyrics_popup_message">Abilita il messaggio popup del testo del brano</string>
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
+    <string name="no_log_available">No log available</string>
 </resources>
