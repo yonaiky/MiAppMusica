@@ -317,7 +317,7 @@ fun OtherSettings() {
 
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = "Parental control".uppercase())
+        SettingsEntryGroupText(title = "Parental control")
 
         SwitchSettingEntry(
             title = "Parental control",
@@ -329,7 +329,6 @@ fun OtherSettings() {
         SettingsGroupSpacer()
 
         SettingsEntryGroupText(title = "DEBUG")
-
         SwitchSettingEntry(
             title = "Enable log debug",
             text = "If enabled, create a log file to highlight errors",

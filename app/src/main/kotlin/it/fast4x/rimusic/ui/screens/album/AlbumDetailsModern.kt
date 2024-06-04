@@ -988,7 +988,6 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onClick = {
-                                        Timber.e("Song click ${song.title}")
                                         if (!selectItems) {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
