@@ -169,21 +169,21 @@ fun Player.findMediaItemIndexById(mediaId: String): Int {
 
 fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): List<MediaItem> {
     var filteredMediaItems = mediaItems
-        runCatching {
-            val preferences = context.preferences
-            val excludeSongWithDurationLimit =
-                preferences.getEnum(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+    runCatching {
+        val preferences = context.preferences
+        val excludeSongWithDurationLimit =
+            preferences.getEnum(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
 
-            if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
-                filteredMediaItems = mediaItems.filter {
-                    it.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
-                        durationTextToMillis(it1)
-                    }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
-                }
+        if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
+            filteredMediaItems = mediaItems.filter {
+                it.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
+                    durationTextToMillis(it1)
+                }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
             }
-        }.onFailure {
-            Timber.e(it.message)
         }
+    }.onFailure {
+        Timber.e(it.message)
+    }
 
     return filteredMediaItems
 }
