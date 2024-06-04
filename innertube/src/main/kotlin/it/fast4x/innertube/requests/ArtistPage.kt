@@ -59,9 +59,9 @@ suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>
                 ?.musicImmersiveHeaderRenderer
                 ?.foregroundThumbnail
                 ?: response
-                .header
-                ?.musicImmersiveHeaderRenderer
-                ?.thumbnail)
+                    .header
+                    ?.musicImmersiveHeaderRenderer
+                    ?.thumbnail)
                 ?.musicThumbnailRenderer
                 ?.thumbnail
                 ?.thumbnails

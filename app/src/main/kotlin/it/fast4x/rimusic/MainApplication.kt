@@ -20,6 +20,21 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         DatabaseInitializer()
+
+        /**** LOG *********/
+        val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
+        if (logEnabled) {
+            val dir = filesDir.resolve("logs").also {
+                if (it.exists()) return@also
+                it.mkdir()
+            }
+            Timber.plant(FileLoggingTree(File(dir, "RiMusic_log.txt")))
+            Timber.d("Log enabled at ${dir.absolutePath}")
+        } else {
+            Timber.uprootAll()
+            Timber.plant(Timber.DebugTree())
+        }
+        /**** LOG *********/
     }
 
     override fun newImageLoader(): ImageLoader {

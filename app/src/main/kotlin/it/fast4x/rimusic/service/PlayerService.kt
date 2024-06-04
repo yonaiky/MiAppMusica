@@ -166,6 +166,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -561,6 +562,8 @@ class PlayerService : InvincibleService(),
                         runCatching {
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
+                        }.onFailure {
+                            Timber.e(it.message)
                         }
                     }
                 }
@@ -581,6 +584,8 @@ class PlayerService : InvincibleService(),
                         runCatching {
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
+                        }.onFailure {
+                            Timber.e(it.message)
                         }
                     }
                 }
@@ -601,6 +606,8 @@ class PlayerService : InvincibleService(),
                         runCatching {
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
+                        }.onFailure {
+                            Timber.e(it.message)
                         }
                     }
                 }
@@ -732,6 +739,8 @@ class PlayerService : InvincibleService(),
             //downloadCache.release()
 
             loudnessEnhancer?.release()
+        }.onFailure {
+            Timber.e(it.message)
         }
         super.onDestroy()
     }
@@ -746,9 +755,11 @@ class PlayerService : InvincibleService(),
     override fun onConfigurationChanged(newConfig: Configuration) {
         handler.post {
             runCatching {
-        if (bitmapProvider.setDefaultBitmap() && player.currentMediaItem != null) {
-            notificationManager?.notify(NotificationId, notification())
-        }
+                if (bitmapProvider.setDefaultBitmap() && player.currentMediaItem != null) {
+                    notificationManager?.notify(NotificationId, notification())
+                }
+            }.onFailure {
+                Timber.e(it.message)
             }
         }
         super.onConfigurationChanged(newConfig)
@@ -909,7 +920,8 @@ class PlayerService : InvincibleService(),
             }
 
         }.onFailure {
-            it.printStackTrace()
+            //it.printStackTrace()
+            Timber.e(it.message)
         }
 
         //Log.d("mediaItem", "QueuePersistentEnabled Restored ${player.currentTimeline.mediaItems.size}")
@@ -942,7 +954,9 @@ class PlayerService : InvincibleService(),
                 }
             }
         }.onFailure {
-            it.printStackTrace()
+            //it.printStackTrace()
+            Timber.e(it.message)
+
         }.onSuccess {
             Log.d("mediaItem", "QueuePersistentEnabled Saved $persistentQueue")
         }
@@ -1028,7 +1042,10 @@ class PlayerService : InvincibleService(),
             if (loudnessEnhancer == null) {
                 loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
             }
-        }.onFailure { return }
+        }.onFailure {
+            Timber.e(it.message)
+            return
+        }
 
         player.currentMediaItem?.mediaId?.let { songId ->
             volumeNormalizationJob?.cancel()
@@ -1217,6 +1234,8 @@ class PlayerService : InvincibleService(),
                 }
                 runCatching {
                     notificationManager?.notify(NotificationId, notification)
+                }.onFailure {
+                    Timber.e(it.message)
                 }
             }
         }
@@ -1400,6 +1419,8 @@ class PlayerService : InvincibleService(),
             handler.post {
                 runCatching {
                     notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
+                }.onFailure {
+                    Timber.e(it.message)
                 }
             }
         }

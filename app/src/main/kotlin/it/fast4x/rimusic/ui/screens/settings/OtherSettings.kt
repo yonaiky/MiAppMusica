@@ -43,6 +43,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -135,10 +136,13 @@ fun OtherSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             /*
             .padding(
@@ -328,12 +332,36 @@ fun OtherSettings() {
 
         SettingsGroupSpacer()
 
+        var text by remember { mutableStateOf(null as String?) }
+        var copyToClipboard by remember {
+            mutableStateOf(false)
+        }
+
+        if (copyToClipboard) text?.let {
+            TextCopyToClipboard(it)
+            copyToClipboard = false
+        }
+
         SettingsEntryGroupText(title = "DEBUG")
         SwitchSettingEntry(
             title = "Enable log debug",
             text = "If enabled, create a log file to highlight errors",
             isChecked = logDebugEnabled,
-            onCheckedChange = { logDebugEnabled = it }
+            onCheckedChange = {
+                logDebugEnabled = it
+                if (it)
+                    SmartToast(context.getString(R.string.restarting_rimusic_is_required), type = PopupType.Info)
+            }
+        )
+        ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        ButtonBarSettingEntry(
+            title = "Copy log to clipboard",
+            text = "",
+            icon = R.drawable.copy,
+            onClick = {
+                text = File(context.filesDir.resolve("logs"),"RiMusic_log.txt").readText()
+                copyToClipboard = true
+            }
         )
 
         Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))

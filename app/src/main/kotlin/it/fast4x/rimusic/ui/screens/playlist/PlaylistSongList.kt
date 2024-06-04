@@ -124,6 +124,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 @ExperimentalTextApi
@@ -454,7 +455,7 @@ fun PlaylistSongList(
                                                         )
                                                     )
                                                 }.onFailure {
-                                                    SmartToast(context.resources.getString(R.string.error))
+                                                    Timber.e(it.message)
                                                 }
                                             }
                                             CoroutineScope(Dispatchers.Main).launch {

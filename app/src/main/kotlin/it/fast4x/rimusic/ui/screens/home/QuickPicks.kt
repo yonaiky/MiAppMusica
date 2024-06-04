@@ -139,6 +139,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 @ExperimentalMaterialApi
@@ -242,7 +243,7 @@ fun QuickPicks(
             discoverPage = Innertube.discoverPage()
 
         }.onFailure {
-            //println("mediaItem refreshed failure")
+            Timber.e(it.message)
         }
     }
 

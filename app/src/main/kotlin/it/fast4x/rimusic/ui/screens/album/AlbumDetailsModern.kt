@@ -410,8 +410,7 @@ fun AlbumDetailsModern(
                             selectItems = false
                         }
                     }.onFailure {
-                        //it.printStackTrace()
-                        //println("mediaItem error ${it.message}")
+                        Timber.e(it.message)
                     }
                 }
             }
@@ -472,8 +471,7 @@ fun AlbumDetailsModern(
                             selectItems = false
                         }
                     }.onFailure {
-                        //it.printStackTrace()
-                        //println("mediaItem error ${it.message}")
+                        Timber.e(it.message)
                     }
                 }
             }

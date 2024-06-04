@@ -11,6 +11,7 @@ import coil.imageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import it.fast4x.rimusic.utils.thumbnail
+import timber.log.Timber
 
 context(Context)
 class BitmapProvider(
@@ -69,7 +70,8 @@ class BitmapProvider(
                 .diskCacheKey(uri.thumbnail(bitmapSize).toString())
                 .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
                 .listener(
-                    onError = { _, _ ->
+                    onError = { _, result ->
+                        Timber.e("Failed to load bitmap ${result.throwable.message}")
                         lastBitmap = null
                         onDone(bitmap)
                         listener?.invoke(lastBitmap)

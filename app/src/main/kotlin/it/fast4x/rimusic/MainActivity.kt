@@ -350,21 +350,6 @@ class MainActivity :
     )
     fun startApp() {
 
-        /**** LOG *********/
-        val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
-        if (logEnabled) {
-            val dir = filesDir.resolve("logs").also {
-                if (it.exists()) return@also
-                it.mkdir()
-            }
-            Timber.plant(FileLoggingTree(File(dir, "RiMusic_log.txt")))
-            Timber.d("Log enabled at ${dir.absolutePath}")
-        } else {
-            Timber.uprootAll()
-            Timber.plant(Timber.DebugTree())
-        }
-        /**** LOG *********/
-
         if (!preferences.getBoolean(closeWithBackButtonKey, false))
             if (Build.VERSION.SDK_INT >= 33) {
                 onBackInvokedDispatcher.registerOnBackInvokedCallback(
@@ -569,8 +554,7 @@ class MainActivity :
                             showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
                             playbackFadeDurationKey,
-                            playerBackgroundColorsKey,
-                            logDebugEnabledKey
+                            playerBackgroundColorsKey
                             -> {
                                 this@MainActivity.recreate()
                             }

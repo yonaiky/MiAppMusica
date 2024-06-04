@@ -13,6 +13,7 @@ import it.fast4x.rimusic.enums.DurationInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 val Player.currentWindow: Timeline.Window?
@@ -181,7 +182,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
                 }
             }
         }.onFailure {
-            it.printStackTrace()
+            Timber.e(it.message)
         }
 
     return filteredMediaItems
@@ -197,7 +198,8 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
                 }!! < excludeSongWithDurationLimit.minutesInMilliSeconds) true else false
         }
     }.onFailure {
-        it.printStackTrace()
+        //it.printStackTrace()
+        Timber.e(it.message)
         return false
     }
 

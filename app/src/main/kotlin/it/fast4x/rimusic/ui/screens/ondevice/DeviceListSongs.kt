@@ -153,6 +153,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import timber.log.Timber
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -1105,6 +1106,8 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                     add(
                                         song
                                     )
+                                }.onFailure {
+                                    Timber.e(it.message)
                                 }
                             }
                         }
@@ -1112,6 +1115,8 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 }?.let {
                     runCatching {
                         emit(it)
+                    }.onFailure {
+                        Timber.e(it.message)
                     }
                 }
         }

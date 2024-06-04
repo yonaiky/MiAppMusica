@@ -182,6 +182,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.random.Random
@@ -957,7 +958,8 @@ fun HomeSongsModern(
                                                     )
                                                 )
                                             }.onFailure {
-                                                SmartToast(context.resources.getString(R.string.error))
+                                                Timber.e(it.message)
+                                                it.message?.let { it1 -> SmartToast(it1,PopupType.Error) }
                                             }
                                         }
                                         CoroutineScope(Dispatchers.Main).launch {
