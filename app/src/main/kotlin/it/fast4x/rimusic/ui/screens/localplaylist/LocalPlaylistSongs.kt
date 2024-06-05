@@ -784,27 +784,40 @@ fun LocalPlaylistSongs(
                                 showConfirmDownloadAllDialog = false
                                 isRecommendationEnabled = false
                                 downloadState = Download.STATE_DOWNLOADING
-                                if (playlistSongs.isNotEmpty() == true)
-                                    playlistSongs.forEach {
-                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        query {
-                                            Database.insert(
-                                                Song(
-                                                    id = it.asMediaItem.mediaId,
-                                                    title = it.asMediaItem.mediaMetadata.title.toString(),
-                                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                                    thumbnailUrl = it.thumbnailUrl,
-                                                    durationText = null
+                                if (listMediaItems.isEmpty()) {
+                                    if (playlistSongs.isNotEmpty() == true)
+                                        playlistSongs.forEach {
+                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            query {
+                                                Database.insert(
+                                                    Song(
+                                                        id = it.asMediaItem.mediaId,
+                                                        title = it.asMediaItem.mediaMetadata.title.toString(),
+                                                        artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                                        thumbnailUrl = it.thumbnailUrl,
+                                                        durationText = null
+                                                    )
                                                 )
+                                            }
+                                            manageDownload(
+                                                context = context,
+                                                songId = it.asMediaItem.mediaId,
+                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = false
                                             )
                                         }
+                                } else {
+                                    listMediaItems.forEach {
+                                        binder?.cache?.removeResource(it.mediaId)
                                         manageDownload(
                                             context = context,
-                                            songId = it.asMediaItem.mediaId,
-                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                            downloadState = false
+                                            songId = it.mediaId,
+                                            songTitle = it.mediaMetadata.title.toString(),
+                                            downloadState = true
                                         )
                                     }
+                                    selectItems = false
+                                }
                             }
                         )
                     }
@@ -832,16 +845,28 @@ fun LocalPlaylistSongs(
                             onConfirm = {
                                 showConfirmDeleteDownloadDialog = false
                                 downloadState = Download.STATE_DOWNLOADING
-                                if (playlistSongs.isNotEmpty() == true)
-                                    playlistSongs.forEach {
-                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                if (listMediaItems.isEmpty()) {
+                                    if (playlistSongs.isNotEmpty() == true)
+                                        playlistSongs.forEach {
+                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            manageDownload(
+                                                context = context,
+                                                songId = it.asMediaItem.mediaId,
+                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = true
+                                            )
+                                        }
+                                } else {
+                                    listMediaItems.forEach {
+                                        binder?.cache?.removeResource(it.mediaId)
                                         manageDownload(
                                             context = context,
-                                            songId = it.asMediaItem.mediaId,
-                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                            songId = it.mediaId,
+                                            songTitle = it.mediaMetadata.title.toString(),
                                             downloadState = true
                                         )
                                     }
+                                }
                             }
                         )
                     }

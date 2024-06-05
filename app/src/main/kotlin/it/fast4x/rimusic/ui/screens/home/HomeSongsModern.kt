@@ -770,16 +770,30 @@ fun HomeSongsModern(
                                 showConfirmDownloadAllDialog = false
                                 //isRecommendationEnabled = false
                                 downloadState = Download.STATE_DOWNLOADING
-                                if (items.isNotEmpty() == true)
-                                    items.forEach {
-                                        binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        manageDownload(
-                                            context = context,
-                                            songId = it.asMediaItem.mediaId,
-                                            songTitle = it.asMediaItem.mediaMetadata.title.toString(),
-                                            downloadState = false
-                                        )
+                                if (listMediaItems.isEmpty()) {
+                                    if (items.isNotEmpty() == true)
+                                        items.forEach {
+                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            manageDownload(
+                                                context = context,
+                                                songId = it.asMediaItem.mediaId,
+                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = false
+                                            )
+                                        }
+                                } else {
+                                    listMediaItems.forEach {
+                                            binder?.cache?.removeResource(it.mediaId)
+                                            manageDownload(
+                                                context = context,
+                                                songId = it.mediaId,
+                                                songTitle = it.mediaMetadata.title.toString(),
+                                                downloadState = false
+                                            )
+
                                     }
+                                    selectItems = false
+                                }
                             }
                         )
                     }
@@ -808,16 +822,29 @@ fun HomeSongsModern(
                                 onConfirm = {
                                     showConfirmDeleteDownloadDialog = false
                                     downloadState = Download.STATE_DOWNLOADING
-                                    if (items.isNotEmpty() == true)
-                                        items.forEach {
-                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                    if (listMediaItems.isEmpty()) {
+                                        if (items.isNotEmpty() == true)
+                                            items.forEach {
+                                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                                manageDownload(
+                                                    context = context,
+                                                    songId = it.asMediaItem.mediaId,
+                                                    songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                    downloadState = true
+                                                )
+                                            }
+                                    } else {
+                                        listMediaItems.forEach {
+                                            binder?.cache?.removeResource(it.mediaId)
                                             manageDownload(
                                                 context = context,
-                                                songId = it.asMediaItem.mediaId,
-                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                songId = it.mediaId,
+                                                songTitle = it.mediaMetadata.title.toString(),
                                                 downloadState = true
                                             )
                                         }
+                                        selectItems = false
+                                    }
                                 }
                             )
                         }
@@ -907,7 +934,7 @@ fun HomeSongsModern(
                      */
 
                     HeaderIconButton(
-                        icon = R.drawable.add_in_playlist,
+                        icon = R.drawable.ellipsis_horizontal,
                         color = colorPalette.text,
                         onClick = {
                             menuState.display {
