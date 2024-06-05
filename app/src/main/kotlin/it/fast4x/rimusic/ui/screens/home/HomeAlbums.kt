@@ -275,7 +275,7 @@ fun HomeAlbums(
                     )
 
 
-
+                    /*
                     BasicText(
                         text = when (sortBy) {
                             AlbumSortBy.Title -> stringResource(R.string.sort_title)
@@ -299,6 +299,8 @@ fun HomeAlbums(
                                 //showSortTypeSelectDialog = true
                             }
                     )
+
+                     */
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,

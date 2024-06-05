@@ -595,6 +595,36 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun albumSongs(albumId: String): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT *, (SELECT SUM(CAST(REPLACE(durationText, ':', '') AS INTEGER)) FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId WHERE SongAlbumMap.albumId = Album.id AND position IS NOT NULL) as totalDuration " +
+            "FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY totalDuration ASC" )
+    @RewriteQueriesToDropUnusedColumns
+    fun albumsByTotalDurationAsc(): Flow<List<Album>>
+
+    @Transaction
+    @Query("SELECT *, (SELECT SUM(CAST(REPLACE(durationText, ':', '') AS INTEGER)) FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId WHERE SongAlbumMap.albumId = Album.id AND position IS NOT NULL) as totalDuration " +
+            "FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY totalDuration DESC" )
+    @RewriteQueriesToDropUnusedColumns
+    fun albumsByTotalDurationDesc(): Flow<List<Album>>
+
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM SongAlbumMap WHERE albumId = Album.id) as songCount " +
+            "FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY songCount ASC" )
+    @RewriteQueriesToDropUnusedColumns
+    fun albumsBySongsCountAsc(): Flow<List<Album>>
+
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM SongAlbumMap WHERE albumId = Album.id) as songCount " +
+            "FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY songCount DESC" )
+    @RewriteQueriesToDropUnusedColumns
+    fun albumsBySongsCountDesc(): Flow<List<Album>>
+
+    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY authorsText COLLATE NOCASE ASC")
+    fun albumsByArtistAsc(): Flow<List<Album>>
+
+    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY authorsText COLLATE NOCASE DESC")
+    fun albumsByArtistDesc(): Flow<List<Album>>
+
     @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY title COLLATE NOCASE ASC")
     fun albumsByTitleAsc(): Flow<List<Album>>
 
@@ -626,6 +656,18 @@ interface Database {
             AlbumSortBy.DateAdded -> when (sortOrder) {
                 SortOrder.Ascending -> albumsByRowIdAsc()
                 SortOrder.Descending -> albumsByRowIdDesc()
+            }
+            AlbumSortBy.Artist -> when (sortOrder) {
+                SortOrder.Ascending -> albumsByArtistAsc()
+                SortOrder.Descending -> albumsByArtistDesc()
+            }
+            AlbumSortBy.Songs -> when (sortOrder) {
+                SortOrder.Ascending -> albumsBySongsCountAsc()
+                SortOrder.Descending -> albumsBySongsCountDesc()
+            }
+            AlbumSortBy.Duration -> when (sortOrder) {
+                SortOrder.Ascending -> albumsByTotalDurationAsc()
+                SortOrder.Descending -> albumsByTotalDurationDesc()
             }
         }
     }

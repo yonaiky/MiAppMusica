@@ -3,5 +3,8 @@ package it.fast4x.rimusic.enums
 enum class AlbumSortBy {
     Title,
     Year,
-    DateAdded
+    DateAdded,
+    Artist,
+    Songs,
+    Duration
 }

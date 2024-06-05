@@ -247,6 +247,9 @@ fun HomeAlbumsModern(
                                             onTitle = { sortBy = AlbumSortBy.Title },
                                             onYear = { sortBy = AlbumSortBy.Year },
                                             onDateAdded = { sortBy = AlbumSortBy.DateAdded },
+                                            onArtist = { sortBy = AlbumSortBy.Artist },
+                                            onSongNumber = { sortBy = AlbumSortBy.Songs },
+                                            onDuration = { sortBy = AlbumSortBy.Duration }
                                         )
                                     }
                                 }
