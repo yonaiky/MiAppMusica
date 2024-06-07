@@ -68,6 +68,7 @@ import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.rimusic.Database
@@ -537,6 +538,34 @@ fun PlaylistSongListModern(
                                         }
                                     )
                             )
+
+                            HeaderIconButton(
+                                icon = R.drawable.radio,
+                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
+                                color = colorPalette.text,
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (binder != null) {
+                                                binder.stopRadio()
+                                                binder.playRadio(
+                                                    NavigationEndpoint.Endpoint.Watch( videoId =
+                                                        if (binder.player.currentMediaItem?.mediaId != null)
+                                                            binder.player.currentMediaItem?.mediaId
+                                                        else playlistPage?.songsPage?.items?.first()?.asMediaItem?.mediaId
+                                                    )
+                                                )
+                                            }
+
+                                        },
+                                        onLongClick = {
+                                            SmartToast(context.getString(R.string.info_start_radio))
+                                        }
+                                    )
+                            )
+
 
                             HeaderIconButton(
                                 icon = R.drawable.add_in_playlist,
