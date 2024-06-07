@@ -49,10 +49,14 @@ class BitmapProvider(
 
         lastIsSystemInDarkMode = isSystemInDarkMode
 
-        defaultBitmap =
-            Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888).applyCanvas {
-                drawColor(colorProvider(isSystemInDarkMode))
-            }
+        runCatching {
+            defaultBitmap =
+                Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888).applyCanvas {
+                    drawColor(colorProvider(isSystemInDarkMode))
+                }
+        }.onFailure {
+            Timber.e(it.message)
+        }
 
         return lastBitmap == null
     }
@@ -63,26 +67,30 @@ class BitmapProvider(
         lastEnqueued?.dispose()
         lastUri = uri
 
-        lastEnqueued = applicationContext.imageLoader.enqueue(
-            ImageRequest.Builder(applicationContext)
-                .data(uri.thumbnail(bitmapSize))
-                .allowHardware(false)
-                .diskCacheKey(uri.thumbnail(bitmapSize).toString())
-                .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
-                .listener(
-                    onError = { _, result ->
-                        Timber.e("Failed to load bitmap ${result.throwable.message}")
-                        lastBitmap = null
-                        onDone(bitmap)
-                        listener?.invoke(lastBitmap)
-                    },
-                    onSuccess = { _, result ->
-                        lastBitmap = (result.drawable as BitmapDrawable).bitmap
-                        onDone(bitmap)
-                        listener?.invoke(lastBitmap)
-                    }
-                )
-                .build()
-        )
+        runCatching {
+            lastEnqueued = applicationContext.imageLoader.enqueue(
+                ImageRequest.Builder(applicationContext)
+                    .data(uri.thumbnail(bitmapSize))
+                    .allowHardware(false)
+                    .diskCacheKey(uri.thumbnail(bitmapSize).toString())
+                    .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
+                    .listener(
+                        onError = { _, result ->
+                            Timber.e("Failed to load bitmap ${result.throwable.message}")
+                            lastBitmap = null
+                            onDone(bitmap)
+                            listener?.invoke(lastBitmap)
+                        },
+                        onSuccess = { _, result ->
+                            lastBitmap = (result.drawable as BitmapDrawable).bitmap
+                            onDone(bitmap)
+                            listener?.invoke(lastBitmap)
+                        }
+                    )
+                    .build()
+            )
+        }.onFailure {
+            Timber.e(it.message)
+        }
     }
 }

@@ -394,12 +394,16 @@ class PlayerService : InvincibleService(),
     override fun onCreate() {
         super.onCreate()
 
-        bitmapProvider = BitmapProvider(
-            bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
-            colorProvider = { isSystemInDarkMode ->
-                if (isSystemInDarkMode) Color.BLACK else Color.WHITE
-            }
-        )
+        runCatching {
+            bitmapProvider = BitmapProvider(
+                bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
+                colorProvider = { isSystemInDarkMode ->
+                    if (isSystemInDarkMode) Color.BLACK else Color.WHITE
+                }
+            )
+        }.onFailure {
+            Timber.e(it.message)
+        }
 
         createNotificationChannel()
 
@@ -814,9 +818,17 @@ class PlayerService : InvincibleService(),
         maybeProcessRadio()
 
         if (mediaItem == null) {
-            bitmapProvider.listener?.invoke(null)
+            runCatching {
+                bitmapProvider.listener?.invoke(null)
+            }.onFailure {
+                Timber.e(it.message)
+            }
         } else if (mediaItem.mediaMetadata.artworkUri == bitmapProvider.lastUri) {
-            bitmapProvider.listener?.invoke(bitmapProvider.lastBitmap)
+            runCatching {
+                bitmapProvider.listener?.invoke(bitmapProvider.lastBitmap)
+            }.onFailure {
+                Timber.e(it.message)
+            }
         }
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
@@ -1414,15 +1426,22 @@ class PlayerService : InvincibleService(),
         }
 
 
-        bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
-            maybeShowSongCoverInLockScreen()
-            handler.post {
-                runCatching {
-                    notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
-                }.onFailure {
-                    Timber.e(it.message)
+        runCatching {
+            bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
+                maybeShowSongCoverInLockScreen()
+                handler.post {
+                    runCatching {
+                        notificationManager?.notify(
+                            NotificationId,
+                            builder.setLargeIcon(bitmap).build()
+                        )
+                    }.onFailure {
+                        Timber.e(it.message)
+                    }
                 }
             }
+        }.onFailure {
+            Timber.e(it.message)
         }
 
 
