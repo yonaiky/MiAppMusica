@@ -189,6 +189,13 @@ interface Database {
     fun songsMostPlayedByYearMonth(year: Long, month: Long, limit:Long = Long.MAX_VALUE): Flow<List<Song>>
 
     @Transaction
+    @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE " +
+            "CAST(strftime('%m',timestamp / 1000,'unixepoch') AS INTEGER) = :month AND CAST(strftime('%Y',timestamp / 1000,'unixepoch') as INTEGER) = :year " +
+            "GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsMostPlayedByYearMonthNoFlow(year: Long, month: Long, limit:Long = Long.MAX_VALUE): List<Song>
+
+    @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
     @RewriteQueriesToDropUnusedColumns
     fun songsOnDevice(): Flow<List<Song>>

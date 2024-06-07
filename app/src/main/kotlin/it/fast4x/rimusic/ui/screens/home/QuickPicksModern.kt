@@ -112,11 +112,13 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
@@ -313,7 +315,9 @@ fun QuickPicksModern(
     }
     cachedSongs?.addAll(downloadedSongs)
 
-
+    val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
+    if (enableCreateMonthlyPlaylists)
+        CheckMonthlyPlaylist()
 
     PullToRefreshBox(
         refreshing = refreshing,
