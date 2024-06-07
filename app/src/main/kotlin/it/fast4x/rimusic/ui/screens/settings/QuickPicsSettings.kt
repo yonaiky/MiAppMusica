@@ -119,7 +119,7 @@ fun  QuickPicsSettings() {
         )
 
         SwitchSettingEntry(
-            title = "Enable Quick Picks page",
+            title = stringResource(R.string.enable_quick_picks_page),
             text = "",
             isChecked = enableQuickPicksPage,
             onCheckedChange = {

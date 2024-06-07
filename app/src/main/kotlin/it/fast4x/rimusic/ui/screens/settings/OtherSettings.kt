@@ -350,11 +350,11 @@ fun OtherSettings() {
 
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = "Parental control")
+        SettingsEntryGroupText(title = stringResource(R.string.parental_control))
 
         SwitchSettingEntry(
-            title = "Parental control",
-            text = "Prevent play songs with age limitation",
+            title = stringResource(R.string.parental_control),
+            text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
             isChecked = parentalControlEnabled,
             onCheckedChange = { parentalControlEnabled = it }
         )

@@ -571,4 +571,8 @@ CC-BY-SA 3.0</string>
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
     <string name="no_log_available">No log available</string>
+    <string name="enable_quick_picks_page">Enable Quick Picks page</string>
+    <string name="lang_vietnamese">Vietnamese</string>
+    <string name="parental_control">Parental control</string>
+    <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
 </resources>

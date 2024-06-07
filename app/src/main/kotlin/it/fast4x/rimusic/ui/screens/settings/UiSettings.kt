@@ -535,7 +535,7 @@ fun  UiSettings() {
                         Languages.Telugu -> stringResource(R.string.lang_telugu)
                         Languages.Turkish -> stringResource(R.string.turkish)
                         Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
-                        Languages.Vietnamese -> "Vietnamese"
+                        Languages.Vietnamese -> stringResource(R.string.lang_vietnamese)
                     }
                 }
             )
