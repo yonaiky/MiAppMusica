@@ -137,6 +137,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioFadeIn
 import it.fast4x.rimusic.utils.audioFadeOut
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -156,6 +157,7 @@ import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
@@ -755,29 +757,17 @@ fun PlayerModern(
     //val onGoToHome = homeRoute::global
 
 
-    val windows by remember {
-        mutableStateOf(binder.player.currentTimeline.windows)
-    }
-
-    var queuedSongs by remember {
-        mutableStateOf<List<Song>>(emptyList())
-    }
-
-    LaunchedEffect(Unit, mediaItem.mediaId, windows) {
-        Database.getSongsList(
-            windows.map {
-                it.mediaItem.mediaId
-            }
-        ).collect { queuedSongs = it }
+    val mediaItems by remember {
+        mutableStateOf(binder.player.currentTimeline.mediaItems)
     }
 
     var totalPlayTimes = 0L
-    queuedSongs.forEach {
-        totalPlayTimes += it.durationText?.let { it1 ->
+    mediaItems.forEach {
+        totalPlayTimes += it.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
             durationTextToMillis(it1)
         }?.toLong() ?: 0
     }
-
+//    println("mediaItem totalPlayTimes $totalPlayTimes")
 
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
