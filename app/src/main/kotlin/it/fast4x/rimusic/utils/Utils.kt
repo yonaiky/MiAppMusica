@@ -233,7 +233,7 @@ val MediaItem.asSong: Song
         id = mediaId,
         title = mediaMetadata.title.toString(),
         artistsText = mediaMetadata.artist.toString(),
-        durationText = "",
+        durationText = mediaMetadata.extras?.getString("durationText"),
         thumbnailUrl = mediaMetadata.artworkUri.toString()
     )
 
