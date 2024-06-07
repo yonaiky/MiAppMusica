@@ -23,26 +23,46 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.password
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.toUpperCase
+import it.fast4x.compose.persist.persistList
+import it.fast4x.piped.models.Instance
+import it.fast4x.piped.Piped
+import it.fast4x.piped.models.UrlString
+import it.fast4x.rimusic.ApplicationDependencies
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
+import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.Menu
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.PipedSession
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
@@ -52,6 +72,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -63,8 +84,14 @@ import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.toast
+import it.fast4x.rimusic.utils.upsert
+import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import timber.log.Timber
 import java.io.File
 import java.net.Proxy
+import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("BatteryLife")
 @ExperimentalAnimationApi
@@ -130,6 +157,8 @@ fun OtherSettings() {
 
     var parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     var logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
+
+
 
     Column(
         modifier = Modifier
@@ -329,6 +358,197 @@ fun OtherSettings() {
             isChecked = parentalControlEnabled,
             onCheckedChange = { parentalControlEnabled = it }
         )
+
+        /*
+        /****** PIPED ******/
+        val defaultPipedInstanceUrl by rememberSaveable { mutableStateOf("https://pipedapi-libre.kavin.rocks") }
+        val defaultPipedInstanceName by rememberSaveable { mutableStateOf("kavin.rocks libre (Official)") }
+        var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+        var username by rememberSaveable { mutableStateOf("") }
+        var password by rememberSaveable { mutableStateOf("") }
+        var loadInstances by rememberSaveable { mutableStateOf(false) }
+        var isLoading by rememberSaveable { mutableStateOf(false) }
+        var instanceSelected: Int? by rememberSaveable { mutableStateOf(null) }
+        var instances by persistList<Instance>(tag = "otherSettings/pipedInstances")
+        var noInstances by rememberSaveable { mutableStateOf(false) }
+        var executeLogin by rememberSaveable { mutableStateOf(false) }
+        var isUserLoggedIn by rememberSaveable { mutableStateOf(false) }
+        var showInstances by rememberSaveable { mutableStateOf(false) }
+        var session by rememberSaveable { mutableStateOf<Result<it.fast4x.piped.models.Session>?>(null) }
+        var pipedSession: PipedSession? by rememberSaveable { mutableStateOf(null) }
+
+        val menuState = LocalMenuState.current
+        val coroutineScope = rememberCoroutineScope()
+
+        if (isLoading)
+            DefaultDialog(
+                onDismiss = {
+                    isLoading = false
+                }
+            ) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+
+        if (loadInstances) {
+            LaunchedEffect(Unit) {
+                isLoading = true
+                instanceSelected = null
+                Piped.getInstances()?.getOrNull()?.let {
+                    instances = it
+                    //println("mediaItem Instances $it")
+                } ?: run { noInstances = true }
+                isLoading = false
+                showInstances = true
+                /*
+                runCatching {
+                    Dependencies.credentialManager.get(context)?.let {
+                        username = it.id
+                        password = it.password
+                    }
+                }.getOrNull()
+                 */
+            }
+        }
+        if (noInstances) {
+            SmartToast("No instances found", type = PopupType.Info)
+        }
+
+        if (executeLogin) {
+            LaunchedEffect(Unit) {
+                coroutineScope.launch {
+                    isLoading = true
+                    session = Piped.login(
+                        apiBaseUrl = instances[instanceSelected!!].apiBaseUrl,
+                        username = username,
+                        password = password
+                    )?.onFailure {
+                        Timber.e(it.message)
+                        isLoading = false
+                        SmartToast("Piped login failed", type = PopupType.Error)
+                        isUserLoggedIn = false
+                        loadInstances = false
+                        session = null
+                        executeLogin = false
+                    }
+                    if (session?.isSuccess == false)
+                        return@launch
+
+                    SmartToast("Piped login successful", type = PopupType.Success)
+                    Timber.i("Piped login successful")
+
+                    session.let {
+                        it?.getOrNull()?.token?.let { it1 ->
+                            pipedSession = PipedSession(
+                                instanceName = instances[instanceSelected!!].name,
+                                apiBaseUrl = it.getOrNull()!!.apiBaseUrl,
+                                username = username,
+                                token = it1
+                            )
+                            Timber.i("PipedSession ${pipedSession!!.serialize()}")
+                        }
+                    }
+
+
+                runCatching {
+                    ApplicationDependencies.credentialManager.upsert(
+                        context = context,
+                        username = username,
+                        password = password
+                    )
+                }.onFailure {
+                    Timber.e(it.message)
+                }
+
+                    isLoading = false
+                    loadInstances = false
+                    isUserLoggedIn = true
+                    executeLogin = false
+                }
+            }
+        }
+
+        if (showInstances && instances.isNotEmpty()) {
+            menuState.display {
+                Menu {
+                    MenuEntry(
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = {
+                            showInstances = false
+                            menuState.hide()
+                        }
+                    )
+                    instances.forEach {
+                        MenuEntry(
+                            icon = R.drawable.server,
+                            text = it.name,
+                            secondaryText = "${it.locationsFormatted} Users: ${it.userCount}",
+                            onClick = {
+                                menuState.hide()
+                                instances.indexOf(it).let { index ->
+                                    //instances[index].apiBaseUrl
+                                    instanceSelected = index
+                                    executeLogin = true
+                                    //println("mediaItem Instance ${instances[index].apiBaseUrl}")
+                                }
+                                showInstances = false
+                            }
+                        )
+                    }
+                    MenuEntry(
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = {
+                            showInstances = false
+                            menuState.hide()
+                        }
+                    )
+                }
+            }
+        }
+
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = "PIPED")
+        SwitchSettingEntry(
+            title = "Enable piped syncronization",
+            text = "",
+            isChecked = isPipedEnabled,
+            onCheckedChange = { isPipedEnabled = it }
+        )
+
+        AnimatedVisibility(visible = isPipedEnabled) {
+            Column {
+                ButtonBarSettingEntry(
+                    title = "Change instance",
+                    text = pipedSession?.instanceName ?: defaultPipedInstanceName,
+                    icon = R.drawable.open,
+                    onClick = {
+                        loadInstances = true
+                    }
+                )
+
+                TextDialogSettingEntry(
+                    title = "Username",
+                    text = username,
+                    currentText = username,
+                    onTextSave = { username = it })
+                TextDialogSettingEntry(
+                    title = "Password",
+                    text = if (password.isNotEmpty()) "********" else "",
+                    currentText = password,
+                    onTextSave = { password = it },
+                    modifier = Modifier
+                        .semantics {
+                            password()
+                        }
+                    )
+            }
+        }
+
+        /****** PIPED ******/
+
+         */
 
         SettingsGroupSpacer()
 

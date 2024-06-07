@@ -113,6 +113,7 @@ dependencies {
     implementation(projects.innertubes)
     implementation(projects.kugou)
     implementation(projects.lrclib)
+    implementation(projects.piped)
 
     val appcompatVersion = "1.7.0"
     implementation("androidx.appcompat:appcompat:$appcompatVersion")
@@ -135,6 +136,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.github.vincent-series:smart-toast:4.1.6")
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("androidx.credentials:credentials:1.3.0-beta01")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-beta01")
     
     //End
     coreLibraryDesugaring(libs.desugaring)

@@ -189,6 +189,7 @@ const val parentalControlEnabledKey = "parentalControlEnabled"
 const val playerPositionKey = "playerPosition"
 const val excludeSongsWithDurationLimitKey = "excludeSongsWithDurationLimit"
 const val logDebugEnabledKey = "logDebugEnabled"
+const val isPipedEnabledKey = "isPipedEnabled"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

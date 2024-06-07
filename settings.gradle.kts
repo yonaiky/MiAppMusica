@@ -19,6 +19,8 @@ dependencyResolutionManagement {
 
             library("kotlin-coroutines","org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.7.3")
 
+            library("kotlin-datetime", "org.jetbrains.kotlinx", "kotlinx-datetime").version("0.6.0")
+
             library("compose-foundation", "androidx.compose.foundation", "foundation").versionRef("compose")
             library("compose-ui", "androidx.compose.ui", "ui").versionRef("compose")
             library("compose-ui-util", "androidx.compose.ui", "ui-util").versionRef("compose")
@@ -68,4 +70,5 @@ include(":innertube")
 include(":ktor-client-brotli")
 include(":kugou")
 include(":lrclib")
+include(":piped")
 include(":innertubes")

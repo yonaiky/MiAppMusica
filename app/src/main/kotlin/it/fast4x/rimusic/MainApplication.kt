@@ -1,6 +1,7 @@
 package it.fast4x.rimusic
 
 import android.app.Application
+import androidx.credentials.CredentialManager
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
