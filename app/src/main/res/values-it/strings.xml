@@ -567,7 +567,7 @@
     <string name="icon_like_brilliant">Brillante</string>
     <string name="player_swap_controls_with_timeline">Inverti i controlli con la timeline</string>
     <string name="player_enable_lyrics_popup_message">Abilita il messaggio popup del testo del brano</string>
-    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
-    <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
-    <string name="no_log_available">No log available</string>
+    <string name="exclude_songs_with_duration_limit">Escludi brani con limite di durata</string>
+    <string name="exclude_songs_with_duration_limit_description">Se abilitato, i brani con durata superiore al limite saranno esclusi, applicati alla coda di riproduzione e mytop</string>
+    <string name="no_log_available">Nessun registro disponibile</string>
 </resources>
