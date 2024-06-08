@@ -149,7 +149,7 @@ interface Database {
     @Query("SELECT Playlist.*, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = Playlist.id) as songCount " +
             "FROM Song JOIN SongPlaylistMap ON Song.id = SongPlaylistMap.songId " +
             "JOIN Event ON Song.id = Event.songId JOIN Playlist ON Playlist.id = SongPlaylistMap.playlistId " +
-            "WHERE (:to - Event.timestamp) <= :from GROUP BY Playlist.id ORDER BY Event.timestamp DESC LIMIT :limit")
+            "WHERE (:to - Event.timestamp) <= :from GROUP BY Playlist.id ORDER BY SUM(Event.playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun playlistsMostPlayedByPeriod(from: Long,to: Long, limit:Int): Flow<List<PlaylistPreview>>
 
@@ -159,7 +159,7 @@ interface Database {
     //        "WHERE Event.timestamp BETWEEN :from AND :to GROUP BY Album.id ORDER BY Event.timestamp DESC LIMIT :limit")
     @Query("SELECT Album.* FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId " +
             "JOIN Event ON Song.id = Event.songId JOIN Album ON Album.id = SongAlbumMap.albumId " +
-            "WHERE (:to - Event.timestamp) <= :from GROUP BY Album.id ORDER BY Event.timestamp DESC LIMIT :limit")
+            "WHERE (:to - Event.timestamp) <= :from GROUP BY Album.id ORDER BY SUM(Event.playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun albumsMostPlayedByPeriod(from: Long,to: Long, limit:Int): Flow<List<Album>>
 
@@ -169,7 +169,7 @@ interface Database {
     //        "WHERE Event.timestamp BETWEEN :from AND :to GROUP BY Artist.id ORDER BY Event.timestamp DESC LIMIT :limit")
     @Query("SELECT Artist.* FROM Song JOIN SongArtistMap ON Song.id = SongArtistMap.songId " +
             "JOIN Event ON Song.id = Event.songId JOIN Artist ON Artist.id = SongArtistMap.artistId " +
-            "WHERE (:to - Event.timestamp) <= :from GROUP BY Artist.id ORDER BY Event.timestamp DESC LIMIT :limit")
+            "WHERE (:to - Event.timestamp) <= :from GROUP BY Artist.id ORDER BY SUM(Event.playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun artistsMostPlayedByPeriod(from: Long,to: Long, limit:Int): Flow<List<Artist>>
 
@@ -177,7 +177,7 @@ interface Database {
     //@Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE timestamp " +
     //        "BETWEEN :from AND :to GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE " +
-            "(:to - Event.timestamp) <= :from GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
+            "(:to - Event.timestamp) <= :from GROUP BY songId  ORDER BY SUM(playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun songsMostPlayedByPeriod(from: Long, to: Long, limit:Long = Long.MAX_VALUE): Flow<List<Song>>
 
