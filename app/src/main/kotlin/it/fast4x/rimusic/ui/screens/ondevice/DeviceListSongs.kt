@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
+import it.fast4x.rimusic.utils.isAtLeastAndroid11
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
@@ -996,7 +997,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 if (isAtLeastAndroid10) MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
                 else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-            val projection = arrayOf(
+            var projection = arrayOf(
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
@@ -1010,9 +1011,11 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.IS_MUSIC,
                 MediaStore.Audio.Media.MIME_TYPE,
-                MediaStore.Audio.Media.BITRATE,
                 MediaStore.Audio.Media.DATE_MODIFIED
             )
+
+            if (isAtLeastAndroid11)
+                projection += MediaStore.Audio.Media.BITRATE
 
             val sortOrderSQL = when (order) {
                 SortOrder.Ascending -> "ASC"
@@ -1045,11 +1048,12 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                     val isMusicIdx = cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)
 
                     val mimeTypeIdx = cursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE)
-                    val bitrateIdx = cursor.getColumnIndex(MediaStore.Audio.Media.BITRATE)
+                    val bitrateIdx = if (isAtLeastAndroid11) cursor.getColumnIndex(MediaStore.Audio.Media.BITRATE) else -1
                     val dateModifiedIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
 
                     val blacklist = OnDeviceBlacklist(context = context)
 
+                    Timber.i(" sdk int ${Build.VERSION.SDK_INT}")
 
                     buildList {
                         while (cursor.moveToNext()) {
@@ -1063,7 +1067,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                             val albumId = cursor.getLong(albumIdIdx)
 
                             val mimeType = cursor.getString(mimeTypeIdx)
-                            val bitrate = cursor.getInt(bitrateIdx)
+                            val bitrate = if (isAtLeastAndroid11) cursor.getInt(bitrateIdx) else 0
                             val dateModified = cursor.getLong(dateModifiedIdx)
 
                             val relativePath = if (isAtLeastAndroid10) {
