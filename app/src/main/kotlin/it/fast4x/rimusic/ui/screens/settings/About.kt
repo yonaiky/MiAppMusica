@@ -207,6 +207,7 @@ fun About() {
                  "Iscle \n"+
                 "JZITNIK-github \n" +
                 "Locxter \n"+
+                 "lrusso96 \n"+
                 "Roklc \n"+
                 "sharunkumar \n" +
                 "SuhasDissa \n"
