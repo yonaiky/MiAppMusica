@@ -136,8 +136,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.github.vincent-series:smart-toast:4.1.6")
     implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("androidx.credentials:credentials:1.3.0-beta01")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-beta01")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     
     //End
     coreLibraryDesugaring(libs.desugaring)
