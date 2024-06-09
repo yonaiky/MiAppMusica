@@ -211,7 +211,7 @@ fun AppNavigation(
             }
         }
 
-        composable(route = "player") {
+        composable(route = NavRoutes.player.name) {
             val density = LocalDensity.current
             val windowsInsets = WindowInsets.systemBars
             val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }

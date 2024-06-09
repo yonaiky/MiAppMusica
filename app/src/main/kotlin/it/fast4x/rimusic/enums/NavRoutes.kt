@@ -10,6 +10,7 @@ enum class NavRoutes {
     localPlaylist,
     mood,
     onDevice,
+    player,
     playlist,
     queue,
     search,
