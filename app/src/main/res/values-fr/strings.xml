@@ -576,4 +576,6 @@
     <string name="lang_vietnamese">Vietnamese</string>
     <string name="parental_control">Parental control</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
+    <string name="cache_location_private">Private</string>
+    <string name="cache_location_system">System</string>
 </resources>
