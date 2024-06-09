@@ -720,7 +720,7 @@ fun  UiSettings() {
                     closeWithBackButton = it
                 }
             )
-            SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
 
         if (filter.isNullOrBlank() || stringResource(R.string.close_background_player).contains(filterCharSequence,true))

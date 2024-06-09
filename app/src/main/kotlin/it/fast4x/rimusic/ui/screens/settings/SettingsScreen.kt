@@ -290,6 +290,8 @@ fun SettingsEntry(
             BasicText(
                 text = titleSecondary,
                 style = typography.xxs.secondary,
+                maxLines = 2,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 //modifier = Modifier
                 //    .padding(vertical = 8.dp, horizontal = 24.dp)
             )
