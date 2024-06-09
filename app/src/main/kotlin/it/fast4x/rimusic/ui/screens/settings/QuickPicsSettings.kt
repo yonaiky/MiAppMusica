@@ -44,6 +44,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
+import it.fast4x.rimusic.utils.showMoodsAndGenresKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -67,6 +68,7 @@ fun  QuickPicsSettings() {
     var showNewAlbumsArtists by rememberPreference(showNewAlbumsArtistsKey, true)
     var showNewAlbums by rememberPreference(showNewAlbumsKey, true)
     var showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
+    var showMoodsAndGenres by rememberPreference(showMoodsAndGenresKey, true)
     var showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
     var enableQuickPicksPage by rememberPreference(enableQuickPicksPageKey, true)
     val eventsCount by remember {
@@ -218,6 +220,15 @@ fun  QuickPicsSettings() {
             isChecked = showPlaylistMightLike,
             onCheckedChange = {
                 showPlaylistMightLike = it
+            }
+        )
+
+        SwitchSettingEntry(
+            title = "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}",
+            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.moods_and_genres),
+            isChecked = showMoodsAndGenres,
+            onCheckedChange = {
+                showMoodsAndGenres = it
             }
         )
 
