@@ -359,7 +359,7 @@
     <string name="sleeptimer_stop">berhenti</string>
     <string name="player_keep_minimized">Tetap minimalkan</string>
     <string name="when_click_on_a_song_player_start_minimized">Saat menekan suatu lagu, pemutar akan tetap diminimalkan</string>
-    <string name="settings_use_font_type">Tipe font</string>
+    <string name="settings_use_font_type">Jenis font</string>
     <string name="enabled">Aktif</string>
     <string name="ask">Tanyakan</string>
     <string name="item_select">Pilih</string>
