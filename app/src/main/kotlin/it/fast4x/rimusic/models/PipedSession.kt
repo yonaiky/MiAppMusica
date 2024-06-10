@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.models
 
 import io.ktor.http.Url
+import it.fast4x.piped.models.authenticatedWith
 
 data class PipedSession(
     val instanceName: String,
@@ -8,6 +9,8 @@ data class PipedSession(
     val token: String,
     val username: String
 ) {
+
+    fun toApiSession() = apiBaseUrl authenticatedWith token
 
     fun serialize() = "$instanceName|$apiBaseUrl|$token|$username"
     companion object {

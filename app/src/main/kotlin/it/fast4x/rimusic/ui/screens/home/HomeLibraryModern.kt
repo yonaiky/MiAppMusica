@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
+import it.fast4x.piped.Piped
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
@@ -91,6 +92,7 @@ import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
+import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
@@ -112,6 +114,8 @@ import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlinx.coroutines.async
+import timber.log.Timber
 
 
 @ExperimentalMaterialApi
@@ -155,8 +159,22 @@ fun HomeLibraryModern(
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
+    var itemsPiped by persistList<it.fast4x.piped.models.PlaylistPreview>("home/pipedPlaylists")
+    val pipedSession = getPipedSession()
+
+    println("pipedInfo ${pipedSession}")
+
     LaunchedEffect(sortBy, sortOrder) {
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
+    }
+
+    LaunchedEffect(Unit) {
+        async {
+            Piped.playlist.list(session = pipedSession.toApiSession())
+        }.await()?.map {
+            itemsPiped = it
+        }
+        println("pipedInfo ${itemsPiped}")
     }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -439,22 +457,41 @@ fun HomeLibraryModern(
                 )
             }
 
-            if (playlistType == PlaylistsType.Playlist)
+            if (playlistType == PlaylistsType.Playlist) {
                 items(items = items.filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
                 }, key = { it.playlist.id }) { playlistPreview ->
+                    Modifier
+                        .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
                     PlaylistItem(
                         playlist = playlistPreview,
                         thumbnailSizeDp = thumbnailSizeDp,
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .fillMaxSize()
+                    )
+                }
+
+                /*
+                items(items = itemsPiped, key = { "piped" + it.id }) { playlistPreview ->
+                    PlaylistItem(
+                        playlist = PlaylistPreview(Playlist(name = "piped:" + playlistPreview.name, browseId = playlistPreview.id.toString()), playlistPreview.videoCount),
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        thumbnailSizePx = thumbnailSizePx,
+                        alternative = true,
+                        modifier = Modifier
+                            .clickable(onClick = {
+                                //onPlaylistClick(playlistPreview.playlist)
+                            })
                             .animateItemPlacement()
                             .fillMaxSize()
                     )
                 }
+                 */
+            }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
                  items(items = items.filter {
