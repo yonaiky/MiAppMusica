@@ -399,7 +399,7 @@
     <string name="sort_duration">Durasi</string>
     <string name="lang_serbian_cyrillic">Српска</string>
     <string name="pause_between_songs">Jeda diantara lagu</string>
-    <string name="navigation_bar_type">Tipe bilah navigasi</string>
+    <string name="navigation_bar_type">Gaya bilah navigasi</string>
     <string name="icon_and_text">Ikon dan teks</string>
     <string name="only_icon">Ikon saja</string>
     <string name="action_bar_show_menu_button">Tombol Menu</string>
@@ -546,7 +546,7 @@
     <string name="lang_estonian">Estonian (eesti keel)</string>
     <string name="pcontrols_modern">Modern</string>
     <string name="pcontrols_essential">Setelan awal</string>
-    <string name="pcontrols_type">Tipe kontrol</string>
+    <string name="pcontrols_type">Gaya kontrol</string>
     <string name="player_swiping_down_is_disabled">Usap kebawah dimatikan</string>
     <string name="player_position">Posisi pemutar</string>
     <string name="position_top">Atas</string>
@@ -555,7 +555,7 @@
     <string name="removed_from_favorites">Dihapus dari favorit</string>
     <string name="lang_filipino">Filipino (Tagalog)</string>
     <string name="action_bar_transparent_background">Transparan</string>
-    <string name="pinfo_type">Tipe informasi</string>
+    <string name="pinfo_type">Gaya tajuk</string>
     <string name="pinfo_album_and_artist_name">Album dan Artis</string>
     <string name="show_player_top_actions_bar">Tampilkan bilah aksi atas</string>
     <string name="icon_like_button">Tombol favorit</string>
