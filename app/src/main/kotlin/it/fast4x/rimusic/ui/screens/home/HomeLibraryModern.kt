@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -93,11 +94,14 @@ import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.playlistTypeKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showBuiltinPlaylistsKey
@@ -114,9 +118,15 @@ import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+
+const val PIPED_PREFIX = "piped:"
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -154,27 +164,82 @@ fun HomeLibraryModern(
         )
     }
 
-    var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    var sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+    val coroutineScope = rememberCoroutineScope()
 
-    var items by persistList<PlaylistPreview>("home/playlists")
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val itemsPiped by persistList<it.fast4x.piped.models.PlaylistPreview>("home/pipedPlaylists")
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
+        val pipedSession = getPipedSession()
+        //println("pipedInfo ${pipedSession}")
+        LaunchedEffect(Unit) {
+            async {
+                Piped.playlist.list(session = pipedSession.toApiSession())
+            }.await()?.map {
+                //itemsPiped = it
+                transaction {
+                    it.forEach {
+                        val playlistExist = Database.playlistExistByName("$PIPED_PREFIX${it.name}")
+                        if (playlistExist == 0L) {
+                            val playlistId =
+                            Database.insert(
+                                Playlist(
+                                    name = "$PIPED_PREFIX${it.name}",
+                                    browseId = it.id.toString()
+                                )
+                            )
+                            coroutineScope.launch(Dispatchers.IO) {
+                                async {
+                                    Piped.playlist.songs(
+                                        session = pipedSession.toApiSession(),
+                                        id = it.id
+                                    )
+                                }.await()?.map {playlist ->
 
-    var itemsPiped by persistList<it.fast4x.piped.models.PlaylistPreview>("home/pipedPlaylists")
-    val pipedSession = getPipedSession()
+                                    playlist.videos.forEach {video ->
 
-    println("pipedInfo ${pipedSession}")
+                                        println("pipedInfo ${video.thumbnailUrl}")
+                                        val song = video.id?.let { id ->
+                                                Song(
+                                                    id = id,
+                                                    title = video.cleanTitle,
+                                                    artistsText = video.cleanArtists,
+                                                    durationText = video.durationText,
+                                                    thumbnailUrl = video.thumbnailUrl.toString()
+                                                )
+                                        }
+                                        if (song != null) {
+                                            Database.insert(song)
+                                        }
+                                    }
+                                    playlist.videos.forEachIndexed { index, song ->
+                                        Database.insert(
+                                            SongPlaylistMap(
+                                                songId = song.id.toString(),
+                                                playlistId = playlistId,
+                                                position = index
+                                            )
+                                        )
+                                    }
 
-    LaunchedEffect(sortBy, sortOrder) {
-        Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            println("pipedInfo ${itemsPiped}")
+        }
     }
 
-    LaunchedEffect(Unit) {
-        async {
-            Piped.playlist.list(session = pipedSession.toApiSession())
-        }.await()?.map {
-            itemsPiped = it
-        }
-        println("pipedInfo ${itemsPiped}")
+
+    var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
+    var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
+
+    var items by persistList<PlaylistPreview>("home/playlists")
+    LaunchedEffect(sortBy, sortOrder) {
+        Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -462,35 +527,18 @@ fun HomeLibraryModern(
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
                 }, key = { it.playlist.id }) { playlistPreview ->
-                    Modifier
-                        .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+
                     PlaylistItem(
                         playlist = playlistPreview,
                         thumbnailSizeDp = thumbnailSizeDp,
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
+                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }
-
-                /*
-                items(items = itemsPiped, key = { "piped" + it.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = PlaylistPreview(Playlist(name = "piped:" + playlistPreview.name, browseId = playlistPreview.id.toString()), playlistPreview.videoCount),
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                //onPlaylistClick(playlistPreview.playlist)
-                            })
-                            .animateItemPlacement()
-                            .fillMaxSize()
-                    )
-                }
-                 */
             }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
@@ -504,7 +552,7 @@ fun HomeLibraryModern(
                         alternative = true,
                         modifier = Modifier
                             .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }
@@ -520,7 +568,7 @@ fun HomeLibraryModern(
                         alternative = true,
                         modifier = Modifier
                             .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }

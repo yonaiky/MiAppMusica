@@ -22,11 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
@@ -47,6 +49,7 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 @Composable
 fun PlaylistItem(
@@ -102,7 +105,10 @@ fun PlaylistItem(
         thumbnailContent = {
             if (thumbnails.toSet().size == 1) {
                 AsyncImage(
-                    model = thumbnails.first().thumbnail(thumbnailSizePx),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(thumbnails.first())
+                        .setHeader("User-Agent", "Mozilla/5.0")
+                        .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = it
@@ -119,7 +125,13 @@ fun PlaylistItem(
                         Alignment.BottomEnd
                     ).forEachIndexed { index, alignment ->
                         AsyncImage(
-                            model = thumbnails.getOrNull(index),
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(thumbnails.getOrNull(index))
+                                .setHeader("User-Agent", "Mozilla/5.0")
+                                .build(),
+                            onError = {error ->
+                                Timber.e(error.result.throwable.message)
+                            },
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

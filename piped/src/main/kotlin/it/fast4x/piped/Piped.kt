@@ -17,6 +17,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLBuilder
@@ -202,6 +204,12 @@ object Piped {
         suspend fun songs(session: Session, id: UUID) = runCatchingCancellable {
             request(session, "playlists/$id").body<Playlist>()
         }
+
+        /*
+        suspend fun songsTest(session: Session, id: UUID) = runCatchingCancellable {
+            println("piped.playlists.songsTest: " + request(session, "playlists/$id").bodyAsText())
+        }
+         */
     }
 
 
