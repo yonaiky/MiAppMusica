@@ -109,6 +109,9 @@ fun PlaylistItem(
                         .data(thumbnails.first())
                         .setHeader("User-Agent", "Mozilla/5.0")
                         .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
+                    onError = {error ->
+                        Timber.e(error.result.throwable.message)
+                    },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = it
