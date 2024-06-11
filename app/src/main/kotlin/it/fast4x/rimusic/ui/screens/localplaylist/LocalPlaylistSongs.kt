@@ -50,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -127,6 +128,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -152,6 +154,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -167,6 +170,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
+import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.Dispatchers
@@ -176,6 +180,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.UUID
 
 
 @KotlinCsvExperimental
@@ -545,6 +550,10 @@ fun LocalPlaylistSongs(
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false
+    val playlistNotPipedType = playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX,0,true) == false
+
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
 
 
     Box(
@@ -581,9 +590,15 @@ fun LocalPlaylistSongs(
 
                     HeaderWithIcon(
                         //title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
-                        title = playlistPreview?.playlist?.name?.let {
-                            if (playlistNotMonthlyType) cleanPrefix(it)
-                            else getTitleMonthlyPlaylist(cleanPrefix(it))
+                        title = playlistPreview?.playlist?.name?.let {name ->
+                            if (name.startsWith(PINNED_PREFIX,0,true))
+                                name.substringAfter(PINNED_PREFIX) else
+                                if (name.startsWith(MONTHLY_PREFIX,0,true))
+                                    getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
+                                    if (name.startsWith(PIPED_PREFIX,0,true))
+                                        name.substringAfter(PIPED_PREFIX) else name
+                            //if (playlistNotMonthlyType) cleanPrefix(it)
+                            //else getTitleMonthlyPlaylist(cleanPrefix(it))
                         } ?: "Unknown",
                         iconId = R.drawable.playlist,
                         enabled = true,
@@ -626,7 +641,7 @@ fun LocalPlaylistSongs(
                         modifier = Modifier
                             //.fillMaxHeight()
                             .padding(end = 10.dp)
-                            .fillMaxWidth( if (isLandscape) 0.90f else 0.80f )
+                            .fillMaxWidth(if (isLandscape) 0.90f else 0.80f)
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
@@ -959,12 +974,14 @@ fun LocalPlaylistSongs(
                                         },
                                         showOnSyncronize = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                         onSyncronize = {
+                                            if (!playlistPreview.playlist.name.startsWith(PIPED_PREFIX,0,true)) {
                                                 transaction {
                                                     runBlocking(Dispatchers.IO) {
                                                         withContext(Dispatchers.IO) {
                                                             Innertube.playlistPage(
                                                                 BrowseBody(
-                                                                    browseId = playlistPreview.playlist.browseId ?: ""
+                                                                    browseId = playlistPreview.playlist.browseId
+                                                                        ?: ""
                                                                 )
                                                             )
                                                                 ?.completed()
@@ -985,12 +1002,23 @@ fun LocalPlaylistSongs(
                                                             }?.let(Database::insertSongPlaylistMaps)
                                                     }
                                                 }
+                                                SmartToast(context.getString(R.string.done))
+                                            } else {
+                                                syncSongsInPipedPlaylist(
+                                                    coroutineScope = coroutineScope,
+                                                    pipedSession = pipedSession.toApiSession(),
+                                                    idPipedPlaylist = UUID.fromString(playlistPreview.playlist.browseId),
+                                                    playlistId = playlistPreview.playlist.id
+
+                                                )
+                                                SmartToast(context.getString(R.string.done))
+                                            }
                                         },
                                         onRename = {
-                                            if (playlistNotMonthlyType)
+                                            if (playlistNotMonthlyType || playlistNotPipedType)
                                                 isRenaming = true
                                             else
-                                                SmartToast(context.getString(R.string.info_cannot_rename_a_monthly_playlist))
+                                                SmartToast(context.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist))
                                         },
                                         onAddToPlaylist = { playlistPreview ->
                                             position =

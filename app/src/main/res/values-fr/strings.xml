@@ -578,4 +578,17 @@
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">System</string>
+    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or piped playlist</string>
+    <string name="debug">DEBUG</string>
+    <string name="enable_log_debug">Enable log debug</string>
+    <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
+    <string name="copy_log_to_clipboard">Copy log to clipboard</string>
+    <string name="piped_account">PIPED</string>
+    <string name="enable_piped_syncronization">Enable piped syncronization</string>
+    <string name="piped_change_instance">Change instance</string>
+    <string name="piped_username">Username</string>
+    <string name="piped_password">Password</string>
+    <string name="piped_disconnect">Disconnect</string>
+    <string name="piped_connect">Connect</string>
+    <string name="piped_connected_to_s">Connected to %s</string>
 </resources>

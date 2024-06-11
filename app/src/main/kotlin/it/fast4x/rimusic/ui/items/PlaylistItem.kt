@@ -35,6 +35,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
@@ -239,6 +240,17 @@ fun PlaylistItem(
             )
 
             name?.let {
+                if (it.startsWith(PIPED_PREFIX,0,true)) {
+                    Image(
+                        painter = painterResource(R.drawable.piped_logo),
+                        colorFilter = ColorFilter.tint(colorPalette.red),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(all = 5.dp),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.Fit
+                    )
+                }
                 if (it.startsWith(PINNED_PREFIX,0,true)) {
                     Image(
                         painter = painterResource(R.drawable.pin),
@@ -294,7 +306,9 @@ fun PlaylistItem(
                         text = if (name.startsWith(PINNED_PREFIX,0,true))
                             name.substringAfter(PINNED_PREFIX) else
                             if (name.startsWith(MONTHLY_PREFIX,0,true))
-                                getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else name,
+                                getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
+                            if (name.startsWith(PIPED_PREFIX,0,true))
+                            name.substringAfter(PIPED_PREFIX) else name,
                         style = typography.xs.semiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,

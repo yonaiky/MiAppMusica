@@ -53,6 +53,7 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -139,7 +140,8 @@ fun PlaylistsItemGridMenu(
 
             val unpinnedPlaylists = playlistPreviews.filter {
                 !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
+                !it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
             }
 
             var isCreatingNewPlaylist by rememberSaveable {

@@ -461,6 +461,7 @@ fun ButtonBarSettingEntry(
     text: String,
     icon: Int,
     iconSize: Dp = 24.dp,
+    iconColor: Color? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
@@ -474,7 +475,7 @@ fun ButtonBarSettingEntry(
         trailingContent = {
             Image(
                 painter = painterResource(icon),
-                colorFilter = ColorFilter.tint(colorPalette.text),
+                colorFilter = ColorFilter.tint(iconColor ?: colorPalette.text),
                 modifier = Modifier.size(iconSize),
                 contentDescription = null,
                 contentScale = ContentScale.Fit

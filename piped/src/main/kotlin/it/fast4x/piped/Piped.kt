@@ -13,6 +13,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
@@ -150,6 +151,9 @@ object Piped {
         suspend fun list(session: Session) = runCatchingCancellable {
             request(session, "user/playlists").body<List<PlaylistPreview>>()
         }
+        suspend fun listTest(session: Session) = runCatchingCancellable {
+            println("pipedInfo piped.playlists.listTest: " + request(session, "user/playlists").bodyAsText())
+        }
 
         suspend fun create(session: Session, name: String) = runCatchingCancellable {
             request(session, "user/playlists/create") {
@@ -178,15 +182,42 @@ object Piped {
         }
 
         suspend fun add(session: Session, id: UUID, videos: List<String>) = runCatchingCancellable {
-            request(session, "user/playlists/add") {
-                method = HttpMethod.Post
-                setBody(
-                    mapOf(
-                        "playlistId" to id.toString(),
-                        "videoIds" to videos
-                    )
-                )
-            }.isOk()
+            println("pipedInfo piped.playlists.add: start")
+
+                client.post(session.apiBaseUrl / "user/playlists/add") {
+                    header("Authorization", session.token)
+                    contentType(ContentType.Application.Json)
+                    parameter("playlistId", id.toString())
+                    parameter("videoIds", videos)
+                }
+
+            /*
+            runCatchingCancellable {
+                    request(session, "user/playlists/add") {
+                        method = HttpMethod.Post
+                        //setBody(
+                        parameter("playlistId", id.toString())
+                        parameter("videoIds", videos)
+
+                        /*
+                                    mapOf(
+                                        "playlistId" to id.toString(),
+                                        "videoIds" to videos
+                                    )
+
+                                 */
+                        //)
+                    }.isOk()
+            }?.onFailure {
+                println("pipedInfo piped.playlists.add: failed ${it.message}")
+            }?.onSuccess {
+                println("pipedInfo piped.playlists.add: success")
+            }
+            */
+
+            println("pipedInfo piped.playlists added ")
+        }?.onFailure {
+            println("pipedInfo piped.playlists.add: failed ${it.message}")
         }
 
         suspend fun remove(session: Session, id: UUID, idx: Int) = runCatchingCancellable {

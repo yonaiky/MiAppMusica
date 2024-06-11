@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -80,24 +81,30 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addSongsToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuStyleKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
@@ -106,6 +113,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi
@@ -436,6 +444,15 @@ fun BaseMediaItemMenu(
     onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
     val context = LocalContext.current
+    /*
+    var syncPiped by remember {
+        mutableStateOf(false)
+    }
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
+    */
 
     MediaItemMenu(
         navController = navController,
@@ -458,6 +475,19 @@ fun BaseMediaItemMenu(
                     )
                 )
             }
+            /*
+            println("pipedInfo mediaitemmenu uuid ${playlist.browseId}")
+
+            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+                addSongsToPipedPlaylist(coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession() ,
+                    id = UUID.fromString(playlist.browseId),
+                    videos = listOf(mediaItem.mediaId)
+                )
+
+             */
+
+
         },
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
@@ -762,7 +792,8 @@ fun MediaItemMenu(
 
             val unpinnedPlaylists = playlistPreviews.filter {
                 !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
+                !it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
             }
 
             var isCreatingNewPlaylist by rememberSaveable {

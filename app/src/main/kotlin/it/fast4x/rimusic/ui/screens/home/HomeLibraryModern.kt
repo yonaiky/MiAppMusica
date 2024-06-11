@@ -89,8 +89,10 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
+import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
@@ -164,75 +166,7 @@ fun HomeLibraryModern(
         )
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val itemsPiped by persistList<it.fast4x.piped.models.PlaylistPreview>("home/pipedPlaylists")
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-    if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
-        val pipedSession = getPipedSession()
-        //println("pipedInfo ${pipedSession}")
-        LaunchedEffect(Unit) {
-            async {
-                Piped.playlist.list(session = pipedSession.toApiSession())
-            }.await()?.map {
-                //itemsPiped = it
-                transaction {
-                    it.forEach {
-                        val playlistExist = Database.playlistExistByName("$PIPED_PREFIX${it.name}")
-                        if (playlistExist == 0L) {
-                            val playlistId =
-                            Database.insert(
-                                Playlist(
-                                    name = "$PIPED_PREFIX${it.name}",
-                                    browseId = it.id.toString()
-                                )
-                            )
-                            coroutineScope.launch(Dispatchers.IO) {
-                                async {
-                                    Piped.playlist.songs(
-                                        session = pipedSession.toApiSession(),
-                                        id = it.id
-                                    )
-                                }.await()?.map {playlist ->
-
-                                    playlist.videos.forEach {video ->
-
-                                        println("pipedInfo ${video.thumbnailUrl}")
-                                        val song = video.id?.let { id ->
-                                                Song(
-                                                    id = id,
-                                                    title = video.cleanTitle,
-                                                    artistsText = video.cleanArtists,
-                                                    durationText = video.durationText,
-                                                    thumbnailUrl = video.thumbnailUrl.toString()
-                                                )
-                                        }
-                                        if (song != null) {
-                                            Database.insert(song)
-                                        }
-                                    }
-                                    playlist.videos.forEachIndexed { index, song ->
-                                        Database.insert(
-                                            SongPlaylistMap(
-                                                songId = song.id.toString(),
-                                                playlistId = playlistId,
-                                                position = index
-                                            )
-                                        )
-                                    }
-
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-            println("pipedInfo ${itemsPiped}")
-        }
-    }
-
+    ImportPipedPlaylists()
 
     var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)

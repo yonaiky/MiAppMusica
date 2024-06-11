@@ -197,159 +197,6 @@ fun OtherSettings() {
         )
         SettingsDescription(text = stringResource(R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup))
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.proxy))
-        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_proxy),
-            text = "",
-            isChecked = isProxyEnabled,
-            onCheckedChange = { isProxyEnabled = it }
-        )
-
-        AnimatedVisibility(visible = isProxyEnabled) {
-            Column {
-                EnumValueSelectorSettingsEntry(title = stringResource(R.string.proxy_mode),
-                    selectedValue = proxyMode,
-                    onValueSelected = { proxyMode = it },
-                    valueText = { it.name }
-                )
-                TextDialogSettingEntry(
-                    title = stringResource(R.string.proxy_host),
-                    text = proxyHost, //stringResource(R.string.set_proxy_hostname),
-                    currentText = proxyHost,
-                    onTextSave = { proxyHost = it })
-                TextDialogSettingEntry(
-                    title = stringResource(R.string.proxy_port),
-                    text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),
-                    currentText = proxyPort.toString(),
-                    onTextSave = { proxyPort = it.toIntOrNull() ?: 1080 })
-            }
-        }
-
-
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(stringResource(R.string.on_device))
-        StringListValueSelectorSettingsEntry(
-            title = stringResource(R.string.blacklisted_folders),
-            text = stringResource(R.string.edit_blacklist_for_on_device_songs),
-            addTitle = stringResource(R.string.add_folder),
-            addPlaceholder = if (isAtLeastAndroid10) {
-                "Android/media/com.whatsapp/WhatsApp/Media"
-            } else {
-                "/storage/emulated/0/Android/media/com.whatsapp/"
-            },
-            conflictTitle = stringResource(R.string.this_folder_already_exists),
-            removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
-            context = LocalContext.current,
-            list = blackListedPaths,
-            add = { newPath ->
-                blackListedPaths = blackListedPaths + newPath
-                val file = File(context.filesDir, "Blacklisted_paths.txt")
-                file.writeText(blackListedPaths.joinToString("\n"))
-            },
-            remove = { path ->
-                blackListedPaths = blackListedPaths.filter { it != path }
-                val file = File(context.filesDir, "Blacklisted_paths.txt")
-                file.writeText(blackListedPaths.joinToString("\n"))
-            }
-        )
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.folders),
-            text = stringResource(R.string.show_folders_in_on_device_page),
-            isChecked = showFolders,
-            onCheckedChange = { showFolders = it }
-        )
-        AnimatedVisibility(visible = showFolders) {
-            TextDialogSettingEntry(
-                title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
-                text = defaultFolder,
-                currentText = defaultFolder,
-                onTextSave = { defaultFolder = it }
-            )
-        }
-
-        SettingsGroupSpacer()
-
-        SettingsEntryGroupText(title = stringResource(R.string.android_auto))
-
-        SettingsDescription(text = stringResource(R.string.enable_unknown_sources))
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.android_auto_1),
-            text = stringResource(R.string.enable_android_auto_support),
-            isChecked = isAndroidAutoEnabled,
-            onCheckedChange = { isAndroidAutoEnabled = it }
-        )
-
-        SettingsGroupSpacer()
-
-        SettingsEntryGroupText(title = stringResource(R.string.service_lifetime))
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.keep_screen_on),
-            text = stringResource(R.string.prevents_screen_timeout),
-            isChecked = isKeepScreenOnEnabled,
-            onCheckedChange = { isKeepScreenOnEnabled = it }
-        )
-
-        ImportantSettingsDescription(text = stringResource(R.string.battery_optimizations_applied))
-
-        if (isAtLeastAndroid12) {
-            SettingsDescription(text = stringResource(R.string.is_android12))
-        }
-
-        val msgNoBatteryOptim = stringResource(R.string.not_find_battery_optimization_settings)
-
-        SettingsEntry(
-            title = stringResource(R.string.ignore_battery_optimizations),
-            isEnabled = !isIgnoringBatteryOptimizations,
-            text = if (isIgnoringBatteryOptimizations) {
-                stringResource(R.string.already_unrestricted)
-            } else {
-                stringResource(R.string.disable_background_restrictions)
-            },
-            onClick = {
-                if (!isAtLeastAndroid6) return@SettingsEntry
-
-                try {
-                    activityResultLauncher.launch(
-                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                            data = Uri.parse("package:${context.packageName}")
-                        }
-                    )
-                } catch (e: ActivityNotFoundException) {
-                    try {
-                        activityResultLauncher.launch(
-                            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        SmartToast("$msgNoBatteryOptim RiMusic", type = PopupType.Info)
-                    }
-                }
-            }
-        )
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.invincible_service),
-            text = stringResource(R.string.turning_off_battery_optimizations_is_not_enough),
-            isChecked = isInvincibilityEnabled,
-            onCheckedChange = { isInvincibilityEnabled = it }
-        )
-
-        SettingsGroupSpacer()
-
-        SettingsEntryGroupText(title = stringResource(R.string.parental_control))
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.parental_control),
-            text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
-            isChecked = parentalControlEnabled,
-            onCheckedChange = { parentalControlEnabled = it }
-        )
-
-
 
         /****** PIPED ******/
         var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
@@ -475,10 +322,10 @@ fun OtherSettings() {
 
 
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = "PIPED")
+        SettingsEntryGroupText(title = stringResource(R.string.piped_account))
         SwitchSettingEntry(
             isEnabled = pipedApiToken.isEmpty(),
-            title = "Enable piped syncronization",
+            title = stringResource(R.string.enable_piped_syncronization),
             text = "",
             isChecked = isPipedEnabled,
             onCheckedChange = { isPipedEnabled = it }
@@ -488,7 +335,7 @@ fun OtherSettings() {
             Column {
                 ButtonBarSettingEntry(
                     isEnabled = pipedApiToken.isEmpty(),
-                    title = "Change instance",
+                    title = stringResource(R.string.piped_change_instance),
                     text = pipedInstanceName,
                     icon = R.drawable.open,
                     onClick = {
@@ -498,14 +345,14 @@ fun OtherSettings() {
 
                 TextDialogSettingEntry(
                     isEnabled = pipedApiToken.isEmpty(),
-                    title = "Username",
+                    title = stringResource(R.string.piped_username),
                     text = pipedUsername,
                     currentText = pipedUsername,
                     onTextSave = { pipedUsername = it }
                 )
                 TextDialogSettingEntry(
                     isEnabled = pipedApiToken.isEmpty(),
-                    title = "Password",
+                    title = stringResource(R.string.piped_password),
                     text = if (pipedPassword.isNotEmpty()) "********" else "",
                     currentText = pipedPassword,
                     onTextSave = { pipedPassword = it },
@@ -516,10 +363,13 @@ fun OtherSettings() {
                 )
 
                 ButtonBarSettingEntry(
-                    //isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
-                    title = if (pipedApiToken.isNotEmpty()) "Disconnect" else "Connect",
-                    text = if (pipedApiToken.isNotEmpty()) "Connected to %s".format(pipedInstanceName) else "",
-                    icon = R.drawable.chevron_forward,
+                    isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
+                    title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
+                        R.string.piped_connect
+                    ),
+                    text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(pipedInstanceName) else "",
+                    icon = R.drawable.piped_logo,
+                    iconColor = colorPalette.red,
                     onClick = {
                         if (pipedApiToken.isNotEmpty()) {
                             pipedApiToken = ""
@@ -532,6 +382,159 @@ fun OtherSettings() {
         }
 
         /****** PIPED ******/
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(stringResource(R.string.on_device))
+        StringListValueSelectorSettingsEntry(
+            title = stringResource(R.string.blacklisted_folders),
+            text = stringResource(R.string.edit_blacklist_for_on_device_songs),
+            addTitle = stringResource(R.string.add_folder),
+            addPlaceholder = if (isAtLeastAndroid10) {
+                "Android/media/com.whatsapp/WhatsApp/Media"
+            } else {
+                "/storage/emulated/0/Android/media/com.whatsapp/"
+            },
+            conflictTitle = stringResource(R.string.this_folder_already_exists),
+            removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
+            context = LocalContext.current,
+            list = blackListedPaths,
+            add = { newPath ->
+                blackListedPaths = blackListedPaths + newPath
+                val file = File(context.filesDir, "Blacklisted_paths.txt")
+                file.writeText(blackListedPaths.joinToString("\n"))
+            },
+            remove = { path ->
+                blackListedPaths = blackListedPaths.filter { it != path }
+                val file = File(context.filesDir, "Blacklisted_paths.txt")
+                file.writeText(blackListedPaths.joinToString("\n"))
+            }
+        )
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.folders),
+            text = stringResource(R.string.show_folders_in_on_device_page),
+            isChecked = showFolders,
+            onCheckedChange = { showFolders = it }
+        )
+        AnimatedVisibility(visible = showFolders) {
+            TextDialogSettingEntry(
+                title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
+                text = defaultFolder,
+                currentText = defaultFolder,
+                onTextSave = { defaultFolder = it }
+            )
+        }
+
+        SettingsGroupSpacer()
+
+        SettingsEntryGroupText(title = stringResource(R.string.android_auto))
+
+        SettingsDescription(text = stringResource(R.string.enable_unknown_sources))
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.android_auto_1),
+            text = stringResource(R.string.enable_android_auto_support),
+            isChecked = isAndroidAutoEnabled,
+            onCheckedChange = { isAndroidAutoEnabled = it }
+        )
+
+        SettingsGroupSpacer()
+
+        SettingsEntryGroupText(title = stringResource(R.string.service_lifetime))
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.keep_screen_on),
+            text = stringResource(R.string.prevents_screen_timeout),
+            isChecked = isKeepScreenOnEnabled,
+            onCheckedChange = { isKeepScreenOnEnabled = it }
+        )
+
+        ImportantSettingsDescription(text = stringResource(R.string.battery_optimizations_applied))
+
+        if (isAtLeastAndroid12) {
+            SettingsDescription(text = stringResource(R.string.is_android12))
+        }
+
+        val msgNoBatteryOptim = stringResource(R.string.not_find_battery_optimization_settings)
+
+        SettingsEntry(
+            title = stringResource(R.string.ignore_battery_optimizations),
+            isEnabled = !isIgnoringBatteryOptimizations,
+            text = if (isIgnoringBatteryOptimizations) {
+                stringResource(R.string.already_unrestricted)
+            } else {
+                stringResource(R.string.disable_background_restrictions)
+            },
+            onClick = {
+                if (!isAtLeastAndroid6) return@SettingsEntry
+
+                try {
+                    activityResultLauncher.launch(
+                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                            data = Uri.parse("package:${context.packageName}")
+                        }
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    try {
+                        activityResultLauncher.launch(
+                            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        SmartToast("$msgNoBatteryOptim RiMusic", type = PopupType.Info)
+                    }
+                }
+            }
+        )
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.invincible_service),
+            text = stringResource(R.string.turning_off_battery_optimizations_is_not_enough),
+            isChecked = isInvincibilityEnabled,
+            onCheckedChange = { isInvincibilityEnabled = it }
+        )
+
+        SettingsGroupSpacer()
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.proxy))
+        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        SwitchSettingEntry(
+            title = stringResource(R.string.enable_proxy),
+            text = "",
+            isChecked = isProxyEnabled,
+            onCheckedChange = { isProxyEnabled = it }
+        )
+
+        AnimatedVisibility(visible = isProxyEnabled) {
+            Column {
+                EnumValueSelectorSettingsEntry(title = stringResource(R.string.proxy_mode),
+                    selectedValue = proxyMode,
+                    onValueSelected = { proxyMode = it },
+                    valueText = { it.name }
+                )
+                TextDialogSettingEntry(
+                    title = stringResource(R.string.proxy_host),
+                    text = proxyHost, //stringResource(R.string.set_proxy_hostname),
+                    currentText = proxyHost,
+                    onTextSave = { proxyHost = it })
+                TextDialogSettingEntry(
+                    title = stringResource(R.string.proxy_port),
+                    text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),
+                    currentText = proxyPort.toString(),
+                    onTextSave = { proxyPort = it.toIntOrNull() ?: 1080 })
+            }
+        }
+
+        SettingsGroupSpacer()
+
+        SettingsEntryGroupText(title = stringResource(R.string.parental_control))
+
+        SwitchSettingEntry(
+            title = stringResource(R.string.parental_control),
+            text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
+            isChecked = parentalControlEnabled,
+            onCheckedChange = { parentalControlEnabled = it }
+        )
 
 
         SettingsGroupSpacer()
@@ -548,10 +551,10 @@ fun OtherSettings() {
 
         val noLogAvailable = stringResource(R.string.no_log_available)
 
-        SettingsEntryGroupText(title = "DEBUG")
+        SettingsEntryGroupText(title = stringResource(R.string.debug))
         SwitchSettingEntry(
-            title = "Enable log debug",
-            text = "If enabled, create a log file to highlight errors",
+            title = stringResource(R.string.enable_log_debug),
+            text = stringResource(R.string.if_enabled_create_a_log_file_to_highlight_errors),
             isChecked = logDebugEnabled,
             onCheckedChange = {
                 logDebugEnabled = it
@@ -561,7 +564,7 @@ fun OtherSettings() {
         )
         ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         ButtonBarSettingEntry(
-            title = "Copy log to clipboard",
+            title = stringResource(R.string.copy_log_to_clipboard),
             text = "",
             icon = R.drawable.copy,
             onClick = {
@@ -574,7 +577,7 @@ fun OtherSettings() {
             }
         )
         ButtonBarSettingEntry(
-            title = "Copy crash log to clipboard",
+            title = stringResource(R.string.copy_log_to_clipboard),
             text = "",
             icon = R.drawable.copy,
             onClick = {
