@@ -240,6 +240,19 @@ private suspend fun Bitmap.blur(
         }
         x++
     }
+
+    //merge #2258
+    val darkenFactor = 0.2f // 20% darker
+
+    for (i in 0 until wh) {
+        val alpha = Color.alpha(pix[i])
+        val red = (Color.red(pix[i]) * (1 - darkenFactor)).toInt()
+        val green = (Color.green(pix[i]) * (1 - darkenFactor)).toInt()
+        val blue = (Color.blue(pix[i]) * (1 - darkenFactor)).toInt()
+
+        pix[i] = Color.argb(alpha, red, green, blue)
+    }
+
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     sentBitmap.recycle()
     return@withContext bitmap
