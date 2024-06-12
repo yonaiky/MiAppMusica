@@ -37,10 +37,13 @@ import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.ui.components.ProgressPercentage
 import it.fast4x.rimusic.ui.components.SeekBar
+import it.fast4x.rimusic.ui.components.SeekBarAudioWaves
 import it.fast4x.rimusic.ui.components.SeekBarColored
 import it.fast4x.rimusic.ui.components.SeekBarCustom
 import it.fast4x.rimusic.ui.components.SeekBarWaved
+import it.fast4x.rimusic.ui.components.WaveInteraction
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import kotlinx.coroutines.delay
@@ -91,6 +94,7 @@ fun GetSeekBar(
 
         if (playerTimelineType != PlayerTimelineType.Default
             && playerTimelineType != PlayerTimelineType.Wavy
+            && playerTimelineType != PlayerTimelineType.FakeAudioBar
             //&& playerTimelineType != PlayerTimelineType.ColoredBar
             )
             SeekBarCustom(
@@ -190,6 +194,17 @@ fun GetSeekBar(
             )
         }
 
+        if (playerTimelineType == PlayerTimelineType.FakeAudioBar)
+            SeekBarAudioWaves(
+                progressPercentage = ProgressPercentage(position.toFloat() / duration.toFloat()),
+                playedColor = colorPalette.accent,
+                notPlayedColor = colorPalette.textSecondary,
+                waveInteraction = {
+                    scrubbingPosition = (it.value * duration.toFloat()).toLong()
+                    binder.player.seekTo(scrubbingPosition!!)
+                },
+                modifier = Modifier.height(40.dp)
+            )
 
         /*
         if (playerTimelineType == PlayerTimelineType.ColoredBar)
