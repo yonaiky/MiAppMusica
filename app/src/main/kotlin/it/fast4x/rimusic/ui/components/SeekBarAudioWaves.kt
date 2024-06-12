@@ -42,7 +42,7 @@ fun SeekBarAudioWaves(
     BoxWithConstraints(modifier) {
         val updatedWaveInteraction by rememberUpdatedState(waveInteraction)
         val numberOfWaves = remember(maxWidth) {
-            (maxWidth / 3f).value.roundToInt() //5f defaul
+            (maxWidth / 3f).value.roundToInt() //5f default
         }
         val waveWidth = remember(maxWidth) {
             (maxWidth / numberOfWaves.toFloat()) * waveWidthPercentOfSpaceAvailable
