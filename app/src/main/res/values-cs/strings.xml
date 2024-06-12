@@ -567,7 +567,7 @@
     <string name="icon_like_brilliant">Zářivý</string>
     <string name="player_swap_controls_with_timeline">Prohodit ovládání s časovou osou</string>
     <string name="player_enable_lyrics_popup_message">Povolit vyskakovací okno s písňovými texty</string>
-    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
-    <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
-    <string name="no_log_available">No log available</string>
+    <string name="exclude_songs_with_duration_limit">Vyloučit skladby s limitem délky trvání</string>
+    <string name="exclude_songs_with_duration_limit_description">Skladby, jejichž délka trvání překročí limit, budou vyloučeny z Top skladeb a fronty přehrávání</string>
+    <string name="no_log_available">Žádný protokol není k dispozici</string>
 </resources>
