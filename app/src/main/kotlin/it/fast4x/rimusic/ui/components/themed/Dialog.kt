@@ -83,6 +83,7 @@ import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playbackPitchKey
 import it.fast4x.rimusic.utils.playbackSpeedKey
+import it.fast4x.rimusic.utils.playbackVolumeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -1157,13 +1158,15 @@ fun PlaybackParamsDialog(
     speedValue: (Float) -> Unit,
     pitchValue: (Float) -> Unit
 ) {
+    val binder = LocalPlayerServiceBinder.current
     val (colorPalette) = LocalAppearance.current
     val defaultSpeed = 1f
     val defaultPitch = 1f
+    val defaultVolume = binder?.player?.volume ?: 1f
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
+    var playbackVolume  by rememberPreference(playbackVolumeKey, defaultVolume)
 
-    val binder = LocalPlayerServiceBinder.current
 
     DefaultDialog(
         onDismiss = {
@@ -1275,6 +1278,72 @@ fun PlaybackParamsDialog(
                 thumb = { thumbValue ->
                     CustomSliderDefaults.Thumb(
                         thumbValue = "%.1fx".format(playbackPitch),
+                        color = Color.Transparent,
+                        size = 40.dp,
+                        modifier = Modifier.background(
+                            brush = Brush.linearGradient(listOf(colorPalette.background1, colorPalette.favoritesIcon)),
+                            shape = CircleShape
+                        )
+                    )
+                },
+                track = { sliderPositions ->
+                    Box(
+                        modifier = Modifier
+                            .track()
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                            .background(Color.White)
+                            .padding(1.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .progress(sliderPositions = sliderPositions)
+                                .background(
+                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
+                                )
+                        )
+                    }
+                }
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, start = 4.dp)
+        ) {
+            IconButton(
+                onClick = {
+                    playbackVolume = defaultVolume
+                    binder?.player?.volume = playbackVolume
+                },
+                icon = R.drawable.volume_up,
+                color = colorPalette.favoritesIcon,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+
+            CustomSlider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                value = playbackVolume,
+                onValueChange = {
+                    playbackVolume = it
+                    binder?.player?.volume = playbackVolume
+                },
+                valueRange = 0.0f..1.0f,
+                gap = 1,
+                showIndicator = true,
+                thumb = { thumbValue ->
+                    CustomSliderDefaults.Thumb(
+                        thumbValue = "%.1f".format(playbackVolume),
                         color = Color.Transparent,
                         size = 40.dp,
                         modifier = Modifier.background(
