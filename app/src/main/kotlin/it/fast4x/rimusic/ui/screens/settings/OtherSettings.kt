@@ -577,7 +577,7 @@ fun OtherSettings() {
             }
         )
         ButtonBarSettingEntry(
-            title = stringResource(R.string.copy_log_to_clipboard),
+            title = stringResource(R.string.copy_crash_log_to_clipboard),
             text = "",
             icon = R.drawable.copy,
             onClick = {

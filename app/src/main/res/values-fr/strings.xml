@@ -592,4 +592,5 @@
     <string name="piped_connect">Connect</string>
     <string name="piped_connected_to_s">Connected to %s</string>
     <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="copy_crash_log_to_clipboard">Copy crash log to clipboard</string>
 </resources>
