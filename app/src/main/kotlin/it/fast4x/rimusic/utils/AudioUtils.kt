@@ -3,21 +3,9 @@ package it.fast4x.rimusic.utils
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
 import android.media.AudioManager
-import androidx.annotation.OptIn
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import it.fast4x.rimusic.service.PlayerService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import kotlinx.coroutines.withContext
-import java.util.Timer
-import java.util.TimerTask
 import android.os.Handler
 import android.os.Looper
-import androidx.core.content.ContextCompat.getSystemService
 import java.math.RoundingMode
 
 var volume = 0f
@@ -80,4 +68,9 @@ fun getDeviceVolume(context: Context): Float {
     val volumeLevel: Int = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     val maxVolume: Int = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
     return volumeLevel.toFloat() / maxVolume
+}
+
+fun setDeviceVolume(context: Context, volume: Float) {
+    val audioManager = context.getSystemService(AUDIO_SERVICE) as AudioManager
+    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (volume * audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)).toInt(), 0)
 }
