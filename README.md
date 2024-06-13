@@ -183,6 +183,7 @@ WARNING, the custom version is not an official release, download only if invited
 ###  **Developer / Designer:**
 - [25huizengek1](https://github.com/25huizengek1)
 - [821938089](https://github.com/821938089)
+- [aneesh1122](https://github.com/aneesh1122)
 - [bbyeen](https://github.com/bbyeen)
 - [Craeckie](https://github.com/Craeckie)
 - [DanielSevillano](https://github.com/DanielSevillano)
