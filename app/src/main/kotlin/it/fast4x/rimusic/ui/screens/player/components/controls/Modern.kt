@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +36,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.models.Info
@@ -50,16 +47,19 @@ import it.fast4x.rimusic.ui.components.themed.CustomElevatedButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.bold
-import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
+import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
+import it.fast4x.rimusic.utils.playerControlsTypeKey
+
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
@@ -75,8 +75,8 @@ fun InfoAlbumAndArtistModern(
     artist: String?,
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
-){
-
+) {
+    val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val (colorPalette, typography) = LocalAppearance.current
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -96,26 +96,26 @@ fun InfoAlbumAndArtistModern(
             modifier = Modifier.fillMaxWidth(0.90f)
         ) {
 
-                IconButton(
-                    icon = if (albumId == null && !media.isLocal) R.drawable.logo_youtube else R.drawable.album,
-                    color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
-                    enabled = albumId != null,
-                    onClick = {
-                        if (albumId != null) {
-                            //onGoToAlbum(albumId)
-                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
-                            //layoutState.collapseSoft()
-                            onCollapse()
-                        }
-                    },
-                    modifier = Modifier
-                        .size(26.dp)
-                )
+            IconButton(
+                icon = if (albumId == null && !media.isLocal) R.drawable.logo_youtube else R.drawable.album,
+                color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                enabled = albumId != null,
+                onClick = {
+                    if (albumId != null) {
+                        //onGoToAlbum(albumId)
+                        navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                        //layoutState.collapseSoft()
+                        onCollapse()
+                    }
+                },
+                modifier = Modifier
+                    .size(26.dp)
+            )
 
-                Spacer(
-                    modifier = Modifier
-                        .width(8.dp)
-                )
+            Spacer(
+                modifier = Modifier
+                    .width(8.dp)
+            )
 
 
             var modifierTitle = Modifier
@@ -143,6 +143,7 @@ fun InfoAlbumAndArtistModern(
             //}
         }
 
+        if (playerControlsType == PlayerControlsType.Modern)
             IconButton(
                 color = colorPalette.favoritesIcon,
                 icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
@@ -201,28 +202,28 @@ fun InfoAlbumAndArtistModern(
 
 
 
-            IconButton(
-                icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else R.drawable.artists,
-                color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
-                onClick = {
-                    if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
-                        showSelectDialog = true
-                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
-                        //onGoToArtist( artistIds[0].id )
-                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
-                        //layoutState.collapseSoft()
-                        onCollapse()
-                    }
-                },
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 2.dp)
-            )
+        IconButton(
+            icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else R.drawable.artists,
+            color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+            onClick = {
+                if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
+                    showSelectDialog = true
+                if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                    //onGoToArtist( artistIds[0].id )
+                    navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                    //layoutState.collapseSoft()
+                    onCollapse()
+                }
+            },
+            modifier = Modifier
+                .size(24.dp)
+                .padding(start = 2.dp)
+        )
 
-            Spacer(
-                modifier = Modifier
-                    .width(12.dp)
-            )
+        Spacer(
+            modifier = Modifier
+                .width(12.dp)
+        )
 
         var modifierArtist = Modifier
             .clickable {
@@ -266,7 +267,7 @@ fun ControlsModern(
     rotationAngle: Float,
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
-){
+) {
 
 
     val (colorPalette, typography) = LocalAppearance.current

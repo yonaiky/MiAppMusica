@@ -465,11 +465,7 @@ fun AppearanceSettings() {
                 },
             )
 
-        AnimatedVisibility(
-            visible = playerControlsType == PlayerControlsType.Essential,
-            enter = fadeIn(tween(100)),
-            exit = fadeOut(tween(100)),
-        ) {
+
             if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
                     filterCharSequence,
                     true
@@ -492,7 +488,7 @@ fun AppearanceSettings() {
                         }
                     },
                 )
-        }
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
                 filterCharSequence,
