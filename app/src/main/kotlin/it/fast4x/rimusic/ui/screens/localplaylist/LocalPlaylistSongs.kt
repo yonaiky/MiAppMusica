@@ -96,6 +96,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -1443,6 +1444,27 @@ fun LocalPlaylistSongs(
                                     )
                                 }
 
+                                if (sortBy == PlaylistSongSortBy.Position)
+                                    BasicText(
+                                        text = (index + 1).toString(),
+                                        style = typography.m.semiBold.center.color(colorPalette.onOverlay),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette.overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(Alignment.Center)
+                                    )
+
                                 if (nowPlayingItem > -1)
                                     NowPlayingShow(song.asMediaItem.mediaId)
                             },
@@ -1475,7 +1497,6 @@ fun LocalPlaylistSongs(
                                         } else checkedState.value = !checkedState.value
                                     }
                                 )
-                                //.animateItemPlacement(reorderingState)
                                 .draggedItem(reorderingState = reorderingState, index = index)
                                 .background(color = colorPalette.background0)
                         )

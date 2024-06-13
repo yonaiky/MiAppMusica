@@ -531,6 +531,7 @@ fun QueueModern(
 
                                         }
                                          */
+                                        //.animateItem()
                                         .draggedItem(
                                             reorderingState = reorderingState,
                                             index = window.firstPeriodIndex
