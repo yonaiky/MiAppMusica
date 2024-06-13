@@ -195,10 +195,19 @@ fun AppearanceSettings() {
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
-    var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
+    var transparentBackgroundActionBarPlayer by rememberPreference(
+        transparentBackgroundPlayerActionBarKey,
+        false
+    )
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
-    var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
-    var playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
+    var playerSwapControlsWithTimeline by rememberPreference(
+        playerSwapControlsWithTimelineKey,
+        false
+    )
+    var playerEnableLyricsPopupMessage by rememberPreference(
+        playerEnableLyricsPopupMessageKey,
+        true
+    )
 
     Column(
         modifier = Modifier
@@ -417,7 +426,11 @@ fun AppearanceSettings() {
                 },
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(
+                filterCharSequence,
+                true
+            )
+        )
             SwitchSettingEntry(
                 title = stringResource(R.string.player_swap_controls_with_timeline),
                 text = "",
@@ -466,28 +479,28 @@ fun AppearanceSettings() {
             )
 
 
-            if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
-                    filterCharSequence,
-                    true
-                )
+        if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
+                filterCharSequence,
+                true
             )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.play_button),
-                    selectedValue = playerPlayButtonType,
-                    onValueSelected = {
-                        playerPlayButtonType = it
-                        lastPlayerPlayButtonType = it
-                    },
-                    valueText = {
-                        when (it) {
-                            PlayerPlayButtonType.Disabled -> stringResource(R.string.vt_disabled)
-                            PlayerPlayButtonType.Default -> stringResource(R.string._default)
-                            PlayerPlayButtonType.Rectangular -> stringResource(R.string.rectangular)
-                            PlayerPlayButtonType.Square -> stringResource(R.string.square)
-                            PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
-                        }
-                    },
-                )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.play_button),
+                selectedValue = playerPlayButtonType,
+                onValueSelected = {
+                    playerPlayButtonType = it
+                    lastPlayerPlayButtonType = it
+                },
+                valueText = {
+                    when (it) {
+                        PlayerPlayButtonType.Disabled -> stringResource(R.string.vt_disabled)
+                        PlayerPlayButtonType.Default -> stringResource(R.string._default)
+                        PlayerPlayButtonType.Rectangular -> stringResource(R.string.rectangular)
+                        PlayerPlayButtonType.Square -> stringResource(R.string.square)
+                        PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
+                    }
+                },
+            )
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
