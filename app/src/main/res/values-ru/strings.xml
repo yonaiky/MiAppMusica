@@ -570,4 +570,25 @@
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">Если включено, песни длительностью больше лимита будут исключены, применены к Моему Топу и очереди воспроизведения</string>
     <string name="no_log_available">No log available</string>
+    <string name="enable_quick_picks_page">Enable Quick Picks page</string>
+    <string name="lang_vietnamese">Vietnamese</string>
+    <string name="parental_control">Parental control</string>
+    <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
+    <string name="cache_location_private">Private</string>
+    <string name="cache_location_system">System</string>
+    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or piped playlist</string>
+    <string name="debug">DEBUG</string>
+    <string name="enable_log_debug">Enable log debug</string>
+    <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
+    <string name="copy_log_to_clipboard">Copy log to clipboard</string>
+    <string name="piped_account">PIPED</string>
+    <string name="enable_piped_syncronization">Enable piped syncronization</string>
+    <string name="piped_change_instance">Change instance</string>
+    <string name="piped_username">Username</string>
+    <string name="piped_password">Password</string>
+    <string name="piped_disconnect">Disconnect</string>
+    <string name="piped_connect">Connect</string>
+    <string name="piped_connected_to_s">Connected to %s</string>
+    <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="copy_crash_log_to_clipboard">Copy crash log to clipboard</string>
 </resources>
