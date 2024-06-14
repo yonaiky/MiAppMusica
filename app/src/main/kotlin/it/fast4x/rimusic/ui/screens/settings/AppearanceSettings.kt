@@ -103,6 +103,8 @@ import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @ExperimentalAnimationApi
@@ -115,6 +117,8 @@ fun AppearanceSettings() {
         true
     )
 
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.Rectangular
@@ -353,36 +357,61 @@ fun AppearanceSettings() {
                 onCheckedChange = { showTopActionsBar = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
                 filterCharSequence,
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.player_thumbnail_size),
-                selectedValue = playerThumbnailSize,
-                onValueSelected = { playerThumbnailSize = it },
-                valueText = {
-                    when (it) {
-                        PlayerThumbnailSize.Small -> stringResource(R.string.small)
-                        PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
-                        PlayerThumbnailSize.Big -> stringResource(R.string.big)
-                        PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_thumbnail),
+                text = "",
+                isChecked = showthumbnail,
+                onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it }
+            )
+        if(showthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_lyrics_thumbnail),
+                    text = "",
+                    isChecked = showlyricsthumbnail,
+                    onCheckedChange = { showlyricsthumbnail = it }
+                )
+        if(showthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                    filterCharSequence,
+                    true
+                )
+             )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.player_thumbnail_size),
+                    selectedValue = playerThumbnailSize,
+                    onValueSelected = { playerThumbnailSize = it },
+                    valueText = {
+                        when (it) {
+                            PlayerThumbnailSize.Small -> stringResource(R.string.small)
+                            PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
+                            PlayerThumbnailSize.Big -> stringResource(R.string.big)
+                            PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+                        }
                     }
-                }
-            )
+                )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
+
+             if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
                 filterCharSequence,
                 true
-            )
-        )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.thumbnail_roundness),
-                selectedValue = thumbnailRoundness,
-                onValueSelected = { thumbnailRoundness = it },
-                trailingContent = {
-                    Spacer(
+                )
+             )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.thumbnail_roundness),
+                    selectedValue = thumbnailRoundness,
+                    onValueSelected = { thumbnailRoundness = it },
+                    trailingContent = {
+                      Spacer(
                         modifier = Modifier
                             .border(
                                 width = 1.dp,
@@ -395,16 +424,16 @@ fun AppearanceSettings() {
                             )
                             .size(36.dp)
                     )
-                },
+                  },
                 valueText = {
                     when (it) {
                         ThumbnailRoundness.None -> stringResource(R.string.none)
                         ThumbnailRoundness.Light -> stringResource(R.string.light)
                         ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
                         ThumbnailRoundness.Medium -> stringResource(R.string.medium)
-                    }
-                }
-            )
+                        }
+                  }
+             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,

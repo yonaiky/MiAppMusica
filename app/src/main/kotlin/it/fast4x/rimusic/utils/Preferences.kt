@@ -187,6 +187,8 @@ const val customThemeDark_textSecondaryKey = "customThemeDark_textSecondary"
 const val customThemeDark_textDisabledKey = "customThemeDark_textDisabled"
 const val customThemeDark_iconButtonPlayerKey = "customThemeDark_iconButtonPlayer"
 const val customThemeDark_accentKey = "customThemeDark_accent"
+const val showthumbnailKey = "showthumbnail"
+const val showlyricsthumbnailKey = "showlyricsthumbnail"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

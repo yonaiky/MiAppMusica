@@ -86,6 +86,8 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.thumbnail
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -110,6 +112,8 @@ fun Thumbnail(
         it to (it - 64.dp).px
     }
 
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var nullableWindow by remember {
         mutableStateOf(player.currentWindow)
     }
@@ -196,8 +200,10 @@ fun Thumbnail(
 
         val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
         var modifierUiType by remember { mutableStateOf(modifier) }
-        if (playerControlsType == PlayerControlsType.Modern)
-            modifierUiType = modifier
+        if (showthumbnail)
+            if (!isShowingLyrics)
+             if (playerControlsType == PlayerControlsType.Modern)
+              modifierUiType = modifier
                 .padding(vertical = 8.dp)
                 .aspectRatio(1f)
                 //.size(thumbnailSizeDp)
@@ -207,18 +213,20 @@ fun Thumbnail(
                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
                 .clip(LocalAppearance.current.thumbnailShape)
                 //.padding(14.dp)
-        else modifierUiType = modifier
-            .aspectRatio(1f)
-            //.size(thumbnailSizeDp)
-            .padding(14.dp)
-            .fillMaxSize()
-            .clip(LocalAppearance.current.thumbnailShape)
+              else modifierUiType = modifier
+                .aspectRatio(1f)
+                //.size(thumbnailSizeDp)
+                .padding(14.dp)
+                .fillMaxSize()
+                .clip(LocalAppearance.current.thumbnailShape)
 
 
         Box(
             modifier = modifierUiType
         ) {
-            if(artImageAvailable)
+            if (showthumbnail)
+             if (!isShowingLyrics)
+              if(artImageAvailable)
                 AsyncImage(
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
                     /*
@@ -261,7 +269,7 @@ fun Thumbnail(
 
                 )
 
-            if(!artImageAvailable)
+              if(!artImageAvailable)
                 Image(
                     painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
@@ -284,9 +292,75 @@ fun Thumbnail(
                     contentDescription = "Background Image",
                     contentScale = ContentScale.Fit
                 )
+             else if(showlyricsthumbnail)
+              if(artImageAvailable)
+                  AsyncImage(
+                      model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
+                      /*
+                      model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                          thumbnailSizePx
+                      ),
+                       */
+                      /*
+                      model = ImageRequest.Builder(LocalContext.current)
+                          .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                          .size(Size.ORIGINAL)
+                          .scale(Scale.FIT)
+                          .build(),
+                       */
+                      onSuccess = {
+                          artImageAvailable = true
+                      },
+                      onError = {
+                          artImageAvailable = false
+                      },
+                      contentDescription = null,
+                      contentScale = ContentScale.Fit,
+                      modifier = Modifier
+                          .pointerInput(Unit) {
+                              detectTapGestures(
+                                  onLongPress = { onShowStatsForNerds(true) },
+                                  onTap = if (thumbnailTapEnabledKey) {
+                                      {
+                                          onShowLyrics(true)
+                                          onShowEqualizer(false)
+                                      }
+                                  } else null,
+                                  onDoubleTap = { onDoubleTap() }
+                              )
 
+                          }
+                          .fillMaxSize()
+                          .clip(LocalAppearance.current.thumbnailShape)
+
+
+                  )
+
+              if(!artImageAvailable)
+                Image(
+                    painter = painterResource(R.drawable.app_icon),
+                    colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
+                    modifier = Modifier
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { onShowStatsForNerds(true) },
+                                onTap = if (thumbnailTapEnabledKey) {
+                                    {
+                                        onShowLyrics(true)
+                                        onShowEqualizer(false)
+                                    }
+                                } else null,
+                                onDoubleTap = { onDoubleTap() }
+                            )
+
+                        }
+                        .fillMaxSize()
+                        .clip(LocalAppearance.current.thumbnailShape),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Fit
+                )
             //if (!currentWindow.mediaItem.isLocal)
-                Lyrics(
+            Lyrics(
                 mediaId = currentWindow.mediaItem.mediaId,
                 isDisplayed = isShowingLyrics && error == null,
                 onDismiss = {

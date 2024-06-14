@@ -1047,7 +1047,7 @@ fun BlurParamsDialog(
                 onValueChange = {
                     blurStrength = it
                 },
-                valueRange = 1f..50f,
+                valueRange = 0f..50f,
                 gap = 1,
                 showIndicator = true,
                 thumb = { thumbValue ->
