@@ -1,5 +1,13 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
@@ -9,6 +17,7 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 
+    /*
     versionCatalogs {
         create("libs") {
             version("kotlin", "1.9.23")
@@ -59,6 +68,7 @@ dependencyResolutionManagement {
             library("junit", "junit", "junit").version("4.13.2")
         }
     }
+     */
 }
 
 rootProject.name = "RiMusic"
