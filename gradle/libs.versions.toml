@@ -1,11 +1,15 @@
 
 [versions]
+compose-compiler = "1.5.11"
+junit = "4.13.2"
 agp = "8.3.1"
 kotlin = "1.9.23"
+kotlin-ksp = "1.9.23-1.0.20"
 kotlin-coroutine = "1.7.3"
 kotlin-datetime = "0.6.0"
-compose-compiler = "1.5.11"
+
 compose = "1.6.1"
+compose-activity = "1.6.1"
 shimmer = "1.0.3"
 coil = "2.6.0"
 room = "2.6.0"
@@ -14,14 +18,22 @@ ktor = "2.3.10"
 brotli = "0.1.2"
 palette = "1.0.0"
 desugaring = "2.0.4"
-junit = "4.13.2"
 appcompat = "1.7.0"
 core = "1.0.1"
+core-ktx = "1.13.1"
 media = "1.7.0"
 material = "1.6.7"
 material3 = "1.3.0-beta02"
+androidmaterial = "1.12.0"
 constraintlayout = "1.0.1"
 composeruntimelivedata = "1.6.7"
+translator = "1.0.2"
+kotlin-csv = "1.9.3"
+monetcompat = "0.4.1"
+navigation = "2.7.7"
+smarttoast = "4.1.6"
+timber = "5.0.1"
+crypto = "1.1.0-alpha06"
 
 [libraries]
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -34,7 +46,8 @@ compose-ui-util = {group = "androidx.compose.ui", name = "ui-util", version.ref 
 compose-ui-graphics-android = {group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "compose"}
 compose-ripple = {group = "androidx.compose.material", name = "material-ripple", version.ref = "compose"}
 compose-shimmer = {group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer"}
-compose-activity = {group = "androidx.activity", name = "activity-compose", version.ref = "compose"}
+compose-activity = {group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity"}
+compose-animation = {group = "androidx.compose.animation", name = "animation", version.ref = "compose"}
 compose-coil = {group = "io.coil-kt", name = "coil-compose", version.ref = "coil"}
 room = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
@@ -53,17 +66,26 @@ desugaring = {group = "com.android.tools", name = "desugar_jdk_libs", version.re
 appcompat = {group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat"}
 appcompat-resources = {group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat"}
 core-splashscreen = {group = "androidx.core", name = "core-splashscreen", version.ref = "core"}
+core-ktx = {group = "androidx.core", name = "core-ktx", version.ref = "core-ktx"}
 media = {group = "androidx.media", name = "media", version.ref = "media"}
 material = {group = "androidx.compose.material", name = "material", version.ref = "material"}
 material3 = {group = "androidx.compose.material3", name = "material3-android", version.ref = "material3"}
+androidmaterial = {group = "com.google.android.material", name = "material", version.ref = "androidmaterial"}
 constraintlayout = {group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout"}
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "composeruntimelivedata"}
-
+translator = { group = "com.github.therealbush", name = "translator", version.ref = "translator"}
+kotlin-csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", version.ref = "kotlin-csv"}
+monetcompat = { group = "com.github.KieronQuinn", name = "MonetCompat", version.ref = "monetcompat"}
+navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation"}
+smarttoast = { group = "io.github.vincent-series", name = "smart-toast", version.ref = "smarttoast"}
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
+crypto = { group = "androidx.security", name = "security-crypto", version.ref = "crypto"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 
