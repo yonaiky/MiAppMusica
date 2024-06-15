@@ -97,8 +97,7 @@ fun Player.addNext(mediaItem: MediaItem, context: Context? = null) {
     if (context != null && excludeMediaItem(mediaItem, context)) return
 
     val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
-    if (itemIndex == 0) return
-    if (itemIndex > -1) removeMediaItem(itemIndex)
+    if (itemIndex >= 0) removeMediaItem(itemIndex)
 
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
         forcePlay(mediaItem)
@@ -114,7 +113,7 @@ fun Player.addNext(mediaItems: List<MediaItem>, context: Context? = null) {
 
     filteredMediaItems.forEach { mediaItem ->
         val itemIndex = findMediaItemIndexById(mediaItem.mediaId)
-        if (itemIndex > -1) removeMediaItem(itemIndex)
+        if (itemIndex >= 0) removeMediaItem(itemIndex)
     }
 
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
