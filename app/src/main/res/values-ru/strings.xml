@@ -150,7 +150,7 @@
     <string name="none">Нет</string>
     <string name="light">Легкий</string>
     <string name="heavy">Большой</string>
-    <string name="player_rotating_buttons">Поворотные кнопки</string>
+    <string name="player_rotating_buttons">Поворот кнопок</string>
     <string name="player_enable_rotation_buttons">Включение поворота кнопок при нажатии</string>
     <string name="statistics">Статистика</string>
     <string name="today">Сегодня</string>
@@ -176,10 +176,10 @@
     <string name="german">Немецкий (Deutsch)</string>
     <string name="spanish">Испанский (Español)</string>
     <string name="french">Французский (Français)</string>
-    <string name="romanian">Romanian (Română)</string>
+    <string name="romanian">Румынский (Română)</string>
     <string name="russian">Русский</string>
-    <string name="turkish">Turkish (Türkçe)</string>
-    <string name="polish">Polish (Polski)</string>
+    <string name="turkish">Турецкий (Türkçe)</string>
+    <string name="polish">Польский (Polski)</string>
     <string name="dark">Темный</string>
     <string name="system">Система</string>
     <string name="unlimited">Неограниченный</string>
@@ -268,7 +268,7 @@
     <string name="hungarian">Венгерский (Magyar)</string>
     <string name="korean">Корейский (한국어)</string>
     <string name="background_player">"ФОНОВЫЙ ПЛЕЕР "</string>
-    <string name="show_favorite_button">Показать кнопку Избранное</string>
+    <string name="show_favorite_button">Показать кнопку Мне нравится</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Показывать кнопку Избранное на экране блокировки и области уведомлений</string>
     <string name="show_download_button">Показать кнопку Загрузить</string>
     <string name="show_download_button_in_lock_screen_and_notification_area">Показать кнопку загрузки на экране блокировки и области уведомлений</string>
@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Показать кнопку очереди</string>
     <string name="action_bar_show_shuffle_button">Показать кнопку перемешать</string>
     <string name="action_bar_show_lyrics_button">Показать кнопку текст песни</string>
-    <string name="action_bar_show_arrow_button">Показать кнопку со стрелкой</string>
+    <string name="action_bar_show_arrow_button">Показать кнопку просмотра списка воспроизведения</string>
     <string name="lang_finnish">Финский (Suomi)</string>
     <string name="listening_time">Время прослушивания</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Показывает количество прослушанных песен и время их прослушивания</string>
@@ -566,7 +566,7 @@
     <string name="icon_like_striped">В полоску</string>
     <string name="icon_like_brilliant">Бриллиант</string>
     <string name="player_swap_controls_with_timeline">Поменять кнопки управления и таймлайн местами</string>
-    <string name="player_enable_lyrics_popup_message">Enable lyrics popup message</string>
+    <string name="player_enable_lyrics_popup_message">Включить всплывающее сообщение при поиске текста песни</string>
     <string name="exclude_songs_with_duration_limit">Исключить песни с ограничением по длительности</string>
     <string name="exclude_songs_with_duration_limit_description">Если включено, песни длительностью больше лимита будут исключены, применены к Моему Топу и очереди воспроизведения</string>
     <string name="no_log_available">Нет доступных логов</string>
@@ -574,8 +574,8 @@
     <string name="lang_vietnamese">Вьетнамский (tiếng Việt)</string>
     <string name="parental_control">Родительский контроль</string>
     <string name="info_prevent_play_songs_with_age_limitation">Запретить воспроизведение песен с ограничением возраста</string>
-    <string name="cache_location_private">Private</string>
-    <string name="cache_location_system">System</string>
+    <string name="cache_location_private">Внутри файлов приложения</string>
+    <string name="cache_location_system">Стандартное (внутри системы)</string>
     <string name="info_cannot_rename_a_monthly_or_piped_playlist">Невозможно переименовать ежемесячный или piped плейлист</string>
     <string name="debug">ОТЛАДКА</string>
     <string name="enable_log_debug">Включить отладку логов</string>
@@ -589,6 +589,6 @@
     <string name="piped_disconnect">Отключиться</string>
     <string name="piped_connect">Подключиться</string>
     <string name="piped_connected_to_s">Подключен к %s</string>
-    <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="fake_audio_bar">\"Фальшивая\" вейвформа </string>
     <string name="copy_crash_log_to_clipboard">Скопировать логи сбоев в буфер обмена</string>
 </resources>
