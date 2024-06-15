@@ -9,7 +9,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.DurationInMinutes
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -180,6 +182,12 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
                     durationTextToMillis(it1)
                 }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
             }
+
+            val excludedSongs = mediaItems.size - filteredMediaItems.size
+            if (excludedSongs > 0)
+                CoroutineScope(Dispatchers.Main).launch {
+                        SmartToast(context.getString(R.string.message_excluded_s_songs).format(excludedSongs))
+                }
         }
     }.onFailure {
         Timber.e(it.message)
@@ -193,9 +201,16 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
         val excludeSongWithDurationLimit =
             preferences.getEnum(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
         if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
-            return if(mediaItem.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
+            val excludedSong = mediaItem.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
                     durationTextToMillis(it1)
-                }!! < excludeSongWithDurationLimit.minutesInMilliSeconds) true else false
+                }!! <= excludeSongWithDurationLimit.minutesInMilliSeconds
+
+            if (excludedSong)
+                CoroutineScope(Dispatchers.Main).launch {
+                    SmartToast(context.getString(R.string.message_excluded_s_songs).format(1))
+                }
+
+            return excludedSong
         }
     }.onFailure {
         //it.printStackTrace()
@@ -203,6 +218,6 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
         return false
     }
 
-    return true
+    return false
 
 }
