@@ -568,7 +568,7 @@
     <string name="player_swap_controls_with_timeline">Intercambiar controles con la línea de tiempo</string>
     <string name="player_enable_lyrics_popup_message">Activar mensaje emergente de letras</string>
     <string name="exclude_songs_with_duration_limit">Excluir canciones con límite de duración</string>
-    <string name="exclude_songs_with_duration_limit_description">Si está activado, las canciones con duración superior al límite serán excluidas, aplicadas a Mi Top y a la cola de reproducción</string>
+    <string name="exclude_songs_with_duration_limit_description">Si está activado, las canciones con duración superior al límite serán excluidas de Mi Top y la cola de reproducción</string>
     <string name="no_log_available">No hay ningún registro disponible</string>
     <string name="enable_quick_picks_page">Activar página de selecciones rápidas</string>
     <string name="lang_vietnamese">Vietnamita</string>
@@ -582,13 +582,13 @@
     <string name="if_enabled_create_a_log_file_to_highlight_errors">Si está habilitado, crea un archivo de registro para resaltar errores</string>
     <string name="copy_log_to_clipboard">Copiar registro al portapapeles</string>
     <string name="piped_account">PIPED</string>
-    <string name="enable_piped_syncronization">Habilitar sincronización con Piped</string>
+    <string name="enable_piped_syncronization">Activar sincronización con Piped</string>
     <string name="piped_change_instance">Cambiar instancia</string>
     <string name="piped_username">Usuario</string>
     <string name="piped_password">Contraseña</string>
     <string name="piped_disconnect">Desconectar</string>
     <string name="piped_connect">Conectar</string>
-    <string name="piped_connected_to_s">Conectándose a %s</string>
+    <string name="piped_connected_to_s">Conectado a %s</string>
     <string name="fake_audio_bar">Barra de audio falsa</string>
     <string name="copy_crash_log_to_clipboard">Copiar registro de fallos al portapapeles</string>
 </resources>
