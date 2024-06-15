@@ -191,6 +191,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import kotlin.math.absoluteValue
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
+import it.fast4x.rimusic.utils.showthumbnailKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -456,6 +459,7 @@ fun PlayerModern(
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = downloadedStateMedia(mediaItem.mediaId)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
 
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
@@ -935,11 +939,11 @@ fun PlayerModern(
                         },
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe) {
-                                if (deltaX > 0) {
+                                if (deltaX > 5) {
                                     binder.player.seekToPreviousMediaItem()
                                     //binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
-                                } else {
+                                } else if (deltaX <-5){
                                     binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
@@ -1059,17 +1063,30 @@ fun PlayerModern(
                                     .height(40.dp)
                                     .weight(1f)
                             ) {
-
+                                val offset = Offset(0.0f, 0.0f)
                                 BasicText(
                                     text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
-                                    style = typography.xxxs.semiBold,
+                                    style = TextStyle(
+                                        color = colorPalette.text,
+                                        shadow = Shadow(
+                                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = if (showthumbnail) 0f else 2.0f
+                                        ),
+                                        fontSize = typography.xxxs.semiBold.fontSize,
+                                    ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
 
+                                val offset2 = Offset(0.0f, 0.0f)
                                 BasicText(
                                     text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
-                                    style = typography.xxxs.semiBold,
+                                    style = TextStyle(
+                                        color = colorPalette.text,
+                                        shadow = Shadow(
+                                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset2, blurRadius = if (showthumbnail) 0f else 2.0f
+                                        ),
+                                        fontSize = typography.xxxs.semiBold.fontSize,
+                                    ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
@@ -1097,19 +1114,31 @@ fun PlayerModern(
                                     .height(40.dp)
                                     .weight(1f)
                             ) {
-
+                                val offset = Offset(0.0f, 0.0f)
                                 BasicText(
                                     text = nextNextMediaItem.mediaMetadata.title?.toString()
                                         ?: "",
-                                    style = typography.xxxs.semiBold,
+                                    style = TextStyle(
+                                        color = colorPalette.text,
+                                        shadow = Shadow(
+                                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 2.0f
+                                        ),
+                                        fontSize = typography.xxxs.semiBold.fontSize,
+                                    ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
-
+                                val offset2 = Offset(0.0f, 0.0f)
                                 BasicText(
                                     text = nextNextMediaItem.mediaMetadata.artist?.toString()
                                         ?: "",
-                                    style = typography.xxxs.semiBold,
+                                    style = TextStyle(
+                                        color = colorPalette.text,
+                                        shadow = Shadow(
+                                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset2, blurRadius = if (showthumbnail) 0f else 2.0f
+                                        ),
+                                        fontSize = typography.xxxs.semiBold.fontSize,
+                                    ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )

@@ -77,6 +77,11 @@ import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -96,7 +101,9 @@ fun InfoAlbumAndArtistEssential(
 ) {
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val (colorPalette, typography) = LocalAppearance.current
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
 
@@ -127,11 +134,15 @@ fun InfoAlbumAndArtistEssential(
             if (playerControlsType == PlayerControlsType.Modern)
                 Spacer(modifier = Modifier.weight(0.1f))
 
+            val offset = Offset(0.0f, 0.0f)
             BasicText(
                 text = title ?: "",
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                    shadow = Shadow(
+                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
+                    ),
                     fontStyle = typography.l.bold.fontStyle,
                     fontWeight = typography.l.bold.fontWeight,
                     fontSize = typography.l.bold.fontSize,
@@ -207,11 +218,15 @@ fun InfoAlbumAndArtistEssential(
                 }
             }
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
+        val offset = Offset(0.0f, 0.0f)
         BasicText(
             text = artist ?: "",
             style = TextStyle(
                 textAlign = TextAlign.Center,
                 color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                shadow = Shadow(
+                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
+                ),
                 fontStyle = typography.m.bold.fontStyle,
                 fontSize = typography.m.bold.fontSize,
                 //fontWeight = typography.m.bold.fontWeight,
@@ -374,7 +389,7 @@ fun ControlsEssential(
         Image(
             painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),
             modifier = Modifier
                 .rotate(rotationAngle)
                 .align(Alignment.Center)

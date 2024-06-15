@@ -59,6 +59,12 @@ import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.showthumbnailKey
+import androidx.compose.ui.geometry.Offset
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -76,8 +82,10 @@ fun InfoAlbumAndArtistModern(
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
 ) {
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val (colorPalette, typography) = LocalAppearance.current
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
@@ -127,11 +135,14 @@ fun InfoAlbumAndArtistModern(
                     }
                 }
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
-
+            val offset = Offset(0.0f, 0.0f)
             BasicText(
                 text = title ?: "",
                 style = TextStyle(
                     color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                    shadow = Shadow(
+                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
+                    ),
                     fontStyle = typography.l.bold.fontStyle,
                     fontWeight = typography.l.bold.fontWeight,
                     fontSize = typography.l.bold.fontSize,
@@ -236,10 +247,14 @@ fun InfoAlbumAndArtistModern(
                 }
             }
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
+        val offset = Offset(0.0f, 0.0f)
         BasicText(
             text = artist ?: "",
             style = TextStyle(
                 color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                shadow = Shadow(
+                    color =if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
+                ),
                 fontStyle = typography.m.bold.fontStyle,
                 fontSize = typography.m.bold.fontSize,
                 fontWeight = typography.m.bold.fontWeight,
@@ -276,7 +291,7 @@ fun ControlsModern(
     var isRotated by rememberSaveable { mutableStateOf(false) }
 
     CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
         onClick = {},
         modifier = Modifier
             .size(55.dp)
@@ -297,16 +312,16 @@ fun ControlsModern(
         Image(
             painter = painterResource(R.drawable.play_skip_back),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text), //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),
             modifier = Modifier
                 .padding(10.dp)
-                .size(26.dp)
+                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 36.dp else 26.dp)
                 .rotate(rotationAngle)
         )
     }
 
     CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
         onClick = {},
         modifier = Modifier
             .combinedClickable(
@@ -351,11 +366,11 @@ fun ControlsModern(
         Image(
             painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text), //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
             modifier = Modifier
                 .rotate(rotationAngle)
                 .align(Alignment.Center)
-                .size(30.dp)
+                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 40.dp else 30.dp)
         )
 
         val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
@@ -380,7 +395,7 @@ fun ControlsModern(
     }
 
     CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(alpha = 0.95f),
+        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
         onClick = {},
         modifier = Modifier
             .size(55.dp)
@@ -400,10 +415,10 @@ fun ControlsModern(
         Image(
             painter = painterResource(R.drawable.play_skip_forward),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text), //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
             modifier = Modifier
                 .padding(10.dp)
-                .size(26.dp)
+                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 36.dp else 26.dp)
                 .rotate(rotationAngle)
         )
     }
