@@ -13,7 +13,7 @@
     <string name="remove_from_queue">Remove from queue</string>
     <string name="remove_from_playlist">Remove from playlist</string>
     <string name="hide">Hide</string>
-    <string name="hide_from_quick_picks">Hide from Quick picks</string>
+    <string name="hide_from_quick_picks">Hide from Quick Picks</string>
     <string name="related_albums">Related albums</string>
     <string name="similar_artists">Similar artists</string>
     <string name="playlists_you_might_like">Playlists you might like</string>
@@ -140,7 +140,7 @@
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">The returned video id doesn\'t match the requested one</string>
     <string name="error_an_unknown_playback_error_has_occurred">An unknown playback error has occurred</string>
     <string name="tips">For You</string>
-    <string name="is_min_list_time_for_tips_or_quick_pics">Minimum playback duration for a song to be suggested in Quick picks</string>
+    <string name="is_min_list_time_for_tips_or_quick_pics">Minimum playback duration for a song to be suggested in Quick Picks</string>
     <string name="min_listening_time">Min playback duration</string>
     <string name="player_thumbnail_size">Thumbnail Size</string>
     <string name="restarting_rimusic_is_required">Restarting is required</string>
@@ -151,7 +151,7 @@
     <string name="light">Light</string>
     <string name="heavy">Heavy</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
-    <string name="player_enable_rotation_buttons">Enable rotation of buttons when clicked</string>
+    <string name="player_enable_rotation_buttons">Enable button rotation upon click</string>
     <string name="statistics">Statistics</string>
     <string name="today">Today</string>
     <string name="_1_week">1 Week</string>
@@ -385,7 +385,7 @@
     <string name="sort_date_liked">Date Favorited</string>
     <string name="export_playlist">Export playlist</string>
     <string name="lang_afrikaans">Afrikaans (Afrikaans)</string>
-    <string name="playlist_top">Playlist Top</string>
+    <string name="playlist_top">Top Playlist</string>
     <string name="my_playlist_top">My Top %s</string>
     <string name="navigation_bar_position">Navigation bar position</string>
     <string name="direction_left">Left</string>
@@ -394,7 +394,7 @@
     <string name="value_copied">Copied</string>
     <string name="do_you_really_want_to_delete_cache">Do you really want to delete cache?</string>
     <string name="lang_swedish">Swedish (Svenska)</string>
-    <string name="pinned_playlists">Pinned Playlists</string>
+    <string name="pinned_playlists">Pinned</string>
     <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
     <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
@@ -480,7 +480,7 @@
     <string name="info_wait_it_may_take_a_few_minutes">Please wait, this may take few minutes...</string>
     <string name="album_and_alternative_versions">Album</string>
     <string name="album_alternative_versions">Alternative versions</string>
-    <string name="monthly_playlists">Monthly playlists</string>
+    <string name="monthly_playlists">Monthly</string>
     <string name="month_january_s">January %s</string>
     <string name="month_february_s">February %s</string>
     <string name="month_march_s">March %s</string>
