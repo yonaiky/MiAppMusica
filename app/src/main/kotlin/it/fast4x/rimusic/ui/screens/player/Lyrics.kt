@@ -602,7 +602,7 @@ fun Lyrics(
                                 text = translatedText,
                                 style = TextStyle(
                                     shadow = Shadow(
-                                        color = Color.Black, offset = offset, blurRadius = if (showthumbnail) 0f else 7f
+                                        color = if (!showthumbnail) Color.Black else Color.Transparent, offset = offset, blurRadius = 7f
                                     ),
                                 ).merge(when (fontSize) {
                                     LyricsFontSize.Light ->
