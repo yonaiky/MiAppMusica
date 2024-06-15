@@ -225,7 +225,7 @@
     <string name="listen_on_invidious">Слушать в Invidious</string>
     <string name="disable_horizontal_swipe">Отключить горизонтальный свайп</string>
     <string name="disable_song_switching_via_swipe">Отключить переключение треков свайпом</string>
-    <string name="interface_in_use">Интерфейс используется</string>
+    <string name="interface_in_use">Используемый интерфейс</string>
     <string name="user_interface">Пользовательский интерфейс</string>
     <string name="ui_tab">Интерфейс</string>
     <string name="system_language">Системный язык</string>
@@ -568,7 +568,7 @@
     <string name="player_swap_controls_with_timeline">Поменять кнопки управления и таймлайн местами</string>
     <string name="player_enable_lyrics_popup_message">Включить всплывающее сообщение при поиске текста песни</string>
     <string name="exclude_songs_with_duration_limit">Исключить песни с ограничением по длительности</string>
-    <string name="exclude_songs_with_duration_limit_description">Если включено, песни длительностью больше лимита будут исключены, применены к Моему Топу и очереди воспроизведения</string>
+    <string name="exclude_songs_with_duration_limit_description">Если включено, песни длительностью больше лимита будут исключены, применяется к Моему Топу и очереди воспроизведения</string>
     <string name="no_log_available">Нет доступных логов</string>
     <string name="enable_quick_picks_page">Включить страницу Рекомендаций</string>
     <string name="lang_vietnamese">Вьетнамский (tiếng Việt)</string>
