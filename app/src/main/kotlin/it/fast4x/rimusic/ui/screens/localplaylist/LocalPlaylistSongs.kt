@@ -1444,6 +1444,7 @@ fun LocalPlaylistSongs(
                                     )
                                 }
 
+                                /*
                                 if (sortBy == PlaylistSongSortBy.Position)
                                     BasicText(
                                         text = (index + 1).toString(),
@@ -1464,6 +1465,7 @@ fun LocalPlaylistSongs(
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
                                             .align(Alignment.Center)
                                     )
+                                 */
 
                                 if (nowPlayingItem > -1)
                                     NowPlayingShow(song.asMediaItem.mediaId)
