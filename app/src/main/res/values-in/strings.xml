@@ -385,7 +385,7 @@
     <string name="sort_date_liked">Tanggal di sukai</string>
     <string name="export_playlist">Ekspor daftar putar</string>
     <string name="lang_afrikaans">Afrikaans</string>
-    <string name="playlist_top">Playlist Teratas</string>
+    <string name="playlist_top">Daftar putar Teratas</string>
     <string name="my_playlist_top">%s Teratas</string>
     <string name="navigation_bar_position">Posisi bilah navigasi</string>
     <string name="direction_left">Kiri</string>
@@ -394,7 +394,7 @@
     <string name="value_copied">Telah disalin</string>
     <string name="do_you_really_want_to_delete_cache">Apakah kamu ingin menghapus cache?</string>
     <string name="lang_swedish">Svenska</string>
-    <string name="pinned_playlists">Playlist Disematkan</string>
+    <string name="pinned_playlists">Disematkan</string>
     <string name="locked">Terkunci</string>
     <string name="sort_duration">Durasi</string>
     <string name="lang_serbian_cyrillic">Српска</string>
@@ -480,7 +480,7 @@
     <string name="info_wait_it_may_take_a_few_minutes">Mohon tunggu sebentar, mungkin memerlukan waktu beberapa menit...</string>
     <string name="album_and_alternative_versions">Album</string>
     <string name="album_alternative_versions">Versi alternatif</string>
-    <string name="monthly_playlists">Daftar putar bulanan</string>
+    <string name="monthly_playlists">Bulanan</string>
     <string name="month_january_s">%s Januari</string>
     <string name="month_february_s">%s Februari</string>
     <string name="month_march_s">%s Maret</string>
@@ -572,7 +572,7 @@
     <string name="no_log_available">Log tidak tersedia</string>
     <string name="enable_quick_picks_page">Enable Quick Picks page</string>
     <string name="lang_vietnamese">Vietnamese</string>
-    <string name="parental_control">Parental control</string>
+    <string name="parental_control">Kontrol orang tua</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">System</string>
