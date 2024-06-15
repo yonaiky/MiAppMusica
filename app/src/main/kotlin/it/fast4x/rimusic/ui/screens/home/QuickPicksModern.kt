@@ -132,6 +132,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
+import it.fast4x.rimusic.utils.showMoodsAndGenresKey
 import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import it.fast4x.rimusic.utils.showNewAlbumsKey
 import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -202,6 +203,7 @@ fun QuickPicksModern(
     val showSimilarArtists by rememberPreference(showSimilarArtistsKey, true)
     val showNewAlbumsArtists by rememberPreference(showNewAlbumsArtistsKey, true)
     val showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
+    val showMoodsAndGenres by rememberPreference(showMoodsAndGenresKey, true)
     val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
     val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
     val showTips by rememberPreference(showTipsKey, true)
@@ -648,7 +650,7 @@ fun QuickPicksModern(
 
                                 BasicText(
                                     text = stringResource(R.string.new_albums_of_your_artists),
-                                    style = typography.m.semiBold,
+                                    style = typography.l.semiBold,
                                     modifier = sectionTextModifier
                                 )
 
@@ -671,13 +673,6 @@ fun QuickPicksModern(
                             }
 
                         if (showNewAlbums) {
-                            /*
-                            BasicText(
-                                text = stringResource(R.string.new_albums),
-                                style = typography.m.semiBold,
-                                modifier = sectionTextModifier
-                            )
-                             */
                             Title(
                                 title = stringResource(R.string.new_albums),
                                 onClick = { navController.navigate(NavRoutes.newAlbums.name) },
@@ -704,7 +699,7 @@ fun QuickPicksModern(
                         related?.albums?.let { albums ->
                             BasicText(
                                 text = stringResource(R.string.related_albums),
-                                style = typography.m.semiBold,
+                                style = typography.l.semiBold,
                                 modifier = sectionTextModifier
                             )
 
@@ -729,7 +724,7 @@ fun QuickPicksModern(
                         related?.artists?.let { artists ->
                             BasicText(
                                 text = stringResource(R.string.similar_artists),
-                                style = typography.m.semiBold,
+                                style = typography.l.semiBold,
                                 modifier = sectionTextModifier
                             )
 
@@ -754,7 +749,7 @@ fun QuickPicksModern(
                         related?.playlists?.let { playlists ->
                             BasicText(
                                 text = stringResource(R.string.playlists_you_might_like),
-                                style = typography.m.semiBold,
+                                style = typography.l.semiBold,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 24.dp, bottom = 8.dp)
@@ -778,16 +773,10 @@ fun QuickPicksModern(
                             }
                         }
 
+                if (showMoodsAndGenres)
                     discoverPage?.getOrNull()?.let { page ->
                         if (page.moods.isNotEmpty()) {
 
-                            /*
-                            BasicText(
-                                text = stringResource(R.string.moods_and_genres),
-                                style = typography.m.semiBold,
-                                modifier = sectionTextModifier
-                            )
-                             */
                             Title(
                                 title = stringResource(R.string.moods_and_genres),
                                 onClick = { navController.navigate(NavRoutes.moodsPage.name) },
@@ -826,7 +815,7 @@ fun QuickPicksModern(
                     localMonthlyPlaylists.let { playlists ->
                         BasicText(
                             text = stringResource(R.string.monthly_playlists),
-                            style = typography.m.semiBold,
+                            style = typography.l.semiBold,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 24.dp, bottom = 8.dp)

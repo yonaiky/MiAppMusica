@@ -88,6 +88,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.models.Event
@@ -109,6 +110,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
@@ -127,10 +129,12 @@ import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
+import it.fast4x.rimusic.utils.moveDir
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -308,7 +312,7 @@ class PlayerService : InvincibleService(),
 
     private var isNotificationStarted = false
 
-    private var exoPlayerAlternateCacheLocation = ""
+    //private var exoPlayerAlternateCacheLocation = ""
 
     override val notificationId: Int
         get() = NotificationId
@@ -394,12 +398,16 @@ class PlayerService : InvincibleService(),
     override fun onCreate() {
         super.onCreate()
 
-        bitmapProvider = BitmapProvider(
-            bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
-            colorProvider = { isSystemInDarkMode ->
-                if (isSystemInDarkMode) Color.BLACK else Color.WHITE
-            }
-        )
+        runCatching {
+            bitmapProvider = BitmapProvider(
+                bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
+                colorProvider = { isSystemInDarkMode ->
+                    if (isSystemInDarkMode) Color.BLACK else Color.WHITE
+                }
+            )
+        }.onFailure {
+            Timber.e(it.message)
+        }
 
         createNotificationChannel()
 
@@ -425,9 +433,11 @@ class PlayerService : InvincibleService(),
         }
 
         //val cacheEvictor = NoOpCacheEvictor()
+        val exoPlayerCacheLocation = preferences.getEnum(
+            exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System
+        )
+        val directoryLocation = if (exoPlayerCacheLocation == ExoPlayerCacheLocation.Private) filesDir else cacheDir
 
-        var directory = cacheDir
-        //val downloadDirectory = getExternalFilesDir(null) ?: filesDir
         var cacheDirName = "rimusic_cache"
 
         val cacheSize =
@@ -435,7 +445,23 @@ class PlayerService : InvincibleService(),
 
         if (cacheSize == ExoPlayerDiskCacheMaxSize.Disabled) cacheDirName = "rimusic_no_cache"
 
+        val directory = directoryLocation.resolve(cacheDirName).also { dir ->
+            if (dir.exists()) return@also
 
+            dir.mkdir()
+
+            directoryLocation.listFiles()?.forEach { file ->
+                if (file.isDirectory && file.name.length == 1 && file.name.isDigitsOnly() || file.extension == "uid") {
+                    if (!file.renameTo(dir.resolve(file.name))) {
+                        file.deleteRecursively()
+                    }
+                }
+            }
+
+            filesDir.resolve("coil").deleteRecursively()
+        }
+
+        /*
         if (exoPlayerAlternateCacheLocation == "") {
             directory = cacheDir.resolve(cacheDirName).also { dir ->
                 if (dir.exists()) return@also
@@ -472,10 +498,11 @@ class PlayerService : InvincibleService(),
                 dir.resolve("coil").deleteRecursively()
             }
         }
-
+        */
 
         cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
 
+        //val downloadDirectory = getExternalFilesDir(null) ?: filesDir
         //downloadCache = SimpleCache(downloadDirectory, cacheEvictor, StandaloneDatabaseProvider(this))
 
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
@@ -814,9 +841,17 @@ class PlayerService : InvincibleService(),
         maybeProcessRadio()
 
         if (mediaItem == null) {
-            bitmapProvider.listener?.invoke(null)
+            runCatching {
+                bitmapProvider.listener?.invoke(null)
+            }.onFailure {
+                Timber.e(it.message)
+            }
         } else if (mediaItem.mediaMetadata.artworkUri == bitmapProvider.lastUri) {
-            bitmapProvider.listener?.invoke(bitmapProvider.lastBitmap)
+            runCatching {
+                bitmapProvider.listener?.invoke(bitmapProvider.lastBitmap)
+            }.onFailure {
+                Timber.e(it.message)
+            }
         }
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
@@ -1414,15 +1449,22 @@ class PlayerService : InvincibleService(),
         }
 
 
-        bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
-            maybeShowSongCoverInLockScreen()
-            handler.post {
-                runCatching {
-                    notificationManager?.notify(NotificationId, builder.setLargeIcon(bitmap).build())
-                }.onFailure {
-                    Timber.e(it.message)
+        runCatching {
+            bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
+                maybeShowSongCoverInLockScreen()
+                handler.post {
+                    runCatching {
+                        notificationManager?.notify(
+                            NotificationId,
+                            builder.setLargeIcon(bitmap).build()
+                        )
+                    }.onFailure {
+                        Timber.e(it.message)
+                    }
                 }
             }
+        }.onFailure {
+            Timber.e(it.message)
         }
 
 

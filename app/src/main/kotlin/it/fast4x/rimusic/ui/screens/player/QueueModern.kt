@@ -531,6 +531,7 @@ fun QueueModern(
 
                                         }
                                          */
+                                        //.animateItem()
                                         .draggedItem(
                                             reorderingState = reorderingState,
                                             index = window.firstPeriodIndex
@@ -683,7 +684,9 @@ fun QueueModern(
                             .absoluteOffset(0.dp, -65.dp)
                             .align(Alignment.TopCenter)
                     ){
-                        PlayerEssential(showPlayer = {}, hidePlayer = {})
+                        PlayerEssential(
+                            showPlayer = { navController.navigate(NavRoutes.player.name)},
+                            hidePlayer = {})
                     }
 
 

@@ -290,6 +290,8 @@ fun SettingsEntry(
             BasicText(
                 text = titleSecondary,
                 style = typography.xxs.secondary,
+                maxLines = 2,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 //modifier = Modifier
                 //    .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -459,6 +461,7 @@ fun ButtonBarSettingEntry(
     text: String,
     icon: Int,
     iconSize: Dp = 24.dp,
+    iconColor: Color? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
@@ -472,7 +475,7 @@ fun ButtonBarSettingEntry(
         trailingContent = {
             Image(
                 painter = painterResource(icon),
-                colorFilter = ColorFilter.tint(colorPalette.text),
+                colorFilter = ColorFilter.tint(iconColor ?: colorPalette.text),
                 modifier = Modifier.size(iconSize),
                 contentDescription = null,
                 contentScale = ContentScale.Fit

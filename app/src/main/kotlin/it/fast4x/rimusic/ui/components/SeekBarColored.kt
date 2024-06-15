@@ -51,6 +51,7 @@ fun SeekBarColored(
     shape: Shape = RectangleShape,
     drawSteps: Boolean = false,
 ) {
+    /*
     val (colorPalette, typography) = LocalAppearance.current
     val isDragging = remember {
         MutableTransitionState(false)
@@ -61,7 +62,7 @@ fun SeekBarColored(
     val currentBarHeight by transition.animateDp(label = "") { if (it) scrubberRadius else barHeight }
     val currentScrubberRadius by transition.animateDp(label = "") { if (it) 0.dp else scrubberRadius }
 
-    /*
+
     Box(
         modifier = modifier
             .pointerInput(minimumValue, maximumValue) {

@@ -1,7 +1,6 @@
 package it.fast4x.rimusic
 
 import android.app.Application
-import androidx.credentials.CredentialManager
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
@@ -21,8 +20,6 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         DatabaseInitializer()
-        ApplicationDependencies.init(this)
-        //val credentialManager by lazy { CredentialManager.create(this) }
 
         /**** LOG *********/
         val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
@@ -69,16 +66,5 @@ class MainApplication : Application(), ImageLoaderFactory {
             )
             .respectCacheHeaders(false)
             .build()
-    }
-}
-object ApplicationDependencies {
-    lateinit var mainApp: MainApplication
-        private set
-
-    //androidx.credentials.CredentialManager have much bug actually
-    //val credentialManager by lazy { CredentialManager.create(mainApp) }
-
-    internal fun init(application: MainApplication) {
-        this.mainApp = application
     }
 }

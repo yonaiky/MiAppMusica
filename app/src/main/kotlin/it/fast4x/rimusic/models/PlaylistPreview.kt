@@ -8,3 +8,4 @@ data class PlaylistPreview(
     @Embedded val playlist: Playlist,
     val songCount: Int
 )
+

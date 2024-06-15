@@ -3,6 +3,7 @@ package it.fast4x.piped.models
 import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -21,7 +22,12 @@ data class PlaylistPreview(
     val thumbnailUrl: UrlString,
     @SerialName("videos")
     val videoCount: Int
-)
+) {
+    //val UUIDtoBrowseId: String
+    //    get() = id.toString().replace("-", "")
+
+
+}
 
 @Serializable
 data class Playlist(
@@ -47,6 +53,20 @@ data class Playlist(
         @SerialName("duration")
         val durationSeconds: Long
     ) {
+        val cleanTitle: String
+            get() = title.split("-", ignoreCase = true).let {
+                println("pipedInfo: $title $it ${it.size}")
+                return if (it.size > 1) it[1].trim()
+                else title
+            }
+
+        val cleanArtists: String
+            get() = title.split("-", ignoreCase = true).let {
+                println("pipedInfo: $title $it ${it.size}")
+                return if (it.size > 1) it[0].trim()
+                else title
+            }
+
         val id
             get() = if (url.startsWith("/watch?v=")) url.substringAfter("/watch?v=")
             else Url(url).parameters["v"]?.firstOrNull()?.toString()
@@ -56,5 +76,11 @@ data class Playlist(
             else Url(uploaderUrl).pathSegments.lastOrNull()
 
         val duration get() = durationSeconds.seconds
+        val durationText: String
+            get() {
+                val minutes = duration.inWholeMinutes
+                val seconds = duration.inWholeSeconds % 60
+                return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
+            }
     }
 }

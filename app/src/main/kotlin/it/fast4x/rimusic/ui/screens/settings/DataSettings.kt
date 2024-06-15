@@ -45,9 +45,11 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
+import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.internal
 import it.fast4x.rimusic.path
@@ -66,6 +68,7 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerAlternateCacheLocationKey
+import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
@@ -107,10 +110,18 @@ fun DataSettings() {
         ExoPlayerDiskDownloadCacheMaxSize.`2GB`
     )
 
+    /*
     var exoPlayerAlternateCacheLocation by rememberPreference(
         exoPlayerAlternateCacheLocationKey,""
     )
+     */
 
+    var exoPlayerCacheLocation by rememberPreference(
+        exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System
+    )
+
+
+    /*
     val dirRequest = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         uri?.let {
             context.applicationContext.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -119,6 +130,7 @@ fun DataSettings() {
             exoPlayerAlternateCacheLocation = uri.path.toString()
         }
     }
+     */
 
 
     var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
@@ -304,10 +316,13 @@ fun DataSettings() {
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             /*
             .padding(
@@ -648,34 +663,52 @@ fun DataSettings() {
 
         }
 
+        EnumValueSelectorSettingsEntry(
+            title = "Cache location",
+            selectedValue = exoPlayerCacheLocation,
+            onValueSelected = { exoPlayerCacheLocation = it },
+            valueText = {
+                when (it) {
+                    ExoPlayerCacheLocation.Private -> stringResource(R.string.cache_location_private)
+                    ExoPlayerCacheLocation.System -> stringResource(R.string.cache_location_system)
+                }
+            }
+        )
 
-        //SettingsGroupSpacer()
+        SettingsDescription("Private cache location, can't be cleaned by the system")
+        ImportantSettingsDescription(stringResource(R.string.restarting_rimusic_is_required))
+
+        SettingsGroupSpacer()
 
         //SettingsEntryGroupText(title = stringResource(R.string.folder_cache))
 
+        /*
         SettingsDescription(
             text = stringResource(R.string.custom_cache_from_android_10_may_not_be_available)
         )
 
+
         SettingsEntry(
             title = stringResource(R.string.cache_location_folder),
             text = if (exoPlayerAlternateCacheLocation == "") stringResource(R.string._default) else exoPlayerAlternateCacheLocation,
-            isEnabled = if (sdkVersion.toShort() < 29) true else false,
+            //isEnabled = if (sdkVersion.toShort() < 29) true else false,
             onClick = {
                 dirRequest.launch(null)
             }
         )
+
 
         ImportantSettingsDescription(text = stringResource(R.string.cache_reset_by_clicking_button))
 
         SettingsEntry(
             title = stringResource(R.string.reset_cache_location_folder),
             text = "",
-            isEnabled = if (sdkVersion.toShort() < 29) true else false,
+            //isEnabled = if (sdkVersion.toShort() < 29) true else false,
             onClick = {
                 exoPlayerAlternateCacheLocation = ""
             }
         )
+         */
 
 
         SettingsEntryGroupText(title = "BACKUP AND RESTORE")

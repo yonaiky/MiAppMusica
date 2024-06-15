@@ -1,7 +1,5 @@
 package it.fast4x.rimusic.ui.screens.settings
 
-//import it.vfsfitvnm.vimusic.BuildConfig
-
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -199,6 +197,7 @@ fun About() {
         SettingsTopDescription( text =
             "25huizengek1 \n"+
                     "821938089 \n"+
+                    "aneesh1122\n"+
                     "bbyeen \n"+
                 "Craeckie \n"+
                 "DanielSevillano \n"+
@@ -207,6 +206,7 @@ fun About() {
                  "Iscle \n"+
                 "JZITNIK-github \n" +
                 "Locxter \n"+
+                 "lrusso96 \n"+
                 "Roklc \n"+
                 "sharunkumar \n" +
                 "SuhasDissa \n"

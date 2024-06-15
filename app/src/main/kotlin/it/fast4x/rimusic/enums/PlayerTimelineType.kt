@@ -5,5 +5,6 @@ enum class PlayerTimelineType {
     Wavy,
     PinBar,
     BodiedBar,
+    FakeAudioBar,
     //ColoredBar
 }

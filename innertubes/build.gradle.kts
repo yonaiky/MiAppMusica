@@ -16,5 +16,5 @@ dependencies {
     implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.client.encoding)
     implementation(libs.brotli)
-    testImplementation(testLibs.junit)
+    //testImplementation(libs.junit)
 }

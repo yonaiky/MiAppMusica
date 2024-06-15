@@ -22,17 +22,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
@@ -47,6 +50,7 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 @Composable
 fun PlaylistItem(
@@ -102,7 +106,13 @@ fun PlaylistItem(
         thumbnailContent = {
             if (thumbnails.toSet().size == 1) {
                 AsyncImage(
-                    model = thumbnails.first().thumbnail(thumbnailSizePx),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(thumbnails.first())
+                        .setHeader("User-Agent", "Mozilla/5.0")
+                        .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
+                    onError = {error ->
+                        Timber.e(error.result.throwable.message)
+                    },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = it
@@ -119,7 +129,13 @@ fun PlaylistItem(
                         Alignment.BottomEnd
                     ).forEachIndexed { index, alignment ->
                         AsyncImage(
-                            model = thumbnails.getOrNull(index),
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(thumbnails.getOrNull(index))
+                                .setHeader("User-Agent", "Mozilla/5.0")
+                                .build(),
+                            onError = {error ->
+                                Timber.e(error.result.throwable.message)
+                            },
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -224,6 +240,17 @@ fun PlaylistItem(
             )
 
             name?.let {
+                if (it.startsWith(PIPED_PREFIX,0,true)) {
+                    Image(
+                        painter = painterResource(R.drawable.piped_logo),
+                        colorFilter = ColorFilter.tint(colorPalette.red),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(all = 5.dp),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.Fit
+                    )
+                }
                 if (it.startsWith(PINNED_PREFIX,0,true)) {
                     Image(
                         painter = painterResource(R.drawable.pin),
@@ -279,7 +306,9 @@ fun PlaylistItem(
                         text = if (name.startsWith(PINNED_PREFIX,0,true))
                             name.substringAfter(PINNED_PREFIX) else
                             if (name.startsWith(MONTHLY_PREFIX,0,true))
-                                getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else name,
+                                getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
+                            if (name.startsWith(PIPED_PREFIX,0,true))
+                            name.substringAfter(PIPED_PREFIX) else name,
                         style = typography.xs.semiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,

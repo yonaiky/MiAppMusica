@@ -137,6 +137,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioFadeIn
 import it.fast4x.rimusic.utils.audioFadeOut
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -156,6 +157,7 @@ import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
@@ -755,29 +757,17 @@ fun PlayerModern(
     //val onGoToHome = homeRoute::global
 
 
-    val windows by remember {
-        mutableStateOf(binder.player.currentTimeline.windows)
-    }
-
-    var queuedSongs by remember {
-        mutableStateOf<List<Song>>(emptyList())
-    }
-
-    LaunchedEffect(Unit, mediaItem.mediaId, windows) {
-        Database.getSongsList(
-            windows.map {
-                it.mediaItem.mediaId
-            }
-        ).collect { queuedSongs = it }
+    val mediaItems by remember {
+        mutableStateOf(binder.player.currentTimeline.mediaItems)
     }
 
     var totalPlayTimes = 0L
-    queuedSongs.forEach {
-        totalPlayTimes += it.durationText?.let { it1 ->
+    mediaItems.forEach {
+        totalPlayTimes += it.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
             durationTextToMillis(it1)
         }?.toLong() ?: 0
     }
-
+//    println("mediaItem totalPlayTimes $totalPlayTimes")
 
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
@@ -1010,7 +1000,7 @@ fun PlayerModern(
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { showQueue = true }
                     .background(colorPalette.background2.copy(
-                        alpha = if (transparentBackgroundActionBarPlayer) 0.1f else 0.7f
+                        alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.7f // 0.0 > 0.1
                     ))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
@@ -1031,7 +1021,9 @@ fun PlayerModern(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                .background(colorPalette.background2.copy(alpha = 0.3f))
+                                //.background(colorPalette.background2.copy(alpha = 0.3f))
+                                .background(colorPalette.background2.copy(
+                                    alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f))
                                 .padding(horizontal = 12.dp)
                                 .fillMaxWidth()
                         ) {

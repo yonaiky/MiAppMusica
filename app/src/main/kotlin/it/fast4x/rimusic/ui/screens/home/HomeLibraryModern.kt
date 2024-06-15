@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
+import it.fast4x.piped.Piped
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
@@ -87,15 +89,21 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
+import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
+import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.playlistTypeKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showBuiltinPlaylistsKey
@@ -112,7 +120,15 @@ import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
+
+const val PIPED_PREFIX = "piped:"
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -150,11 +166,12 @@ fun HomeLibraryModern(
         )
     }
 
+    ImportPipedPlaylists()
+
     var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    var sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+    var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
 
     var items by persistList<PlaylistPreview>("home/playlists")
-
     LaunchedEffect(sortBy, sortOrder) {
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
@@ -439,11 +456,12 @@ fun HomeLibraryModern(
                 )
             }
 
-            if (playlistType == PlaylistsType.Playlist)
+            if (playlistType == PlaylistsType.Playlist) {
                 items(items = items.filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
                 }, key = { it.playlist.id }) { playlistPreview ->
+
                     PlaylistItem(
                         playlist = playlistPreview,
                         thumbnailSizeDp = thumbnailSizeDp,
@@ -451,10 +469,11 @@ fun HomeLibraryModern(
                         alternative = true,
                         modifier = Modifier
                             .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }
+            }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
                  items(items = items.filter {
@@ -467,7 +486,7 @@ fun HomeLibraryModern(
                         alternative = true,
                         modifier = Modifier
                             .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }
@@ -483,7 +502,7 @@ fun HomeLibraryModern(
                         alternative = true,
                         modifier = Modifier
                             .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
-                            .animateItemPlacement()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
                 }
