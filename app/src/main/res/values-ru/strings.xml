@@ -591,4 +591,7 @@
     <string name="piped_connected_to_s">Подключен к %s</string>
     <string name="fake_audio_bar">\"Фальшивая\" вейвформа </string>
     <string name="copy_crash_log_to_clipboard">Копировать логи сбоев в буфер обмена</string>
+    <string name="show_thumbnail">Show Thumbnail</string>
+    <string name="show_lyrics_thumbnail">Show Thumbnail for Lyrics</string>
+    <string name="large">Large</string>
 </resources>
