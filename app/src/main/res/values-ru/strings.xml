@@ -188,7 +188,7 @@
     <string name="turn_off">Выключить</string>
     <string name="download">Загрузить</string>
     <string name="_default">По умолчанию</string>
-    <string name="dynamic">Динамично</string>
+    <string name="dynamic">Динамически</string>
     <string name="discovery">Открытия</string>
     <string name="mood">Настроение</string>
     <string name="new_albums">Новые альбомы</string>
@@ -567,7 +567,7 @@
     <string name="icon_like_brilliant">Бриллиант</string>
     <string name="player_swap_controls_with_timeline">Поменять кнопки управления и таймлайн местами</string>
     <string name="player_enable_lyrics_popup_message">Enable lyrics popup message</string>
-    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
+    <string name="exclude_songs_with_duration_limit">Исключить песни с ограничением по длительности</string>
     <string name="exclude_songs_with_duration_limit_description">Если включено, песни длительностью больше лимита будут исключены, применены к Моему Топу и очереди воспроизведения</string>
     <string name="no_log_available">Нет доступных логов</string>
     <string name="enable_quick_picks_page">Включить страницу Рекомендаций</string>
@@ -590,5 +590,5 @@
     <string name="piped_connect">Подключиться</string>
     <string name="piped_connected_to_s">Подключен к %s</string>
     <string name="fake_audio_bar">Fake Audio Bar</string>
-    <string name="copy_crash_log_to_clipboard">Копировать логи сбоев в буфер обмена</string>
+    <string name="copy_crash_log_to_clipboard">Скопировать логи сбоев в буфер обмена</string>
 </resources>
