@@ -201,49 +201,31 @@ fun Thumbnail(
         val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
         var modifierUiType by remember { mutableStateOf(modifier) }
         if (showthumbnail)
-            if (!isShowingLyrics)
-             if (playerControlsType == PlayerControlsType.Modern)
-               modifierUiType = modifier
-                .padding(vertical = 8.dp)
-                .aspectRatio(1f)
-                //.size(thumbnailSizeDp)
-                .fillMaxSize()
-                //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                .clip(LocalAppearance.current.thumbnailShape)
-                //.padding(14.dp)
-             else modifierUiType = modifier
-                .aspectRatio(1f)
-                //.size(thumbnailSizeDp)
-                .padding(14.dp)
-                .fillMaxSize()
-                .clip(LocalAppearance.current.thumbnailShape)
+            if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+              if (playerControlsType == PlayerControlsType.Modern)
+                modifierUiType = modifier
+                 .padding(vertical = 8.dp)
+                 .aspectRatio(1f)
+                 //.size(thumbnailSizeDp)
+                 .fillMaxSize()
+                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
+                 .clip(LocalAppearance.current.thumbnailShape)
+                 //.padding(14.dp)
+              else modifierUiType = modifier
+                 .aspectRatio(1f)
+                 //.size(thumbnailSizeDp)
+                 .padding(14.dp)
+                 .fillMaxSize()
+                 .clip(LocalAppearance.current.thumbnailShape)
 
-            else if (showlyricsthumbnail)
-             if (playerControlsType == PlayerControlsType.Modern)
-               modifierUiType = modifier
-                .padding(vertical = 8.dp)
-                .aspectRatio(1f)
-                //.size(thumbnailSizeDp)
-                .fillMaxSize()
-                //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                .clip(LocalAppearance.current.thumbnailShape)
-                //.padding(14.dp)
-             else modifierUiType = modifier
-                    .aspectRatio(1f)
-                    //.size(thumbnailSizeDp)
-                    .padding(14.dp)
-                    .fillMaxSize()
-                    .clip(LocalAppearance.current.thumbnailShape)
 
         Box(
             modifier = modifierUiType
         ) {
             if (showthumbnail)
-             if (!isShowingLyrics)
+             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
               if(artImageAvailable)
                 AsyncImage(
                     model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
@@ -286,73 +268,6 @@ fun Thumbnail(
 
 
                 )
-
-              if(!artImageAvailable)
-                Image(
-                    painter = painterResource(R.drawable.app_icon),
-                    colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
-                    modifier = Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = { onShowStatsForNerds(true) },
-                                onTap = if (thumbnailTapEnabledKey) {
-                                    {
-                                        onShowLyrics(true)
-                                        onShowEqualizer(false)
-                                    }
-                                } else null,
-                                onDoubleTap = { onDoubleTap() }
-                            )
-
-                        }
-                        .fillMaxSize()
-                        .clip(LocalAppearance.current.thumbnailShape),
-                    contentDescription = "Background Image",
-                    contentScale = ContentScale.Fit
-                )
-             else if(showlyricsthumbnail)
-              if(artImageAvailable)
-                  AsyncImage(
-                      model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
-                      /*
-                      model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                          thumbnailSizePx
-                      ),
-                       */
-                      /*
-                      model = ImageRequest.Builder(LocalContext.current)
-                          .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
-                          .size(Size.ORIGINAL)
-                          .scale(Scale.FIT)
-                          .build(),
-                       */
-                      onSuccess = {
-                          artImageAvailable = true
-                      },
-                      onError = {
-                          artImageAvailable = false
-                      },
-                      contentDescription = null,
-                      contentScale = ContentScale.Fit,
-                      modifier = Modifier
-                          .pointerInput(Unit) {
-                              detectTapGestures(
-                                  onLongPress = { onShowStatsForNerds(true) },
-                                  onTap = if (thumbnailTapEnabledKey) {
-                                      {
-                                          onShowLyrics(true)
-                                          onShowEqualizer(false)
-                                      }
-                                  } else null,
-                                  onDoubleTap = { onDoubleTap() }
-                              )
-
-                          }
-                          .fillMaxSize()
-                          .clip(LocalAppearance.current.thumbnailShape)
-
-
-                  )
 
               if(!artImageAvailable)
                 Image(

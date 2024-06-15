@@ -400,7 +400,7 @@ fun AppearanceSettings() {
                     }
                 )
 
-
+        if(showthumbnail)
              if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
                 filterCharSequence,
                 true
