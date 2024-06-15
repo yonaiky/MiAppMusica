@@ -123,6 +123,14 @@ import me.bush.translator.Translator
 import okhttp3.internal.toImmutableList
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.ui.styling.ColorPalette
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @UnstableApi
@@ -153,11 +161,14 @@ fun Lyrics(
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player
 
+        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
         var isPicking by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
 
         val thumbnailSize = Dimensions.thumbnails.player.song
+        val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
 
         var isEditing by remember(mediaId, isShowingSynchronizedLyrics) {
             mutableStateOf(false)
@@ -452,7 +463,7 @@ fun Lyrics(
                     )
                 }
                 .fillMaxSize()
-                .background(Color.Black.copy(0.8f))
+                .background(Color.Black.copy(if (showlyricsthumbnail) 0.8f else 0.0f))
                 .clip(thumbnailShape)
 
         ) {
@@ -552,7 +563,7 @@ fun Lyrics(
                     }
 
                     var modifierBG = Modifier.verticalFadingEdge()
-                    if (showBackgroundLyrics) modifierBG = modifierBG.background(colorPalette.accent)
+                    if (showBackgroundLyrics && showlyricsthumbnail) modifierBG = modifierBG.background(colorPalette.accent)
 
                     LazyColumn(
                         state = lazyListState,
@@ -586,16 +597,24 @@ fun Lyrics(
                                     showPlaceholder = false
                                 }
                             } else translatedText = sentence.second
+                            val offset = Offset(0.0f, 0.0f)
                             BasicText(
                                 text = translatedText,
-                                style = when (fontSize) {
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = if (!showthumbnail) Color.Black else Color.Transparent, offset = offset, blurRadius = 7f
+                                    ),
+                                ).merge(when (fontSize) {
                                     LyricsFontSize.Light ->
-                                        typography.m.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
+                                        typography.m.center.medium.color(if (index == synchronizedLyrics.index) if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent else if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black.copy(0.65f) else Color.White.copy(0.65f) else colorPalette.accent.copy(0.65f))
                                     LyricsFontSize.Medium ->
-                                        typography.l.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
+                                        typography.l.center.medium.color(if (index == synchronizedLyrics.index) if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent else if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black.copy(0.65f) else Color.White.copy(0.65f) else colorPalette.accent.copy(0.65f))
                                     LyricsFontSize.Heavy ->
-                                        typography.xl.center.medium.color(if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled)
-                                },
+                                        typography.xl.center.medium.color(if (index == synchronizedLyrics.index) if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent else if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black.copy(0.65f) else Color.White.copy(0.65f) else colorPalette.accent.copy(0.65f))
+                                    LyricsFontSize.Large ->
+                                        typography.xlxl.center.medium.color(if (index == synchronizedLyrics.index) if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent else if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black.copy(0.65f) else Color.White.copy(0.65f) else colorPalette.accent.copy(0.65f))
+                                }
+                                ),
                                 modifier = Modifier
                                     .padding(vertical = 4.dp, horizontal = 32.dp)
                                     .clickable {
@@ -633,11 +652,13 @@ fun Lyrics(
                         text = translatedText,
                         style = when (fontSize) {
                             LyricsFontSize.Light ->
-                                typography.m.center.medium.color(PureBlackColorPalette.text)
+                                typography.m.center.medium.color(if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent)
                             LyricsFontSize.Medium ->
-                                typography.l.center.medium.color(PureBlackColorPalette.text)
+                                typography.l.center.medium.color(if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent)
                             LyricsFontSize.Heavy ->
-                                typography.xl.center.medium.color(PureBlackColorPalette.text)
+                                typography.xl.center.medium.color(if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent)
+                            LyricsFontSize.Large ->
+                                typography.xlxl.center.medium.color(if (showthumbnail) if (showlyricsthumbnail) PureBlackColorPalette.text else if (colorPaletteMode == ColorPaletteMode.Light) Color.Black else Color.White else colorPalette.accent)
                         },
                         modifier = Modifier
                             .verticalFadingEdge()
@@ -725,6 +746,15 @@ fun Lyrics(
                                     onClick = {
                                         menuState.hide()
                                         fontSize = LyricsFontSize.Heavy
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.text,
+                                    text = stringResource(R.string.large),
+                                    secondaryText = "",
+                                    onClick = {
+                                        menuState.hide()
+                                        fontSize = LyricsFontSize.Large
                                     }
                                 )
                             }
