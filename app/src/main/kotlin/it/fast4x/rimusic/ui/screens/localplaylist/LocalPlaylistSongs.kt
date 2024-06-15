@@ -287,7 +287,7 @@ fun LocalPlaylistSongs(
         lazyListState = lazyListState,
         key = playlistSongs,
         onDragEnd = { fromIndex, toIndex ->
-            Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
+            //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
             query {
                 Database.move(playlistId, fromIndex, toIndex)
             }

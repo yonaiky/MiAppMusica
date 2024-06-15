@@ -31,6 +31,12 @@ fun syncSongsInPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Sessi
             )
         }.await()?.map {playlist ->
 
+            playlistId.let {
+                transaction {
+                    Database.clearPlaylist(it)
+                }
+            }
+
             playlist.videos.forEach {video ->
                 val song = video.id?.let { id ->
                     Song(
