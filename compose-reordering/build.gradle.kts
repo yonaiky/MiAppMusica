@@ -1,7 +1,16 @@
+
 plugins {
     id("com.android.library")
     kotlin("android")
 }
+
+/*
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin)
+    //alias(libs.plugins.kotlin.compose)
+}
+ */
 
 android {
     namespace = "it.fast4x.compose.reordering"
