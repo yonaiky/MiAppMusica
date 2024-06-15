@@ -593,4 +593,7 @@
     <string name="copy_crash_log_to_clipboard">Salin log crash ke papan klip</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
+    <string name="show_thumbnail">Show thumbnail</string>
+    <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
+    <string name="large">Large</string>
 </resources>

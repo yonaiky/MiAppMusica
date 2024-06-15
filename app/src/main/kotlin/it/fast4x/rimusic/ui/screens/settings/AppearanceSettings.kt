@@ -100,11 +100,11 @@ import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @ExperimentalAnimationApi
@@ -368,7 +368,7 @@ fun AppearanceSettings() {
                 isChecked = showthumbnail,
                 onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it }
             )
-        if(showthumbnail)
+        if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
                     filterCharSequence,
                     true
@@ -380,12 +380,12 @@ fun AppearanceSettings() {
                     isChecked = showlyricsthumbnail,
                     onCheckedChange = { showlyricsthumbnail = it }
                 )
-        if(showthumbnail)
+        if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                     filterCharSequence,
                     true
                 )
-             )
+            )
                 EnumValueSelectorSettingsEntry(
                     title = stringResource(R.string.player_thumbnail_size),
                     selectedValue = playerThumbnailSize,
@@ -401,17 +401,17 @@ fun AppearanceSettings() {
                 )
 
 
-             if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
                 filterCharSequence,
                 true
-                )
-             )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.thumbnail_roundness),
-                    selectedValue = thumbnailRoundness,
-                    onValueSelected = { thumbnailRoundness = it },
-                    trailingContent = {
-                      Spacer(
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.thumbnail_roundness),
+                selectedValue = thumbnailRoundness,
+                onValueSelected = { thumbnailRoundness = it },
+                trailingContent = {
+                    Spacer(
                         modifier = Modifier
                             .border(
                                 width = 1.dp,
@@ -424,16 +424,16 @@ fun AppearanceSettings() {
                             )
                             .size(36.dp)
                     )
-                  },
+                },
                 valueText = {
                     when (it) {
                         ThumbnailRoundness.None -> stringResource(R.string.none)
                         ThumbnailRoundness.Light -> stringResource(R.string.light)
                         ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
                         ThumbnailRoundness.Medium -> stringResource(R.string.medium)
-                        }
-                  }
-             )
+                    }
+                }
+            )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,
