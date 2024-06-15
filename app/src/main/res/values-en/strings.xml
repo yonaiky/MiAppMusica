@@ -465,7 +465,7 @@
     <string name="info_not_find_app_open_doc">Couldn\'t find an application to open documents</string>
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
-    <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_floating_icon">Show floating search icon</string>
     <string name="show_equalizer">Equalizer</string>
     <string name="theme_pure_black">Pure Black</string>
     <string name="theme_modern_black">Modern Black</string>
@@ -494,9 +494,9 @@
     <string name="month_november_s">November %s</string>
     <string name="month_december_s">December %s</string>
     <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumber a monthly playlist</string>
-    <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
-    <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
-    <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Can\'t rename a monthly playlist</string>
+    <string name="info_cannot_delete_a_monthly_playlist">Can\'t delete a monthly playlist</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sorting</string>
     <string name="information">Information</string>
     <string name="info_lyrics_found_on_s">Lyrics found on %s</string>
     <string name="info_lyrics_not_found_on_s_try_on_s">Lyrics not found on %s, try on %s</string>
@@ -508,7 +508,7 @@
     <string name="bg_colors_background_from_theme">Match theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient from song cover</string>
     <string name="bg_colors_gradient_background_from_theme">Gradient from theme</string>
-    <string name="vimusic_show_search_button_in_navigation_bar">Show search button in navigation bar</string>
+    <string name="vimusic_show_search_button_in_navigation_bar">Show the search button in the navigation bar</string>
     <string name="vismusic_only_in_left_right_navigation_bar">Only for left or right navigation bar in ViMusic UI</string>
     <string name="enable_monthly_playlists_creation">Enable monthly playlists creation</string>
     <string name="info_no_singles_yet">No singles available</string>
@@ -516,7 +516,7 @@
     <string name="info_no_songs_yet">No songs available</string>
     <string name="theme_customized">Customized</string>
     <string name="do_you_really_want_to_reset_the_custom_light_theme_colors">Do you really want to reset the custom light theme colors?</string>
-    <string name="do_you_really_want_to_reset_the_custom_dark_theme_colors">Do you really want to reset the custom dark theme colors</string>
+    <string name="do_you_really_want_to_reset_the_custom_dark_theme_colors">Do you really want to reset the custom dark theme colors?</string>
     <string name="info_reset_custom_light_theme_colors">Reset custom light theme colors</string>
     <string name="info_reset_custom_dark_theme_colors">Reset custom dark theme colors</string>
     <string name="title_customized_light_theme_colors">Customized light theme colors</string>
@@ -528,7 +528,7 @@
     <string name="color_background_4">Background 4</string>
     <string name="color_background_5">Background 5</string>
     <string name="color_text">Text</string>
-    <string name="color_text_secondary">Text secondary</string>
+    <string name="color_text_secondary">Text Secondary</string>
     <string name="color_text_disabled">Text disabled</string>
     <string name="color_icon_button_player">Player button icon</string>
     <string name="color_accent">Color accent</string>
@@ -565,7 +565,7 @@
     <string name="icon_like_shape">Cute</string>
     <string name="icon_like_striped">Striped</string>
     <string name="icon_like_brilliant">Brilliant</string>
-    <string name="player_swap_controls_with_timeline">Swap controls with timeline</string>
+    <string name="player_swap_controls_with_timeline">Swap the controls with the timeline</string>
     <string name="player_enable_lyrics_popup_message">Enable lyrics popup message</string>
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">Songs with duration exceeding the limit will be excluded from the Top songs and playback queue</string>
@@ -582,13 +582,13 @@
     <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
     <string name="copy_log_to_clipboard">Copy log to clipboard</string>
     <string name="piped_account">PIPED</string>
-    <string name="enable_piped_syncronization">Enable piped syncronization</string>
-    <string name="piped_change_instance">Change instance</string>
+    <string name="enable_piped_syncronization">Enable piped synchronization</string>
+    <string name="piped_change_instance">Change Instance</string>
     <string name="piped_username">Username</string>
     <string name="piped_password">Password</string>
     <string name="piped_disconnect">Disconnect</string>
     <string name="piped_connect">Connect</string>
     <string name="piped_connected_to_s">Connected to %s</string>
-    <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="fake_audio_bar">Fake Waveform</string>
     <string name="copy_crash_log_to_clipboard">Copy crash log to clipboard</string>
 </resources>
