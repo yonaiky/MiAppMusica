@@ -570,9 +570,9 @@
     <string name="exclude_songs_with_duration_limit">Süre sınırı olan şarkıları hariç tut</string>
     <string name="exclude_songs_with_duration_limit_description">Etkinleştirilirse, süresi sınırı aşan şarkılar hariç tutulur, en sevdiklerim listesine ve oynatma sırasına uygulanır</string>
     <string name="no_log_available">Kayıt mevcut değil</string>
-    <string name="enable_quick_picks_page">Enable Quick Picks page</string>
+    <string name="enable_quick_picks_page">Hızlı Seçimler sayfasını etkinleştir</string>
     <string name="lang_vietnamese">Vietnamese</string>
-    <string name="parental_control">Parental control</string>
+    <string name="parental_control">Ebeveyn kontrolü</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">System</string>
