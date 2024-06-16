@@ -4,7 +4,8 @@ enum class PlayerThumbnailSize {
     Small,
     Medium,
     Big,
-    Biggest;
+    Biggest,
+    Expanded;
 
     val size: Int
         get() = when (this) {
@@ -12,6 +13,7 @@ enum class PlayerThumbnailSize {
             Medium -> 45
             Big -> 20
             Biggest -> 10
+            Expanded -> 0
         }
 
 }
