@@ -93,6 +93,16 @@ fun SortMenu (
                 }
             )
         }
+        onDateLiked?.let {
+            MenuEntry(
+                icon = R.drawable.heart,
+                text = stringResource(R.string.sort_date_liked),
+                onClick = {
+                    onDismiss()
+                    onDateLiked()
+                }
+            )
+        }
         onPlayTime?.let {
             MenuEntry(
                 icon = R.drawable.trending,
@@ -193,16 +203,7 @@ fun SortMenu (
                 }
             )
         }
-        onDateLiked?.let {
-            MenuEntry(
-                icon = R.drawable.heart,
-                text = stringResource(R.string.sort_date_liked),
-                onClick = {
-                    onDismiss()
-                    onDateLiked()
-                }
-            )
-        }
+
         onDuration?.let {
             MenuEntry(
                 icon = R.drawable.time,
