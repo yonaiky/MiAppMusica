@@ -589,9 +589,9 @@
     <string name="piped_disconnect">Отключиться</string>
     <string name="piped_connect">Подключиться</string>
     <string name="piped_connected_to_s">Подключен к %s</string>
-    <string name="fake_audio_bar">\"Фальшивая\" вейвформа </string>
-    <string name="copy_crash_log_to_clipboard">Копировать логи сбоев в буфер обмена</string>
+    <string name="fake_audio_bar">\"Фальшивая\" вейвформа</string>
+    <string name="copy_crash_log_to_clipboard">Скопировать логи сбоев в буфер обмена</string>
     <string name="show_thumbnail">Показывать превью</string>
     <string name="show_lyrics_thumbnail">Показывать превью текстов песен</string>
-    <string name="large">Large</string>
+    <string name="large">Крупный</string>
 </resources>
