@@ -553,7 +553,7 @@
     <string name="position_bottom">Unten</string>
     <string name="added_to_favorites">Zu Favoriten hinzugefügt</string>
     <string name="removed_from_favorites">Von Favoriten entfernt</string>
-    <string name="lang_filipino">Filipino</string>
+    <string name="lang_filipino">Philippinisch</string>
     <string name="action_bar_transparent_background">Transparenter Hintergrund</string>
     <string name="pinfo_type">Info type</string>
     <string name="pinfo_album_and_artist_name">Album and artist name</string>
@@ -569,18 +569,18 @@
     <string name="player_enable_lyrics_popup_message">Enable lyrics popup message</string>
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
-    <string name="no_log_available">No log available</string>
+    <string name="no_log_available">Protokoll nicht vorhanden</string>
     <string name="enable_quick_picks_page">Enable Quick Picks page</string>
-    <string name="lang_vietnamese">Vietnamese</string>
-    <string name="parental_control">Parental control</string>
-    <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
-    <string name="cache_location_private">Private</string>
+    <string name="lang_vietnamese">Vietnamesisch</string>
+    <string name="parental_control">Jugendschutz</string>
+    <string name="info_prevent_play_songs_with_age_limitation">Verhindere die Wiedergabe von Liedern mit Altersbegrenzung</string>
+    <string name="cache_location_private">Privat</string>
     <string name="cache_location_system">System</string>
     <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or piped playlist</string>
     <string name="debug">DEBUG</string>
     <string name="enable_log_debug">Fehlerprotokoll aktivieren</string>
     <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
-    <string name="copy_log_to_clipboard">Copy log to clipboard</string>
+    <string name="copy_log_to_clipboard">Kopiere Protokoll in die Zwischenablage</string>
     <string name="piped_account">PIPED</string>
     <string name="enable_piped_syncronization">Enable piped syncronization</string>
     <string name="piped_change_instance">Change instance</string>
@@ -595,5 +595,9 @@
     <string name="show_lyrics_thumbnail">Miniaturansicht für Liedtexte anzeigen</string>
     <string name="large">Groß</string>
     <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
+    <string name="expanded">Erweitert</string>
+    <string name="lyricscolor">Liedtext-Farbe</string>
+    <string name="accent">Accent</string>
+    <string name="lyrics_size">Liedtext-Größe</string>
+    <string name="translate">Übersetzen</string>
 </resources>
