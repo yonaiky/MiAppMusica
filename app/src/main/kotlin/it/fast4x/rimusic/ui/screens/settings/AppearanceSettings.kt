@@ -47,6 +47,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
+import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
@@ -107,6 +108,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.lyricsColorKey
 
 
 @ExperimentalAnimationApi
@@ -192,6 +196,11 @@ fun AppearanceSettings() {
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
+
+    )
+    var lyricsColor by rememberPreference(
+        lyricsColorKey,
+        LyricsColor.Thememode
     )
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
@@ -374,7 +383,7 @@ fun AppearanceSettings() {
                 isChecked = showthumbnail,
                 onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it }
             )
-        if (showthumbnail)
+        if(showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
                     filterCharSequence,
                     true
@@ -386,12 +395,33 @@ fun AppearanceSettings() {
                     isChecked = showlyricsthumbnail,
                     onCheckedChange = { showlyricsthumbnail = it }
                 )
-        if (showthumbnail)
-            if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
+        if (!showlyricsthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.lyricscolor).contains(
                     filterCharSequence,
                     true
                 )
             )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.lyricscolor),
+                    selectedValue = lyricsColor,
+                    onValueSelected = {
+                        lyricsColor = it
+                    },
+                    valueText = {
+                        when (it) {
+                            LyricsColor.Thememode -> stringResource(R.string.theme)
+                            LyricsColor.Accent -> stringResource(R.string.accent)
+                            LyricsColor.Cover -> stringResource(R.string.cover)
+                        }
+                    },
+                )
+
+        if(showthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                    filterCharSequence,
+                    true
+                )
+             )
                 EnumValueSelectorSettingsEntry(
                     title = stringResource(R.string.player_thumbnail_size),
                     selectedValue = playerThumbnailSize,
