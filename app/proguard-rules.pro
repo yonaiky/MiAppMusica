@@ -19,10 +19,7 @@
     public static <1> INSTANCE;
     kotlinx.serialization.KSerializer serializer(...);
 }
--if class androidx.credentials.CredentialManager
--keep class androidx.credentials.playservices.** {
-  *;
-}
+
 
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 
@@ -39,3 +36,21 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+
+
+#-dontwarn it.fast4x.compose.persist.PersistKt
+#-dontwarn it.fast4x.compose.persist.PersistMapCleanupKt
+#-dontwarn it.fast4x.compose.persist.PersistMapOwner
+#-dontwarn it.fast4x.compose.persist.UtilsKt
+#-dontwarn it.fast4x.compose.reordering.DraggedItemKt
+#-dontwarn it.fast4x.compose.reordering.ReorderKt
+#-dontwarn it.fast4x.compose.reordering.ReorderingState
+#-dontwarn it.fast4x.compose.reordering.ReorderingStateKt
+#-dontwarn it.fast4x.compose.routing.Route0
+#-dontwarn it.fast4x.compose.routing.Route1
+#-dontwarn it.fast4x.compose.routing.Route3
+#-dontwarn it.fast4x.compose.routing.Route
+#-dontwarn it.fast4x.compose.routing.RouteHandlerKt
+#-dontwarn it.fast4x.compose.routing.RouteHandlerScope
+#-dontwarn it.fast4x.compose.routing.TransitionsKt
