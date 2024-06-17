@@ -910,8 +910,8 @@ fun Lyrics(
                         .align(Alignment.BottomStart)
                         .size(20.dp)
                 )
-
-                IconButton(
+                if (showlyricsthumbnail)
+                 IconButton(
                     icon = R.drawable.text,
                     color = DefaultDarkColorPalette.text,
                     enabled = true,
@@ -969,6 +969,7 @@ fun Lyrics(
                     .fillMaxWidth(0.2f)
             ) {
 
+               if (showlyricsthumbnail)
                 IconButton(
                     icon = R.drawable.translate,
                     color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
@@ -995,6 +996,65 @@ fun Lyrics(
                             onClick = {
                                 menuState.display {
                                     Menu {
+                                      if (!showlyricsthumbnail)
+                                        MenuEntry(
+                                            icon = R.drawable.text,
+                                            enabled = true,
+                                            text = stringResource(R.string.lyrics_size),
+                                            onClick = {
+                                                menuState.display {
+                                                    Menu {
+                                                        MenuEntry(
+                                                            icon = R.drawable.text,
+                                                            text = stringResource(R.string.light),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                fontSize = LyricsFontSize.Light
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = R.drawable.text,
+                                                            text = stringResource(R.string.medium),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                fontSize = LyricsFontSize.Medium
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = R.drawable.text,
+                                                            text = stringResource(R.string.heavy),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                fontSize = LyricsFontSize.Heavy
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = R.drawable.text,
+                                                            text = stringResource(R.string.large),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                fontSize = LyricsFontSize.Large
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        )
+                                      if (!showlyricsthumbnail)
+                                        MenuEntry(
+                                            icon = R.drawable.translate,
+                                            text = stringResource(R.string.translate),
+                                            enabled = true,
+                                            onClick = {
+                                                translateEnabled = !translateEnabled
+                                                showPlaceholder = if (!translateEnabled) false else true
+                                            }
+                                        )
+
                                         MenuEntry(
                                             icon = R.drawable.time,
                                             text = stringResource(R.string.show) + " ${

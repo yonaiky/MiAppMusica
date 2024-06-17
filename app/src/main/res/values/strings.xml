@@ -598,6 +598,8 @@
     <string name="expanded">Expanded</string>
     <string name="lyricscolor">Lyrics Color</string>
     <string name="accent">Accent</string>
+    <string name="lyrics_size">Lyrics Size</string>
+    <string name="translate">Translate</string>
 
 
 </resources>
