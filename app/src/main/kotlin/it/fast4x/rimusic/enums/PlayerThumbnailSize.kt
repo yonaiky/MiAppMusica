@@ -9,10 +9,10 @@ enum class PlayerThumbnailSize {
 
     val size: Int
         get() = when (this) {
-            Small -> 80
-            Medium -> 45
-            Big -> 20
-            Biggest -> 10
+            Small -> 90
+            Medium -> 55
+            Big -> 30
+            Biggest -> 20
             Expanded -> 0
         }
 
