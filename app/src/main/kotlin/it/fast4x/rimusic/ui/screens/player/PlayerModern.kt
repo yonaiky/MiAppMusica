@@ -194,6 +194,7 @@ import kotlin.math.absoluteValue
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -226,7 +227,7 @@ fun PlayerModern(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -1531,8 +1532,8 @@ fun PlayerModern(
                         modifier = Modifier
                             .clip(thumbnailShape)
                             .padding(
-                                horizontal = playerThumbnailSize.size.dp,
-                                vertical = 4.dp
+                                horizontal = if (isShowingLyrics && !showlyricsthumbnail) 0.dp else playerThumbnailSize.size.dp,
+                                vertical = if (isShowingLyrics && !showlyricsthumbnail)  0.dp else 4.dp,
                             )
                     )
                 }

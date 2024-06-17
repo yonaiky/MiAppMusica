@@ -91,12 +91,17 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.mediaItemToggleLike
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.flow.distinctUntilChanged
+import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.getLikedIcon
+import it.fast4x.rimusic.utils.getUnlikedIcon
 
 import kotlin.math.absoluteValue
 
@@ -144,6 +149,10 @@ fun PlayerEssential(
     var likedAt by rememberSaveable {
         mutableStateOf<Long?>(null)
     }
+    var miniPlayerType by rememberPreference(
+        miniPlayerTypeKey,
+        MiniPlayerType.Essential
+    )
     LaunchedEffect(mediaItem.mediaId) {
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
@@ -163,7 +172,7 @@ fun PlayerEssential(
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) updateLike = true
+            if (value == SwipeToDismissBoxValue.StartToEnd) if (miniPlayerType == MiniPlayerType.Essential) updateLike = true else binder.player.forceSeekToPrevious()
             else if (value == SwipeToDismissBoxValue.EndToStart) binder.player.forceSeekToNext()
 
             return@rememberSwipeToDismissBoxState false
@@ -217,9 +226,11 @@ fun PlayerEssential(
             ) {
                 Icon(
                     imageVector = when (dismissState.targetValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> { if (likedAt == null)
-                            ImageVector.vectorResource(R.drawable.heart_outline)
-                            else ImageVector.vectorResource(R.drawable.heart)
+                        SwipeToDismissBoxValue.StartToEnd -> {
+                            if (miniPlayerType == MiniPlayerType.Modern) ImageVector.vectorResource(R.drawable.play_skip_forward) else
+                             if (likedAt == null)
+                             ImageVector.vectorResource(R.drawable.heart_outline)
+                             else ImageVector.vectorResource(R.drawable.heart)
                         }
                         SwipeToDismissBoxValue.EndToStart ->  ImageVector.vectorResource(R.drawable.play_skip_forward)
                         SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
@@ -331,6 +342,7 @@ fun PlayerEssential(
                 modifier = Modifier
                     .height(Dimensions.collapsedPlayer)
             ) {
+               if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_back,
                     color = colorPalette.iconButtonPlayer,
@@ -371,7 +383,7 @@ fun PlayerEssential(
                             .size(24.dp)
                     )
                 }
-
+               if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_forward,
                     color = colorPalette.iconButtonPlayer,
@@ -384,6 +396,19 @@ fun PlayerEssential(
                         .padding(horizontal = 2.dp, vertical = 8.dp)
                         .size(24.dp)
                 )
+                if (miniPlayerType == MiniPlayerType.Modern)
+                 it.fast4x.rimusic.ui.components.themed.IconButton(
+                     icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+                     color = colorPalette.favoritesIcon,
+                     onClick = {
+                         updateLike = true
+                     },
+                     modifier = Modifier
+                         .rotate(rotationAngle)
+                         .padding(horizontal = 2.dp, vertical = 8.dp)
+                         .size(24.dp)
+                 )
+
             }
 
             Spacer(

@@ -834,6 +834,12 @@ interface Database {
     @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.ROWID DESC")
     fun songsPlaylistByRowIdDesc(id: Long): Flow<List<Song>>
 
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.LikedAt COLLATE NOCASE ASC")
+    fun songsPlaylistByDateLikedAsc(id: Long): Flow<List<Song>>
+    @Transaction
+    @Query("SELECT S.* FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id ORDER BY S.LikedAt COLLATE NOCASE DESC")
+    fun songsPlaylistByDateLikedDesc(id: Long): Flow<List<Song>>
     fun songsPlaylist(id: Long, sortBy: PlaylistSongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             PlaylistSongSortBy.PlayTime -> when (sortOrder) {
@@ -851,6 +857,10 @@ interface Database {
             PlaylistSongSortBy.Position -> when (sortOrder) {
                 SortOrder.Ascending -> songsPlaylistByPositionAsc(id)
                 SortOrder.Descending -> songsPlaylistByPositionDesc(id)
+            }
+            PlaylistSongSortBy.DateLiked -> when (sortOrder) {
+                SortOrder.Ascending -> songsPlaylistByDateLikedAsc(id)
+                SortOrder.Descending -> songsPlaylistByDateLikedDesc(id)
             }
             PlaylistSongSortBy.DatePlayed -> when (sortOrder) {
                 SortOrder.Ascending -> songsPlaylistByDatePlayedAsc(id)
