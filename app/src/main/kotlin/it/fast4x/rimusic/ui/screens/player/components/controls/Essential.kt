@@ -79,6 +79,8 @@ import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
@@ -132,25 +134,43 @@ fun InfoAlbumAndArtistEssential(
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
             if (playerControlsType == PlayerControlsType.Modern)
-                Spacer(modifier = Modifier.weight(0.1f))
+                Spacer(modifier = Modifier.weight(0.1f)) //.weight(1f)
 
-            val offset = Offset(0.0f, 0.0f)
-            BasicText(
-                text = title ?: "",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
-                    shadow = Shadow(
-                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
+            Box(
+                modifier = Modifier
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                BasicText(
+                    text = title ?: "",
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                        fontStyle = typography.l.bold.fontStyle,
+                        fontWeight = typography.l.bold.fontWeight,
+                        fontSize = typography.l.bold.fontSize,
+                        fontFamily = typography.l.bold.fontFamily
                     ),
-                    fontStyle = typography.l.bold.fontStyle,
-                    fontWeight = typography.l.bold.fontWeight,
-                    fontSize = typography.l.bold.fontSize,
-                    fontFamily = typography.l.bold.fontFamily
-                ),
-                maxLines = 1,
-                modifier = Modifier.weight(1f).then(modifierTitle)
-            )
+                    maxLines = 1,
+                    modifier = modifierTitle
+                )
+                BasicText(
+                    text = title ?: "",
+                    style = TextStyle(
+                        drawStyle = Stroke(width = 1f, join = StrokeJoin.Round),
+                        textAlign = TextAlign.Center,
+                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                        else Color.Black,
+                        fontStyle = typography.l.bold.fontStyle,
+                        fontWeight = typography.l.bold.fontWeight,
+                        fontSize = typography.l.bold.fontSize,
+                        fontFamily = typography.l.bold.fontFamily
+                    ),
+                    maxLines = 1,
+                    modifier = modifierTitle
+                )
+            }
+
             //}
             if (playerControlsType == PlayerControlsType.Modern)
                 IconButton(
@@ -218,24 +238,41 @@ fun InfoAlbumAndArtistEssential(
                 }
             }
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
-        val offset = Offset(0.0f, 0.0f)
-        BasicText(
-            text = artist ?: "",
-            style = TextStyle(
-                textAlign = TextAlign.Center,
-                color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
-                shadow = Shadow(
-                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White else Color.Black, offset = offset, blurRadius = 1.5f
-                ),
-                fontStyle = typography.m.bold.fontStyle,
-                fontSize = typography.m.bold.fontSize,
-                //fontWeight = typography.m.bold.fontWeight,
-                fontFamily = typography.m.bold.fontFamily
-            ),
-            maxLines = 1,
-            modifier = modifierArtist
 
-        )
+        Box(
+            //modifier = Modifier
+        ) {
+            BasicText(
+                text = artist ?: "",
+                style = TextStyle(
+                    textAlign = TextAlign.Center,
+                    color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                    fontStyle = typography.m.bold.fontStyle,
+                    fontSize = typography.m.bold.fontSize,
+                    //fontWeight = typography.m.bold.fontWeight,
+                    fontFamily = typography.m.bold.fontFamily
+                ),
+                maxLines = 1,
+                modifier = modifierArtist
+
+            )
+            BasicText(
+                text = artist ?: "",
+                style = TextStyle(
+                    drawStyle = Stroke(width = 1f, join = StrokeJoin.Round),
+                    textAlign = TextAlign.Center,
+                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    else Color.Black,
+                    fontStyle = typography.m.bold.fontStyle,
+                    fontSize = typography.m.bold.fontSize,
+                    //fontWeight = typography.m.bold.fontWeight,
+                    fontFamily = typography.m.bold.fontFamily
+                ),
+                maxLines = 1,
+                modifier = modifierArtist
+
+            )
+        }
 
     }
 
