@@ -123,8 +123,8 @@ fun AlbumsItemGridMenu(
 
                 val unpinnedPlaylists = playlistPreviews.filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                    !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                    !it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                    !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) //&&
+                    //!it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
                 }
 
                 var isCreatingNewPlaylist by rememberSaveable {

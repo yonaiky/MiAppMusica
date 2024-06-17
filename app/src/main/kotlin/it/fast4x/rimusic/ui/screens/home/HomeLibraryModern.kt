@@ -94,6 +94,7 @@ import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -126,6 +127,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
 
 
 const val PIPED_PREFIX = "piped:"
@@ -152,6 +154,11 @@ fun HomeLibraryModern(
         mutableStateOf(false)
     }
 
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
+
     if (isCreatingANewPlaylist) {
         InputTextDialog(
             onDismiss = { isCreatingANewPlaylist = false },
@@ -162,6 +169,11 @@ fun HomeLibraryModern(
                 query {
                     Database.insert(Playlist(name = text))
                 }
+                if (isPipedEnabled && pipedApiToken.isNotEmpty())
+                    createPipedPlaylist(coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        name = text
+                    )
             }
         )
     }

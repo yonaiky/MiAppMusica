@@ -147,6 +147,7 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
+import it.fast4x.rimusic.utils.deletePipedPlaylist
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -158,14 +159,18 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSongSortByKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.recommendationsNumberKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -300,6 +305,12 @@ fun LocalPlaylistSongs(
         mutableStateOf(false)
     }
 
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
+
+
     if (isDeleting) {
         ConfirmationDialog(
             text = stringResource(R.string.delete_playlist),
@@ -308,6 +319,14 @@ fun LocalPlaylistSongs(
                 query {
                     playlistPreview?.playlist?.let(Database::delete)
                 }
+
+                if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                    deletePipedPlaylist(coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession() ,
+                        id = UUID.fromString(playlistPreview?.playlist?.browseId)
+                    )
+
+
                 onDelete()
             }
         )
@@ -531,6 +550,14 @@ fun LocalPlaylistSongs(
                     query {
                         playlistPreview?.playlist?.copy(name = text)?.let(Database::update)
                     }
+
+                    if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                        renamePipedPlaylist(coroutineScope = coroutineScope,
+                            pipedSession = pipedSession.toApiSession() ,
+                            id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                            name = text
+                        )
+
                 }
                 if(isExporting) {
                     plistName = text
@@ -552,9 +579,6 @@ fun LocalPlaylistSongs(
 
     val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false
     val playlistNotPipedType = playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX,0,true) == false
-
-    val coroutineScope = rememberCoroutineScope()
-    val pipedSession = getPipedSession()
 
 
     Box(
@@ -1476,6 +1500,7 @@ fun LocalPlaylistSongs(
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
                                                 navController = navController,
+                                                playlist = playlistPreview,
                                                 playlistId = playlistId,
                                                 positionInPlaylist = index,
                                                 song = song,

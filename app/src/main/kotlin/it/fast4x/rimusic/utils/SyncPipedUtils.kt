@@ -20,6 +20,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
+import kotlinx.serialization.Serializable
 
 fun syncSongsInPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, idPipedPlaylist: UUID, playlistId: Long) {
 
@@ -147,43 +148,54 @@ fun ImportPipedPlaylists(){
     }
 }
 
-fun addSongsToPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, videos: List<String>) {
+fun addToPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, videos: List<String>) {
 
     coroutineScope.launch(Dispatchers.IO) {
-        runCatching {
-            Piped.playlist.add(session = pipedSession, id = id, videos = videos)
-        }.onFailure {
-            Timber.e(it)
-        }
-        /*
-        async {
-            Piped.playlist.add(session = pipedSession, id = id, videos = videos)
-        }.await()?.onFailure {
-            println("pipedInfo addSongsToPlaylist ${it.message}")
-        }?.onSuccess {
-            println("pipedInfo addSongsToPlaylist success")
-        }
+            Piped.playlist.add(session = pipedSession, id = id, videos = videos.map { it.toID() })
 
-         */
     }
 
 }
 
-/*
-@Composable
-fun AddSongsToPipedPlaylist(id: UUID, videos: List<String>) {
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-    if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
-        val pipedSession = getPipedSession()
-        LaunchedEffect(Unit) {
-            async {
-                Piped.playlist.add(session = pipedSession.toApiSession(), id = id, videos = videos)
-            }.await()?.onFailure {
-                println("pipedInfo addSongsToPlaylist ${it.message}")
-            }
-        }
-    }
-}
- */
+fun removeFromPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, idx: Int) {
 
+    coroutineScope.launch(Dispatchers.IO) {
+        Piped.playlist.remove(session = pipedSession, id = id, idx = idx)
+
+    }
+
+}
+
+fun deletePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID) {
+
+    coroutineScope.launch(Dispatchers.IO) {
+        Piped.playlist.delete(session = pipedSession, id = id)
+
+    }
+
+}
+
+fun renamePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, name: String) {
+
+    coroutineScope.launch(Dispatchers.IO) {
+        Piped.playlist.rename(session = pipedSession, id = id, name = name)
+
+    }
+
+}
+
+fun createPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, name: String) {
+
+    coroutineScope.launch(Dispatchers.IO) {
+        Piped.playlist.create(session = pipedSession, name = name)
+
+    }
+
+}
+
+fun String.toID(): String {
+    return this
+        .replace("/watch?v=", "") // videos
+        .replace("/channel/", "") // channels
+        .replace("/playlist?list=", "") // playlists
+}

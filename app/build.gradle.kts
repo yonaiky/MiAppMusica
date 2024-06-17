@@ -144,6 +144,7 @@ dependencies {
     implementation(libs.smarttoast)
     implementation(libs.timber)
     implementation(libs.crypto)
+    implementation(libs.logging.interceptor)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
