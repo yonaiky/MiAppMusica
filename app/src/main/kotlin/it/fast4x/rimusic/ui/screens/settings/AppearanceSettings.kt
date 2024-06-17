@@ -56,6 +56,7 @@ import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -103,6 +104,7 @@ import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 
@@ -190,6 +192,10 @@ fun AppearanceSettings() {
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
+    )
+    var miniPlayerType by rememberPreference(
+        miniPlayerTypeKey,
+        MiniPlayerType.Essential
     )
     var playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
@@ -396,22 +402,23 @@ fun AppearanceSettings() {
                             PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
                             PlayerThumbnailSize.Big -> stringResource(R.string.big)
                             PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+                            PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
                         }
                     }
                 )
 
-
-        if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
+        if(showthumbnail)
+             if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
                 filterCharSequence,
                 true
-            )
-        )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.thumbnail_roundness),
-                selectedValue = thumbnailRoundness,
-                onValueSelected = { thumbnailRoundness = it },
-                trailingContent = {
-                    Spacer(
+                )
+             )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.thumbnail_roundness),
+                    selectedValue = thumbnailRoundness,
+                    onValueSelected = { thumbnailRoundness = it },
+                    trailingContent = {
+                      Spacer(
                         modifier = Modifier
                             .border(
                                 width = 1.dp,
@@ -424,16 +431,16 @@ fun AppearanceSettings() {
                             )
                             .size(36.dp)
                     )
-                },
+                  },
                 valueText = {
                     when (it) {
                         ThumbnailRoundness.None -> stringResource(R.string.none)
                         ThumbnailRoundness.Light -> stringResource(R.string.light)
                         ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
                         ThumbnailRoundness.Medium -> stringResource(R.string.medium)
-                    }
-                }
-            )
+                        }
+                  }
+             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,
@@ -451,6 +458,25 @@ fun AppearanceSettings() {
                     when (it) {
                         PlayerInfoType.Modern -> stringResource(R.string.pcontrols_modern)
                         PlayerInfoType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.miniplayertype).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.miniplayertype),
+                selectedValue = miniPlayerType,
+                onValueSelected = {
+                    miniPlayerType = it
+                },
+                valueText = {
+                    when (it) {
+                        MiniPlayerType.Modern -> stringResource(R.string.pcontrols_modern)
+                        MiniPlayerType.Essential -> stringResource(R.string.pcontrols_essential)
                     }
                 },
             )

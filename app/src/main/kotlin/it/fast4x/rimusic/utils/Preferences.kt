@@ -189,6 +189,7 @@ const val customThemeDark_iconButtonPlayerKey = "customThemeDark_iconButtonPlaye
 const val customThemeDark_accentKey = "customThemeDark_accent"
 const val showthumbnailKey = "showthumbnail"
 const val showlyricsthumbnailKey = "showlyricsthumbnail"
+const val miniPlayerTypeKey = "miniPlayerType"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

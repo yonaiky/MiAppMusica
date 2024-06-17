@@ -189,6 +189,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import kotlin.math.absoluteValue
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @ExperimentalTextApi
@@ -222,7 +223,7 @@ fun Player(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -1397,8 +1398,8 @@ fun Player(
                         modifier = Modifier
                             .clip(thumbnailShape)
                             .padding(
-                                horizontal = playerThumbnailSize.size.dp,
-                                vertical = 4.dp
+                                horizontal = if (isShowingLyrics && !showlyricsthumbnail) 0.dp else playerThumbnailSize.size.dp,
+                                vertical = if (isShowingLyrics && !showlyricsthumbnail)  0.dp else 4.dp,
                             )
                     )
                 }
