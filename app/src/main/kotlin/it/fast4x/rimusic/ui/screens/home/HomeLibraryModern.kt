@@ -166,14 +166,18 @@ fun HomeLibraryModern(
             value = "",
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
-                query {
-                    Database.insert(Playlist(name = text))
-                }
-                if (isPipedEnabled && pipedApiToken.isNotEmpty())
-                    createPipedPlaylist(coroutineScope = coroutineScope,
+
+                if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
+                    createPipedPlaylist(
+                        coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
                         name = text
                     )
+                } else {
+                    query {
+                        Database.insert(Playlist(name = text))
+                    }
+                }
             }
         )
     }

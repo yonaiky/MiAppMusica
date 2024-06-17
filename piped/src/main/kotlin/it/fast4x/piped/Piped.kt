@@ -37,9 +37,11 @@ import it.fast4x.piped.utils.ProxyPreferences
 import it.fast4x.piped.utils.runCatchingCancellable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -188,7 +190,6 @@ object Piped {
         }
 
         suspend fun rename(session: Session, id: UUID, name: String) = runCatchingCancellable {
-            println("pipedInfo piped.playlists.rename: start")
             request(session, "user/playlists/rename") {
                 method = HttpMethod.Post
                 setBody(
@@ -201,7 +202,6 @@ object Piped {
         }
 
         suspend fun delete(session: Session, id: UUID) = runCatchingCancellable {
-            println("pipedInfo piped.playlists.delete: start")
             request(session, "user/playlists/delete") {
                 method = HttpMethod.Post
                 setBody(mapOf("playlistId" to id.toString()))
@@ -209,35 +209,26 @@ object Piped {
         }
 
         suspend fun add(session: Session, id: UUID, videos: List<String>) = runCatchingCancellable {
-            println("pipedInfo piped.playlists.add: start")
-/*
-            CoroutineScope(Dispatchers.IO).launch {
+
+            var body =
+                "\"session\":\"${session.token}\"," +
+                "\"playlistId\":\"${id}\"," +
+                if (videos.size == 1)
+                    "\"videoId\":\"${videos.first()}\""
+                else
+                    "\"videoIds\":" + videos.joinToString(prefix = "[", postfix = "]") { it -> "\"${it}\"" }
+
+            body = "{$body}"
+
+            withContext(NonCancellable) {
                 client.post(session.apiBaseUrl / "user/playlists/add") {
                     header("Authorization", session.token)
-                    //contentType(ContentType.Application.Json)
-                    parameter("playlistId", id.toString())
-                    parameter("videoIds", videos)
-                }
+                    contentType(ContentType.Application.Json)
+                    setBody(body)
+                }.isOk()
             }
-
- */
-
-                    val body = mapOf(
-                        "playlistId" to id.toString(),
-                        "videoIds" to Json.encodeToJsonElement(videos).toString()
-                    )
-                    println("pipedInfo mapOf $body")
-                    request(session, "user/playlists/add") {
-                        method = HttpMethod.Post
-                        setBody(body)
-                    }.isOk()
-
-
-
-
-            println("pipedInfo piped.playlists added ")
         }?.onFailure {
-            println("pipedInfo piped.playlists.add: failed ${it.message}")
+            println("pipedInfo piped.playlists.add general failed:  ${it.message}")
         }
 
         suspend fun remove(session: Session, id: UUID, idx: Int) = runCatchingCancellable {
@@ -250,7 +241,6 @@ object Piped {
                     )
                 )
             }.isOk()
-            println("pipedInfo piped.playlists removed ")
         }?.onFailure {
             println("pipedInfo piped.playlists.remove: failed ${it.message}")
         }
@@ -259,11 +249,6 @@ object Piped {
             request(session, "playlists/$id").body<Playlist>()
         }
 
-        /*
-        suspend fun songsTest(session: Session, id: UUID) = runCatchingCancellable {
-            println("piped.playlists.songsTest: " + request(session, "playlists/$id").bodyAsText())
-        }
-         */
     }
 
 

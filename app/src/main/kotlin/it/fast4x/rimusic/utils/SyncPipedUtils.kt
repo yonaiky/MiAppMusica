@@ -184,13 +184,20 @@ fun renamePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, i
 
 }
 
-fun createPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, name: String) {
+fun createPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, name: String): Long {
+    var playlistId: Long = -1
 
     coroutineScope.launch(Dispatchers.IO) {
-        Piped.playlist.create(session = pipedSession, name = name)
-
+        async {
+            Piped.playlist.create(session = pipedSession, name = name)
+        }.await()?.map {
+           playlistId = Database.insert(Playlist(name = "$PIPED_PREFIX$name", browseId = it.id.toString()))
+        }
     }
 
+    Timber.d("pipedInfo new playlistId $playlistId")
+
+    return playlistId
 }
 
 fun String.toID(): String {
