@@ -596,4 +596,6 @@
     <string name="show_thumbnail">Show Thumbnail</string>
     <string name="show_lyrics_thumbnail">Show Thumbnail for Lyrics</string>
     <string name="large">Large</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
 </resources>

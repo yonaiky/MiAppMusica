@@ -594,4 +594,6 @@
     <string name="show_thumbnail">Miniaturansicht anzeigen</string>
     <string name="show_lyrics_thumbnail">Miniaturansicht für Liedtexte anzeigen</string>
     <string name="large">Groß</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
 </resources>

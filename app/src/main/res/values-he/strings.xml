@@ -594,4 +594,6 @@
     <string name="show_thumbnail">הצג תמונה ממוזערת</string>
     <string name="show_lyrics_thumbnail">הצג תמונה ממוזערת למילים</string>
     <string name="large">גדול</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
 </resources>

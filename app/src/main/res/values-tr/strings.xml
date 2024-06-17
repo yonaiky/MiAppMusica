@@ -594,4 +594,6 @@
     <string name="show_thumbnail">Küçük Resimleri Göster</string>
     <string name="show_lyrics_thumbnail">Şarkı Sözleri için Küçük Resim Göster</string>
     <string name="large">Geniş</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
 </resources>
