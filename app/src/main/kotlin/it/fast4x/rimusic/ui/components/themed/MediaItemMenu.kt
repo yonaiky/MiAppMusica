@@ -87,10 +87,12 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -116,6 +118,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import kotlin.system.exitProcess
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi
@@ -920,13 +923,22 @@ fun MediaItemMenu(
                         unpinnedPlaylists.forEach { playlistPreview ->
                             MenuEntry(
                                 icon = if (playlistIds.contains(playlistPreview.playlist.id)) R.drawable.checkmark else R.drawable.add_in_playlist,
-                                text = playlistPreview.playlist.name,
+                                text = cleanPrefix(playlistPreview.playlist.name),
                                 secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
                                     onDismiss()
                                     onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
                                 },
                                 trailingContent = {
+                                    if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                                        Image(
+                                            painter = painterResource(R.drawable.piped_logo),
+                                            contentDescription = null,
+                                            colorFilter = ColorFilter.tint(colorPalette.red),
+                                            modifier = Modifier
+                                                .size(18.dp)
+                                        )
+
                                     IconButton(
                                         icon = R.drawable.open,
                                         color = colorPalette.text,
@@ -940,6 +952,7 @@ fun MediaItemMenu(
                                         modifier = Modifier
                                             .size(24.dp)
                                     )
+
                                 }
                             )
                         }

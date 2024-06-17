@@ -84,11 +84,9 @@ fun ImportPipedPlaylists(){
     val coroutineScope = rememberCoroutineScope()
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val itemsPiped by persistList<it.fast4x.piped.models.PlaylistPreview>("home/pipedPlaylists")
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
         val pipedSession = getPipedSession()
-        //println("pipedInfo ${pipedSession}")
         LaunchedEffect(Unit) {
             async {
                 Piped.playlist.list(session = pipedSession.toApiSession())
