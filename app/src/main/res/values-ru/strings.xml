@@ -594,6 +594,8 @@
     <string name="show_thumbnail">Показывать превью</string>
     <string name="show_lyrics_thumbnail">Показывать превью текстов песен</string>
     <string name="large">Крупный</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
 </resources>

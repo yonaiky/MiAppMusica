@@ -598,4 +598,6 @@
     <string name="show_thumbnail">Show thumbnail</string>
     <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
     <string name="large">Large</string>
+    <string name="miniplayertype">Mini Player Type</string>
+    <string name="expanded">Expanded</string>
 </resources>
