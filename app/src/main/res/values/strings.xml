@@ -596,5 +596,8 @@
     <string name="large">Large</string>
     <string name="miniplayertype">Mini Player Type</string>
     <string name="expanded">Expanded</string>
+    <string name="lyricscolor">Lyrics Color</string>
+    <string name="accent">Accent</string>
+
 
 </resources>
