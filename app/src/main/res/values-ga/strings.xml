@@ -62,9 +62,9 @@
     <string name="request_a_feature_or_suggest_an_idea">Mol gné nó smaoineamh</string>
     <string name="theme">Téama</string>
     <string name="theme_mode">Modh an téama</string>
-    <string name="thumbnail_roundness">Thumbnail roundness</string>
-    <string name="use_system_font">Use system font</string>
-    <string name="use_font_by_the_system">Use the font applied by the system</string>
+    <string name="thumbnail_roundness">Cruinne na mionsamhlacha</string>
+    <string name="use_system_font">Úsáid chló na córais</string>
+    <string name="use_font_by_the_system">Úsáid chló na córais</string>
     <string name="apply_font_padding">Apply font padding</string>
     <string name="add_spacing_around_texts">Add spacing around texts</string>
     <string name="lockscreen">LOCKSCREEN</string>
