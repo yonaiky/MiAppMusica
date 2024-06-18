@@ -571,8 +571,8 @@
     <string name="exclude_songs_with_duration_limit_description">Ako je omogućeno, pesme čije trajanje prelazi ograničenje će biti isključene, primenjene na moj vrh i red za reprodukciju</string>
     <string name="no_log_available">Nije dostupan zapis</string>
     <string name="enable_quick_picks_page">Omogući stranicu Brzi Odabiri</string>
-    <string name="lang_vietnamese">Vietnamese</string>
-    <string name="parental_control">Parental control</string>
+    <string name="lang_vietnamese">Vijetnamski</string>
+    <string name="parental_control">Roditeljska kontrola</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">System</string>
