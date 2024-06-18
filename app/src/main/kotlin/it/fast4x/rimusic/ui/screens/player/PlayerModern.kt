@@ -854,6 +854,10 @@ fun PlayerModern(
                     indication = null,
                     onClick = {
                     },
+                    onDoubleClick = {
+                       if (!showlyricsthumbnail)
+                         showthumbnail = !showthumbnail
+                    },
                     onLongClick = {
                         showBlurPlayerDialog = true
                     }
