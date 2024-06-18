@@ -853,6 +853,9 @@ fun PlayerModern(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
+                       if(thumbnailTapEnabled)
+                          if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
+                          isShowingLyrics = !isShowingLyrics
                     },
                     onDoubleClick = {
                        if (!showlyricsthumbnail)
