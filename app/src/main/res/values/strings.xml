@@ -600,6 +600,7 @@
     <string name="accent">Accent</string>
     <string name="lyrics_size">Lyrics Size</string>
     <string name="translate">Translate</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
 
 
 </resources>

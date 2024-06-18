@@ -109,6 +109,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.transparentbarKey
 
 
 @ExperimentalAnimationApi
@@ -122,6 +123,7 @@ fun AppearanceSettings() {
     )
 
     var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var transparentbar by rememberPreference(transparentbarKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
@@ -540,6 +542,18 @@ fun AppearanceSettings() {
                         //PlayerTimelineType.ColoredBar -> "Colored bar"
                     }
                 }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.transparentbar).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.transparentbar),
+                text = "",
+                isChecked = transparentbar,
+                onCheckedChange = { transparentbar = it}
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pcontrols_type).contains(

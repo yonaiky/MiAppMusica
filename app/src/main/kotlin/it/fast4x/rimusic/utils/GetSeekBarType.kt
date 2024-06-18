@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -48,6 +49,7 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import it.fast4x.rimusic.utils.transparentbarKey
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -64,6 +66,7 @@ fun GetSeekBar(
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
+    var transparentbar by rememberPreference(transparentbarKey, false)
     val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
@@ -117,7 +120,7 @@ fun GetSeekBar(
                     scrubbingPosition = null
                 },
                 color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = colorPalette.textSecondary,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp)
             )
 
@@ -141,7 +144,7 @@ fun GetSeekBar(
                     scrubbingPosition = null
                 },
                 color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = colorPalette.textSecondary,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
             )
 
@@ -189,7 +192,7 @@ fun GetSeekBar(
                 },
                 color = colorPalette.collapsedPlayerProgressBar,
                 isActive = binder.player.isPlaying,
-                backgroundColor = colorPalette.textSecondary,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp)
             )
         }

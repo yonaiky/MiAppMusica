@@ -191,6 +191,7 @@ const val showthumbnailKey = "showthumbnail"
 const val showlyricsthumbnailKey = "showlyricsthumbnail"
 const val miniPlayerTypeKey = "miniPlayerType"
 const val lyricsColorKey = "lyricsColor"
+const val transparentbarKey = "transparentbar"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
