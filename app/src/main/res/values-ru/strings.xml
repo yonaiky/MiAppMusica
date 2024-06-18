@@ -594,10 +594,10 @@
     <string name="show_thumbnail">Показывать превью</string>
     <string name="show_lyrics_thumbnail">Показывать превью текстов песен</string>
     <string name="large">Крупный</string>
-    <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
-    <string name="lyricscolor">Lyrics Color</string>
-    <string name="accent">Accent</string>
-    <string name="lyrics_size">Lyrics Size</string>
-    <string name="translate">Translate</string>
+    <string name="miniplayertype">Вид свернутого плеера</string>
+    <string name="expanded">Развернутый</string>
+    <string name="lyricscolor">Цвет текстов песен</string>
+    <string name="accent">Акцент</string>
+    <string name="lyrics_size">Размер текстов песен</string>
+    <string name="translate">Перевести</string>
 </resources>
