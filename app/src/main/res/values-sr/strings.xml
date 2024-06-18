@@ -588,11 +588,11 @@
     <string name="piped_password">Лозинка</string>
     <string name="piped_disconnect">Прекини везу</string>
     <string name="piped_connect">Повежи се</string>
-    <string name="piped_connected_to_s">Connected to %s</string>
-    <string name="fake_audio_bar">Fake Audio Bar</string>
-    <string name="copy_crash_log_to_clipboard">Copy crash log to clipboard</string>
-    <string name="show_thumbnail">Show Thumbnail</string>
-    <string name="show_lyrics_thumbnail">Show Thumbnail for Lyrics</string>
+    <string name="piped_connected_to_s">Повезано на %s</string>
+    <string name="fake_audio_bar">Лажни Аудио Бар</string>
+    <string name="copy_crash_log_to_clipboard">Копирајте запис грешке у привремену меморију</string>
+    <string name="show_thumbnail">Прикажи Сличицу</string>
+    <string name="show_lyrics_thumbnail">Прикажи Сличицу za Стихове</string>
     <string name="large">Large</string>
     <string name="miniplayertype">Mini Player Type</string>
     <string name="expanded">Expanded</string>
