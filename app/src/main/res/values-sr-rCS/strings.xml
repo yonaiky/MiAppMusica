@@ -76,7 +76,7 @@
     <string name="max_size">Max veličina</string>
     <string name="database">Baza podataka</string>
     <string name="reset_quick_picks">Resetujte brze odabire</string>
-    <string name="quick_picks_are_cleared">Brzi odabiri su očišćeni</string>
+    <string name="quick_picks_are_cleared">Brzi Odabiri su očišćeni</string>
     <string name="backup">REZERVNA KOPIJA</string>
     <string name="personal_preference">Lične postavke (tj. režim teme) i keš memorija su isključeni.</string>
     <string name="backup_1">Rezervna kopija</string>
@@ -567,10 +567,10 @@
     <string name="icon_like_brilliant">Sjajno</string>
     <string name="player_swap_controls_with_timeline">Zamenite kontrole sa vremenskom linijom</string>
     <string name="player_enable_lyrics_popup_message">Omogući iskačuću poruku za stihove</string>
-    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
-    <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
-    <string name="no_log_available">No log available</string>
-    <string name="enable_quick_picks_page">Enable Quick Picks page</string>
+    <string name="exclude_songs_with_duration_limit">Izuzmi pesme sa ograničenjem trajanja</string>
+    <string name="exclude_songs_with_duration_limit_description">Ako je omogućeno, pesme čije trajanje prelazi ograničenje će biti isključene, primenjene na moj vrh i red za reprodukciju</string>
+    <string name="no_log_available">Nije dostupan zapis</string>
+    <string name="enable_quick_picks_page">Omogući stranicu Brzi Odabiri</string>
     <string name="lang_vietnamese">Vietnamese</string>
     <string name="parental_control">Parental control</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
