@@ -204,7 +204,7 @@ fun Thumbnail(
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
               if (playerControlsType == PlayerControlsType.Modern)
                 modifierUiType = modifier
-                 .padding(vertical = 8.dp)
+                 //.padding(vertical = 8.dp)
                  .aspectRatio(1f)
                  //.size(thumbnailSizeDp)
                  .fillMaxSize()
@@ -216,7 +216,7 @@ fun Thumbnail(
               else modifierUiType = modifier
                  .aspectRatio(1f)
                  //.size(thumbnailSizeDp)
-                 .padding(14.dp)
+                 //.padding(14.dp)
                  .fillMaxSize()
                  .clip(LocalAppearance.current.thumbnailShape)
 

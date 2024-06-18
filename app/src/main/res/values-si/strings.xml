@@ -123,16 +123,16 @@ CC-BY-SA 3.0</string>
     <string name="provided_by">ලබාදෙන ලද්දේ</string>
     <string name="delete_playback_events">ධාවන අවස්ථා %1$s විනාශ කරන්න</string>
     <string name="existing_data_will_be_overwritten">Existing data will be overwritten.\n%1$s will automatically close itself after restoring the database.</string>
-    <string name="folder_cache">FOLDER CACHE</string>
-    <string name="cache_reset_by_clicking_button">Attention by clicking on the button below, the cache location folder will be reset to the default</string>
-    <string name="cache_location_folder">Location folder</string>
-    <string name="custom_cache_from_android_10_may_not_be_available">From Android 10, this feature may not be available</string>
-    <string name="reset_cache_location_folder">RESET CACHE LOCATION FOLDER</string>
-    <string name="used">" used"</string>
-    <string name="close_background_player">Close background player</string>
-    <string name="when_app_swipe_out_from_task_manager">When app swipe out from task manager</string>
-    <string name="opening_url">is loading...</string>
-    <string name="an_error_has_occurred_while_fetching_the_lyrics">An error has occurred while fetching the lyrics</string>
+    <string name="folder_cache">ෆෝල්ඩර කෑෂ්</string>
+    <string name="cache_reset_by_clicking_button">අවදනයයි!! පහත බටනය එබීමෙන් කෑශ් ෆෝල්ඩරය ඇති ස්ථානය වෙනස් වේ</string>
+    <string name="cache_location_folder">ෆෝල්ඩර ස්ථානය</string>
+    <string name="custom_cache_from_android_10_may_not_be_available">Android 10යෙන් පසු මෙම ක්‍රියාවලිය කළ නොහැකි වේ</string>
+    <string name="reset_cache_location_folder">කැෂේ ෆෝල්ඩරය ඇති ස්ථානය මුල් තත්වයට ගෙනෙන්න</string>
+    <string name="used">" භාවිතා කරන ලද"</string>
+    <string name="close_background_player">පසුබිම් දාවකය වසන්න</string>
+    <string name="when_app_swipe_out_from_task_manager">ක්‍රියා මැනේජරයෙන් ඉවත් කළ විට</string>
+    <string name="opening_url">ලෝඩ් වෙමින් පවතී...</string>
+    <string name="an_error_has_occurred_while_fetching_the_lyrics">ලීරික්ස් ලබාගැනීමේදී ගැටලුවක් ඇතිවිය</string>
     <string name="are_not_available_for_this_song">are not available for this song</string>
     <string name="error_a_network_error_has_occurred">A network error has occurred</string>
     <string name="error_couldn_t_find_a_playable_audio_format">Couldn\'t find a playable audio format</string>
@@ -599,4 +599,8 @@ CC-BY-SA 3.0</string>
     <string name="large">Large</string>
     <string name="miniplayertype">Mini Player Type</string>
     <string name="expanded">Expanded</string>
+    <string name="lyricscolor">Lyrics Color</string>
+    <string name="accent">Accent</string>
+    <string name="lyrics_size">Lyrics Size</string>
+    <string name="translate">Translate</string>
 </resources>

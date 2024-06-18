@@ -591,11 +591,15 @@
     <string name="piped_connected_to_s">Conectado a %s</string>
     <string name="fake_audio_bar">Barra de audio falsa</string>
     <string name="copy_crash_log_to_clipboard">Copiar registro de fallos al portapapeles</string>
+    <string name="show_thumbnail">Mostrar miniatura</string>
+    <string name="show_lyrics_thumbnail">Mostrar miniatura para letras</string>
+    <string name="large">Grande</string>
+    <string name="miniplayertype">Tipo de reproductor mini</string>
+    <string name="expanded">Expandido</string>
+    <string name="lyricscolor">Color de las letras</string>
+    <string name="accent">Acento</string>
+    <string name="lyrics_size">Tamaño de las letras</string>
+    <string name="translate">Traducir</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
-    <string name="show_thumbnail">Show thumbnail</string>
-    <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
-    <string name="large">Large</string>
-    <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
-</resources>
+    </resources>
