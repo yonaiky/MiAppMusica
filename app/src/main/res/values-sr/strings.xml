@@ -593,11 +593,11 @@
     <string name="copy_crash_log_to_clipboard">Копирајте запис грешке у привремену меморију</string>
     <string name="show_thumbnail">Прикажи Сличицу</string>
     <string name="show_lyrics_thumbnail">Прикажи Сличицу za Стихове</string>
-    <string name="large">Large</string>
-    <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
-    <string name="lyricscolor">Lyrics Color</string>
-    <string name="accent">Accent</string>
-    <string name="lyrics_size">Lyrics Size</string>
-    <string name="translate">Translate</string>
+    <string name="large">Велики</string>
+    <string name="miniplayertype">Врста Мини Плејера</string>
+    <string name="expanded">Проширен</string>
+    <string name="lyricscolor">Боја Стихова</string>
+    <string name="accent">Наглашена боја</string>
+    <string name="lyrics_size">Величина Стихова</string>
+    <string name="translate">Преведи</string>
 </resources>
