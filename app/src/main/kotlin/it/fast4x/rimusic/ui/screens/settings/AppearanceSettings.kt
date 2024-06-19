@@ -543,7 +543,7 @@ fun AppearanceSettings() {
                     }
                 }
             )
-       if (playerTimelineType != PlayerTimelineType.FakeAudioBar)
+
         if (filter.isNullOrBlank() || stringResource(R.string.transparentbar).contains(
                 filterCharSequence,
                 true

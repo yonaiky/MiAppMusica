@@ -201,7 +201,7 @@ fun GetSeekBar(
             SeekBarAudioWaves(
                 progressPercentage = ProgressPercentage(position.toFloat() / duration.toFloat()),
                 playedColor = colorPalette.accent,
-                notPlayedColor = colorPalette.textSecondary,
+                notPlayedColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 waveInteraction = {
                     scrubbingPosition = (it.value * duration.toFloat()).toLong()
                     binder.player.seekTo(scrubbingPosition!!)
