@@ -195,8 +195,10 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+//import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.isShowingLyricsKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -273,16 +275,28 @@ fun PlayerModern(
     val defaultStrength = 25f
     val defaultDarkenFactor = 0.2f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
+    //var blurStrength2 by rememberPreference(blurStrength2Key, defaultStrength)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
         mutableStateOf(false)
     }
+    var isShowingLyrics by rememberSaveable {
+        mutableStateOf(false)
+    }
     if (showBlurPlayerDialog) {
-        BlurParamsDialog(
-            onDismiss = { showBlurPlayerDialog = false},
-            scaleValue = { blurStrength = it },
-            darkenFactorValue = { blurDarkenFactor = it}
+
+        //if(!isShowingLyrics)
+         BlurParamsDialog(
+             onDismiss = { showBlurPlayerDialog = false},
+             scaleValue = { blurStrength = it },
+             darkenFactorValue = { blurDarkenFactor = it}
         )
+        /*else
+         BlurParamsDialog(
+            onDismiss = { showBlurPlayerDialog = false},
+            scaleValue = { blurStrength2 = it },
+            darkenFactorValue = { blurDarkenFactor = it}
+         )*/
     }
 
     val context = LocalContext.current
@@ -743,9 +757,17 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
+                   if(!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
                     BlurTransformation(
                         scale = 0.5f,
                         radius = blurStrength.toInt(),
+                        //darkenFactor = blurDarkenFactor
+                    )
+                   else
+                    BlurTransformation(
+                        scale = 0.5f,
+                        //radius = blurStrength2.toInt(),
+                        radius = 25,
                         //darkenFactor = blurDarkenFactor
                     )
                 )
@@ -776,9 +798,6 @@ fun PlayerModern(
     }
 //    println("mediaItem totalPlayTimes $totalPlayTimes")
 
-    var isShowingLyrics by rememberSaveable {
-        mutableStateOf(false)
-    }
 
     var isShowingStatsForNerds by rememberSaveable {
         mutableStateOf(false)

@@ -81,6 +81,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
+//import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.drawCircle
@@ -97,6 +98,8 @@ import it.fast4x.rimusic.utils.setDeviceVolume
 import kotlinx.coroutines.delay
 import progress
 import track
+import it.fast4x.rimusic.utils.isShowingLyricsKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 @Composable
 fun TextFieldDialog(
@@ -1011,10 +1014,18 @@ fun BlurParamsDialog(
 ) {
     val (colorPalette) = LocalAppearance.current
     val defaultStrength = 25f
+    val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
     var blurStrength  by rememberPreference(blurStrengthKey, defaultStrength)
+    //var blurStrength2  by rememberPreference(blurStrength2Key, defaultStrength2)
     var blurDarkenFactor  by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
 
+    var isShowingLyrics by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+
+  //if (!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
     DefaultDialog(
         onDismiss = {
             scaleValue(blurStrength)
@@ -1085,6 +1096,90 @@ fun BlurParamsDialog(
                 }
             )
         }
+
+  /*if (isShowingLyrics && !showlyricsthumbnail)
+      DefaultDialog(
+          onDismiss = {
+              scaleValue(blurStrength2)
+              darkenFactorValue(blurDarkenFactor)
+              onDismiss()
+          }
+      ) {
+
+          Row(
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier
+                  .fillMaxWidth()
+          ) {
+              IconButton(
+                  onClick = {
+                      blurStrength2 = defaultStrength2
+                  },
+                  icon = R.drawable.droplet,
+                  color = colorPalette.favoritesIcon,
+                  modifier = Modifier
+                      .size(24.dp)
+              )
+
+              CustomSlider(
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(horizontal = 5.dp),
+                  value = blurStrength2,
+                  onValueChange = {
+                      blurStrength2 = it
+                  },
+                  valueRange = 0f..50f,
+                  gap = 1,
+                  showIndicator = true,
+                  thumb = { thumbValue ->
+                      CustomSliderDefaults.Thumb(
+                          thumbValue = "%.0f".format(blurStrength2),
+                          color = Color.Transparent,
+                          size = 40.dp,
+                          modifier = Modifier.background(
+                              brush = Brush.linearGradient(
+                                  listOf(
+                                      colorPalette.background1,
+                                      colorPalette.favoritesIcon
+                                  )
+                              ),
+                              shape = CircleShape
+                          )
+                      )
+                  },
+                  track = { sliderPositions ->
+                      Box(
+                          modifier = Modifier
+                              .track()
+                              .border(
+                                  width = 1.dp,
+                                  color = Color.LightGray.copy(alpha = 0.4f),
+                                  shape = CircleShape
+                              )
+                              .background(Color.White)
+                              .padding(1.dp),
+                          contentAlignment = Alignment.CenterStart
+                      ) {
+                          Box(
+                              modifier = Modifier
+                                  .progress(sliderPositions = sliderPositions)
+                                  .background(
+                                      brush = Brush.linearGradient(
+                                          listOf(
+                                              colorPalette.favoritesIcon,
+                                              Color.Red
+                                          )
+                                      )
+                                  )
+                          )
+                      }
+                  }
+              )
+          }
+      }*/
+
 
 
 
