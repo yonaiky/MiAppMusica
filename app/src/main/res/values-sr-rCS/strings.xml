@@ -593,11 +593,11 @@
     <string name="copy_crash_log_to_clipboard">Kopirajte zapis greške u privremenu memoriju</string>
     <string name="show_thumbnail">Prikaži Sličicu</string>
     <string name="show_lyrics_thumbnail">Prikaži Sličicu za Stihove</string>
-    <string name="large">Large</string>
-    <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
-    <string name="lyricscolor">Lyrics Color</string>
-    <string name="accent">Accent</string>
-    <string name="lyrics_size">Lyrics Size</string>
-    <string name="translate">Translate</string>
+    <string name="large">Veliki</string>
+    <string name="miniplayertype">Vrsta Mini Plejera</string>
+    <string name="expanded">Proširen</string>
+    <string name="lyricscolor">Boja Sthova</string>
+    <string name="accent">Naglašena boja</string>
+    <string name="lyrics_size">Veličina Stihova</string>
+    <string name="translate">Prevedi</string>
 </resources>
