@@ -203,6 +203,7 @@ import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -554,7 +555,8 @@ class MainActivity :
                             showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
                             playbackFadeDurationKey,
-                            playerBackgroundColorsKey
+                            playerBackgroundColorsKey,
+                            miniPlayerTypeKey
                             -> {
                                 this@MainActivity.recreate()
                             }

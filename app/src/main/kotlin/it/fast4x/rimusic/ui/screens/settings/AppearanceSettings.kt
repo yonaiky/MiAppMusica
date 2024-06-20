@@ -58,6 +58,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -70,6 +71,8 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
@@ -111,6 +114,8 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
+import it.fast4x.rimusic.utils.transparentbarKey
 
 
 @ExperimentalAnimationApi
@@ -124,6 +129,7 @@ fun AppearanceSettings() {
     )
 
     var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var transparentbar by rememberPreference(transparentbarKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
@@ -153,6 +159,10 @@ fun AppearanceSettings() {
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Medium
+    )
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Medium
     )
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -227,6 +237,8 @@ fun AppearanceSettings() {
         playerEnableLyricsPopupMessageKey,
         true
     )
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
     Column(
         modifier = Modifier
@@ -416,6 +428,18 @@ fun AppearanceSettings() {
                     },
                 )
 
+
+       if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
+                filterCharSequence,
+                true
+                )
+           )
+            SwitchSettingEntry(
+                title = stringResource(R.string.expandedlyrics),
+                text = stringResource(R.string.expandedlyricsinfo),
+                isChecked = expandedlyrics,
+                onCheckedChange = { expandedlyrics = it }
+            )
         if(showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                     filterCharSequence,
@@ -436,6 +460,25 @@ fun AppearanceSettings() {
                         }
                     }
                 )
+      if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.timelinesize),
+                selectedValue = playerTimelineSize,
+                onValueSelected = { playerTimelineSize = it },
+                valueText = {
+                    when (it) {
+                        PlayerTimelineSize.Small -> stringResource(R.string.small)
+                        PlayerTimelineSize.Medium -> stringResource(R.string.medium)
+                        PlayerTimelineSize.Big -> stringResource(R.string.big)
+                        PlayerTimelineSize.Biggest -> stringResource(R.string.biggest)
+                        PlayerTimelineSize.Expanded -> stringResource(R.string.expanded)
+                    }
+                }
+            )
 
         if(showthumbnail)
              if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
@@ -542,6 +585,18 @@ fun AppearanceSettings() {
                         //PlayerTimelineType.ColoredBar -> "Colored bar"
                     }
                 }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.transparentbar).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.transparentbar),
+                text = "",
+                isChecked = transparentbar,
+                onCheckedChange = { transparentbar = it}
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pcontrols_type).contains(
@@ -750,12 +805,12 @@ fun AppearanceSettings() {
                     }
                 },
             )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
+       if(showlyricsthumbnail)
+         if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
                 filterCharSequence,
                 true
             )
-        )
+         )
             SwitchSettingEntry(
                 title = stringResource(R.string.show_background_in_lyrics),
                 text = "",
@@ -763,7 +818,7 @@ fun AppearanceSettings() {
                 onCheckedChange = { showBackgroundLyrics = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+      if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
                 filterCharSequence,
                 true
             )
@@ -835,6 +890,18 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = transparentBackgroundActionBarPlayer,
                 onCheckedChange = { transparentBackgroundActionBarPlayer = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.actionspacedevenly).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.actionspacedevenly),
+                text = "",
+                isChecked = actionspacedevenly,
+                onCheckedChange = { actionspacedevenly = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(

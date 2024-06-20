@@ -130,11 +130,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.LyricsColor
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.ui.styling.ColorPalette
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 
 
 @UnstableApi
@@ -173,6 +175,11 @@ fun Lyrics(
         var lyricsColor by rememberPreference(
             lyricsColorKey,
             LyricsColor.Thememode)
+        val playerBackgroundColors by rememberPreference(
+            playerBackgroundColorsKey,
+            PlayerBackgroundColors.ThemeColor
+        )
+        var lyricsFontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
 
         val thumbnailSize = Dimensions.thumbnails.player.song
         val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
@@ -470,7 +477,7 @@ fun Lyrics(
                     )
                 }
                 .fillMaxSize()
-                .background(Color.Black.copy(if (showlyricsthumbnail) 0.8f else 0.0f))
+                .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.8f))
                 .clip(thumbnailShape)
 
         ) {
@@ -485,7 +492,7 @@ fun Lyrics(
                     text = stringResource(R.string.an_error_has_occurred_while_fetching_the_lyrics),
                     style = typography.xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
-                        .background(Color.Black.copy(0.4f))
+                        .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.4f))
                         .padding(all = 8.dp)
                         .fillMaxWidth()
                 )
@@ -507,7 +514,7 @@ fun Lyrics(
                             "${stringResource(R.string.are_not_available_for_this_song)}",
                     style = typography.xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
-                        .background(Color.Black.copy(0.4f))
+                        .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.4f))
                         .padding(all = 8.dp)
                         .fillMaxWidth()
                 )
@@ -516,7 +523,7 @@ fun Lyrics(
                         R.string.synchronized_lyrics)}",
                     style = typography.xs.center.bold.color(PureBlackColorPalette.text),
                     modifier = Modifier
-                        .background(Color.Black.copy(0.4f))
+                        .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.4f))
                         .padding(all = 8.dp)
                         .padding(top = 30.dp)
                         .fillMaxWidth()
@@ -672,11 +679,31 @@ fun Lyrics(
                                                 binder?.player?.seekTo(sentence.first)
                                         }
                                 )
-
+                            if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
                                 BasicText(
                                     text = translatedText,
                                     style = TextStyle(
-                                        drawStyle = Stroke(width = if (!showthumbnail) 5.5f else if (colorPaletteMode == ColorPaletteMode.Light) 2f else 3.5f, join = StrokeJoin.Round),
+                                        drawStyle = Stroke(width = if (fontSize == LyricsFontSize.Large)
+                                                                     if (lyricsColor == LyricsColor.Thememode)
+                                                                      if (colorPaletteMode == ColorPaletteMode.Light) 3.0f
+                                                                      else 5.0f
+                                                                     else 5.0f
+                                                                   else if (fontSize == LyricsFontSize.Heavy)
+                                                                         if (lyricsColor == LyricsColor.Thememode)
+                                                                          if (colorPaletteMode == ColorPaletteMode.Light) 1.5f
+                                                                          else 3.5f
+                                                                         else 3.5f
+                                                                   else if (fontSize == LyricsFontSize.Medium)
+                                                                         if (lyricsColor == LyricsColor.Thememode)
+                                                                          if (colorPaletteMode == ColorPaletteMode.Light) 0.95f
+                                                                          else 2.95f
+                                                                        else 2.95f
+                                                                   else
+                                                                         if (lyricsColor == LyricsColor.Thememode)
+                                                                          if (colorPaletteMode == ColorPaletteMode.Light) 0.65f
+                                                                          else 2.65f
+                                                                        else 2.65f,
+                                                                   join = StrokeJoin.Round),
                                     ).merge(
                                         when (fontSize) {
                                             LyricsFontSize.Light ->
@@ -687,11 +714,11 @@ fun Lyrics(
                                                                if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                                else Color.Black
                                                              else Color.Black
-                                                        else if (showlyricsthumbnail) Color.Transparent
-                                                        else if (lyricsColor == LyricsColor.Thememode)
+                                                    else if (showlyricsthumbnail) Color.Transparent
+                                                         else if (lyricsColor == LyricsColor.Thememode)
                                                            if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.6f)
                                                            else Color.Black.copy(0.6f)
-                                                         else Color.Black
+                                                         else Color.Black.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Medium ->
@@ -706,7 +733,7 @@ fun Lyrics(
                                                     else if (lyricsColor == LyricsColor.Thememode)
                                                         if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.6f)
                                                         else Color.Black.copy(0.6f)
-                                                    else Color.Black
+                                                    else Color.Black.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Heavy ->
@@ -721,7 +748,7 @@ fun Lyrics(
                                                     else if (lyricsColor == LyricsColor.Thememode)
                                                         if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.6f)
                                                         else Color.Black.copy(0.6f)
-                                                    else Color.Black
+                                                    else Color.Black.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Large ->
@@ -736,7 +763,7 @@ fun Lyrics(
                                                     else if (lyricsColor == LyricsColor.Thememode)
                                                         if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.6f)
                                                         else Color.Black.copy(0.6f)
-                                                    else Color.Black
+                                                    else Color.Black.copy(0.6f)
                                                 )
                                         }
                                     ),
@@ -818,10 +845,31 @@ fun Lyrics(
                                     )
                             }
                         )
+                    if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
                         BasicText(
                             text = translatedText,
                             style = TextStyle(
-                                drawStyle = Stroke(width = if (!showthumbnail) 5.5f else if (colorPaletteMode == ColorPaletteMode.Light) 2f else 3.5f, join = StrokeJoin.Round),
+                                drawStyle = Stroke(width = if (fontSize == LyricsFontSize.Large)
+                                                             if (lyricsColor == LyricsColor.Thememode)
+                                                               if (colorPaletteMode == ColorPaletteMode.Light) 3.0f
+                                                               else 5.0f
+                                                             else 5.0f
+                                                           else if (fontSize == LyricsFontSize.Heavy)
+                                                                  if (lyricsColor == LyricsColor.Thememode)
+                                                                    if (colorPaletteMode == ColorPaletteMode.Light) 1.5f
+                                                                    else 3.5f
+                                                                  else 3.5f
+                                                           else if (fontSize == LyricsFontSize.Medium)
+                                                                  if (lyricsColor == LyricsColor.Thememode)
+                                                                    if (colorPaletteMode == ColorPaletteMode.Light) 0.95f
+                                                                    else 2.95f
+                                                                else 2.95f
+                                                           else
+                                                                  if (lyricsColor == LyricsColor.Thememode)
+                                                                    if (colorPaletteMode == ColorPaletteMode.Light) 0.65f
+                                                                    else 2.65f
+                                                                else 2.65f,
+                                    join = StrokeJoin.Round),
                             ).merge(
                                 when (fontSize) {
                                     LyricsFontSize.Light ->
@@ -830,7 +878,7 @@ fun Lyrics(
                                             else if (lyricsColor == LyricsColor.Thememode)
                                                 if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                 else Color.Black
-                                            else Color.Black
+                                            else Color.Black.copy(0.6f)
                                         )
 
                                     LyricsFontSize.Medium ->
@@ -839,7 +887,7 @@ fun Lyrics(
                                             else if (lyricsColor == LyricsColor.Thememode)
                                                 if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                 else Color.Black
-                                            else Color.Black
+                                            else Color.Black.copy(0.6f)
                                         )
 
                                     LyricsFontSize.Heavy ->
@@ -848,7 +896,7 @@ fun Lyrics(
                                             else if (lyricsColor == LyricsColor.Thememode)
                                                 if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                 else Color.Black
-                                            else Color.Black
+                                            else Color.Black.copy(0.6f)
                                         )
 
                                     LyricsFontSize.Large ->
@@ -857,7 +905,7 @@ fun Lyrics(
                                             else if (lyricsColor == LyricsColor.Thememode)
                                                    if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                    else Color.Black
-                                                 else Color.Black
+                                                 else Color.Black.copy(0.6f)
                                         )
                                 }
                             )
