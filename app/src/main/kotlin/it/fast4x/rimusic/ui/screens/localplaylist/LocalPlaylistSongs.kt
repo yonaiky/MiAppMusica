@@ -142,6 +142,7 @@ import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.cleanPrefix
@@ -1071,6 +1072,16 @@ fun LocalPlaylistSongs(
                                                     }
                                                     //Log.d("mediaItemPos", "added position ${position + index}")
                                                 }
+                                                println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+
+                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+                                                    addToPipedPlaylist(
+                                                        context = context,
+                                                        coroutineScope = coroutineScope,
+                                                        pipedSession = pipedSession.toApiSession() ,
+                                                        id = UUID.fromString(playlistPreview.playlist.browseId),
+                                                        videos = listMediaItems.map { it.mediaId }.toList()
+                                                    )
                                             } else {
                                                 listMediaItems.forEachIndexed { index, song ->
                                                     //Log.d("mediaItemMaxPos", position.toString())
@@ -1086,6 +1097,16 @@ fun LocalPlaylistSongs(
                                                     }
                                                     //Log.d("mediaItemPos", "add position $position")
                                                 }
+                                                println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+
+                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+                                                    addToPipedPlaylist(
+                                                        context = context,
+                                                        coroutineScope = coroutineScope,
+                                                        pipedSession = pipedSession.toApiSession() ,
+                                                        id = UUID.fromString(playlistPreview.playlist.browseId),
+                                                        videos = listMediaItems.map { it.mediaId }.toList()
+                                                    )
                                                 listMediaItems.clear()
                                                 selectItems = false
                                             }
