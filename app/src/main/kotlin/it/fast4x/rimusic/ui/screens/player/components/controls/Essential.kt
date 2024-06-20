@@ -398,7 +398,7 @@ fun ControlsEssential(
                         if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
                             colorPalette.background1 else
                             if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
-                                colorPalette.background4 else colorPalette.background0
+                                colorPalette.background4 else Color.Transparent
                 }
             )
             .width(playerPlayButtonType.width.dp)
