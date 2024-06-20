@@ -195,6 +195,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
@@ -283,6 +284,7 @@ fun PlayerModern(
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
+
     if (showBlurPlayerDialog) {
 
         //if(!isShowingLyrics)
@@ -384,6 +386,7 @@ fun PlayerModern(
             }
         )
     }
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
@@ -1227,7 +1230,7 @@ fun PlayerModern(
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = if (actionspacedevenly) Arrangement.SpaceEvenly else Arrangement.SpaceBetween,
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth()

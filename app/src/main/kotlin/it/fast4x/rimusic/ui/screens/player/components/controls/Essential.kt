@@ -157,7 +157,7 @@ fun InfoAlbumAndArtistEssential(
                 BasicText(
                     text = title ?: "",
                     style = TextStyle(
-                        drawStyle = Stroke(width = 1f, join = StrokeJoin.Round),
+                        drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                         textAlign = TextAlign.Center,
                         color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                         else Color.Black,
@@ -259,7 +259,7 @@ fun InfoAlbumAndArtistEssential(
             BasicText(
                 text = artist ?: "",
                 style = TextStyle(
-                    drawStyle = Stroke(width = 1f, join = StrokeJoin.Round),
+                    drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                     textAlign = TextAlign.Center,
                     color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                     else Color.Black,

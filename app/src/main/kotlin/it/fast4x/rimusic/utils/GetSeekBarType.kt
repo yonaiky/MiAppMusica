@@ -6,6 +6,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,14 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.models.ui.UiMedia
@@ -77,6 +82,8 @@ fun GetSeekBar(
     LaunchedEffect(mediaId) {
         if (compositionLaunched) animatedPosition.animateTo(0f)
     }
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     LaunchedEffect(position) {
         if (!isSeeking && !animatedPosition.isRunning)
             animatedPosition.animateTo(
@@ -251,12 +258,25 @@ fun GetSeekBar(
             .padding(horizontal = 10.dp)
             .fillMaxWidth()
     ) {
-        BasicText(
-            text = formatAsDuration(scrubbingPosition ?: position),
-            style = typography.xxs.semiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Box(
+
+        ) {
+            BasicText(
+                text = formatAsDuration(scrubbingPosition ?: position),
+                style = typography.xxs.semiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            BasicText(
+                text = formatAsDuration(scrubbingPosition ?: position),
+                style = typography.xxs.semiBold.merge(TextStyle(
+                    drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    else Color.Black)),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
 
         if (duration != C.TIME_UNSET) {
             val positionAndDuration = binder.player.positionAndDurationState()
@@ -283,6 +303,9 @@ fun GetSeekBar(
             if (!paused) {
 
                 if (showRemainingSongTime)
+                    Box(
+
+                    ){
                     BasicText(
                         text = "-${formatAsDuration(timeRemaining.toLong())}",
                         style = typography.xxs.semiBold,
@@ -291,6 +314,19 @@ fun GetSeekBar(
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     )
+                    BasicText(
+                        text = "-${formatAsDuration(timeRemaining.toLong())}",
+                        style = typography.xxs.semiBold.merge(TextStyle(
+                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                            else Color.Black)),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    )
+
+
 
                 /*
                 Row(
@@ -335,13 +371,32 @@ fun GetSeekBar(
                 overflow = TextOverflow.Ellipsis,
             )
              */
+            Box(
 
-            BasicText(
-                text = formatAsDuration(duration),
-                style = typography.xxs.semiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            ) {
+                BasicText(
+                    text = formatAsDuration(duration),
+                    style = typography.xxs.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                BasicText(
+                    text = formatAsDuration(duration),
+                    style = typography.xxs.semiBold.merge(
+                        TextStyle(
+                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                0.5f
+                            )
+                            else Color.Black
+                        )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+          }
 
         }
     }

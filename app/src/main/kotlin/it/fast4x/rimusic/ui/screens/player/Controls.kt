@@ -114,6 +114,8 @@ import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,6 +174,7 @@ fun Controls(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
 
     val scope = rememberCoroutineScope()
@@ -249,8 +252,58 @@ fun Controls(
      */
     val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
 
+if(expandedlyrics && !showlyricsthumbnail)
 
+    Column(
+
+    ){
+        if (playerInfoType == PlayerInfoType.Modern)
+            InfoAlbumAndArtistModern(
+                binder = binder,
+                navController = navController,
+                media = media,
+                title = title,
+                albumId = albumId,
+                mediaId = mediaId,
+                likedAt = likedAt,
+                onCollapse = onCollapse,
+                disableScrollingText = disableScrollingText,
+                artist = artist,
+                artistIds = artistIds,
+            )
+
+        if (playerInfoType == PlayerInfoType.Essential)
+            InfoAlbumAndArtistEssential(
+                binder = binder,
+                navController = navController,
+                media = media,
+                title = title,
+                albumId = albumId,
+                mediaId = mediaId,
+                likedAt = likedAt,
+                onCollapse = onCollapse,
+                disableScrollingText = disableScrollingText,
+                artist = artist,
+                artistIds = artistIds,
+            )
+        GetSeekBar(
+            position = position,
+            duration = duration,
+            media = media,
+            mediaId = mediaId
+        )
+        GetControls(
+            binder = binder,
+            position = position,
+            shouldBePlaying = shouldBePlaying,
+            likedAt = likedAt,
+            mediaId = mediaId
+        )
+    }
+
+else
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = modifier

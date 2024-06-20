@@ -195,6 +195,8 @@ const val miniPlayerTypeKey = "miniPlayerType"
 const val lyricsColorKey = "lyricsColor"
 const val transparentbarKey = "transparentbar"
 const val isShowingLyricsKey = "isShowingLyrics"
+const val actionspacedevenlyKey = "actionspacedevenly"
+const val expandedlyricsKey = "expandedlyrics"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

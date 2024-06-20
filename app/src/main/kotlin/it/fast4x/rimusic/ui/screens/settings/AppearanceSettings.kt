@@ -71,6 +71,8 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
@@ -233,6 +235,8 @@ fun AppearanceSettings() {
         playerEnableLyricsPopupMessageKey,
         true
     )
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
     Column(
         modifier = Modifier
@@ -422,6 +426,18 @@ fun AppearanceSettings() {
                     },
                 )
 
+
+       if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
+                filterCharSequence,
+                true
+                )
+           )
+            SwitchSettingEntry(
+                title = stringResource(R.string.expandedlyrics),
+                text = stringResource(R.string.expandedlyricsinfo),
+                isChecked = expandedlyrics,
+                onCheckedChange = { expandedlyrics = it }
+            )
         if(showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                     filterCharSequence,
@@ -872,6 +888,18 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = transparentBackgroundActionBarPlayer,
                 onCheckedChange = { transparentBackgroundActionBarPlayer = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.actionspacedevenly).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.actionspacedevenly),
+                text = "",
+                isChecked = actionspacedevenly,
+                onCheckedChange = { actionspacedevenly = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
