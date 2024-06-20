@@ -600,4 +600,5 @@
     <string name="expanded">Expanded</string>
     <string name="lyricscolor">Lyrics Color</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="piped_playlists">Piped</string>
 </resources>

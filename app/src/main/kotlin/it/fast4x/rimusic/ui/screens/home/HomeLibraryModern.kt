@@ -117,6 +117,7 @@ import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
+import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
@@ -303,9 +304,12 @@ fun HomeLibraryModern(
 
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
     var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
 
     var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    if (showPipedPlaylists) buttonsList +=
+        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
     if (showPinnedPlaylists) buttonsList +=
         PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
     if (showMonthlyPlaylists) buttonsList +=
@@ -475,10 +479,15 @@ fun HomeLibraryModern(
             }
 
             if (playlistType == PlaylistsType.Playlist) {
-                items(items = items.filter {
+                items(items = items,
+                    /*
+                    .filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                }, key = { it.playlist.id }) { playlistPreview ->
+                    }
+
+                     */
+                    key = { it.playlist.id }) { playlistPreview ->
 
                     PlaylistItem(
                         playlist = playlistPreview,
@@ -492,6 +501,22 @@ fun HomeLibraryModern(
                     )
                 }
             }
+
+            if (playlistType == PlaylistsType.PipedPlaylist)
+                items(items = items.filter {
+                    it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                }, key = { it.playlist.id }) { playlistPreview ->
+                    PlaylistItem(
+                        playlist = playlistPreview,
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        thumbnailSizePx = thumbnailSizePx,
+                        alternative = true,
+                        modifier = Modifier
+                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .fillMaxSize()
+                    )
+                }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
                  items(items = items.filter {

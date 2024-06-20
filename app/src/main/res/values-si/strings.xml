@@ -604,4 +604,5 @@ CC-BY-SA 3.0</string>
     <string name="lyrics_size">Lyrics Size</string>
     <string name="translate">Translate</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="piped_playlists">Piped</string>
 </resources>

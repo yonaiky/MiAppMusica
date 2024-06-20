@@ -608,6 +608,7 @@
     <string name="expandedlyrics">Expanded view of lyrics</string>
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="piped_playlists">Piped</string>
 
 
 </resources>
