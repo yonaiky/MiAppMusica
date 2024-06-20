@@ -72,7 +72,7 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
-import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
@@ -175,6 +175,7 @@ fun AppearanceSettings() {
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey,true)
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
@@ -238,7 +239,6 @@ fun AppearanceSettings() {
         true
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
-    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
     Column(
         modifier = Modifier
@@ -429,17 +429,6 @@ fun AppearanceSettings() {
                 )
 
 
-       if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
-                filterCharSequence,
-                true
-                )
-           )
-            SwitchSettingEntry(
-                title = stringResource(R.string.expandedlyrics),
-                text = stringResource(R.string.expandedlyricsinfo),
-                isChecked = expandedlyrics,
-                onCheckedChange = { expandedlyrics = it }
-            )
         if(showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                     filterCharSequence,
@@ -962,6 +951,18 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.expandedplayer),
+                text = "",
+                isChecked = expandedplayertoggle,
+                onCheckedChange = { expandedplayertoggle = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(

@@ -600,6 +600,10 @@
     <string name="accent">Vurgu rengi</string>
     <string name="lyrics_size">Şarkı Sözü Boyutu</string>
     <string name="translate">Tercüme et</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>

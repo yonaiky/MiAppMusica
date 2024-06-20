@@ -151,6 +151,8 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.expandedplayerKey
+import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
@@ -424,6 +426,7 @@ fun Player(
 
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
 
 
     var likedAt by rememberSaveable {
@@ -449,6 +452,7 @@ fun Player(
     val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     val showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     val showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    val expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
     val showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
@@ -1632,6 +1636,18 @@ fun Player(
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
+                            )
+
+                        if (expandedplayertoggle)
+                            IconButton(
+                                icon = R.drawable.minmax,
+                                color = if (expandedplayer) colorPalette.text else colorPalette.textDisabled,
+                                enabled = true,
+                                onClick = {
+                                    expandedplayer = !expandedplayer
+                                },
+                                modifier = Modifier
+                                    .size(20.dp),
                             )
 
 

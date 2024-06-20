@@ -602,5 +602,9 @@
     <string name="accent">Accent</string>
     <string name="lyrics_size">Lyrics Size</string>
     <string name="translate">Translate</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
     <string name="piped_playlists">Piped</string>
 </resources>
