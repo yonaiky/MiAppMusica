@@ -227,7 +227,7 @@ fun PlayerEssential(
                 Icon(
                     imageVector = when (dismissState.targetValue) {
                         SwipeToDismissBoxValue.StartToEnd -> {
-                            if (miniPlayerType == MiniPlayerType.Modern) ImageVector.vectorResource(R.drawable.play_skip_forward) else
+                            if (miniPlayerType == MiniPlayerType.Modern) ImageVector.vectorResource(R.drawable.play_skip_back) else
                              if (likedAt == null)
                              ImageVector.vectorResource(R.drawable.heart_outline)
                              else ImageVector.vectorResource(R.drawable.heart)

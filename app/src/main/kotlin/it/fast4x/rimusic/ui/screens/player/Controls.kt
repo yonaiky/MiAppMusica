@@ -65,6 +65,7 @@ import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
@@ -103,6 +104,7 @@ import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
@@ -112,6 +114,8 @@ import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,6 +174,7 @@ fun Controls(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
 
     val scope = rememberCoroutineScope()
@@ -211,9 +216,9 @@ fun Controls(
 
     var showSelectDialog by remember { mutableStateOf(false) }
 
-    val playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Medium
     )
 
 
@@ -247,13 +252,63 @@ fun Controls(
      */
     val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
 
+if(expandedlyrics && !showlyricsthumbnail)
 
+    Column(
+
+    ){
+        if (playerInfoType == PlayerInfoType.Modern)
+            InfoAlbumAndArtistModern(
+                binder = binder,
+                navController = navController,
+                media = media,
+                title = title,
+                albumId = albumId,
+                mediaId = mediaId,
+                likedAt = likedAt,
+                onCollapse = onCollapse,
+                disableScrollingText = disableScrollingText,
+                artist = artist,
+                artistIds = artistIds,
+            )
+
+        if (playerInfoType == PlayerInfoType.Essential)
+            InfoAlbumAndArtistEssential(
+                binder = binder,
+                navController = navController,
+                media = media,
+                title = title,
+                albumId = albumId,
+                mediaId = mediaId,
+                likedAt = likedAt,
+                onCollapse = onCollapse,
+                disableScrollingText = disableScrollingText,
+                artist = artist,
+                artistIds = artistIds,
+            )
+        GetSeekBar(
+            position = position,
+            duration = duration,
+            media = media,
+            mediaId = mediaId
+        )
+        GetControls(
+            binder = binder,
+            position = position,
+            shouldBePlaying = shouldBePlaying,
+            likedAt = likedAt,
+            mediaId = mediaId
+        )
+    }
+
+else
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = playerThumbnailSize.size.dp)
+            .padding(horizontal = playerTimelineSize.size.dp)
     ) {
 
         if (playerInfoType == PlayerInfoType.Modern)

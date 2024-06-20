@@ -140,6 +140,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.audioFadeIn
 import it.fast4x.rimusic.utils.audioFadeOut
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -486,6 +487,7 @@ fun Player(
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
 
     if (isShowingSleepTimerDialog) {
         if (sleepTimerMillisLeft != null) {
@@ -1462,7 +1464,7 @@ fun Player(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween, //Arrangement.SpaceEvenly,
+                        horizontalArrangement = if (actionspacedevenly) Arrangement.SpaceEvenly else Arrangement.SpaceBetween, //Arrangement.SpaceEvenly,
                         modifier = Modifier
                             //.align(Alignment.Center)
                             //.padding(horizontal = 12.dp)
