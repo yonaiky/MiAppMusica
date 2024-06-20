@@ -600,4 +600,8 @@
     <string name="accent">Naglašena boja</string>
     <string name="lyrics_size">Veličina Stihova</string>
     <string name="translate">Prevedi</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
 </resources>
