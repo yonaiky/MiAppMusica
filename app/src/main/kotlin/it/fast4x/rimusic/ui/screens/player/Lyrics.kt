@@ -948,6 +948,7 @@ fun Lyrics(
                     .align(Alignment.BottomStart)
                     .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
+                if (showlyricsthumbnail)
                 IconButton(
                     icon = R.drawable.minmax,
                     color = DefaultDarkColorPalette.text,
