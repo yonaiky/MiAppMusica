@@ -196,7 +196,8 @@ const val lyricsColorKey = "lyricsColor"
 const val transparentbarKey = "transparentbar"
 const val isShowingLyricsKey = "isShowingLyrics"
 const val actionspacedevenlyKey = "actionspacedevenly"
-const val expandedlyricsKey = "expandedlyrics"
+const val expandedplayerKey = "expandedplayer"
+const val expandedplayertoggleKey = "expandedplayertoggle"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

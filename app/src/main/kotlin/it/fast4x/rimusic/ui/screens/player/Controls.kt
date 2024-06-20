@@ -114,7 +114,7 @@ import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 
@@ -174,7 +174,7 @@ fun Controls(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
 
 
     val scope = rememberCoroutineScope()
@@ -254,7 +254,7 @@ fun Controls(
     var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
 
-if(expandedlyrics && !showlyricsthumbnail)
+if(expandedplayer)
 
     Column(
 
@@ -288,11 +288,19 @@ if(expandedlyrics && !showlyricsthumbnail)
                 artist = artist,
                 artistIds = artistIds,
             )
+        Spacer(
+            modifier = Modifier
+                .height(10.dp)
+        )
         GetSeekBar(
             position = position,
             duration = duration,
             media = media,
             mediaId = mediaId
+        )
+        Spacer(
+            modifier = Modifier
+                .height(10.dp)
         )
         GetControls(
             binder = binder,

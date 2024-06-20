@@ -603,8 +603,7 @@
     <string name="transparentbar">Transparent Timeline Bar</string>
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedplayer">Expanded Player</string>
 
 
 </resources>

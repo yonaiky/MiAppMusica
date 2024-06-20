@@ -196,6 +196,8 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
+import it.fast4x.rimusic.utils.expandedplayerKey
+import it.fast4x.rimusic.utils.expandedplayertoggleKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
@@ -460,6 +462,7 @@ fun PlayerModern(
 
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
 
 
     var likedAt by rememberSaveable {
@@ -486,6 +489,7 @@ fun PlayerModern(
     val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     val showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     val showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    val expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
     val showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
@@ -1316,6 +1320,18 @@ fun PlayerModern(
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
+                            )
+
+                        if (expandedplayertoggle)
+                            IconButton(
+                                icon = R.drawable.minmax,
+                                color = if (expandedplayer) colorPalette.text else colorPalette.textDisabled,
+                                enabled = true,
+                                onClick = {
+                                    expandedplayer = !expandedplayer
+                                },
+                                modifier = Modifier
+                                    .size(20.dp),
                             )
 
 
