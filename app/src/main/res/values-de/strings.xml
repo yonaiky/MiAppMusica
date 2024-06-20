@@ -600,4 +600,8 @@
     <string name="accent">Accent</string>
     <string name="lyrics_size">Liedtext-Größe</string>
     <string name="translate">Übersetzen</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
 </resources>
