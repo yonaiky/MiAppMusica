@@ -58,6 +58,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -109,6 +110,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.transparentbarKey
 
 
@@ -153,6 +155,10 @@ fun AppearanceSettings() {
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Medium
+    )
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Medium
     )
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -436,6 +442,25 @@ fun AppearanceSettings() {
                         }
                     }
                 )
+      if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.timelinesize),
+                selectedValue = playerTimelineSize,
+                onValueSelected = { playerTimelineSize = it },
+                valueText = {
+                    when (it) {
+                        PlayerTimelineSize.Small -> stringResource(R.string.small)
+                        PlayerTimelineSize.Medium -> stringResource(R.string.medium)
+                        PlayerTimelineSize.Big -> stringResource(R.string.big)
+                        PlayerTimelineSize.Biggest -> stringResource(R.string.biggest)
+                        PlayerTimelineSize.Expanded -> stringResource(R.string.expanded)
+                    }
+                }
+            )
 
         if(showthumbnail)
              if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
@@ -762,12 +787,12 @@ fun AppearanceSettings() {
                     }
                 },
             )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
+       if(showlyricsthumbnail)
+         if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
                 filterCharSequence,
                 true
             )
-        )
+         )
             SwitchSettingEntry(
                 title = stringResource(R.string.show_background_in_lyrics),
                 text = "",
@@ -775,7 +800,7 @@ fun AppearanceSettings() {
                 onCheckedChange = { showBackgroundLyrics = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+      if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
                 filterCharSequence,
                 true
             )

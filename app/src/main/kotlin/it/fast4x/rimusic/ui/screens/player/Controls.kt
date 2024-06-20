@@ -65,6 +65,7 @@ import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
@@ -103,6 +104,7 @@ import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
@@ -211,9 +213,9 @@ fun Controls(
 
     var showSelectDialog by remember { mutableStateOf(false) }
 
-    val playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Medium
     )
 
 
@@ -253,7 +255,7 @@ fun Controls(
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = playerThumbnailSize.size.dp)
+            .padding(horizontal = playerTimelineSize.size.dp)
     ) {
 
         if (playerInfoType == PlayerInfoType.Modern)
