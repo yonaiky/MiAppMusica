@@ -594,10 +594,10 @@
     <string name="show_thumbnail">Küçük Resimleri Göster</string>
     <string name="show_lyrics_thumbnail">Şarkı Sözleri için Küçük Resim Göster</string>
     <string name="large">Geniş</string>
-    <string name="miniplayertype">Mini Player Type</string>
-    <string name="expanded">Expanded</string>
-    <string name="lyricscolor">Lyrics Color</string>
-    <string name="accent">Accent</string>
-    <string name="lyrics_size">Lyrics Size</string>
-    <string name="translate">Translate</string>
+    <string name="miniplayertype">Mini Oynatıcı Tipi</string>
+    <string name="expanded">Genişletilmiş</string>
+    <string name="lyricscolor">Şarkı Sözü Rengi</string>
+    <string name="accent">Vurgu rengi</string>
+    <string name="lyrics_size">Şarkı Sözü Boyutu</string>
+    <string name="translate">Tercüme et</string>
 </resources>
