@@ -90,10 +90,14 @@ fun ImportPipedPlaylists(){
     val coroutineScope = rememberCoroutineScope()
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-    if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
-        val pipedSession = getPipedSession()
-        LaunchedEffect(Unit) {
+    //val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val pipedSession = getPipedSession()
+    if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
+       SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+        return
+    }
+
+    LaunchedEffect(Unit) {
             async {
                 Piped.playlist.list(session = pipedSession.toApiSession())
             }.await()?.map {
@@ -149,8 +153,7 @@ fun ImportPipedPlaylists(){
                 }
             }
         }
-    } else
-        SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+
 }
 
 fun addToPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, videos: List<String>) {
