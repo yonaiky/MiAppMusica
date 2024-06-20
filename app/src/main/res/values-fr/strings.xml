@@ -604,4 +604,5 @@
     <string name="accent">Couleur d\'accentuation</string>
     <string name="lyrics_size">Taille des paroles</string>
     <string name="translate">Traduire</string>
+     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
 </resources>

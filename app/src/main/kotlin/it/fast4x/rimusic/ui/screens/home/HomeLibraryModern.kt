@@ -158,6 +158,7 @@ fun HomeLibraryModern(
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
+    val context = LocalContext.current
 
     if (isCreatingANewPlaylist) {
         InputTextDialog(
@@ -169,6 +170,7 @@ fun HomeLibraryModern(
 
                 if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
                     createPipedPlaylist(
+                        context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
                         name = text
@@ -212,7 +214,7 @@ fun HomeLibraryModern(
     var plistId by remember {
         mutableStateOf(0L)
     }
-    val context = LocalContext.current
+
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult

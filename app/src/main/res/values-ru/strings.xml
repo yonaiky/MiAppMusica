@@ -602,4 +602,5 @@
     <string name="translate">Перевести</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
 </resources>

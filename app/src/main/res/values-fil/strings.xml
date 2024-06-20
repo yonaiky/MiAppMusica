@@ -602,4 +602,5 @@
     <string name="accent">Accent</string>
     <string name="lyrics_size">Size ng Lyrics</string>
     <string name="translate">I-Translate</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
 </resources>

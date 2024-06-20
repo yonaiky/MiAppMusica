@@ -598,4 +598,6 @@
     <string name="large">Large</string>
     <string name="miniplayertype">Mini PlayerMini Player Type Type</string>
     <string name="expanded">Expanded</string>
+    <string name="lyricscolor">Lyrics Color</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
 </resources>

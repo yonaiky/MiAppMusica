@@ -5,14 +5,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +26,9 @@ import timber.log.Timber
 import java.util.UUID
 import kotlinx.serialization.Serializable
 
-fun syncSongsInPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, idPipedPlaylist: UUID, playlistId: Long) {
+fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pipedSession: Session, idPipedPlaylist: UUID, playlistId: Long) {
+
+   if (!checkPipedAccount(context, pipedSession)) return
 
     coroutineScope.launch(Dispatchers.IO) {
         async {
@@ -143,11 +149,12 @@ fun ImportPipedPlaylists(){
                 }
             }
         }
-    }
+    } else
+        SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)
 }
 
-fun addToPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, videos: List<String>) {
-
+fun addToPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, videos: List<String>) {
+    if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
             Piped.playlist.add(session = pipedSession, id = id, videos = videos.map { it.toID() })
 
@@ -155,8 +162,8 @@ fun addToPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id
 
 }
 
-fun removeFromPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, idx: Int) {
-
+fun removeFromPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, idx: Int) {
+    if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.remove(session = pipedSession, id = id, idx = idx)
 
@@ -164,8 +171,8 @@ fun removeFromPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Sessio
 
 }
 
-fun deletePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID) {
-
+fun deletePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, id: UUID) {
+    if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.delete(session = pipedSession, id = id)
 
@@ -173,8 +180,8 @@ fun deletePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, i
 
 }
 
-fun renamePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, name: String) {
-
+fun renamePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, id: UUID, name: String) {
+    if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.rename(session = pipedSession, id = id, name = name)
 
@@ -182,8 +189,9 @@ fun renamePipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, i
 
 }
 
-fun createPipedPlaylist(coroutineScope: CoroutineScope, pipedSession: Session, name: String): Long {
+fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, name: String): Long {
     var playlistId: Long = -1
+    if (!checkPipedAccount(context, pipedSession)) return playlistId
 
     coroutineScope.launch(Dispatchers.IO) {
         async {
@@ -203,4 +211,13 @@ fun String.toID(): String {
         .replace("/watch?v=", "") // videos
         .replace("/channel/", "") // channels
         .replace("/playlist?list=", "") // playlists
+}
+
+fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
+    val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
+    if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
+        SmartToast(context.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+        return false
+    }
+    return true
 }

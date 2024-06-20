@@ -309,6 +309,7 @@ fun LocalPlaylistSongs(
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
+    val context = LocalContext.current
 
 
     if (isDeleting) {
@@ -321,8 +322,10 @@ fun LocalPlaylistSongs(
                 }
 
                 if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
-                    deletePipedPlaylist(coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession() ,
+                    deletePipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
                         id = UUID.fromString(playlistPreview?.playlist?.browseId)
                     )
 
@@ -366,7 +369,7 @@ fun LocalPlaylistSongs(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
-    val context = LocalContext.current
+
     val uriHandler = LocalUriHandler.current
 
     var showConfirmDeleteDownloadDialog by remember {
@@ -552,7 +555,9 @@ fun LocalPlaylistSongs(
                     }
 
                     if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
-                        renamePipedPlaylist(coroutineScope = coroutineScope,
+                        renamePipedPlaylist(
+                            context = context,
+                            coroutineScope = coroutineScope,
                             pipedSession = pipedSession.toApiSession() ,
                             id = UUID.fromString(playlistPreview?.playlist?.browseId),
                             name = text
@@ -1030,6 +1035,7 @@ fun LocalPlaylistSongs(
                                                 SmartToast(context.getString(R.string.done))
                                             } else {
                                                 syncSongsInPipedPlaylist(
+                                                    context = context,
                                                     coroutineScope = coroutineScope,
                                                     pipedSession = pipedSession.toApiSession(),
                                                     idPipedPlaylist = UUID.fromString(playlistPreview.playlist.browseId),

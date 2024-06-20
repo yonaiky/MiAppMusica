@@ -180,6 +180,7 @@ fun InPlaylistMediaItemMenu(
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
+    val context = LocalContext.current
 
     NonQueuedMediaItemMenu(
         navController = navController,
@@ -192,7 +193,9 @@ fun InPlaylistMediaItemMenu(
             }
 
             if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
-                removeFromPipedPlaylist(coroutineScope = coroutineScope,
+                removeFromPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession() ,
                     id = UUID.fromString(playlist.playlist.browseId),
                     positionInPlaylist
@@ -498,7 +501,9 @@ fun BaseMediaItemMenu(
             println("pipedInfo mediaitemmenu uuid ${playlist.browseId}")
 
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
-                addToPipedPlaylist(coroutineScope = coroutineScope,
+                addToPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession() ,
                     id = UUID.fromString(playlist.browseId),
                     videos = listOf(mediaItem.mediaId)
