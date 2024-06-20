@@ -600,4 +600,8 @@
     <string name="accent">Vurgu rengi</string>
     <string name="lyrics_size">Şarkı Sözü Boyutu</string>
     <string name="translate">Tercüme et</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
 </resources>
