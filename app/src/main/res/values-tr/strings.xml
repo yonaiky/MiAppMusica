@@ -591,6 +591,8 @@
     <string name="piped_connected_to_s">%s ağına bağlanıldı</string>
     <string name="fake_audio_bar">Sahte Ses Çubuğu</string>
     <string name="copy_crash_log_to_clipboard">Çökme günlüğünü panoya kopyala</string>
+    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
+    <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="show_thumbnail">Küçük Resimleri Göster</string>
     <string name="show_lyrics_thumbnail">Şarkı Sözleri için Küçük Resim Göster</string>
     <string name="large">Geniş</string>
@@ -604,4 +606,10 @@
     <string name="timelinesize">Oynatıcı Zaman Çizgisi Boyutu</string>
     <string name="actionspacedevenly">Eşit Aralıklı</string>
     <string name="expandedplayer">Genişletilmiş Oynatıcı</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="piped_playlists">Piped</string>
+    <string name="lang_bengali">Bengali</string>
+    <string name="lang_irish">Irish</string>
 </resources>
