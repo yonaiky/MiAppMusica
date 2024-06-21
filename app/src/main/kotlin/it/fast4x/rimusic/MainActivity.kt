@@ -190,6 +190,7 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum

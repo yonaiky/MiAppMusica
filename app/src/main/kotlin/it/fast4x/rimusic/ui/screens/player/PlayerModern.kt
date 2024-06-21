@@ -999,6 +999,7 @@ fun PlayerModern(
         Controls(
             navController = navController,
             onCollapse = onDismiss,
+            expandedplayer = expandedplayer,
             layoutState = layoutState,
             media = mediaItem.toUiMedia(positionAndDuration.second),
             mediaId = mediaItem.mediaId,

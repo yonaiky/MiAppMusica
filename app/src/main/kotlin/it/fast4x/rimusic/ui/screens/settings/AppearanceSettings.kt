@@ -162,7 +162,7 @@ fun AppearanceSettings() {
     )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
-        PlayerTimelineSize.Medium
+        PlayerTimelineSize.Biggest
     )
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
