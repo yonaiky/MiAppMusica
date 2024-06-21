@@ -193,6 +193,7 @@ import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import kotlin.math.absoluteValue
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 
 
 @ExperimentalTextApi
@@ -1072,7 +1073,7 @@ fun Player(
             }
 
         }
-
+        var showthumbnail by rememberPreference(showthumbnailKey, true)
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }
             //var direction by remember { mutableIntStateOf(-1)}
@@ -1084,6 +1085,7 @@ fun Player(
                 onShowStatsForNerds = { isShowingStatsForNerds = it },
                 isShowingEqualizer = isShowingEqualizer,
                 onShowEqualizer = { isShowingEqualizer = it },
+                showthumbnail = showthumbnail,
                 onMaximize = { lyricsBottomSheetState.expandSoft() },
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem

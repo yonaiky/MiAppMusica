@@ -969,6 +969,7 @@ fun PlayerModern(
             onShowStatsForNerds = { isShowingStatsForNerds = it },
             isShowingEqualizer = isShowingEqualizer,
             onShowEqualizer = { isShowingEqualizer = it },
+            showthumbnail = showthumbnail,
             onMaximize = {
                     showFullLyrics = true
             },
