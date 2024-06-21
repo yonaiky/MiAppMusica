@@ -66,6 +66,7 @@ import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 
 
@@ -143,7 +144,9 @@ fun InfoAlbumAndArtistModern(
                 BasicText(
                     text = title ?: "",
                     style = TextStyle(
-                        color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                        color = if (albumId == null)
+                            if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                        else colorPalette.text,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
                         fontSize = typography.l.bold.fontSize,
@@ -269,7 +272,9 @@ fun InfoAlbumAndArtistModern(
             BasicText(
                 text = artist ?: "",
                 style = TextStyle(
-                    color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                    color = if (albumId == null)
+                        if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                    else colorPalette.text,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,
                     fontWeight = typography.m.bold.fontWeight,

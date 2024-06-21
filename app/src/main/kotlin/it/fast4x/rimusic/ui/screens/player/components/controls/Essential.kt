@@ -80,6 +80,7 @@ import it.fast4x.rimusic.utils.playerControlsTypeKey
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -145,7 +146,9 @@ fun InfoAlbumAndArtistEssential(
                     text = title ?: "",
                     style = TextStyle(
                         textAlign = TextAlign.Center,
-                        color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                        color = if (albumId == null)
+                                 if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                                else colorPalette.text,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
                         fontSize = typography.l.bold.fontSize,
@@ -246,7 +249,9 @@ fun InfoAlbumAndArtistEssential(
                 text = artist ?: "",
                 style = TextStyle(
                     textAlign = TextAlign.Center,
-                    color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                    color = if (artistIds?.isEmpty() == true)
+                             if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                            else colorPalette.text,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,
                     //fontWeight = typography.m.bold.fontWeight,
