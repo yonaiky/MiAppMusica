@@ -65,7 +65,7 @@ enum class Languages {
             Finnish -> "fi"
             Italian -> "it"
             Indonesian -> "in"
-            Irish -> "ga-IE"
+            Irish -> "ga"
             Japanese -> "ja"
             Korean -> "ko"
             Czech -> "cs"
