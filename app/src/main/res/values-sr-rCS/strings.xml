@@ -591,6 +591,8 @@
     <string name="piped_connected_to_s">Povezano na %s</string>
     <string name="fake_audio_bar">Lažni Audio Bar</string>
     <string name="copy_crash_log_to_clipboard">Kopirajte zapis greške u privremenu memoriju</string>
+    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
+    <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="show_thumbnail">Prikaži Sličicu</string>
     <string name="show_lyrics_thumbnail">Prikaži Sličicu za Stihove</string>
     <string name="large">Veliki</string>
@@ -604,4 +606,10 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="piped_playlists">Piped</string>
+    <string name="lang_bengali">Bengali</string>
+    <string name="lang_irish">Irish</string>
 </resources>
