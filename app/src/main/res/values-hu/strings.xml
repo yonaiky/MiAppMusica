@@ -610,4 +610,6 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
 </resources>

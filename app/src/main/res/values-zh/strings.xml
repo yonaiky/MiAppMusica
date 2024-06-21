@@ -603,4 +603,13 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
+    <string name="accent">Accent</string>
+    <string name="lyrics_size">Lyrics Size</string>
+    <string name="translate">Translate</string>
+    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="timelinesize">Player Timeline Size</string>
+    <string name="actionspacedevenly">Spaced Evenly</string>
+    <string name="expandedplayer">Expanded Player</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
 </resources>
