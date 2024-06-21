@@ -1072,7 +1072,7 @@ fun LocalPlaylistSongs(
                                                     }
                                                     //Log.d("mediaItemPos", "added position ${position + index}")
                                                 }
-                                                println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+                                                //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
                                                 if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
                                                     addToPipedPlaylist(
