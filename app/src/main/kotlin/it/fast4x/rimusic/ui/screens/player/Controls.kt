@@ -257,7 +257,8 @@ fun Controls(
 if(expandedplayer)
 
     Column(
-
+        modifier = Modifier
+            .padding(horizontal = playerTimelineSize.size.dp)
     ){
         if (playerInfoType == PlayerInfoType.Modern)
             InfoAlbumAndArtistModern(
