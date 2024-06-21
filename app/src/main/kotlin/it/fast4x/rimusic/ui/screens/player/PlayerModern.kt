@@ -1242,7 +1242,7 @@ fun PlayerModern(
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
                                 icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                                color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isDownloaded) colorPalette.accent else Color.Gray,
                                 downloadState = downloadState,
                                 onClick = {
                                     manageDownload(
@@ -1261,7 +1261,7 @@ fun PlayerModern(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1286,7 +1286,7 @@ fun PlayerModern(
                         if (showButtonPlayerLoop)
                             IconButton(
                                 icon = R.drawable.repeat,
-                                color = if (trackLoopEnabled) colorPalette.text else colorPalette.textDisabled,
+                                color = if (trackLoopEnabled) colorPalette.accent else Color.Gray,
                                 onClick = {
                                     trackLoopEnabled = !trackLoopEnabled
                                     if (effectRotationEnabled) isRotated = !isRotated
@@ -1299,7 +1299,7 @@ fun PlayerModern(
                         if (showButtonPlayerShuffle)
                             IconButton(
                                 icon = R.drawable.shuffle,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 enabled = true,
                                 onClick = {
                                     binder?.player?.shuffleQueue()
@@ -1312,7 +1312,7 @@ fun PlayerModern(
                         if (showButtonPlayerLyrics)
                             IconButton(
                                 icon = R.drawable.song_lyrics,
-                                color = if (isShowingLyrics) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
@@ -1325,7 +1325,7 @@ fun PlayerModern(
                         if (expandedplayertoggle)
                             IconButton(
                                 icon = R.drawable.minmax,
-                                color = if (expandedplayer) colorPalette.text else colorPalette.textDisabled,
+                                color = if (expandedplayer) colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     expandedplayer = !expandedplayer
@@ -1352,7 +1352,7 @@ fun PlayerModern(
                         if (showButtonPlayerSleepTimer)
                             IconButton(
                                 icon = R.drawable.sleep,
-                                color = if (sleepTimerMillisLeft != null) colorPalette.text else colorPalette.textDisabled,
+                                color = if (sleepTimerMillisLeft != null) colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     isShowingSleepTimerDialog = true
@@ -1367,7 +1367,7 @@ fun PlayerModern(
 
                             IconButton(
                                 icon = R.drawable.equalizer,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 enabled = true,
                                 onClick = {
                                     try {
@@ -1402,7 +1402,7 @@ fun PlayerModern(
                         if (showButtonPlayerArrow)
                             IconButton(
                                 icon = R.drawable.chevron_up,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 enabled = true,
                                 onClick = {
                                     showQueue = true
@@ -1415,7 +1415,7 @@ fun PlayerModern(
                         if (showButtonPlayerMenu && !isLandscape)
                             IconButton(
                                 icon = R.drawable.ellipsis_vertical,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
@@ -1440,7 +1440,7 @@ fun PlayerModern(
                         if (isLandscape) {
                             IconButton(
                                 icon = R.drawable.ellipsis_horizontal,
-                                color = colorPalette.text,
+                                color = colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
