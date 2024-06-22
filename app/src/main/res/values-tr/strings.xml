@@ -592,7 +592,7 @@
     <string name="fake_audio_bar">Sahte Ses Çubuğu</string>
     <string name="copy_crash_log_to_clipboard">Çökme günlüğünü panoya kopyala</string>
     <string name="title_backup_and_restore">YEDEKLEME VE GERİ YÜKLEME</string>
-    <string name="message_excluded_s_songs">%s Şarkılar hariçtir</string>
+    <string name="message_excluded_s_songs">%s Şarkı hariçtir</string>
     <string name="show_thumbnail">Küçük Resimleri Göster</string>
     <string name="show_lyrics_thumbnail">Şarkı Sözleri için Küçük Resim Göster</string>
     <string name="large">Geniş</string>
@@ -611,5 +611,5 @@
     <string name="info_connect_your_piped_account_first">Önce piped hesabını bağla yoksa piped senkronizasyonu nu devre dışı bırak</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">İrlandaca</string>
+    <string name="lang_irish">Irish</string>
 </resources>
