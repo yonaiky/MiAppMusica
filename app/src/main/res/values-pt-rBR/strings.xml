@@ -606,10 +606,10 @@
     <string name="timelinesize">Tamanho do Reprodutor da Timeline</string>
     <string name="actionspacedevenly">Uniformemente Espaçado</string>
     <string name="expandedplayer">Reprodutor Expandido</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
-    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="expandedlyrics">Exibição expandida das letras</string>
+    <string name="expandedlyricsinfo">Funciona apenas quando a miniatura das letras estiver desativada</string>
+    <string name="info_connect_your_piped_account_first">Conecte sua conta Piped primeiro ou desative a sincronização do Piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irish</string>
+    <string name="lang_bengali">Bengalês</string>
+    <string name="lang_irish">Irlandês</string>
 </resources>
