@@ -74,6 +74,7 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lyricsColorKey
@@ -965,7 +966,7 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-        if (!showlyricsthumbnail)
+        if (!showlyricsthumbnail and !isLandscape)
         if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
                 filterCharSequence,
                 true

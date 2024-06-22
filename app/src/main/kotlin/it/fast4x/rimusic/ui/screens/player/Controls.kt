@@ -115,6 +115,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.utils.expandedplayerKey
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 
@@ -256,13 +257,13 @@ fun Controls(
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey,false)
 
-    if (expandedplayer && !showlyricsthumbnail)
-    Column(
+  if ((!isLandscape) and (expandedplayer && !showlyricsthumbnail))
+  Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .padding(horizontal = playerTimelineSize.size.dp)
-    ){
+  ){
         if (playerInfoType == PlayerInfoType.Modern)
             InfoAlbumAndArtistModern(
                 binder = binder,
@@ -318,10 +319,10 @@ fun Controls(
             modifier = Modifier
                 .height(10.dp)
         )
-    }
+  }
 
-    else
-    Column(
+  else
+  Column(
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxWidth()

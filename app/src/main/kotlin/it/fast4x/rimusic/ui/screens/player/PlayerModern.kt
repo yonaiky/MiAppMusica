@@ -1349,8 +1349,8 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-
-                        if (expandedplayertoggle && !showlyricsthumbnail)
+                        if (!isLandscape)
+                         if (expandedplayertoggle && !showlyricsthumbnail)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,
@@ -1361,6 +1361,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(20.dp),
                             )
+
 
 
                         if (playerVisualizerType != PlayerVisualizerType.Disabled)
