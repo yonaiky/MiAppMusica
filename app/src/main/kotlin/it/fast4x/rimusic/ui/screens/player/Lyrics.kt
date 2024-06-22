@@ -136,6 +136,7 @@ import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.lyricsoutlineKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 
 
@@ -224,6 +225,7 @@ fun Lyrics(
         var fontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
         val showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
         val playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
+        var lyricsoutline by rememberPreference(lyricsoutlineKey, false)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics) {
             withContext(Dispatchers.IO) {
@@ -679,7 +681,7 @@ fun Lyrics(
                                                 binder?.player?.seekTo(sentence.first)
                                         }
                                 )
-                            if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                if (lyricsoutline && !showlyricsthumbnail)
                                 BasicText(
                                     text = translatedText,
                                     style = TextStyle(
@@ -845,7 +847,7 @@ fun Lyrics(
                                     )
                             }
                         )
-                    if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                        if (lyricsoutline && !showlyricsthumbnail)
                         BasicText(
                             text = translatedText,
                             style = TextStyle(

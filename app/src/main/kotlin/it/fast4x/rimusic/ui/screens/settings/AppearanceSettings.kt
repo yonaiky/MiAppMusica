@@ -77,6 +77,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.lyricsoutlineKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -237,6 +238,7 @@ fun AppearanceSettings() {
         true
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var lyricsoutline by rememberPreference(lyricsoutlineKey, false)
 
     Column(
         modifier = Modifier
@@ -424,6 +426,19 @@ fun AppearanceSettings() {
                             LyricsColor.Cover -> stringResource(R.string.cover)
                         }
                     },
+                )
+
+        if (!showlyricsthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.lyricsoutline).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.lyricsoutline),
+                    text = "effective only when thumbnail for lyrics is disabled",
+                    isChecked = lyricsoutline,
+                    onCheckedChange = { lyricsoutline = it }
                 )
 
 
@@ -950,7 +965,7 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-
+        if (!showlyricsthumbnail)
         if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
                 filterCharSequence,
                 true

@@ -1350,7 +1350,7 @@ fun PlayerModern(
                                     .size(24.dp),
                             )
 
-                        if (expandedplayertoggle)
+                        if (expandedplayertoggle && !showlyricsthumbnail)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,

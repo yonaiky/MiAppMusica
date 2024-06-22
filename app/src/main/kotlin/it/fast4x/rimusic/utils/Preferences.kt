@@ -199,6 +199,7 @@ const val isShowingLyricsKey = "isShowingLyrics"
 const val actionspacedevenlyKey = "actionspacedevenly"
 const val expandedplayerKey = "expandedplayer"
 const val expandedplayertoggleKey = "expandedplayertoggle"
+const val lyricsoutlineKey = "lyricsoutline"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
