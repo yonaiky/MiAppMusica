@@ -78,7 +78,6 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lyricsColorKey
-import it.fast4x.rimusic.utils.lyricsoutlineKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -239,7 +238,6 @@ fun AppearanceSettings() {
         true
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
-    var lyricsoutline by rememberPreference(lyricsoutlineKey, false)
 
     Column(
         modifier = Modifier
@@ -408,40 +406,6 @@ fun AppearanceSettings() {
                     isChecked = showlyricsthumbnail,
                     onCheckedChange = { showlyricsthumbnail = it }
                 )
-        if (!showlyricsthumbnail)
-            if (filter.isNullOrBlank() || stringResource(R.string.lyricscolor).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.lyricscolor),
-                    selectedValue = lyricsColor,
-                    onValueSelected = {
-                        lyricsColor = it
-                    },
-                    valueText = {
-                        when (it) {
-                            LyricsColor.Thememode -> stringResource(R.string.theme)
-                            LyricsColor.Accent -> stringResource(R.string.accent)
-                            LyricsColor.Cover -> stringResource(R.string.cover)
-                        }
-                    },
-                )
-
-        if (!showlyricsthumbnail)
-            if (filter.isNullOrBlank() || stringResource(R.string.lyricsoutline).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.lyricsoutline),
-                    text = "effective only when thumbnail for lyrics is disabled",
-                    isChecked = lyricsoutline,
-                    onCheckedChange = { lyricsoutline = it }
-                )
-
 
         if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(

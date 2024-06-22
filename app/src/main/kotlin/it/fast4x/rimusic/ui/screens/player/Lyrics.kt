@@ -1095,7 +1095,38 @@ fun Lyrics(
                                                 }
                                             }
                                         )
-                                      if (!showlyricsthumbnail)
+                                        if (!showlyricsthumbnail)
+                                            MenuEntry(
+                                                icon = R.drawable.droplet,
+                                                enabled = true,
+                                                text = stringResource(R.string.lyricscolor),
+                                                onClick = {
+                                                    menuState.display {
+                                                        Menu {
+                                                            MenuEntry(
+                                                                icon = R.drawable.droplet,
+                                                                text = stringResource(R.string.theme),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsColor = LyricsColor.Thememode
+                                                                }
+                                                            )
+                                                            MenuEntry(
+                                                                icon = R.drawable.droplet,
+                                                                text = stringResource(R.string.accent),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsColor = LyricsColor.Accent
+                                                                }
+                                                            )
+
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        if (!showlyricsthumbnail)
                                         MenuEntry(
                                             icon = R.drawable.translate,
                                             text = stringResource(R.string.translate),
@@ -1105,6 +1136,15 @@ fun Lyrics(
                                                 showPlaceholder = if (!translateEnabled) false else true
                                             }
                                         )
+                                         if (!showlyricsthumbnail)
+                                         MenuEntry(
+                                             icon = if (lyricsoutline) R.drawable.checkmark else  R.drawable.close,
+                                             text = stringResource(R.string.lyricsoutline),
+                                             enabled = true,
+                                             onClick = {
+                                                 lyricsoutline = !lyricsoutline
+                                             }
+                                         )
 
                                         MenuEntry(
                                             icon = R.drawable.time,
