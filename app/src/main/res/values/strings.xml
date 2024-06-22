@@ -613,6 +613,9 @@
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
     <string name="lyricsoutline">Lyrics Outline</string>
+    <string name="rainbow">Rainbow</string>
+    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="fluidtheme">Fluid Theme</string>
 
 
 </resources>
