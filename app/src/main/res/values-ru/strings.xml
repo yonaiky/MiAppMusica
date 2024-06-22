@@ -139,7 +139,7 @@
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">Эта песня не может быть воспроизведена из-за ограничений сервера</string>
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">Возвращенный идентификатор видео не совпадает с запрошенным</string>
     <string name="error_an_unknown_playback_error_has_occurred">Произошла неизвестная ошибка воспроизведения</string>
-    <string name="tips">Для Вас</string>
+    <string name="tips">Рекомендации</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">Это минимальное время прослушивания, чтобы включить песню в список возможных советов или обзора</string>
     <string name="min_listening_time">Мин. время прослушивания</string>
     <string name="player_thumbnail_size">Размер миниатюры</string>
@@ -238,8 +238,8 @@
     <string name="custom_cache_size">Пользовательский размер кэша</string>
     <string name="listen_on">Слушать в</string>
     <string name="error_local_music_not_found">Локальный музыкальный файл не найден</string>
-    <string name="bodied_bar">Элегантный бар</string>
-    <string name="pin_bar">Закрепить бар</string>
+    <string name="bodied_bar">Широкий таймлайн</string>
+    <string name="pin_bar">Совмещенный таймлайн (широкий и по умолчанию)</string>
     <string name="rectangular">Прямоугольник</string>
     <string name="square">Квадрат</string>
     <string name="circular_ribbed">Ребристый круг</string>
@@ -591,8 +591,8 @@
     <string name="piped_connected_to_s">Подключен к %s</string>
     <string name="fake_audio_bar">\"Фальшивая\" вейвформа</string>
     <string name="copy_crash_log_to_clipboard">Скопировать логи сбоев в буфер обмена</string>
-    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
-    <string name="message_excluded_s_songs">Excluded %s songs</string>
+    <string name="title_backup_and_restore">РЕЗЕРВНОЕ КОПИРОВАНИЕ И ВОССТАНОВЛЕНИЕ</string>
+    <string name="message_excluded_s_songs">Исключено %s песен</string>
     <string name="show_thumbnail">Показывать превью</string>
     <string name="show_lyrics_thumbnail">Показывать превью текстов песен</string>
     <string name="large">Крупный</string>
@@ -602,14 +602,14 @@
     <string name="accent">Акцент</string>
     <string name="lyrics_size">Размер текстов песен</string>
     <string name="translate">Перевести</string>
-    <string name="transparentbar">Transparent Timeline Bar</string>
-    <string name="timelinesize">Player Timeline Size</string>
-    <string name="actionspacedevenly">Spaced Evenly</string>
-    <string name="expandedplayer">Expanded Player</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
-    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="transparentbar">Прозрачный таймлайн</string>
+    <string name="timelinesize">Размер таймлайна</string>
+    <string name="actionspacedevenly">Равномерное распределение кнопок на панели действий</string>
+    <string name="expandedplayer">Развернуть плеер</string>
+    <string name="expandedlyrics">Развернутый просмотр текстов песен</string>
+    <string name="expandedlyricsinfo">Работает только при отключении превью текстов песен</string>
+    <string name="info_connect_your_piped_account_first">Сначала подключите учетную запись Piped или отключите синхронизацию Piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irish</string>
+    <string name="lang_bengali">Бенгальский (বাংলা)</string>
+    <string name="lang_irish">Ирландский (Gaeilge)</string>
 </resources>
