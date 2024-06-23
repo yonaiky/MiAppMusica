@@ -243,7 +243,7 @@
     <string name="rectangular">চারকোনা</string>
     <string name="square">বর্গ</string>
     <string name="circular_ribbed">গোলাকার </string>
-    <string name="play_button">প্লে বাটন</string>
+    <string name="play_button">প্লে বোতাম</string>
     <string name="portuguese_brazilian">পর্তুগিজ, ব্রাজিলিয়</string>
     <string name="portuguese">পর্তুগীজ</string>
     <string name="indonesian">ইন্দোনেশিয়ান</string>
@@ -257,7 +257,7 @@
     <string name="audio_quality_format_low">নিচু</string>
     <string name="audio_quality_format_unknown">অজানা</string>
     <string name="do_you_really_want_to_delete_download">আপনি কি সত্যি ডাওনলোড মুছতে চান?</string>
-    <string name="enqueue_all">সব কিউতে রাখুন</string>
+    <string name="enqueue_all">সব সারিতে রাখুন</string>
     <string name="enqueue_selected">বাছাই করা গুলো কিউতে রাখুন</string>
     <string name="greek">গ্রীক</string>
     <string name="catalan">কাতালান</string>
