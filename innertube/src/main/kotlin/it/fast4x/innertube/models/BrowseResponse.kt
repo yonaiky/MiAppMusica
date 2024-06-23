@@ -14,6 +14,7 @@ data class BrowseResponse(
     data class Contents(
         val singleColumnBrowseResultsRenderer: Tabs?,
         val sectionListRenderer: SectionListRenderer?,
+        val twoColumnBrowseResultsRenderer: TwoColumnBrowseResultsRenderer?
     )
 
     @Serializable
