@@ -1070,7 +1070,7 @@ fun PlayerModern(
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { showQueue = true }
                     .background(colorPalette.background2.copy(
-                        alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.7f // 0.0 > 0.1
+                        alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
                     ))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
