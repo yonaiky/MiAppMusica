@@ -531,8 +531,8 @@
     <string name="color_text_secondary">Вторинний текст</string>
     <string name="color_text_disabled">Текст некоректний або недоступний</string>
     <string name="color_icon_button_player">Icon button player</string>
-    <string name="color_accent">Accent</string>
-    <string name="title_customized_dark_theme_colors">Customized dark theme colors</string>
+    <string name="color_accent">Акцентний колір</string>
+    <string name="title_customized_dark_theme_colors">Настроєні кольори темної теми</string>
     <string name="title_reset_customized_dark_colors">Reset customized dark colors</string>
     <string name="click_to_reset_default_dark_colors">Click to reset default dark colors</string>
     <string name="info_color_s_applied">Color %s applied</string>
