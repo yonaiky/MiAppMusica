@@ -202,6 +202,7 @@ import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
+import it.fast4x.rimusic.utils.blackgradientKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -856,6 +857,7 @@ fun PlayerModern(
         //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
+    var blackgradient by rememberPreference(blackgradientKey, false)
         /*
         .padding(
             windowInsets
@@ -945,7 +947,7 @@ fun PlayerModern(
                     .background(
                         Brush.verticalGradient(
                             0.5f to dynamicColorPalette.background2,
-                            1.0f to colorPalette.background2,
+                            1.0f to if (blackgradient) Color.Black else colorPalette.background2,
                             //0.0f to colorPalette.background0,
                             //1.0f to colorPalette.background2,
                             startY = 0.0f,

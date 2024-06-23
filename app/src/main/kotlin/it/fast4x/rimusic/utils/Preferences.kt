@@ -200,6 +200,7 @@ const val isShowingLyricsKey = "isShowingLyrics"
 const val actionspacedevenlyKey = "actionspacedevenly"
 const val expandedplayerKey = "expandedplayer"
 const val expandedplayertoggleKey = "expandedplayertoggle"
+const val blackgradientKey = "blackgradient"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

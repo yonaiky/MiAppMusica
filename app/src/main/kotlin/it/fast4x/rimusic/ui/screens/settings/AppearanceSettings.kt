@@ -115,6 +115,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
+import it.fast4x.rimusic.utils.blackgradientKey
 
 
 @ExperimentalAnimationApi
@@ -129,6 +130,7 @@ fun AppearanceSettings() {
 
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     var transparentbar by rememberPreference(transparentbarKey, false)
+    var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
@@ -668,6 +670,19 @@ fun AppearanceSettings() {
                     }
                 },
             )
+
+        if ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient))
+            if (filter.isNullOrBlank() || stringResource(R.string.blackgradient).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.blackgradient),
+                    text = "",
+                    isChecked = blackgradient,
+                    onCheckedChange = { blackgradient = it }
+                )
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 filterCharSequence,
