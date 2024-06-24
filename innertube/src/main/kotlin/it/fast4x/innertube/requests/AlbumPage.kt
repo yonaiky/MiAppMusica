@@ -96,9 +96,10 @@ suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
         body.context.apply()
     }.body<BrowseResponse0624>()
 
-    val musicDetailHeaderRenderer = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()
-        ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
-        ?.musicResponsiveHeaderRenderer
+    val musicDetailHeaderRenderer =
+        response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicResponsiveHeaderRenderer
 
     /*
 
@@ -117,7 +118,7 @@ suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
         title = null,
         description = musicDetailHeaderRenderer
             ?.description
-            ?.musicDescriptionShelfRenderer?.description?.runs?.joinToString("") { it.text ?: "" },
+            ?.musicDescriptionShelfRenderer?.description?.runs?.joinToString("") { it.text },
         thumbnail = null,
         authors = null,
         year = null,
@@ -125,10 +126,10 @@ suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
         songsPage = null,
         otherVersions = null,
         otherInfo = musicDetailHeaderRenderer
-            ?.secondSubtitle?.runs?.joinToString("") { it.text ?: "" }
+            ?.secondSubtitle?.runs?.joinToString("") { it.text }
 
     )
 
 }.onFailure {
-    println("ERROR IN Innertube albumPageDetails "+it.message)
+    println("mediaItem ERROR IN Innertube albumPageDetails " + it.message)
 }

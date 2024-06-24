@@ -86,12 +86,12 @@ data class MusicResponsiveListItemRenderer (
     val overlay: Overlay,
     val flexColumns: List<FlexColumn>,
     val fixedColumns: List<FixedColumn>,
-    val menu: Menu,
+    val menu: Menu? = null,
     val badges: List<Badge>? = null,
-    val playlistItemData: PlaylistItemData,
+    val playlistItemData: PlaylistItemData? = null,
     val itemHeight: ItemHeight,
     val index: Index,
-    val multiSelectCheckbox: MultiSelectCheckbox
+    val multiSelectCheckbox: MultiSelectCheckbox? = null
 )
 
 @Serializable
@@ -526,7 +526,7 @@ data class MusicItemThumbnailOverlayRendererContent (
 
 @Serializable
 data class ContentMusicPlayButtonRenderer (
-    val playNavigationEndpoint: NavigationEndpoint,
+    val playNavigationEndpoint: NavigationEndpoint? = null,
     val trackingParams: String,
     val playIcon: Icon,
     val pauseIcon: Icon,
@@ -539,8 +539,8 @@ data class ContentMusicPlayButtonRenderer (
     val activeScaleFactor: Long,
     val buttonSize: ButtonSize,
     val rippleTarget: RippleTarget,
-    val accessibilityPlayData: Accessibility,
-    val accessibilityPauseData: Accessibility
+    val accessibilityPlayData: Accessibility? = null,
+    val accessibilityPauseData: Accessibility? = null
 )
 
 @Serializable
@@ -713,7 +713,7 @@ data class MusicDescriptionShelfRenderer (
     val moreButton: MoreButton,
     val trackingParams: String,
     val shelfStyle: String,
-    val straplineBadge: List<Badge>
+    val straplineBadge: List<Badge>? = null
 )
 
 @Serializable

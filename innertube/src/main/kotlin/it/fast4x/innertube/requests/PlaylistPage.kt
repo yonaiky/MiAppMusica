@@ -10,7 +10,6 @@ import it.fast4x.innertube.models.ContinuationResponse
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.utils.from
 
@@ -20,6 +19,8 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         setBody(body)
         body.context.apply()
     }.body<BrowseResponse>()
+
+    println("mediaItem twoColumnBrowseResultsRenderer ${response.contents?.twoColumnBrowseResultsRenderer}")
 
 
     if (response.contents?.twoColumnBrowseResultsRenderer == null) {
@@ -83,13 +84,13 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
             otherInfo = header
                 ?.secondSubtitle
                 ?.text
-    )
+        )
     } else {
         /* NEW */
         val header = response
             .contents
-            .twoColumnBrowseResultsRenderer
-            .tabs
+            ?.twoColumnBrowseResultsRenderer
+            ?.tabs
             ?.firstOrNull()
             ?.tabRenderer
             ?.content
@@ -100,8 +101,8 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
 
         val contents = response
             .contents
-            .twoColumnBrowseResultsRenderer
-            .secondaryContents
+            ?.twoColumnBrowseResultsRenderer
+            ?.secondaryContents
             ?.sectionListRenderer
             ?.contents
 
@@ -155,7 +156,7 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
     }
 
 }.onFailure {
-    println("ERROR IN Innertube playlistpage "+it.message)
+    println("mediaItem ERROR IN Innertube playlistpage " + it.message)
 }
 
 

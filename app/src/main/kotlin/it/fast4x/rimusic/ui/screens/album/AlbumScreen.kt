@@ -84,13 +84,13 @@ fun AlbumScreen(
     playerEssential: @Composable () -> Unit = {},
 ) {
 
-    val uriHandler = LocalUriHandler.current
+    //val uriHandler = LocalUriHandler.current
     val saveableStateHolder = rememberSaveableStateHolder()
 
     var tabIndex by rememberSaveable {
         mutableStateOf(0)
     }
-    var thumbnailRoundness by rememberPreference(
+    val thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
@@ -109,13 +109,15 @@ fun AlbumScreen(
         Database
             .album(browseId)
             .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
-            .collect { (currentAlbum, tabIndex) ->
+            .collect { (currentAlbum,
+                          // tabIndex
+            ) ->
                 album = currentAlbum
 
                 if (albumPage == null
                     //&& (currentAlbum?.timestamp == null || tabIndex == 1)
                     ) {
-                    //println("mediaItem home album launch start")
+                    println("mediaItem home album launch start browseId $browseId")
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
