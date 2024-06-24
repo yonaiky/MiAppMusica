@@ -202,6 +202,7 @@ import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
+import it.fast4x.rimusic.utils.blackgradientKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -856,6 +857,7 @@ fun PlayerModern(
         //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
+    var blackgradient by rememberPreference(blackgradientKey, false)
         /*
         .padding(
             windowInsets
@@ -945,7 +947,7 @@ fun PlayerModern(
                     .background(
                         Brush.verticalGradient(
                             0.5f to dynamicColorPalette.background2,
-                            1.0f to colorPalette.background2,
+                            1.0f to if (blackgradient) Color.Black else colorPalette.background2,
                             //0.0f to colorPalette.background0,
                             //1.0f to colorPalette.background2,
                             startY = 0.0f,
@@ -969,6 +971,7 @@ fun PlayerModern(
             onShowStatsForNerds = { isShowingStatsForNerds = it },
             isShowingEqualizer = isShowingEqualizer,
             onShowEqualizer = { isShowingEqualizer = it },
+            showthumbnail = showthumbnail,
             onMaximize = {
                     showFullLyrics = true
             },
@@ -1067,7 +1070,7 @@ fun PlayerModern(
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { showQueue = true }
                     .background(colorPalette.background2.copy(
-                        alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.7f // 0.0 > 0.1
+                        alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
                     ))
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
@@ -1348,8 +1351,8 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-
-                        if (expandedplayertoggle)
+                        if (!isLandscape)
+                         if (expandedplayertoggle && !showlyricsthumbnail)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,
@@ -1360,6 +1363,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(20.dp),
                             )
+
 
 
                         if (playerVisualizerType != PlayerVisualizerType.Disabled)

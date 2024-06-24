@@ -74,6 +74,7 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lyricsColorKey
@@ -114,6 +115,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
+import it.fast4x.rimusic.utils.blackgradientKey
 
 
 @ExperimentalAnimationApi
@@ -128,6 +130,7 @@ fun AppearanceSettings() {
 
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     var transparentbar by rememberPreference(transparentbarKey, false)
+    var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
@@ -405,27 +408,6 @@ fun AppearanceSettings() {
                     isChecked = showlyricsthumbnail,
                     onCheckedChange = { showlyricsthumbnail = it }
                 )
-        if (!showlyricsthumbnail)
-            if (filter.isNullOrBlank() || stringResource(R.string.lyricscolor).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.lyricscolor),
-                    selectedValue = lyricsColor,
-                    onValueSelected = {
-                        lyricsColor = it
-                    },
-                    valueText = {
-                        when (it) {
-                            LyricsColor.Thememode -> stringResource(R.string.theme)
-                            LyricsColor.Accent -> stringResource(R.string.accent)
-                            LyricsColor.Cover -> stringResource(R.string.cover)
-                        }
-                    },
-                )
-
 
         if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
@@ -689,6 +671,19 @@ fun AppearanceSettings() {
                 },
             )
 
+        if ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient))
+            if (filter.isNullOrBlank() || stringResource(R.string.blackgradient).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.blackgradient),
+                    text = "",
+                    isChecked = blackgradient,
+                    onCheckedChange = { blackgradient = it }
+                )
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 filterCharSequence,
                 true
@@ -950,7 +945,7 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-
+        if (!showlyricsthumbnail and !isLandscape)
         if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
                 filterCharSequence,
                 true

@@ -102,6 +102,7 @@ fun Thumbnail(
     onShowEqualizer: (Boolean) -> Unit,
     onMaximize: () -> Unit,
     onDoubleTap: () -> Unit,
+    showthumbnail: Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -112,7 +113,6 @@ fun Thumbnail(
         it to (it - 64.dp).px
     }
 
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     var nullableWindow by remember {
         mutableStateOf(player.currentWindow)

@@ -251,6 +251,7 @@ import java.net.Proxy
 import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
+import it.fast4x.rimusic.utils.showthumbnailKey
 
 
 @UnstableApi
