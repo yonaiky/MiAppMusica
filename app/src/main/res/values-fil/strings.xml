@@ -597,8 +597,6 @@
     <string name="show_lyrics_thumbnail">Ipakita ang thumbnail para sa lyrics</string>
     <string name="large">Malaki</string>
     <string name="miniplayertype">Klase ng miniplayer</string>
-    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
-    <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="expanded">Expanded</string>
     <string name="lyricscolor">Kulay ng Lyrics</string>
     <string name="accent">Accent</string>
