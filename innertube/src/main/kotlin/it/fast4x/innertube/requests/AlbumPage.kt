@@ -5,20 +5,14 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.Url
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.v0624.BrowseResponse0624
 
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body).map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
         playlistPage(BrowseBody(browseId = "VL$playlistId")).getOrNull()?.let { playlist ->
             album.copy(songsPage = playlist.songsPage)
-            /*
-            albumPageDetails(BrowseBody(browseId = body.browseId)).getOrNull()?.let {
-                //println("mediaItem albumPage pre songsPage ${album.songsPage?.items?.size} ")
-                album.copy(songsPage = playlist.songsPage, description = it.description, otherInfo = it.otherInfo)
-            } ?: album.copy(songsPage = playlist.songsPage)
-            */
         }
     } ?: album
 }
@@ -27,17 +21,17 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body).map { alb
             //println("mediaItem albumPage pre songsPage ${album.songsPage?.items?.size} ")
             album.copy(description = it.description, otherInfo = it.otherInfo)
         }
-}
+    }
     ?.map { album ->
-    //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
+        //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
 
-    val albumInfo = Innertube.Info(
-        name = album?.title,
-        endpoint = NavigationEndpoint.Endpoint.Browse(
-            browseId = body.browseId,
-            params = body.params
+        val albumInfo = Innertube.Info(
+            name = album?.title,
+            endpoint = NavigationEndpoint.Endpoint.Browse(
+                browseId = body.browseId,
+                params = body.params
+            )
         )
-    )
 
         album?.copy(
             songsPage = album.songsPage?.copy(
@@ -51,7 +45,9 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body).map { alb
             )
         )
 
-}
+    }?.onFailure {
+        println("ERROR IN Innertube albumPage "+it.message)
+    }
 
 /*
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
@@ -97,25 +93,32 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
 suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
         setBody(body)
-        //mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),musicCarouselShelfRenderer.contents.$musicTwoRowItemRendererMask),header.musicDetailHeaderRenderer(title,subtitle,thumbnail),microformat")
         body.context.apply()
-    }.body<BrowseResponse>()
+    }.body<BrowseResponse0624>()
 
-    val musicDetailHeaderRenderer = response
-        .header
-        ?.musicDetailHeaderRenderer
+    val musicDetailHeaderRenderer =
+        response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicResponsiveHeaderRenderer
 
     /*
-    println("mediaItem albumPageDetails des ${musicDetailHeaderRenderer
-        ?.description
-        ?.text} browseId ${body.browseId}")
+
+    println("mediaItem albumPageDetails ${
+        musicDetailHeaderRenderer
+            ?.description
+            ?.musicDescriptionShelfRenderer?.description?.runs
+        ?.joinToString("") { it.text ?: "" }} browseId ${body.browseId}")
+
+    println("mediaItem albumPageDetails response ${response} ")
+
      */
+
 
     Innertube.PlaylistOrAlbumPage(
         title = null,
         description = musicDetailHeaderRenderer
             ?.description
-            ?.text,
+            ?.musicDescriptionShelfRenderer?.description?.runs?.joinToString("") { it.text },
         thumbnail = null,
         authors = null,
         year = null,
@@ -123,8 +126,10 @@ suspend fun Innertube.albumPageDetails(body: BrowseBody) = runCatching {
         songsPage = null,
         otherVersions = null,
         otherInfo = musicDetailHeaderRenderer
-            ?.secondSubtitle
-            ?.text
+            ?.secondSubtitle?.runs?.joinToString("") { it.text }
+
     )
 
+}.onFailure {
+    println("mediaItem ERROR IN Innertube albumPageDetails " + it.message)
 }
