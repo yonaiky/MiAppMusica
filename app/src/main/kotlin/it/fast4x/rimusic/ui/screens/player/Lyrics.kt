@@ -579,7 +579,7 @@ fun Lyrics(
                     LaunchedEffect(synchronizedLyrics, density) {
                         //val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
                         val centerOffset = with(density) {
-                            (-thumbnailSize.div(if (expandedplayer) if (trailingContent == null) 2 else 1 else if (trailingContent == null) 3 else 2))
+                            (-thumbnailSize.div(if (expandedplayer && !showlyricsthumbnail) if (trailingContent == null) 2 else 1 else if (trailingContent == null) 3 else 2))
                                 .roundToPx()
                         }
 
