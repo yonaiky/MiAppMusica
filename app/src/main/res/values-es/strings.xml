@@ -591,7 +591,7 @@
     <string name="piped_connected_to_s">Conectado a %s</string>
     <string name="fake_audio_bar">Barra de audio falsa</string>
     <string name="copy_crash_log_to_clipboard">Copiar registro de fallos al portapapeles</string>
-    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
+    <string name="title_backup_and_restore">COPIA DE SEGURIDAD Y RESTAURACIÓN</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="show_thumbnail">Mostrar miniatura</string>
     <string name="show_lyrics_thumbnail">Mostrar miniatura para letras</string>
