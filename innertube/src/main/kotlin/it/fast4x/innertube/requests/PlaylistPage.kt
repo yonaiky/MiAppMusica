@@ -21,7 +21,9 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         body.context.apply()
     }.body<BrowseResponse>()
 
+
     if (response.contents?.twoColumnBrowseResultsRenderer == null) {
+        /* OLD */
         val header = response
             .header
             ?.musicDetailHeaderRenderer
@@ -83,6 +85,7 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
                 ?.text
     )
     } else {
+        /* NEW */
         val header = response
             .contents
             .twoColumnBrowseResultsRenderer
@@ -151,7 +154,11 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         )
     }
 
+}.onFailure {
+    println("ERROR IN Innertube playlistpage "+it.message)
 }
+
+
 /*
 suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
