@@ -612,4 +612,9 @@
     <string name="piped_playlists">上游渠道</string>
     <string name="lang_bengali">孟加拉语</string>
     <string name="lang_irish">爱尔兰语</string>
+    <string name="lyricsoutline">Lyrics Outline</string>
+    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="fluidtheme">Fluid Theme</string>
+    <string name="blackgradient">Black Gradient at Bottom</string>
+    <string name="glow">Glow</string>
 </resources>
