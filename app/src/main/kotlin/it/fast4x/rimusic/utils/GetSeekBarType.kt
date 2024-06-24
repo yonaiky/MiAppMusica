@@ -353,14 +353,14 @@ fun GetSeekBar(
                  */
 
             } else {
-                Image(
+               /* Image(
                     painter = painterResource(R.drawable.pause),
                     colorFilter = ColorFilter.tint(colorPalette.accent),
                     modifier = Modifier
                         .size(20.dp),
                     contentDescription = "Background Image",
                     contentScale = ContentScale.Fit
-                )
+                ) */
             }
 
             /*
