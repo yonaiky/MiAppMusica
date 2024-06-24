@@ -9,6 +9,7 @@ sourceSets.all {
     java.srcDir("src/$name/kotlin")
 }
 
+/*
 dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
@@ -18,3 +19,4 @@ dependencies {
     implementation(libs.brotli)
     //testImplementation(libs.junit)
 }
+ */

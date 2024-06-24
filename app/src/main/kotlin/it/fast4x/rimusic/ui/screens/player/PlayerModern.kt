@@ -855,6 +855,7 @@ fun PlayerModern(
     var containerModifier = Modifier
         //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
+    var deltaX by remember { mutableStateOf(0f) }
         /*
         .padding(
             windowInsets
@@ -891,6 +892,31 @@ fun PlayerModern(
                         showBlurPlayerDialog = true
                     }
                 )
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onHorizontalDrag = { change, dragAmount ->
+                            deltaX = dragAmount
+                        },
+                        onDragStart = {
+                            //Log.d("mediaItemGesture","ondragStart offset ${it}")
+                        },
+                        onDragEnd = {
+                            if (!disablePlayerHorizontalSwipe) {
+                                if (deltaX > 5) {
+                                    binder.player.seekToPreviousMediaItem()
+                                    //binder.player.forceSeekToPrevious()
+                                    //Log.d("mediaItem","Swipe to LEFT")
+                                } else if (deltaX <-5){
+                                    binder.player.forceSeekToNext()
+                                    //Log.d("mediaItem","Swipe to RIGHT")
+                                }
+
+                            }
+
+                        }
+
+                    )
+                }
 
         } else {
             containerModifier = containerModifier
@@ -999,6 +1025,7 @@ fun PlayerModern(
         Controls(
             navController = navController,
             onCollapse = onDismiss,
+            expandedplayer = expandedplayer,
             layoutState = layoutState,
             media = mediaItem.toUiMedia(positionAndDuration.second),
             mediaId = mediaItem.mediaId,

@@ -5,6 +5,7 @@ enum class Languages {
     Afrikaans,
     Arabic,
     Bashkir,
+    Bengali,
     Catalan,
     Danish,
     English,
@@ -24,6 +25,7 @@ enum class Languages {
     Hungarian,
     Italian,
     Indonesian,
+    Irish,
     Japanese,
     Korean,
     Odia,
@@ -50,6 +52,7 @@ enum class Languages {
             Afrikaans -> "af"
             Arabic -> "ar"
             Bashkir -> "ba"
+            Bengali -> "bn"
             Catalan -> "ca"
             ChineseSimplified -> "zh-CN"
             ChineseTraditional -> "zh-TW"
@@ -62,6 +65,7 @@ enum class Languages {
             Finnish -> "fi"
             Italian -> "it"
             Indonesian -> "in"
+            Irish -> "ga"
             Japanese -> "ja"
             Korean -> "ko"
             Czech -> "cs"

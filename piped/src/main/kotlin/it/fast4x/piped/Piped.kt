@@ -35,13 +35,22 @@ import it.fast4x.piped.models.Session
 import it.fast4x.piped.models.authenticatedWith
 import it.fast4x.piped.utils.ProxyPreferences
 import it.fast4x.piped.utils.runCatchingCancellable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.logging.HttpLoggingInterceptor
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.UUID
@@ -102,10 +111,20 @@ object Piped {
 
             expectSuccess = true
 
+            engine {
+                addInterceptor(
+                    HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                    }
+                )
+            }
+
             defaultRequest {
                 accept(ContentType.Application.Json)
                 contentType(ContentType.Application.Json)
             }
+
+
 
         }
     }
@@ -127,6 +146,8 @@ object Piped {
     private suspend fun HttpResponse.isOk() =
         (body<JsonElement>() / "message").jsonPrimitive.content == "ok"
 
+    private suspend fun HttpResponse.bodyAsText() = body<String>()
+
     suspend fun getInstances() = runCatchingCancellable {
         client.get("https://piped-instances.kavin.rocks/").body<List<Instance>>()
     }
@@ -146,6 +167,12 @@ object Piped {
         }
 
     val playlist = Playlists()
+
+    @Serializable
+    data class Message(
+        val error: String? = null,
+        val message: String? = null
+    )
 
     class Playlists internal constructor() {
         suspend fun list(session: Session) = runCatchingCancellable {
@@ -182,42 +209,26 @@ object Piped {
         }
 
         suspend fun add(session: Session, id: UUID, videos: List<String>) = runCatchingCancellable {
-            println("pipedInfo piped.playlists.add: start")
 
+            var body =
+                "\"session\":\"${session.token}\"," +
+                "\"playlistId\":\"${id}\"," +
+                if (videos.size == 1)
+                    "\"videoId\":\"${videos.first()}\""
+                else
+                    "\"videoIds\":" + videos.joinToString(prefix = "[", postfix = "]") { it -> "\"${it}\"" }
+
+            body = "{$body}"
+
+            withContext(NonCancellable) {
                 client.post(session.apiBaseUrl / "user/playlists/add") {
                     header("Authorization", session.token)
                     contentType(ContentType.Application.Json)
-                    parameter("playlistId", id.toString())
-                    parameter("videoIds", videos)
-                }
-
-            /*
-            runCatchingCancellable {
-                    request(session, "user/playlists/add") {
-                        method = HttpMethod.Post
-                        //setBody(
-                        parameter("playlistId", id.toString())
-                        parameter("videoIds", videos)
-
-                        /*
-                                    mapOf(
-                                        "playlistId" to id.toString(),
-                                        "videoIds" to videos
-                                    )
-
-                                 */
-                        //)
-                    }.isOk()
-            }?.onFailure {
-                println("pipedInfo piped.playlists.add: failed ${it.message}")
-            }?.onSuccess {
-                println("pipedInfo piped.playlists.add: success")
+                    setBody(body)
+                }.isOk()
             }
-            */
-
-            println("pipedInfo piped.playlists added ")
         }?.onFailure {
-            println("pipedInfo piped.playlists.add: failed ${it.message}")
+            println("pipedInfo piped.playlists.add general failed:  ${it.message}")
         }
 
         suspend fun remove(session: Session, id: UUID, idx: Int) = runCatchingCancellable {
@@ -226,21 +237,18 @@ object Piped {
                 setBody(
                     mapOf(
                         "playlistId" to id.toString(),
-                        "index" to idx
+                        "index" to idx.toString()
                     )
                 )
             }.isOk()
+        }?.onFailure {
+            println("pipedInfo piped.playlists.remove: failed ${it.message}")
         }
 
         suspend fun songs(session: Session, id: UUID) = runCatchingCancellable {
             request(session, "playlists/$id").body<Playlist>()
         }
 
-        /*
-        suspend fun songsTest(session: Session, id: UUID) = runCatchingCancellable {
-            println("piped.playlists.songsTest: " + request(session, "playlists/$id").bodyAsText())
-        }
-         */
     }
 
 

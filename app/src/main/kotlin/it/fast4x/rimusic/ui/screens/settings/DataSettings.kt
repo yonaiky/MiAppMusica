@@ -711,7 +711,7 @@ fun DataSettings() {
          */
 
 
-        SettingsEntryGroupText(title = "BACKUP AND RESTORE")
+        SettingsEntryGroupText(title = stringResource(R.string.title_backup_and_restore))
 
         SettingsEntry(
             title = stringResource(R.string.save_to_backup),

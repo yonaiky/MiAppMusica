@@ -1,7 +1,17 @@
+
 plugins {
     id("com.android.library")
     kotlin("android")
 }
+
+
+/*
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin)
+    //alias(libs.plugins.kotlin.compose)
+}
+ */
 
 android {
     namespace = "it.fast4x.compose.persist"
@@ -9,12 +19,12 @@ android {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
+        //targetSdk = 34
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }

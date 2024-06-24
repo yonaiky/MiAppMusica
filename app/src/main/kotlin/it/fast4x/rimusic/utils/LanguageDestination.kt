@@ -17,6 +17,7 @@ fun languageDestination (
         Languages.Afrikaans -> Language.AFRIKAANS
         Languages.Arabic -> Language.ARABIC
         Languages.Bashkir -> Language.BASQUE
+        Languages.Bengali -> Language.BENGALI
         Languages.Catalan -> Language.CATALAN
         Languages.ChineseSimplified -> Language.CHINESE_SIMPLIFIED
         Languages.ChineseTraditional -> Language.CHINESE_TRADITIONAL
@@ -35,6 +36,7 @@ fun languageDestination (
         Languages.Hindi -> Language.HINDI
         Languages.Hungarian -> Language.HUNGARIAN
         Languages.Indonesian -> Language.INDONESIAN
+        Languages.Irish -> Language.IRISH
         Languages.Japanese -> Language.JAPANESE
         Languages.Korean -> Language.KOREAN
         Languages.Italian -> Language.ITALIAN

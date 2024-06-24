@@ -94,6 +94,7 @@ import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -116,6 +117,7 @@ import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
+import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsGeneralKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
@@ -126,6 +128,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
 
 
 const val PIPED_PREFIX = "piped:"
@@ -152,6 +155,12 @@ fun HomeLibraryModern(
         mutableStateOf(false)
     }
 
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
+    val context = LocalContext.current
+
     if (isCreatingANewPlaylist) {
         InputTextDialog(
             onDismiss = { isCreatingANewPlaylist = false },
@@ -159,8 +168,18 @@ fun HomeLibraryModern(
             value = "",
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
-                query {
-                    Database.insert(Playlist(name = text))
+
+                if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
+                    createPipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        name = text
+                    )
+                } else {
+                    query {
+                        Database.insert(Playlist(name = text))
+                    }
                 }
             }
         )
@@ -196,7 +215,7 @@ fun HomeLibraryModern(
     var plistId by remember {
         mutableStateOf(0L)
     }
-    val context = LocalContext.current
+
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
@@ -285,9 +304,12 @@ fun HomeLibraryModern(
 
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
     var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
 
     var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    if (showPipedPlaylists) buttonsList +=
+        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
     if (showPinnedPlaylists) buttonsList +=
         PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
     if (showMonthlyPlaylists) buttonsList +=
@@ -457,10 +479,15 @@ fun HomeLibraryModern(
             }
 
             if (playlistType == PlaylistsType.Playlist) {
-                items(items = items.filter {
+                items(items = items,
+                    /*
+                    .filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                }, key = { it.playlist.id }) { playlistPreview ->
+                    }
+
+                     */
+                    key = { it.playlist.id }) { playlistPreview ->
 
                     PlaylistItem(
                         playlist = playlistPreview,
@@ -474,6 +501,22 @@ fun HomeLibraryModern(
                     )
                 }
             }
+
+            if (playlistType == PlaylistsType.PipedPlaylist)
+                items(items = items.filter {
+                    it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                }, key = { it.playlist.id }) { playlistPreview ->
+                    PlaylistItem(
+                        playlist = playlistPreview,
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        thumbnailSizePx = thumbnailSizePx,
+                        alternative = true,
+                        modifier = Modifier
+                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .fillMaxSize()
+                    )
+                }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
                  items(items = items.filter {

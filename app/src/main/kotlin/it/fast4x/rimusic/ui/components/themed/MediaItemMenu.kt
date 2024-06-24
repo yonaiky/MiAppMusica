@@ -71,6 +71,7 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
+import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -86,10 +87,12 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.addSongsToPipedPlaylist
+import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -106,6 +109,7 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
@@ -114,6 +118,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import kotlin.system.exitProcess
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi
@@ -165,11 +170,18 @@ fun InHistoryMediaItemMenu(
 fun InPlaylistMediaItemMenu(
     navController: NavController,
     onDismiss: () -> Unit,
+    playlist: PlaylistPreview? = null,
     playlistId: Long,
     positionInPlaylist: Int,
     song: Song,
     modifier: Modifier = Modifier
 ) {
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val coroutineScope = rememberCoroutineScope()
+    val pipedSession = getPipedSession()
+    val context = LocalContext.current
+
     NonQueuedMediaItemMenu(
         navController = navController,
         mediaItem = song.asMediaItem,
@@ -179,6 +191,16 @@ fun InPlaylistMediaItemMenu(
                 Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
                 Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
             }
+
+            if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                removeFromPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession() ,
+                    id = UUID.fromString(playlist.playlist.browseId),
+                    positionInPlaylist
+                )
+
         },
         modifier = modifier
     )
@@ -444,7 +466,7 @@ fun BaseMediaItemMenu(
     onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
     val context = LocalContext.current
-    /*
+
     var syncPiped by remember {
         mutableStateOf(false)
     }
@@ -452,7 +474,7 @@ fun BaseMediaItemMenu(
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
-    */
+
 
     MediaItemMenu(
         navController = navController,
@@ -475,17 +497,19 @@ fun BaseMediaItemMenu(
                     )
                 )
             }
-            /*
+
             println("pipedInfo mediaitemmenu uuid ${playlist.browseId}")
 
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
-                addSongsToPipedPlaylist(coroutineScope = coroutineScope,
+                addToPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession() ,
                     id = UUID.fromString(playlist.browseId),
                     videos = listOf(mediaItem.mediaId)
                 )
 
-             */
+
 
 
         },
@@ -792,8 +816,8 @@ fun MediaItemMenu(
 
             val unpinnedPlaylists = playlistPreviews.filter {
                 !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                !it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) //&&
+                //!it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
             }
 
             var isCreatingNewPlaylist by rememberSaveable {
@@ -904,13 +928,22 @@ fun MediaItemMenu(
                         unpinnedPlaylists.forEach { playlistPreview ->
                             MenuEntry(
                                 icon = if (playlistIds.contains(playlistPreview.playlist.id)) R.drawable.checkmark else R.drawable.add_in_playlist,
-                                text = playlistPreview.playlist.name,
+                                text = cleanPrefix(playlistPreview.playlist.name),
                                 secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
                                     onDismiss()
                                     onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
                                 },
                                 trailingContent = {
+                                    if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                                        Image(
+                                            painter = painterResource(R.drawable.piped_logo),
+                                            contentDescription = null,
+                                            colorFilter = ColorFilter.tint(colorPalette.red),
+                                            modifier = Modifier
+                                                .size(18.dp)
+                                        )
+
                                     IconButton(
                                         icon = R.drawable.open,
                                         color = colorPalette.text,
@@ -924,6 +957,7 @@ fun MediaItemMenu(
                                         modifier = Modifier
                                             .size(24.dp)
                                     )
+
                                 }
                             )
                         }

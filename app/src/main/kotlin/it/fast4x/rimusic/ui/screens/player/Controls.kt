@@ -128,6 +128,7 @@ import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 fun Controls(
     navController: NavController,
     onCollapse: () -> Unit,
+    expandedplayer: Boolean,
     layoutState: PlayerSheetState,
     media: UiMedia,
     mediaId: String,
@@ -174,7 +175,6 @@ fun Controls(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var expandedplayer by rememberPreference(expandedplayerKey, false)
 
 
     val scope = rememberCoroutineScope()
@@ -218,7 +218,7 @@ fun Controls(
 
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
-        PlayerTimelineSize.Medium
+        PlayerTimelineSize.Biggest
     )
 
 

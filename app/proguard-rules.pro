@@ -19,10 +19,7 @@
     public static <1> INSTANCE;
     kotlinx.serialization.KSerializer serializer(...);
 }
--if class androidx.credentials.CredentialManager
--keep class androidx.credentials.playservices.** {
-  *;
-}
+
 
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 
@@ -39,3 +36,4 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+

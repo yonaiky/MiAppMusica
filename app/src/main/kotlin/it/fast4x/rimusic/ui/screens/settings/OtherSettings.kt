@@ -324,7 +324,6 @@ fun OtherSettings() {
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.piped_account))
         SwitchSettingEntry(
-            isEnabled = pipedApiToken.isEmpty(),
             title = stringResource(R.string.enable_piped_syncronization),
             text = "",
             isChecked = isPipedEnabled,

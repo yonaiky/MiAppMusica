@@ -48,34 +48,36 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.LyricsColor
+import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.enums.MiniPlayerType
-import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.iconLikeTypeKey
-import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
+import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.lyricsColorKey
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
@@ -84,6 +86,7 @@ import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -105,14 +108,11 @@ import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import it.fast4x.rimusic.utils.lyricsColorKey
-import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.transparentbarKey
 
 
@@ -160,7 +160,7 @@ fun AppearanceSettings() {
     )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
-        PlayerTimelineSize.Medium
+        PlayerTimelineSize.Biggest
     )
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -173,7 +173,7 @@ fun AppearanceSettings() {
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
-    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey,true)
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
@@ -393,7 +393,7 @@ fun AppearanceSettings() {
                 isChecked = showthumbnail,
                 onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it }
             )
-        if(showthumbnail)
+        if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
                     filterCharSequence,
                     true
@@ -427,12 +427,12 @@ fun AppearanceSettings() {
                 )
 
 
-        if(showthumbnail)
+        if (showthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                     filterCharSequence,
                     true
                 )
-             )
+            )
                 EnumValueSelectorSettingsEntry(
                     title = stringResource(R.string.player_thumbnail_size),
                     selectedValue = playerThumbnailSize,
@@ -447,7 +447,7 @@ fun AppearanceSettings() {
                         }
                     }
                 )
-      if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
                 filterCharSequence,
                 true
             )
@@ -467,40 +467,40 @@ fun AppearanceSettings() {
                 }
             )
 
-        if(showthumbnail)
-             if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
-                filterCharSequence,
-                true
+        if (showthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
+                    filterCharSequence,
+                    true
                 )
-             )
+            )
                 EnumValueSelectorSettingsEntry(
                     title = stringResource(R.string.thumbnail_roundness),
                     selectedValue = thumbnailRoundness,
                     onValueSelected = { thumbnailRoundness = it },
                     trailingContent = {
-                      Spacer(
-                        modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = colorPalette.accent,
-                                shape = thumbnailRoundness.shape()
-                            )
-                            .background(
-                                color = colorPalette.background1,
-                                shape = thumbnailRoundness.shape()
-                            )
-                            .size(36.dp)
-                    )
-                  },
-                valueText = {
-                    when (it) {
-                        ThumbnailRoundness.None -> stringResource(R.string.none)
-                        ThumbnailRoundness.Light -> stringResource(R.string.light)
-                        ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
-                        ThumbnailRoundness.Medium -> stringResource(R.string.medium)
+                        Spacer(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = colorPalette.accent,
+                                    shape = thumbnailRoundness.shape()
+                                )
+                                .background(
+                                    color = colorPalette.background1,
+                                    shape = thumbnailRoundness.shape()
+                                )
+                                .size(36.dp)
+                        )
+                    },
+                    valueText = {
+                        when (it) {
+                            ThumbnailRoundness.None -> stringResource(R.string.none)
+                            ThumbnailRoundness.Light -> stringResource(R.string.light)
+                            ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
+                            ThumbnailRoundness.Medium -> stringResource(R.string.medium)
                         }
-                  }
-             )
+                    }
+                )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,
@@ -583,7 +583,7 @@ fun AppearanceSettings() {
                 title = stringResource(R.string.transparentbar),
                 text = "",
                 isChecked = transparentbar,
-                onCheckedChange = { transparentbar = it}
+                onCheckedChange = { transparentbar = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.pcontrols_type).contains(
@@ -792,20 +792,20 @@ fun AppearanceSettings() {
                     }
                 },
             )
-       if(showlyricsthumbnail)
-         if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
-                filterCharSequence,
-                true
+        if (showlyricsthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
+                    filterCharSequence,
+                    true
+                )
             )
-         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_background_in_lyrics),
-                text = "",
-                isChecked = showBackgroundLyrics,
-                onCheckedChange = { showBackgroundLyrics = it }
-            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_background_in_lyrics),
+                    text = "",
+                    isChecked = showBackgroundLyrics,
+                    onCheckedChange = { showBackgroundLyrics = it }
+                )
 
-      if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
                 filterCharSequence,
                 true
             )

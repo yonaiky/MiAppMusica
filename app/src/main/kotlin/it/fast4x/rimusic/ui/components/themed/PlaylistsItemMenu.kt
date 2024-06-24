@@ -153,8 +153,8 @@ fun PlaylistsItemMenu(
 
                 val unpinnedPlaylists = playlistPreviews.filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                    !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                    !it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                    !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) //&&
+                    //!it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
                 }
 
                 var isCreatingNewPlaylist by rememberSaveable {
@@ -291,6 +291,15 @@ fun PlaylistsItemMenu(
                                         )
                                     },
                                     trailingContent = {
+                                        if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                                            Image(
+                                                painter = painterResource(R.drawable.piped_logo),
+                                                contentDescription = null,
+                                                colorFilter = ColorFilter.tint(colorPalette.red),
+                                                modifier = Modifier
+                                                    .size(18.dp)
+                                            )
+
                                         IconButton(
                                             icon = R.drawable.open,
                                             color = colorPalette.text,
