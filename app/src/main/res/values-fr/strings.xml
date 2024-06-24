@@ -593,11 +593,11 @@
     <string name="piped_connected_to_s">Connecté à %s</string>
     <string name="fake_audio_bar">Fausse barre audio</string>
     <string name="copy_crash_log_to_clipboard">Copier le journal des plantages dans le presse-papiers</string>
-    <string name="show_thumbnail">Afficher la miniature</string>
-    <string name="show_lyrics_thumbnail">Afficher la miniature pour les paroles</string>
     <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
-     <string name="large">Large</string>
+    <string name="show_thumbnail">Afficher la miniature</string>
+    <string name="show_lyrics_thumbnail">Afficher la miniature pour les paroles</string>
+    <string name="large">Large</string>
     <string name="miniplayertype">Type du mini-lecteur</string>
     <string name="expanded">Étendu</string>
     <string name="lyricscolor">Couleur des paroles</string>
@@ -608,10 +608,10 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
-     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
 </resources>

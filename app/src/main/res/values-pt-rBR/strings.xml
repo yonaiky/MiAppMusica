@@ -591,6 +591,8 @@
     <string name="piped_connected_to_s">Conectado a %s</string>
     <string name="fake_audio_bar">Barra de áudio falsa</string>
     <string name="copy_crash_log_to_clipboard">Copiar log de erro para área de transferência</string>
+    <string name="title_backup_and_restore">BACKUP E RESTAURAR</string>
+    <string name="message_excluded_s_songs">%s Músicas excluídas</string>
     <string name="show_thumbnail">Mostrar miniatura</string>
     <string name="show_lyrics_thumbnail">Exibir miniatura para letras</string>
     <string name="large">Grande</string>
@@ -600,16 +602,14 @@
     <string name="accent">Destaque</string>
     <string name="lyrics_size">Tamanho da letra</string>
     <string name="translate">Traduzir</string>
-    <string name="transparentbar">Transparent Timeline Bar</string>
-    <string name="timelinesize">Player Timeline Size</string>
-    <string name="actionspacedevenly">Spaced Evenly</string>
-    <string name="expandedplayer">Expanded Player</string>
-    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
-    <string name="message_excluded_s_songs">Excluded %s songs</string>
-     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="transparentbar">Barra da Timeline Transparente</string>
+    <string name="timelinesize">Tamanho do Reprodutor da Timeline</string>
+    <string name="actionspacedevenly">Uniformemente Espaçado</string>
+    <string name="expandedplayer">Reprodutor Expandido</string>
+    <string name="expandedlyrics">Exibição expandida das letras</string>
+    <string name="expandedlyricsinfo">Funciona apenas quando a miniatura das letras estiver desativada</string>
+    <string name="info_connect_your_piped_account_first">Conecte sua conta Piped primeiro ou desative a sincronização do Piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irish</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="lang_bengali">Bengalês</string>
+    <string name="lang_irish">Irlandês</string>
 </resources>
