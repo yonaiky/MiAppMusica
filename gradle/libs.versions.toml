@@ -34,6 +34,7 @@ smarttoast = "4.1.6"
 timber = "5.0.1"
 crypto = "1.1.0-alpha06"
 loggingInterceptor = "4.12.0"
+math3 = "3.6.1"
 
 [libraries]
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -81,6 +82,7 @@ smarttoast = { group = "io.github.vincent-series", name = "smart-toast", version
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
 crypto = { group = "androidx.security", name = "security-crypto", version.ref = "crypto"}
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+math3 = {group = "org.apache.commons", name = "commons-math3", version.ref = "math3"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

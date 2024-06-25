@@ -80,8 +80,10 @@ import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
+import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.extensions.nextvisualizer.NextVisualizer
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.PlaylistWithSongs
@@ -898,6 +900,10 @@ fun QuickPicksModern(
                         }
                     }
                  */
+
+
+
+
             }
 
 

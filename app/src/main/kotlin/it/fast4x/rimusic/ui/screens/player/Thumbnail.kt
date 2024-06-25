@@ -10,19 +10,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -47,17 +36,11 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.Size
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerControlsType
-import it.fast4x.rimusic.enums.TransitionEffect
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -68,26 +51,18 @@ import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
-import it.fast4x.rimusic.utils.dropShadow
-import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
-import it.fast4x.rimusic.utils.thumbnail
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -198,78 +173,82 @@ fun Thumbnail(
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
 
-        val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+        val playerControlsType by rememberPreference(
+            playerControlsTypeKey,
+            PlayerControlsType.Modern
+        )
         var modifierUiType by remember { mutableStateOf(modifier) }
         if (showthumbnail)
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-              if (playerControlsType == PlayerControlsType.Modern)
-                modifierUiType = modifier
-                 .padding(vertical = 8.dp)
-                 .aspectRatio(1f)
-                 //.size(thumbnailSizeDp)
-                 .fillMaxSize()
-                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                 .clip(LocalAppearance.current.thumbnailShape)
-                 //.padding(14.dp)
-              else modifierUiType = modifier
-                 .aspectRatio(1f)
-                 //.size(thumbnailSizeDp)
-                 //.padding(14.dp)
-                 .fillMaxSize()
-                 .clip(LocalAppearance.current.thumbnailShape)
+                if (playerControlsType == PlayerControlsType.Modern)
+                    modifierUiType = modifier
+                        .padding(vertical = 8.dp)
+                        .aspectRatio(1f)
+                        //.size(thumbnailSizeDp)
+                        .fillMaxSize()
+                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                        .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
+                        .clip(LocalAppearance.current.thumbnailShape)
+                //.padding(14.dp)
+                else modifierUiType = modifier
+                    .aspectRatio(1f)
+                    //.size(thumbnailSizeDp)
+                    //.padding(14.dp)
+                    .fillMaxSize()
+                    .clip(LocalAppearance.current.thumbnailShape)
 
 
         Box(
             modifier = modifierUiType
         ) {
             if (showthumbnail)
-             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-              if(artImageAvailable)
-                AsyncImage(
-                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
-                    /*
-                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                        thumbnailSizePx
-                    ),
-                     */
-                    /*
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
-                        .size(Size.ORIGINAL)
-                        .scale(Scale.FIT)
-                        .build(),
-                     */
-                    onSuccess = {
-                        artImageAvailable = true
-                    },
-                    onError = {
-                        artImageAvailable = false
-                    },
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = { onShowStatsForNerds(true) },
-                                onTap = if (thumbnailTapEnabledKey) {
-                                    {
-                                        onShowLyrics(true)
-                                        onShowEqualizer(false)
-                                    }
-                                } else null,
-                                onDoubleTap = { onDoubleTap() }
-                            )
+                if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+                    if (artImageAvailable)
+                        AsyncImage(
+                            model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString()
+                                .resize(1200, 1200),
+                            /*
+                            model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                                thumbnailSizePx
+                            ),
+                             */
+                            /*
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                .size(Size.ORIGINAL)
+                                .scale(Scale.FIT)
+                                .build(),
+                             */
+                            onSuccess = {
+                                artImageAvailable = true
+                            },
+                            onError = {
+                                artImageAvailable = false
+                            },
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onLongPress = { onShowStatsForNerds(true) },
+                                        onTap = if (thumbnailTapEnabledKey) {
+                                            {
+                                                onShowLyrics(true)
+                                                onShowEqualizer(false)
+                                            }
+                                        } else null,
+                                        onDoubleTap = { onDoubleTap() }
+                                    )
 
-                        }
-                        .fillMaxSize()
-                        .clip(LocalAppearance.current.thumbnailShape)
+                                }
+                                .fillMaxSize()
+                                .clip(LocalAppearance.current.thumbnailShape)
 
 
-                )
+                        )
 
-              if(!artImageAvailable)
+            if (!artImageAvailable)
                 Image(
                     painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
@@ -316,10 +295,10 @@ fun Thumbnail(
                 onDismiss = { onShowStatsForNerds(false) }
             )
 
-
-            ShowVisualizer(
+            NextVisualizer(
                 isDisplayed = isShowingEqualizer && error == null
             )
+
 
             PlaybackError(
                 isDisplayed = error != null,

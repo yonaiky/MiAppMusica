@@ -203,6 +203,7 @@ import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.visualizerEnabledKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -264,17 +265,7 @@ fun PlayerModern(
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
-    val playerVisualizerType by rememberPreference(
-        playerVisualizerTypeKey,
-        PlayerVisualizerType.Disabled
-    )
-
-    /*
-    val playbackFadeDuration by rememberPreference(
-        playbackFadeDurationKey,
-        DurationInSeconds.Disabled
-    )
-     */
+    val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
     val defaultStrength = 25f
     val defaultDarkenFactor = 0.2f
@@ -1365,8 +1356,7 @@ fun PlayerModern(
                             )
 
 
-
-                        if (playerVisualizerType != PlayerVisualizerType.Disabled)
+                        if (visualizerEnabled)
                             IconButton(
                                 icon = R.drawable.sound_effect,
                                 color = if (isShowingEqualizer) colorPalette.text else colorPalette.textDisabled,

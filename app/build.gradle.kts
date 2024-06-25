@@ -145,6 +145,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.crypto)
     implementation(libs.logging.interceptor)
+    implementation(libs.math3)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
