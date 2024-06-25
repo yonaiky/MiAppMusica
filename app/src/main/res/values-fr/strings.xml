@@ -619,4 +619,6 @@
     <string name="fluidtheme">Thème Fluide</string>
     <string name="blackgradient">Dégradé noir en bas</string>
     <string name="glow">Éclat</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="textoutline">Enable Text Outline</string>
 </resources>
