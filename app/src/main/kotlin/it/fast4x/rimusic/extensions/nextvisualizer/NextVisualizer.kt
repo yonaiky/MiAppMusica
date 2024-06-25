@@ -200,21 +200,25 @@ fun NextVisualizer() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomCenter)
-                            .height(50.dp)
+                            .height(35.dp)
                     ) {
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer-- else currentVisualizer = 0 },
                             icon = R.drawable.arrow_left,
                             color = LocalAppearance.current.colorPalette.text,
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(28.dp)
                         )
+                        
+                        BasicText(text = "${currentVisualizer + 1}/${visualizersList.size}",
+                            style = typography.xs.semiBold.copy(color = LocalAppearance.current.colorPalette.text),)
+                        
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++ else currentVisualizer = 0 },
                             icon = R.drawable.arrow_right,
                             color = LocalAppearance.current.colorPalette.text,
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(28.dp)
                         )
                     }
 
