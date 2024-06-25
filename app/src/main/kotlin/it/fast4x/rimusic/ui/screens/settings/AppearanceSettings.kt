@@ -116,6 +116,8 @@ import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.textoutlineKey
 
 
 @ExperimentalAnimationApi
@@ -136,6 +138,8 @@ fun AppearanceSettings() {
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.Rectangular
     )
+    var bottomgradient by rememberPreference(bottomgradientKey, false)
+    var textoutline by rememberPreference(textoutlineKey, false)
 
     var lastPlayerPlayButtonType by rememberPreference(
         lastPlayerPlayButtonTypeKey,
@@ -683,8 +687,31 @@ fun AppearanceSettings() {
                     isChecked = blackgradient,
                     onCheckedChange = { blackgradient = it }
                 )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+            if (filter.isNullOrBlank() || stringResource(R.string.bottomgradient).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.bottomgradient),
+                    text = "",
+                    isChecked = bottomgradient,
+                    onCheckedChange = { bottomgradient = it }
+                )
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+           if (filter.isNullOrBlank() || stringResource(R.string.textoutline).contains(
+                filterCharSequence,
+                true
+                )
+           )
+               SwitchSettingEntry(
+                   title = stringResource(R.string.textoutline),
+                   text = "",
+                   isChecked = textoutline,
+                   onCheckedChange = { textoutline = it }
+               )
+       if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 filterCharSequence,
                 true
             )

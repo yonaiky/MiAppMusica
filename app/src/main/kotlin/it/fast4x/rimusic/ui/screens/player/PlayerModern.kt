@@ -7,6 +7,7 @@ import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -203,6 +204,9 @@ import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.textoutlineKey
+import kotlin.Float.Companion.POSITIVE_INFINITY
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -858,6 +862,7 @@ fun PlayerModern(
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
     var blackgradient by rememberPreference(blackgradientKey, false)
+    var bottomgradient by rememberPreference(bottomgradientKey, false)
         /*
         .padding(
             windowInsets
@@ -877,6 +882,14 @@ fun PlayerModern(
                     painter = painter,
                     contentScale = ContentScale.Crop,
                     sizeToIntrinsics = false
+                )
+               .background(
+                    Brush.verticalGradient(
+                        0.0f to Color.Transparent,
+                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.55f) else Color.Black.copy(0.75f) else Color.Transparent,
+                        startY = if ((!isLandscape) and (expandedplayer && !showlyricsthumbnail)) 1400f else 800f,
+                        endY = POSITIVE_INFINITY
+                    )
                 )
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -1042,6 +1055,7 @@ fun PlayerModern(
             modifier = modifier
         )
     }
+    var textoutline by rememberPreference(textoutlineKey, false)
 
     Box(
         modifier = Modifier
@@ -1145,7 +1159,7 @@ fun PlayerModern(
                                         text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
                                         style = TextStyle(
                                             drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (showthumbnail) Color.Transparent
+                                            color = if (!textoutline) Color.Transparent
                                                     else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
                                                          else Color.Black,
                                             fontSize = typography.xxxs.semiBold.fontSize,
@@ -1171,7 +1185,7 @@ fun PlayerModern(
                                         text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
                                         style = TextStyle(
                                             drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (showthumbnail) Color.Transparent
+                                            color = if (!textoutline) Color.Transparent
                                             else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
                                             else Color.Black,
                                             fontSize = typography.xxxs.semiBold.fontSize,
@@ -1222,7 +1236,7 @@ fun PlayerModern(
                                             ?: "",
                                         style = TextStyle(
                                             drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (showthumbnail) Color.Transparent
+                                            color = if (!textoutline) Color.Transparent
                                             else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
                                             else Color.Black,
                                             fontSize = typography.xxxs.semiBold.fontSize,
@@ -1250,7 +1264,7 @@ fun PlayerModern(
                                             ?: "",
                                         style = TextStyle(
                                             drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (showthumbnail) Color.Transparent
+                                            color = if (!textoutline) Color.Transparent
                                             else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
                                             else Color.Black,
                                             fontSize = typography.xxxs.semiBold.fontSize,

@@ -93,6 +93,7 @@ fun GetSeekBar(
                 )
             )
     }
+    var textoutline by rememberPreference(textoutlineKey, false)
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -271,7 +272,7 @@ fun GetSeekBar(
                 text = formatAsDuration(scrubbingPosition ?: position),
                 style = typography.xxs.semiBold.merge(TextStyle(
                     drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                     else Color.Black)),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -318,7 +319,7 @@ fun GetSeekBar(
                         text = "-${formatAsDuration(timeRemaining.toLong())}",
                         style = typography.xxs.semiBold.merge(TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                             else Color.Black)),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -385,7 +386,7 @@ fun GetSeekBar(
                     style = typography.xxs.semiBold.merge(
                         TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                            color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
                                 0.5f
                             )
                             else Color.Black
