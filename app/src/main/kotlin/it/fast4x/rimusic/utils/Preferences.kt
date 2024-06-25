@@ -201,6 +201,8 @@ const val actionspacedevenlyKey = "actionspacedevenly"
 const val expandedplayerKey = "expandedplayer"
 const val expandedplayertoggleKey = "expandedplayertoggle"
 const val blackgradientKey = "blackgradient"
+const val bottomgradientKey = "bottomgradient"
+const val textoutlineKey = "textoutline"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
