@@ -71,6 +71,8 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.currentVisualizerKey
+import it.fast4x.rimusic.utils.currentWindow
+import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -203,15 +205,20 @@ fun NextVisualizer() {
                             .height(35.dp)
                     ) {
                         IconButton(
-                            onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer-- else currentVisualizer = 0 },
+                            onClick = {
+                                if (currentVisualizer <= visualizersList.lastIndex) currentVisualizer--
+                                if (currentVisualizer < 0) currentVisualizer = visualizersList.lastIndex
+                            },
                             icon = R.drawable.arrow_left,
                             color = LocalAppearance.current.colorPalette.text,
                             modifier = Modifier
                                 .size(28.dp)
                         )
                         
-                        BasicText(text = "${currentVisualizer + 1}/${visualizersList.size}",
-                            style = typography.xs.semiBold.copy(color = LocalAppearance.current.colorPalette.text),)
+                        BasicText(
+                            text = "${currentVisualizer + 1}/${visualizersList.size}",
+                            style = typography.xs.semiBold.copy(color = LocalAppearance.current.colorPalette.text),
+                        )
                         
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++ else currentVisualizer = 0 },
@@ -227,6 +234,7 @@ fun NextVisualizer() {
     }
 }
 
+@OptIn(UnstableApi::class)
 @Composable
 fun getVisualizers(): List<Painter> {
 
@@ -235,96 +243,108 @@ fun getVisualizers(): List<Painter> {
     val ampR = 3f
     val yR = 0.2f
     val color = LocalAppearance.current.colorPalette.text.hashCode()
+    var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
+    val binder = LocalPlayerServiceBinder.current
+    LaunchedEffect(Unit) {
+        try {
+            bitmapCover = getBitmapFromUrl(
+                context,
+                binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
 
-    val background: Bitmap = ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!
-    val bitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!
+    val background: Bitmap = bitmapCover //ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!
+    val bitmap: Bitmap = bitmapCover //ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!
     circleBitmap = bitmap.let { Icon.getCircledBitmap(it) }
     return listOf(
         // Basic components
-        Move(WfmAnalog(ampR = ampR)),
-        Move(FftBar(ampR = ampR), yR = yR),
-        Move(FftLine(ampR = ampR), yR = yR),
+        Move(WfmAnalog(colorPaint = color, ampR = ampR)),
+        Move(FftBar(colorPaint = color, ampR = ampR), yR = yR),
+        Move(FftLine(colorPaint = color, ampR = ampR), yR = yR),
         Move(FftWave(ampR = ampR), yR = yR),
         Move(FftWaveRgb(ampR = ampR), yR = yR),
         Compose(
-            Move(WfmAnalog(), yR = -.3f),
-            Move(FftBar(), yR = -.1f),
-            Move(FftLine(), yR = .1f),
+            Move(WfmAnalog(colorPaint = color), yR = -.3f),
+            Move(FftBar(colorPaint = color), yR = -.1f),
+            Move(FftLine(colorPaint = color), yR = .1f),
             Move(FftWave(), yR = .3f),
             Move(FftWaveRgb(), yR = .5f)
         ),
-        Move(FftBar(side = "b", ampR = ampR), yR = -yR),
-        Move(FftLine(side = "b", ampR = ampR), yR = -yR),
+        Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -yR),
+        Move(FftLine(colorPaint = color, side = "b", ampR = ampR), yR = -yR),
         Move(FftWave(side = "b", ampR = ampR), yR = -yR),
         Move(FftWaveRgb(side = "b", ampR = ampR), yR = -yR),
         Compose(
-            Move(FftBar(side = "b"), yR = -.3f),
-            Move(FftLine(side = "b"), yR = -.1f),
+            Move(FftBar(colorPaint = color, side = "b"), yR = -.3f),
+            Move(FftLine(colorPaint = color, side = "b"), yR = -.1f),
             Move(FftWave(side = "b"), yR = .1f),
             Move(FftWaveRgb(side = "b"), yR = .3f)
         ),
-        Move(FftBar(side = "ab", ampR = ampR), yR = yR-0.1f),
-        Move(FftLine(side = "ab", ampR = ampR), yR = yR-0.1f),
+        Move(FftBar(colorPaint = color, side = "ab", ampR = ampR), yR = yR-0.1f),
+        Move(FftLine(colorPaint = color, side = "ab", ampR = ampR), yR = yR-0.1f),
         Move(FftWave(side = "ab", ampR = ampR), yR = yR-0.1f),
         Move(FftWaveRgb(side = "ab", ampR = ampR), yR = yR-0.1f),
         Compose(
-            Move(FftBar(side = "ab"), yR = -.3f),
-            Move(FftLine(side = "ab"), yR = -.1f),
+            Move(FftBar(colorPaint = color, side = "ab"), yR = -.3f),
+            Move(FftLine(colorPaint = color, side = "ab"), yR = -.1f),
             Move(FftWave(side = "ab"), yR = .1f),
             Move(FftWaveRgb(side = "ab"), yR = .3f)
         ),
         // Basic components (Circle)
-        Move(FftCLine(ampR = ampR)),
+        Move(FftCLine(colorPaint = color, ampR = ampR)),
         FftCWave(colorPaint = color, ampR = ampR),
         Move(FftCWaveRgb(colorPaint = color, ampR = ampR)),
         Compose(
-            Move(FftCLine(ampR = ampR)),
+            Move(FftCLine(colorPaint = color, ampR = ampR)),
             FftCWave(colorPaint = color, ampR = ampR),
             Move(FftCWaveRgb(colorPaint = color, ampR = ampR))
         ),
-        Move(FftCLine(side = "b", ampR = ampR)),
+        Move(FftCLine(colorPaint = color, side = "b", ampR = ampR)),
         FftCWave(side = "b", colorPaint = color, ampR = ampR),
         Move(FftCWaveRgb(side = "b",colorPaint = color, ampR = ampR)),
         Compose(
-            Move(FftCLine(side = "b", ampR = ampR)),
+            Move(FftCLine(colorPaint = color, side = "b", ampR = ampR)),
             FftCWave(side = "b", colorPaint = color, ampR = ampR),
             Move(FftCWaveRgb(side = "b",colorPaint = color, ampR = ampR)),
         ),
-        Move(FftCLine(side = "ab", ampR = ampR)),
+        Move(FftCLine(colorPaint = color, side = "ab", ampR = ampR)),
         FftCWave(side = "ab", colorPaint = color, ampR = ampR),
         Move(FftCWaveRgb(side = "ab", colorPaint = color, ampR = ampR)),
         Compose(
-            Move(FftCLine(side = "ab", ampR = ampR)),
+            Move(FftCLine(colorPaint = color, side = "ab", ampR = ampR)),
             FftCWave(side = "ab", colorPaint = color, ampR = ampR),
             Move(FftCWaveRgb(side = "ab", colorPaint = color, ampR = ampR))
         ),
         //Blend
         Move(Blend(
-            FftLine(ampR = ampR).apply {
+            FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_HORIZONTAL)
         ), yR = yR),
         Move(Blend(
-            FftLine(ampR = ampR).apply {
+            FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_VERTICAL, hsv = true)
         ), yR = yR),
         Move(Blend(
-            FftLine(ampR = ampR).apply {
+            FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
         ), yR = yR),
         Move(Blend(
-            FftLine(ampR = ampR).apply {
+            FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.RADIAL)
         ), yR = yR),
         Move(Blend(
-            FftCBar(side = "ab", gapX = 8f).apply {
+            FftCBar(colorPaint = color, side = "ab", gapX = 8f).apply {
                 paint.style = Paint.Style.FILL
             },
             Gradient(preset = Gradient.SWEEP, hsv = true)
@@ -332,14 +352,14 @@ fun getVisualizers(): List<Painter> {
         // Composition
         Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
         Compose(
-            WfmAnalog().apply { paint.alpha = 150 },
+            WfmAnalog(colorPaint = color, ampR = ampR).apply { paint.alpha = 150 },
             Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
                 animX.duration = 1000
                 animY.duration = 2000
             }),
         Compose(
             Preset.getPresetWithBitmap("liveBg", background),
-            FftCLine().apply {
+            FftCLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             }
         )

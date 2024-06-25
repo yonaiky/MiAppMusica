@@ -8,8 +8,9 @@ import it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
 import it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 
 class WfmAnalog(
+    val colorPaint: Int = Color.WHITE,
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
+        color = colorPaint;style = Paint.Style.STROKE;strokeWidth = 2f
     },
     //
     var startHz: Int = 0,
