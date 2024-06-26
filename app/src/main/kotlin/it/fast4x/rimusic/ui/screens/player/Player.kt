@@ -654,7 +654,6 @@ fun Player(
         playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
     ) {
-        val context = LocalContext.current
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             dynamicColorPalette = dynamicColorPaletteOf(

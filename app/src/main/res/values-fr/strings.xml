@@ -621,4 +621,6 @@
     <string name="glow">Éclat</string>
     <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
+    <string name="set_cache_location">Cache location</string>
+    <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
 </resources>
