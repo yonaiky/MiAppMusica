@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -330,61 +333,62 @@ fun ControlsModern(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
 
-    CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
-        onClick = {},
-        modifier = Modifier
-            .size(55.dp)
-            .combinedClickable(
-                indication = ripple(bounded = true),
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    //binder.player.forceSeekToPrevious()
-                    binder.player.seekToPrevious()
-                    if (effectRotationEnabled) isRotated = !isRotated
-                },
-                onLongClick = {
-                    binder.player.seekTo(position - 5000)
-                }
-            )
+  if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
+      CustomElevatedButton(
+          backgroundColor = colorPalette.background2.copy(0.95f),
+          onClick = {},
+          modifier = Modifier
+              .size(55.dp)
+              .combinedClickable(
+                  indication = ripple(bounded = true),
+                  interactionSource = remember { MutableInteractionSource() },
+                  onClick = {
+                      //binder.player.forceSeekToPrevious()
+                      binder.player.seekToPrevious()
+                      if (effectRotationEnabled) isRotated = !isRotated
+                  },
+                  onLongClick = {
+                      binder.player.seekTo(position - 5000)
+                  }
+              )
 
-    ) {
-        Image(
-            painter = painterResource(R.drawable.play_skip_back),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),
-            modifier = Modifier
-                .padding(10.dp)
-                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 36.dp else 26.dp)
-                .rotate(rotationAngle)
-        )
-    }
+      ) {
+          Image(
+              painter = painterResource(R.drawable.play_skip_back),
+              contentDescription = null,
+              colorFilter = ColorFilter.tint(colorPalette.text),
+              modifier = Modifier
+                  .padding(10.dp)
+                  .size(26.dp)
+                  .rotate(rotationAngle)
+          )
+      }
 
-    CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
-        onClick = {},
-        modifier = Modifier
-            .combinedClickable(
-                indication = ripple(bounded = true),
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    if (shouldBePlaying) {
-                        binder.player.pause()
-                    } else {
-                        if (binder.player.playbackState == Player.STATE_IDLE) {
-                            binder.player.prepare()
-                        }
-                        binder.player.play()
-                    }
-                    if (effectRotationEnabled) isRotated = !isRotated
-                },
-                onLongClick = onShowSpeedPlayerDialog
-            )
-            .width(playerPlayButtonType.width.dp)
-            .height(playerPlayButtonType.height.dp)
+      CustomElevatedButton(
+          backgroundColor = colorPalette.background2.copy(0.95f),
+          onClick = {},
+          modifier = Modifier
+              .combinedClickable(
+                  indication = ripple(bounded = true),
+                  interactionSource = remember { MutableInteractionSource() },
+                  onClick = {
+                      if (shouldBePlaying) {
+                          binder.player.pause()
+                      } else {
+                          if (binder.player.playbackState == Player.STATE_IDLE) {
+                              binder.player.prepare()
+                          }
+                          binder.player.play()
+                      }
+                      if (effectRotationEnabled) isRotated = !isRotated
+                  },
+                  onLongClick = onShowSpeedPlayerDialog
+              )
+              .width(playerPlayButtonType.width.dp)
+              .height(playerPlayButtonType.height.dp)
 
-    ) {
-        /*
+      ) {
+          /*
         if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
             Image(
                 painter = painterResource(R.drawable.a13shape),
@@ -403,39 +407,39 @@ fun ControlsModern(
             )
          */
 
-        Image(
-            painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
-            modifier = Modifier
-                .rotate(rotationAngle)
-                .align(Alignment.Center)
-                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 40.dp else 30.dp)
-        )
+          Image(
+              painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+              contentDescription = null,
+              colorFilter = ColorFilter.tint(colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+              modifier = Modifier
+                  .rotate(rotationAngle)
+                  .align(Alignment.Center)
+                  .size(30.dp)
+          )
 
-        val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
-        if (fmtSpeed != "1.0x")
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
+          val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
+          if (fmtSpeed != "1.0x")
+              Box(
+                  modifier = Modifier
+                      .align(Alignment.BottomCenter)
 
-            ) {
-                BasicText(
-                    text = fmtSpeed,
-                    style = TextStyle(
-                        color = colorPalette.text,
-                        fontStyle = typography.xxxs.semiBold.fontStyle,
-                        fontSize = typography.xxxs.semiBold.fontSize
-                    ),
-                    maxLines = 1,
-                    modifier = Modifier
-                        .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
-                )
-            }
-    }
+              ) {
+                  BasicText(
+                      text = fmtSpeed,
+                      style = TextStyle(
+                          color = colorPalette.text,
+                          fontStyle = typography.xxxs.semiBold.fontStyle,
+                          fontSize = typography.xxxs.semiBold.fontSize
+                      ),
+                      maxLines = 1,
+                      modifier = Modifier
+                          .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                  )
+              }
+      }
 
     CustomElevatedButton(
-        backgroundColor = colorPalette.background2.copy(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 0.0f else 0.95f),
+        backgroundColor = colorPalette.background2.copy(0.95f),
         onClick = {},
         modifier = Modifier
             .size(55.dp)
@@ -451,16 +455,136 @@ fun ControlsModern(
                 }
             )
 
-    ) {
-        Image(
-            painter = painterResource(R.drawable.play_skip_forward),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
-            modifier = Modifier
-                .padding(10.dp)
-                .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 36.dp else 26.dp)
-                .rotate(rotationAngle)
-        )
-    }
+      ) {
+          Image(
+              painter = painterResource(R.drawable.play_skip_forward),
+              contentDescription = null,
+              colorFilter = ColorFilter.tint(colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+              modifier = Modifier
+                  .padding(10.dp)
+                  .size(26.dp)
+                  .rotate(rotationAngle)
+          )
+      }
+  }
+
+  if (playerPlayButtonType == PlayerPlayButtonType.Disabled) {
+
+      Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.SpaceEvenly,
+          modifier = Modifier
+              .padding(horizontal = 12.dp)
+              .fillMaxWidth()
+      ) {
+          Box(
+
+          )
+          {
+              Icon(
+                  painter = painterResource(R.drawable.play_skip_back),
+                  contentDescription = null,
+                  modifier = Modifier
+                      .offset(x = (8).dp, y = (8).dp)
+                      .blur(5.dp)
+                      .size(41.dp),
+                  tint = Color.Black
+              )
+              Image(
+                  painter = painterResource(R.drawable.play_skip_back),
+                  contentDescription = null,
+                  colorFilter = ColorFilter.tint(colorPalette.accent),
+                  modifier = Modifier
+                      .padding(10.dp)
+                      .size(36.dp)
+                      .rotate(rotationAngle)
+                      .combinedClickable(
+                          onClick = {
+                              //binder.player.forceSeekToPrevious()
+                              binder.player.seekToPrevious()
+                              if (effectRotationEnabled) isRotated = !isRotated
+                          },
+                          onLongClick = {
+                              binder.player.seekTo(position - 5000)
+                          }
+                      )
+              )
+          }
+
+          Box(
+              modifier = Modifier
+                  .offset(x = (4).dp, y = (3).dp)
+
+          ) {
+              Icon(
+                  painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                  contentDescription = null,
+                  modifier = Modifier
+                      .offset(x = (-5).dp, y = (-5).dp)
+                      .blur(10.dp)
+                      .size(70.dp),
+                  tint = Color.Black
+              )
+              Image(
+                  painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                  contentDescription = null,
+                  colorFilter = ColorFilter.tint(colorPalette.accent),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                  modifier = Modifier
+                      .rotate(rotationAngle)
+                      .size(60.dp)
+                      .combinedClickable(
+                          onClick = {
+                              if (shouldBePlaying) {
+                                  binder.player.pause()
+                              } else {
+                                  if (binder.player.playbackState == Player.STATE_IDLE) {
+                                      binder.player.prepare()
+                                  }
+                                  binder.player.play()
+                              }
+                              if (effectRotationEnabled) isRotated = !isRotated
+                          },
+                          onLongClick = onShowSpeedPlayerDialog
+                      )
+              )
+
+          }
+
+          Box(
+
+
+          ) {
+              Icon(
+                  painter = painterResource(R.drawable.play_skip_forward),
+                  contentDescription = null,
+                  modifier = Modifier
+                      .offset(x = (7).dp, y = (8).dp)
+                      .blur(5.dp)
+                      .size(41.dp),
+                  tint = Color.Black
+              )
+              Image(
+                  painter = painterResource(R.drawable.play_skip_forward),
+                  contentDescription = null,
+                  colorFilter = ColorFilter.tint(colorPalette.accent),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                  modifier = Modifier
+                      .padding(10.dp)
+                      .size(36.dp)
+                      .rotate(rotationAngle)
+                      .combinedClickable(
+                          onClick = {
+                              binder.player.forceSeekToNext()
+                              if (effectRotationEnabled) isRotated = !isRotated
+                          },
+                          onLongClick = {
+                              binder.player.seekTo(position + 5000)
+                          }
+                      )
+              )
+          }
+      }
+  }
+
+
 
 }
