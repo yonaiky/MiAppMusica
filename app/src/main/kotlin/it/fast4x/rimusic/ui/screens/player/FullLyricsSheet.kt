@@ -58,6 +58,7 @@ import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -215,6 +216,7 @@ fun FullLyricsSheet(
                                 size = thumbnailSizeDp,
                                 mediaMetadataProvider = it1,
                                 durationProvider = player::getDuration,
+                                isLandscape = isLandscape,
                                 trailingContent = {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,

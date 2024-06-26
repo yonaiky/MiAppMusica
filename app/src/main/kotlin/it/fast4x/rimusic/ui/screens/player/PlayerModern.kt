@@ -887,8 +887,8 @@ fun PlayerModern(
                     Brush.verticalGradient(
                         0.0f to Color.Transparent,
                         1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.55f) else Color.Black.copy(0.75f) else Color.Transparent,
-                        startY = if ((!isLandscape) and (expandedplayer && !showlyricsthumbnail)) 1400f else 800f,
-                        endY = POSITIVE_INFINITY
+                        startY = if (isLandscape) POSITIVE_INFINITY else if (expandedplayer && !showlyricsthumbnail) 1400f else 800f,
+                        endY = if (isLandscape) 0f else POSITIVE_INFINITY
                     )
                 )
                 .combinedClickable(
