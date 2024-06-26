@@ -113,7 +113,7 @@ fun Thumbnail(
     val unknownplaybackerror =
         stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
-    val formatUnsupported = "This file seems to have an unsupported format"
+    val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
     var artImageAvailable by remember {
         mutableStateOf(true)

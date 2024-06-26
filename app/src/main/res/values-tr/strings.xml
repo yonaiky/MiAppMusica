@@ -621,4 +621,5 @@
     <string name="textoutline">Metin Anahattını Etkinleştir</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
+    <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
 </resources>
