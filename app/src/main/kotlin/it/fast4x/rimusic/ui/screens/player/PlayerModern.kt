@@ -1561,6 +1561,27 @@ fun PlayerModern(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .weight(1f)
+                            .pointerInput(Unit) {
+                                detectHorizontalDragGestures(
+                                    onHorizontalDrag = { change, dragAmount ->
+                                        deltaX = dragAmount
+                                    },
+                                    onDragStart = {
+                                    },
+                                    onDragEnd = {
+                                        if (!disablePlayerHorizontalSwipe) {
+                                            if (deltaX > 5) {
+                                                binder.player.seekToPreviousMediaItem()
+                                            } else if (deltaX <-5){
+                                                binder.player.forceSeekToNext()
+                                            }
+
+                                        }
+
+                                    }
+
+                                )
+                            }
                     ){
                         if (!showlyricsthumbnail)
                             Lyrics(
@@ -1715,27 +1736,52 @@ fun PlayerModern(
                                 vertical = 4.dp,
                             )
                     )
-                    if (!showlyricsthumbnail)
-                        Lyrics(
-                            mediaId = mediaItem.mediaId,
-                            isDisplayed = isShowingLyrics,
-                            onDismiss = {
-                                if (thumbnailTapEnabled)
-                                    isShowingLyrics = false
-                            },
-                            ensureSongInserted = { Database.insert(mediaItem) },
-                            size = 1000.dp,
-                            mediaMetadataProvider = mediaItem::mediaMetadata,
-                            durationProvider = player::getDuration,
-                            isLandscape = isLandscape,
-                            onMaximize = {
-                                showFullLyrics = true
-                            },
-                            enableClick = when (clickLyricsText) {
-                                ClickLyricsText.Player, ClickLyricsText.Both -> true
-                                else -> false
+                    Box(
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectHorizontalDragGestures(
+                                    onHorizontalDrag = { change, dragAmount ->
+                                        deltaX = dragAmount
+                                    },
+                                    onDragStart = {
+                                    },
+                                    onDragEnd = {
+                                        if (!disablePlayerHorizontalSwipe) {
+                                            if (deltaX > 5) {
+                                                binder.player.seekToPreviousMediaItem()
+                                            } else if (deltaX <-5){
+                                                binder.player.forceSeekToNext()
+                                            }
+
+                                        }
+
+                                    }
+
+                                )
                             }
-                        )
+                    ) {
+                        if (!showlyricsthumbnail)
+                            Lyrics(
+                                mediaId = mediaItem.mediaId,
+                                isDisplayed = isShowingLyrics,
+                                onDismiss = {
+                                    if (thumbnailTapEnabled)
+                                        isShowingLyrics = false
+                                },
+                                ensureSongInserted = { Database.insert(mediaItem) },
+                                size = 1000.dp,
+                                mediaMetadataProvider = mediaItem::mediaMetadata,
+                                durationProvider = player::getDuration,
+                                isLandscape = isLandscape,
+                                onMaximize = {
+                                    showFullLyrics = true
+                                },
+                                enableClick = when (clickLyricsText) {
+                                    ClickLyricsText.Player, ClickLyricsText.Both -> true
+                                    else -> false
+                                }
+                            )
+                    }
                 }
 
 
