@@ -196,6 +196,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
@@ -207,6 +208,7 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -1511,6 +1513,9 @@ fun PlayerModern(
                 }
             }
         }
+        val binder = LocalPlayerServiceBinder.current
+        val player = binder?.player ?: return
+        val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
 
         if (isLandscape) {
             Row(
@@ -1542,12 +1547,33 @@ fun PlayerModern(
                             .weight(1f)
                             //.padding(vertical = 10.dp)
                     ) {
-
+                        if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
                         thumbnailContent(
                             modifier = Modifier
                                 .padding(all = 12.dp)
                                 //.padding(horizontal = 10.dp)
                         )
+                        if (!showlyricsthumbnail)
+                            Lyrics(
+                                mediaId = mediaItem.mediaId,
+                                isDisplayed = isShowingLyrics,
+                                onDismiss = {
+                                    if (thumbnailTapEnabled)
+                                        isShowingLyrics = false
+                                },
+                                ensureSongInserted = { Database.insert(mediaItem) },
+                                size = 1000.dp,
+                                mediaMetadataProvider = mediaItem::mediaMetadata,
+                                durationProvider = player::getDuration,
+                                isLandscape = isLandscape,
+                                onMaximize = {
+                                    showFullLyrics = true
+                                },
+                                enableClick = when (clickLyricsText) {
+                                    ClickLyricsText.Player, ClickLyricsText.Both -> true
+                                    else -> false
+                                }
+                            )
                     }
                 }
                 Column (
@@ -1671,14 +1697,36 @@ fun PlayerModern(
                     modifier = Modifier
                         .weight(1.2f)
                 ) {
+                    if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
                     thumbnailContent(
                         modifier = Modifier
                             .clip(thumbnailShape)
                             .padding(
-                                horizontal = if (isShowingLyrics && !showlyricsthumbnail) 0.dp else playerThumbnailSize.size.dp,
-                                vertical = if (isShowingLyrics && !showlyricsthumbnail)  0.dp else 4.dp,
+                                horizontal = playerThumbnailSize.size.dp,
+                                vertical = 4.dp,
                             )
                     )
+                    if (!showlyricsthumbnail)
+                        Lyrics(
+                            mediaId = mediaItem.mediaId,
+                            isDisplayed = isShowingLyrics,
+                            onDismiss = {
+                                if (thumbnailTapEnabled)
+                                    isShowingLyrics = false
+                            },
+                            ensureSongInserted = { Database.insert(mediaItem) },
+                            size = 1000.dp,
+                            mediaMetadataProvider = mediaItem::mediaMetadata,
+                            durationProvider = player::getDuration,
+                            isLandscape = isLandscape,
+                            onMaximize = {
+                                showFullLyrics = true
+                            },
+                            enableClick = when (clickLyricsText) {
+                                ClickLyricsText.Player, ClickLyricsText.Both -> true
+                                else -> false
+                            }
+                        )
                 }
 
 
