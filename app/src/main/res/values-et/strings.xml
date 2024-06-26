@@ -593,8 +593,8 @@
     <string name="copy_crash_log_to_clipboard">Kopeeri kokku jooksmise logi lõikelauale</string>
     <string name="title_backup_and_restore">VARUKOOPIAD JA TAASTAMINE</string>
     <string name="message_excluded_s_songs">Välja arvatud %s laulu(d)</string>
-    <string name="show_thumbnail">Show thumbnail</string>
-    <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
+    <string name="show_thumbnail">Kuva pisipilt</string>
+    <string name="show_lyrics_thumbnail">Kuva lüürika pisipilti</string>
     <string name="large">Suur</string>
     <string name="miniplayertype">Mini mängija liik</string>
     <string name="expanded">Laiendatud</string>
@@ -607,11 +607,11 @@
     <string name="actionspacedevenly">Võrdsed Vahed</string>
     <string name="expandedplayer">Laiendatud Mängija</string>
     <string name="expandedlyrics">Laiendatud vaade lüürikatest</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
-    <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
+    <string name="expandedlyricsinfo">Funktsioneerib ainult kui lüürika pisipilt on välja lülitada</string>
+    <string name="info_connect_your_piped_account_first">Ühendage kõigepealt oma Piped konto või lülitage Piped sünkroniseerimine välja</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irish</string>
+    <string name="lang_bengali">Bengaali</string>
+    <string name="lang_irish">Iiri</string>
     <string name="lyricsoutline">Lyrics Outline</string>
     <string name="fluidrainbow">Fluid Rainbow</string>
     <string name="fluidtheme">Fluid Theme</string>
