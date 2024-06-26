@@ -41,6 +41,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -49,6 +50,7 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -109,8 +111,7 @@ fun Thumbnail(
     val videoidmismatcherror =
         stringResource(R.string.error_the_returned_video_id_doesn_t_match_the_requested_one)
     val unknownplaybackerror =
-        stringResource(R.string.error_an_unknown_playback_error_has_occurred) + " " +
-                stringResource(R.string.restart_app_please)
+        stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
     val formatUnsupported = "This file seems to have an unsupported format"
 
@@ -274,23 +275,23 @@ fun Thumbnail(
                 )
             //if (!currentWindow.mediaItem.isLocal)
             if (showlyricsthumbnail)
-            Lyrics(
-                mediaId = currentWindow.mediaItem.mediaId,
-                isDisplayed = isShowingLyrics && error == null,
-                onDismiss = {
-                    if (thumbnailTapEnabledKey) onShowLyrics(false)
-                },
-                ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
-                size = thumbnailSizeDp,
-                mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
-                durationProvider = player::getDuration,
-                onMaximize = onMaximize,
-                isLandscape = isLandscape,
-                enableClick = when (clickLyricsText) {
-                    ClickLyricsText.Player, ClickLyricsText.Both -> true
-                    else -> false
-                }
-            )
+                Lyrics(
+                    mediaId = currentWindow.mediaItem.mediaId,
+                    isDisplayed = isShowingLyrics && error == null,
+                    onDismiss = {
+                        if (thumbnailTapEnabledKey) onShowLyrics(false)
+                    },
+                    ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
+                    size = thumbnailSizeDp,
+                    mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
+                    durationProvider = player::getDuration,
+                    onMaximize = onMaximize,
+                    isLandscape = isLandscape,
+                    enableClick = when (clickLyricsText) {
+                        ClickLyricsText.Player, ClickLyricsText.Both -> true
+                        else -> false
+                    }
+                )
 
             StatsForNerds(
                 mediaId = currentWindow.mediaItem.mediaId,
@@ -303,6 +304,22 @@ fun Thumbnail(
             )
 
 
+            if (error != null) {
+                SmartToast(
+                    if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
+                    else when (error?.cause?.cause) {
+                        is UnresolvedAddressException, is UnknownHostException -> networkerror
+                        is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                        is UnplayableException -> originalvideodeletederror
+                        is LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                        is VideoIdMismatchException -> videoidmismatcherror
+                        is PlayableFormatNonSupported -> formatUnsupported
+                        else -> unknownplaybackerror
+                    }, PopupType.Error
+                )
+                player.seekToNext()
+            }
+            /*
             PlaybackError(
                 isDisplayed = error != null,
                 messageProvider = {
@@ -323,6 +340,7 @@ fun Thumbnail(
                     player.seekToNext()
                 }
             )
+             */
         }
     }
 }
