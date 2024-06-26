@@ -729,8 +729,8 @@ data class DescriptionRun (
 
 @Serializable
 data class PurpleNavigationEndpoint (
-    val clickTrackingParams: String,
-    val urlEndpoint: URLEndpoint
+    val clickTrackingParams: String? = null,
+    val urlEndpoint: URLEndpoint? = null
 )
 
 @Serializable
