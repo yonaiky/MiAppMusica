@@ -474,7 +474,6 @@ fun ControlsModern(
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.SpaceEvenly,
           modifier = Modifier
-              .padding(horizontal = 12.dp)
               .fillMaxWidth()
       ) {
           Box(
@@ -485,9 +484,9 @@ fun ControlsModern(
                   painter = painterResource(R.drawable.play_skip_back),
                   contentDescription = null,
                   modifier = Modifier
-                      .offset(x = (8).dp, y = (8).dp)
-                      .blur(5.dp)
-                      .size(41.dp),
+                      .offset(x = (5.5).dp, y = (5.5).dp)
+                      .blur(7.dp)
+                      .size(46.dp),
                   tint = Color.Black
               )
               Image(
@@ -512,17 +511,15 @@ fun ControlsModern(
           }
 
           Box(
-              modifier = Modifier
-                  .offset(x = (4).dp, y = (3).dp)
 
           ) {
               Icon(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                   contentDescription = null,
                   modifier = Modifier
-                      .offset(x = (-5).dp, y = (-5).dp)
+                      .offset(x = (0).dp, y = (0).dp)
                       .blur(10.dp)
-                      .size(70.dp),
+                      .size(75.dp),
                   tint = Color.Black
               )
               Image(
@@ -532,6 +529,7 @@ fun ControlsModern(
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .size(60.dp)
+                      .align(Alignment.Center)
                       .combinedClickable(
                           onClick = {
                               if (shouldBePlaying) {
@@ -558,9 +556,9 @@ fun ControlsModern(
                   painter = painterResource(R.drawable.play_skip_forward),
                   contentDescription = null,
                   modifier = Modifier
-                      .offset(x = (7).dp, y = (8).dp)
-                      .blur(5.dp)
-                      .size(41.dp),
+                      .offset(x = (5.5).dp, y = (5.5).dp)
+                      .blur(7.dp)
+                      .size(46.dp),
                   tint = Color.Black
               )
               Image(
