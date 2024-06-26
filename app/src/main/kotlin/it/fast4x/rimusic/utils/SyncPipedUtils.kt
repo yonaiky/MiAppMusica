@@ -38,6 +38,8 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
             )
         }.await()?.map {playlist ->
 
+            println("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
+
             playlistId.let {
                 transaction {
                     Database.clearPlaylist(it)

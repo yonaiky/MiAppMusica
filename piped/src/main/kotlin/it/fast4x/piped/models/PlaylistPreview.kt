@@ -49,7 +49,7 @@ data class Playlist(
         val uploaderName: String,
         val uploaderUrl: String, // not a real url either
         @SerialName("uploaderAvatar")
-        val uploaderAvatarUrl: UrlString,
+        val uploaderAvatarUrl: UrlString? = null,
         @SerialName("duration")
         val durationSeconds: Long
     ) {
