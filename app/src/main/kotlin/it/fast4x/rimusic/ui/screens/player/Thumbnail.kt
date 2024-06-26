@@ -80,6 +80,7 @@ import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
@@ -304,6 +305,7 @@ fun Thumbnail(
                 mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
                 durationProvider = player::getDuration,
                 onMaximize = onMaximize,
+                isLandscape = isLandscape,
                 enableClick = when (clickLyricsText) {
                     ClickLyricsText.Player, ClickLyricsText.Both -> true
                     else -> false
