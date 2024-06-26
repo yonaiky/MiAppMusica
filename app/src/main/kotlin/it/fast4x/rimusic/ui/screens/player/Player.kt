@@ -1405,8 +1405,8 @@ fun Player(
                         modifier = Modifier
                             .clip(thumbnailShape)
                             .padding(
-                                horizontal = if (isShowingLyrics && !showlyricsthumbnail) 0.dp else playerThumbnailSize.size.dp,
-                                vertical = if (isShowingLyrics && !showlyricsthumbnail) 0.dp else 4.dp,
+                                horizontal = playerThumbnailSize.size.dp,
+                                vertical = 4.dp,
                             )
                     )
                 }

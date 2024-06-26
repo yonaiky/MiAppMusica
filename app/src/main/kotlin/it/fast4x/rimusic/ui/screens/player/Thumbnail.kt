@@ -273,6 +273,7 @@ fun Thumbnail(
                     contentScale = ContentScale.Fit
                 )
             //if (!currentWindow.mediaItem.isLocal)
+            if (showlyricsthumbnail)
             Lyrics(
                 mediaId = currentWindow.mediaItem.mediaId,
                 isDisplayed = isShowingLyrics && error == null,
