@@ -612,4 +612,11 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
+    <string name="lyricsoutline">Lyrics Outline</string>
+    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="fluidtheme">Fluid Theme</string>
+    <string name="blackgradient">Black Gradient at Bottom</string>
+    <string name="glow">Glow</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="textoutline">Enable Text Outline</string>
 </resources>

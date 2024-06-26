@@ -85,6 +85,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.textoutlineKey
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -109,6 +110,7 @@ fun InfoAlbumAndArtistEssential(
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
+    var textoutline by rememberPreference(textoutlineKey, false)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -147,7 +149,7 @@ fun InfoAlbumAndArtistEssential(
                     style = TextStyle(
                         textAlign = TextAlign.Center,
                         color = if (albumId == null)
-                                 if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                                 if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
                                 else colorPalette.text,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -162,7 +164,7 @@ fun InfoAlbumAndArtistEssential(
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                         textAlign = TextAlign.Center,
-                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                         else Color.Black,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -250,7 +252,7 @@ fun InfoAlbumAndArtistEssential(
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = if (artistIds?.isEmpty() == true)
-                             if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                        if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
                             else colorPalette.text,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,
@@ -266,7 +268,7 @@ fun InfoAlbumAndArtistEssential(
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                     textAlign = TextAlign.Center,
-                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                     else Color.Black,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,

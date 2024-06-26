@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -150,7 +152,6 @@ fun Controls(
     binder?.player ?: return
 
 
-
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
@@ -171,7 +172,6 @@ fun Controls(
     if (nextmediaItemIndex.toShort() > -1)
         nextmediaItemtitle = binder.player.getMediaItemAt(nextmediaItemIndex).mediaMetadata.title.toString()
     */
-
 
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -213,9 +213,6 @@ fun Controls(
     //val menuState = LocalMenuState.current
 
 
-
-
-
     var showSelectDialog by remember { mutableStateOf(false) }
 
     var playerTimelineSize by rememberPreference(
@@ -253,165 +250,265 @@ fun Controls(
     }
      */
     val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
-    var playerSwapControlsWithTimeline by rememberPreference(playerSwapControlsWithTimelineKey, false)
+    var playerSwapControlsWithTimeline by rememberPreference(
+        playerSwapControlsWithTimelineKey,
+        false
+    )
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-    var transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey,false)
-
-  if ((!isLandscape) and (expandedplayer && !showlyricsthumbnail))
-  Column(
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Bottom,
+    var transparentBackgroundActionBarPlayer by rememberPreference(
+        transparentBackgroundPlayerActionBarKey,
+        false
+    )
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    Box(
         modifier = Modifier
-            .padding(horizontal = playerTimelineSize.size.dp)
-  ){
-        if (playerInfoType == PlayerInfoType.Modern)
-            InfoAlbumAndArtistModern(
-                binder = binder,
-                navController = navController,
-                media = media,
-                title = title,
-                albumId = albumId,
-                mediaId = mediaId,
-                likedAt = likedAt,
-                onCollapse = onCollapse,
-                disableScrollingText = disableScrollingText,
-                artist = artist,
-                artistIds = artistIds,
-            )
-
-        if (playerInfoType == PlayerInfoType.Essential)
-            InfoAlbumAndArtistEssential(
-                binder = binder,
-                navController = navController,
-                media = media,
-                title = title,
-                albumId = albumId,
-                mediaId = mediaId,
-                likedAt = likedAt,
-                onCollapse = onCollapse,
-                disableScrollingText = disableScrollingText,
-                artist = artist,
-                artistIds = artistIds,
-            )
-        Spacer(
-            modifier = Modifier
-                .height(10.dp)
-        )
-        GetSeekBar(
-            position = position,
-            duration = duration,
-            media = media,
-            mediaId = mediaId
-        )
-        Spacer(
-            modifier = Modifier
-                .height(10.dp)
-        )
-        GetControls(
-            binder = binder,
-            position = position,
-            shouldBePlaying = shouldBePlaying,
-            likedAt = likedAt,
-            mediaId = mediaId
-        )
-        if(!transparentBackgroundActionBarPlayer)
-        Spacer(
-            modifier = Modifier
-                .height(10.dp)
-        )
-  }
-
-  else
-  Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = playerTimelineSize.size.dp)
+            .animateContentSize()
     ) {
-
-        if (playerInfoType == PlayerInfoType.Modern)
-            InfoAlbumAndArtistModern(
-                binder = binder,
-                navController = navController,
-                media = media,
-                title = title,
-                albumId = albumId,
-                mediaId = mediaId,
-                likedAt = likedAt,
-                onCollapse = onCollapse,
-                disableScrollingText = disableScrollingText,
-                artist = artist,
-                artistIds = artistIds,
-            )
-
-        if (playerInfoType == PlayerInfoType.Essential)
-            InfoAlbumAndArtistEssential(
-                binder = binder,
-                navController = navController,
-                media = media,
-                title = title,
-                albumId = albumId,
-                mediaId = mediaId,
-                likedAt = likedAt,
-                onCollapse = onCollapse,
-                disableScrollingText = disableScrollingText,
-                artist = artist,
-                artistIds = artistIds,
-            )
-
-        Spacer(
-            modifier = Modifier
-                .height(25.dp)
-        )
-
-        if (!playerSwapControlsWithTimeline) {
-            GetSeekBar(
-                position = position,
-                duration = duration,
-                media = media,
-                mediaId = mediaId
-            )
-            Spacer(
+        if ((!isLandscape) and (expandedplayer && !showlyricsthumbnail))
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier
-                    .weight(0.4f)
-            )
-            GetControls(
-                binder = binder,
-                position = position,
-                shouldBePlaying = shouldBePlaying,
-                likedAt = likedAt,
-                mediaId = mediaId
-            )
-            Spacer(
-                modifier = Modifier
-                    .weight(0.5f)
-            )
-        } else {
-            GetControls(
-                binder = binder,
-                position = position,
-                shouldBePlaying = shouldBePlaying,
-                likedAt = likedAt,
-                mediaId = mediaId
-            )
-            Spacer(
-                modifier = Modifier
-                    .weight(0.5f)
-            )
-            GetSeekBar(
-                position = position,
-                duration = duration,
-                media = media,
-                mediaId = mediaId
-            )
-            Spacer(
-                modifier = Modifier
-                    .weight(0.4f)
-            )
-        }
+                    .padding(horizontal = playerTimelineSize.size.dp)
+            ) {
+                if (playerInfoType == PlayerInfoType.Modern)
+                    InfoAlbumAndArtistModern(
+                        binder = binder,
+                        navController = navController,
+                        media = media,
+                        title = title,
+                        albumId = albumId,
+                        mediaId = mediaId,
+                        likedAt = likedAt,
+                        onCollapse = onCollapse,
+                        disableScrollingText = disableScrollingText,
+                        artist = artist,
+                        artistIds = artistIds,
+                    )
+
+                if (playerInfoType == PlayerInfoType.Essential)
+                    InfoAlbumAndArtistEssential(
+                        binder = binder,
+                        navController = navController,
+                        media = media,
+                        title = title,
+                        albumId = albumId,
+                        mediaId = mediaId,
+                        likedAt = likedAt,
+                        onCollapse = onCollapse,
+                        disableScrollingText = disableScrollingText,
+                        artist = artist,
+                        artistIds = artistIds,
+                    )
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
+                )
+                GetSeekBar(
+                    position = position,
+                    duration = duration,
+                    media = media,
+                    mediaId = mediaId
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
+                )
+                GetControls(
+                    binder = binder,
+                    position = position,
+                    shouldBePlaying = shouldBePlaying,
+                    likedAt = likedAt,
+                    mediaId = mediaId
+                )
+                if (!transparentBackgroundActionBarPlayer || playerControlsType == PlayerControlsType.Modern)
+                    Spacer(
+                        modifier = Modifier
+                            .height(10.dp)
+                    )
+            }
+        else if (!isLandscape)
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = playerTimelineSize.size.dp)
+                    .fillMaxHeight(0.40f)
+            ) {
+
+                if (playerInfoType == PlayerInfoType.Modern)
+                    InfoAlbumAndArtistModern(
+                        binder = binder,
+                        navController = navController,
+                        media = media,
+                        title = title,
+                        albumId = albumId,
+                        mediaId = mediaId,
+                        likedAt = likedAt,
+                        onCollapse = onCollapse,
+                        disableScrollingText = disableScrollingText,
+                        artist = artist,
+                        artistIds = artistIds,
+                    )
+
+                if (playerInfoType == PlayerInfoType.Essential)
+                    InfoAlbumAndArtistEssential(
+                        binder = binder,
+                        navController = navController,
+                        media = media,
+                        title = title,
+                        albumId = albumId,
+                        mediaId = mediaId,
+                        likedAt = likedAt,
+                        onCollapse = onCollapse,
+                        disableScrollingText = disableScrollingText,
+                        artist = artist,
+                        artistIds = artistIds,
+                    )
+
+                Spacer(
+                    modifier = Modifier
+                        .height(25.dp)
+                )
+
+                if (!playerSwapControlsWithTimeline) {
+                    GetSeekBar(
+                        position = position,
+                        duration = duration,
+                        media = media,
+                        mediaId = mediaId
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .weight(0.4f)
+                    )
+                    GetControls(
+                        binder = binder,
+                        position = position,
+                        shouldBePlaying = shouldBePlaying,
+                        likedAt = likedAt,
+                        mediaId = mediaId
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .weight(0.5f)
+                    )
+                } else {
+                    GetControls(
+                        binder = binder,
+                        position = position,
+                        shouldBePlaying = shouldBePlaying,
+                        likedAt = likedAt,
+                        mediaId = mediaId
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .weight(0.5f)
+                    )
+                    GetSeekBar(
+                        position = position,
+                        duration = duration,
+                        media = media,
+                        mediaId = mediaId
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .weight(0.4f)
+                    )
+                }
+
+            }
 
     }
+    if (isLandscape)
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = playerTimelineSize.size.dp)
+        ) {
 
+            if (playerInfoType == PlayerInfoType.Modern)
+                InfoAlbumAndArtistModern(
+                    binder = binder,
+                    navController = navController,
+                    media = media,
+                    title = title,
+                    albumId = albumId,
+                    mediaId = mediaId,
+                    likedAt = likedAt,
+                    onCollapse = onCollapse,
+                    disableScrollingText = disableScrollingText,
+                    artist = artist,
+                    artistIds = artistIds,
+                )
+
+            if (playerInfoType == PlayerInfoType.Essential)
+                InfoAlbumAndArtistEssential(
+                    binder = binder,
+                    navController = navController,
+                    media = media,
+                    title = title,
+                    albumId = albumId,
+                    mediaId = mediaId,
+                    likedAt = likedAt,
+                    onCollapse = onCollapse,
+                    disableScrollingText = disableScrollingText,
+                    artist = artist,
+                    artistIds = artistIds,
+                )
+
+            Spacer(
+                modifier = Modifier
+                    .height(25.dp)
+            )
+
+            if (!playerSwapControlsWithTimeline) {
+                GetSeekBar(
+                    position = position,
+                    duration = duration,
+                    media = media,
+                    mediaId = mediaId
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.4f)
+                )
+                GetControls(
+                    binder = binder,
+                    position = position,
+                    shouldBePlaying = shouldBePlaying,
+                    likedAt = likedAt,
+                    mediaId = mediaId
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                )
+            } else {
+                GetControls(
+                    binder = binder,
+                    position = position,
+                    shouldBePlaying = shouldBePlaying,
+                    likedAt = likedAt,
+                    mediaId = mediaId
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                )
+                GetSeekBar(
+                    position = position,
+                    duration = duration,
+                    media = media,
+                    mediaId = mediaId
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.4f)
+                )
+            }
+        }
 }
 
 

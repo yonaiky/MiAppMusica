@@ -612,4 +612,11 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Бенгальский (বাংলা)</string>
     <string name="lang_irish">Ирландский (Gaeilge)</string>
+    <string name="lyricsoutline">Обводка текстов песен</string>
+    <string name="fluidrainbow">\"Жидкая\" радуга</string>
+    <string name="fluidtheme">\"Жидкая\" тема</string>
+    <string name="blackgradient">Черный градиент снизу</string>
+    <string name="glow">Свечение</string>
+    <string name="bottomgradient">Показать нижний градиент</string>
+    <string name="textoutline">Включить обводку текста</string>
 </resources>

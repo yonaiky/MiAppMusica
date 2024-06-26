@@ -68,6 +68,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import it.fast4x.rimusic.utils.textoutlineKey
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -137,6 +138,8 @@ fun InfoAlbumAndArtistModern(
                         onCollapse()
                     }
                 }
+            var textoutline by rememberPreference(textoutlineKey, false)
+
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
             Box(
 
@@ -145,7 +148,7 @@ fun InfoAlbumAndArtistModern(
                     text = title ?: "",
                     style = TextStyle(
                         color = if (albumId == null)
-                            if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                            if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
                         else colorPalette.text,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -159,7 +162,7 @@ fun InfoAlbumAndArtistModern(
                     text = title ?: "",
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                        color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                         else Color.Black,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -265,6 +268,7 @@ fun InfoAlbumAndArtistModern(
                     onCollapse()
                 }
             }
+        var textoutline by rememberPreference(textoutlineKey, false)
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
         Box(
 
@@ -273,7 +277,7 @@ fun InfoAlbumAndArtistModern(
                 text = artist ?: "",
                 style = TextStyle(
                     color = if (albumId == null)
-                        if (showthumbnail) colorPalette.textDisabled else colorPalette.textDisabled.copy(0.5f).compositeOver(colorPalette.text)
+                        if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
                     else colorPalette.text,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,
@@ -288,7 +292,7 @@ fun InfoAlbumAndArtistModern(
                 text = artist ?: "",
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                    color = if (showthumbnail) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
                     else Color.Black,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,

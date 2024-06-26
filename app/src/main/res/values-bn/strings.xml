@@ -612,4 +612,11 @@
     <string name="piped_playlists">পাইপড</string>
     <string name="lang_bengali">বাংলা</string>
     <string name="lang_irish">আইরিশ</string>
+    <string name="lyricsoutline">Lyrics Outline</string>
+    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="fluidtheme">Fluid Theme</string>
+    <string name="blackgradient">Black Gradient at Bottom</string>
+    <string name="glow">Glow</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="textoutline">Enable Text Outline</string>
 </resources>
