@@ -435,19 +435,19 @@
     <string name="direction_bottom">Direction bottom</string>
     <string name="event_shake">振る</string>
     <string name="shake_to_change_song">端末を振って曲を変える</string>
-    <string name="history">History</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="this_week">This week</string>
-    <string name="last_week">Last week</string>
+    <string name="history">履歴</string>
+    <string name="yesterday">昨日</string>
+    <string name="this_week">今週</string>
+    <string name="last_week">先週</string>
     <string name="by_casual_played_song">By Casual played song</string>
     <string name="theme_material_you">Material You</string>
-    <string name="show_statistics_in_navigation_bar">Show statistics in navigation bar</string>
-    <string name="settings">Settings</string>
-    <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
-    <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
-    <string name="library_collections">Collections</string>
-    <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
-    <string name="info_shuffle">Shuffle</string>
+    <string name="show_statistics_in_navigation_bar">ナビゲーションバーに統計情報を表示</string>
+    <string name="settings">設定</string>
+    <string name="page_not_been_loaded">ページが正しく読み込まれませんでした。ページを更新してください。</string>
+    <string name="sorry_tips_are_not_available">申し訳ありませんが、現在ヒントは利用できません。</string>
+    <string name="library_collections">コレクション</string>
+    <string name="info_show_hide_hidden_songs">非表示の曲の表示/非表示</string>
+    <string name="info_shuffle">シャッフル</string>
     <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Download all songs</string>
@@ -617,4 +617,6 @@
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Glow</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="textoutline">Enable Text Outline</string>
 </resources>

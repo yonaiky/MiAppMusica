@@ -612,9 +612,11 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
     <string name="lang_irish">Irish</string>
-    <string name="lyricsoutline">Lyrics Outline</string>
-    <string name="fluidrainbow">Fluid Rainbow</string>
-    <string name="fluidtheme">Fluid Theme</string>
-    <string name="blackgradient">Black Gradient at Bottom</string>
-    <string name="glow">Glow</string>
+    <string name="lyricsoutline">Şarkı Sözleri Anahattı</string>
+    <string name="fluidrainbow">Akışkan Gökkuşağı</string>
+    <string name="fluidtheme">Akışkan Tema</string>
+    <string name="blackgradient">Altta Siyah Gradyan</string>
+    <string name="glow">Parıltı</string>
+    <string name="bottomgradient">Alt Gradyanı Göster</string>
+    <string name="textoutline">Metin Anahattını Etkinleştir</string>
 </resources>
