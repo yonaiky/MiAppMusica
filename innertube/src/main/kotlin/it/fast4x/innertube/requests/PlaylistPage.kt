@@ -99,6 +99,11 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
             ?.firstOrNull()
             ?.musicResponsiveHeaderRenderer
 
+        println("mediaItem header album year ${
+            header
+                ?.subtitle?.runs?.getOrNull(2)?.text
+        }")
+
         val contents = response
             .contents
             ?.twoColumnBrowseResultsRenderer
@@ -135,9 +140,8 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
                 ?.map(Innertube::Info),
             year = header
                 ?.subtitle
-                ?.splitBySeparator()
+                ?.runs
                 ?.getOrNull(2)
-                ?.firstOrNull()
                 ?.text,
             url = response
                 .microformat

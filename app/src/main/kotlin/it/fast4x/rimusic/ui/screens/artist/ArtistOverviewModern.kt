@@ -254,9 +254,10 @@ fun ArtistOverviewModern(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .padding(horizontal = 30.dp)
-                                .padding(bottom = 20.dp)
+                                //.padding(bottom = 5.dp)
                         )
 
+                        /*
                         youtubeArtistPage.subscriberCountText?.let {
                             BasicText(
                                 text = String.format(
@@ -270,6 +271,7 @@ fun ArtistOverviewModern(
                                     .align(Alignment.BottomCenter)
                             )
                         }
+                         */
                         HeaderIconButton(
                             icon = R.drawable.share_social,
                             color = colorPalette.text,
@@ -308,6 +310,25 @@ fun ArtistOverviewModern(
                         }
                     }
                 }
+
+                youtubeArtistPage?.subscriberCountText?.let {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        BasicText(
+                            text = String.format(
+                                stringResource(R.string.artist_subscribers),
+                                it
+                            ),
+                            style = typography.xs.semiBold,
+                            maxLines = 1
+                        )
+                    }
+                }
+
 
                 Row(
                     horizontalArrangement = Arrangement.Center,

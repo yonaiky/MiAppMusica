@@ -123,7 +123,8 @@ fun AlbumScreen(
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-                                //println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description}")
+                                //println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
+                                println("mediaItem success home album description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
                                 //Database.clearAlbum(browseId)
 
                                 Database.upsert(

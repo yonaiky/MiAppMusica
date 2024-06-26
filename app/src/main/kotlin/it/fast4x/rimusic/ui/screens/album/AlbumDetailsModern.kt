@@ -568,7 +568,17 @@ fun AlbumDetailsModern(
                                     modifier = Modifier
                                         .align(Alignment.BottomCenter)
                                         .padding(horizontal = 30.dp)
-                                        .padding(bottom = 20.dp)
+                                        //.padding(bottom = 20.dp)
+                                )
+
+                                /*
+                                BasicText(
+                                    text = albumPage?.year ?: "",
+                                    style = typography.xs.medium,
+                                    maxLines = 1,
+                                    modifier = Modifier
+                                        //.padding(top = 10.dp)
+                                        .align(Alignment.BottomStart)
                                 )
 
                                 BasicText(
@@ -579,8 +589,9 @@ fun AlbumDetailsModern(
                                     maxLines = 1,
                                     modifier = Modifier
                                         //.padding(top = 10.dp)
-                                        .align(Alignment.BottomCenter)
+                                        .align(Alignment.BottomEnd)
                                 )
+                                 */
 
                                 HeaderIconButton(
                                     icon = R.drawable.share_social,
@@ -633,6 +644,27 @@ fun AlbumDetailsModern(
                             }
                         }
 
+                    }
+
+                if (albumPage != null)
+                    item(
+                        key = "infoAlbum"
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                //.padding(top = 10.dp)
+                                .fillMaxWidth()
+                        ) {
+                            BasicText(
+                                text = "${albumPage?.year} - " + songs.size.toString() + " "
+                                        + stringResource(R.string.songs)
+                                        + " - " + formatAsTime(totalPlayTimes),
+                                style = typography.xs.medium,
+                                maxLines = 1
+                            )
+                        }
                     }
 
                     item(
