@@ -1528,13 +1528,16 @@ fun PlayerModern(
             ) {
                 Column (
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .animateContentSize()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
+                    if (showthumbnail)
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .weight(1f)
+                        /*modifier = Modifier
+                            .weight(1f)*/
                             //.padding(vertical = 10.dp)
                     ) {
                         if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
@@ -1543,6 +1546,33 @@ fun PlayerModern(
                                 .padding(all = 12.dp)
                                 //.padding(horizontal = 10.dp)
                         )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .pointerInput(Unit) {
+                                detectHorizontalDragGestures(
+                                    onHorizontalDrag = { change, dragAmount ->
+                                        deltaX = dragAmount
+                                    },
+                                    onDragStart = {
+                                    },
+                                    onDragEnd = {
+                                        if (!disablePlayerHorizontalSwipe) {
+                                            if (deltaX > 5) {
+                                                binder.player.seekToPreviousMediaItem()
+                                            } else if (deltaX <-5){
+                                                binder.player.forceSeekToNext()
+                                            }
+
+                                        }
+
+                                    }
+
+                                )
+                            }
+                    ){
                         if (!showlyricsthumbnail)
                             Lyrics(
                                 mediaId = mediaItem.mediaId,
@@ -1696,27 +1726,52 @@ fun PlayerModern(
                                 vertical = 4.dp,
                             )
                     )
-                    if (!showlyricsthumbnail)
-                        Lyrics(
-                            mediaId = mediaItem.mediaId,
-                            isDisplayed = isShowingLyrics,
-                            onDismiss = {
-                                if (thumbnailTapEnabled)
-                                    isShowingLyrics = false
-                            },
-                            ensureSongInserted = { Database.insert(mediaItem) },
-                            size = 1000.dp,
-                            mediaMetadataProvider = mediaItem::mediaMetadata,
-                            durationProvider = player::getDuration,
-                            isLandscape = isLandscape,
-                            onMaximize = {
-                                showFullLyrics = true
-                            },
-                            enableClick = when (clickLyricsText) {
-                                ClickLyricsText.Player, ClickLyricsText.Both -> true
-                                else -> false
+                    Box(
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectHorizontalDragGestures(
+                                    onHorizontalDrag = { change, dragAmount ->
+                                        deltaX = dragAmount
+                                    },
+                                    onDragStart = {
+                                    },
+                                    onDragEnd = {
+                                        if (!disablePlayerHorizontalSwipe) {
+                                            if (deltaX > 5) {
+                                                binder.player.seekToPreviousMediaItem()
+                                            } else if (deltaX <-5){
+                                                binder.player.forceSeekToNext()
+                                            }
+
+                                        }
+
+                                    }
+
+                                )
                             }
-                        )
+                    ) {
+                        if (!showlyricsthumbnail)
+                            Lyrics(
+                                mediaId = mediaItem.mediaId,
+                                isDisplayed = isShowingLyrics,
+                                onDismiss = {
+                                    if (thumbnailTapEnabled)
+                                        isShowingLyrics = false
+                                },
+                                ensureSongInserted = { Database.insert(mediaItem) },
+                                size = 1000.dp,
+                                mediaMetadataProvider = mediaItem::mediaMetadata,
+                                durationProvider = player::getDuration,
+                                isLandscape = isLandscape,
+                                onMaximize = {
+                                    showFullLyrics = true
+                                },
+                                enableClick = when (clickLyricsText) {
+                                    ClickLyricsText.Player, ClickLyricsText.Both -> true
+                                    else -> false
+                                }
+                            )
+                    }
                 }
 
 
