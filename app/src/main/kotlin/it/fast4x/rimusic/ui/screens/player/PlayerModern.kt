@@ -1538,13 +1538,16 @@ fun PlayerModern(
             ) {
                 Column (
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .animateContentSize()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
+                    if (showthumbnail)
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .weight(1f)
+                        /*modifier = Modifier
+                            .weight(1f)*/
                             //.padding(vertical = 10.dp)
                     ) {
                         if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
@@ -1553,6 +1556,12 @@ fun PlayerModern(
                                 .padding(all = 12.dp)
                                 //.padding(horizontal = 10.dp)
                         )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                    ){
                         if (!showlyricsthumbnail)
                             Lyrics(
                                 mediaId = mediaItem.mediaId,
