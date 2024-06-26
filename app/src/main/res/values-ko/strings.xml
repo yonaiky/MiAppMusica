@@ -557,7 +557,7 @@
     <string name="action_bar_transparent_background">투명 배경</string>
     <string name="pinfo_type">정보 유형</string>
     <string name="pinfo_album_and_artist_name">앨범과 작가명</string>
-    <string name="show_player_top_actions_bar">Show top actions bar</string>
+    <string name="show_player_top_actions_bar">랭킹 액션 바 표시</string>
     <string name="icon_like_button">좋아요 버튼</string>
     <string name="icon_like_apple">사과</string>
     <string name="icon_like_breaked">갈라짐</string>
@@ -567,7 +567,7 @@
     <string name="icon_like_brilliant">반짝임</string>
     <string name="player_swap_controls_with_timeline">타임라인으로 컨트롤 변경</string>
     <string name="player_enable_lyrics_popup_message">가사 팝업 메시지 활성화</string>
-    <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
+    <string name="exclude_songs_with_duration_limit">길이 제한을 통한 곡 제외</string>
     <string name="exclude_songs_with_duration_limit_description">활성화시, 제한을 넘는 곡들은 제외되고, 나만의 랭킹과 재생 대기열에 적용됩니다.</string>
     <string name="no_log_available">로그 없음</string>
     <string name="enable_quick_picks_page">빠른 추천 페이지 활성화</string>
@@ -578,9 +578,9 @@
     <string name="cache_location_system">시스템</string>
     <string name="info_cannot_rename_a_monthly_or_piped_playlist">월간 또는 piped 재생 목록의 이름을 변경할 수 없습니다</string>
     <string name="debug">디버그</string>
-    <string name="enable_log_debug">Enable log debug</string>
-    <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
-    <string name="copy_log_to_clipboard">Copy log to clipboard</string>
+    <string name="enable_log_debug">디버그 로그 활성화</string>
+    <string name="if_enabled_create_a_log_file_to_highlight_errors">활성화시, 오류를 강조하는 로그 파일이 생성됩니다</string>
+    <string name="copy_log_to_clipboard">클립보드에 로그 복사</string>
     <string name="piped_account">PIPED</string>
     <string name="enable_piped_syncronization">Enable piped syncronization</string>
     <string name="piped_change_instance">Change instance</string>
