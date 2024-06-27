@@ -1060,7 +1060,7 @@ fun BlurParamsDialog(
                 },
                 valueRange = 0f..50f,
                 gap = 1,
-                showIndicator = true,
+                //showIndicator = true,
                 thumb = { thumbValue ->
                     CustomSliderDefaults.Thumb(
                         thumbValue = "%.0f".format(blurStrength),
