@@ -485,7 +485,7 @@ fun ControlsModern(
                   contentDescription = null,
                   modifier = Modifier
                       .offset(x = (8).dp, y = (8).dp)
-                      .blur(7.dp)
+                      .blur(4.dp)
                       .size(38.dp),
                   tint = Color.Black
               )
@@ -557,7 +557,7 @@ fun ControlsModern(
                   contentDescription = null,
                   modifier = Modifier
                       .offset(x = (8).dp, y = (8).dp)
-                      .blur(7.dp)
+                      .blur(4.dp)
                       .size(38.dp),
                   tint = Color.Black
               )
