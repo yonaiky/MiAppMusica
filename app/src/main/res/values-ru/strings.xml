@@ -619,4 +619,5 @@
     <string name="glow">Свечение</string>
     <string name="bottomgradient">Показать нижний градиент</string>
     <string name="textoutline">Включить обводку текста</string>
+    <string name="thumbnailtype">Thumbnail Type</string>
 </resources>
