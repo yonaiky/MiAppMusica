@@ -59,6 +59,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -118,6 +119,7 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 
 @ExperimentalAnimationApi
@@ -244,6 +246,7 @@ fun AppearanceSettings() {
         true
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
 
     Column(
         modifier = Modifier
@@ -451,6 +454,25 @@ fun AppearanceSettings() {
                         PlayerTimelineSize.Expanded -> stringResource(R.string.expanded)
                     }
                 }
+            )
+        if (showthumbnail)
+          if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
+                filterCharSequence,
+                true
+            )
+          )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.thumbnailtype),
+                selectedValue = thumbnailType,
+                onValueSelected = {
+                    thumbnailType = it
+                },
+                valueText = {
+                    when (it) {
+                        ThumbnailType.Modern -> stringResource(R.string.pcontrols_modern)
+                        ThumbnailType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
             )
 
         if (showthumbnail)

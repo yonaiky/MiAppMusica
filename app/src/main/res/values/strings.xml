@@ -619,6 +619,7 @@
     <string name="glow">Glow</string>
     <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
+    <string name="thumbnailtype">Thumbnail Type</string>
 
 
 </resources>
