@@ -484,9 +484,9 @@ fun ControlsModern(
                   painter = painterResource(R.drawable.play_skip_back),
                   contentDescription = null,
                   modifier = Modifier
-                      .offset(x = (5.5).dp, y = (5.5).dp)
+                      .offset(x = (8).dp, y = (8).dp)
                       .blur(7.dp)
-                      .size(46.dp),
+                      .size(38.dp),
                   tint = Color.Black
               )
               Image(
@@ -495,7 +495,7 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.accent),
                   modifier = Modifier
                       .padding(10.dp)
-                      .size(36.dp)
+                      .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
                           onClick = {
@@ -518,8 +518,8 @@ fun ControlsModern(
                   contentDescription = null,
                   modifier = Modifier
                       .offset(x = (0).dp, y = (0).dp)
-                      .blur(10.dp)
-                      .size(75.dp),
+                      .blur(7.dp)
+                      .size(54.dp),
                   tint = Color.Black
               )
               Image(
@@ -528,7 +528,7 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.accent),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                   modifier = Modifier
                       .rotate(rotationAngle)
-                      .size(60.dp)
+                      .size(44.dp)
                       .align(Alignment.Center)
                       .combinedClickable(
                           onClick = {
@@ -556,9 +556,9 @@ fun ControlsModern(
                   painter = painterResource(R.drawable.play_skip_forward),
                   contentDescription = null,
                   modifier = Modifier
-                      .offset(x = (5.5).dp, y = (5.5).dp)
+                      .offset(x = (8).dp, y = (8).dp)
                       .blur(7.dp)
-                      .size(46.dp),
+                      .size(38.dp),
                   tint = Color.Black
               )
               Image(
@@ -567,7 +567,7 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.accent),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                   modifier = Modifier
                       .padding(10.dp)
-                      .size(36.dp)
+                      .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
                           onClick = {
