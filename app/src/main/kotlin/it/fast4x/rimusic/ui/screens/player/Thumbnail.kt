@@ -55,7 +55,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
-import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
@@ -81,7 +81,6 @@ import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.thumbnail
@@ -89,6 +88,7 @@ import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -199,11 +199,11 @@ fun Thumbnail(
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
 
-        val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+        val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
         var modifierUiType by remember { mutableStateOf(modifier) }
         if (showthumbnail)
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-              if (playerControlsType == PlayerControlsType.Modern)
+              if (thumbnailType == ThumbnailType.Modern)
                 modifierUiType = modifier
                  .padding(vertical = 8.dp)
                  .aspectRatio(1f)
