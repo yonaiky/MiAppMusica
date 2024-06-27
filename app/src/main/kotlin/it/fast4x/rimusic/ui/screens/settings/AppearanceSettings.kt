@@ -380,6 +380,9 @@ fun AppearanceSettings() {
         //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player))
 
+        if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
+            showthumbnail = true
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -391,7 +394,7 @@ fun AppearanceSettings() {
                 isChecked = showTopActionsBar,
                 onCheckedChange = { showTopActionsBar = it }
             )
-
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
         if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
                 filterCharSequence,
                 true
