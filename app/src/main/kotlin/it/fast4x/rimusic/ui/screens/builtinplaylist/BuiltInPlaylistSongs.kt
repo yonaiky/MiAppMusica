@@ -149,10 +149,7 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.BehindMotionSwipe
-import it.fast4x.rimusic.utils.LeftAction
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
-import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.isLandscape

@@ -344,11 +344,11 @@ fun getVisualizers(): List<Painter> {
             Gradient(preset = Gradient.RADIAL)
         ), yR = yR),
         Move(Blend(
-            FftCBar(colorPaint = color, side = "ab", gapX = 8f).apply {
+            FftCBar(colorPaint = color, side = "ab", gapX = 8f, ampR = ampR).apply {
                 paint.style = Paint.Style.FILL
             },
             Gradient(preset = Gradient.SWEEP, hsv = true)
-        ), yR = yR),
+        )),
         // Composition
         Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
         Compose(
