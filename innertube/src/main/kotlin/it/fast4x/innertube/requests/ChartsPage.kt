@@ -7,6 +7,8 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
+import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
+import it.fast4x.innertube.models.v0624.charts.MusicResponsiveListItemRenderer
 
 suspend fun Innertube.chartsPage() = runCatching {
     val response = client.post(browse) {
@@ -17,9 +19,21 @@ suspend fun Innertube.chartsPage() = runCatching {
         response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents
 
-    println("mediaItem chartsPage ${musicDetailRenderer
+    /*
+    println("mediaItem chartsPage playists ${musicDetailRenderer
         ?.mapNotNull { it.musicCarouselShelfRenderer }
         ?.mapNotNull(Innertube.PlaylistItem::from)?.size}")
+     */
+
+/*
+    println("mediaItem chartsPage artists ${musicDetailRenderer
+        ?.mapNotNull { 
+            it.musicCarouselShelfRenderer?.contents
+        }
+        //?.mapNotNull { it.musicCarouselShelfRenderer }
+        ?.map(Innertube.ArtistItem::from)}")
+
+ */
 
     /*
     println("mediaItem chartsPage Language ${
@@ -35,26 +49,6 @@ suspend fun Innertube.chartsPage() = runCatching {
             ?.mapNotNull { it.musicCarouselShelfRenderer }
             ?.mapNotNull(Innertube.PlaylistItem::from)
     )
-
-    /*
-        Innertube.PlaylistOrAlbumPage(
-            title = musicDetailRenderer
-                ?.musicShelfRenderer?.subheaders?.firstOrNull()
-                ?.musicSideAlignedItemRenderer?.startItems?.firstOrNull()
-                ?.musicSortFilterButtonRenderer
-                ?.title?.runs?.firstOrNull()?.text,
-            description = null,
-            thumbnail = null,
-            authors = null,
-            year = null,
-            url = null,
-            songsPage = null,
-            otherVersions = null,
-            otherInfo = null
-
-        )
-
-     */
 
 }.onFailure {
     println("mediaItem ERROR IN Innertube chartsPage " + it.message)
@@ -95,4 +89,35 @@ fun Innertube.PlaylistItem.Companion.from(renderer: MusicCarouselShelfRenderer):
             .contents?.size,
         thumbnail = thumbnail0 ?: thumbnail1
     ).takeIf { it.info?.endpoint?.browseId != null }
+}
+
+fun Innertube.ArtistItem.Companion.from(renderer: List<MusicCarouselShelfRendererContent>): List<Innertube.ArtistItem> {
+
+    val thumbnail = renderer.firstOrNull()?.musicResponsiveListItemRenderer
+        ?.thumbnail
+        ?.musicThumbnailRenderer
+        ?.thumbnail
+        ?.thumbnails
+        ?.firstOrNull()?.toThumbnail()
+
+    return listOf(Innertube.ArtistItem(
+        info = Innertube.Info(
+            name = renderer.firstOrNull()?.musicResponsiveListItemRenderer
+                ?.flexColumns?.firstOrNull()
+                ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
+                ?.text,
+            endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
+                browseId = renderer.firstOrNull()?.musicResponsiveListItemRenderer
+                ?.navigationEndpoint?.browseEndpoint?.browseID,
+                params = null,
+                browseEndpointContextSupportedConfigs = null
+            )
+        ),
+        subscribersCountText = renderer.firstOrNull()?.musicResponsiveListItemRenderer
+        ?.flexColumns?.getOrNull(1)
+            ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
+            ?.text,
+        thumbnail = thumbnail
+    ))
+
 }
