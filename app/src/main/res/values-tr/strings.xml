@@ -619,4 +619,5 @@
     <string name="glow">Parıltı</string>
     <string name="bottomgradient">Alt Gradyanı Göster</string>
     <string name="textoutline">Metin Anahattını Etkinleştir</string>
+    <string name="thumbnailtype">Thumbnail Type</string>
 </resources>

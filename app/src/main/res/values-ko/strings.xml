@@ -619,4 +619,5 @@
     <string name="glow">발광</string>
     <string name="bottomgradient">하단 그라데이션 표시</string>
     <string name="textoutline">글자 윤곽선 활성화</string>
+    <string name="thumbnailtype">Thumbnail Type</string>
 </resources>
