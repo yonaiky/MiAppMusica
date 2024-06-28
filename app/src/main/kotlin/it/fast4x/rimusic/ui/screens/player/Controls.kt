@@ -260,6 +260,7 @@ fun Controls(
         false
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
     Box(
         modifier = Modifier
             .animateContentSize()
@@ -321,7 +322,7 @@ fun Controls(
                     likedAt = likedAt,
                     mediaId = mediaId
                 )
-                if (!transparentBackgroundActionBarPlayer || playerControlsType == PlayerControlsType.Modern)
+                if (!transparentBackgroundActionBarPlayer || (playerControlsType == PlayerControlsType.Modern && playerPlayButtonType != PlayerPlayButtonType.Disabled))
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)

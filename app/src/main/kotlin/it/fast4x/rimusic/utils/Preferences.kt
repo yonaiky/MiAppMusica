@@ -206,6 +206,7 @@ const val expandedplayertoggleKey = "expandedplayertoggle"
 const val blackgradientKey = "blackgradient"
 const val bottomgradientKey = "bottomgradient"
 const val textoutlineKey = "textoutline"
+const val thumbnailTypeKey = "thumbnailType"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

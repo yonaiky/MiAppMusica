@@ -59,6 +59,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -119,6 +120,7 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 
 @ExperimentalAnimationApi
@@ -248,6 +250,7 @@ fun AppearanceSettings() {
         true
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
 
     Column(
         modifier = Modifier
@@ -381,6 +384,9 @@ fun AppearanceSettings() {
         //SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player))
 
+        if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
+            showthumbnail = true
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -392,7 +398,7 @@ fun AppearanceSettings() {
                 isChecked = showTopActionsBar,
                 onCheckedChange = { showTopActionsBar = it }
             )
-
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
         if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
                 filterCharSequence,
                 true
@@ -455,6 +461,25 @@ fun AppearanceSettings() {
                         PlayerTimelineSize.Expanded -> stringResource(R.string.expanded)
                     }
                 }
+            )
+        if (showthumbnail)
+          if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
+                filterCharSequence,
+                true
+            )
+          )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.thumbnailtype),
+                selectedValue = thumbnailType,
+                onValueSelected = {
+                    thumbnailType = it
+                },
+                valueText = {
+                    when (it) {
+                        ThumbnailType.Modern -> stringResource(R.string.pcontrols_modern)
+                        ThumbnailType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
             )
 
         if (showthumbnail)

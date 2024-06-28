@@ -42,6 +42,9 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.ThumbnailType
+import it.fast4x.rimusic.enums.TransitionEffect
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -66,6 +69,9 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -175,6 +181,7 @@ fun Thumbnail(
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
 
+        val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
         val playerControlsType by rememberPreference(
             playerControlsTypeKey,
             PlayerControlsType.Modern
@@ -182,23 +189,24 @@ fun Thumbnail(
         var modifierUiType by remember { mutableStateOf(modifier) }
         if (showthumbnail)
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-                if (playerControlsType == PlayerControlsType.Modern)
-                    modifierUiType = modifier
-                        .padding(vertical = 8.dp)
-                        .aspectRatio(1f)
-                        //.size(thumbnailSizeDp)
-                        .fillMaxSize()
-                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                        .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                        .clip(LocalAppearance.current.thumbnailShape)
-                //.padding(14.dp)
-                else modifierUiType = modifier
-                    .aspectRatio(1f)
-                    //.size(thumbnailSizeDp)
-                    //.padding(14.dp)
-                    .fillMaxSize()
-                    .clip(LocalAppearance.current.thumbnailShape)
+              if (thumbnailType == ThumbnailType.Modern)
+                modifierUiType = modifier
+                 .padding(vertical = 8.dp)
+                 .aspectRatio(1f)
+                 //.size(thumbnailSizeDp)
+                 .fillMaxSize()
+                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
+                 .clip(LocalAppearance.current.thumbnailShape)
+                 //.padding(14.dp)
+              else modifierUiType = modifier
+                 .aspectRatio(1f)
+                 //.size(thumbnailSizeDp)
+                 //.padding(14.dp)
+                 .fillMaxSize()
+                 .clip(LocalAppearance.current.thumbnailShape)
+
 
 
         Box(

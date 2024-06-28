@@ -1717,6 +1717,7 @@ fun PlayerModern(
                     modifier = Modifier
                         .weight(1.2f)
                 ) {
+                   if (showthumbnail)
                     if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
                     thumbnailContent(
                         modifier = Modifier
@@ -1726,7 +1727,7 @@ fun PlayerModern(
                                 vertical = 4.dp,
                             )
                     )
-                    Box(
+                   Box(
                         modifier = Modifier
                             .pointerInput(Unit) {
                                 detectHorizontalDragGestures(
