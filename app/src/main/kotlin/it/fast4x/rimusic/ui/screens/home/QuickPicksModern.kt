@@ -69,6 +69,7 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.chartsPage
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.lrclib.utils.runCatchingCancellable
@@ -132,6 +133,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showActionsBarKey
+import it.fast4x.rimusic.utils.showChartsKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
 import it.fast4x.rimusic.utils.showMoodsAndGenresKey
@@ -184,6 +186,8 @@ fun QuickPicksModern(
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryAlbums")
 
+    var chartsPage by persist<Result<Innertube.ChartsPage>?>("home/chartsPage")
+
     //var discoverPageAlbums by persist<Result<Innertube.DiscoverPageAlbums>>("home/discoveryAlbums")
 
     var preferitesArtists by persistList<Artist>("home/artists")
@@ -209,6 +213,7 @@ fun QuickPicksModern(
     val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
     val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
     val showTips by rememberPreference(showTipsKey, true)
+    val showCharts by rememberPreference(showChartsKey, true)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
@@ -253,6 +258,8 @@ fun QuickPicksModern(
 
             discoverPage = Innertube.discoverPage()
 
+            chartsPage = Innertube.chartsPage()
+
         }.onFailure {
             Timber.e(it.message)
         }
@@ -273,6 +280,10 @@ fun QuickPicksModern(
             refreshing = false
         }
     }
+
+    println(
+        "mediaItem chartsPage Quickpics $chartsPage"
+    )
 
     /*
     LaunchedEffect(Unit) {
@@ -637,6 +648,34 @@ fun QuickPicksModern(
                     }
                 }
 
+                if (showCharts)
+                    chartsPage?.getOrNull()?.playlists.let { playlists ->
+                        BasicText(
+                            text = stringResource(R.string.charts),
+                            style = typography.l.semiBold,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 24.dp, bottom = 8.dp)
+                        )
+
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = playlists.orEmpty(),
+                                key = Innertube.PlaylistItem::key,
+                            ) { playlist ->
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = playlistThumbnailSizePx,
+                                    thumbnailSizeDp = playlistThumbnailSizeDp,
+                                    alternative = true,
+                                    showSongsCount = false,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                )
+                            }
+                        }
+                    }
+
                     discoverPage?.getOrNull()?.let { page ->
                         var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
                         page.newReleaseAlbums.forEach { album ->
@@ -774,6 +813,8 @@ fun QuickPicksModern(
                                 }
                             }
                         }
+
+
 
                 if (showMoodsAndGenres)
                     discoverPage?.getOrNull()?.let { page ->

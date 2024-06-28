@@ -622,4 +622,5 @@
     <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
+    <string name="charts">Charts</string>
 </resources>
