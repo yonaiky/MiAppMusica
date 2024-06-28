@@ -493,14 +493,14 @@
     <string name="month_october_s">Október %s</string>
     <string name="month_november_s">November %s</string>
     <string name="month_december_s">December %s</string>
-    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumbering a monthly playlist</string>
-    <string name="info_cannot_rename_a_monthly_playlist">Cannot rename a monthly playlist</string>
-    <string name="info_cannot_delete_a_monthly_playlist">Cannot delete a monthly playlist</string>
-    <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
-    <string name="information">Information</string>
-    <string name="info_lyrics_found_on_s">Lyrics found on %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Lyrics not found on %s, try on %s</string>
-    <string name="info_lyrics_not_found_on_s">Lyrics not found on %s</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Nem lehet átszámozni egy havi lejátszási listát</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Nem lehet átnevezni egy havi lejátszási listát</string>
+    <string name="info_cannot_delete_a_monthly_playlist">Nem lehet törölni egy havi lejátszási listát</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Az átrendezés csak egy növekvő rendezésnél lehetséges</string>
+    <string name="information">Információ</string>
+    <string name="info_lyrics_found_on_s">Szöveg megtalálva a(z) %s-n</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Szöveg nincs megtalálva a(z) %s-n, próbálja meg az %s-en</string>
+    <string name="info_lyrics_not_found_on_s">Szöveg nincs megtalálva a(z) %s-n</string>
     <string name="info_lyrics_tracks_found_on_s">Lyrics tracks found on %s</string>
     <string name="info_lyrics_tracks_not_found_on_s">Lyrics tracks not found on %s</string>
     <string name="background_colors">Background colors</string>
@@ -619,5 +619,9 @@
     <string name="glow">Glow</string>
     <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
+    <string name="set_cache_location">Cache location</string>
+    <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
+    <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
+    <string name="charts">Charts</string>
     <string name="thumbnailtype">Thumbnail Type</string>
 </resources>
