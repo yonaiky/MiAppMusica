@@ -202,7 +202,7 @@ fun NextVisualizer() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomCenter)
-                            .height(35.dp)
+                            .height(50.dp)
                     ) {
                         IconButton(
                             onClick = {
@@ -212,7 +212,7 @@ fun NextVisualizer() {
                             icon = R.drawable.arrow_left,
                             color = LocalAppearance.current.colorPalette.text,
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(32.dp)
                         )
                         
                         BasicText(
@@ -225,7 +225,7 @@ fun NextVisualizer() {
                             icon = R.drawable.arrow_right,
                             color = LocalAppearance.current.colorPalette.text,
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(32.dp)
                         )
                     }
 
