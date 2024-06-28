@@ -1717,16 +1717,21 @@ fun PlayerModern(
                     modifier = Modifier
                         .weight(1.2f)
                 ) {
-                   if (showthumbnail)
-                    if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-                    thumbnailContent(
-                        modifier = Modifier
-                            .clip(thumbnailShape)
-                            .padding(
-                                horizontal = playerThumbnailSize.size.dp,
-                                vertical = 4.dp,
-                            )
-                    )
+                   if (showthumbnail) {
+                       if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+                           thumbnailContent(
+                               modifier = Modifier
+                                   .clip(thumbnailShape)
+                                   .padding(
+                                       horizontal = playerThumbnailSize.size.dp,
+                                       vertical = 4.dp,
+                                   )
+                           )
+                   } else {
+                       NextVisualizer(
+                           isDisplayed = isShowingEqualizer
+                       )
+                   }
                    Box(
                         modifier = Modifier
                             .pointerInput(Unit) {

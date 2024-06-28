@@ -187,6 +187,7 @@ fun Thumbnail(
             PlayerControlsType.Modern
         )
         var modifierUiType by remember { mutableStateOf(modifier) }
+
         if (showthumbnail)
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
               if (thumbnailType == ThumbnailType.Modern)
@@ -308,9 +309,8 @@ fun Thumbnail(
             )
 
             NextVisualizer(
-                isDisplayed = isShowingEqualizer && error == null
+                isDisplayed = isShowingEqualizer
             )
-
 
             if (error != null) {
                 SmartToast(

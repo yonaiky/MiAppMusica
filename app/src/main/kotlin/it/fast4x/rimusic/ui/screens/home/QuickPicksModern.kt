@@ -281,16 +281,6 @@ fun QuickPicksModern(
         }
     }
 
-    println(
-        "mediaItem chartsPage Quickpics $chartsPage"
-    )
-
-    /*
-    LaunchedEffect(Unit) {
-        //discoverPageAlbums = Innertube.discoverPageNewAlbums()
-        discoverPage = Innertube.discoverPage()
-    }
-     */
 
     LaunchedEffect(Unit) {
         Database.preferitesArtistsByName().collect { preferitesArtists = it }
