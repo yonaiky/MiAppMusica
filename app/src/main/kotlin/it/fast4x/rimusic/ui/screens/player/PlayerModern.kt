@@ -210,6 +210,8 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.showvisthumbnailKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -282,6 +284,10 @@ fun PlayerModern(
         mutableStateOf(false)
     }
     var isShowingLyrics by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var isShowingEqualizer by remember {
         mutableStateOf(false)
     }
 
@@ -762,7 +768,7 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
-                   if(!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
+                    if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                     BlurTransformation(
                         scale = 0.5f,
                         radius = blurStrength.toInt(),
@@ -805,10 +811,6 @@ fun PlayerModern(
 
 
     var isShowingStatsForNerds by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    var isShowingEqualizer by remember {
         mutableStateOf(false)
     }
 
@@ -878,10 +880,10 @@ fun PlayerModern(
                 )
                .background(
                     Brush.verticalGradient(
-                        0.0f to Color.Transparent,
-                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.55f) else Color.Black.copy(0.75f) else Color.Transparent,
-                        startY = if (isLandscape) POSITIVE_INFINITY else if (expandedplayer && !showlyricsthumbnail) 1400f else 800f,
-                        endY = if (isLandscape) 0f else POSITIVE_INFINITY
+                        0.0f to if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.15f) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent,
+                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(if (isLandscape) 0.15f else 0.55f) else Color.Black.copy(if (isLandscape) 0.25f else 0.75f) else Color.Transparent,
+                        startY = if (isLandscape) 0f else if (expandedplayer) 1300f else 950f,
+                        endY = POSITIVE_INFINITY
                     )
                 )
                 .combinedClickable(
@@ -893,7 +895,7 @@ fun PlayerModern(
                           isShowingLyrics = !isShowingLyrics
                     },
                     onDoubleClick = {
-                       if (!showlyricsthumbnail)
+                       if (!showlyricsthumbnail && !showvisthumbnail)
                          showthumbnail = !showthumbnail
                     },
                     onLongClick = {
@@ -1506,12 +1508,14 @@ fun PlayerModern(
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player ?: return
         val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+        var extraspace by rememberPreference(extraspaceKey, false)
 
         if (isLandscape) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
                     .padding(top = 40.dp)
+                    .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
@@ -1533,20 +1537,53 @@ fun PlayerModern(
                         .animateContentSize()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
-                    if (showthumbnail)
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        /*modifier = Modifier
+                    if (showthumbnail) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            /*modifier = Modifier
                             .weight(1f)*/
                             //.padding(vertical = 10.dp)
-                    ) {
-                        if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-                        thumbnailContent(
-                            modifier = Modifier
-                                .padding(all = 12.dp)
-                                //.padding(horizontal = 10.dp)
-                        )
+                        ) {
+                            if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
+                                thumbnailContent(
+                                    modifier = Modifier
+                                        .padding(all = 12.dp)
+                                    //.padding(horizontal = 10.dp)
+                                )
+                        }
                     }
+                    if (isShowingEqualizer && !showvisthumbnail) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .pointerInput(Unit) {
+                                    detectHorizontalDragGestures(
+                                        onHorizontalDrag = { change, dragAmount ->
+                                            deltaX = dragAmount
+                                        },
+                                        onDragStart = {
+                                        },
+                                        onDragEnd = {
+                                            if (!disablePlayerHorizontalSwipe) {
+                                                if (deltaX > 5) {
+                                                    binder.player.seekToPreviousMediaItem()
+                                                } else if (deltaX <-5){
+                                                    binder.player.forceSeekToNext()
+                                                }
+
+                                            }
+
+                                        }
+
+                                    )
+                                }
+                        ) {
+                            NextVisualizer(
+                                    isDisplayed = isShowingEqualizer
+                                )
+                        }
+                    }
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -1718,7 +1755,7 @@ fun PlayerModern(
                         .weight(1.2f)
                 ) {
                    if (showthumbnail) {
-                       if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+                       if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                            thumbnailContent(
                                modifier = Modifier
                                    .clip(thumbnailShape)
@@ -1727,10 +1764,6 @@ fun PlayerModern(
                                        vertical = 4.dp,
                                    )
                            )
-                   } else {
-                       NextVisualizer(
-                           isDisplayed = isShowingEqualizer
-                       )
                    }
                    Box(
                         modifier = Modifier
@@ -1776,6 +1809,10 @@ fun PlayerModern(
                                     ClickLyricsText.Player, ClickLyricsText.Both -> true
                                     else -> false
                                 }
+                            )
+                        if (!showvisthumbnail)
+                            NextVisualizer(
+                                isDisplayed = isShowingEqualizer
                             )
                     }
                 }

@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
@@ -216,6 +217,7 @@ fun OtherSettings() {
 
         val menuState = LocalMenuState.current
         val coroutineScope = rememberCoroutineScope()
+        var extraspace by rememberPreference(extraspaceKey, false)
 
         if (isLoading)
             DefaultDialog(
@@ -435,6 +437,16 @@ fun OtherSettings() {
             text = stringResource(R.string.enable_android_auto_support),
             isChecked = isAndroidAutoEnabled,
             onCheckedChange = { isAndroidAutoEnabled = it }
+        )
+
+        SettingsGroupSpacer()
+
+        SettingsEntryGroupText(title = stringResource(R.string.androidheadunit))
+        SwitchSettingEntry(
+            title = stringResource(R.string.extra_space),
+            text = "",
+            isChecked = extraspace,
+            onCheckedChange = { extraspace = it }
         )
 
         SettingsGroupSpacer()
