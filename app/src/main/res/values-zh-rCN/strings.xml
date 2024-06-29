@@ -612,9 +612,6 @@
     <string name="piped_playlists">上游渠道</string>
     <string name="lang_bengali">孟加拉语</string>
     <string name="lang_irish">爱尔兰语</string>
-    <string name="set_cache_location">Cache location</string>
-    <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
-    <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
     <string name="charts">Charts</string>
     <string name="lyricsoutline">歌词轮廓</string>
     <string name="fluidrainbow">液态彩虹</string>
@@ -623,5 +620,7 @@
     <string name="glow">发光</string>
     <string name="bottomgradient">显示底部渐变效果</string>
     <string name="textoutline">启用文本轮廓</string>
+    <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
+    <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
     <string name="thumbnailtype">Thumbnail Type</string>
 </resources>
