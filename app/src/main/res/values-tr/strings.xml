@@ -624,4 +624,6 @@
     <string name="error_file_unsupported_format">Bu dosya desteklenmeyen bir biçime sahip gibi görünüyor</string>
     <string name="charts">Grafikler</string>
     <string name="thumbnailtype">Küçük Resim Tipi</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
 </resources>

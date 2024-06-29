@@ -52,6 +52,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.extensions.games.pacman.Pacman
+import it.fast4x.rimusic.extensions.games.snake.SnakeGame
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -195,9 +196,16 @@ fun AppNavigation(
             )
         }
 
-        composable(route = NavRoutes.games.name) {
+        composable(route = NavRoutes.gamePacman.name) {
             modalBottomSheedPage {
                 Pacman()
+            }
+
+        }
+
+        composable(route = NavRoutes.gameSnake.name) {
+            modalBottomSheedPage {
+                SnakeGame()
             }
 
         }

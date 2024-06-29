@@ -624,4 +624,6 @@
     <string name="error_file_unsupported_format">Файл имеет неподдерживаемый формат</string>
     <string name="charts">Чарты</string>
     <string name="thumbnailtype">Тип превью</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
 </resources>

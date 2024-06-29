@@ -1,8 +1,10 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -50,7 +52,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun appBar(
     navController: NavController
@@ -102,26 +104,30 @@ fun appBar(
                     contentDescription = null,
                     modifier = Modifier
                         .size(36.dp)
-                        .clickable {
-                            countForReveal++
-                            if (countForReveal == 3) {
-                                SmartToast("Do you like clicking? Then continue...", durationLong = true)
-                            }
-                            if (countForReveal == 6) {
-                                SmartToast("Okay, you’re looking for something, keep...", durationLong = true)
-                            }
-                            if (countForReveal == 9) {
+                        .combinedClickable (
+                            onClick = {
+                                countForReveal++
+                                if (countForReveal == 3) {
+                                    SmartToast("Do you like clicking? Then continue...", durationLong = true)
+                                }
+                                if (countForReveal == 6) {
+                                    SmartToast("Okay, you’re looking for something, keep...", durationLong = true)
+                                }
+                                if (countForReveal == 9) {
+                                    SmartToast("You are a number one, click and enjoy the surprise", durationLong = true)
+                                }
+                                if (countForReveal == 10) {
+                                    countForReveal = 0
+                                    navController.navigate(NavRoutes.gamePacman.name)
+                                }
+                                //if (navController.currentDestination?.route != NavRoutes.home.name)
+                                //    navController.navigate(NavRoutes.home.name)
+                            },
+                            onLongClick = {
                                 SmartToast("You are a number one, click and enjoy the surprise", durationLong = true)
+                                navController.navigate(NavRoutes.gameSnake.name)
                             }
-                            if (countForReveal == 10) {
-                                countForReveal = 0
-                                navController.navigate(NavRoutes.games.name)
-                            }
-
-
-                            //if (navController.currentDestination?.route != NavRoutes.home.name)
-                            //    navController.navigate(NavRoutes.home.name)
-                        }
+                        )
                 )
                 Image(
                     painter = painterResource(R.drawable.app_logo_text),

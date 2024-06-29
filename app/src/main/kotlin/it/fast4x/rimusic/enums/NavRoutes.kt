@@ -6,6 +6,8 @@ enum class NavRoutes {
     artist,
     builtInPlaylist,
     games,
+    gamePacman,
+    gameSnake,
     history,
     localPlaylist,
     mood,
