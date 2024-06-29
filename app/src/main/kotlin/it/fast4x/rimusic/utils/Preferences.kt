@@ -207,6 +207,8 @@ const val blackgradientKey = "blackgradient"
 const val bottomgradientKey = "bottomgradient"
 const val textoutlineKey = "textoutline"
 const val thumbnailTypeKey = "thumbnailType"
+const val showvisthumbnailKey = "showvisthumbnail"
+const val extraspaceKey = "extraspace"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

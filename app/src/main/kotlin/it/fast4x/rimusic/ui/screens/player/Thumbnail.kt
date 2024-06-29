@@ -71,6 +71,7 @@ import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 @ExperimentalAnimationApi
@@ -126,6 +127,7 @@ fun Thumbnail(
     }
 
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
 
     player.DisposableListener {
         object : Player.Listener {
@@ -189,7 +191,7 @@ fun Thumbnail(
         var modifierUiType by remember { mutableStateOf(modifier) }
 
         if (showthumbnail)
-            if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+            if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
               if (thumbnailType == ThumbnailType.Modern)
                 modifierUiType = modifier
                  .padding(vertical = 8.dp)
@@ -214,7 +216,7 @@ fun Thumbnail(
             modifier = modifierUiType
         ) {
             if (showthumbnail)
-                if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+                if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                     if (artImageAvailable)
                         AsyncImage(
                             model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString()
@@ -307,10 +309,11 @@ fun Thumbnail(
                 isDisplayed = isShowingStatsForNerds && error == null,
                 onDismiss = { onShowStatsForNerds(false) }
             )
-
-            NextVisualizer(
-                isDisplayed = isShowingEqualizer
-            )
+            if (showvisthumbnail) {
+                NextVisualizer(
+                    isDisplayed = isShowingEqualizer
+                )
+            }
 
             if (error != null) {
                 SmartToast(
