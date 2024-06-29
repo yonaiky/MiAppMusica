@@ -738,7 +738,7 @@ fun AppearanceSettings() {
             )
                 SwitchSettingEntry(
                     title = stringResource(R.string.bottomgradient),
-                    text = "",
+                    text = stringResource(R.string.lightthemegradientmessage),
                     isChecked = bottomgradient,
                     onCheckedChange = { bottomgradient = it }
                 )
