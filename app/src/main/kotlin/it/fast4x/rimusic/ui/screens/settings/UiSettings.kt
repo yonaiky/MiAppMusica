@@ -218,12 +218,12 @@ fun  UiSettings() {
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
-    var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)
+    //var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
     var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
     var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
+    //var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
     var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
@@ -797,7 +797,7 @@ fun  UiSettings() {
                         disablePlayerHorizontalSwipe = true
                         disableIconButtonOnTop = true
                         playerTimelineType = PlayerTimelineType.Default
-                        playerVisualizerType = PlayerVisualizerType.Disabled
+                        //playerVisualizerType = PlayerVisualizerType.Disabled
                         playerThumbnailSize = PlayerThumbnailSize.Medium
                         thumbnailTapEnabled = true
                         showSearchTab = true
@@ -807,7 +807,6 @@ fun  UiSettings() {
                         disablePlayerHorizontalSwipe = false
                         disableIconButtonOnTop = false
                         playerTimelineType = lastPlayerTimelineType
-                        playerVisualizerType = lastPlayerVisualizerType
                         playerThumbnailSize = lastPlayerThumbnailSize
                         playerPlayButtonType = lastPlayerPlayButtonType
                     }

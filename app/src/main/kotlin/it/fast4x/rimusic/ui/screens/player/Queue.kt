@@ -110,10 +110,7 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.BehindMotionSwipe
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.LeftAction
-import it.fast4x.rimusic.utils.RightActions
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState

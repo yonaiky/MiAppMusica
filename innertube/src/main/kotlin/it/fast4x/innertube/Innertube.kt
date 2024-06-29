@@ -253,6 +253,15 @@ object Innertube {
         )
     }
 
+    data class ItemsPage<T : Item>(
+        var items: List<T>?,
+        val continuation: String?
+    )
+
+    data class ChartsPage(
+        val playlists: List<PlaylistItem>? = null
+    )
+
     fun MusicNavigationButtonRenderer.toMood(): Mood.Item? {
         return Mood.Item(
             title = buttonText.runs.firstOrNull()?.text ?: return null,
@@ -261,9 +270,4 @@ object Innertube {
         )
     }
 
-
-    data class ItemsPage<T : Item>(
-        var items: List<T>?,
-        val continuation: String?
-    )
 }

@@ -664,7 +664,7 @@ fun DataSettings() {
         }
 
         EnumValueSelectorSettingsEntry(
-            title = "Cache location",
+            title = stringResource(R.string.set_cache_location),
             selectedValue = exoPlayerCacheLocation,
             onValueSelected = { exoPlayerCacheLocation = it },
             valueText = {
@@ -675,7 +675,7 @@ fun DataSettings() {
             }
         )
 
-        SettingsDescription("Private cache location, can't be cleaned by the system")
+        SettingsDescription(stringResource(R.string.info_private_cache_location_can_t_cleaned))
         ImportantSettingsDescription(stringResource(R.string.restarting_rimusic_is_required))
 
         SettingsGroupSpacer()

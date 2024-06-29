@@ -10,19 +10,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -47,14 +36,12 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.Size
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
+import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
@@ -66,24 +53,20 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
-import it.fast4x.rimusic.utils.dropShadow
-import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
-import it.fast4x.rimusic.utils.thumbnail
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 import it.fast4x.rimusic.utils.showthumbnailKey
@@ -134,10 +117,9 @@ fun Thumbnail(
     val videoidmismatcherror =
         stringResource(R.string.error_the_returned_video_id_doesn_t_match_the_requested_one)
     val unknownplaybackerror =
-        stringResource(R.string.error_an_unknown_playback_error_has_occurred) + " " +
-                stringResource(R.string.restart_app_please)
+        stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
-    val formatUnsupported = "This file seems to have an unsupported format"
+    val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
     var artImageAvailable by remember {
         mutableStateOf(true)
@@ -200,7 +182,12 @@ fun Thumbnail(
     ) { currentWindow ->
 
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+        val playerControlsType by rememberPreference(
+            playerControlsTypeKey,
+            PlayerControlsType.Modern
+        )
         var modifierUiType by remember { mutableStateOf(modifier) }
+
         if (showthumbnail)
             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
               if (thumbnailType == ThumbnailType.Modern)
@@ -222,55 +209,57 @@ fun Thumbnail(
                  .clip(LocalAppearance.current.thumbnailShape)
 
 
+
         Box(
             modifier = modifierUiType
         ) {
             if (showthumbnail)
-             if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
-              if(artImageAvailable)
-                AsyncImage(
-                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200),
-                    /*
-                    model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
-                        thumbnailSizePx
-                    ),
-                     */
-                    /*
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
-                        .size(Size.ORIGINAL)
-                        .scale(Scale.FIT)
-                        .build(),
-                     */
-                    onSuccess = {
-                        artImageAvailable = true
-                    },
-                    onError = {
-                        artImageAvailable = false
-                    },
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = { onShowStatsForNerds(true) },
-                                onTap = if (thumbnailTapEnabledKey) {
-                                    {
-                                        onShowLyrics(true)
-                                        onShowEqualizer(false)
-                                    }
-                                } else null,
-                                onDoubleTap = { onDoubleTap() }
-                            )
+                if ((!isShowingLyrics) || (isShowingLyrics && showlyricsthumbnail))
+                    if (artImageAvailable)
+                        AsyncImage(
+                            model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString()
+                                .resize(1200, 1200),
+                            /*
+                            model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail(
+                                thumbnailSizePx
+                            ),
+                             */
+                            /*
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(currentWindow.mediaItem.mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                .size(Size.ORIGINAL)
+                                .scale(Scale.FIT)
+                                .build(),
+                             */
+                            onSuccess = {
+                                artImageAvailable = true
+                            },
+                            onError = {
+                                artImageAvailable = false
+                            },
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onLongPress = { onShowStatsForNerds(true) },
+                                        onTap = if (thumbnailTapEnabledKey) {
+                                            {
+                                                onShowLyrics(true)
+                                                onShowEqualizer(false)
+                                            }
+                                        } else null,
+                                        onDoubleTap = { onDoubleTap() }
+                                    )
 
-                        }
-                        .fillMaxSize()
-                        .clip(LocalAppearance.current.thumbnailShape)
+                                }
+                                .fillMaxSize()
+                                .clip(LocalAppearance.current.thumbnailShape)
 
 
-                )
+                        )
 
-              if(!artImageAvailable)
+            if (!artImageAvailable)
                 Image(
                     painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
@@ -295,23 +284,23 @@ fun Thumbnail(
                 )
             //if (!currentWindow.mediaItem.isLocal)
             if (showlyricsthumbnail)
-            Lyrics(
-                mediaId = currentWindow.mediaItem.mediaId,
-                isDisplayed = isShowingLyrics && error == null,
-                onDismiss = {
-                    if (thumbnailTapEnabledKey) onShowLyrics(false)
-                },
-                ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
-                size = thumbnailSizeDp,
-                mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
-                durationProvider = player::getDuration,
-                onMaximize = onMaximize,
-                isLandscape = isLandscape,
-                enableClick = when (clickLyricsText) {
-                    ClickLyricsText.Player, ClickLyricsText.Both -> true
-                    else -> false
-                }
-            )
+                Lyrics(
+                    mediaId = currentWindow.mediaItem.mediaId,
+                    isDisplayed = isShowingLyrics && error == null,
+                    onDismiss = {
+                        if (thumbnailTapEnabledKey) onShowLyrics(false)
+                    },
+                    ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
+                    size = thumbnailSizeDp,
+                    mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
+                    durationProvider = player::getDuration,
+                    onMaximize = onMaximize,
+                    isLandscape = isLandscape,
+                    enableClick = when (clickLyricsText) {
+                        ClickLyricsText.Player, ClickLyricsText.Both -> true
+                        else -> false
+                    }
+                )
 
             StatsForNerds(
                 mediaId = currentWindow.mediaItem.mediaId,
@@ -319,11 +308,26 @@ fun Thumbnail(
                 onDismiss = { onShowStatsForNerds(false) }
             )
 
-
-            ShowVisualizer(
-                isDisplayed = isShowingEqualizer && error == null
+            NextVisualizer(
+                isDisplayed = isShowingEqualizer
             )
 
+            if (error != null) {
+                SmartToast(
+                    if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
+                    else when (error?.cause?.cause) {
+                        is UnresolvedAddressException, is UnknownHostException -> networkerror
+                        is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                        is UnplayableException -> originalvideodeletederror
+                        is LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                        is VideoIdMismatchException -> videoidmismatcherror
+                        is PlayableFormatNonSupported -> formatUnsupported
+                        else -> unknownplaybackerror
+                    }, PopupType.Error
+                )
+                player.seekToNext()
+            }
+            /*
             PlaybackError(
                 isDisplayed = error != null,
                 messageProvider = {
@@ -344,6 +348,7 @@ fun Thumbnail(
                     player.seekToNext()
                 }
             )
+             */
         }
     }
 }

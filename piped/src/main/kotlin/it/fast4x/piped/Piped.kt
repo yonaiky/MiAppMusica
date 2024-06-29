@@ -247,6 +247,8 @@ object Piped {
 
         suspend fun songs(session: Session, id: UUID) = runCatchingCancellable {
             request(session, "playlists/$id").body<Playlist>()
+        }?.onFailure {
+            println("pipedInfo piped.playlists.songs: failed ${it.message}")
         }
 
     }

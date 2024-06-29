@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.utils
 
+//import it.fast4x.rimusic.BuildConfig
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
@@ -20,7 +21,6 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.UserAgent
@@ -29,10 +29,7 @@ import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.playlistPageLong
 import it.fast4x.innertube.utils.ProxyPreferences
-import it.fast4x.innertube.utils.plus
-//import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -181,28 +178,7 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                 .build()
         )
         .build()
-/*
-val Song.asMediaItem: MediaItem
-    @UnstableApi
-    get() = MediaItem.Builder()
-        .setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle(title)
-                .setArtist(artistsText)
-                .setArtworkUri(thumbnailUrl?.toUri())
-                .setExtras(
-                    bundleOf(
-                        "durationText" to durationText
-                    )
-                )
-                .build()
-        )
-        .setMediaId(id)
-        .setUri(id)
-        .setCustomCacheKey(id)
-        .build()
 
-*/
 
 val Song.asMediaItem: MediaItem
     @UnstableApi
@@ -386,86 +362,6 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
 
 }
 
-
-//fix loading playlist with much songs
-/*
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
-    var playlistPage = getOrNull() ?: return null
-
-    while (playlistPage.songsPage?.continuation != null) {
-        val continuation = playlistPage.songsPage?.continuation!!
-        val otherPlaylistPageResult = Innertube.playlistPage(ContinuationBody(continuation = continuation)) ?: break
-
-        if (otherPlaylistPageResult.isFailure) break
-
-        otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
-            playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
-        }
-    }
-
-    return Result.success(playlistPage)
-}
-*/
-
-/*
-// fix loading playlist in infinity loop
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
-    maxDepth: Int = Int.MAX_VALUE
-) = runCatching {
-    val page = getOrThrow()
-    val songs = page.songsPage?.items.orEmpty().toMutableSet()
-    var continuation = page.songsPage?.continuation
-
-    var depth = 0
-
-    while (continuation != null && depth++ < maxDepth) {
-        val newSongs = Innertube.playlistPage(
-            body = ContinuationBody(continuation = continuation)
-        )?.getOrNull()?.takeUnless { it.items.isNullOrEmpty() } ?: break
-
-        if (newSongs.items?.any { it in songs } != false) break
-
-        newSongs.items?.let { songs += it }
-        continuation = newSongs.continuation
-    }
-
-    page.copy(
-        songsPage = Innertube.ItemsPage(
-            items = songs.toList(),
-            continuation = null
-        )
-    )
-}
-*/
-
-/*
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
-    maxDepth: Int = Int.MAX_VALUE
-): Result<Innertube.PlaylistOrAlbumPage>? {
-    var playlistPage = getOrNull() ?: return null
-
-    //playlistPage.songsPage?.continuation?.let { Log.d("mediaItem", it) }
-
-    var depth = 0
-    while (playlistPage.songsPage?.continuation != null && depth++ < maxDepth) {
-        //Log.d("mediaItemDepth","depth $depth")
-        val newSongs = Innertube.playlistPage(
-            body = ContinuationBody(continuation = playlistPage.songsPage?.continuation!!)
-        )?.getOrNull()?.takeIf { result ->
-            //Log.d("mediaItemResult","result items ${result.items?.size}")
-            result.items?.let { items ->
-                items.isNotEmpty() && playlistPage.songsPage?.items?.none { it in items } != false
-            } != false
-        } ?: break
-
-        playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + newSongs)
-    }
-
-    return Result.success(playlistPage)
-}
- */
-
-
 @Composable
 fun CheckAvailableNewVersion(
     onDismiss: () -> Unit
@@ -589,25 +485,6 @@ fun isNetworkAvailableComposable(): Boolean {
     }
 }
 
-/*
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
-    var playlistPage = getOrNull() ?: return null
-
-    while (playlistPage.songsPage?.continuation != null) {
-        val continuation = playlistPage.songsPage?.continuation!!
-        val otherPlaylistPageResult = Innertube.playlistPage(ContinuationBody(continuation = continuation)) ?: break
-
-        if (otherPlaylistPageResult.isFailure) break
-
-        otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
-            playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
-        }
-    }
-
-    return Result.success(playlistPage)
-}
- */
-
 fun getHttpClient() = HttpClient() {
     install(UserAgent) {
         agent = "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
@@ -669,6 +546,7 @@ inline val isAtLeastAndroid10
 
 inline val isAtLeastAndroid11
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
 inline val isAtLeastAndroid12
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 

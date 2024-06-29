@@ -612,4 +612,15 @@
     <string name="expandedplayer">Expanded Player</string>
     <string name="expandedlyrics">Expanded view of lyrics</string>
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="set_cache_location">Cache location</string>
+    <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
+    <string name="lyricsoutline">Lyrics Outline</string>
+    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="fluidtheme">Fluid Theme</string>
+    <string name="blackgradient">Black Gradient at Bottom</string>
+    <string name="glow">Glow</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="textoutline">Enable Text Outline</string>
+    <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
+    <string name="charts">Charts</string>
 </resources>

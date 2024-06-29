@@ -1,35 +1,36 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,31 +43,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
-import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
-import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.Info
-import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -74,21 +76,20 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
@@ -97,14 +98,13 @@ import it.fast4x.rimusic.utils.albumSortOrderKey
 import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
-import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
-import kotlinx.coroutines.coroutineScope
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlin.random.Random
 
 @ExperimentalTextApi
@@ -121,16 +121,30 @@ fun HomeAlbumsModern(
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var sortBy by rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     var sortOrder by rememberPreference(albumSortOrderKey, SortOrder.Descending)
 
     var items by persist<List<Album>>(tag = "home/albums", emptyList())
 
-    LaunchedEffect(sortBy, sortOrder) {
+    var searching by rememberSaveable { mutableStateOf(false) }
+    var filter: String? by rememberSaveable { mutableStateOf(null) }
+
+    LaunchedEffect(sortBy, sortOrder, filter) {
         Database.albums(sortBy, sortOrder).collect { items = it }
     }
+
+    var filterCharSequence: CharSequence
+    filterCharSequence = filter.toString()
+    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
+    if (!filter.isNullOrBlank())
+        items = items
+            .filter {
+                it.title?.contains(filterCharSequence, true) ?: false
+                        || it.year?.contains(filterCharSequence, true) ?: false
+                        || it.authorsText?.contains(filterCharSequence, true) ?: false
+            }
 
     var itemSize by rememberPreference(albumsItemSizeKey, LibraryItemSize.Small.size)
     val thumbnailSizeDp = itemSize.dp + 24.dp
@@ -141,13 +155,16 @@ fun HomeAlbumsModern(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-/*
-    var showSortTypeSelectDialog by remember {
-        mutableStateOf(false)
-    }
+    val navigationBarPosition by rememberPreference(
+        navigationBarPositionKey,
+        NavigationBarPosition.Bottom
+    )
+    /*
+        var showSortTypeSelectDialog by remember {
+            mutableStateOf(false)
+        }
 
- */
+     */
 
     val lazyListState = rememberLazyListState()
 
@@ -161,18 +178,23 @@ fun HomeAlbumsModern(
 
     val lazyGridState = rememberLazyGridState()
 
+    val thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
 
-
-
-    Box (
+    Box(
         modifier = Modifier
-        .background(colorPalette.background0)
-        //.fillMaxSize()
-        .fillMaxHeight()
-        .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-            navigationBarPosition == NavigationBarPosition.Top ||
-            navigationBarPosition == NavigationBarPosition.Bottom) 1f
-        else Dimensions.contentWidthRightBar)
+            .background(colorPalette.background0)
+            //.fillMaxSize()
+            .fillMaxHeight()
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
 
 
@@ -208,14 +230,14 @@ fun HomeAlbumsModern(
                 span = { GridItemSpan(maxLineSpan) }
             ) {
 
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
                         .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
-                ){
+                ) {
                     if (uiType == UiType.RiMusic)
                         TitleSection(title = stringResource(R.string.albums))
 
@@ -240,7 +262,7 @@ fun HomeAlbumsModern(
                             .combinedClickable(
                                 onClick = { sortOrder = !sortOrder },
                                 onLongClick = {
-                                    menuState.display{
+                                    menuState.display {
                                         SortMenu(
                                             title = stringResource(R.string.sorting_order),
                                             onDismiss = menuState::hide,
@@ -257,18 +279,29 @@ fun HomeAlbumsModern(
                     )
 
                     HeaderIconButton(
+                        onClick = { searching = !searching },
+                        icon = R.drawable.search_circle,
+                        color = colorPalette.text,
+                        iconSize = 24.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 2.dp)
+                    )
+
+                    HeaderIconButton(
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
                             .rotate(rotationAngle),
                         icon = R.drawable.dice,
-                        enabled = items.isNotEmpty() ,
+                        enabled = items.isNotEmpty(),
                         color = colorPalette.text,
                         onClick = {
                             isRotated = !isRotated
                             //onAlbumClick(items.get((0..<items.size).random()))
-                            onAlbumClick(items.get(
-                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
-                            ))
+                            onAlbumClick(
+                                items.get(
+                                    Random(System.currentTimeMillis()).nextInt(0, items.size - 1)
+                                )
+                            )
                         },
                         iconSize = 16.dp
                     )
@@ -339,6 +372,113 @@ fun HomeAlbumsModern(
 
                 }
             }
+            if (searching)
+                item(
+                    key = "headerFilter",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    /*        */
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.Bottom,
+                        modifier = Modifier
+                            //.requiredHeight(30.dp)
+                            .padding(all = 10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        AnimatedVisibility(visible = searching) {
+                            val focusRequester = remember { FocusRequester() }
+                            val focusManager = LocalFocusManager.current
+                            val keyboardController = LocalSoftwareKeyboardController.current
+
+                            LaunchedEffect(searching) {
+                                focusRequester.requestFocus()
+                            }
+
+                            BasicTextField(
+                                value = filter ?: "",
+                                onValueChange = { filter = it },
+                                textStyle = typography.xs.semiBold,
+                                singleLine = true,
+                                maxLines = 1,
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    if (filter.isNullOrBlank()) filter = ""
+                                    focusManager.clearFocus()
+                                }),
+                                cursorBrush = SolidColor(colorPalette.text),
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        IconButton(
+                                            onClick = {},
+                                            icon = R.drawable.search,
+                                            color = colorPalette.favoritesIcon,
+                                            modifier = Modifier
+                                                .align(Alignment.CenterStart)
+                                                .size(16.dp)
+                                        )
+                                    }
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(horizontal = 30.dp)
+                                    ) {
+                                        androidx.compose.animation.AnimatedVisibility(
+                                            visible = filter?.isEmpty() ?: true,
+                                            enter = fadeIn(tween(100)),
+                                            exit = fadeOut(tween(100)),
+                                        ) {
+                                            BasicText(
+                                                text = stringResource(R.string.search),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                            )
+                                        }
+
+                                        innerTextField()
+                                    }
+                                },
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .fillMaxWidth()
+                                    .background(
+                                        colorPalette.background4,
+                                        shape = thumbnailRoundness.shape()
+                                    )
+                                    .focusRequester(focusRequester)
+                                    .onFocusChanged {
+                                        if (!it.hasFocus) {
+                                            keyboardController?.hide()
+                                            if (filter?.isBlank() == true) {
+                                                filter = null
+                                                searching = false
+                                            }
+                                        }
+                                    }
+                            )
+                        }
+                        /*
+                        else {
+                            HeaderIconButton(
+                                onClick = { searching = true },
+                                icon = R.drawable.search_circle,
+                                color = colorPalette.text,
+                                iconSize = 24.dp
+                            )
+                        }
+
+                         */
+                    }
+                    /*        */
+                }
 
             items(
                 items = items,
@@ -455,19 +595,19 @@ fun HomeAlbumsModern(
                                                 0
                                             //Log.d("mediaItem", "next initial pos ${position}")
                                             //if (listMediaItems.isEmpty()) {
-                                                songs.forEachIndexed { index, song ->
-                                                    transaction {
-                                                        Database.insert(song.asMediaItem)
-                                                        Database.insert(
-                                                            SongPlaylistMap(
-                                                                songId = song.asMediaItem.mediaId,
-                                                                playlistId = playlistPreview.playlist.id,
-                                                                position = position + index
-                                                            )
+                                            songs.forEachIndexed { index, song ->
+                                                transaction {
+                                                    Database.insert(song.asMediaItem)
+                                                    Database.insert(
+                                                        SongPlaylistMap(
+                                                            songId = song.asMediaItem.mediaId,
+                                                            playlistId = playlistPreview.playlist.id,
+                                                            position = position + index
                                                         )
-                                                    }
-                                                    //Log.d("mediaItemPos", "added position ${position + index}")
+                                                    )
                                                 }
+                                                //Log.d("mediaItemPos", "added position ${position + index}")
+                                            }
                                             //}
                                         }
                                     )
@@ -494,7 +634,7 @@ fun HomeAlbumsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if(uiType == UiType.ViMusic || showFloatingIcon)
+        if (uiType == UiType.ViMusic || showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

@@ -194,6 +194,7 @@ import java.math.RoundingMode
 import kotlin.math.absoluteValue
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.visualizerEnabledKey
 
 
 @ExperimentalTextApi
@@ -256,10 +257,7 @@ fun Player(
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
-    val playerVisualizerType by rememberPreference(
-        playerVisualizerTypeKey,
-        PlayerVisualizerType.Disabled
-    )
+    val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
     val playbackFadeDuration by rememberPreference(
         playbackFadeDurationKey,
@@ -656,7 +654,6 @@ fun Player(
         playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
     ) {
-        val context = LocalContext.current
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             dynamicColorPalette = dynamicColorPaletteOf(
@@ -1654,7 +1651,7 @@ fun Player(
                             )
 
 
-                        if (playerVisualizerType != PlayerVisualizerType.Disabled)
+                        if (visualizerEnabled)
                             IconButton(
                                 icon = R.drawable.sound_effect,
                                 color = if (isShowingEqualizer) colorPalette.text else colorPalette.textDisabled,

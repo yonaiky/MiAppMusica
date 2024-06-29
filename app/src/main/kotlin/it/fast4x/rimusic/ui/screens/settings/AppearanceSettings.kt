@@ -117,6 +117,7 @@ import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -158,10 +159,13 @@ fun AppearanceSettings() {
         showDownloadButtonBackgroundPlayerKey,
         true
     )
+    var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
+    /*
     var playerVisualizerType by rememberPreference(
         playerVisualizerTypeKey,
         PlayerVisualizerType.Disabled
     )
+    */
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
@@ -891,6 +895,13 @@ fun AppearanceSettings() {
                 true
             )
         ) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.visualizer),
+                text = "",
+                isChecked = visualizerEnabled,
+                onCheckedChange = { visualizerEnabled = it }
+            )
+            /*
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.visualizer),
                 selectedValue = playerVisualizerType,
@@ -908,6 +919,7 @@ fun AppearanceSettings() {
                     }
                 }
             )
+            */
             ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
         }
 

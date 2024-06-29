@@ -616,8 +616,8 @@ data class MusicResponsiveHeaderRenderer (
     val title: Index,
     val subtitle: Index,
     val trackingParams: String,
-    val straplineTextOne: StraplineTextOne,
-    val straplineThumbnail: StraplineThumbnailClass,
+    val straplineTextOne: StraplineTextOne? = null,
+    val straplineThumbnail: StraplineThumbnailClass? = null,
     val subtitleBadge: List<Badge>? = null,
     val description: MusicResponsiveHeaderRendererDescription? = null,
     val secondSubtitle: Index
@@ -729,8 +729,8 @@ data class DescriptionRun (
 
 @Serializable
 data class PurpleNavigationEndpoint (
-    val clickTrackingParams: String,
-    val urlEndpoint: URLEndpoint
+    val clickTrackingParams: String? = null,
+    val urlEndpoint: URLEndpoint? = null
 )
 
 @Serializable
