@@ -606,8 +606,8 @@
     <string name="timelinesize">Tamanho do Reprodutor da Timeline</string>
     <string name="actionspacedevenly">Uniformemente Espaçado</string>
     <string name="expandedplayer">Reprodutor Expandido</string>
-    <string name="expandedlyrics">Exibição expandida das letras</string>
-    <string name="expandedlyricsinfo">Funciona apenas quando a miniatura das letras estiver desativada</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Conecte sua conta Piped primeiro ou desative a sincronização do Piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengalês</string>
@@ -627,4 +627,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>
