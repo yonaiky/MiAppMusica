@@ -117,6 +117,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [Adam Kop](https://crowdin.com/profile/damianadam000)
 - [agefcgo](https://crowdin.com/profile/agefcgo)
 - [Ahmad Al Juwaisri](https://crowdin.com/profile/juwaisri)
+- [Ann Naser Nabil] (https://github.com/AnnNaserNabil)
 - [Alnoer](https://crowdin.com/profile/Alnoer)
 - [beez276](https://crowdin.com/profile/beez276)
 - [BabyBenefactor](https://crowdin.com/profile/BabyBenefactor)
