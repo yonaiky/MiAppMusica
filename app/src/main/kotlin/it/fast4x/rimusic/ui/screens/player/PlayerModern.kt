@@ -1598,6 +1598,7 @@ fun PlayerModern(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .weight(1f)
+                            .navigationBarsPadding()
                             .pointerInput(Unit) {
                                 detectHorizontalDragGestures(
                                     onHorizontalDrag = { change, dragAmount ->
