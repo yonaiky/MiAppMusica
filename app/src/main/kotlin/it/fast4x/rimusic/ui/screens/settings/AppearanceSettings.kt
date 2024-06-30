@@ -119,6 +119,7 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -221,10 +222,7 @@ fun AppearanceSettings() {
         ThumbnailRoundness.Heavy
 
     )
-    var lyricsColor by rememberPreference(
-        lyricsColorKey,
-        LyricsColor.Thememode
-    )
+
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
@@ -253,6 +251,7 @@ fun AppearanceSettings() {
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
     Column(
         modifier = Modifier
@@ -389,6 +388,7 @@ fun AppearanceSettings() {
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
+        if (showlyricsthumbnail) expandedlyrics = false
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -510,6 +510,18 @@ fun AppearanceSettings() {
                         }
                     )
         }
+        if (!showlyricsthumbnail)
+            if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.expandedlyrics),
+                    text = stringResource(R.string.expandedlyricsinfo),
+                    isChecked = expandedlyrics,
+                    onCheckedChange = { expandedlyrics = it }
+                )
 
         if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
                 filterCharSequence,
@@ -1023,7 +1035,7 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-        if (!showlyricsthumbnail and !isLandscape)
+        if (!showlyricsthumbnail and !expandedlyrics and !isLandscape)
         if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
                 filterCharSequence,
                 true

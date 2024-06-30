@@ -210,6 +210,7 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 
@@ -290,6 +291,7 @@ fun PlayerModern(
     var isShowingEqualizer by remember {
         mutableStateOf(false)
     }
+    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
 
     if (showBlurPlayerDialog) {
 
@@ -393,6 +395,9 @@ fun PlayerModern(
         )
     }
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
+
+    if ((expandedlyrics) && (!isShowingLyrics)) expandedplayer = false
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
@@ -466,7 +471,6 @@ fun PlayerModern(
 
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-    var expandedplayer by rememberPreference(expandedplayerKey, false)
 
 
     var likedAt by rememberSaveable {
@@ -891,9 +895,11 @@ fun PlayerModern(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
-                       if(thumbnailTapEnabled)
+                       if(thumbnailTapEnabled){
+                          if (expandedlyrics) expandedplayer = !expandedplayer
                           if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
                           isShowingLyrics = !isShowingLyrics
+                        }
                     },
                     onDoubleClick = {
                        if (!showlyricsthumbnail && !showvisthumbnail)
@@ -981,8 +987,10 @@ fun PlayerModern(
             isShowingEqualizer = isShowingEqualizer,
             onShowEqualizer = { isShowingEqualizer = it },
             showthumbnail = showthumbnail,
+            expandedplayer = expandedplayer,
+            onexpandedplayer = { expandedplayer = it },
             onMaximize = {
-                    showFullLyrics = true
+                showFullLyrics = true
             },
             onDoubleTap = {
                 val currentMediaItem = binder.player.currentMediaItem
@@ -1355,6 +1363,7 @@ fun PlayerModern(
                                 color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
+                                    if (expandedlyrics) expandedplayer = !expandedplayer
                                     if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
                                     isShowingLyrics = !isShowingLyrics
                                 },
@@ -1362,7 +1371,7 @@ fun PlayerModern(
                                     .size(24.dp),
                             )
                         if (!isLandscape)
-                         if (expandedplayertoggle && !showlyricsthumbnail)
+                         if (expandedplayertoggle && !showlyricsthumbnail && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,
@@ -1795,8 +1804,10 @@ fun PlayerModern(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
-                                    if (thumbnailTapEnabled)
+                                    if (thumbnailTapEnabled) {
+                                        if (expandedlyrics) expandedplayer = !expandedplayer
                                         isShowingLyrics = false
+                                    }
                                 },
                                 ensureSongInserted = { Database.insert(mediaItem) },
                                 size = 1000.dp,

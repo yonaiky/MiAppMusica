@@ -1083,6 +1083,8 @@ fun Player(
                 isShowingEqualizer = isShowingEqualizer,
                 onShowEqualizer = { isShowingEqualizer = it },
                 showthumbnail = showthumbnail,
+                expandedplayer = expandedplayer,
+                onexpandedplayer = { expandedplayer = it },
                 onMaximize = { lyricsBottomSheetState.expandSoft() },
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
