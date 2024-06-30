@@ -320,9 +320,9 @@ fun QuickPicksModern(
     }
     cachedSongs?.addAll(downloadedSongs)
 
-    val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
-    if (enableCreateMonthlyPlaylists)
-        CheckMonthlyPlaylist()
+    //val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
+    //if (enableCreateMonthlyPlaylists)
+    //    CheckMonthlyPlaylist()
 
     PullToRefreshBox(
         refreshing = refreshing,
