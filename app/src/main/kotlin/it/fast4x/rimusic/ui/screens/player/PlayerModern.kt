@@ -878,14 +878,15 @@ fun PlayerModern(
                     contentScale = ContentScale.Crop,
                     sizeToIntrinsics = false
                 )
-               .background(
+                .background(
                     Brush.verticalGradient(
-                        0.0f to if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.15f) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent,
-                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(if (isLandscape) 0.15f else 0.55f) else Color.Black.copy(if (isLandscape) 0.25f else 0.75f) else Color.Transparent,
-                        startY = if (isLandscape) 0f else if (expandedplayer) 1300f else 950f,
+                        0.0f to Color.Transparent,
+                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(if (isLandscape) 0.8f else 0.75f) else Color.Black.copy(if (isLandscape) 0.8f else 0.75f) else Color.Transparent,
+                        startY = if (isLandscape) 600f else if (expandedplayer) 1300f else 950f,
                         endY = POSITIVE_INFINITY
                     )
                 )
+                .background(if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.25f) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent)
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,

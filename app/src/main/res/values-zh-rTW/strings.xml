@@ -446,7 +446,7 @@
     <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
     <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
     <string name="library_collections">收藏</string>
-    <string name="info_show_hide_hidden_songs">Show/hide hidden songs</string>
+    <string name="info_show_hide_hidden_songs">顯示或繼續隱藏被隱藏的歌曲</string>
     <string name="info_shuffle">隨機播放</string>
     <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
