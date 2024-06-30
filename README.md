@@ -48,6 +48,7 @@
 ## 🌐 Languages available
 - **Afrikaans** thanks to [HelloZebra1133](https://crowdin.com/profile/HelloZebra1133)
 - **Arabic:** thanks to [ABS zarzis](https://crowdin.com/profile/abszar) and [Ahmad Al Juwaisri](https://crowdin.com/profile/juwaisri)
+- **Bangla:** thanks to [Ann Naser Nabil] (https://github.com/AnnNaserNabil)
 - **Bashkir:** thanks to [Shilave malay](https://crowdin.com/profile/Bash.boy)
 - **Catalan:** thanks to [EMC_Translator](https://crowdin.com/profile/EMC_Translator)
 - **Chinese Simplified:** thanks to [SharkChan0622](https://github.com/SharkChan0622)
