@@ -617,11 +617,14 @@
     <string name="fluidtheme">유동적인 테마</string>
     <string name="blackgradient">하단 검은색 그라데이션</string>
     <string name="glow">발광</string>
-    <string name="bottomgradient">하단 그라데이션 표시</string>
+    <string name="bottomgradient">Show Gradient</string>
     <string name="textoutline">글자 윤곽선 활성화</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
     <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
     <string name="charts">Charts</string>
     <string name="thumbnailtype">Thumbnail Type</string>
+    <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
+    <string name="androidheadunit">Android Head unit</string>
+    <string name="extra_space">Extra space at top</string>
 </resources>
