@@ -618,11 +618,14 @@ CC-BY-SA 3.0</string>
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Glow</string>
-    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="bottomgradient">Show Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
     <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
     <string name="charts">Charts</string>
     <string name="thumbnailtype">Thumbnail Type</string>
+    <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
+    <string name="androidheadunit">Android Head unit</string>
+    <string name="extra_space">Extra space at top</string>
 </resources>
