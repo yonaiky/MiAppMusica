@@ -606,8 +606,8 @@
     <string name="timelinesize">Mängija Ajajoone Suurus</string>
     <string name="actionspacedevenly">Võrdsed Vahed</string>
     <string name="expandedplayer">Laiendatud Mängija</string>
-    <string name="expandedlyrics">Laiendatud vaade lüürikatest</string>
-    <string name="expandedlyricsinfo">Funktsioneerib ainult kui lüürika pisipilt on välja lülitada</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Ühendage kõigepealt oma Piped konto või lülitage Piped sünkroniseerimine välja</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengaali</string>
@@ -627,4 +627,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>
