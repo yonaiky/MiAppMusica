@@ -608,8 +608,8 @@
     <string name="timelinesize">Taille de la chronologie du lecteur</string>
     <string name="actionspacedevenly">Espacement sévère</string>
     <string name="expandedplayer">Lecteur étendu</string>
-    <string name="expandedlyrics">Vue agrandie des paroles</string>
-    <string name="expandedlyricsinfo">Ne fonctionne que lorsque la miniature des paroles est désactivée</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Connectez d\'abord votre compte piped ou désactivez la synchronisation piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali (বাংলা)</string>
@@ -629,4 +629,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>
