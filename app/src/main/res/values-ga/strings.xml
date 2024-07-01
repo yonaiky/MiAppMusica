@@ -14,7 +14,7 @@
     <string name="remove_from_playlist">Bain as seinnliosta</string>
     <string name="hide">Cuir i bhfolach</string>
     <string name="hide_from_quick_picks">Cuir i bhfolach as \"Rogha Gasta\"</string>
-    <string name="related_albums">Albaim gaolmhara</string>
+    <string name="related_albums">Albaim cosúil leis seo</string>
     <string name="similar_artists">Ceoltóirí cosúil leis seo</string>
     <string name="playlists_you_might_like">B\'fhéidir gur mhaith leat na seinnliostaí seo</string>
     <string name="an_error_has_occurred">Bhí botún ann</string>
@@ -606,8 +606,8 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
@@ -627,4 +627,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>

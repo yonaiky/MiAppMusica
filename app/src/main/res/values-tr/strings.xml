@@ -606,8 +606,8 @@
     <string name="timelinesize">Oynatıcı Zaman Çizgisi Boyutu</string>
     <string name="actionspacedevenly">Eşit Aralıklı</string>
     <string name="expandedplayer">Genişletilmiş Oynatıcı</string>
-    <string name="expandedlyrics">Genişletilmiş şarkı sözleri görünümü</string>
-    <string name="expandedlyricsinfo">Sadece şarkı sözlerinin küçük resmi kapalıyken çalışır</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Önce piped hesabını bağla yoksa piped senkronizasyonu nu devre dışı bırak</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
@@ -627,4 +627,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>

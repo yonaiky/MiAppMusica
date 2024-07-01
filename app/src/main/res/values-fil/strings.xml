@@ -606,8 +606,8 @@
     <string name="timelinesize">Size ng player timeline</string>
     <string name="actionspacedevenly">Naka-space evenly</string>
     <string name="expandedplayer">Expanded na Player</string>
-    <string name="expandedlyrics">Expanded view ng lyrics</string>
-    <string name="expandedlyricsinfo">Gumagana lang kapag naka disable ang lyric thumbnail</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">I-connect ang inyong piped account muna o i-disable ang piped synchronization</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Ang Bengali</string>
@@ -627,4 +627,6 @@
     <string name="showvisthumbnail">Ipakita ang thumbnail para sa visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space sa taas</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>
