@@ -89,8 +89,6 @@ fun Thumbnail(
     onMaximize: () -> Unit,
     onDoubleTap: () -> Unit,
     showthumbnail: Boolean,
-    expandedplayer: Boolean,
-    onexpandedplayer: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -251,7 +249,6 @@ fun Thumbnail(
                                         onLongPress = { onShowStatsForNerds(true) },
                                         onTap = if (thumbnailTapEnabledKey) {
                                             {
-                                                if(expandedlyrics) onexpandedplayer(true)
                                                 onShowLyrics(true)
                                                 onShowEqualizer(false)
                                             }
@@ -276,7 +273,6 @@ fun Thumbnail(
                                 onLongPress = { onShowStatsForNerds(true) },
                                 onTap = if (thumbnailTapEnabledKey) {
                                     {
-                                        if(expandedlyrics) onexpandedplayer(true)
                                         onShowLyrics(true)
                                         onShowEqualizer(false)
                                     }
