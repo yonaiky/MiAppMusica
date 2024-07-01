@@ -1868,9 +1868,7 @@ fun Lyrics(
                                                 enabled = true,
                                                 onClick = {
                                                     lyricshighlight = !lyricshighlight
-                                                    showPlaceholder =
-                                                        if (!lyricshighlight) false else true
-                                                }
+                                                    }
                                             )
 
                                         MenuEntry(
