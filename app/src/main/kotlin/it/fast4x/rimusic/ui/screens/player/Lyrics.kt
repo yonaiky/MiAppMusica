@@ -118,6 +118,7 @@ import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.lyricsColorKey
 import it.fast4x.rimusic.utils.lyricsFontSizeKey
 import it.fast4x.rimusic.utils.lyricsOutlineKey
+import it.fast4x.rimusic.utils.lyricshighlightKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
@@ -245,6 +246,7 @@ fun Lyrics(
         var checkLyrics by remember {
             mutableStateOf(false)
         }
+        var lyricshighlight by rememberPreference(lyricshighlightKey, false)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -885,6 +887,7 @@ fun Lyrics(
                                                 if (enableClick)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
+                                            .background(if (lyricshighlight) if (index == synchronizedLyrics.index) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f) else Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent)
                                     )
                                 else
                                     BasicText(
@@ -1855,6 +1858,18 @@ fun Lyrics(
                                                     translateEnabled = !translateEnabled
                                                     showPlaceholder =
                                                         if (!translateEnabled) false else true
+                                                }
+                                            )
+
+                                        if (!showlyricsthumbnail)
+                                            MenuEntry(
+                                                icon = R.drawable.horizontal_bold_line_rounded,
+                                                text = stringResource(R.string.highlight),
+                                                enabled = true,
+                                                onClick = {
+                                                    lyricshighlight = !lyricshighlight
+                                                    showPlaceholder =
+                                                        if (!lyricshighlight) false else true
                                                 }
                                             )
 
