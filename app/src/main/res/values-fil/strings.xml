@@ -629,4 +629,5 @@
     <string name="extra_space">Extra space sa taas</string>
     <string name="white">White</string>
     <string name="black">Black</string>
+    <string name="highlight">Highlight</string>
 </resources>
