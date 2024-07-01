@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
+import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -371,6 +372,17 @@ fun ControlsModern(
           Box(
              contentAlignment = Alignment.Center
           ) {
+              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                  Icon(
+                      painter = painterResource(R.drawable.a13shape),
+                      contentDescription = null,
+                      modifier = Modifier
+                          .offset(x = (0).dp, y = (0).dp)
+                          .blur(7.dp)
+                          .size(115.dp),
+                      tint = Color.Black.copy(0.75f)
+                  )
+              }
               Image(
                   painter = painterResource(R.drawable.a13shape),
                   colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
@@ -392,7 +404,7 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
-                      .dropShadow(CircleShape,Color.Black.copy(0.8f),10.dp,0.dp,0.dp,0.dp)
+                      .dropShadow(CircleShape,if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,10.dp,0.dp,0.dp,0.dp)
                       .size(100.dp),
                   contentDescription = "Background Image",
                   contentScale = ContentScale.Fit
