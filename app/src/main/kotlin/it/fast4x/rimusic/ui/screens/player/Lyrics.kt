@@ -248,7 +248,7 @@ fun Lyrics(
         var checkLyrics by remember {
             mutableStateOf(false)
         }
-        var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.White)
+        var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -889,7 +889,7 @@ fun Lyrics(
                                                 if (enableClick)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
-                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else Color.Black.copy(0.5f) else Color.Transparent)
+                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent)
                                     )
                                 else
                                     BasicText(
@@ -1871,6 +1871,16 @@ fun Lyrics(
                                                 onClick = {
                                                     menuState.display {
                                                         Menu {
+                                                            MenuEntry(
+                                                                icon = R.drawable.horizontal_straight_line,
+                                                                text = stringResource(R.string.none),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsHighlight =
+                                                                        LyricsHighlight.None
+                                                                }
+                                                            )
                                                             MenuEntry(
                                                                 icon = R.drawable.horizontal_straight_line,
                                                                 text = stringResource(R.string.white),
