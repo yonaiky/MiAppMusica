@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
@@ -72,6 +73,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
 
 
@@ -369,15 +371,6 @@ fun ControlsModern(
           Box(
              contentAlignment = Alignment.Center
           ) {
-              Icon(
-                  painter = painterResource(R.drawable.a13shape),
-                  contentDescription = null,
-                  modifier = Modifier
-                      .offset(x = (0).dp, y = (0).dp)
-                      .blur(7.dp)
-                      .size(115.dp),
-                  tint = Color.Black.copy(0.85f)
-              )
               Image(
                   painter = painterResource(R.drawable.a13shape),
                   colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
@@ -399,6 +392,7 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
+                      .dropShadow(CircleShape,Color.Black.copy(0.8f),10.dp,0.dp,0.dp,0.dp)
                       .size(100.dp),
                   contentDescription = "Background Image",
                   contentScale = ContentScale.Fit
