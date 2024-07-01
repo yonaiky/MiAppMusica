@@ -630,4 +630,5 @@ CC-BY-SA 3.0</string>
     <string name="extra_space">Extra space at top</string>
     <string name="white">White</string>
     <string name="black">Black</string>
+    <string name="highlight">Highlight</string>
 </resources>

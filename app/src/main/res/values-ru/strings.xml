@@ -629,4 +629,5 @@
     <string name="extra_space">Доп. место сверху</string>
     <string name="white">White</string>
     <string name="black">Black</string>
+    <string name="highlight">Highlight</string>
 </resources>
