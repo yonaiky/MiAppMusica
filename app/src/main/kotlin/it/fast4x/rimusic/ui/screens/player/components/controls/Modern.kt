@@ -71,6 +71,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import it.fast4x.rimusic.utils.textoutlineKey
 
 
@@ -364,31 +365,81 @@ fun ControlsModern(
           )
       }
 
-      CustomElevatedButton(
-          backgroundColor = colorPalette.background2.copy(0.95f),
-          onClick = {},
-          modifier = Modifier
-              .combinedClickable(
-                  indication = ripple(bounded = true),
-                  interactionSource = remember { MutableInteractionSource() },
-                  onClick = {
-                      if (shouldBePlaying) {
-                          binder.player.pause()
-                      } else {
-                          if (binder.player.playbackState == Player.STATE_IDLE) {
-                              binder.player.prepare()
-                          }
-                          binder.player.play()
-                      }
-                      if (effectRotationEnabled) isRotated = !isRotated
-                  },
-                  onLongClick = onShowSpeedPlayerDialog
+      if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed){
+          Box(
+             contentAlignment = Alignment.Center
+          ) {
+              Icon(
+                  painter = painterResource(R.drawable.a13shape),
+                  contentDescription = null,
+                  modifier = Modifier
+                      .offset(x = (0).dp, y = (0).dp)
+                      .blur(7.dp)
+                      .size(115.dp),
+                  tint = Color.Black.copy(0.85f)
               )
-              .width(playerPlayButtonType.width.dp)
-              .height(playerPlayButtonType.height.dp)
+              Image(
+                  painter = painterResource(R.drawable.a13shape),
+                  colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
+                  modifier = Modifier
+                      .rotate(rotationAngle)
+                      .combinedClickable(
+                          indication = ripple(bounded = true),
+                          interactionSource = remember { MutableInteractionSource() },
+                          onClick = {
+                              if (shouldBePlaying) {
+                                  binder.player.pause()
+                              } else {
+                                  if (binder.player.playbackState == Player.STATE_IDLE) {
+                                      binder.player.prepare()
+                                  }
+                                  binder.player.play()
+                              }
+                              if (effectRotationEnabled) isRotated = !isRotated
+                          },
+                          onLongClick = onShowSpeedPlayerDialog
+                      )
+                      .size(100.dp),
+                  contentDescription = "Background Image",
+                  contentScale = ContentScale.Fit
+              )
+              Image(
+                  painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                  contentDescription = null,
+                  colorFilter = ColorFilter.tint(colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                  modifier = Modifier
+                      .rotate(rotationAngle)
+                      .align(Alignment.Center)
+                      .size(30.dp)
+              )
+          }
+      }
+      else {
+          CustomElevatedButton(
+              backgroundColor = colorPalette.background2.copy(0.95f),
+              onClick = {},
+              modifier = Modifier
+                  .combinedClickable(
+                      indication = ripple(bounded = true),
+                      interactionSource = remember { MutableInteractionSource() },
+                      onClick = {
+                          if (shouldBePlaying) {
+                              binder.player.pause()
+                          } else {
+                              if (binder.player.playbackState == Player.STATE_IDLE) {
+                                  binder.player.prepare()
+                              }
+                              binder.player.play()
+                          }
+                          if (effectRotationEnabled) isRotated = !isRotated
+                      },
+                      onLongClick = onShowSpeedPlayerDialog
+                  )
+                  .width(playerPlayButtonType.width.dp)
+                  .height(playerPlayButtonType.height.dp)
 
-      ) {
-          /*
+          ) {
+              /*
         if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
             Image(
                 painter = painterResource(R.drawable.a13shape),
@@ -407,35 +458,36 @@ fun ControlsModern(
             )
          */
 
-          Image(
-              painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
-              contentDescription = null,
-              colorFilter = ColorFilter.tint(colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
-              modifier = Modifier
-                  .rotate(rotationAngle)
-                  .align(Alignment.Center)
-                  .size(30.dp)
-          )
-
-          val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
-          if (fmtSpeed != "1.0x")
-              Box(
+              Image(
+                  painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                  contentDescription = null,
+                  colorFilter = ColorFilter.tint(colorPalette.text),  //ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                   modifier = Modifier
-                      .align(Alignment.BottomCenter)
+                      .rotate(rotationAngle)
+                      .align(Alignment.Center)
+                      .size(30.dp)
+              )
 
-              ) {
-                  BasicText(
-                      text = fmtSpeed,
-                      style = TextStyle(
-                          color = colorPalette.text,
-                          fontStyle = typography.xxxs.semiBold.fontStyle,
-                          fontSize = typography.xxxs.semiBold.fontSize
-                      ),
-                      maxLines = 1,
+              val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
+              if (fmtSpeed != "1.0x")
+                  Box(
                       modifier = Modifier
-                          .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
-                  )
-              }
+                          .align(Alignment.BottomCenter)
+
+                  ) {
+                      BasicText(
+                          text = fmtSpeed,
+                          style = TextStyle(
+                              color = colorPalette.text,
+                              fontStyle = typography.xxxs.semiBold.fontStyle,
+                              fontSize = typography.xxxs.semiBold.fontSize
+                          ),
+                          maxLines = 1,
+                          modifier = Modifier
+                              .padding(bottom = if (playerPlayButtonType != PlayerPlayButtonType.CircularRibbed) 5.dp else 15.dp)
+                      )
+                  }
+          }
       }
 
     CustomElevatedButton(

@@ -397,7 +397,9 @@ fun PlayerModern(
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
-    if ((expandedlyrics) && (!isShowingLyrics)) expandedplayer = false
+    if (expandedlyrics && !isLandscape)
+        if (isShowingLyrics || isShowingEqualizer) expandedplayer = true
+        else expandedplayer = false
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
@@ -896,7 +898,6 @@ fun PlayerModern(
                     indication = null,
                     onClick = {
                        if(thumbnailTapEnabled){
-                          if (expandedlyrics) expandedplayer = !expandedplayer
                           if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
                           isShowingLyrics = !isShowingLyrics
                         }
@@ -987,8 +988,6 @@ fun PlayerModern(
             isShowingEqualizer = isShowingEqualizer,
             onShowEqualizer = { isShowingEqualizer = it },
             showthumbnail = showthumbnail,
-            expandedplayer = expandedplayer,
-            onexpandedplayer = { expandedplayer = it },
             onMaximize = {
                 showFullLyrics = true
             },
@@ -1363,7 +1362,6 @@ fun PlayerModern(
                                 color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
-                                    if (expandedlyrics) expandedplayer = !expandedplayer
                                     if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
                                     isShowingLyrics = !isShowingLyrics
                                 },
@@ -1371,7 +1369,7 @@ fun PlayerModern(
                                     .size(24.dp),
                             )
                         if (!isLandscape)
-                         if (expandedplayertoggle && !showlyricsthumbnail && !expandedlyrics)
+                         if (expandedplayertoggle && (!showlyricsthumbnail || !showvisthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,
@@ -1806,7 +1804,6 @@ fun PlayerModern(
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
                                     if (thumbnailTapEnabled) {
-                                        if (expandedlyrics) expandedplayer = !expandedplayer
                                         isShowingLyrics = false
                                     }
                                 },
