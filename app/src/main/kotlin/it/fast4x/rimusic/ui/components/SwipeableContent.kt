@@ -28,7 +28,9 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
+import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
@@ -48,8 +50,10 @@ fun SwipeableContent(
             return@rememberSwipeToDismissBoxState false
         }
     )
+    val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
 
     SwipeToDismissBox(
+        gesturesEnabled = isSwipeToActionEnabled,
         modifier = Modifier,
             //.padding(horizontal = 16.dp)
             //.clip(RoundedCornerShape(12.dp)),
@@ -67,15 +71,17 @@ fun SwipeableContent(
                 },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = when (dismissState.targetValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(SwipeToRightIcon)
-                        SwipeToDismissBoxValue.EndToStart ->  ImageVector.vectorResource(SwipeToLeftIcon)
-                        SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
-                    },
-                    contentDescription = null,
-                    tint = colorPalette.accent,
-                )
+                val icon = when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(SwipeToRightIcon)
+                    SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(SwipeToLeftIcon)
+                    SwipeToDismissBoxValue.Settled -> null
+                }
+                if (icon != null)
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = colorPalette.accent,
+                    )
             }
         }
     ) {
@@ -109,6 +115,40 @@ fun SwipeableQueueItem(
 
     SwipeableContent(
         SwipeToLeftIcon = R.drawable.trash,
+        SwipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
+        onSwipeToLeft = onSwipeToLeft,
+        onSwipeToRight = { updateLike = true }
+    ) {
+        content()
+    }
+
+}
+
+@Composable
+fun SwipeablePlaylistItem(
+    mediaItem: MediaItem,
+    onSwipeToLeft: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    var likedAt by rememberSaveable {
+        mutableStateOf<Long?>(null)
+    }
+    LaunchedEffect(mediaItem.mediaId) {
+        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
+    }
+    var updateLike by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(updateLike) {
+        if (updateLike) {
+            mediaItemToggleLike(mediaItem)
+            updateLike = false
+            if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites))
+            else SmartToast(context.getString(R.string.removed_from_favorites))
+        }
+    }
+
+    SwipeableContent(
+        SwipeToLeftIcon = R.drawable.play_skip_forward,
         SwipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
         onSwipeToLeft = onSwipeToLeft,
         onSwipeToRight = { updateLike = true }

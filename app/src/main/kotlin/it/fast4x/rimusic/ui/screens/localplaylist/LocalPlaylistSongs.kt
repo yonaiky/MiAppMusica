@@ -114,6 +114,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -1407,94 +1408,101 @@ fun LocalPlaylistSongs(
                         //if (isDownloaded && !listDownloadedMedia.contains(song)) listDownloadedMedia.add(song)
                         //if (!isDownloaded) listDownloadedMedia.dropWhile {  it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                         //Log.d("mediaItem", "loop items listDownloadedMedia ${listDownloadedMedia.distinct().size} ${listDownloadedMedia.distinct()}")
-                        SongItem(
-                            song = song,
-                            isDownloaded = isDownloaded,
-                            onDownloadClick = {
-                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                query {
-                                    Database.insert(
-                                        Song(
-                                            id = song.asMediaItem.mediaId,
-                                            title = song.asMediaItem.mediaMetadata.title.toString(),
-                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = song.thumbnailUrl,
-                                            durationText = null
+
+                SwipeablePlaylistItem(
+                    mediaItem = song.asMediaItem,
+                    onSwipeToLeft = {
+                            binder?.player?.addNext(song.asMediaItem)
+                    }
+                ) {
+                    SongItem(
+                        song = song,
+                        isDownloaded = isDownloaded,
+                        onDownloadClick = {
+                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                            query {
+                                Database.insert(
+                                    Song(
+                                        id = song.asMediaItem.mediaId,
+                                        title = song.asMediaItem.mediaMetadata.title.toString(),
+                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = song.thumbnailUrl,
+                                        durationText = null
+                                    )
+                                )
+                            }
+
+                            if (!isLocal) {
+                                manageDownload(
+                                    context = context,
+                                    songId = song.asMediaItem.mediaId,
+                                    songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                    downloadState = isDownloaded
+                                )
+                            }
+                            //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
+                            //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
+                        },
+                        downloadState = downloadState,
+                        thumbnailSizePx = thumbnailSizePx,
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        trailingContent = {
+                            if (selectItems)
+                                Checkbox(
+                                    checked = checkedState.value,
+                                    onCheckedChange = {
+                                        checkedState.value = it
+                                        if (it) listMediaItems.add(song.asMediaItem) else
+                                            listMediaItems.remove(song.asMediaItem)
+                                    },
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = colorPalette.accent,
+                                        uncheckedColor = colorPalette.text
+                                    ),
+                                    modifier = Modifier
+                                        .scale(0.7f)
+                                )
+                            else checkedState.value = false
+
+                            if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                IconButton(
+                                    icon = R.drawable.reorder,
+                                    color = colorPalette.textDisabled,
+                                    indication = rippleIndication,
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .reorder(
+                                            reorderingState = reorderingState,
+                                            index = index
                                         )
-                                    )
-                                }
+                                        .size(18.dp)
+                                )
+                            }
+                        },
+                        onThumbnailContent = {
+                            if (sortBy == PlaylistSongSortBy.PlayTime) {
+                                BasicText(
+                                    text = song.formattedTotalPlayTime,
+                                    style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    colorPalette.overlay
+                                                )
+                                            ),
+                                            shape = thumbnailShape
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .align(Alignment.BottomCenter)
+                                )
+                            }
 
-                                if (!isLocal) {
-                                    manageDownload(
-                                        context = context,
-                                        songId = song.asMediaItem.mediaId,
-                                        songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                        downloadState = isDownloaded
-                                    )
-                                }
-                                //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
-                                //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
-                            },
-                            downloadState = downloadState,
-                            thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            trailingContent = {
-                                if (selectItems)
-                                    Checkbox(
-                                        checked = checkedState.value,
-                                        onCheckedChange = {
-                                            checkedState.value = it
-                                            if (it) listMediaItems.add(song.asMediaItem) else
-                                                listMediaItems.remove(song.asMediaItem)
-                                        },
-                                        colors = CheckboxDefaults.colors(
-                                            checkedColor = colorPalette.accent,
-                                            uncheckedColor = colorPalette.text
-                                        ),
-                                        modifier = Modifier
-                                            .scale(0.7f)
-                                    )
-                                else checkedState.value = false
-
-                                if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                                    IconButton(
-                                        icon = R.drawable.reorder,
-                                        color = colorPalette.textDisabled,
-                                        indication = rippleIndication,
-                                        onClick = {},
-                                        modifier = Modifier
-                                            .reorder(
-                                                reorderingState = reorderingState,
-                                                index = index
-                                            )
-                                            .size(18.dp)
-                                    )
-                                }
-                            },
-                            onThumbnailContent = {
-                                if (sortBy == PlaylistSongSortBy.PlayTime) {
-                                    BasicText(
-                                        text = song.formattedTotalPlayTime,
-                                        style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                brush = Brush.verticalGradient(
-                                                    colors = listOf(
-                                                        Color.Transparent,
-                                                        colorPalette.overlay
-                                                    )
-                                                ),
-                                                shape = thumbnailShape
-                                            )
-                                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                                            .align(Alignment.BottomCenter)
-                                    )
-                                }
-
-                                /*
+                            /*
                                 if (sortBy == PlaylistSongSortBy.Position)
                                     BasicText(
                                         text = (index + 1).toString(),
@@ -1517,98 +1525,43 @@ fun LocalPlaylistSongs(
                                     )
                                  */
 
-                                if (nowPlayingItem > -1)
-                                    NowPlayingShow(song.asMediaItem.mediaId)
-                            },
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            InPlaylistMediaItemMenu(
-                                                navController = navController,
-                                                playlist = playlistPreview,
-                                                playlistId = playlistId,
-                                                positionInPlaylist = index,
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                    },
-                                    onClick = {
-                                        if (!selectItems) {
-                                            searching = false
-                                            filter = null
-                                            playlistSongs
-                                                .map(Song::asMediaItem)
-                                                .let { mediaItems ->
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayAtIndex(
-                                                        mediaItems,
-                                                        index
-                                                    )
-                                                }
-                                        } else checkedState.value = !checkedState.value
-                                    }
-                                )
-                                .draggedItem(reorderingState = reorderingState, index = index)
-                                .background(color = colorPalette.background0)
-                        )
-                /*
-                    },
-                leftActionsContent = {
-                    if (!reorderingState.isDragging)
-                        LeftAction(
-                            icon = R.drawable.play_skip_forward,
-                            backgroundColor = Color.Transparent, //colorPalette.background4,
-                            onClick = {
-                                binder?.player?.addNext( song.asMediaItem )
-                            }
-                        )
-                },
-                rightActionsContent = {
-                    if (!reorderingState.isDragging) {
-                        var likedAt by remember {
-                            mutableStateOf<Long?>(null)
-                        }
-                        LaunchedEffect(Unit, song.asMediaItem.mediaId) {
-                            Database.likedAt(song.asMediaItem.mediaId).collect { likedAt = it }
-                        }
-
-                        RightActions(
-                            iconAction1 = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-                            backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
-                            onClickAction1 = {
-                                query {
-                                    if (Database.like(
-                                            song.asMediaItem.mediaId,
-                                            if (likedAt == null) System.currentTimeMillis() else null
-                                        ) == 0
-                                    ) {
-                                        Database.insert(song.asMediaItem, Song::toggleLike)
-                                    }
-                                }
-                            },
-                            iconAction2 = R.drawable.trash,
-                            backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
-                            onClickAction2 = {
-                                transaction {
-                                    Database.move(playlistId, index, Int.MAX_VALUE)
-                                    Database.delete(
-                                        SongPlaylistMap(
-                                            song.id,
-                                            playlistId,
-                                            Int.MAX_VALUE
+                            if (nowPlayingItem > -1)
+                                NowPlayingShow(song.asMediaItem.mediaId)
+                        },
+                        modifier = Modifier
+                            .combinedClickable(
+                                onLongClick = {
+                                    menuState.display {
+                                        InPlaylistMediaItemMenu(
+                                            navController = navController,
+                                            playlist = playlistPreview,
+                                            playlistId = playlistId,
+                                            positionInPlaylist = index,
+                                            song = song,
+                                            onDismiss = menuState::hide
                                         )
-                                    )
+                                    }
+                                },
+                                onClick = {
+                                    if (!selectItems) {
+                                        searching = false
+                                        filter = null
+                                        playlistSongs
+                                            .map(Song::asMediaItem)
+                                            .let { mediaItems ->
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayAtIndex(
+                                                    mediaItems,
+                                                    index
+                                                )
+                                            }
+                                    } else checkedState.value = !checkedState.value
                                 }
-                            }
-                        )
-
-                    }
-                },
-                    onHorizontalSwipeWhenActionDisabled = {}
-                )
-                */
+                            )
+                            .draggedItem(reorderingState = reorderingState, index = index)
+                            .background(color = colorPalette.background0)
+                    )
+                }
             }
 
             item(
