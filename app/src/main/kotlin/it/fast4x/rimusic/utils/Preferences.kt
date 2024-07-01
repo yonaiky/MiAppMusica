@@ -209,6 +209,7 @@ const val textoutlineKey = "textoutline"
 const val thumbnailTypeKey = "thumbnailType"
 const val showvisthumbnailKey = "showvisthumbnail"
 const val extraspaceKey = "extraspace"
+const val expandedlyricsKey = "expandedlyrics"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

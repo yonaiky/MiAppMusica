@@ -606,8 +606,8 @@
     <string name="timelinesize">Размер таймлайна</string>
     <string name="actionspacedevenly">Равномерное распределение кнопок на панели действий</string>
     <string name="expandedplayer">Развернутый плеер</string>
-    <string name="expandedlyrics">Развернутый просмотр текстов песен</string>
-    <string name="expandedlyricsinfo">Работает только при отключении превью текстов песен</string>
+    <string name="expandedlyrics">Expanded Lyrics</string>
+    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
     <string name="info_connect_your_piped_account_first">Сначала подключите учетную запись Piped или отключите синхронизацию Piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Бенгальский (বাংলা)</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">\"Жидкая\" тема</string>
     <string name="blackgradient">Черный градиент снизу</string>
     <string name="glow">Свечение</string>
-    <string name="bottomgradient">Показать нижний градиент</string>
+    <string name="bottomgradient">Показать градиент</string>
     <string name="textoutline">Включить обводку текста</string>
     <string name="set_cache_location">Расположение кэша</string>
     <string name="info_private_cache_location_can_t_cleaned">При расположении кэша внутри файлов приложения он не может быть очищен системой</string>
@@ -629,4 +629,6 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 </resources>
