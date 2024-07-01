@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.core.graphics.applyCanvas
 import coil.imageLoader
+import coil.request.CachePolicy
 import coil.request.Disposable
 import coil.request.ImageRequest
 import it.fast4x.rimusic.utils.thumbnail
@@ -55,7 +56,7 @@ class BitmapProvider(
                     drawColor(colorProvider(isSystemInDarkMode))
                 }
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed set default bitmap in BitmapProvider ${it.stackTraceToString()}")
         }
 
         return lastBitmap == null
@@ -70,13 +71,14 @@ class BitmapProvider(
         runCatching {
             lastEnqueued = applicationContext.imageLoader.enqueue(
                 ImageRequest.Builder(applicationContext)
+                    .networkCachePolicy(CachePolicy.ENABLED)
                     .data(uri.thumbnail(bitmapSize))
                     .allowHardware(false)
                     .diskCacheKey(uri.thumbnail(bitmapSize).toString())
                     .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
                     .listener(
                         onError = { _, result ->
-                            Timber.e("Failed to load bitmap ${result.throwable.message}")
+                            Timber.e("Failed to load bitmap ${result.throwable.stackTraceToString()}")
                             lastBitmap = null
                             onDone(bitmap)
                             listener?.invoke(lastBitmap)
@@ -87,10 +89,11 @@ class BitmapProvider(
                             listener?.invoke(lastBitmap)
                         }
                     )
+
                     .build()
             )
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed enqueue in BitmapProvider ${it.stackTraceToString()}")
         }
     }
 }

@@ -985,7 +985,7 @@ fun HomeSongsModern(
                                                     )
                                                 )
                                             }.onFailure {
-                                                Timber.e(it.message)
+                                                Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                 it.message?.let { it1 -> SmartToast(it1,PopupType.Error) }
                                             }
                                         }

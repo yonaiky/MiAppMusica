@@ -601,7 +601,7 @@ fun PlaylistSongListModern(
                                                                     )
                                                                 )
                                                             }.onFailure {
-                                                                Timber.e(it.message)
+                                                                Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
                                                             }
                                                         }
                                                         CoroutineScope(Dispatchers.Main).launch {

@@ -406,7 +406,7 @@ class PlayerService : InvincibleService(),
                 }
             )
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed init bitmap provider in PlayerService ${it.stackTraceToString()}")
         }
 
         createNotificationChannel()
@@ -590,7 +590,7 @@ class PlayerService : InvincibleService(),
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
                         }.onFailure {
-                            Timber.e(it.message)
+                            Timber.e("Failed likedState in PlayerService ${it.stackTraceToString()}")
                         }
                     }
                 }
@@ -612,7 +612,7 @@ class PlayerService : InvincibleService(),
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
                         }.onFailure {
-                            Timber.e(it.message)
+                            Timber.e("Failed downloadState in PlayerService ${it.stackTraceToString()}")
                         }
                     }
                 }
@@ -634,7 +634,7 @@ class PlayerService : InvincibleService(),
                             applicationContext.getSystemService<NotificationManager>()
                                 ?.notify(NotificationId, notification())
                         }.onFailure {
-                            Timber.e(it.message)
+                            Timber.e("Failed cachedState in PlayerService ${it.stackTraceToString()}")
                         }
                     }
                 }
@@ -767,7 +767,7 @@ class PlayerService : InvincibleService(),
 
             loudnessEnhancer?.release()
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
         super.onDestroy()
     }
@@ -786,7 +786,7 @@ class PlayerService : InvincibleService(),
                     notificationManager?.notify(NotificationId, notification())
                 }
             }.onFailure {
-                Timber.e(it.message)
+                Timber.e("Failed ononConfigurationChanged in PlayerService ${it.stackTraceToString()}")
             }
         }
         super.onConfigurationChanged(newConfig)
@@ -844,13 +844,13 @@ class PlayerService : InvincibleService(),
             runCatching {
                 bitmapProvider.listener?.invoke(null)
             }.onFailure {
-                Timber.e(it.message)
+                Timber.e("Failed onMediaItemTransition bitmapProvider.invoke in PlayerService ${it.stackTraceToString()}")
             }
         } else if (mediaItem.mediaMetadata.artworkUri == bitmapProvider.lastUri) {
             runCatching {
                 bitmapProvider.listener?.invoke(bitmapProvider.lastBitmap)
             }.onFailure {
-                Timber.e(it.message)
+                Timber.e("Failed onMediaItemTransition bitmapProvider.invoke lastbitmap in PlayerService ${it.stackTraceToString()}")
             }
         }
 
@@ -956,7 +956,7 @@ class PlayerService : InvincibleService(),
 
         }.onFailure {
             //it.printStackTrace()
-            Timber.e(it.message)
+            Timber.e(it.stackTraceToString())
         }
 
         //Log.d("mediaItem", "QueuePersistentEnabled Restored ${player.currentTimeline.mediaItems.size}")
@@ -990,7 +990,7 @@ class PlayerService : InvincibleService(),
             }
         }.onFailure {
             //it.printStackTrace()
-            Timber.e(it.message)
+            Timber.e(it.stackTraceToString())
 
         }.onSuccess {
             Log.d("mediaItem", "QueuePersistentEnabled Saved $persistentQueue")
@@ -1078,7 +1078,7 @@ class PlayerService : InvincibleService(),
                 loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
             }
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e(it.stackTraceToString())
             return
         }
 
@@ -1270,7 +1270,7 @@ class PlayerService : InvincibleService(),
                 runCatching {
                     notificationManager?.notify(NotificationId, notification)
                 }.onFailure {
-                    Timber.e(it.message)
+                    Timber.e("Failed onEvents in PlayerService ${it.stackTraceToString()}")
                 }
             }
         }
@@ -1459,12 +1459,12 @@ class PlayerService : InvincibleService(),
                             builder.setLargeIcon(bitmap).build()
                         )
                     }.onFailure {
-                        Timber.e(it.message)
+                        Timber.e("Failed notification() bitmapProvider.invoke in PlayerService ${it.stackTraceToString()}")
                     }
                 }
             }
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed notification() load in bitmapProvider in PlayerService ${it.stackTraceToString()}")
         }
 
 
@@ -1507,7 +1507,6 @@ class PlayerService : InvincibleService(),
             }
         }
     }
-
 
     private fun okHttpClient(): OkHttpClient {
         ProxyPreferences.preference?.let {

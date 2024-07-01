@@ -261,7 +261,7 @@ fun QuickPicksModern(
             chartsPage = Innertube.chartsPage()
 
         }.onFailure {
-            Timber.e(it.message)
+            Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
         }
     }
 

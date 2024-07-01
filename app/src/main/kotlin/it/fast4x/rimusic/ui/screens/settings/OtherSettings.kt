@@ -252,7 +252,7 @@ fun OtherSettings() {
                         username = pipedUsername,
                         password = pipedPassword
                     )?.onFailure {
-                        Timber.e(it.message)
+                        Timber.e("Failed piped login ${it.stackTraceToString()}")
                         isLoading = false
                         SmartToast("Piped login failed", type = PopupType.Error)
                         loadInstances = false

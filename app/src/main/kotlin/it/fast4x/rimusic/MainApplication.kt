@@ -64,6 +64,7 @@ class MainApplication : Application(), ImageLoaderFactory {
                     )
                     .build()
             )
+            .networkCachePolicy(CachePolicy.ENABLED)
             .respectCacheHeaders(false)
             .build()
     }

@@ -111,7 +111,7 @@ fun PlaylistItem(
                         .setHeader("User-Agent", "Mozilla/5.0")
                         .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
                     onError = {error ->
-                        Timber.e(error.result.throwable.message)
+                        Timber.e("Failed AsyncImage in PlaylistItem ${error.result.throwable.stackTraceToString()}")
                     },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
@@ -134,7 +134,7 @@ fun PlaylistItem(
                                 .setHeader("User-Agent", "Mozilla/5.0")
                                 .build(),
                             onError = {error ->
-                                Timber.e(error.result.throwable.message)
+                                Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
                             },
                             contentDescription = null,
                             contentScale = ContentScale.Crop,

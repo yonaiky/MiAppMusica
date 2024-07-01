@@ -252,7 +252,7 @@ fun getVisualizers(): List<Painter> {
                 binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
             )
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.e("Failed get bitmap in NextVisualizer ${e.stackTraceToString()}")
         }
     }
 

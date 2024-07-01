@@ -410,7 +410,7 @@ fun AlbumDetailsModern(
                             selectItems = false
                         }
                     }.onFailure {
-                        Timber.e(it.message)
+                        Timber.e("Failed listMediaItems in AlbumDetailsModern ${it.stackTraceToString()}")
                     }
                 }
             }
@@ -471,7 +471,7 @@ fun AlbumDetailsModern(
                             selectItems = false
                         }
                     }.onFailure {
-                        Timber.e(it.message)
+                        Timber.e("Failed listMediaItems 1 in AlbumDetailsModern ${it.stackTraceToString()}")
                     }
                 }
             }
