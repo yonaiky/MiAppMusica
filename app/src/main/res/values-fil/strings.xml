@@ -623,7 +623,6 @@
     <string name="info_private_cache_location_can_t_cleaned">Private location ng cache, hindi maaring linisin ng system</string>
     <string name="error_file_unsupported_format">Mukhang hindi supported ang format ng itong file</string>
     <string name="charts">Charts</string>
-    <string name="thumbnailtype">Thumbnail Type</string>
     <string name="game_restart">Restart</string>
     <string name="game_over">Game Over!</string>
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>

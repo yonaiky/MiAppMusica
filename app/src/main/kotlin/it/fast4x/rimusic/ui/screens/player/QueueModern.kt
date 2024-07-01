@@ -95,6 +95,8 @@ import it.fast4x.rimusic.ui.components.BottomSheet
 import it.fast4x.rimusic.ui.components.BottomSheetState
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MusicBars
+import it.fast4x.rimusic.ui.components.SwipeableContent
+import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -341,26 +343,7 @@ fun QueueModern(
                     .background(colorPalette.background1)
                     .weight(1f)
             ) {
-                /*
-                Box(
-                    modifier = Modifier
-                        .drawBehind { drawRect(backgroundColorProvider()) }
-                        .fillMaxSize()
-                        .padding(horizontalBottomPaddingValues)
 
-                ) {
-                    if (!showButtonPlayerArrow)
-                        Image(
-                            painter = painterResource(R.drawable.horizontal_bold_line_rounded),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.text),
-                            modifier = Modifier
-                                .absoluteOffset(0.dp, -10.dp)
-                                .align(Alignment.TopCenter)
-                                .size(30.dp)
-                        )
-                }
-                */
                 LazyColumn(
                     state = reorderingState.lazyListState,
                     contentPadding = windowInsets
@@ -375,6 +358,7 @@ fun QueueModern(
                         items = windows,
                         key = { it.uid.hashCode() }
                     ) { window ->
+
                         val currentItem by rememberUpdatedState(window)
                         val checkedState = rememberSaveable { mutableStateOf(false) }
 
@@ -386,216 +370,145 @@ fun QueueModern(
                                 downloadState = getDownloadState(window.mediaItem.mediaId)
                                 val isDownloaded =
                                     if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
-                                SongItem(
-                                    song = window.mediaItem,
-                                    isDownloaded = isDownloaded,
-                                    onDownloadClick = {
-                                        binder.cache.removeResource(window.mediaItem.mediaId)
-                                        if (!isLocal)
-                                            manageDownload(
-                                                context = context,
-                                                songId = window.mediaItem.mediaId,
-                                                songTitle = window.mediaItem.mediaMetadata.title.toString(),
-                                                downloadState = isDownloaded
-                                            )
-                                    },
-                                    downloadState = downloadState,
-                                    thumbnailSizePx = thumbnailSizePx,
-                                    thumbnailSizeDp = thumbnailSizeDp,
-                                    onThumbnailContent = {
-                                        musicBarsTransition.AnimatedVisibility(
-                                            visible = { it == window.firstPeriodIndex },
-                                            enter = fadeIn(tween(800)),
-                                            exit = fadeOut(tween(800)),
+
+                        SwipeableQueueItem(
+                            mediaItem = window.mediaItem,
+                            onSwipeToLeft = {
+                                if (isReorderDisabled && isSwipeToActionEnabled)
+                                    player.removeMediaItem(currentItem.firstPeriodIndex)
+                            }
+                        ) {
+                            SongItem(
+                                song = window.mediaItem,
+                                isDownloaded = isDownloaded,
+                                onDownloadClick = {
+                                    binder.cache.removeResource(window.mediaItem.mediaId)
+                                    if (!isLocal)
+                                        manageDownload(
+                                            context = context,
+                                            songId = window.mediaItem.mediaId,
+                                            songTitle = window.mediaItem.mediaMetadata.title.toString(),
+                                            downloadState = isDownloaded
+                                        )
+                                },
+                                downloadState = downloadState,
+                                thumbnailSizePx = thumbnailSizePx,
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                onThumbnailContent = {
+                                    musicBarsTransition.AnimatedVisibility(
+                                        visible = { it == window.firstPeriodIndex },
+                                        enter = fadeIn(tween(800)),
+                                        exit = fadeOut(tween(800)),
+                                    ) {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .background(
+                                                    color = Color.Black.copy(alpha = 0.25f),
+                                                    shape = thumbnailShape
+                                                )
+                                                .size(Dimensions.thumbnails.song)
                                         ) {
-                                            Box(
-                                                contentAlignment = Alignment.Center,
-                                                modifier = Modifier
-                                                    .background(
-                                                        color = Color.Black.copy(alpha = 0.25f),
-                                                        shape = thumbnailShape
-                                                    )
-                                                    .size(Dimensions.thumbnails.song)
-                                            ) {
-                                                if (shouldBePlaying) {
-                                                    MusicBars(
-                                                        color = colorPalette.onOverlay,
-                                                        modifier = Modifier
-                                                            .height(24.dp)
-                                                    )
-                                                } else {
-                                                    Image(
-                                                        painter = painterResource(R.drawable.play),
-                                                        contentDescription = null,
-                                                        colorFilter = ColorFilter.tint(colorPalette.onOverlay),
-                                                        modifier = Modifier
-                                                            .size(24.dp)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    },
-                                    trailingContent = {
-                                        if (selectQueueItems)
-                                            Checkbox(
-                                                checked = checkedState.value,
-                                                onCheckedChange = {
-                                                    checkedState.value = it
-                                                    if (it) {
-                                                        listMediaItems.add(window.mediaItem)
-                                                        listMediaItemsIndex.add(window.firstPeriodIndex)
-                                                    } else
-                                                    {
-                                                        listMediaItems.remove(window.mediaItem)
-                                                        listMediaItemsIndex.remove(window.firstPeriodIndex)
-                                                    }
-                                                },
-                                                colors = colors(
-                                                    checkedColor = colorPalette.accent,
-                                                    uncheckedColor = colorPalette.text
-                                                ),
-                                                modifier = Modifier
-                                                    .scale(0.7f)
-                                            )
-                                        else checkedState.value = false
-
-                                        if (!isReorderDisabled) {
-                                            IconButton(
-                                                icon = R.drawable.reorder,
-                                                color = colorPalette.textDisabled,
-                                                indication = rippleIndication,
-                                                onClick = {},
-                                                modifier = Modifier
-                                                    .reorder(
-                                                        reorderingState = reorderingState,
-                                                        index = window.firstPeriodIndex
-                                                    )
-                                                    .size(18.dp)
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    QueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        mediaItem = window.mediaItem,
-                                                        indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
-                                                        onDismiss = menuState::hide,
-                                                        onDownload = {
-                                                            manageDownload(
-                                                                context = context,
-                                                                songId = window.mediaItem.mediaId,
-                                                                songTitle = window.mediaItem.mediaMetadata.title.toString(),
-                                                                downloadState = isDownloaded
-                                                            )
-                                                        }
-
-                                                    )
-                                                }
-                                            },
-                                            onClick = {
-                                                if (!selectQueueItems) {
-                                                    if (isPlayingThisMediaItem) {
-                                                        if (shouldBePlaying) {
-                                                            player.pause()
-                                                        } else {
-                                                            player.play()
-                                                        }
-                                                    } else {
-                                                        player.seekToDefaultPosition(window.firstPeriodIndex)
-                                                        player.playWhenReady = true
-                                                    }
-                                                } else checkedState.value = !checkedState.value
-                                            }
-                                        )
-                                        /*
-                                        .pointerInput(Unit) {
-
-                                            detectHorizontalDragGestures(
-                                                onHorizontalDrag = { change, dragAmount ->
-                                                    deltaX = dragAmount
-                                                },
-
-                                                onDragEnd = {
-                                                    if (!isReorderDisabled && !isSwipeToActionEnabled)
-                                                        player.removeMediaItem(window.firstPeriodIndex)
-                                                }
-
-                                            )
-
-                                        }
-                                         */
-                                        //.animateItem()
-                                        .draggedItem(
-                                            reorderingState = reorderingState,
-                                            index = window.firstPeriodIndex
-                                        )
-                                        .background(color = colorPalette.background0)
-
-                                )
-                            /*
-                            },
-                            leftActionsContent = {
-                                if (!reorderingState.isDragging)
-                                    LeftAction(
-                                        icon = R.drawable.share_social,
-                                        backgroundColor = Color.Transparent, //colorPalette.background4,
-                                        onClick = {
-                                            val sendIntent = Intent().apply {
-                                                action = Intent.ACTION_SEND
-                                                type = "text/plain"
-                                                putExtra(
-                                                    Intent.EXTRA_TEXT,
-                                                    "https://music.youtube.com/watch?v=${window.mediaItem.mediaId}"
+                                            if (shouldBePlaying) {
+                                                MusicBars(
+                                                    color = colorPalette.onOverlay,
+                                                    modifier = Modifier
+                                                        .height(24.dp)
+                                                )
+                                            } else {
+                                                Image(
+                                                    painter = painterResource(R.drawable.play),
+                                                    contentDescription = null,
+                                                    colorFilter = ColorFilter.tint(colorPalette.onOverlay),
+                                                    modifier = Modifier
+                                                        .size(24.dp)
                                                 )
                                             }
-
-                                            context.startActivity(Intent.createChooser(sendIntent, null))
                                         }
-                                    )
-                            },
-                            rightActionsContent = {
-                                if (!reorderingState.isDragging) {
-                                    //val currentItem by rememberUpdatedState(window)
-                                    var likedAt by remember {
-                                        mutableStateOf<Long?>(null)
                                     }
-                                    LaunchedEffect(Unit, window.mediaItem.mediaId) {
-                                        Database.likedAt(window.mediaItem.mediaId).collect { likedAt = it }
-                                    }
-
-                                    RightActions(
-                                        iconAction1 = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-                                        backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
-                                        onClickAction1 = {
-                                            query {
-                                                if (Database.like(
-                                                        window.mediaItem.mediaId,
-                                                        if (likedAt == null) System.currentTimeMillis() else null
-                                                    ) == 0
-                                                ) {
-                                                    Database.insert(window.mediaItem, Song::toggleLike)
+                                },
+                                trailingContent = {
+                                    if (selectQueueItems)
+                                        Checkbox(
+                                            checked = checkedState.value,
+                                            onCheckedChange = {
+                                                checkedState.value = it
+                                                if (it) {
+                                                    listMediaItems.add(window.mediaItem)
+                                                    listMediaItemsIndex.add(window.firstPeriodIndex)
+                                                } else {
+                                                    listMediaItems.remove(window.mediaItem)
+                                                    listMediaItemsIndex.remove(window.firstPeriodIndex)
                                                 }
+                                            },
+                                            colors = colors(
+                                                checkedColor = colorPalette.accent,
+                                                uncheckedColor = colorPalette.text
+                                            ),
+                                            modifier = Modifier
+                                                .scale(0.7f)
+                                        )
+                                    else checkedState.value = false
+
+                                    if (!isReorderDisabled) {
+                                        IconButton(
+                                            icon = R.drawable.reorder,
+                                            color = colorPalette.textDisabled,
+                                            indication = rippleIndication,
+                                            onClick = {},
+                                            modifier = Modifier
+                                                .reorder(
+                                                    reorderingState = reorderingState,
+                                                    index = window.firstPeriodIndex
+                                                )
+                                                .size(18.dp)
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onLongClick = {
+                                            menuState.display {
+                                                QueuedMediaItemMenu(
+                                                    navController = navController,
+                                                    mediaItem = window.mediaItem,
+                                                    indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
+                                                    onDismiss = menuState::hide,
+                                                    onDownload = {
+                                                        manageDownload(
+                                                            context = context,
+                                                            songId = window.mediaItem.mediaId,
+                                                            songTitle = window.mediaItem.mediaMetadata.title.toString(),
+                                                            downloadState = isDownloaded
+                                                        )
+                                                    }
+
+                                                )
                                             }
                                         },
-                                        iconAction2 = R.drawable.trash,
-                                        backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
-                                        onClickAction2 = {
-                                                player.removeMediaItem(currentItem.firstPeriodIndex)
+                                        onClick = {
+                                            if (!selectQueueItems) {
+                                                if (isPlayingThisMediaItem) {
+                                                    if (shouldBePlaying) {
+                                                        player.pause()
+                                                    } else {
+                                                        player.play()
+                                                    }
+                                                } else {
+                                                    player.seekToDefaultPosition(window.firstPeriodIndex)
+                                                    player.playWhenReady = true
+                                                }
+                                            } else checkedState.value = !checkedState.value
                                         }
                                     )
+                                    .draggedItem(
+                                        reorderingState = reorderingState,
+                                        index = window.firstPeriodIndex
+                                    )
+                                    .background(color = colorPalette.background0)
 
-                                }
-                            },
-                            onHorizontalSwipeWhenActionDisabled = {
-                                if (!isReorderDisabled && !isSwipeToActionEnabled)
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
-                                else SmartToast(context.resources.getString(R.string.locked), type = PopupType.Warning)
-                            }
-                        )
-                        */
+                            )
+                        }
                     }
 
                     item {
