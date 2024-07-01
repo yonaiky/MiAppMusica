@@ -388,12 +388,7 @@ fun ControlsEssential(
                     ColorPaletteName.Dynamic, ColorPaletteName.Default,
                     ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> {
                         when (playerPlayButtonType) {
-                            PlayerPlayButtonType.CircularRibbed -> {
-                                if (isGradientBackgroundEnabled) colorPalette.background2
-                                else colorPalette.background1
-                            }
-
-                            PlayerPlayButtonType.Disabled -> Color.Transparent
+                            PlayerPlayButtonType.CircularRibbed, PlayerPlayButtonType.Disabled -> Color.Transparent
                             else -> {
                                 if (isGradientBackgroundEnabled) colorPalette.background1
                                 else colorPalette.background2
