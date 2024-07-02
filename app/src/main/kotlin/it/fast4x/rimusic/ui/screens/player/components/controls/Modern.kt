@@ -575,7 +575,8 @@ fun ControlsModern(
           }
 
           Box(
-
+              modifier = Modifier
+                .bounceClick()
           ) {
               Icon(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
@@ -595,6 +596,8 @@ fun ControlsModern(
                       .size(44.dp)
                       .align(Alignment.Center)
                       .combinedClickable(
+                          indication = null,
+                          interactionSource = null,
                           onClick = {
                               if (shouldBePlaying) {
                                   binder.player.pause()
@@ -608,7 +611,6 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
-                      .bounceClick()
               )
 
           }
