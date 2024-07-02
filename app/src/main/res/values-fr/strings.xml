@@ -624,10 +624,10 @@
     <string name="set_cache_location">Emplacement du cache</string>
     <string name="info_private_cache_location_can_t_cleaned">L\'emplacement du cache privé, ne peut pas être nettoyé par le système</string>
     <string name="error_file_unsupported_format">Ce fichier semble avoir un format non supporté</string>
-    <string name="charts">Palmarès</string>
+    <string name="charts">Tableau</string>
     <string name="thumbnailtype">Type de pochette d\'album</string>
     <string name="showvisthumbnail">Afficher la pochette pour le visualiseur</string>
-    <string name="androidheadunit">Autoradio Android</string>
+    <string name="androidheadunit">Unité principale Android</string>
     <string name="extra_space">Espace supplémentaire en haut</string>
     <string name="white">Blanc</string>
     <string name="black">Noir</string>
