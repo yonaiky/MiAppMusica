@@ -119,6 +119,7 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
@@ -252,6 +253,7 @@ fun AppearanceSettings() {
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var expandedlyrics by rememberPreference(expandedlyricsKey, false)
+    var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
 
     Column(
         modifier = Modifier
@@ -668,6 +670,18 @@ fun AppearanceSettings() {
                         PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
                     }
                 },
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.buttonzoomout).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.buttonzoomout),
+                text = "",
+                isChecked = buttonzoomout,
+                onCheckedChange = { buttonzoomout = it }
             )
 
 

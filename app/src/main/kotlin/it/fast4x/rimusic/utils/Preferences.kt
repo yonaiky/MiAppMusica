@@ -212,6 +212,7 @@ const val extraspaceKey = "extraspace"
 const val expandedlyricsKey = "expandedlyrics"
 const val lyricsHighlightKey = "lyricsHighlight"
 const val buttonStateKey = "buttonState"
+const val buttonzoomoutKey = "buttonzoomout"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

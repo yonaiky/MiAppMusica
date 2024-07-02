@@ -97,6 +97,7 @@ import it.fast4x.rimusic.utils.GetControls
 import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -267,6 +268,7 @@ fun Controls(
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
+
     Box(
         modifier = Modifier
             .animateContentSize()
@@ -520,7 +522,8 @@ fun Controls(
 
 fun Modifier.bounceClick() = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-    val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.8f else 1f)
+    var buttonzoomout by rememberPreference(buttonzoomoutKey,false)
+    val scale by animateFloatAsState(if ((buttonState == ButtonState.Pressed) && (buttonzoomout)) 0.8f else 1f)
 
     this
         .graphicsLayer {

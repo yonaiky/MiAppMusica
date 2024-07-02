@@ -630,6 +630,7 @@
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
+    <string name="buttonzoomout">Button Zoom Out Animation</string>
 
 
 </resources>
