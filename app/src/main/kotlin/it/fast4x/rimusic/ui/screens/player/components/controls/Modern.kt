@@ -74,6 +74,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
 
@@ -370,7 +371,26 @@ fun ControlsModern(
 
       if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed){
           Box(
-             contentAlignment = Alignment.Center
+             contentAlignment = Alignment.Center,
+             modifier = Modifier
+                 .combinedClickable(
+                     indication = ripple(bounded = true),
+                     interactionSource = remember { MutableInteractionSource() },
+                     onClick = {
+                         if (shouldBePlaying) {
+                             binder.player.pause()
+                         } else {
+                             if (binder.player.playbackState == Player.STATE_IDLE) {
+                                 binder.player.prepare()
+                             }
+                             binder.player.play()
+                         }
+                         if (effectRotationEnabled) isRotated = !isRotated
+                     },
+                     onLongClick = onShowSpeedPlayerDialog
+                 )
+                 .bounceClick()
+
           ) {
               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
                   Icon(
@@ -388,22 +408,6 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
                   modifier = Modifier
                       .rotate(rotationAngle)
-                      .combinedClickable(
-                          indication = ripple(bounded = true),
-                          interactionSource = remember { MutableInteractionSource() },
-                          onClick = {
-                              if (shouldBePlaying) {
-                                  binder.player.pause()
-                              } else {
-                                  if (binder.player.playbackState == Player.STATE_IDLE) {
-                                      binder.player.prepare()
-                                  }
-                                  binder.player.play()
-                              }
-                              if (effectRotationEnabled) isRotated = !isRotated
-                          },
-                          onLongClick = onShowSpeedPlayerDialog
-                      )
                       .dropShadow(CircleShape,if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,6.dp,0.dp,0.dp,0.dp)
                       .size(100.dp),
                   contentDescription = "Background Image",
@@ -441,6 +445,7 @@ fun ControlsModern(
                       },
                       onLongClick = onShowSpeedPlayerDialog
                   )
+                  .bounceClick()
                   .width(playerPlayButtonType.width.dp)
                   .height(playerPlayButtonType.height.dp)
 
@@ -472,6 +477,7 @@ fun ControlsModern(
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
                       .size(30.dp)
+                      .bounceClick()
               )
 
               val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
@@ -602,6 +608,7 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
+                      .bounceClick()
               )
 
           }

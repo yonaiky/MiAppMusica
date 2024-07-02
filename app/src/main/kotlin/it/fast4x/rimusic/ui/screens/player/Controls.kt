@@ -15,6 +15,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,9 +45,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +65,7 @@ import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PauseBetweenSongs
@@ -91,6 +97,7 @@ import it.fast4x.rimusic.utils.GetControls
 import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -261,6 +268,7 @@ fun Controls(
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
+
     Box(
         modifier = Modifier
             .animateContentSize()
@@ -508,6 +516,29 @@ fun Controls(
                     modifier = Modifier
                         .weight(0.4f)
                 )
+            }
+        }
+}
+
+fun Modifier.bounceClick() = composed {
+    var buttonState by remember { mutableStateOf(ButtonState.Idle) }
+    var buttonzoomout by rememberPreference(buttonzoomoutKey,false)
+    val scale by animateFloatAsState(if ((buttonState == ButtonState.Pressed) && (buttonzoomout)) 0.8f else 1f)
+
+    this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+        .pointerInput(buttonState) {
+            awaitPointerEventScope {
+                buttonState = if (buttonState == ButtonState.Pressed) {
+                    waitForUpOrCancellation()
+                    ButtonState.Idle
+                } else {
+                    awaitFirstDown(false)
+                    ButtonState.Pressed
+                }
             }
         }
 }

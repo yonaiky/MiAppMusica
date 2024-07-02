@@ -82,7 +82,10 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.ui.screens.player.bounceClick
+import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
@@ -111,6 +114,7 @@ fun InfoAlbumAndArtistEssential(
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
     var textoutline by rememberPreference(textoutlineKey, false)
+    val buttonState by rememberPreference(buttonStateKey, ButtonState.Idle)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -382,6 +386,7 @@ fun ControlsEssential(
                 },
                 onLongClick = onShowSpeedPlayerDialog
             )
+            .bounceClick()
             .clip(RoundedCornerShape(playPauseRoundness))
             .background(
                 when (colorPaletteName) {
@@ -420,7 +425,8 @@ fun ControlsEssential(
                 ),
                 modifier = Modifier
                     .fillMaxSize()
-                    .rotate(rotationAngle),
+                    .rotate(rotationAngle)
+                    .bounceClick(),
                 contentDescription = "Background Image",
                 contentScale = ContentScale.Fit
             )
@@ -433,6 +439,7 @@ fun ControlsEssential(
                 .rotate(rotationAngle)
                 .align(Alignment.Center)
                 .size(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) 40.dp else 30.dp)
+                .bounceClick()
         )
 
         val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")
