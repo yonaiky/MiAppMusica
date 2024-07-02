@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,11 +41,8 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
-import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailType
-import it.fast4x.rimusic.enums.TransitionEffect
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -61,19 +59,15 @@ import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
-import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import java.net.UnknownHostException
-import java.nio.channels.UnresolvedAddressException
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
+import java.net.UnknownHostException
+import java.nio.channels.UnresolvedAddressException
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -129,7 +123,7 @@ fun Thumbnail(
 
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
-    var expandedlyrics by rememberPreference(expandedlyricsKey,false)
+    //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 
     player.DisposableListener {
         object : Player.Listener {
@@ -186,38 +180,40 @@ fun Thumbnail(
     ) { currentWindow ->
 
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+        /*
         val playerControlsType by rememberPreference(
             playerControlsTypeKey,
             PlayerControlsType.Modern
         )
+         */
         var modifierUiType by remember { mutableStateOf(modifier) }
 
         if (showthumbnail)
             if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
-              if (thumbnailType == ThumbnailType.Modern)
-                modifierUiType = modifier
-                 .padding(vertical = 8.dp)
-                 .aspectRatio(1f)
-                 //.size(thumbnailSizeDp)
-                 .fillMaxSize()
-                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                 //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                 .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                 .clip(LocalAppearance.current.thumbnailShape)
-                 //.padding(14.dp)
-              else modifierUiType = modifier
-                 .aspectRatio(1f)
-                 //.size(thumbnailSizeDp)
-                 //.padding(14.dp)
-                 .fillMaxSize()
-                 .clip(LocalAppearance.current.thumbnailShape)
+                if (thumbnailType == ThumbnailType.Modern)
+                    modifierUiType = modifier
+                        .padding(vertical = 8.dp)
+                        .aspectRatio(1f)
+                        //.size(thumbnailSizeDp)
+                        .fillMaxSize()
+                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                        .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
+                        .clip(LocalAppearance.current.thumbnailShape)
+                //.padding(14.dp)
+                else modifierUiType = modifier
+                    .aspectRatio(1f)
+                    //.size(thumbnailSizeDp)
+                    //.padding(14.dp)
+                    .fillMaxSize()
+                    .clip(LocalAppearance.current.thumbnailShape)
 
 
 
         Box(
             modifier = modifierUiType
         ) {
-            if (showthumbnail){
+            if (showthumbnail) {
                 if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                     if (artImageAvailable)
                         AsyncImage(
@@ -263,74 +259,79 @@ fun Thumbnail(
 
                         )
 
-            if (!artImageAvailable)
-                Image(
-                    painter = painterResource(R.drawable.app_icon),
-                    colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
-                    modifier = Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = { onShowStatsForNerds(true) },
-                                onTap = if (thumbnailTapEnabledKey) {
-                                    {
-                                        onShowLyrics(true)
-                                        onShowEqualizer(false)
-                                    }
-                                } else null,
-                                onDoubleTap = { onDoubleTap() }
-                            )
+                if (!artImageAvailable)
+                    Image(
+                        painter = painterResource(R.drawable.app_icon),
+                        colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = { onShowStatsForNerds(true) },
+                                    onTap = if (thumbnailTapEnabledKey) {
+                                        {
+                                            onShowLyrics(true)
+                                            onShowEqualizer(false)
+                                        }
+                                    } else null,
+                                    onDoubleTap = { onDoubleTap() }
+                                )
 
+                            }
+                            .fillMaxSize()
+                            .clip(LocalAppearance.current.thumbnailShape),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.Fit
+                    )
+                //if (!currentWindow.mediaItem.isLocal)
+                if (showlyricsthumbnail)
+                    Lyrics(
+                        mediaId = currentWindow.mediaItem.mediaId,
+                        isDisplayed = isShowingLyrics && error == null,
+                        onDismiss = {
+                            if (thumbnailTapEnabledKey) onShowLyrics(false)
+                        },
+                        ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
+                        size = thumbnailSizeDp,
+                        mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
+                        durationProvider = player::getDuration,
+                        onMaximize = onMaximize,
+                        isLandscape = isLandscape,
+                        enableClick = when (clickLyricsText) {
+                            ClickLyricsText.Player, ClickLyricsText.Both -> true
+                            else -> false
                         }
-                        .fillMaxSize()
-                        .clip(LocalAppearance.current.thumbnailShape),
-                    contentDescription = "Background Image",
-                    contentScale = ContentScale.Fit
-                )
-            //if (!currentWindow.mediaItem.isLocal)
-            if (showlyricsthumbnail)
-                Lyrics(
+                    )
+
+                StatsForNerds(
                     mediaId = currentWindow.mediaItem.mediaId,
-                    isDisplayed = isShowingLyrics && error == null,
-                    onDismiss = {
-                        if (thumbnailTapEnabledKey) onShowLyrics(false)
-                    },
-                    ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
-                    size = thumbnailSizeDp,
-                    mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
-                    durationProvider = player::getDuration,
-                    onMaximize = onMaximize,
-                    isLandscape = isLandscape,
-                    enableClick = when (clickLyricsText) {
-                        ClickLyricsText.Player, ClickLyricsText.Both -> true
-                        else -> false
-                    }
+                    isDisplayed = isShowingStatsForNerds && error == null,
+                    onDismiss = { onShowStatsForNerds(false) }
                 )
+                if (showvisthumbnail) {
+                    NextVisualizer(
+                        isDisplayed = isShowingEqualizer
+                    )
+                }
 
-            StatsForNerds(
-                mediaId = currentWindow.mediaItem.mediaId,
-                isDisplayed = isShowingStatsForNerds && error == null,
-                onDismiss = { onShowStatsForNerds(false) }
-            )
-            if (showvisthumbnail) {
-                NextVisualizer(
-                    isDisplayed = isShowingEqualizer
-                )
-            }
+                var errorCounter by remember { mutableIntStateOf(0) }
 
-            if (error != null) {
-                SmartToast(
-                    if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
-                    else when (error?.cause?.cause) {
-                        is UnresolvedAddressException, is UnknownHostException -> networkerror
-                        is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                        is UnplayableException -> originalvideodeletederror
-                        is LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                        is VideoIdMismatchException -> videoidmismatcherror
-                        is PlayableFormatNonSupported -> formatUnsupported
-                        else -> unknownplaybackerror
-                    }, PopupType.Error
-                )
-                player.seekToNext()
+                if (error != null) {
+                    errorCounter = errorCounter.plus(1)
+                    if (errorCounter < 3) {
+                        SmartToast(
+                            if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
+                            else when (error?.cause?.cause) {
+                                is UnresolvedAddressException, is UnknownHostException -> networkerror
+                                is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                                is UnplayableException -> originalvideodeletederror
+                                is LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                                is VideoIdMismatchException -> videoidmismatcherror
+                                is PlayableFormatNonSupported -> formatUnsupported
+                                else -> unknownplaybackerror
+                            }, PopupType.Error
+                        )
+                        player.seekToNext()
+                    } else errorCounter = 0
                 }
             }
             /*
