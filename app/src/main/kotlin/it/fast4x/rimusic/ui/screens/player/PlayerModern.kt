@@ -1555,7 +1555,8 @@ fun PlayerModern(
                             if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                                 thumbnailContent(
                                     modifier = Modifier
-                                        .padding(all = 12.dp)
+                                        .padding(vertical = playerThumbnailSize.size.dp,
+                                                 horizontal = playerThumbnailSize.size.dp)
                                     //.padding(horizontal = 10.dp)
                                 )
                         }
