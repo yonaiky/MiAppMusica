@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -118,7 +119,6 @@ import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.lyricsColorKey
 import it.fast4x.rimusic.utils.lyricsFontSizeKey
 import it.fast4x.rimusic.utils.lyricsOutlineKey
-import it.fast4x.rimusic.utils.lyricshighlightKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
@@ -136,6 +136,9 @@ import me.bush.translator.Language
 import me.bush.translator.Translator
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import it.fast4x.rimusic.utils.lyricsHighlightKey
+import it.fast4x.rimusic.enums.LyricsHighlight
+
 
 
 @UnstableApi
@@ -246,7 +249,7 @@ fun Lyrics(
         var checkLyrics by remember {
             mutableStateOf(false)
         }
-        var lyricshighlight by rememberPreference(lyricshighlightKey, false)
+        var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -887,7 +890,8 @@ fun Lyrics(
                                                 if (enableClick)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
-                                            .background(if (lyricshighlight) if (index == synchronizedLyrics.index) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f) else Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent)
+                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent,RoundedCornerShape(6.dp))
+                                            .fillMaxWidth()
                                     )
                                 else
                                     BasicText(
@@ -1864,11 +1868,44 @@ fun Lyrics(
                                         if (!showlyricsthumbnail)
                                             MenuEntry(
                                                 icon = R.drawable.horizontal_bold_line_rounded,
-                                                text = stringResource(R.string.highlight),
                                                 enabled = true,
+                                                text = stringResource(R.string.highlight),
                                                 onClick = {
-                                                    lyricshighlight = !lyricshighlight
+                                                    menuState.display {
+                                                        Menu {
+                                                            MenuEntry(
+                                                                icon = R.drawable.horizontal_straight_line,
+                                                                text = stringResource(R.string.none),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsHighlight =
+                                                                        LyricsHighlight.None
+                                                                }
+                                                            )
+                                                            MenuEntry(
+                                                                icon = R.drawable.horizontal_straight_line,
+                                                                text = stringResource(R.string.white),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsHighlight =
+                                                                        LyricsHighlight.White
+                                                                }
+                                                            )
+                                                            MenuEntry(
+                                                                icon = R.drawable.horizontal_straight_line,
+                                                                text = stringResource(R.string.black),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    lyricsHighlight =
+                                                                        LyricsHighlight.Black
+                                                                }
+                                                            )
+                                                        }
                                                     }
+                                                }
                                             )
 
                                         MenuEntry(
