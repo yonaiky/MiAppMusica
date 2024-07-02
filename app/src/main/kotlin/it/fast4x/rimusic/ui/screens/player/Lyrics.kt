@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -889,7 +890,8 @@ fun Lyrics(
                                                 if (enableClick)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
-                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent)
+                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent,RoundedCornerShape(6.dp))
+                                            .fillMaxWidth()
                                     )
                                 else
                                     BasicText(
