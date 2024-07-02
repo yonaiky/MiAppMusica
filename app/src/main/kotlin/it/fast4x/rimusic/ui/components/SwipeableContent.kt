@@ -62,7 +62,7 @@ fun SwipeableContent(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorPalette.background1)
+                    //.background(colorPalette.background1)
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = when (dismissState.targetValue) {
                     SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
