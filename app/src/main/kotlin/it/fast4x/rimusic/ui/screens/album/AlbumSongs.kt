@@ -75,6 +75,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -709,36 +710,42 @@ fun AlbumSongs(
                             val isDownloaded =
                                 if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
-                            SongItem(
-                                title = song.title,
-                                isDownloaded = isDownloaded,
-                                downloadState = downloadState,
-                                onDownloadClick = {
-                                    binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    query {
-                                        Database.insert(
-                                            Song(
-                                                id = song.asMediaItem.mediaId,
-                                                title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                thumbnailUrl = song.thumbnailUrl,
-                                                durationText = null
+                            SwipeablePlaylistItem(
+                                mediaItem = song.asMediaItem,
+                                onSwipeToLeft = {
+                                    binder?.player?.addNext(song.asMediaItem)
+                                }
+                            ) {
+                                SongItem(
+                                    title = song.title,
+                                    isDownloaded = isDownloaded,
+                                    downloadState = downloadState,
+                                    onDownloadClick = {
+                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                        query {
+                                            Database.insert(
+                                                Song(
+                                                    id = song.asMediaItem.mediaId,
+                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
+                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                                    thumbnailUrl = song.thumbnailUrl,
+                                                    durationText = null
+                                                )
                                             )
-                                        )
-                                    }
-                                    if (!isLocal)
-                                        manageDownload(
-                                            context = context,
-                                            songId = song.asMediaItem.mediaId,
-                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                            downloadState = isDownloaded
-                                        )
-                                },
-                                authors = song.artistsText,
-                                duration = song.durationText,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                thumbnailContent = {
-                                    /*
+                                        }
+                                        if (!isLocal)
+                                            manageDownload(
+                                                context = context,
+                                                songId = song.asMediaItem.mediaId,
+                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                                downloadState = isDownloaded
+                                            )
+                                    },
+                                    authors = song.artistsText,
+                                    duration = song.durationText,
+                                    thumbnailSizeDp = thumbnailSizeDp,
+                                    thumbnailContent = {
+                                        /*
                                     AsyncImage(
                                         model = song.thumbnailUrl,
                                         contentDescription = null,
@@ -749,60 +756,61 @@ fun AlbumSongs(
                                     )
                                      */
 
-                                    BasicText(
-                                        text = "${index + 1}",
-                                        style = typography.s.semiBold.center.color(colorPalette.textDisabled),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier
-                                            .width(thumbnailSizeDp)
-                                            .align(Alignment.Center)
-                                    )
-
-                                    if (nowPlayingItem > -1)
-                                        NowPlayingShow(song.asMediaItem.mediaId)
-                                },
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
-                                                )
-                                            }
-                                        },
-                                        onClick = {
-                                            if (!selectItems) {
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    songs.map(Song::asMediaItem),
-                                                    index
-                                                )
-                                            } else checkedState.value = !checkedState.value
-                                        }
-                                    ),
-                                trailingContent = {
-                                    if (selectItems)
-                                        Checkbox(
-                                            checked = checkedState.value,
-                                            onCheckedChange = {
-                                                checkedState.value = it
-                                                if (it) listMediaItems.add(song.asMediaItem) else
-                                                    listMediaItems.remove(song.asMediaItem)
-                                            },
-                                            colors = CheckboxDefaults.colors(
-                                                checkedColor = colorPalette.accent,
-                                                uncheckedColor = colorPalette.text
-                                            ),
+                                        BasicText(
+                                            text = "${index + 1}",
+                                            style = typography.s.semiBold.center.color(colorPalette.textDisabled),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier
-                                                .scale(0.7f)
+                                                .width(thumbnailSizeDp)
+                                                .align(Alignment.Center)
                                         )
-                                    else checkedState.value = false
-                                },
-                                mediaId = song.asMediaItem.mediaId
-                            )
+
+                                        if (nowPlayingItem > -1)
+                                            NowPlayingShow(song.asMediaItem.mediaId)
+                                    },
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                menuState.display {
+                                                    NonQueuedMediaItemMenu(
+                                                        navController = navController,
+                                                        onDismiss = menuState::hide,
+                                                        mediaItem = song.asMediaItem,
+                                                    )
+                                                }
+                                            },
+                                            onClick = {
+                                                if (!selectItems) {
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        songs.map(Song::asMediaItem),
+                                                        index
+                                                    )
+                                                } else checkedState.value = !checkedState.value
+                                            }
+                                        ),
+                                    trailingContent = {
+                                        if (selectItems)
+                                            Checkbox(
+                                                checked = checkedState.value,
+                                                onCheckedChange = {
+                                                    checkedState.value = it
+                                                    if (it) listMediaItems.add(song.asMediaItem) else
+                                                        listMediaItems.remove(song.asMediaItem)
+                                                },
+                                                colors = CheckboxDefaults.colors(
+                                                    checkedColor = colorPalette.accent,
+                                                    uncheckedColor = colorPalette.text
+                                                ),
+                                                modifier = Modifier
+                                                    .scale(0.7f)
+                                            )
+                                        else checkedState.value = false
+                                    },
+                                    mediaId = song.asMediaItem.mediaId
+                                )
+                            }
                         }
 
                     item(key = "bottom"){
