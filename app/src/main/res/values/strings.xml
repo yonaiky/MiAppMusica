@@ -632,6 +632,7 @@
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
+    <string name="thin_bar">Thin Bar</string>
 
 
 </resources>

@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -46,7 +47,7 @@ fun SeekBar(
         MutableTransitionState(false)
     }
 
-    val transition = updateTransition(transitionState = isDragging, label = null)
+    val transition = rememberTransition(transitionState = isDragging, label = null)
 
     val currentBarHeight by transition.animateDp(label = "") { if (it) scrubberRadius else barHeight }
     val currentScrubberRadius by transition.animateDp(label = "") { if (it) 0.dp else scrubberRadius }
@@ -136,6 +137,108 @@ fun SeekBar(
         Spacer(
             modifier = Modifier
                 .height(currentBarHeight)
+                .fillMaxWidth((value.toFloat() - minimumValue) / (maximumValue - minimumValue))
+                .background(color = color, shape = shape)
+                .align(Alignment.CenterStart)
+        )
+    }
+}
+
+@Composable
+fun SeekBarThin(
+    value: Long,
+    minimumValue: Long,
+    maximumValue: Long,
+    onDragStart: (Long) -> Unit,
+    onDrag: (Long) -> Unit,
+    onDragEnd: () -> Unit,
+    color: Color,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
+    barHeight: Dp = 4.dp,
+    scrubberColor: Color = color,
+    scrubberRadius: Dp = 6.dp,
+    shape: Shape = RectangleShape,
+    drawSteps: Boolean = false,
+) {
+    val isDragging = remember {
+        MutableTransitionState(false)
+    }
+
+
+    Box(
+        modifier = modifier
+            .pointerInput(minimumValue, maximumValue) {
+                if (maximumValue < minimumValue) return@pointerInput
+
+                var acc = 0f
+
+                detectHorizontalDragGestures(
+                    onDragStart = {
+                        isDragging.targetState = true
+                    },
+                    onHorizontalDrag = { _, delta ->
+                        acc += delta / size.width * (maximumValue - minimumValue)
+
+                        if (acc !in -1f..1f) {
+                            onDrag(acc.toLong())
+                            acc -= acc.toLong()
+                        }
+                    },
+                    onDragEnd = {
+                        isDragging.targetState = false
+                        acc = 0f
+                        onDragEnd()
+                    },
+                    onDragCancel = {
+                        isDragging.targetState = false
+                        acc = 0f
+                        onDragEnd()
+                    }
+                )
+            }
+            .pointerInput(minimumValue, maximumValue) {
+                if (maximumValue < minimumValue) return@pointerInput
+
+                detectTapGestures(
+                    onPress = { offset ->
+                        onDragStart((offset.x / size.width * (maximumValue - minimumValue) + minimumValue).roundToLong())
+                    },
+                    onTap = {
+                        onDragEnd()
+                    }
+                )
+            }
+            .padding(horizontal = scrubberRadius)
+            .drawWithContent {
+                drawContent()
+
+                if (drawSteps) {
+                    for (i in value + 1..maximumValue) {
+                        val stepPosition =
+                            (i.toFloat() - minimumValue) / (maximumValue - minimumValue) * size.width
+                        drawCircle(
+                            color = scrubberColor,
+                            radius = scrubberRadius.toPx() / 2,
+                            center = center.copy(x = stepPosition),
+                        )
+                    }
+                }
+            }
+            .height(scrubberRadius)
+    ) {
+
+        Spacer(
+            modifier = Modifier
+                .height(barHeight)
+                .fillMaxWidth()
+                .background(color = backgroundColor, shape = shape)
+                .align(Alignment.Center)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .height(barHeight)
                 .fillMaxWidth((value.toFloat() - minimumValue) / (maximumValue - minimumValue))
                 .background(color = color, shape = shape)
                 .align(Alignment.CenterStart)

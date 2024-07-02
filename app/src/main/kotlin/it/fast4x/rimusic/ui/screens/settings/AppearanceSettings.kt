@@ -610,6 +610,7 @@ fun AppearanceSettings() {
                         PlayerTimelineType.BodiedBar -> stringResource(R.string.bodied_bar)
                         PlayerTimelineType.PinBar -> stringResource(R.string.pin_bar)
                         PlayerTimelineType.FakeAudioBar -> stringResource(R.string.fake_audio_bar)
+                        PlayerTimelineType.ThinBar -> stringResource(R.string.thin_bar)
                         //PlayerTimelineType.ColoredBar -> "Colored bar"
                     }
                 }

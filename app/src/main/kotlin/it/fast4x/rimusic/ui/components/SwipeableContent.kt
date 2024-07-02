@@ -35,8 +35,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun SwipeableContent(
-    SwipeToLeftIcon: Int,
-    SwipeToRightIcon: Int,
+    swipeToLeftIcon: Int,
+    swipeToRightIcon: Int,
     onSwipeToLeft: () -> Unit,
     onSwipeToRight: () -> Unit,
     content: @Composable () -> Unit
@@ -72,8 +72,8 @@ fun SwipeableContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val icon = when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(SwipeToRightIcon)
-                    SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(SwipeToLeftIcon)
+                    SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(swipeToRightIcon)
+                    SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(swipeToLeftIcon)
                     SwipeToDismissBoxValue.Settled -> null
                 }
                 if (icon != null)
@@ -114,8 +114,8 @@ fun SwipeableQueueItem(
     }
 
     SwipeableContent(
-        SwipeToLeftIcon = R.drawable.trash,
-        SwipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
+        swipeToLeftIcon = R.drawable.trash,
+        swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
         onSwipeToLeft = onSwipeToLeft,
         onSwipeToRight = { updateLike = true }
     ) {
@@ -148,8 +148,8 @@ fun SwipeablePlaylistItem(
     }
 
     SwipeableContent(
-        SwipeToLeftIcon = R.drawable.play_skip_forward,
-        SwipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
+        swipeToLeftIcon = R.drawable.play_skip_forward,
+        swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
         onSwipeToLeft = onSwipeToLeft,
         onSwipeToRight = { updateLike = true }
     ) {

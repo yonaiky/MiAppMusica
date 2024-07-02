@@ -6,5 +6,6 @@ enum class PlayerTimelineType {
     PinBar,
     BodiedBar,
     FakeAudioBar,
+    ThinBar,
     //ColoredBar
 }

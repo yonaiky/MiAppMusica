@@ -48,6 +48,7 @@ import it.fast4x.rimusic.ui.components.SeekBar
 import it.fast4x.rimusic.ui.components.SeekBarAudioWaves
 import it.fast4x.rimusic.ui.components.SeekBarColored
 import it.fast4x.rimusic.ui.components.SeekBarCustom
+import it.fast4x.rimusic.ui.components.SeekBarThin
 import it.fast4x.rimusic.ui.components.SeekBarWaved
 import it.fast4x.rimusic.ui.components.WaveInteraction
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -82,7 +83,7 @@ fun GetSeekBar(
     LaunchedEffect(mediaId) {
         if (compositionLaunched) animatedPosition.animateTo(0f)
     }
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    //var showthumbnail by rememberPreference(showthumbnailKey, true)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     LaunchedEffect(position) {
         if (!isSeeking && !animatedPosition.isRunning)
@@ -93,7 +94,7 @@ fun GetSeekBar(
                 )
             )
     }
-    var textoutline by rememberPreference(textoutlineKey, false)
+    val textoutline by rememberPreference(textoutlineKey, false)
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,6 +107,7 @@ fun GetSeekBar(
         if (playerTimelineType != PlayerTimelineType.Default
             && playerTimelineType != PlayerTimelineType.Wavy
             && playerTimelineType != PlayerTimelineType.FakeAudioBar
+            && playerTimelineType != PlayerTimelineType.ThinBar
             //&& playerTimelineType != PlayerTimelineType.ColoredBar
             )
             SeekBarCustom(
@@ -134,6 +136,30 @@ fun GetSeekBar(
 
         if (playerTimelineType == PlayerTimelineType.Default)
             SeekBar(
+                value = scrubbingPosition ?: position,
+                minimumValue = 0,
+                maximumValue = duration,
+                onDragStart = {
+                    scrubbingPosition = it
+                },
+                onDrag = { delta ->
+                    scrubbingPosition = if (duration != C.TIME_UNSET) {
+                        scrubbingPosition?.plus(delta)?.coerceIn(0, duration)
+                    } else {
+                        null
+                    }
+                },
+                onDragEnd = {
+                    scrubbingPosition?.let(binder.player::seekTo)
+                    scrubbingPosition = null
+                },
+                color = colorPalette.collapsedPlayerProgressBar,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                shape = RoundedCornerShape(8.dp),
+            )
+
+        if (playerTimelineType == PlayerTimelineType.ThinBar)
+            SeekBarThin(
                 value = scrubbingPosition ?: position,
                 minimumValue = 0,
                 maximumValue = duration,
