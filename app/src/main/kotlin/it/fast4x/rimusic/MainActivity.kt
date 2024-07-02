@@ -294,8 +294,12 @@ class MainActivity :
 
     override fun onStart() {
         super.onStart()
-        startService(Intent(this, PlayerService::class.java))
-        bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
+        runCatching {
+            startService(Intent(this, PlayerService::class.java))
+            bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
+        }.onFailure {
+            Timber.e("MainActivity.onStart ${it.stackTraceToString()}")
+        }
     }
 
     @ExperimentalMaterialApi

@@ -128,20 +128,22 @@ fun PlaylistItem(
                         Alignment.BottomStart,
                         Alignment.BottomEnd
                     ).forEachIndexed { index, alignment ->
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(thumbnails.getOrNull(index))
-                                .setHeader("User-Agent", "Mozilla/5.0")
-                                .build(),
-                            onError = {error ->
-                                Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
-                            },
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .align(alignment)
-                                .size(thumbnailSizeDp / 2)
-                        )
+                        val thumbnail = thumbnails.getOrNull(index)
+                        if (thumbnail != null)
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(thumbnail)
+                                    .setHeader("User-Agent", "Mozilla/5.0")
+                                    .build(),
+                                onError = {error ->
+                                    Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
+                                },
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .align(alignment)
+                                    .size(thumbnailSizeDp / 2)
+                            )
                     }
                 }
             }
