@@ -1557,6 +1557,9 @@ fun PlayerModern(
                                     modifier = Modifier
                                         .padding(vertical = playerThumbnailSize.size.dp,
                                                  horizontal = playerThumbnailSize.size.dp)
+                                        .thumbnailpause(
+                                            shouldBePlaying = shouldBePlaying
+                                        )
                                     //.padding(horizontal = 10.dp)
                                 )
                         }
@@ -1772,6 +1775,9 @@ fun PlayerModern(
                                    .padding(
                                        horizontal = playerThumbnailSize.size.dp,
                                        vertical = 4.dp,
+                                   )
+                                   .thumbnailpause(
+                                       shouldBePlaying = shouldBePlaying
                                    )
                            )
                    }

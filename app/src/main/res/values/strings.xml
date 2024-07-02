@@ -631,6 +631,7 @@
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
     <string name="buttonzoomout">Button Zoom Out Animation</string>
+    <string name="thumbnailpause">Zoom out thumbnail when paused</string>
 
 
 </resources>

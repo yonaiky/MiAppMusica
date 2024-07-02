@@ -213,6 +213,7 @@ const val expandedlyricsKey = "expandedlyrics"
 const val lyricsHighlightKey = "lyricsHighlight"
 const val buttonStateKey = "buttonState"
 const val buttonzoomoutKey = "buttonzoomout"
+const val thumbnailpauseKey = "thumbnailpause"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
