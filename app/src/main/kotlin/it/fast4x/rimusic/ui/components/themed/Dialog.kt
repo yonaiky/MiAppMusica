@@ -1265,7 +1265,7 @@ fun PlaybackParamsDialog(
     val (colorPalette) = LocalAppearance.current
     val defaultSpeed = 1f
     val defaultPitch = 1f
-    val defaultVolume = binder?.player?.volume ?: 1f
+    val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
     val defaultDeviceVolume = getDeviceVolume(context)
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
