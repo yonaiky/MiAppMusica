@@ -371,7 +371,26 @@ fun ControlsModern(
 
       if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed){
           Box(
-             contentAlignment = Alignment.Center
+             contentAlignment = Alignment.Center,
+             modifier = Modifier
+                 .combinedClickable(
+                     indication = ripple(bounded = true),
+                     interactionSource = remember { MutableInteractionSource() },
+                     onClick = {
+                         if (shouldBePlaying) {
+                             binder.player.pause()
+                         } else {
+                             if (binder.player.playbackState == Player.STATE_IDLE) {
+                                 binder.player.prepare()
+                             }
+                             binder.player.play()
+                         }
+                         if (effectRotationEnabled) isRotated = !isRotated
+                     },
+                     onLongClick = onShowSpeedPlayerDialog
+                 )
+                 .bounceClick()
+
           ) {
               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
                   Icon(
@@ -380,8 +399,7 @@ fun ControlsModern(
                       modifier = Modifier
                           .offset(x = (0).dp, y = (0).dp)
                           .blur(7.dp)
-                          .size(115.dp)
-                          .bounceClick(),
+                          .size(115.dp),
                       tint = Color.Black.copy(0.75f)
                   )
               }
@@ -390,23 +408,6 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
                   modifier = Modifier
                       .rotate(rotationAngle)
-                      .combinedClickable(
-                          indication = ripple(bounded = true),
-                          interactionSource = remember { MutableInteractionSource() },
-                          onClick = {
-                              if (shouldBePlaying) {
-                                  binder.player.pause()
-                              } else {
-                                  if (binder.player.playbackState == Player.STATE_IDLE) {
-                                      binder.player.prepare()
-                                  }
-                                  binder.player.play()
-                              }
-                              if (effectRotationEnabled) isRotated = !isRotated
-                          },
-                          onLongClick = onShowSpeedPlayerDialog
-                      )
-                      .bounceClick()
                       .dropShadow(CircleShape,if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,6.dp,0.dp,0.dp,0.dp)
                       .size(100.dp),
                   contentDescription = "Background Image",
@@ -420,7 +421,6 @@ fun ControlsModern(
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
                       .size(30.dp)
-                      .bounceClick()
               )
           }
       }
@@ -608,6 +608,7 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
+                      .bounceClick()
               )
 
           }
