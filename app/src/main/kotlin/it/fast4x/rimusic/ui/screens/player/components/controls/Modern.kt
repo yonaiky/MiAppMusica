@@ -74,6 +74,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
 
@@ -379,7 +380,8 @@ fun ControlsModern(
                       modifier = Modifier
                           .offset(x = (0).dp, y = (0).dp)
                           .blur(7.dp)
-                          .size(115.dp),
+                          .size(115.dp)
+                          .bounceClick(),
                       tint = Color.Black.copy(0.75f)
                   )
               }
@@ -404,6 +406,7 @@ fun ControlsModern(
                           },
                           onLongClick = onShowSpeedPlayerDialog
                       )
+                      .bounceClick()
                       .dropShadow(CircleShape,if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,6.dp,0.dp,0.dp,0.dp)
                       .size(100.dp),
                   contentDescription = "Background Image",
@@ -417,6 +420,7 @@ fun ControlsModern(
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
                       .size(30.dp)
+                      .bounceClick()
               )
           }
       }
@@ -441,6 +445,7 @@ fun ControlsModern(
                       },
                       onLongClick = onShowSpeedPlayerDialog
                   )
+                  .bounceClick()
                   .width(playerPlayButtonType.width.dp)
                   .height(playerPlayButtonType.height.dp)
 
@@ -472,6 +477,7 @@ fun ControlsModern(
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
                       .size(30.dp)
+                      .bounceClick()
               )
 
               val fmtSpeed = "%.1fx".format(playbackSpeed).replace(",", ".")

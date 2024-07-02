@@ -211,6 +211,7 @@ const val showvisthumbnailKey = "showvisthumbnail"
 const val extraspaceKey = "extraspace"
 const val expandedlyricsKey = "expandedlyrics"
 const val lyricsHighlightKey = "lyricsHighlight"
+const val buttonStateKey = "buttonState"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
