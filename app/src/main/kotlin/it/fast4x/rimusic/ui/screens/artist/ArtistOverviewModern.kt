@@ -41,7 +41,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
@@ -188,6 +190,7 @@ fun ArtistOverviewModern(
     val listMediaItems = remember { mutableListOf<MediaItem>() }
 
     val artist by persist<Artist?>("artist/$browseId/artist")
+    val hapticFeedback = LocalHapticFeedback.current
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -560,7 +563,8 @@ fun ArtistOverviewModern(
                                                     onDismiss = menuState::hide,
                                                     mediaItem = song.asMediaItem,
                                                 )
-                                            }
+                                            };
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         },
                                         onClick = {
                                             binder?.stopRadio()

@@ -51,8 +51,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -259,6 +261,7 @@ fun AlbumDetailsModern(
     var nowPlayingItem by remember {
         mutableStateOf(-1)
     }
+    val hapticFeedback = LocalHapticFeedback.current
 
     /*
     val painter = rememberAsyncImagePainter(
@@ -1015,7 +1018,8 @@ fun AlbumDetailsModern(
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
                                             )
-                                        }
+                                        };
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {
                                         if (!selectItems) {
