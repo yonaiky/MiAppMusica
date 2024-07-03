@@ -62,9 +62,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -194,6 +196,7 @@ fun PlayerEssential(
         animationSpec = tween(durationMillis = 200), label = ""
     )
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
+    val hapticFeedback = LocalHapticFeedback.current
 
     SwipeToDismissBox(
         modifier = Modifier
@@ -249,7 +252,8 @@ fun PlayerEssential(
             modifier = Modifier
                 .combinedClickable (
                     onLongClick = {
-                        navController?.navigate(NavRoutes.queue.name)
+                        navController?.navigate(NavRoutes.queue.name);
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     },
                     onClick = {
                         //if (showPlayer != null)

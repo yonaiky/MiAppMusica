@@ -64,8 +64,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -314,7 +316,7 @@ fun HomeSongsModern(
         BuiltInPlaylist.OnDevice to stringResource(R.string.on_device)
 
     val excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
-
+    val hapticFeedback = LocalHapticFeedback.current
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
@@ -1202,7 +1204,8 @@ fun HomeSongsModern(
                                                         },
                                                         thumbnailSizeDp = thumbnailSizeDp
                                                     )
-                                                }
+                                                };
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             },
                                             onClick = {
                                                 currentFolderPath += folder.name + "/"
@@ -1266,7 +1269,8 @@ fun HomeSongsModern(
                                                 song = song,
                                                 onDismiss = menuState::hide
                                             )
-                                        }
+                                        };
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {
                                         if (!selectItems) {
@@ -1423,7 +1427,8 @@ fun HomeSongsModern(
                                             onDismiss = menuState::hide,
                                             onHideFromDatabase = { isHiding = true }
                                         )
-                                    }
+                                    };
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 },
                                 onClick = {
                                     searching = false
