@@ -632,4 +632,7 @@
     <string name="highlight">Highlight</string>
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
+    <string name="upnext">Up Next</string>
+    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showalbumcover">Show Album Cover</string>
 </resources>
