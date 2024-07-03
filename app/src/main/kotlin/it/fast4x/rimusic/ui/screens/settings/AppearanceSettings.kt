@@ -119,10 +119,12 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
+import it.fast4x.rimusic.utils.thumbnailpauseKey
 
 
 @ExperimentalAnimationApi
@@ -252,6 +254,8 @@ fun AppearanceSettings() {
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var expandedlyrics by rememberPreference(expandedlyricsKey, false)
+    var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
+    var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
 
     Column(
         modifier = Modifier
@@ -413,6 +417,18 @@ fun AppearanceSettings() {
                 onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it; showvisthumbnail = it }
             )
         if (showthumbnail){
+            if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.thumbnailpause),
+                    text = "",
+                    isChecked = thumbnailpause,
+                    onCheckedChange = { thumbnailpause = it }
+                )
+
             if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
                     filterCharSequence,
                     true
@@ -669,6 +685,18 @@ fun AppearanceSettings() {
                         PlayerPlayButtonType.CircularRibbed -> stringResource(R.string.circular_ribbed)
                     }
                 },
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.buttonzoomout).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.buttonzoomout),
+                text = "",
+                isChecked = buttonzoomout,
+                onCheckedChange = { buttonzoomout = it }
             )
 
 

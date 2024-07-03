@@ -64,8 +64,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -583,6 +585,7 @@ fun LocalPlaylistSongs(
 
     val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false
     val playlistNotPipedType = playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX,0,true) == false
+    val hapticFeedback = LocalHapticFeedback.current
 
 
     Box(
@@ -1541,6 +1544,7 @@ fun LocalPlaylistSongs(
                                             onDismiss = menuState::hide
                                         )
                                     }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 },
                                 onClick = {
                                     if (!selectItems) {

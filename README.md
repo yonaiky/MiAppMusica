@@ -29,6 +29,7 @@
 - Fetch, display, edit and translate synchronized, or not, songs lyrics
 - Light, Dark, Dynamic, PureBlack and ModernBack themes
 - Sleep timer with customizable time
+- Audio control panel: control volume of app and device, playback speed and pitch
 - Audio normalization
 - Audio auto-skip silence
 - Android Auto support

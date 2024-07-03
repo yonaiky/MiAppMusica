@@ -50,8 +50,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -161,6 +163,7 @@ fun PlaylistSongListModern(
     var playlistPage by persist<Innertube.PlaylistOrAlbumPage?>("playlist/$browseId/playlistPage")
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
+    val hapticFeedback = LocalHapticFeedback.current
 
     LaunchedEffect(Unit, filter) {
         if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
@@ -778,7 +781,8 @@ fun PlaylistSongListModern(
                                             onDismiss = menuState::hide,
                                             mediaItem = song.asMediaItem,
                                         )
-                                    }
+                                    };
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 },
                                 onClick = {
                                     searching = false

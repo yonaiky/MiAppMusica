@@ -51,8 +51,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -260,6 +262,7 @@ fun AlbumDetailsModern(
     var nowPlayingItem by remember {
         mutableStateOf(-1)
     }
+    val hapticFeedback = LocalHapticFeedback.current
 
     /*
     val painter = rememberAsyncImagePainter(
@@ -1010,51 +1013,51 @@ fun AlbumDetailsModern(
                                             .align(Alignment.Center)
                                     )
 
-                                    if (nowPlayingItem > -1)
-                                        NowPlayingShow(song.asMediaItem.mediaId)
-                                },
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
-                                                )
-                                            }
+                                if (nowPlayingItem > -1)
+                                    NowPlayingShow(song.asMediaItem.mediaId)
+                            },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            NonQueuedMediaItemMenu(
+                                                navController = navController,
+                                                onDismiss = menuState::hide,
+                                                mediaItem = song.asMediaItem,
+                                            )
+                                        };
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        if (!selectItems) {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                songs.map(Song::asMediaItem),
+                                                index
+                                            )
+                                        } else checkedState.value = !checkedState.value
+                                    }
+                                ),
+                            trailingContent = {
+                                if (selectItems)
+                                    Checkbox(
+                                        checked = checkedState.value,
+                                        onCheckedChange = {
+                                            checkedState.value = it
+                                            if (it) listMediaItems.add(song.asMediaItem) else
+                                                listMediaItems.remove(song.asMediaItem)
                                         },
-                                        onClick = {
-                                            if (!selectItems) {
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    songs.map(Song::asMediaItem),
-                                                    index
-                                                )
-                                            } else checkedState.value = !checkedState.value
-                                        }
-                                    ),
-                                trailingContent = {
-                                    if (selectItems)
-                                        Checkbox(
-                                            checked = checkedState.value,
-                                            onCheckedChange = {
-                                                checkedState.value = it
-                                                if (it) listMediaItems.add(song.asMediaItem) else
-                                                    listMediaItems.remove(song.asMediaItem)
-                                            },
-                                            colors = CheckboxDefaults.colors(
-                                                checkedColor = colorPalette.accent,
-                                                uncheckedColor = colorPalette.text
-                                            ),
-                                            modifier = Modifier
-                                                .scale(0.7f)
-                                        )
-                                    else checkedState.value = false
-                                },
-                                mediaId = song.asMediaItem.mediaId
-                            )
-                        }
+                                        colors = CheckboxDefaults.colors(
+                                            checkedColor = colorPalette.accent,
+                                            uncheckedColor = colorPalette.text
+                                        ),
+                                        modifier = Modifier
+                                            .scale(0.7f)
+                                    )
+                                else checkedState.value = false
+                            },
+                            mediaId = song.asMediaItem.mediaId
+                        )
                     }
 
 

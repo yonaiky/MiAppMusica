@@ -55,8 +55,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -320,6 +322,7 @@ fun QuickPicksModern(
     }
     cachedSongs?.addAll(downloadedSongs)
 
+    val hapticFeedback = LocalHapticFeedback.current
     //val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
     //if (enableCreateMonthlyPlaylists)
     //    CheckMonthlyPlaylist()
@@ -518,7 +521,8 @@ fun QuickPicksModern(
                                                         }
 
                                                     )
-                                                }
+                                                };
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             },
                                             onClick = {
                                                 val mediaItem = song.asMediaItem
@@ -610,6 +614,7 @@ fun QuickPicksModern(
 
                                                         )
                                                 }
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             },
                                             onClick = {
                                                 val mediaItem = song.asMediaItem
