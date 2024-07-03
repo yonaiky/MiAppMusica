@@ -635,4 +635,7 @@
     <string name="highlight">Vurgula</string>
     <string name="buttonzoomout">Düğme Uzaklaştırma Animasyonu</string>
     <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
+    <string name="upnext">Up Next</string>
+    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showalbumcover">Show Album Cover</string>
 </resources>
