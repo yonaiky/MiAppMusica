@@ -569,12 +569,25 @@ fun OtherSettings() {
             isChecked = logDebugEnabled,
             onCheckedChange = {
                 logDebugEnabled = it
-                if (it)
-                    SmartToast(context.getString(R.string.restarting_rimusic_is_required), type = PopupType.Info)
+                if (!it) {
+                    val file = File(context.filesDir.resolve("logs"),"RiMusic_log.txt")
+                    if (file.exists())
+                        file.delete()
+
+                    val filec = File(context.filesDir.resolve("logs"),"RiMusic_crash_log.txt")
+                    if (filec.exists())
+                        filec.delete()
+
+
+                } else SmartToast(
+                    context.getString(R.string.restarting_rimusic_is_required),
+                    type = PopupType.Info
+                )
             }
         )
         ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         ButtonBarSettingEntry(
+            isEnabled = logDebugEnabled,
             title = stringResource(R.string.copy_log_to_clipboard),
             text = "",
             icon = R.drawable.copy,
@@ -588,6 +601,7 @@ fun OtherSettings() {
             }
         )
         ButtonBarSettingEntry(
+            isEnabled = logDebugEnabled,
             title = stringResource(R.string.copy_crash_log_to_clipboard),
             text = "",
             icon = R.drawable.copy,

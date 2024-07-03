@@ -83,7 +83,7 @@ fun Thumbnail(
     onShowLyrics: (Boolean) -> Unit,
     isShowingStatsForNerds: Boolean,
     onShowStatsForNerds: (Boolean) -> Unit,
-    isShowingEqualizer: Boolean,
+    isShowingVisualizer: Boolean,
     onShowEqualizer: (Boolean) -> Unit,
     onMaximize: () -> Unit,
     onDoubleTap: () -> Unit,
@@ -194,7 +194,7 @@ fun Thumbnail(
         var modifierUiType by remember { mutableStateOf(modifier) }
 
         if (showthumbnail)
-            if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
+            if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                 if (thumbnailType == ThumbnailType.Modern)
                     modifierUiType = modifier
                         .padding(vertical = 8.dp)
@@ -219,7 +219,7 @@ fun Thumbnail(
             modifier = modifierUiType
         ) {
             if (showthumbnail) {
-                if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
+                if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                     if (artImageAvailable)
                         AsyncImage(
                             model = currentWindow.mediaItem.mediaMetadata.artworkUri.toString()
@@ -314,7 +314,7 @@ fun Thumbnail(
                 )
                 if (showvisthumbnail) {
                     NextVisualizer(
-                        isDisplayed = isShowingEqualizer
+                        isDisplayed = isShowingVisualizer
                     )
                 }
 

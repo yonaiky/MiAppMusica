@@ -1080,7 +1080,7 @@ fun Player(
                 onShowLyrics = { isShowingLyrics = it },
                 isShowingStatsForNerds = isShowingStatsForNerds,
                 onShowStatsForNerds = { isShowingStatsForNerds = it },
-                isShowingEqualizer = isShowingEqualizer,
+                isShowingVisualizer = isShowingEqualizer,
                 onShowEqualizer = { isShowingEqualizer = it },
                 showthumbnail = showthumbnail,
                 onMaximize = { lyricsBottomSheetState.expandSoft() },

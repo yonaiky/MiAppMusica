@@ -293,7 +293,7 @@ fun PlayerModern(
         mutableStateOf(false)
     }
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
-    var isShowingEqualizer by remember {
+    var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
     var expandedlyrics by rememberPreference(expandedlyricsKey, false)
@@ -403,7 +403,7 @@ fun PlayerModern(
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
     if (expandedlyrics && !isLandscape)
-        if (isShowingLyrics || isShowingEqualizer) expandedplayer = true
+        if (isShowingLyrics || isShowingVisualizer) expandedplayer = true
         else expandedplayer = false
 
     LaunchedEffect(mediaItem.mediaId) {
@@ -906,7 +906,7 @@ fun PlayerModern(
                     indication = null,
                     onClick = {
                        if(thumbnailTapEnabled){
-                          if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
+                          if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
                           isShowingLyrics = !isShowingLyrics
                         }
                     },
@@ -994,8 +994,8 @@ fun PlayerModern(
             onShowLyrics = { isShowingLyrics = it },
             isShowingStatsForNerds = isShowingStatsForNerds,
             onShowStatsForNerds = { isShowingStatsForNerds = it },
-            isShowingEqualizer = isShowingEqualizer,
-            onShowEqualizer = { isShowingEqualizer = it },
+            isShowingVisualizer = isShowingVisualizer,
+            onShowEqualizer = { isShowingVisualizer = it },
             showthumbnail = showthumbnail,
             onMaximize = {
                 showFullLyrics = true
@@ -1427,7 +1427,7 @@ fun PlayerModern(
                                 color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
-                                    if (isShowingEqualizer) isShowingEqualizer = !isShowingEqualizer
+                                    if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
                                     isShowingLyrics = !isShowingLyrics
                                 },
                                 modifier = Modifier
@@ -1450,11 +1450,11 @@ fun PlayerModern(
                         if (visualizerEnabled)
                             IconButton(
                                 icon = R.drawable.sound_effect,
-                                color = if (isShowingEqualizer) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isShowingVisualizer) colorPalette.text else colorPalette.textDisabled,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingLyrics) isShowingLyrics = !isShowingLyrics
-                                    isShowingEqualizer = !isShowingEqualizer
+                                    isShowingVisualizer = !isShowingVisualizer
                                 },
                                 modifier = Modifier
                                     .size(24.dp)
@@ -1617,7 +1617,7 @@ fun PlayerModern(
                             .weight(1f)*/
                             //.padding(vertical = 10.dp)
                         ) {
-                            if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
+                            if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                                 thumbnailContent(
                                     modifier = Modifier
                                         .padding(vertical = playerThumbnailSize.size.dp,
@@ -1629,7 +1629,7 @@ fun PlayerModern(
                                 )
                         }
                     }
-                    if (isShowingEqualizer && !showvisthumbnail) {
+                    if (isShowingVisualizer && !showvisthumbnail) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
@@ -1656,7 +1656,7 @@ fun PlayerModern(
                                 }
                         ) {
                             NextVisualizer(
-                                    isDisplayed = isShowingEqualizer
+                                    isDisplayed = isShowingVisualizer
                                 )
                         }
                     }
@@ -1833,7 +1833,7 @@ fun PlayerModern(
                         .weight(1.2f)
                 ) {
                    if (showthumbnail) {
-                       if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
+                       if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                            thumbnailContent(
                                modifier = Modifier
                                    .clip(thumbnailShape)
@@ -1894,7 +1894,7 @@ fun PlayerModern(
                             )
                         if (!showvisthumbnail)
                             NextVisualizer(
-                                isDisplayed = isShowingEqualizer
+                                isDisplayed = isShowingVisualizer
                             )
                     }
                 }
