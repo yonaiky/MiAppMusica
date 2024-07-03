@@ -129,6 +129,7 @@ fun PlayerEssential(
         )
     }
     var shouldBePlaying by remember { mutableStateOf(binder.player.shouldBePlaying) }
+    val hapticFeedback = LocalHapticFeedback.current
 
     binder.player.DisposableListener {
         object : Player.Listener {
@@ -176,7 +177,7 @@ fun PlayerEssential(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.StartToEnd) if (miniPlayerType == MiniPlayerType.Essential) updateLike = true else binder.player.forceSeekToPrevious()
             else if (value == SwipeToDismissBoxValue.EndToStart) binder.player.forceSeekToNext()
-
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
             return@rememberSwipeToDismissBoxState false
         }
     )
@@ -196,7 +197,6 @@ fun PlayerEssential(
         animationSpec = tween(durationMillis = 200), label = ""
     )
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
-    val hapticFeedback = LocalHapticFeedback.current
 
     SwipeToDismissBox(
         modifier = Modifier

@@ -774,17 +774,18 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
-                    if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
-                    BlurTransformation(
-                        scale = 0.5f,
-                        radius = blurStrength.toInt(),
-                        //darkenFactor = blurDarkenFactor
-                    )
+                  if (showthumbnail) {
+                      BlurTransformation(
+                          scale = 0.5f,
+                          radius = blurStrength.toInt(),
+                          //darkenFactor = blurDarkenFactor
+                      )
+                  }
                    else
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
-                        radius = 25,
+                        radius = if (isShowingLyrics) 25 else 0,
                         //darkenFactor = blurDarkenFactor
                     )
                 )
@@ -907,6 +908,7 @@ fun PlayerModern(
                          showthumbnail = !showthumbnail
                     },
                     onLongClick = {
+                      if(showthumbnail)
                         showBlurPlayerDialog = true
                     }
                 )
