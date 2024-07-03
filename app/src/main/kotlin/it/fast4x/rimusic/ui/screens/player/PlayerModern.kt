@@ -780,6 +780,12 @@ fun PlayerModern(
             )
             .size(coil.size.Size.ORIGINAL)
             .transformations(
+                BlurTransformation(
+                    scale = 0.5f,
+                    radius = blurStrength.toInt(),
+                    //darkenFactor = blurDarkenFactor
+                )
+                /*
                 listOf(
                   if (showthumbnail) {
                       BlurTransformation(
@@ -796,6 +802,8 @@ fun PlayerModern(
                         //darkenFactor = blurDarkenFactor
                     )
                 )
+
+                 */
             )
             .build()
     )
@@ -915,7 +923,6 @@ fun PlayerModern(
                          showthumbnail = !showthumbnail
                     },
                     onLongClick = {
-                      if(showthumbnail)
                         showBlurPlayerDialog = true
                     }
                 )
