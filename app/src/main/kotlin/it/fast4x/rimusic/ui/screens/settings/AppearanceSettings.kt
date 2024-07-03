@@ -121,6 +121,8 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.showalbumcoverKey
+import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -256,6 +258,8 @@ fun AppearanceSettings() {
     var expandedlyrics by rememberPreference(expandedlyricsKey, false)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
+    var showtwosongs by rememberPreference(showtwosongsKey, true)
+    var showalbumcover by rememberPreference(showalbumcoverKey, true)
 
     Column(
         modifier = Modifier
@@ -830,6 +834,30 @@ fun AppearanceSettings() {
                 isChecked = showNextSongsInPlayer,
                 onCheckedChange = { showNextSongsInPlayer = it }
             )
+        if (showNextSongsInPlayer) {
+            if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.showtwosongs),
+                    text = "",
+                    isChecked = showtwosongs,
+                    onCheckedChange = { showtwosongs = it }
+                )
+            if (filter.isNullOrBlank() || stringResource(R.string.showalbumcover).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.showalbumcover),
+                    text = "",
+                    isChecked = showalbumcover,
+                    onCheckedChange = { showalbumcover = it }
+                )
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(
                 filterCharSequence,

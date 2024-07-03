@@ -27,6 +27,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -43,6 +44,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -212,6 +215,8 @@ import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.showalbumcoverKey
+import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 
 
@@ -538,6 +543,8 @@ fun PlayerModern(
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
+    var showtwosongs by rememberPreference(showtwosongsKey, true)
+    var showalbumcover by rememberPreference(showalbumcoverKey, true)
 
     if (isShowingSleepTimerDialog) {
         if (sleepTimerMillisLeft != null) {
@@ -774,17 +781,18 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
-                    if ((!isShowingLyrics && !isShowingEqualizer) || (isShowingEqualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
-                    BlurTransformation(
-                        scale = 0.5f,
-                        radius = blurStrength.toInt(),
-                        //darkenFactor = blurDarkenFactor
-                    )
+                  if (showthumbnail) {
+                      BlurTransformation(
+                          scale = 0.5f,
+                          radius = blurStrength.toInt(),
+                          //darkenFactor = blurDarkenFactor
+                      )
+                  }
                    else
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
-                        radius = 25,
+                        radius = if (isShowingLyrics) 25 else 0,
                         //darkenFactor = blurDarkenFactor
                     )
                 )
@@ -907,6 +915,7 @@ fun PlayerModern(
                          showthumbnail = !showthumbnail
                     },
                     onLongClick = {
+                      if(showthumbnail)
                         showBlurPlayerDialog = true
                     }
                 )
@@ -1105,6 +1114,20 @@ fun PlayerModern(
                 ) {
                     if (showNextSongsInPlayer) {
                         Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                        ){
+                            BasicText(
+                                text = stringResource(R.string.upnext),
+                                style = TextStyle(
+                                    color = colorPalette.text,
+                                    fontSize = typography.xs.semiBold.fontSize,
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                        Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
@@ -1123,159 +1146,201 @@ fun PlayerModern(
                             } catch (e: Exception) {
                                 MediaItem.EMPTY
                             }
-
-                            Box(
-                                contentAlignment = Alignment.Center,
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
+                                  .weight(1f)
+                                  .width(IntrinsicSize.Min)
                             ) {
-                                AsyncImage(
-                                    model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                        Dimensions.thumbnails.song.px / 2
-                                    ),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .padding(all = 5.dp)
-                                        .clip(thumbnailShape)
-                                        .size(30.dp)
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .weight(1f)
-                            ) {
-                                 Box(
-
-                                 ) {
-                                    BasicText(
-                                        text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
-                                        style = TextStyle(
-                                            color = colorPalette.text,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                     )
-                                     BasicText(
-                                        text = nextMediaItem.mediaMetadata.title?.toString() ?: "",
-                                        style = TextStyle(
-                                            drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (!textoutline) Color.Transparent
-                                                    else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
-                                                         else Color.Black,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                     )
-                                   }
-
-                                Box(
-
-                                ) {
-                                    BasicText(
-                                        text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
-                                        style = TextStyle(
-                                            color = colorPalette.text,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                    BasicText(
-                                        text = nextMediaItem.mediaMetadata.artist?.toString() ?: "",
-                                        style = TextStyle(
-                                            drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (!textoutline) Color.Transparent
-                                            else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
-                                            else Color.Black,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-                            }
-
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                            ) {
-                                AsyncImage(
-                                    model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                        Dimensions.thumbnails.song.px / 2
-                                    ),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .padding(all = 5.dp)
-                                        .clip(thumbnailShape)
-                                        .size(30.dp)
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .weight(1f)
-                            ) {
-                                Box(
-
-                                ) {
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                            ?: "",
-                                        style = TextStyle(
-                                            color = colorPalette.text,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                            ?: "",
-                                        style = TextStyle(
-                                            drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (!textoutline) Color.Transparent
-                                            else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
-                                            else Color.Black,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-
-                                }
-                                Box(
-
-                                ) {
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.artist?.toString()
-                                            ?: "",
-                                        style = TextStyle(
-                                            color = colorPalette.text,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                )
-                                    BasicText(
-                                        text = nextNextMediaItem.mediaMetadata.artist?.toString()
-                                            ?: "",
-                                        style = TextStyle(
-                                            drawStyle = Stroke(width = 0.25f, join = StrokeJoin.Round),
-                                            color = if (!textoutline) Color.Transparent
-                                            else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.65f)
-                                            else Color.Black,
-                                            fontSize = typography.xxxs.semiBold.fontSize,
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
+                                if (showalbumcover) {
+                                    Box(
+                                        modifier = Modifier
+                                          .align(Alignment.CenterVertically)
+                                    ) {
+                                        AsyncImage(
+                                            model = nextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                                Dimensions.thumbnails.song.px / 2
+                                            ),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .padding(end = 5.dp)
+                                                .clip(RoundedCornerShape(5.dp))
+                                                .size(30.dp)
+                                        )
                                     }
+                                }
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                ) {
+                                    Box(
+
+                                    ) {
+                                        BasicText(
+                                            text = nextMediaItem.mediaMetadata.title?.toString()
+                                                ?: "",
+                                            style = TextStyle(
+                                                color = colorPalette.text,
+                                                fontSize = typography.xxxs.semiBold.fontSize,
+                                            ),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                        BasicText(
+                                            text = nextMediaItem.mediaMetadata.title?.toString()
+                                                ?: "",
+                                            style = TextStyle(
+                                                drawStyle = Stroke(
+                                                    width = 0.25f,
+                                                    join = StrokeJoin.Round
+                                                ),
+                                                color = if (!textoutline) Color.Transparent
+                                                else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                    0.65f
+                                                )
+                                                else Color.Black,
+                                                fontSize = typography.xxxs.semiBold.fontSize,
+                                            ),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+
+                                    Box(
+
+                                    ) {
+                                        BasicText(
+                                            text = nextMediaItem.mediaMetadata.artist?.toString()
+                                                ?: "",
+                                            style = TextStyle(
+                                                color = colorPalette.text,
+                                                fontSize = typography.xxxs.semiBold.fontSize,
+                                            ),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                        BasicText(
+                                            text = nextMediaItem.mediaMetadata.artist?.toString()
+                                                ?: "",
+                                            style = TextStyle(
+                                                drawStyle = Stroke(
+                                                    width = 0.25f,
+                                                    join = StrokeJoin.Round
+                                                ),
+                                                color = if (!textoutline) Color.Transparent
+                                                else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                    0.65f
+                                                )
+                                                else Color.Black,
+                                                fontSize = typography.xxxs.semiBold.fontSize,
+                                            ),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+                                }
+                            }
+                            if (showtwosongs) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier
+                                      .weight(1f)
+                                      .width(IntrinsicSize.Min)
+                                ) {
+                                    if (showalbumcover) {
+                                        Box(
+                                            modifier = Modifier
+                                                .align(Alignment.CenterVertically)
+                                        ) {
+                                            AsyncImage(
+                                                model = nextNextMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                                    Dimensions.thumbnails.song.px / 2
+                                                ),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .padding(end = 5.dp)
+                                                    .clip(RoundedCornerShape(5.dp))
+                                                    .size(30.dp)
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier
+                                            .height(40.dp)
+                                    ) {
+                                        Box(
+
+                                        ) {
+                                            BasicText(
+                                                text = nextNextMediaItem.mediaMetadata.title?.toString()
+                                                    ?: "",
+                                                style = TextStyle(
+                                                    color = colorPalette.text,
+                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                            BasicText(
+                                                text = nextNextMediaItem.mediaMetadata.title?.toString()
+                                                    ?: "",
+                                                style = TextStyle(
+                                                    drawStyle = Stroke(
+                                                        width = 0.25f,
+                                                        join = StrokeJoin.Round
+                                                    ),
+                                                    color = if (!textoutline) Color.Transparent
+                                                    else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                        0.65f
+                                                    )
+                                                    else Color.Black,
+                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+
+                                        }
+                                        Box(
+
+                                        ) {
+                                            BasicText(
+                                                text = nextNextMediaItem.mediaMetadata.artist?.toString()
+                                                    ?: "",
+                                                style = TextStyle(
+                                                    color = colorPalette.text,
+                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                            BasicText(
+                                                text = nextNextMediaItem.mediaMetadata.artist?.toString()
+                                                    ?: "",
+                                                style = TextStyle(
+                                                    drawStyle = Stroke(
+                                                        width = 0.25f,
+                                                        join = StrokeJoin.Round
+                                                    ),
+                                                    color = if (!textoutline) Color.Transparent
+                                                    else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                        0.65f
+                                                    )
+                                                    else Color.Black,
+                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

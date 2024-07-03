@@ -214,6 +214,9 @@ const val lyricsHighlightKey = "lyricsHighlight"
 const val buttonStateKey = "buttonState"
 const val buttonzoomoutKey = "buttonzoomout"
 const val thumbnailpauseKey = "thumbnailpause"
+const val showtwosongsKey = "showtwosongs"
+const val showalbumcoverKey = "showalbumcover"
+
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

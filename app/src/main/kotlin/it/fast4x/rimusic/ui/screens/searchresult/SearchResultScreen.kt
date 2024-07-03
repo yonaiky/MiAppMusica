@@ -15,8 +15,10 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
@@ -87,6 +89,7 @@ fun SearchResultScreen(
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
+    val hapticFeedback = LocalHapticFeedback.current
 
     PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
@@ -200,7 +203,8 @@ fun SearchResultScreen(
                                                             onDismiss = menuState::hide,
                                                             mediaItem = song.asMediaItem,
                                     )
-                                                    }
+                                                    };
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                 },
                                                 onClick = {
                                                     binder?.stopRadio()
@@ -333,7 +337,8 @@ fun SearchResultScreen(
                                                             mediaItem = video.asMediaItem,
                                                             onDismiss = menuState::hide
                                                         )
-                                                    }
+                                                    };
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                 },
                                                 onClick = {
                                                     binder?.stopRadio()

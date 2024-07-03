@@ -236,7 +236,7 @@
     <string name="value_must_be_greater_than">"Değer şundan daha büyük olmalıdır "</string>
     <string name="custom">Özel</string>
     <string name="custom_cache_size">Özel önbellek boyutu</string>
-    <string name="listen_on">Şunda dinle</string>
+    <string name="listen_on">Şununla dinle...</string>
     <string name="error_local_music_not_found">Yerel müzik dosyası bulunamadı</string>
     <string name="bodied_bar">Kalın çubuk</string>
     <string name="pin_bar">İnce çubuk</string>
@@ -606,8 +606,8 @@
     <string name="timelinesize">Oynatıcı Zaman Çizgisi Boyutu</string>
     <string name="actionspacedevenly">Eşit Aralıklı</string>
     <string name="expandedplayer">Genişletilmiş Oynatıcı</string>
-    <string name="expandedlyrics">Expanded Lyrics</string>
-    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
+    <string name="expandedlyrics">Genişletilmiş Şarkı Sözleri</string>
+    <string name="expandedlyricsinfo">Genişletilmiş Oynatıcı yalnızca şarkı sözleri etkinleştirildiğinde çalışır</string>
     <string name="info_connect_your_piped_account_first">Önce piped hesabını bağla yoksa piped senkronizasyonu nu devre dışı bırak</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Akışkan Tema</string>
     <string name="blackgradient">Altta Siyah Gradyan</string>
     <string name="glow">Parıltı</string>
-    <string name="bottomgradient">Show Gradient</string>
+    <string name="bottomgradient">Gradyanı Göster</string>
     <string name="textoutline">Metin Anahattını Etkinleştir</string>
     <string name="set_cache_location">Önbellek konumu</string>
     <string name="info_private_cache_location_can_t_cleaned">Özel önbellek konumu, sistem tarafından temizlenemez</string>
@@ -626,13 +626,13 @@
     <string name="thumbnailtype">Küçük Resim Tipi</string>
     <string name="game_restart">Restart</string>
     <string name="game_over">Game Over!</string>
-    <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
+    <string name="showvisthumbnail">Görselleştirici için küçük resim göster</string>
     <string name="androidheadunit">Android Head unit</string>
-    <string name="extra_space">Extra space at top</string>
-    <string name="white">White</string>
-    <string name="black">Black</string>
-    <string name="highlight">Highlight</string>
     <string name="thin_bar">Thin Bar</string>
-    <string name="buttonzoomout">Button Zoom Out Animation</string>
-    <string name="thumbnailpause">Shrink thumbnail when paused</string>
+    <string name="extra_space">Üstte ekstra boşluk</string>
+    <string name="white">Beyaz</string>
+    <string name="black">Siyah</string>
+    <string name="highlight">Vurgula</string>
+    <string name="buttonzoomout">Düğme Uzaklaştırma Animasyonu</string>
+    <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
 </resources>
