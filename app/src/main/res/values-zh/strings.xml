@@ -639,4 +639,5 @@
     <string name="upnext">Up Next</string>
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">"Show Album "</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>

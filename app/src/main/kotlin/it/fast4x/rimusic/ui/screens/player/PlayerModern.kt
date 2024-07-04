@@ -341,9 +341,29 @@ fun PlayerModern(
 
     val mediaItem = nullableMediaItem ?: return
 
+    var isShowingSleepTimerDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var delayedSleepTimer by remember {
+        mutableStateOf(false)
+    }
+
+    val sleepTimerMillisLeft by (binder?.sleepTimerMillisLeft
+        ?: flowOf(null))
+        .collectAsState(initial = null)
+
     val positionAndDuration by binder.player.positionAndDurationState()
     var timeRemaining by remember { mutableIntStateOf(0) }
     timeRemaining = positionAndDuration.second.toInt() - positionAndDuration.first.toInt()
+
+    if (sleepTimerMillisLeft != null)
+        if (sleepTimerMillisLeft!! < timeRemaining.toLong() && !delayedSleepTimer)  {
+            binder.cancelSleepTimer()
+            binder.startSleepTimer(timeRemaining.toLong())
+            delayedSleepTimer = true
+            SmartToast(stringResource(R.string.info_sleep_timer_delayed_at_end_of_song))
+        }
 
     /*
     if (playbackFadeDuration != DurationInSeconds.Disabled) {
@@ -532,13 +552,7 @@ fun PlayerModern(
     }
      */
 
-    var isShowingSleepTimerDialog by remember {
-        mutableStateOf(false)
-    }
 
-    val sleepTimerMillisLeft by (binder?.sleepTimerMillisLeft
-        ?: flowOf(null))
-        .collectAsState(initial = null)
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -555,6 +569,7 @@ fun PlayerModern(
                 onDismiss = { isShowingSleepTimerDialog = false },
                 onConfirm = {
                     binder.cancelSleepTimer()
+                    delayedSleepTimer = false
                     //onDismiss()
                 }
             )
@@ -895,24 +910,30 @@ fun PlayerModern(
                 .background(
                     Brush.verticalGradient(
                         0.0f to Color.Transparent,
-                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(if (isLandscape) 0.8f else 0.75f) else Color.Black.copy(if (isLandscape) 0.8f else 0.75f) else Color.Transparent,
+                        1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                            if (isLandscape) 0.8f else 0.75f
+                        ) else Color.Black.copy(if (isLandscape) 0.8f else 0.75f) else Color.Transparent,
                         startY = if (isLandscape) 600f else if (expandedplayer) 1300f else 950f,
                         endY = POSITIVE_INFINITY
                     )
                 )
-                .background(if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.25f) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent)
+                .background(
+                    if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                        0.25f
+                    ) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent
+                )
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
-                       if(thumbnailTapEnabled){
-                          if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
-                          isShowingLyrics = !isShowingLyrics
+                        if (thumbnailTapEnabled) {
+                            if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
+                            isShowingLyrics = !isShowingLyrics
                         }
                     },
                     onDoubleClick = {
-                       if (!showlyricsthumbnail && !showvisthumbnail)
-                         showthumbnail = !showthumbnail
+                        if (!showlyricsthumbnail && !showvisthumbnail)
+                            showthumbnail = !showthumbnail
                     },
                     onLongClick = {
                         showBlurPlayerDialog = true
@@ -932,7 +953,7 @@ fun PlayerModern(
                                     binder.player.seekToPreviousMediaItem()
                                     //binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
-                                } else if (deltaX <-5){
+                                } else if (deltaX < -5) {
                                     binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
@@ -1094,9 +1115,11 @@ fun PlayerModern(
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .clickable { showQueue = true }
-                    .background(colorPalette.background2.copy(
-                        alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
-                    ))
+                    .background(
+                        colorPalette.background2.copy(
+                            alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
+                        )
+                    )
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
@@ -1131,8 +1154,11 @@ fun PlayerModern(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
                                 //.background(colorPalette.background2.copy(alpha = 0.3f))
-                                .background(colorPalette.background2.copy(
-                                    alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f))
+                                .background(
+                                    colorPalette.background2.copy(
+                                        alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
+                                    )
+                                )
                                 .padding(horizontal = 12.dp)
                                 .fillMaxWidth()
                         ) {
@@ -1148,8 +1174,8 @@ fun PlayerModern(
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
-                                  .weight(1f)
-                                  .width(IntrinsicSize.Min)
+                                    .weight(1f)
+                                    .width(IntrinsicSize.Min)
                             ) {
                                 if (showalbumcover) {
                                     Box(
@@ -1246,8 +1272,8 @@ fun PlayerModern(
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier
-                                      .weight(1f)
-                                      .width(IntrinsicSize.Min)
+                                        .weight(1f)
+                                        .width(IntrinsicSize.Min)
                                 ) {
                                     if (showalbumcover) {
                                         Box(
@@ -1619,8 +1645,10 @@ fun PlayerModern(
                             if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                                 thumbnailContent(
                                     modifier = Modifier
-                                        .padding(vertical = playerThumbnailSize.size.dp,
-                                                 horizontal = playerThumbnailSize.size.dp)
+                                        .padding(
+                                            vertical = playerThumbnailSize.size.dp,
+                                            horizontal = playerThumbnailSize.size.dp
+                                        )
                                         .thumbnailpause(
                                             shouldBePlaying = shouldBePlaying
                                         )
@@ -1643,7 +1671,7 @@ fun PlayerModern(
                                             if (!disablePlayerHorizontalSwipe) {
                                                 if (deltaX > 5) {
                                                     binder.player.seekToPreviousMediaItem()
-                                                } else if (deltaX <-5){
+                                                } else if (deltaX < -5) {
                                                     binder.player.forceSeekToNext()
                                                 }
 
@@ -1676,7 +1704,7 @@ fun PlayerModern(
                                         if (!disablePlayerHorizontalSwipe) {
                                             if (deltaX > 5) {
                                                 binder.player.seekToPreviousMediaItem()
-                                            } else if (deltaX <-5){
+                                            } else if (deltaX < -5) {
                                                 binder.player.forceSeekToNext()
                                             }
 

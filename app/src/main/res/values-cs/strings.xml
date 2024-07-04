@@ -639,4 +639,5 @@
     <string name="showalbumcover">Zobrazit obal alba</string>
     <string name="thin_bar">Thin Bar</string>
     <string name="do_not_translate">Do not translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>

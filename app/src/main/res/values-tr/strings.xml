@@ -639,4 +639,5 @@
     <string name="showtwosongs">Sıradaki sonraki iki şarkıyı göster</string>
     <string name="showalbumcover">Albüm Kapağını Göster</string>
     <string name="do_not_translate">Do not translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>
