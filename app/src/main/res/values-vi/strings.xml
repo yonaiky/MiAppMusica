@@ -630,4 +630,5 @@
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
     <string name="thin_bar">Thin Bar</string>
+    <string name="do_not_translate">Do not translate</string>
 </resources>

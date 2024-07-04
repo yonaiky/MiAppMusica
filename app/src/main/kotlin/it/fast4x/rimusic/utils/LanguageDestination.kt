@@ -3,17 +3,22 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
+import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.Languages
 import me.bush.translator.Language
+import timber.log.Timber
 
 
 @Composable
 fun languageDestination (
-    language: Languages = Languages.English
+    language: Languages? = null,
 ): Language {
-    val languageApp  by rememberPreference(languageAppKey, Languages.English)
+    //val languageApp  by rememberPreference(languageAppKey, Languages.English)
+    val otherLanguageApp  by rememberPreference(otherLanguageAppKey, Languages.English)
+    //Timber.d("LanguageDestination: language $language otherLanguageApp $otherLanguageApp")
 
-    return when (languageApp) {
+    return when (language ?: otherLanguageApp) {
         Languages.Afrikaans -> Language.AFRIKAANS
         Languages.Arabic -> Language.ARABIC
         Languages.Bashkir -> Language.BASQUE
@@ -56,5 +61,61 @@ fun languageDestination (
         Languages.Ukrainian -> Language.UKRAINIAN
         Languages.Vietnamese -> Language.VIETNAMESE
         else -> Language.ENGLISH
+    }
+}
+
+@Composable
+fun languageDestinationName (
+    language: Languages? = null,
+): String {
+    //val languageApp  by rememberPreference(languageAppKey, Languages.English)
+    val otherLanguageApp  by rememberPreference(otherLanguageAppKey, Languages.English)
+    //Timber.d("LanguageDestination: language $language otherLanguageApp $otherLanguageApp")
+
+    return when (language ?: otherLanguageApp) {
+        Languages.System -> stringResource(R.string.system_language)
+        Languages.Afrikaans -> stringResource(R.string.lang_afrikaans)
+        Languages.Arabic -> stringResource(R.string.arabic)
+        Languages.Bashkir -> stringResource(R.string.bashkir)
+        Languages.Bengali -> stringResource(R.string.lang_bengali)
+        Languages.Catalan -> stringResource(R.string.catalan)
+        Languages.ChineseSimplified -> stringResource(R.string.chinese_simplified)
+        Languages.ChineseTraditional -> stringResource(R.string.chinese_traditional)
+        Languages.Czech -> stringResource(R.string.czech)
+        Languages.Danish -> stringResource(R.string.lang_danish)
+        Languages.Dutch -> stringResource(R.string.lang_dutch)
+        Languages.English -> stringResource(R.string.english)
+        Languages.Esperanto -> stringResource(R.string.esperanto)
+        Languages.Estonian -> stringResource(R.string.lang_estonian)
+        Languages.Filipino -> stringResource(R.string.lang_filipino)
+        Languages.Finnish -> stringResource(R.string.lang_finnish)
+        Languages.French -> stringResource(R.string.french)
+        Languages.German -> stringResource(R.string.german)
+        Languages.Greek -> stringResource(R.string.greek)
+        Languages.Hebrew -> stringResource(R.string.lang_hebrew)
+        Languages.Hindi -> stringResource(R.string.lang_hindi)
+        Languages.Hungarian -> stringResource(R.string.hungarian)
+        Languages.Indonesian -> stringResource(R.string.indonesian)
+        Languages.Irish -> stringResource(R.string.lang_irish)
+        Languages.Japanese -> stringResource(R.string.lang_japanese)
+        Languages.Korean -> stringResource(R.string.korean)
+        Languages.Italian -> stringResource(R.string.italian)
+        Languages.Odia -> stringResource(R.string.odia)
+        Languages.Persian -> stringResource(R.string.persian)
+        Languages.Polish -> stringResource(R.string.polish)
+        Languages.PortugueseBrazilian -> stringResource(R.string.portuguese_brazilian)
+        Languages.Portuguese -> stringResource(R.string.portuguese)
+        Languages.Romanian -> stringResource(R.string.romanian)
+        //Languages.RomanianEmo -> stringResource(R.string.romanian_emoticons_rom_n)
+        Languages.Russian -> stringResource(R.string.russian)
+        Languages.SerbianCyrillic -> stringResource(R.string.lang_serbian_cyrillic)
+        Languages.SerbianLatin -> stringResource(R.string.lang_serbian_latin)
+        Languages.Sinhala -> stringResource(R.string.lang_sinhala)
+        Languages.Spanish -> stringResource(R.string.spanish)
+        Languages.Swedish -> stringResource(R.string.lang_swedish)
+        Languages.Telugu -> stringResource(R.string.lang_telugu)
+        Languages.Turkish -> stringResource(R.string.turkish)
+        Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
+        Languages.Vietnamese -> stringResource(R.string.lang_vietnamese)
     }
 }

@@ -638,6 +638,7 @@
     <string name="upnext">Up Next</string>
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">Show Album Cover</string>
+    <string name="do_not_translate">Do not translate</string>
 
 
 </resources>

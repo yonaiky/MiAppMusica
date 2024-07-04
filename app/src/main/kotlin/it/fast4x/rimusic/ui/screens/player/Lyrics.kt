@@ -22,6 +22,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -85,6 +86,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.LyricsFontSize
 import it.fast4x.rimusic.enums.LyricsOutline
@@ -138,7 +140,10 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.utils.lyricsHighlightKey
 import it.fast4x.rimusic.enums.LyricsHighlight
-
+import it.fast4x.rimusic.ui.components.themed.TitleSection
+import it.fast4x.rimusic.utils.languageDestinationName
+import it.fast4x.rimusic.utils.otherLanguageAppKey
+import timber.log.Timber
 
 
 @UnstableApi
@@ -213,11 +218,72 @@ fun Lyrics(
             mutableStateOf(false)
         }
 
-        val languageDestination = languageDestination()
+        var showLanguagesList by remember {
+            mutableStateOf(false)
+        }
 
         var translateEnabled by remember {
             mutableStateOf(false)
         }
+
+        var otherLanguageApp  by rememberPreference(otherLanguageAppKey, Languages.English)
+
+        if (showLanguagesList) {
+            translateEnabled = false
+            menuState.display {
+                Menu {
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        TitleSection(title = stringResource(R.string.languages))
+                    }
+
+                    MenuEntry(
+                        icon = R.drawable.translate,
+                        text = stringResource(R.string.do_not_translate),
+                        secondaryText = "",
+                        onClick = {
+                            menuState.hide()
+                            showLanguagesList = false
+                            translateEnabled = false
+
+                        }
+                    )
+                    MenuEntry(
+                        icon = R.drawable.translate,
+                        text = stringResource(R.string._default),
+                        secondaryText = languageDestinationName(otherLanguageApp),
+                        onClick = {
+                            menuState.hide()
+                            showLanguagesList = false
+                            translateEnabled = true
+
+                        }
+                    )
+
+                    Languages.entries.forEach {
+                        if (it != Languages.System)
+                            MenuEntry(
+                                icon = R.drawable.translate,
+                                text = languageDestinationName(it),
+                                secondaryText = "",
+                                onClick = {
+                                    menuState.hide()
+                                    otherLanguageApp = it
+                                    showLanguagesList = false
+                                    translateEnabled = true
+
+                                }
+                            )
+                    }
+                }
+            }
+        }
+
+        var languageDestination = languageDestination(otherLanguageApp)
 
         val translator = Translator(getHttpClient())
 
@@ -664,20 +730,20 @@ fun Lyrics(
                             var translatedText by remember { mutableStateOf("") }
                             if (translateEnabled) {
                                 LaunchedEffect(Unit) {
-                                    val result = withContext(Dispatchers.IO) {
-                                        try {
-                                            translator.translate(
-                                                sentence.second,
-                                                languageDestination,
-                                                Language.AUTO
-                                            ).translatedText
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
+                                        val result = withContext(Dispatchers.IO) {
+                                            try {
+                                                translator.translate(
+                                                    sentence.second,
+                                                    languageDestination,
+                                                    Language.AUTO
+                                                ).translatedText
+                                            } catch (e: Exception) {
+                                                Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
+                                            }
                                         }
-                                    }
-                                    translatedText =
-                                        if (result.toString() == "kotlin.Unit") "" else result.toString()
-                                    showPlaceholder = false
+                                        translatedText =
+                                            if (result.toString() == "kotlin.Unit") "" else result.toString()
+                                        showPlaceholder = false
                                 }
                             } else translatedText = sentence.second
 
@@ -890,7 +956,14 @@ fun Lyrics(
                                                 if (enableClick)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
-                                            .background(if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f) else Color.Transparent else Color.Transparent,RoundedCornerShape(6.dp))
+                                            .background(
+                                                if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(
+                                                    0.5f
+                                                ) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(
+                                                    0.5f
+                                                ) else Color.Transparent else Color.Transparent,
+                                                RoundedCornerShape(6.dp)
+                                            )
                                             .fillMaxWidth()
                                     )
                                 else
@@ -1192,20 +1265,20 @@ fun Lyrics(
                     var translatedText by remember { mutableStateOf("") }
                     if (translateEnabled) {
                         LaunchedEffect(Unit) {
-                            val result = withContext(Dispatchers.IO) {
-                                try {
-                                    translator.translate(
-                                        text,
-                                        languageDestination,
-                                        Language.AUTO
-                                    ).translatedText
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                                val result = withContext(Dispatchers.IO) {
+                                    try {
+                                        translator.translate(
+                                            text,
+                                            languageDestination,
+                                            Language.AUTO
+                                        ).translatedText
+                                    } catch (e: Exception) {
+                                        Timber.e("Lyrics not sync translation ${e.stackTraceToString()}")
+                                    }
                                 }
-                            }
-                            translatedText =
-                                if (result.toString() == "kotlin.Unit") "" else result.toString()
-                            showPlaceholder = false
+                                translatedText =
+                                    if (result.toString() == "kotlin.Unit") "" else result.toString()
+                                showPlaceholder = false
                         }
                     } else translatedText = text
 
@@ -1859,9 +1932,13 @@ fun Lyrics(
                                                 text = stringResource(R.string.translate),
                                                 enabled = true,
                                                 onClick = {
+                                                    menuState.hide()
+                                                    showLanguagesList = true
+                                                    /*
                                                     translateEnabled = !translateEnabled
                                                     showPlaceholder =
                                                         if (!translateEnabled) false else true
+                                                     */
                                                 }
                                             )
 
