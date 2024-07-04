@@ -780,12 +780,6 @@ fun PlayerModern(
             )
             .size(coil.size.Size.ORIGINAL)
             .transformations(
-                BlurTransformation(
-                    scale = 0.5f,
-                    radius = blurStrength.toInt(),
-                    //darkenFactor = blurDarkenFactor
-                )
-                /*
                 listOf(
                   if (showthumbnail) {
                       BlurTransformation(
@@ -798,12 +792,10 @@ fun PlayerModern(
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
-                        radius = if (isShowingLyrics) 25 else 0,
+                        radius = if (isShowingLyrics && !isShowingVisualizer) 25 else 0,
                         //darkenFactor = blurDarkenFactor
                     )
                 )
-
-                 */
             )
             .build()
     )
