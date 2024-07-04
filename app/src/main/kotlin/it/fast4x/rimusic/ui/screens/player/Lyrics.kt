@@ -613,10 +613,18 @@ fun Lyrics(
             if (text?.isEmpty() == true && !checkedLyricsLrc && !checkedLyricsKugou && !checkedLyricsInnertube)
                 checkLyrics = !checkLyrics
 
+            /*
+
             if (lyrics?.fixed?.isEmpty() == true && lyrics?.synced?.isNotEmpty() == true)
                 isShowingSynchronizedLyrics = true
+
             if (lyrics?.fixed?.isEmpty() == false && lyrics?.synced?.isNotEmpty() == false)
                 isShowingSynchronizedLyrics = false
+
+            if (lyrics?.fixed?.isEmpty() == false && lyrics?.synced?.isNotEmpty() == true)
+                isShowingSynchronizedLyrics = true
+
+             */
 
             /*
             AnimatedVisibility(
