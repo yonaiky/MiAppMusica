@@ -131,6 +131,7 @@ fun About() {
                     "agefcgo \n"+
                     "Ahmad Al Juwaisri \n"+
                     "Alnoer \n"+
+                    "Ann Naser Nabil \n"+
                     "AntoniNowak \n" +
                     "beez276 \n"+
                     "CiccioDerole \n"+
