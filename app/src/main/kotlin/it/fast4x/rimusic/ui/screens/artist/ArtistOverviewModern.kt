@@ -514,9 +514,9 @@ fun ArtistOverviewModern(
                             Title(
                                 title = stringResource(R.string.songs),
                                 onClick = {
-                                    if (youtubeArtistPage.songsEndpoint?.browseId != null) {
+                                    //if (youtubeArtistPage.songsEndpoint?.browseId != null) {
                                         onViewAllSongsClick()
-                                    } else SmartToast(context.getString(R.string.info_no_songs_yet))
+                                    //} else SmartToast(context.getString(R.string.info_no_songs_yet))
                                 },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
@@ -598,9 +598,9 @@ fun ArtistOverviewModern(
                             Title(
                                 title = stringResource(R.string.albums),
                                 onClick = {
-                                    if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
+                                    //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                         onViewAllAlbumsClick()
-                                    } else SmartToast(context.getString(R.string.info_no_albums_yet))
+                                    //} else SmartToast(context.getString(R.string.info_no_albums_yet))
                                 }
                             )
                             /*
@@ -653,9 +653,9 @@ fun ArtistOverviewModern(
                             Title(
                                 title = stringResource(R.string.singles),
                                 onClick = {
-                                    if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
+                                    //if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
                                         onViewAllSinglesClick()
-                                    } else SmartToast(context.getString(R.string.info_no_singles_yet))
+                                    //} else SmartToast(context.getString(R.string.info_no_singles_yet))
                                 }
                             )
                             /*
