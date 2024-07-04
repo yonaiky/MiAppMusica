@@ -44,10 +44,13 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.primaryButton
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+
+const val EXPLICIT_PREFIX = "e:"
 
 @UnstableApi
 @Composable
@@ -359,7 +362,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
 
-                    if (isExplicit)
+                    if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
                         IconButton(
                             icon = R.drawable.explicit,
                             color = colorPalette.text,
@@ -370,7 +373,7 @@ fun SongItem(
                         )
 
                     BasicText(
-                        text = title ?: "",
+                        text = cleanPrefix(title ?: ""),
                         style = typography.xs.semiBold,
                         /*
                         style = TextStyle(
@@ -398,7 +401,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
 
-                    if (isExplicit)
+                    if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
                         IconButton(
                             icon = R.drawable.explicit,
                             color = colorPalette.text,
@@ -408,7 +411,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
                     BasicText(
-                        text = title ?: "",
+                        text = cleanPrefix(title ?: ""),
                         style = typography.xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

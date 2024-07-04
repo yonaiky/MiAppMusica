@@ -26,6 +26,20 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
      */
     val albumRow = if (albumId == null) 3 else 2
 
+    val explicitBadge = if (renderer
+        .badges
+        ?.find {
+            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+        } != null) "e:" else ""
+
+    println("mediaItem badges ${
+        renderer
+            .badges
+            ?.find {
+                it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+            } != null
+    }")
+
     return Innertube.SongItem(
         info = renderer
             .flexColumns
@@ -36,7 +50,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.getOrNull(0)
             ?.let {
                 if (it.navigationEndpoint?.endpoint is NavigationEndpoint.Endpoint.Watch) Innertube.Info(
-                    name = it.text,
+                    name = "${explicitBadge}${it.text}",
                     endpoint = it.navigationEndpoint.endpoint as NavigationEndpoint.Endpoint.Watch
                 ) else null
             },
