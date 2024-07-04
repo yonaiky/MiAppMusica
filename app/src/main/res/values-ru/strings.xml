@@ -606,8 +606,8 @@
     <string name="timelinesize">Размер таймлайна</string>
     <string name="actionspacedevenly">Равномерное распределение кнопок на панели действий</string>
     <string name="expandedplayer">Развернутый плеер</string>
-    <string name="expandedlyrics">Expanded Lyrics</string>
-    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
+    <string name="expandedlyrics">Развернутые тексты песен</string>
+    <string name="expandedlyricsinfo">Развернутый плеер работает если включены тексты песен</string>
     <string name="info_connect_your_piped_account_first">Сначала подключите учетную запись Piped или отключите синхронизацию Piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Бенгальский (বাংলা)</string>
@@ -627,12 +627,12 @@
     <string name="showvisthumbnail">Показать превью для визуализции</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Доп. место сверху</string>
-    <string name="white">White</string>
-    <string name="black">Black</string>
-    <string name="highlight">Highlight</string>
-    <string name="buttonzoomout">Button Zoom Out Animation</string>
-    <string name="thumbnailpause">Shrink thumbnail when paused</string>
-    <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
-    <string name="showalbumcover">Show Album Cover</string>
+    <string name="white">Белый</string>
+    <string name="black">Чёрный</string>
+    <string name="highlight">Выделить</string>
+    <string name="buttonzoomout">Анимация кнопки \"Уменьшить масштаб\"</string>
+    <string name="thumbnailpause">Сжать миниатюру во время паузы</string>
+    <string name="upnext">Далее</string>
+    <string name="showtwosongs">Показать следующие две песни в очереди</string>
+    <string name="showalbumcover">Показать обложку альбома</string>
 </resources>
