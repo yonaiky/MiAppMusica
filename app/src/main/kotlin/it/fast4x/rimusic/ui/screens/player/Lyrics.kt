@@ -613,68 +613,6 @@ fun Lyrics(
             if (text?.isEmpty() == true && !checkedLyricsLrc && !checkedLyricsKugou && !checkedLyricsInnertube)
                 checkLyrics = !checkLyrics
 
-            /*
-
-            if (lyrics?.fixed?.isEmpty() == true && lyrics?.synced?.isNotEmpty() == true)
-                isShowingSynchronizedLyrics = true
-
-            if (lyrics?.fixed?.isEmpty() == false && lyrics?.synced?.isNotEmpty() == false)
-                isShowingSynchronizedLyrics = false
-
-            if (lyrics?.fixed?.isEmpty() == false && lyrics?.synced?.isNotEmpty() == true)
-                isShowingSynchronizedLyrics = true
-
-             */
-
-            /*
-            AnimatedVisibility(
-                visible = text?.let(String::isEmpty) ?: false,
-                enter = slideInVertically { -it },
-                exit = slideOutVertically { -it },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-            ) {
-                BasicText(
-                    text = "${
-                        if (isShowingSynchronizedLyrics) stringResource(R.string.synchronized_lyrics) else stringResource(
-                            R.string.unsynchronized_lyrics
-                        )
-                    } " +
-                            "${stringResource(R.string.are_not_available_for_this_song)}",
-                    style = typography.xs.center.medium.color(PureBlackColorPalette.text),
-                    modifier = Modifier
-                        .background(
-                            if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(
-                                0.4f
-                            )
-                        )
-                        .padding(all = 8.dp)
-                        .fillMaxWidth()
-                )
-                BasicText(
-                    text = "${stringResource(R.string.click_to_switch_to)} ${
-                        if (isShowingSynchronizedLyrics) stringResource(R.string.unsynchronized_lyrics) else stringResource(
-                            R.string.synchronized_lyrics
-                        )
-                    }",
-                    style = typography.xs.center.bold.color(PureBlackColorPalette.text),
-                    modifier = Modifier
-                        .background(
-                            if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(
-                                0.4f
-                            )
-                        )
-                        .padding(all = 8.dp)
-                        .padding(top = 30.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            isShowingSynchronizedLyrics = !isShowingSynchronizedLyrics
-                        }
-                )
-            }
-             */
-
-
             if (text?.isNotEmpty() == true) {
                 if (isShowingSynchronizedLyrics) {
                     val density = LocalDensity.current
