@@ -629,12 +629,17 @@
     <string name="showvisthumbnail">Afficher la pochette pour le visualiseur</string>
     <string name="androidheadunit">Unité principale Android</string>
     <string name="extra_space">Espace supplémentaire en haut</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">Blanc</string>
     <string name="black">Noir</string>
     <string name="highlight">Mis en avant</string>
+    <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Animation de zoom arrière du bouton</string>
     <string name="thumbnailpause">Réduire la miniature quand c\'est en pause</string>
     <string name="upnext">Suivant</string>
     <string name="showtwosongs">Afficher les deux titres suivants dans la file d\'attente</string>
     <string name="showalbumcover">Afficher la pochette de l\'album</string>
+    <string name="do_not_translate">Do not translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>
