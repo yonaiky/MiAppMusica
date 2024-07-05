@@ -606,8 +606,8 @@
     <string name="timelinesize">প্লেয়ার টাইমলাইনের আকার</string>
     <string name="actionspacedevenly">সমভাবে ছড়ানো</string>
     <string name="expandedplayer">প্রসারিত প্লেয়ার</string>
-    <string name="expandedlyrics">প্রসারিত লিরিক্স</string>
-    <string name="expandedlyricsinfo">সম্প্রসারিত প্লেয়ার শুধুমাত্র লিরিক্স সক্রিয় করা হলেই কাজ করে</string>
+    <string name="expandedlyrics">লিরিকের প্রসারিত ভিউ</string>
+    <string name="expandedlyricsinfo">লিরিক থাম্বনেইল বন্ধ থাকলেই কাজ করবে শুধু</string>
     <string name="info_connect_your_piped_account_first">আপনার পাইপড একাউন্ট কানেক্ট করুন কিংবা পাইপড সিংক্রোনাইজেশন বন্ধ করুন</string>
     <string name="piped_playlists">পাইপড</string>
     <string name="lang_bengali">বাংলা</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">উজ্জ্বল</string>
-    <string name="bottomgradient">গ্রেডিয়েন্ট দেখান</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
@@ -627,12 +627,17 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
+    <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">Show Album Cover</string>
+    <string name="do_not_translate">Do not translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>
