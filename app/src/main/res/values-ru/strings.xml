@@ -627,12 +627,17 @@
     <string name="showvisthumbnail">Показать превью для визуализции</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Доп. место сверху</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">Белый</string>
     <string name="black">Чёрный</string>
     <string name="highlight">Выделить</string>
+    <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Анимация кнопки \"Уменьшить масштаб\"</string>
     <string name="thumbnailpause">Сжать миниатюру во время паузы</string>
     <string name="upnext">Далее</string>
     <string name="showtwosongs">Показать следующие две песни в очереди</string>
     <string name="showalbumcover">Показать обложку альбома</string>
+    <string name="do_not_translate">Do not translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
 </resources>
