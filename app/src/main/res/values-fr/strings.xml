@@ -632,9 +632,9 @@
     <string name="white">Blanc</string>
     <string name="black">Noir</string>
     <string name="highlight">Mis en avant</string>
-    <string name="buttonzoomout">Button Zoom Out Animation</string>
-    <string name="thumbnailpause">Shrink thumbnail when paused</string>
-    <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
-    <string name="showalbumcover">Show Album Cover</string>
+    <string name="buttonzoomout">Animation de zoom arrière du bouton</string>
+    <string name="thumbnailpause">Réduire la miniature quand c\'est en pause</string>
+    <string name="upnext">Suivant</string>
+    <string name="showtwosongs">Afficher les deux titres suivants dans la file d\'attente</string>
+    <string name="showalbumcover">Afficher la pochette de l\'album</string>
 </resources>
