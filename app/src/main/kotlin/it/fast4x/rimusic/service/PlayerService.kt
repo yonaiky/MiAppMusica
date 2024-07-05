@@ -109,6 +109,7 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
@@ -891,7 +892,7 @@ class PlayerService : InvincibleService(),
                 MediaSessionCompat.QueueItem(
                     builder
                         .setMediaId(mediaItem.mediaId)
-                        .setTitle(mediaItem.mediaMetadata.title)
+                        .setTitle(cleanPrefix(mediaItem.mediaMetadata.title.toString()))
                         .setSubtitle(mediaItem.mediaMetadata.artist)
                         .setIconUri(mediaItem.mediaMetadata.artworkUri)
                         .build(),
@@ -1105,7 +1106,7 @@ class PlayerService : InvincibleService(),
         if (isAtLeastAndroid13 && player.currentMediaItemIndex == 0) {
             metadataBuilder.putText(
                 MediaMetadataCompat.METADATA_KEY_TITLE,
-                "${player.mediaMetadata.title} "
+                "${cleanPrefix(player.mediaMetadata.title.toString())} "
             )
         }
 
@@ -1227,7 +1228,7 @@ class PlayerService : InvincibleService(),
     override fun onEvents(player: Player, events: Player.Events) {
         if (player.duration != C.TIME_UNSET) mediaSession.setMetadata(
             metadataBuilder
-                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, player.mediaMetadata.title)
+                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, cleanPrefix(player.mediaMetadata.title.toString()))
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, player.mediaMetadata.artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, player.mediaMetadata.albumTitle)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, player.duration)
@@ -1240,6 +1241,8 @@ class PlayerService : InvincibleService(),
                 Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 Player.EVENT_IS_PLAYING_CHANGED,
                 Player.EVENT_POSITION_DISCONTINUITY,
+                Player.EVENT_IS_LOADING_CHANGED,
+                Player.EVENT_MEDIA_METADATA_CHANGED
                 //Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED
             )
         ) {
@@ -1365,7 +1368,7 @@ class PlayerService : InvincibleService(),
         } else {
             NotificationCompat.Builder(applicationContext)
         }
-            .setContentTitle(mediaMetadata.title)
+            .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(mediaMetadata.artist)
             .setSubText(player.playerError?.message)
             .setLargeIcon(bitmapProvider.bitmap)
@@ -2061,7 +2064,7 @@ class PlayerService : InvincibleService(),
                 manageDownload(
                     context = this@PlayerService,
                     songId = mediaItem.mediaId,
-                    songTitle = mediaItem.mediaMetadata.title.toString(),
+                    songTitle = cleanPrefix(mediaItem.mediaMetadata.title.toString()),
                     downloadState = downloads[mediaItem.mediaId]?.state == Download.STATE_COMPLETED
                 )
             updatePlaybackState()

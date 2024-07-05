@@ -101,7 +101,9 @@ import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 
@@ -320,12 +322,26 @@ fun PlayerEssential(
                     .height(Dimensions.collapsedPlayer)
                     .weight(1f)
             ) {
-                BasicText(
-                    text = mediaItem.mediaMetadata.title?.toString() ?: "",
-                    style = typography.xxs.semiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX) == true)
+                        it.fast4x.rimusic.ui.components.themed.IconButton(
+                            icon = R.drawable.explicit,
+                            color = colorPalette.text,
+                            enabled = true,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(14.dp)
+                        )
+                    BasicText(
+                        text = cleanPrefix(mediaItem.mediaMetadata.title?.toString() ?: ""),
+                        style = typography.xxs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
 
                 BasicText(
                     text = mediaItem.mediaMetadata.artist?.toString() ?: "",

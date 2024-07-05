@@ -84,8 +84,10 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.buttonStateKey
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
@@ -148,8 +150,19 @@ fun InfoAlbumAndArtistEssential(
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
+
+                if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                    IconButton(
+                        icon = R.drawable.explicit,
+                        color = colorPalette.text,
+                        enabled = true,
+                        onClick = {},
+                        modifier = Modifier
+                            .size(18.dp)
+                    )
+
                 BasicText(
-                    text = title ?: "",
+                    text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         textAlign = TextAlign.Center,
                         color = if (albumId == null)
@@ -164,7 +177,7 @@ fun InfoAlbumAndArtistEssential(
                     modifier = modifierTitle
                 )
                 BasicText(
-                    text = title ?: "",
+                    text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                         textAlign = TextAlign.Center,

@@ -74,7 +74,9 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.screens.player.bounceClick
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
 
@@ -149,11 +151,21 @@ fun InfoAlbumAndArtistModern(
             var textoutline by rememberPreference(textoutlineKey, false)
 
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
-            Box(
-
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                    IconButton(
+                        icon = R.drawable.explicit,
+                        color = colorPalette.text,
+                        enabled = true,
+                        onClick = {},
+                        modifier = Modifier
+                            .size(18.dp)
+                    )
                 BasicText(
-                    text = title ?: "",
+                    text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         color = if (albumId == null)
                             if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
@@ -167,7 +179,7 @@ fun InfoAlbumAndArtistModern(
                     modifier = modifierTitle
                 )
                 BasicText(
-                    text = title ?: "",
+                    text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                         color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)

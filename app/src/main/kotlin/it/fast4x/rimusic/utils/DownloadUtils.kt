@@ -159,7 +159,7 @@ fun manageDownload (
                             contentUri
                         )
                         .setCustomCacheKey(songId)
-                        .setData(songTitle.toByteArray())
+                        .setData(cleanPrefix(songTitle).toByteArray())
                         .build()
 
                     DownloadService.sendAddDownload(

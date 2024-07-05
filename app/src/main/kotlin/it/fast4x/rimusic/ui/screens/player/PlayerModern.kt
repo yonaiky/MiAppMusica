@@ -210,6 +210,7 @@ import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
@@ -1077,7 +1078,7 @@ fun PlayerModern(
             layoutState = layoutState,
             media = mediaItem.toUiMedia(positionAndDuration.second),
             mediaId = mediaItem.mediaId,
-            title = mediaItem.mediaMetadata.title?.toString(),
+            title = mediaItem.mediaMetadata.title?.toString() ?: "",
             artist = mediaItem.mediaMetadata.artist?.toString(),
             artistIds = artistsInfo,
             albumId = albumId,
@@ -1205,8 +1206,8 @@ fun PlayerModern(
 
                                     ) {
                                         BasicText(
-                                            text = nextMediaItem.mediaMetadata.title?.toString()
-                                                ?: "",
+                                            text = cleanPrefix(nextMediaItem.mediaMetadata.title?.toString()
+                                                ?: ""),
                                             style = TextStyle(
                                                 color = colorPalette.text,
                                                 fontSize = typography.xxxs.semiBold.fontSize,
@@ -1215,8 +1216,8 @@ fun PlayerModern(
                                             overflow = TextOverflow.Ellipsis,
                                         )
                                         BasicText(
-                                            text = nextMediaItem.mediaMetadata.title?.toString()
-                                                ?: "",
+                                            text = cleanPrefix(nextMediaItem.mediaMetadata.title?.toString()
+                                                ?: ""),
                                             style = TextStyle(
                                                 drawStyle = Stroke(
                                                     width = 0.25f,
@@ -1303,8 +1304,8 @@ fun PlayerModern(
 
                                         ) {
                                             BasicText(
-                                                text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                                    ?: "",
+                                                text = cleanPrefix(nextNextMediaItem.mediaMetadata.title?.toString()
+                                                    ?: ""),
                                                 style = TextStyle(
                                                     color = colorPalette.text,
                                                     fontSize = typography.xxxs.semiBold.fontSize,
@@ -1313,8 +1314,8 @@ fun PlayerModern(
                                                 overflow = TextOverflow.Ellipsis,
                                             )
                                             BasicText(
-                                                text = nextNextMediaItem.mediaMetadata.title?.toString()
-                                                    ?: "",
+                                                text = cleanPrefix(nextNextMediaItem.mediaMetadata.title?.toString()
+                                                    ?: ""),
                                                 style = TextStyle(
                                                     drawStyle = Stroke(
                                                         width = 0.25f,
