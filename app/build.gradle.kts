@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.bundletool)
+    //alias(libs.plugins.bundletool)
     //alias(libs.plugins.kotlin.compose)
 }
 
@@ -31,8 +31,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 41
-        versionName = "0.6.41"
+        versionCode = 42
+        versionName = "0.6.42"
         //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 

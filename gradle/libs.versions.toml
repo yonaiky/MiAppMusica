@@ -35,7 +35,7 @@ timber = "5.0.1"
 crypto = "1.1.0-alpha06"
 loggingInterceptor = "4.12.0"
 math3 = "3.6.1"
-bundletool = "0.2.4"
+#bundletool = "0.2.4"
 
 [libraries]
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -93,5 +93,5 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
-bundletool = { id = "app.accrescent.tools.bundletool", version.ref = "bundletool" }
+#bundletool = { id = "app.accrescent.tools.bundletool", version.ref = "bundletool" }
 
