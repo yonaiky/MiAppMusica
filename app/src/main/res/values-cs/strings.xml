@@ -640,4 +640,5 @@
     <string name="showalbumcover">Zobrazit obal alba</string>
     <string name="do_not_translate">Nepřekládat</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Časovač spánku byl odložen na konec skladby</string>
+    <string name="lyricsbackground">Lyrics Background</string>
 </resources>
