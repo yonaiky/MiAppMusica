@@ -338,67 +338,20 @@ fun Lyrics(
                             }
                         }
 
-                        LrcLib.lyrics(
-                            artist = mediaMetadata.artist?.toString() ?: "",
-                            title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
-                            duration = duration.milliseconds,
-                            album = mediaMetadata.albumTitle?.toString()
-                        )?.onSuccess {
-                            if ((it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
-                                && playerEnableLyricsPopupMessage
-                            )
-                                coroutineScope.launch {
-                                    SmartToast(
-                                        context.getString(R.string.info_lyrics_found_on_s)
-                                            .format("LrcLib.net"),
-                                        type = PopupType.Success
-                                    )
-                                }
-                            else
-                                if (playerEnableLyricsPopupMessage)
-                                    coroutineScope.launch {
-                                        SmartToast(
-                                            context.getString(R.string.info_lyrics_not_found_on_s)
-                                                .format("LrcLib.net"),
-                                            type = PopupType.Error,
-                                            durationLong = true
-                                        )
-                                    }
-
-                            isError = false
-                            Database.upsert(
-                                Lyrics(
-                                    songId = mediaId,
-                                    fixed = currentLyrics?.fixed,
-                                    synced = it?.text.orEmpty()
-                                )
-                            )
-                            checkedLyricsLrc = true
-                        }?.onFailure {
-                            if (playerEnableLyricsPopupMessage)
-                                coroutineScope.launch {
-                                    SmartToast(
-                                        context.getString(R.string.info_lyrics_not_found_on_s_try_on_s)
-                                            .format("LrcLib.net", "KuGou.com"),
-                                        type = PopupType.Error,
-                                        durationLong = true
-                                    )
-                                }
-
-                            checkedLyricsLrc = true
-
-                            KuGou.lyrics(
+                        kotlin.runCatching {
+                            LrcLib.lyrics(
                                 artist = mediaMetadata.artist?.toString() ?: "",
                                 title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
-                                duration = duration / 1000
+                                duration = duration.milliseconds,
+                                album = mediaMetadata.albumTitle?.toString()
                             )?.onSuccess {
-                                if ((it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                if ((it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
                                     && playerEnableLyricsPopupMessage
                                 )
                                     coroutineScope.launch {
                                         SmartToast(
                                             context.getString(R.string.info_lyrics_found_on_s)
-                                                .format("KuGou.com"),
+                                                .format("LrcLib.net"),
                                             type = PopupType.Success
                                         )
                                     }
@@ -407,7 +360,7 @@ fun Lyrics(
                                         coroutineScope.launch {
                                             SmartToast(
                                                 context.getString(R.string.info_lyrics_not_found_on_s)
-                                                    .format("KuGou.com"),
+                                                    .format("LrcLib.net"),
                                                 type = PopupType.Error,
                                                 durationLong = true
                                             )
@@ -418,38 +371,98 @@ fun Lyrics(
                                     Lyrics(
                                         songId = mediaId,
                                         fixed = currentLyrics?.fixed,
-                                        synced = it?.value.orEmpty()
+                                        synced = it?.text.orEmpty()
                                     )
                                 )
-                                checkedLyricsKugou = true
+                                checkedLyricsLrc = true
                             }?.onFailure {
                                 if (playerEnableLyricsPopupMessage)
                                     coroutineScope.launch {
                                         SmartToast(
-                                            context.getString(R.string.info_lyrics_not_found_on_s)
-                                                .format("KuGou.com"),
+                                            context.getString(R.string.info_lyrics_not_found_on_s_try_on_s)
+                                                .format("LrcLib.net", "KuGou.com"),
                                             type = PopupType.Error,
                                             durationLong = true
                                         )
                                     }
 
-                                isError = true
+                                checkedLyricsLrc = true
+
+                                kotlin.runCatching {
+                                    KuGou.lyrics(
+                                        artist = mediaMetadata.artist?.toString() ?: "",
+                                        title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
+                                        duration = duration / 1000
+                                    )?.onSuccess {
+                                        if ((it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                            && playerEnableLyricsPopupMessage
+                                        )
+                                            coroutineScope.launch {
+                                                SmartToast(
+                                                    context.getString(R.string.info_lyrics_found_on_s)
+                                                        .format("KuGou.com"),
+                                                    type = PopupType.Success
+                                                )
+                                            }
+                                        else
+                                            if (playerEnableLyricsPopupMessage)
+                                                coroutineScope.launch {
+                                                    SmartToast(
+                                                        context.getString(R.string.info_lyrics_not_found_on_s)
+                                                            .format("KuGou.com"),
+                                                        type = PopupType.Error,
+                                                        durationLong = true
+                                                    )
+                                                }
+
+                                        isError = false
+                                        Database.upsert(
+                                            Lyrics(
+                                                songId = mediaId,
+                                                fixed = currentLyrics?.fixed,
+                                                synced = it?.value.orEmpty()
+                                            )
+                                        )
+                                        checkedLyricsKugou = true
+                                    }?.onFailure {
+                                        if (playerEnableLyricsPopupMessage)
+                                            coroutineScope.launch {
+                                                SmartToast(
+                                                    context.getString(R.string.info_lyrics_not_found_on_s)
+                                                        .format("KuGou.com"),
+                                                    type = PopupType.Error,
+                                                    durationLong = true
+                                                )
+                                            }
+
+                                        isError = true
+                                    }
+                                }.onFailure {
+                                    Timber.e("Lyrics Kugou get error ${it.stackTraceToString()}")
+                                }
                             }
+                        }.onFailure {
+                            Timber.e("Lyrics get error ${it.stackTraceToString()}")
                         }
 
                     } else if (!isShowingSynchronizedLyrics && currentLyrics?.fixed == null) {
                         isError = false
                         lyrics = null
-                        Innertube.lyrics(NextBody(videoId = mediaId))?.onSuccess { fixedLyrics ->
-                            Database.upsert(
-                                Lyrics(
-                                    songId = mediaId,
-                                    fixed = fixedLyrics ?: "",
-                                    synced = currentLyrics?.synced
-                                )
-                            )
-                        }?.onFailure {
-                            isError = true
+                        kotlin.runCatching {
+                            Innertube.lyrics(NextBody(videoId = mediaId))
+                                ?.onSuccess { fixedLyrics ->
+                                    Database.upsert(
+                                        Lyrics(
+                                            songId = mediaId,
+                                            fixed = fixedLyrics ?: "",
+                                            synced = currentLyrics?.synced
+                                        )
+                                    )
+                                }?.onFailure {
+                                isError = true
+                            }
+                        }.onFailure {
+                            Timber.e("Lyrics Innertube get error ${it.stackTraceToString()}")
                         }
                         checkedLyricsInnertube = true
                     } else {
@@ -493,47 +506,51 @@ fun Lyrics(
 
             LaunchedEffect(Unit) {
                 val mediaMetadata = mediaMetadataProvider()
-                LrcLib.lyrics(
-                    artist = mediaMetadata.artist?.toString().orEmpty(),
-                    title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
-                )?.onSuccess {
-                    if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
-                        coroutineScope.launch {
-                            SmartToast(
-                                context.getString(R.string.info_lyrics_tracks_found_on_s)
-                                    .format("LrcLib.net"),
-                                type = PopupType.Success
-                            )
-                        }
-                    else
+                kotlin.runCatching {
+                    LrcLib.lyrics(
+                        artist = mediaMetadata.artist?.toString().orEmpty(),
+                        title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+                    )?.onSuccess {
+                        if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
+                            coroutineScope.launch {
+                                SmartToast(
+                                    context.getString(R.string.info_lyrics_tracks_found_on_s)
+                                        .format("LrcLib.net"),
+                                    type = PopupType.Success
+                                )
+                            }
+                        else
+                            if (playerEnableLyricsPopupMessage)
+                                coroutineScope.launch {
+                                    SmartToast(
+                                        context.getString(R.string.info_lyrics_tracks_not_found_on_s)
+                                            .format("LrcLib.net"),
+                                        type = PopupType.Error,
+                                        durationLong = true
+                                    )
+                                }
+
+                        tracks.clear()
+                        tracks.addAll(it)
+                        loading = false
+                        error = false
+                    }?.onFailure {
                         if (playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
                                 SmartToast(
-                                    context.getString(R.string.info_lyrics_tracks_not_found_on_s)
+                                    context.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics)
                                         .format("LrcLib.net"),
                                     type = PopupType.Error,
                                     durationLong = true
                                 )
                             }
 
-                    tracks.clear()
-                    tracks.addAll(it)
-                    loading = false
-                    error = false
-                }?.onFailure {
-                    if (playerEnableLyricsPopupMessage)
-                        coroutineScope.launch {
-                            SmartToast(
-                                context.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics)
-                                    .format("LrcLib.net"),
-                                type = PopupType.Error,
-                                durationLong = true
-                            )
-                        }
-
-                    loading = false
-                    error = true
-                } ?: run { loading = false }
+                        loading = false
+                        error = true
+                    } ?: run { loading = false }
+                }.onFailure {
+                    Timber.e("Lyrics get error 1 ${it.stackTraceToString()}")
+                }
             }
 
             if (loading)
