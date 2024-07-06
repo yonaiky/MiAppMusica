@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.player.components.controls
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -80,6 +81,8 @@ import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -361,6 +364,7 @@ fun ControlsModern(
           onClick = {},
           modifier = Modifier
               .size(55.dp)
+              .clip(RoundedCornerShape(8.dp))
               .combinedClickable(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
@@ -390,8 +394,9 @@ fun ControlsModern(
           Box(
              contentAlignment = Alignment.Center,
              modifier = Modifier
+                 .clip(CircleShape)
                  .combinedClickable(
-                     indication = ripple(bounded = true),
+                     indication = ripple(bounded = false),
                      interactionSource = remember { MutableInteractionSource() },
                      onClick = {
                          if (shouldBePlaying) {
@@ -446,6 +451,7 @@ fun ControlsModern(
               backgroundColor = colorPalette.background2.copy(0.95f),
               onClick = {},
               modifier = Modifier
+                  .clip(RoundedCornerShape(8.dp))
                   .combinedClickable(
                       indication = ripple(bounded = true),
                       interactionSource = remember { MutableInteractionSource() },
@@ -524,6 +530,7 @@ fun ControlsModern(
         onClick = {},
         modifier = Modifier
             .size(55.dp)
+            .clip(RoundedCornerShape(8.dp))
             .combinedClickable(
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
@@ -535,6 +542,7 @@ fun ControlsModern(
                     binder.player.seekTo(position + 5000)
                 }
             )
+            .clip(RoundedCornerShape(8.dp))
 
       ) {
           Image(
@@ -579,6 +587,8 @@ fun ControlsModern(
                       .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
+                          interactionSource = null,
+                          indication = null,
                           onClick = {
                               //binder.player.forceSeekToPrevious()
                               binder.player.seekToPrevious()
@@ -613,8 +623,8 @@ fun ControlsModern(
                       .size(44.dp)
                       .align(Alignment.Center)
                       .combinedClickable(
-                          indication = null,
                           interactionSource = null,
+                          indication = null,
                           onClick = {
                               if (shouldBePlaying) {
                                   binder.player.pause()
@@ -654,6 +664,8 @@ fun ControlsModern(
                       .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
+                          interactionSource = null,
+                          indication = null,
                           onClick = {
                               binder.player.forceSeekToNext()
                               if (effectRotationEnabled) isRotated = !isRotated
