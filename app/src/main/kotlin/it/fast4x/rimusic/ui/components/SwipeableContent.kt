@@ -107,7 +107,6 @@ fun SwipeableQueueItem(
             Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
     var updateLike by rememberSaveable { mutableStateOf(false) }
-    val hapticFeedback = LocalHapticFeedback.current
     LaunchedEffect(updateLike) {
         if (updateLike) {
             mediaItemToggleLike(mediaItem)
@@ -138,7 +137,6 @@ fun SwipeablePlaylistItem(
     var likedAt by rememberSaveable {
         mutableStateOf<Long?>(null)
     }
-    val hapticFeedback = LocalHapticFeedback.current
     LaunchedEffect(mediaItem.mediaId) {
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
