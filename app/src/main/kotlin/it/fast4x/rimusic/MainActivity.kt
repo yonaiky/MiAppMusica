@@ -190,6 +190,7 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
@@ -208,6 +209,10 @@ import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
+import it.fast4x.rimusic.utils.pipedInstanceNameKey
+import it.fast4x.rimusic.utils.pipedUsernameKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
@@ -387,6 +392,13 @@ class MainActivity :
             if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
                     LocalePreferenceItem(Locale.getDefault().toLanguageTag(), "")
+        }
+
+        with(encryptedPreferences) {
+            MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
+            MainApplication.pipedInstanceName = getString(pipedInstanceNameKey, "").toString()
+            MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
+            MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
         }
 
         setContent {

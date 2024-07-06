@@ -465,15 +465,23 @@ fun BaseMediaItemMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
+
+    println("mediaItem BaseMediaItemMenu before")
+
     val context = LocalContext.current
 
     var syncPiped by remember {
         mutableStateOf(false)
     }
+
+    val coroutineScope = rememberCoroutineScope()
+    println("mediaItem BaseMediaItemMenu after")
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-    val coroutineScope = rememberCoroutineScope()
+    println("mediaItem BaseMediaItemMenu after 1")
     val pipedSession = getPipedSession()
+    println("mediaItem BaseMediaItemMenu after 2")
+
 
 
     MediaItemMenu(
@@ -498,13 +506,11 @@ fun BaseMediaItemMenu(
                 )
             }
 
-            println("pipedInfo mediaitemmenu uuid ${playlist.browseId}")
-
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
                 addToPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession() ,
+                    pipedSession = pipedSession.toApiSession(),
                     id = UUID.fromString(playlist.browseId),
                     videos = listOf(mediaItem.mediaId)
                 )

@@ -1,6 +1,7 @@
 package it.fast4x.rimusic
 
 import android.app.Application
+import androidx.compose.runtime.getValue
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
@@ -12,11 +13,15 @@ import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.logDebugEnabledKey
+import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
+import it.fast4x.rimusic.utils.pipedInstanceNameKey
 import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import timber.log.Timber
 import java.io.File
 
 class MainApplication : Application(), ImageLoaderFactory {
+
     override fun onCreate() {
         super.onCreate()
         DatabaseInitializer()
@@ -67,5 +72,12 @@ class MainApplication : Application(), ImageLoaderFactory {
             .networkCachePolicy(CachePolicy.ENABLED)
             .respectCacheHeaders(false)
             .build()
+    }
+
+    companion object {
+        var pipedUsername: String? = ""
+        var pipedInstanceName: String? = ""
+        var pipedApiBaseUrl: String? = ""
+        var pipedApiToken: String? = ""
     }
 }
