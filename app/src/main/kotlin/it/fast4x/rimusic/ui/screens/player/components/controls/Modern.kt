@@ -83,6 +83,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import it.fast4x.rimusic.utils.doubleShadowDrop
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -364,6 +365,7 @@ fun ControlsModern(
           onClick = {},
           modifier = Modifier
               .size(55.dp)
+              .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
               .clip(RoundedCornerShape(8.dp))
               .combinedClickable(
                   indication = ripple(bounded = true),
@@ -451,6 +453,7 @@ fun ControlsModern(
               backgroundColor = colorPalette.background2.copy(0.95f),
               onClick = {},
               modifier = Modifier
+                  .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
                   .clip(RoundedCornerShape(8.dp))
                   .combinedClickable(
                       indication = ripple(bounded = true),
@@ -530,6 +533,7 @@ fun ControlsModern(
         onClick = {},
         modifier = Modifier
             .size(55.dp)
+            .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
             .clip(RoundedCornerShape(8.dp))
             .combinedClickable(
                 indication = ripple(bounded = true),
