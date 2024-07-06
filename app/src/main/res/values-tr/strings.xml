@@ -630,9 +630,12 @@
     <string name="androidheadunit">Android Head unit</string>
     <string name="thin_bar">Thin Bar</string>
     <string name="extra_space">Üstte ekstra boşluk</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">Beyaz</string>
     <string name="black">Siyah</string>
     <string name="highlight">Vurgula</string>
+    <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Düğme Uzaklaştırma Animasyonu</string>
     <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
     <string name="upnext">Sıradaki</string>

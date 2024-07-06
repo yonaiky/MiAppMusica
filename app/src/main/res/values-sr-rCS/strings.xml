@@ -606,8 +606,8 @@
     <string name="timelinesize">Tamaño de la línea de tiempo del jugador</string>
     <string name="actionspacedevenly">Espaciados uniformemente</string>
     <string name="expandedplayer">Jugadora expandida</string>
-    <string name="expandedlyrics">Expanded Lyrics</string>
-    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
+    <string name="expandedlyrics">Vista ampliada de las letras</string>
+    <string name="expandedlyricsinfo">Funciona sólo cuando la miniatura de la letra está desactivada</string>
     <string name="info_connect_your_piped_account_first">Conecte primero su cuenta canalizada o deshabilite la sincronización canalizada</string>
     <string name="piped_playlists">Canalizado</string>
     <string name="lang_bengali">bengalí</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Tema fluido</string>
     <string name="blackgradient">Degradado negro en la parte inferior</string>
     <string name="glow">Brillo</string>
-    <string name="bottomgradient">Show Gradient</string>
+    <string name="bottomgradient">Mostrar degradado inferior</string>
     <string name="textoutline">Habilitar esquema de texto</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
@@ -629,6 +629,8 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>

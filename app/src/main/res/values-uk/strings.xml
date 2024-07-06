@@ -606,8 +606,8 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
-    <string name="expandedlyrics">Expanded Lyrics</string>
-    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
+    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali (বাংলা)</string>
@@ -629,6 +629,8 @@
     <string name="showvisthumbnail">Показати мініатюри для візуалізатора</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">Білий</string>
     <string name="black">Чорний</string>
     <string name="highlight">Highlight</string>
