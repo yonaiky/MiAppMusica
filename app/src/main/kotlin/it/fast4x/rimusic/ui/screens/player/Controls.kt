@@ -321,7 +321,7 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .height(10.dp)
+                        .height(if (playerPlayButtonType != PlayerPlayButtonType.Disabled) 10.dp else 5.dp)
                 )
                 GetControls(
                     binder = binder,
@@ -330,11 +330,12 @@ fun Controls(
                     likedAt = likedAt,
                     mediaId = mediaId
                 )
-                if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
+                if ((!transparentBackgroundActionBarPlayer) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
                     )
+                }
             }
         else if (!isLandscape)
             Column(

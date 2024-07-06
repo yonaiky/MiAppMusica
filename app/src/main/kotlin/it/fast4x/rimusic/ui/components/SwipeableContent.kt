@@ -20,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -42,10 +44,11 @@ fun SwipeableContent(
     content: @Composable () -> Unit
 ) {
     val (colorPalette) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) onSwipeToRight()
-            else if (value == SwipeToDismissBoxValue.EndToStart) onSwipeToLeft()
+            if (value == SwipeToDismissBoxValue.StartToEnd) {onSwipeToRight();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
+            else if (value == SwipeToDismissBoxValue.EndToStart) {onSwipeToLeft();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
 
             return@rememberSwipeToDismissBoxState false
         }

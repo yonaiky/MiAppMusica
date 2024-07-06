@@ -217,7 +217,7 @@ const val buttonzoomoutKey = "buttonzoomout"
 const val thumbnailpauseKey = "thumbnailpause"
 const val showtwosongsKey = "showtwosongs"
 const val showalbumcoverKey = "showalbumcover"
-
+const val lyricsBackgroundKey = "lyricsBackground"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
