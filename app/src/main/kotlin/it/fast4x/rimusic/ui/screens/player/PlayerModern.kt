@@ -426,9 +426,11 @@ fun PlayerModern(
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
-    if (expandedlyrics && !isLandscape)
-        if (isShowingLyrics || isShowingVisualizer) expandedplayer = true
+    if (expandedlyrics && !isLandscape) {
+        if ((isShowingLyrics && !showlyricsthumbnail) || (isShowingVisualizer && !showvisthumbnail)) expandedplayer = true
         else expandedplayer = false
+    }
+    if (showlyricsthumbnail) expandedplayer = false
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
@@ -1238,7 +1240,7 @@ fun PlayerModern(
                                                     join = StrokeJoin.Round
                                                 ),
                                                 color = if (!textoutline) Color.Transparent
-                                                else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
                                                     0.65f
                                                 )
                                                 else Color.Black,
@@ -1273,7 +1275,7 @@ fun PlayerModern(
                                                     join = StrokeJoin.Round
                                                 ),
                                                 color = if (!textoutline) Color.Transparent
-                                                else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
                                                     0.65f
                                                 )
                                                 else Color.Black,
@@ -1340,7 +1342,7 @@ fun PlayerModern(
                                                         join = StrokeJoin.Round
                                                     ),
                                                     color = if (!textoutline) Color.Transparent
-                                                    else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                    else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
                                                         0.65f
                                                     )
                                                     else Color.Black,
@@ -1375,7 +1377,7 @@ fun PlayerModern(
                                                         join = StrokeJoin.Round
                                                     ),
                                                     color = if (!textoutline) Color.Transparent
-                                                    else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                                                    else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
                                                         0.65f
                                                     )
                                                     else Color.Black,
@@ -1481,7 +1483,7 @@ fun PlayerModern(
                                     .size(24.dp),
                             )
                         if (!isLandscape)
-                         if (expandedplayertoggle && (!showlyricsthumbnail || !showvisthumbnail) && !expandedlyrics)
+                         if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
                                 color = if (expandedplayer) colorPalette.accent else Color.Gray,
