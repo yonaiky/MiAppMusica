@@ -79,6 +79,7 @@ import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
+import androidx.compose.foundation.isSystemInDarkTheme
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -185,7 +186,7 @@ fun InfoAlbumAndArtistModern(
                     text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                         else Color.Black,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -316,7 +317,7 @@ fun InfoAlbumAndArtistModern(
                 text = artist ?: "",
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,

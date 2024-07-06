@@ -396,7 +396,7 @@ fun AppearanceSettings() {
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
-        if (showlyricsthumbnail || showvisthumbnail) expandedlyrics = false
+        if (showlyricsthumbnail) expandedlyrics = false
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -530,7 +530,7 @@ fun AppearanceSettings() {
                         }
                     )
         }
-        if (!showlyricsthumbnail && !showvisthumbnail && !isLandscape)
+        if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
                     filterCharSequence,
                     true
