@@ -44,10 +44,11 @@ fun SwipeableContent(
     content: @Composable () -> Unit
 ) {
     val (colorPalette) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) onSwipeToRight()
-            else if (value == SwipeToDismissBoxValue.EndToStart) onSwipeToLeft()
+            if (value == SwipeToDismissBoxValue.StartToEnd) {onSwipeToRight();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
+            else if (value == SwipeToDismissBoxValue.EndToStart) {onSwipeToLeft();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
 
             return@rememberSwipeToDismissBoxState false
         }
@@ -120,7 +121,7 @@ fun SwipeableQueueItem(
         swipeToLeftIcon = R.drawable.trash,
         swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
         onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = { updateLike = true; hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) }
+        onSwipeToRight = { updateLike = true }
     ) {
         content()
     }
@@ -155,7 +156,7 @@ fun SwipeablePlaylistItem(
         swipeToLeftIcon = R.drawable.play_skip_forward,
         swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
         onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = { updateLike = true; hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) }
+        onSwipeToRight = { updateLike = true }
     ) {
         content()
     }

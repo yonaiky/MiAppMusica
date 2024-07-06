@@ -172,7 +172,7 @@ fun SearchResultScreen(
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
                                         onSwipeToLeft = {
-                                            binder?.player?.addNext(song.asMediaItem);hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            binder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
                                     SongItem(
