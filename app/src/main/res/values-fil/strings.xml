@@ -623,11 +623,12 @@
     <string name="info_private_cache_location_can_t_cleaned">Private location ng cache, hindi maaring linisin ng system</string>
     <string name="error_file_unsupported_format">Mukhang hindi supported ang format ng itong file</string>
     <string name="charts">Charts</string>
-    <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
-    <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
+    <string name="thumbnailtype">Klase ng Thumbnail</string>
+    <string name="showvisthumbnail">Ipakita ang thumbnail para sa visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space sa taas</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">Puti</string>
     <string name="black">Itim</string>
     <string name="highlight">I-highlight</string>
@@ -637,8 +638,7 @@
     <string name="upnext">Ang Susunod</string>
     <string name="showtwosongs">Ipakita ang susunod na dalawang kanta sa queue</string>
     <string name="showalbumcover">Ipakita ang Album Cover</string>
-    <string name="do_not_translate">Do not translate</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
-    <string name="lyricsbackground">Lyrics Background</string>
-    <string name="thumbnailtype">Klase ng Thumbnail</string>
+    <string name="do_not_translate">Huwag i-translate</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Delayed ang sleep timer sa pagkatapos ng kanta</string>
+    <string name="lyricsbackground">Background ng Lyrics</string>
 </resources>

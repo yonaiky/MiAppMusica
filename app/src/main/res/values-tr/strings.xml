@@ -624,12 +624,13 @@
     <string name="error_file_unsupported_format">Bu dosya desteklenmeyen bir biçime sahip gibi görünüyor</string>
     <string name="charts">Grafikler</string>
     <string name="thumbnailtype">Küçük Resim Tipi</string>
-    <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
     <string name="showvisthumbnail">Görselleştirici için küçük resim göster</string>
     <string name="androidheadunit">Android Head unit</string>
-    <string name="thin_bar">Thin Bar</string>
     <string name="extra_space">Üstte ekstra boşluk</string>
+
+    <string name="game_restart">Yeniden Başlat</string>
+    <string name="game_over">Oyun Bitti!</string>
+    <string name="thin_bar">İnce Çubuk</string>
     <string name="white">Beyaz</string>
     <string name="black">Siyah</string>
     <string name="highlight">Vurgula</string>
@@ -638,7 +639,7 @@
     <string name="upnext">Sıradaki</string>
     <string name="showtwosongs">Sıradaki sonraki iki şarkıyı göster</string>
     <string name="showalbumcover">Albüm Kapağını Göster</string>
-    <string name="do_not_translate">Do not translate</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
-    <string name="lyricsbackground">Lyrics Background</string>
+    <string name="do_not_translate">Tercüme etme</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Uyku zamanlayıcısı şarkı sonuna ertelendi</string>
+    <string name="lyricsbackground">Şarkı sözleri arka planı</string>
 </resources>
