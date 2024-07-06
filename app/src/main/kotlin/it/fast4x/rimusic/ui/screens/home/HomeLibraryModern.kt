@@ -174,7 +174,6 @@ fun HomeLibraryModern(
     }
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
     val context = LocalContext.current
@@ -187,7 +186,7 @@ fun HomeLibraryModern(
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
 
-                if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
+                if (isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     createPipedPlaylist(
                         context = context,
                         coroutineScope = coroutineScope,

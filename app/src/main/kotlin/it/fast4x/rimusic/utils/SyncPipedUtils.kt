@@ -10,6 +10,7 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MainApplication
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Playlist
@@ -76,7 +77,7 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
 @Composable
 fun TestPipedPlaylists() {
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+    val pipedApiToken = MainApplication.pipedApiToken ?: ""
     if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
         val pipedSession = getPipedSession()
         LaunchedEffect(Unit) {
@@ -92,7 +93,6 @@ fun ImportPipedPlaylists(){
     val coroutineScope = rememberCoroutineScope()
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    //val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val pipedSession = getPipedSession()
     if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
        SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)

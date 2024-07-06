@@ -24,3 +24,4 @@ val String.toPipedSession: PipedSession
     get() = this.split("|").let {
         PipedSession(it[0], Url(it[1]), it[2], it[3])
     }
+

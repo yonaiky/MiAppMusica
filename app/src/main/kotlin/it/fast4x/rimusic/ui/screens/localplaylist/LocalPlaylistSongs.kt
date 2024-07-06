@@ -307,7 +307,6 @@ fun LocalPlaylistSongs(
     }
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
     val context = LocalContext.current
@@ -322,7 +321,7 @@ fun LocalPlaylistSongs(
                     playlistPreview?.playlist?.let(Database::delete)
                 }
 
-                if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
                     deletePipedPlaylist(
                         context = context,
                         coroutineScope = coroutineScope,
@@ -555,7 +554,7 @@ fun LocalPlaylistSongs(
                         playlistPreview?.playlist?.copy(name = text)?.let(Database::update)
                     }
 
-                    if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                    if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
                         renamePipedPlaylist(
                             context = context,
                             coroutineScope = coroutineScope,
@@ -1075,7 +1074,7 @@ fun LocalPlaylistSongs(
                                                 }
                                                 //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
                                                     addToPipedPlaylist(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
@@ -1100,7 +1099,7 @@ fun LocalPlaylistSongs(
                                                 }
                                                 println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
                                                     addToPipedPlaylist(
                                                         context = context,
                                                         coroutineScope = coroutineScope,

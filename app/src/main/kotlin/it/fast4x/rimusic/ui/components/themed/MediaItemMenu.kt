@@ -177,7 +177,6 @@ fun InPlaylistMediaItemMenu(
     modifier: Modifier = Modifier
 ) {
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
     val context = LocalContext.current
@@ -192,7 +191,7 @@ fun InPlaylistMediaItemMenu(
                 Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
             }
 
-            if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+            if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
                 removeFromPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
@@ -465,22 +464,11 @@ fun BaseMediaItemMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
-
-    println("mediaItem BaseMediaItemMenu before")
-
     val context = LocalContext.current
 
-    var syncPiped by remember {
-        mutableStateOf(false)
-    }
-
     val coroutineScope = rememberCoroutineScope()
-    println("mediaItem BaseMediaItemMenu after")
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-    println("mediaItem BaseMediaItemMenu after 1")
     val pipedSession = getPipedSession()
-    println("mediaItem BaseMediaItemMenu after 2")
 
 
 
@@ -506,7 +494,7 @@ fun BaseMediaItemMenu(
                 )
             }
 
-            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedApiToken.isNotEmpty())
+            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
                 addToPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
