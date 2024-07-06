@@ -628,16 +628,16 @@
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Prostor navíc nahoře</string>
     <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
+    <string name="game_over">Konec hry!</string>
     <string name="white">Bílá</string>
     <string name="black">Černá</string>
     <string name="highlight">Zvýraznění</string>
-    <string name="thin_bar">Thin Bar</string>
+    <string name="thin_bar">Tenká časová osa</string>
     <string name="buttonzoomout">Animace oddálení tlačítka</string>
     <string name="thumbnailpause">Zmenšit miniaturu při pozastavení</string>
     <string name="upnext">Další</string>
     <string name="showtwosongs">Zobrazit další dvě skladby ve frontě</string>
     <string name="showalbumcover">Zobrazit obal alba</string>
-    <string name="do_not_translate">Do not translate</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="do_not_translate">Nepřekládat</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Časovač spánku byl odložen na konec skladby</string>
 </resources>
