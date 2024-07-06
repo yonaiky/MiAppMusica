@@ -63,6 +63,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastDistinctBy
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -541,7 +542,7 @@ fun QuickPicksModern(
 
                         if (related != null) {
                             items(
-                                items = related?.songs?.filter {
+                                items = related?.songs?.fastDistinctBy { it.key }?.filter {
                                     if (cachedSongs != null) {
                                         if (cachedSongs.indexOf(it.asMediaItem.mediaId) < 0) true else false
                                     } else true
