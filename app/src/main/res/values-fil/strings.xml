@@ -631,13 +631,14 @@
     <string name="white">Puti</string>
     <string name="black">Itim</string>
     <string name="highlight">I-highlight</string>
+    <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Zoom out animation ng button</string>
     <string name="thumbnailpause">I-shrink ang thumbnail kapag naka pause ito</string>
     <string name="upnext">Ang Susunod</string>
     <string name="showtwosongs">Ipakita ang susunod na dalawang kanta sa queue</string>
     <string name="showalbumcover">Ipakita ang Album Cover</string>
-    <string name="thumbnailtype">Klase ng Thumbnail</string>
-    <string name="thin_bar">Thin Bar</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="lyricsbackground">Lyrics Background</string>
+    <string name="thumbnailtype">Klase ng Thumbnail</string>
 </resources>

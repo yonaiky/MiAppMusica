@@ -624,20 +624,21 @@
     <string name="error_file_unsupported_format">Файл имеет неподдерживаемый формат</string>
     <string name="charts">Чарты</string>
     <string name="thumbnailtype">Тип превью</string>
-    <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Доп. место сверху</string>
+    <string name="game_restart">Играть снова</string>
+    <string name="game_over">Игра окончена!</string>
     <string name="white">Белый</string>
     <string name="black">Чёрный</string>
     <string name="highlight">Выделить</string>
+    <string name="thin_bar">Тонкий таймлайн</string>
     <string name="buttonzoomout">Анимация кнопки \"Уменьшить масштаб\"</string>
     <string name="thumbnailpause">Сжать миниатюру во время паузы</string>
     <string name="upnext">Далее</string>
     <string name="showtwosongs">Показать следующие две песни в очереди</string>
     <string name="showalbumcover">Показать обложку альбома</string>
-    <string name="thin_bar">Thin Bar</string>
-    <string name="do_not_translate">Do not translate</string>
+    <string name="do_not_translate">Не переводить</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="lyricsbackground">Lyrics Background</string>
 </resources>

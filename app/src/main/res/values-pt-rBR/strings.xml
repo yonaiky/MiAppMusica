@@ -606,8 +606,8 @@
     <string name="timelinesize">Tamanho do Reprodutor da Timeline</string>
     <string name="actionspacedevenly">Uniformemente Espaçado</string>
     <string name="expandedplayer">Reprodutor Expandido</string>
-    <string name="expandedlyrics">Expanded Lyrics</string>
-    <string name="expandedlyricsinfo">Expanded Player works only when Lyrics are activated</string>
+    <string name="expandedlyrics">Exibição expandida das letras</string>
+    <string name="expandedlyricsinfo">Funciona apenas quando a miniatura das letras estiver desativada</string>
     <string name="info_connect_your_piped_account_first">Conecte sua conta Piped primeiro ou desative a sincronização do Piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengalês</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Tema Fluido</string>
     <string name="blackgradient">Gradiente Preto na Parte Inferior</string>
     <string name="glow">Brilhar</string>
-    <string name="bottomgradient">Show Gradient</string>
+    <string name="bottomgradient">Show Bottom Gradient</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
@@ -629,6 +629,8 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
@@ -640,4 +642,5 @@
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="lyricsbackground">Lyrics Background</string>
 </resources>
