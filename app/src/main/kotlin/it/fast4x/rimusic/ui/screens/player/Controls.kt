@@ -330,7 +330,7 @@ fun Controls(
                     likedAt = likedAt,
                     mediaId = mediaId
                 )
-                if ((!transparentBackgroundActionBarPlayer) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
+                if (((playerControlsType == PlayerControlsType.Modern) || (!transparentBackgroundActionBarPlayer)) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
