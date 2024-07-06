@@ -377,7 +377,7 @@ fun QueueModern(
                             mediaItem = window.mediaItem,
                             onSwipeToLeft = {
                                 if (isReorderDisabled && isSwipeToActionEnabled)
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
+                                    player.removeMediaItem(currentItem.firstPeriodIndex);hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         ) {
                             SongItem(

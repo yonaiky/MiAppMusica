@@ -164,6 +164,9 @@ fun InfoAlbumAndArtistModern(
                         modifier = Modifier
                             .size(18.dp)
                     )
+            Box(
+
+            ){
                 BasicText(
                     text = cleanPrefix(title ?: ""),
                     style = TextStyle(
@@ -192,6 +195,7 @@ fun InfoAlbumAndArtistModern(
                     maxLines = 1,
                     modifier = modifierTitle
                 )
+                }
             }
             //}
         }

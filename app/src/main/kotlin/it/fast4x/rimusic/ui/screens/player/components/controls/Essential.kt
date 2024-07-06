@@ -142,25 +142,25 @@ fun InfoAlbumAndArtistEssential(
                 }
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
-            if (playerControlsType == PlayerControlsType.Modern)
-                Spacer(modifier = Modifier.weight(0.1f)) //.weight(1f)
+            Box(
+                modifier = Modifier.weight(0.1f)
+            ){
+             if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                 IconButton(
+                     icon = R.drawable.explicit,
+                     color = colorPalette.text,
+                     enabled = true,
+                     onClick = {},
+                     modifier = Modifier
+                         .size(18.dp)
+                 )
+            }
 
             Box(
                 modifier = Modifier
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-
-                if (title?.startsWith(EXPLICIT_PREFIX) == true)
-                    IconButton(
-                        icon = R.drawable.explicit,
-                        color = colorPalette.text,
-                        enabled = true,
-                        onClick = {},
-                        modifier = Modifier
-                            .size(18.dp)
-                    )
-
                 BasicText(
                     text = cleanPrefix(title ?: ""),
                     style = TextStyle(
@@ -219,6 +219,8 @@ fun InfoAlbumAndArtistEssential(
                         .padding(start = 5.dp)
                         .size(24.dp)
                 )
+            else
+              Spacer(modifier = Modifier.weight(0.1f))
         }
 
     }

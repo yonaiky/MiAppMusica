@@ -1232,7 +1232,7 @@ fun HomeSongsModern(
                         SwipeablePlaylistItem(
                             mediaItem = song.asMediaItem,
                             onSwipeToLeft = {
-                                binder?.player?.addNext(song.asMediaItem)
+                                binder?.player?.addNext(song.asMediaItem);hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         ) {
                             SongItem(
@@ -1336,7 +1336,7 @@ fun HomeSongsModern(
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
                         onSwipeToLeft = {
-                            binder?.player?.addNext(song.asMediaItem)
+                            binder?.player?.addNext(song.asMediaItem);hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                     ) {
                         SongItem(

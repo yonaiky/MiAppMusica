@@ -44,6 +44,7 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -62,6 +63,7 @@ import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
@@ -167,6 +169,12 @@ fun SearchResultScreen(
                                     //Log.d("mediaItem",song.toString())
                                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                                     val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
+                                    SwipeablePlaylistItem(
+                                        mediaItem = song.asMediaItem,
+                                        onSwipeToLeft = {
+                                            binder?.player?.addNext(song.asMediaItem);hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        }
+                                    ) {
                                     SongItem(
                                         song = song,
                                         isDownloaded = isDownloaded,
@@ -212,7 +220,8 @@ fun SearchResultScreen(
                                                     binder?.setupRadio(song.info?.endpoint)
                                                 }
                                             )
-                                    )
+                                       )
+                                    }
                                 },
                                 itemPlaceholderContent = {
                                     SongItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)

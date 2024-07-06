@@ -17,6 +17,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -50,6 +51,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -214,6 +216,7 @@ import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
@@ -808,7 +811,7 @@ fun PlayerModern(
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
-                        radius = if (isShowingLyrics && !isShowingVisualizer) 25 else 0,
+                        radius = if (isShowingLyrics && !isShowingVisualizer) blurStrength.toInt() else 0,
                         //darkenFactor = blurDarkenFactor
                     )
                 )
@@ -888,6 +891,7 @@ fun PlayerModern(
     var deltaX by remember { mutableStateOf(0f) }
     var blackgradient by rememberPreference(blackgradientKey, false)
     var bottomgradient by rememberPreference(bottomgradientKey, false)
+    var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
         /*
         .padding(
             windowInsets
@@ -937,6 +941,7 @@ fun PlayerModern(
                             showthumbnail = !showthumbnail
                     },
                     onLongClick = {
+                        if (showthumbnail || (isShowingLyrics && !isShowingVisualizer))
                         showBlurPlayerDialog = true
                     }
                 )
@@ -1090,6 +1095,14 @@ fun PlayerModern(
     }
     var textoutline by rememberPreference(textoutlineKey, false)
 
+    fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+        return if (condition) {
+            then(modifier(Modifier))
+        } else {
+            this
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -1137,20 +1150,6 @@ fun PlayerModern(
                 ) {
                     if (showNextSongsInPlayer) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                        ){
-                            BasicText(
-                                text = stringResource(R.string.upnext),
-                                style = TextStyle(
-                                    color = colorPalette.text,
-                                    fontSize = typography.xs.semiBold.fontSize,
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                        Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
@@ -1172,6 +1171,20 @@ fun PlayerModern(
                             } catch (e: Exception) {
                                 MediaItem.EMPTY
                             }
+                            Row(
+                                  modifier = Modifier
+                                      .padding(vertical = 7.5.dp)
+                              ){
+                                  Icon(
+                                      painter = painterResource(id = R.drawable.chevron_forward),
+                                      contentDescription = null,
+                                      modifier = Modifier
+                                          .size(25.dp),
+                                      tint = colorPalette.accent
+                                  )
+                              }
+
+
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
@@ -1214,6 +1227,7 @@ fun PlayerModern(
                                             ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                         )
                                         BasicText(
                                             text = cleanPrefix(nextMediaItem.mediaMetadata.title?.toString()
@@ -1232,6 +1246,7 @@ fun PlayerModern(
                                             ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                         )
                                     }
 
@@ -1247,6 +1262,7 @@ fun PlayerModern(
                                             ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                         )
                                         BasicText(
                                             text = nextMediaItem.mediaMetadata.artist?.toString()
@@ -1265,6 +1281,7 @@ fun PlayerModern(
                                             ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                         )
                                     }
                                 }
@@ -1312,6 +1329,7 @@ fun PlayerModern(
                                                 ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                             )
                                             BasicText(
                                                 text = cleanPrefix(nextNextMediaItem.mediaMetadata.title?.toString()
@@ -1330,6 +1348,7 @@ fun PlayerModern(
                                                 ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                             )
 
                                         }
@@ -1345,6 +1364,7 @@ fun PlayerModern(
                                                 ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                             )
                                             BasicText(
                                                 text = nextNextMediaItem.mediaMetadata.artist?.toString()
@@ -1363,6 +1383,7 @@ fun PlayerModern(
                                                 ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.conditional(!disableScrollingText) {basicMarquee()}
                                             )
                                         }
                                     }
