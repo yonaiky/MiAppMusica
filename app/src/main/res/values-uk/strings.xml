@@ -629,8 +629,6 @@
     <string name="showvisthumbnail">Показати мініатюри для візуалізатора</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
-    <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
     <string name="white">Білий</string>
     <string name="black">Чорний</string>
     <string name="highlight">Highlight</string>

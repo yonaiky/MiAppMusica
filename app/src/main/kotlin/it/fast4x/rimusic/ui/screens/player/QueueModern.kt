@@ -376,7 +376,6 @@ fun QueueModern(
                         SwipeableQueueItem(
                             mediaItem = window.mediaItem,
                             onSwipeToLeft = {
-                                if (isReorderDisabled && isSwipeToActionEnabled)
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
                             }
                         ) {

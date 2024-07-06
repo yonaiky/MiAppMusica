@@ -144,6 +144,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.lyricsBackgroundKey
 
 
@@ -339,7 +340,7 @@ fun Lyrics(
 
                         LrcLib.lyrics(
                             artist = mediaMetadata.artist?.toString() ?: "",
-                            title = mediaMetadata.title?.toString() ?: "",
+                            title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
                             duration = duration.milliseconds,
                             album = mediaMetadata.albumTitle?.toString()
                         )?.onSuccess {
@@ -388,7 +389,7 @@ fun Lyrics(
 
                             KuGou.lyrics(
                                 artist = mediaMetadata.artist?.toString() ?: "",
-                                title = mediaMetadata.title?.toString() ?: "",
+                                title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
                                 duration = duration / 1000
                             )?.onSuccess {
                                 if ((it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
@@ -494,7 +495,7 @@ fun Lyrics(
                 val mediaMetadata = mediaMetadataProvider()
                 LrcLib.lyrics(
                     artist = mediaMetadata.artist?.toString().orEmpty(),
-                    title = mediaMetadata.title?.toString().orEmpty()
+                    title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
                 )?.onSuccess {
                     if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
                         coroutineScope.launch {
@@ -2063,7 +2064,7 @@ fun Lyrics(
                                                         Intent(Intent.ACTION_WEB_SEARCH).apply {
                                                             putExtra(
                                                                 SearchManager.QUERY,
-                                                                "${mediaMetadata.title} ${mediaMetadata.artist} lyrics"
+                                                                "${cleanPrefix(mediaMetadata.title.toString())} ${mediaMetadata.artist} lyrics"
                                                             )
                                                         }
                                                     )
