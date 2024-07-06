@@ -93,8 +93,8 @@ data class CustomIndexColumn (
 @Serializable
 data class MusicCustomIndexColumnRenderer (
     val text: TextClass? = null,
-    val icon: Icon? = null,
-    val iconColorStyle: IconColorStyle? = null,
+    //val icon: Icon? = null,
+    //val iconColorStyle: IconColorStyle? = null,
     val accessibilityData: AccessibilityData? = null
 )
 
@@ -107,11 +107,12 @@ data class AccessibilityData (
 data class AccessibilityDataAccessibilityData (
     val label: String? = null
 )
-
+/*
 @Serializable
 data class Icon (
     val iconType: IconType? = null
 )
+
 
 @Serializable
 enum class IconType(val value: String) {
@@ -141,6 +142,7 @@ enum class IconColorStyle(val value: String) {
     @SerialName("CUSTOM_INDEX_COLUMN_ICON_COLOR_STYLE_RED") CustomIndexColumnIconColorStyleRed("CUSTOM_INDEX_COLUMN_ICON_COLOR_STYLE_RED");
 }
 
+ */
 @Serializable
 data class TextClass (
     val runs: List<DefaultTextRun>? = null
@@ -191,9 +193,9 @@ data class NavigationEndpointBrowseEndpoint (
     @SerialName("browseId")
     val browseID: String? = null,
 
-    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs? = null
+    //val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs? = null
 )
-
+/*
 @Serializable
 data class BrowseEndpointContextSupportedConfigs (
     val browseEndpointContextMusicConfig: BrowseEndpointContextMusicConfig? = null
@@ -210,6 +212,7 @@ enum class PageType(val value: String) {
     @SerialName("MUSIC_PAGE_TYPE_PLAYLIST") MusicPageTypePlaylist("MUSIC_PAGE_TYPE_PLAYLIST"),
     @SerialName("MUSIC_PAGE_TYPE_USER_CHANNEL") MusicPageTypeUserChannel("MUSIC_PAGE_TYPE_USER_CHANNEL");
 }
+*/
 
 @Serializable
 data class WatchEndpoint (
@@ -220,7 +223,7 @@ data class WatchEndpoint (
     val playlistID: String? = null,
 
     val loggingContext: LoggingContext? = null,
-    val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs? = null,
+    //val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs? = null,
     val params: Params? = null
 )
 
@@ -240,21 +243,26 @@ enum class Params(val value: String) {
     @SerialName("wAEB8gECGAE%3D") WAEB8GECGAE3D("wAEB8gECGAE%3D");
 }
 
+/*
 @Serializable
 data class WatchEndpointMusicSupportedConfigs (
     val watchEndpointMusicConfig: WatchEndpointMusicConfig? = null
 )
+
 
 @Serializable
 data class WatchEndpointMusicConfig (
     val musicVideoType: MusicVideoType? = null
 )
 
+
 @Serializable
 enum class MusicVideoType(val value: String) {
     @SerialName("MUSIC_VIDEO_TYPE_OMV") MusicVideoTypeOmv("MUSIC_VIDEO_TYPE_OMV"),
     @SerialName("MUSIC_VIDEO_TYPE_UGC") MusicVideoTypeUgc("MUSIC_VIDEO_TYPE_UGC");
 }
+
+ */
 
 @Serializable
 enum class ItemHeight(val value: String) {
@@ -284,7 +292,7 @@ data class ItemElement (
 @Serializable
 data class MenuItemRenderer (
     val text: TextClass? = null,
-    val icon: Icon? = null,
+    //val icon: Icon? = null,
     val navigationEndpoint: MenuNavigationItemRendererNavigationEndpoint? = null,
     val trackingParams: String? = null,
     val serviceEndpoint: ServiceEndpoint? = null
@@ -430,10 +438,10 @@ data class PlaylistItemData (
 @Serializable
 data class ToggleMenuServiceItemRenderer (
     val defaultText: TextClass? = null,
-    val defaultIcon: Icon? = null,
+    //val defaultIcon: Icon? = null,
     val defaultServiceEndpoint: DefaultServiceEndpoint? = null,
     val toggledText: TextClass? = null,
-    val toggledIcon: Icon? = null,
+    //val toggledIcon: Icon? = null,
     val trackingParams: String? = null
 )
 
@@ -501,13 +509,13 @@ data class MusicItemThumbnailOverlayRendererContent (
 data class MusicPlayButtonRenderer (
     val playNavigationEndpoint: NavigationEndpoint? = null,
     val trackingParams: String? = null,
-    val playIcon: Icon? = null,
-    val pauseIcon: Icon? = null,
+    //val playIcon: Icon? = null,
+    //val pauseIcon: Icon? = null,
     val iconColor: Long? = null,
     val backgroundColor: Long? = null,
     val activeBackgroundColor: Long? = null,
     val loadingIndicatorColor: Long? = null,
-    val playingIcon: Icon? = null,
+    //val playingIcon: Icon? = null,
     val iconLoadingColor: Long? = null,
     val activeScaleFactor: Long? = null,
     val buttonSize: ButtonSize? = null,
@@ -694,7 +702,7 @@ data class StartItem (
 @Serializable
 data class MusicSortFilterButtonRenderer (
     val title: TextClass? = null,
-    val icon: Icon? = null,
+    //val icon: Icon? = null,
     val menu: MusicSortFilterButtonRendererMenu? = null,
     val accessibility: AccessibilityData? = null,
     val trackingParams: String? = null
@@ -729,7 +737,7 @@ data class MusicMultiSelectMenuItemRenderer (
     val title: TextClass? = null,
     val formItemEntityKey: String? = null,
     val trackingParams: String? = null,
-    val selectedIcon: Icon? = null,
+    //val selectedIcon: Icon? = null,
     val selectedAccessibility: AccessibilityData? = null,
     val deselectedAccessibility: AccessibilityData? = null,
     val selectedCommand: SelectedCommand? = null

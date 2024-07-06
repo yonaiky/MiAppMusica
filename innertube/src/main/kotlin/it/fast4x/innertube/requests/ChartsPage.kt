@@ -3,6 +3,7 @@ package it.fast4x.innertube.requests
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
