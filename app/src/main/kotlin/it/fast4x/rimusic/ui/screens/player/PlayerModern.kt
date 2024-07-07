@@ -1176,6 +1176,7 @@ fun PlayerModern(
                             Row(
                                   modifier = Modifier
                                       .padding(vertical = 7.5.dp)
+                                      .weight(if (showtwosongs) 0.15f else 0.07f)
                               ){
                                   Icon(
                                       painter = painterResource(id = R.drawable.chevron_forward),
@@ -1288,6 +1289,13 @@ fun PlayerModern(
                                     }
                                 }
                             }
+                            if (!showtwosongs) {
+                                Row(
+                                    modifier = modifier
+                                        .weight(0.07f)
+                                ){}
+                            }
+
                             if (showtwosongs) {
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
