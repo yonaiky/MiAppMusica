@@ -612,8 +612,8 @@
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengalese</string>
     <string name="lang_irish">Irlandese</string>
-    <string name="lyricsoutline">Lyrics Outline</string>
-    <string name="fluidrainbow">Fluid Rainbow</string>
+    <string name="lyricsoutline">Contorno Testo Brano</string>
+    <string name="fluidrainbow">Arcobaleno Fluido</string>
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Glow</string>
@@ -627,6 +627,8 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
+    <string name="game_restart">Restart</string>
+    <string name="game_over">Game Over!</string>
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
