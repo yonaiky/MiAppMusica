@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -126,6 +127,7 @@ import kotlinx.coroutines.launch
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 
 
@@ -268,6 +270,8 @@ fun Controls(
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    val expandedlandscape = expandedplayer && !showthumbnail
 
     Box(
         modifier = Modifier
@@ -433,6 +437,7 @@ fun Controls(
     if (isLandscape)
         Column(
             horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Bottom,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = playerTimelineSize.size.dp)
@@ -470,7 +475,7 @@ fun Controls(
 
             Spacer(
                 modifier = Modifier
-                    .height(25.dp)
+                    .height(if (expandedlandscape) 10.dp else 25.dp)
             )
 
             if (!playerSwapControlsWithTimeline) {
@@ -482,7 +487,9 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .weight(0.4f)
+                        .animateContentSize()
+                        .conditional(!expandedlandscape) { weight(0.4f) }
+                        .conditional(expandedlandscape) { height(15.dp) }
                 )
                 GetControls(
                     binder = binder,
@@ -493,7 +500,9 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .weight(0.5f)
+                        .animateContentSize()
+                        .conditional(!expandedlandscape) { weight(0.5f) }
+                        .conditional(expandedlandscape) { height(15.dp) }
                 )
             } else {
                 GetControls(
@@ -505,7 +514,9 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .weight(0.5f)
+                        .animateContentSize()
+                        .conditional(!expandedlandscape) { weight(0.5f) }
+                        .conditional(expandedlandscape) { height(15.dp) }
                 )
                 GetSeekBar(
                     position = position,
@@ -515,7 +526,9 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .weight(0.4f)
+                        .animateContentSize()
+                        .conditional(!expandedlandscape) { weight(0.4f) }
+                        .conditional(expandedlandscape) { height(15.dp) }
                 )
             }
         }
@@ -542,6 +555,14 @@ fun Modifier.bounceClick() = composed {
                 }
             }
         }
+}
+
+fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
 }
 
 
