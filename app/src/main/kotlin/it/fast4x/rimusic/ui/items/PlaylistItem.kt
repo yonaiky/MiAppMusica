@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.items
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
@@ -312,8 +313,10 @@ fun PlaylistItem(
                             if (name.startsWith(PIPED_PREFIX,0,true))
                             name.substringAfter(PIPED_PREFIX) else name,
                         style = typography.xs.semiBold,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .basicMarquee(iterations = Int.MAX_VALUE)
                     )
                 }
 
@@ -321,8 +324,10 @@ fun PlaylistItem(
                 BasicText(
                     text = channelName,
                     style = typography.xs.semiBold.secondary,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
             }
         }

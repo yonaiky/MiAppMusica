@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -95,6 +96,8 @@ fun VideoItem(
                 style = typography.xs.semiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
             BasicText(
@@ -102,6 +105,8 @@ fun VideoItem(
                 style = typography.xs.semiBold.secondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
             views?.let {
@@ -112,6 +117,7 @@ fun VideoItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 4.dp)
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
             }
         }

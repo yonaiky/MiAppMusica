@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -224,6 +225,7 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
+                            .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
                     it()
@@ -233,6 +235,8 @@ fun SongItem(
                 style = typography.xs.semiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
 
@@ -255,6 +259,7 @@ fun SongItem(
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .weight(1f)
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
 
                 duration?.let {
@@ -386,6 +391,7 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
+                            .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
                     it()
@@ -415,6 +421,8 @@ fun SongItem(
                         style = typography.xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .basicMarquee(iterations = Int.MAX_VALUE)
                     )
                 }
 
@@ -480,6 +488,7 @@ fun SongItem(
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .weight(1f)
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
 
                 duration?.let {

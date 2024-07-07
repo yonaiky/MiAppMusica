@@ -1,6 +1,9 @@
 package it.fast4x.rimusic.ui.items
 
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -98,8 +101,10 @@ fun ArtistItem(
             BasicText(
                 text = name ?: "",
                 style = typography.xs.semiBold,
-                maxLines = if (alternative) 1 else 2,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 1, //if (alternative) 1 else 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
             subscribersCount?.let {
@@ -110,6 +115,7 @@ fun ArtistItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 4.dp)
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
             }
         }

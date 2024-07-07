@@ -259,9 +259,11 @@ fun QuickPicksModern(
                 }
             }
 
-            discoverPage = Innertube.discoverPage()
+            if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres)
+                discoverPage = Innertube.discoverPage()
 
-            chartsPage = Innertube.chartsPage()
+            if (showCharts)
+                chartsPage = Innertube.chartsPage()
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
