@@ -1482,7 +1482,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-                        if (!isLandscape)
+                        if (!isLandscape || !showthumbnail)
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,

@@ -1092,18 +1092,21 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-        if (!showlyricsthumbnail and !expandedlyrics and !isLandscape)
-        if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
-                filterCharSequence,
-                true
-            )
-        )
-            SwitchSettingEntry(
-                title = stringResource(R.string.expandedplayer),
-                text = "",
-                isChecked = expandedplayertoggle,
-                onCheckedChange = { expandedplayertoggle = it }
-            )
+        if (!isLandscape || !showthumbnail) {
+            if (!showlyricsthumbnail and !expandedlyrics) {
+                if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.expandedplayer),
+                        text = "",
+                        isChecked = expandedplayertoggle,
+                        onCheckedChange = { expandedplayertoggle = it }
+                    )
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(
                 filterCharSequence,
