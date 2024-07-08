@@ -421,7 +421,7 @@ fun AppearanceSettings() {
                         }
                     }
                 )
-            if (landscapeLayout == LandscapeLayout.Layout2) {
+            if (landscapeLayout == LandscapeLayout.Layout2 && showthumbnail) {
                 if (filter.isNullOrBlank() || stringResource(R.string.hideprevnext).contains(
                         filterCharSequence,
                         true

@@ -1667,7 +1667,7 @@ fun PlayerModern(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = if (landscapeLayout == LandscapeLayout.Layout1) 40.dp else 20.dp)
+                    .padding(top = if ((landscapeLayout == LandscapeLayout.Layout1) || !showthumbnail) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
