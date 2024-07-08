@@ -218,6 +218,8 @@ const val thumbnailpauseKey = "thumbnailpause"
 const val showtwosongsKey = "showtwosongs"
 const val showalbumcoverKey = "showalbumcover"
 const val lyricsBackgroundKey = "lyricsBackground"
+const val landscapeLayoutKey = "landscapeLayout"
+const val hideprevnextKey = "hideprevnext"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

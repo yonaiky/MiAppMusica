@@ -6,13 +6,20 @@ import android.content.Intent
 import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -40,6 +47,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -201,7 +209,10 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.times
 import it.fast4x.rimusic.enums.ClickLyricsText
+import it.fast4x.rimusic.enums.LandscapeLayout
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
@@ -219,9 +230,13 @@ import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.hideprevnextKey
+import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -1639,12 +1654,21 @@ fun PlayerModern(
         val player = binder?.player ?: return
         val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
         var extraspace by rememberPreference(extraspaceKey, false)
+        var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
+        val nextMediaItem = if (binder.player.hasNextMediaItem())
+            binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
+        else MediaItem.EMPTY
+        val prevMediaItem = if (binder.player.hasPreviousMediaItem())
+            binder.player.getMediaItemAt(binder.player.previousMediaItemIndex)
+        else MediaItem.EMPTY
+        var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
+        var hideprevnext by rememberPreference(hideprevnextKey, false)
 
         if (isLandscape) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = 40.dp)
+                    .padding(top = if ((landscapeLayout == LandscapeLayout.Layout1) || !showthumbnail) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
@@ -1667,7 +1691,7 @@ fun PlayerModern(
                         .animateContentSize()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
-                    if (showthumbnail) {
+                    if (showthumbnail && landscapeLayout == LandscapeLayout.Layout1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             /*modifier = Modifier
@@ -1774,6 +1798,54 @@ fun PlayerModern(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    AnimatedVisibility(visible = (showthumbnail && landscapeLayout == LandscapeLayout.Layout2)) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxHeight(0.6f)
+                            /*modifier = Modifier
+                            .weight(1f)*/
+                            //.padding(vertical = 10.dp)
+                        ) {
+                            if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
+                                if (!hideprevnext) {
+                                    AsyncImage(
+                                        model = prevMediaItem.mediaMetadata.artworkUri.toString()
+                                            .resize(1200, 1200),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier
+                                            .padding(
+                                                all = playerThumbnailSize.size.dp + 40.dp
+                                            )
+                                            .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)), 0.dp)
+                                            .clip(thumbnailRoundness.shape())
+                                    )
+                                    AsyncImage(
+                                        model = nextMediaItem.mediaMetadata.artworkUri.toString()
+                                            .resize(1200, 1200),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier
+                                            .padding(
+                                                all = playerThumbnailSize.size.dp + 40.dp
+                                            )
+                                            .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp), 0.dp)
+                                            .clip(thumbnailRoundness.shape())
+                                    )
+                                }
+                                thumbnailContent(
+                                    modifier = Modifier
+                                        .padding(
+                                            all = playerThumbnailSize.size.dp
+                                        )
+                                        .thumbnailpause(
+                                            shouldBePlaying = shouldBePlaying
+                                        )
+                                )
+                            }
+                        }
+                    }
                     controlsContent(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
