@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -146,6 +147,7 @@ import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.lyricsBackgroundKey
+import it.fast4x.rimusic.utils.isShowingLyricsKey
 
 
 @UnstableApi
@@ -1636,13 +1638,28 @@ fun Lyrics(
                 }
             }
             /*********/
-
+            var isShowingLyrics by rememberSaveable {
+                mutableStateOf(false)
+            }
 
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
+                /*if (isLandscape && !showlyricsthumbnail)
+                    IconButton(
+                        icon = R.drawable.chevron_back,
+                        color = colorPalette.accent,
+                        enabled = true,
+                        onClick = {
+                            isShowingLyrics = false
+                        },
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .align(Alignment.BottomStart)
+                            .size(30.dp)
+                    )*/
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.minmax,

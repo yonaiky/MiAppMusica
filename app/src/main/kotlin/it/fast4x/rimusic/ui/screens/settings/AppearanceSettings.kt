@@ -47,6 +47,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
+import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -121,12 +122,14 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
+import it.fast4x.rimusic.utils.landscapeLayoutKey
 
 
 @ExperimentalAnimationApi
@@ -260,6 +263,8 @@ fun AppearanceSettings() {
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
     var showtwosongs by rememberPreference(showtwosongsKey, true)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
+    var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
+    var hideprevnext by rememberPreference(hideprevnextKey, false)
 
     Column(
         modifier = Modifier
@@ -396,7 +401,41 @@ fun AppearanceSettings() {
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
-        if (showlyricsthumbnail || showvisthumbnail) expandedlyrics = false
+        if (showlyricsthumbnail) expandedlyrics = false
+        
+        if (isLandscape) {
+            if (filter.isNullOrBlank() || stringResource(R.string.landscapelayout).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.landscapelayout),
+                    titleSecondary = stringResource(R.string.layoutinfo),
+                    selectedValue = landscapeLayout,
+                    onValueSelected = { landscapeLayout = it },
+                    valueText = {
+                        when (it) {
+                            LandscapeLayout.Layout1 -> stringResource(R.string.layout) + " 1"
+                            LandscapeLayout.Layout2 -> stringResource(R.string.layout) + " 2"
+                        }
+                    }
+                )
+            if (landscapeLayout == LandscapeLayout.Layout2 && showthumbnail) {
+                if (filter.isNullOrBlank() || stringResource(R.string.hideprevnext).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.hideprevnext),
+                        text = "",
+                        isChecked = hideprevnext,
+                        onCheckedChange = { hideprevnext = it }
+                    )
+            }
+        }
+        
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -530,7 +569,7 @@ fun AppearanceSettings() {
                         }
                     )
         }
-        if (!showlyricsthumbnail && !showvisthumbnail && !isLandscape)
+        if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
                     filterCharSequence,
                     true
@@ -1092,18 +1131,21 @@ fun AppearanceSettings() {
                 isChecked = showButtonPlayerLyrics,
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
-        if (!showlyricsthumbnail and !expandedlyrics and !isLandscape)
-        if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
-                filterCharSequence,
-                true
-            )
-        )
-            SwitchSettingEntry(
-                title = stringResource(R.string.expandedplayer),
-                text = "",
-                isChecked = expandedplayertoggle,
-                onCheckedChange = { expandedplayertoggle = it }
-            )
+        if (!isLandscape || !showthumbnail) {
+            if (!showlyricsthumbnail and !expandedlyrics) {
+                if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.expandedplayer),
+                        text = "",
+                        isChecked = expandedplayertoggle,
+                        onCheckedChange = { expandedplayertoggle = it }
+                    )
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(
                 filterCharSequence,

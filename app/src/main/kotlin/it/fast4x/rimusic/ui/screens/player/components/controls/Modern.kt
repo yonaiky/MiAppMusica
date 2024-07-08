@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.player.components.controls
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -79,6 +80,10 @@ import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.textoutlineKey
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import it.fast4x.rimusic.utils.doubleShadowDrop
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -185,7 +190,7 @@ fun InfoAlbumAndArtistModern(
                     text = cleanPrefix(title ?: ""),
                     style = TextStyle(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                        color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                         else Color.Black,
                         fontStyle = typography.l.bold.fontStyle,
                         fontWeight = typography.l.bold.fontWeight,
@@ -316,7 +321,7 @@ fun InfoAlbumAndArtistModern(
                 text = artist ?: "",
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
-                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black,
                     fontStyle = typography.m.bold.fontStyle,
                     fontSize = typography.m.bold.fontSize,
@@ -360,6 +365,8 @@ fun ControlsModern(
           onClick = {},
           modifier = Modifier
               .size(55.dp)
+              .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
+              .clip(RoundedCornerShape(8.dp))
               .combinedClickable(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
@@ -389,8 +396,9 @@ fun ControlsModern(
           Box(
              contentAlignment = Alignment.Center,
              modifier = Modifier
+                 .clip(CircleShape)
                  .combinedClickable(
-                     indication = ripple(bounded = true),
+                     indication = ripple(bounded = false),
                      interactionSource = remember { MutableInteractionSource() },
                      onClick = {
                          if (shouldBePlaying) {
@@ -445,6 +453,8 @@ fun ControlsModern(
               backgroundColor = colorPalette.background2.copy(0.95f),
               onClick = {},
               modifier = Modifier
+                  .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
+                  .clip(RoundedCornerShape(8.dp))
                   .combinedClickable(
                       indication = ripple(bounded = true),
                       interactionSource = remember { MutableInteractionSource() },
@@ -523,6 +533,8 @@ fun ControlsModern(
         onClick = {},
         modifier = Modifier
             .size(55.dp)
+            .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
+            .clip(RoundedCornerShape(8.dp))
             .combinedClickable(
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
@@ -534,6 +546,7 @@ fun ControlsModern(
                     binder.player.seekTo(position + 5000)
                 }
             )
+            .clip(RoundedCornerShape(8.dp))
 
       ) {
           Image(
@@ -578,6 +591,8 @@ fun ControlsModern(
                       .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
+                          interactionSource = null,
+                          indication = null,
                           onClick = {
                               //binder.player.forceSeekToPrevious()
                               binder.player.seekToPrevious()
@@ -612,8 +627,8 @@ fun ControlsModern(
                       .size(44.dp)
                       .align(Alignment.Center)
                       .combinedClickable(
-                          indication = null,
                           interactionSource = null,
+                          indication = null,
                           onClick = {
                               if (shouldBePlaying) {
                                   binder.player.pause()
@@ -653,6 +668,8 @@ fun ControlsModern(
                       .size(34.dp)
                       .rotate(rotationAngle)
                       .combinedClickable(
+                          interactionSource = null,
+                          indication = null,
                           onClick = {
                               binder.player.forceSeekToNext()
                               if (effectRotationEnabled) isRotated = !isRotated

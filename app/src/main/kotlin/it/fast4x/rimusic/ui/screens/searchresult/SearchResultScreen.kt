@@ -333,29 +333,38 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = headerContent,
                                 itemContent = { video ->
-                                    VideoItem(
-                                        video = video,
-                                        thumbnailWidthDp = thumbnailWidthDp,
-                                        thumbnailHeightDp = thumbnailHeightDp,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onLongClick = {
-                                                    menuState.display {
-                                                        NonQueuedMediaItemMenu(
-                                                            navController = navController,
-                                                            mediaItem = video.asMediaItem,
-                                                            onDismiss = menuState::hide
+                                    SwipeablePlaylistItem(
+                                        mediaItem = video.asMediaItem,
+                                        onSwipeToLeft = {
+                                            binder?.player?.addNext(video.asMediaItem)
+                                        }
+                                    ) {
+                                        VideoItem(
+                                            video = video,
+                                            thumbnailWidthDp = thumbnailWidthDp,
+                                            thumbnailHeightDp = thumbnailHeightDp,
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onLongClick = {
+                                                        menuState.display {
+                                                            NonQueuedMediaItemMenu(
+                                                                navController = navController,
+                                                                mediaItem = video.asMediaItem,
+                                                                onDismiss = menuState::hide
+                                                            )
+                                                        };
+                                                        hapticFeedback.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
                                                         )
-                                                    };
-                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                },
-                                                onClick = {
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlay(video.asMediaItem)
-                                                    binder?.setupRadio(video.info?.endpoint)
-                                                }
-                                            )
-                                    )
+                                                    },
+                                                    onClick = {
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlay(video.asMediaItem)
+                                                        binder?.setupRadio(video.info?.endpoint)
+                                                    }
+                                                )
+                                        )
+                                    }
                                 },
                                 itemPlaceholderContent = {
                                     VideoItemPlaceholder(

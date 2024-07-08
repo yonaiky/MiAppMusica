@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -298,7 +299,7 @@ fun GetSeekBar(
                 text = formatAsDuration(scrubbingPosition ?: position),
                 style = typography.xxs.semiBold.merge(TextStyle(
                     drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                    color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black)),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -345,7 +346,7 @@ fun GetSeekBar(
                         text = "-${formatAsDuration(timeRemaining.toLong())}",
                         style = typography.xxs.semiBold.merge(TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(0.5f)
+                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                             else Color.Black)),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -412,7 +413,7 @@ fun GetSeekBar(
                     style = typography.xxs.semiBold.merge(
                         TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
                                 0.5f
                             )
                             else Color.Black
