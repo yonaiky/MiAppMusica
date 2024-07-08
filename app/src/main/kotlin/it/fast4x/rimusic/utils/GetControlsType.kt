@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.themed.PlaybackParamsDialog
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
+import kotlin.math.roundToInt
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -44,6 +46,9 @@ fun GetControls(
     val isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
 
     var playbackSpeed by rememberPreference(playbackSpeedKey, 1f)
+    var playbackDuration by rememberPreference(playbackDurationKey, 0f)
+    var setPlaybackDuration by remember { mutableStateOf(false) }
+
     var showSpeedPlayerDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -52,9 +57,19 @@ fun GetControls(
         PlaybackParamsDialog(
             onDismiss = { showSpeedPlayerDialog = false },
             speedValue = { playbackSpeed = it },
-            pitchValue = {}
+            pitchValue = {},
+            durationValue = {
+                playbackDuration = it
+                setPlaybackDuration = true
+            }
         )
     }
+
+
+        MedleyMode(
+            binder = binder,
+            seconds = playbackDuration.roundToInt()
+        )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

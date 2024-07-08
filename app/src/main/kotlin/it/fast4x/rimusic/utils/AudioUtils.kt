@@ -6,7 +6,19 @@ import android.media.AudioManager
 import androidx.media3.exoplayer.ExoPlayer
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.OptIn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.service.PlayerService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.RoundingMode
+import kotlin.time.Duration.Companion.seconds
 
 var volume = 0f
 
@@ -73,4 +85,24 @@ fun getDeviceVolume(context: Context): Float {
 fun setDeviceVolume(context: Context, volume: Float) {
     val audioManager = context.getSystemService(AUDIO_SERVICE) as AudioManager
     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (volume * audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)).toInt(), 0)
+}
+
+@Composable
+@OptIn(UnstableApi::class)
+fun MedleyMode(binder: PlayerService.Binder?, seconds: Int) {
+    if (seconds == 0) return
+    if (binder != null) {
+        val coroutineScope = rememberCoroutineScope()
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                while (isActive) {
+                    delay(1.seconds * seconds)
+                    withContext(Dispatchers.Main) {
+                        if (binder.player.isPlaying)
+                            binder.player.forceSeekToNext()
+                    }
+                }
+            }
+        }
+    }
 }

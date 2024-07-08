@@ -42,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -85,6 +86,7 @@ import it.fast4x.rimusic.utils.blurStrengthKey
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.drawCircle
+import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getDeviceVolume
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playbackDeviceVolumeKey
@@ -99,7 +101,13 @@ import kotlinx.coroutines.delay
 import progress
 import track
 import it.fast4x.rimusic.utils.isShowingLyricsKey
+import it.fast4x.rimusic.utils.playbackDurationKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun TextFieldDialog(
@@ -1258,7 +1266,8 @@ fun BlurParamsDialog(
 fun PlaybackParamsDialog(
     onDismiss: () -> Unit,
     speedValue: (Float) -> Unit,
-    pitchValue: (Float) -> Unit
+    pitchValue: (Float) -> Unit,
+    durationValue: (Float) -> Unit
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -1267,18 +1276,95 @@ fun PlaybackParamsDialog(
     val defaultPitch = 1f
     val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
     val defaultDeviceVolume = getDeviceVolume(context)
+    val defaultDuration = 0f
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
     var playbackVolume  by rememberPreference(playbackVolumeKey, defaultVolume)
     var playbackDeviceVolume  by rememberPreference(playbackDeviceVolumeKey, defaultDeviceVolume)
+    var playbackDuration by rememberPreference(playbackDurationKey, defaultDuration)
 
     DefaultDialog(
         onDismiss = {
             speedValue(playbackSpeed)
             pitchValue(playbackPitch)
+            durationValue(playbackDuration)
             onDismiss()
         }
     ) {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    playbackDuration = defaultDuration
+                },
+                icon = R.drawable.playbackduration,
+                color = colorPalette.favoritesIcon,
+                modifier = Modifier
+                    .size(24.dp)
+            )
+
+            CustomSlider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 13.dp)
+                    .padding(horizontal = 5.dp),
+                value = playbackDuration,
+                onValueChange = {
+                    playbackDuration = it
+                },
+                valueRange = 1f..60f,
+                gap = 1,
+                showIndicator = true,
+                thumb = { thumbValue ->
+                    CustomSliderDefaults.Thumb(
+                        thumbValue = "%.0f".format(playbackDuration),
+                        color = Color.Transparent,
+                        size = 40.dp,
+                        modifier = Modifier.background(
+                            brush = Brush.linearGradient(
+                                listOf(
+                                    colorPalette.background1,
+                                    colorPalette.favoritesIcon
+                                )
+                            ),
+                            shape = CircleShape
+                        )
+                    )
+                },
+                track = { sliderPositions ->
+                    Box(
+                        modifier = Modifier
+                            .track()
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray.copy(alpha = 0.4f),
+                                shape = CircleShape
+                            )
+                            .background(Color.White)
+                            .padding(1.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .progress(sliderPositions = sliderPositions)
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        listOf(
+                                            colorPalette.favoritesIcon,
+                                            Color.Red
+                                        )
+                                    )
+                                )
+                        )
+                    }
+                }
+            )
+        }
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
