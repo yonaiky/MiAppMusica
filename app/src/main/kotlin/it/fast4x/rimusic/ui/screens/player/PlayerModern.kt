@@ -209,6 +209,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.times
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -1818,7 +1819,7 @@ fun PlayerModern(
                                                 vertical = playerThumbnailSize.size.dp + 40.dp,
                                                 horizontal = playerThumbnailSize.size.dp + 40.dp
                                             )
-                                            .offset(-(400.dp), 0.dp)
+                                            .offset(-(400.dp - 2*(playerThumbnailSize.size.dp)), 0.dp)
                                             .clip(thumbnailRoundness.shape())
                                     )
                                     AsyncImage(
@@ -1831,7 +1832,7 @@ fun PlayerModern(
                                                 vertical = playerThumbnailSize.size.dp + 40.dp,
                                                 horizontal = playerThumbnailSize.size.dp + 40.dp
                                             )
-                                            .offset(400.dp, 0.dp)
+                                            .offset(400.dp - 2*(playerThumbnailSize.size.dp), 0.dp)
                                             .clip(thumbnailRoundness.shape())
                                     )
                                 }
