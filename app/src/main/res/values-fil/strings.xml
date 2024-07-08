@@ -641,4 +641,8 @@
     <string name="do_not_translate">Huwag i-translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Delayed ang sleep timer sa pagkatapos ng kanta</string>
     <string name="lyricsbackground">Background ng Lyrics</string>
+    <string name="landscapelayout">Landscape Layout</string>
+    <string name="layout">Layout</string>
+    <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
 </resources>
