@@ -568,7 +568,7 @@
     <string name="player_swap_controls_with_timeline">Поміняти місцями елементи керування з таймлайном</string>
     <string name="player_enable_lyrics_popup_message">Увімкнути повідомлення з текстами, що спливає</string>
     <string name="exclude_songs_with_duration_limit">Виключити пісні з обмеженням тривалості</string>
-    <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
+    <string name="exclude_songs_with_duration_limit_description">Якщо увімкнено, пісні з обмеженою тривалістю буде виключено, застосовуються до mytop і черги відтворення</string>
     <string name="no_log_available">Журнал відсутній</string>
     <string name="enable_quick_picks_page">Увімкнути сторінку швидкого вибору</string>
     <string name="lang_vietnamese">В’єтнамська</string>
@@ -606,8 +606,8 @@
     <string name="timelinesize">Розмір Таймлайну Програвача</string>
     <string name="actionspacedevenly">Розташована Рівномірно</string>
     <string name="expandedplayer">Розширений Програвач</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedlyrics">Розширений Текст</string>
+    <string name="expandedlyricsinfo">Розширений Програвач працює тільки коли текст увімкнено</string>
     <string name="info_connect_your_piped_account_first">Спочатку під’єднайте свій piped акаунт або вимкніть piped синхронізацію</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali (বাংলা)</string>
@@ -625,7 +625,7 @@
     <string name="charts">Чарти</string>
     <string name="thumbnailtype">Тип мініатюр</string>
     <string name="showvisthumbnail">Показати мініатюри для візуалізатора</string>
-    <string name="androidheadunit">Android Head unit</string>
+    <string name="androidheadunit">Android Head Unit</string>
     <string name="extra_space">Додаткове Місце Вгорі</string>
     <string name="game_restart">Заново</string>
     <string name="game_over">Гру Завершено!</string>
