@@ -1816,10 +1816,9 @@ fun PlayerModern(
                                         contentScale = ContentScale.Fit,
                                         modifier = Modifier
                                             .padding(
-                                                vertical = playerThumbnailSize.size.dp + 40.dp,
-                                                horizontal = playerThumbnailSize.size.dp + 40.dp
+                                                all = playerThumbnailSize.size.dp + 40.dp
                                             )
-                                            .offset(-(400.dp - 2*(playerThumbnailSize.size.dp)), 0.dp)
+                                            .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)), 0.dp)
                                             .clip(thumbnailRoundness.shape())
                                     )
                                     AsyncImage(
@@ -1829,18 +1828,16 @@ fun PlayerModern(
                                         contentScale = ContentScale.Fit,
                                         modifier = Modifier
                                             .padding(
-                                                vertical = playerThumbnailSize.size.dp + 40.dp,
-                                                horizontal = playerThumbnailSize.size.dp + 40.dp
+                                                all = playerThumbnailSize.size.dp + 40.dp
                                             )
-                                            .offset(400.dp - 2*(playerThumbnailSize.size.dp), 0.dp)
+                                            .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp), 0.dp)
                                             .clip(thumbnailRoundness.shape())
                                     )
                                 }
                                 thumbnailContent(
                                     modifier = Modifier
                                         .padding(
-                                            vertical = playerThumbnailSize.size.dp,
-                                            horizontal = playerThumbnailSize.size.dp
+                                            all = playerThumbnailSize.size.dp
                                         )
                                         .thumbnailpause(
                                             shouldBePlaying = shouldBePlaying
