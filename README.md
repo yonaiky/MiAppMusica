@@ -92,6 +92,7 @@
 [<img src="./assets/images/getItGithub.png" alt="GitHub" height="80">](https://github.com/fast4x/RiMusic/releases/latest)
 [<img src="./assets/images/getItIzzyOnDroid.png" alt="IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/it.fast4x.rimusic/)
 [<img src="./assets/images/getItf-droid.png" alt="F-Droid" height="80">](https://f-droid.org/it/packages/it.fast4x.rimusic/)
+[<img src="./assets/images/getItOpenapk.png" alt="OpenAPK" height="80">](https://www.openapk.net/rimusic/it.fast4x.rimusic/)
 
 ## ❗ CUSTOM VERSION
 WARNING, the custom version is not an official release, download only if invited by the developer!
