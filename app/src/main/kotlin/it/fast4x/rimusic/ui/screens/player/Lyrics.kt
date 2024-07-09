@@ -1652,19 +1652,21 @@ fun Lyrics(
                     .align(Alignment.BottomStart)
                     .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
-                /*if (isLandscape && !showlyricsthumbnail)
+                if (isLandscape && !showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.chevron_back,
                         color = colorPalette.accent,
                         enabled = true,
                         onClick = {
-                            isShowingLyrics = false
+                            //isShowingLyrics = false
+                            onDismiss()
                         },
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .align(Alignment.BottomStart)
                             .size(30.dp)
-                    )*/
+                    )
+
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.minmax,

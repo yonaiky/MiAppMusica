@@ -1776,7 +1776,7 @@ fun PlayerModern(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
-                                    if (thumbnailTapEnabled)
+                                    //if (thumbnailTapEnabled)
                                         isShowingLyrics = false
                                 },
                                 ensureSongInserted = { Database.insert(mediaItem) },

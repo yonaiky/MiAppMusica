@@ -293,7 +293,8 @@ fun Thumbnail(
                         mediaId = currentWindow.mediaItem.mediaId,
                         isDisplayed = isShowingLyrics && error == null,
                         onDismiss = {
-                            if (thumbnailTapEnabledKey) onShowLyrics(false)
+                            //if (thumbnailTapEnabledKey)
+                            onShowLyrics(false)
                         },
                         ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
                         size = thumbnailSizeDp,
