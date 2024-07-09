@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.DropdownMenu
@@ -44,8 +45,10 @@ import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.getCurrentRoute
+import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.rememberPreference
@@ -145,6 +148,23 @@ fun appBar(
                                 navController.navigate(NavRoutes.home.name)
                         }
                 )
+
+                val logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
+                if (logDebugEnabled)
+                    BasicText(
+                        text = "Debug Mode Enabled",
+                        style = TextStyle(
+                            fontSize = typography.xs.bold.fontSize,
+                            fontWeight = typography.xs.bold.fontWeight,
+                            fontFamily = typography.xs.bold.fontFamily,
+                            color = colorPalette.red
+                        ),
+                        modifier = Modifier
+                            .clickable {
+                                SmartToast("Debug mode is enabled, remember to disable it in settings", durationLong = true)
+                                    navController.navigate(NavRoutes.settings.name)
+                            }
+                    )
                 /*
                 BasicText(
                     text = "Music",
