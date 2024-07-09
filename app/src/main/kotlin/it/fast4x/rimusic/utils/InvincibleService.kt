@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.Binder
 import android.os.Handler
 import android.os.Looper
+import timber.log.Timber
 
 // https://stackoverflow.com/q/53502244/16885569
 // I found four ways to make the system not kill the stopped foreground service: e.g. when
@@ -76,7 +77,11 @@ abstract class InvincibleService : Service() {
                 Intent.ACTION_SCREEN_ON -> handler.post(this)
                 Intent.ACTION_SCREEN_OFF -> notification()?.let { notification ->
                     handler.removeCallbacks(this)
-                    startForeground(notificationId, notification)
+                    runCatching {
+                        startForeground(notificationId, notification)
+                    }.onFailure {
+                        Timber.e("Failed startForeground in InvincibleService onReceive ${it.stackTraceToString()}")
+                    }
                 }
             }
         }
@@ -105,8 +110,16 @@ abstract class InvincibleService : Service() {
         override fun run() {
             if (shouldBeInvincible() && isAllowedToStartForegroundServices) {
                 notification()?.let { notification ->
-                    startForeground(notificationId, notification)
-                    stopForeground(false)
+                    runCatching {
+                        startForeground(notificationId, notification)
+                    }.onFailure {
+                        Timber.e("Failed startForeground in InvincibleService run ${it.stackTraceToString()}")
+                    }
+                    runCatching {
+                        stopForeground(false)
+                    }.onFailure {
+                        Timber.e("Failed stopForeground in InvincibleService run ${it.stackTraceToString()}")
+                    }
                     handler.postDelayed(this, intervalMs)
                 }
             }

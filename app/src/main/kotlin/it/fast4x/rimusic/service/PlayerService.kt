@@ -951,8 +951,16 @@ class PlayerService : InvincibleService(),
                 player.prepare()
 
                 isNotificationStarted = true
-                startForegroundService(this@PlayerService, intent<PlayerService>())
-                startForeground(NotificationId, notification())
+                kotlin.runCatching {
+                    startForegroundService(this@PlayerService, intent<PlayerService>())
+                }.onFailure {
+                    Timber.e("maybeRestoreFromDiskPlayerQueue PlayerService startForegroundService ${it.stackTraceToString()}")
+                }
+                runCatching {
+                    startForeground(NotificationId, notification())
+                }.onFailure {
+                    Timber.e("maybeRestoreFromDiskPlayerQueue PlayerService startForeground ${it.stackTraceToString()}")
+                }
             }
 
         }.onFailure {
@@ -1056,8 +1064,16 @@ class PlayerService : InvincibleService(),
                 player.prepare()
 
                 isNotificationStarted = true
-                startForegroundService(this@PlayerService, intent<PlayerService>())
-                startForeground(NotificationId, notification())
+                runCatching {
+                    startForegroundService(this@PlayerService, intent<PlayerService>())
+                }.onFailure {
+                    Timber.e("maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
+                }
+                runCatching {
+                    startForeground(NotificationId, notification())
+                }.onFailure {
+                    Timber.e("maybeRestorePlayerQueue startForeground ${it.stackTraceToString()}")
+                }
             }
         }
 
@@ -1251,7 +1267,11 @@ class PlayerService : InvincibleService(),
             if (notification == null) {
                 isNotificationStarted = false
                 makeInvincible(false)
-                stopForeground(false)
+                kotlin.runCatching {
+                    stopForeground(false)
+                }.onFailure {
+                    Timber.e("Failed stopForeground in PlayerService onEvents ${it.stackTraceToString()}")
+                }
                 sendCloseEqualizerIntent()
                 notificationManager?.cancel(NotificationId)
                 return
@@ -1259,21 +1279,33 @@ class PlayerService : InvincibleService(),
 
             if (player.shouldBePlaying && !isNotificationStarted) {
                 isNotificationStarted = true
-                startForegroundService(this@PlayerService, intent<PlayerService>())
-                startForeground(NotificationId, notification)
+                kotlin.runCatching {
+                    startForegroundService(this@PlayerService, intent<PlayerService>())
+                }.onFailure {
+                    Timber.e("Failed startForegroundService in PlayerService onEvents ${it.stackTraceToString()}")
+                }
+                kotlin.runCatching {
+                    startForeground(NotificationId, notification)
+                }.onFailure {
+                    Timber.e("Failed startForeground in PlayerService onEvents ${it.stackTraceToString()}")
+                }
                 makeInvincible(false)
                 sendOpenEqualizerIntent()
             } else {
                 if (!player.shouldBePlaying) {
                     isNotificationStarted = false
-                    stopForeground(false)
+                    kotlin.runCatching {
+                        stopForeground(false)
+                    }.onFailure {
+                        Timber.e("Failed stopForeground 1 in PlayerService onEvents ${it.stackTraceToString()}")
+                    }
                     makeInvincible(true)
                     sendCloseEqualizerIntent()
                 }
                 runCatching {
                     notificationManager?.notify(NotificationId, notification)
                 }.onFailure {
-                    Timber.e("Failed onEvents in PlayerService ${it.stackTraceToString()}")
+                    Timber.e("Failed onEvents in PlayerService notificationManager.notify ${it.stackTraceToString()}")
                 }
             }
         }
