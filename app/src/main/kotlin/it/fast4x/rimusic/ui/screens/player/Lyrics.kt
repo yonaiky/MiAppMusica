@@ -1643,9 +1643,6 @@ fun Lyrics(
                 }
             }
             /*********/
-            var isShowingLyrics by rememberSaveable {
-                mutableStateOf(false)
-            }
 
             Box(
                 modifier = Modifier
@@ -1657,10 +1654,7 @@ fun Lyrics(
                         icon = R.drawable.chevron_back,
                         color = colorPalette.accent,
                         enabled = true,
-                        onClick = {
-                            //isShowingLyrics = false
-                            onDismiss()
-                        },
+                        onClick = onDismiss,
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .align(Alignment.BottomStart)
