@@ -246,7 +246,7 @@ fun getVisualizers(): List<Painter> {
     val color = LocalAppearance.current.colorPalette.text.hashCode()
     var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
     val binder = LocalPlayerServiceBinder.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {
         try {
             bitmapCover = getBitmapFromUrl(
                 context,
