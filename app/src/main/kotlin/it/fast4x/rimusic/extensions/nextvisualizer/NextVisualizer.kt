@@ -77,6 +77,7 @@ import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import timber.log.Timber
@@ -249,7 +250,7 @@ fun getVisualizers(): List<Painter> {
         try {
             bitmapCover = getBitmapFromUrl(
                 context,
-                binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString().resize(1200, 1200)
             )
         } catch (e: Exception) {
             Timber.e("Failed get bitmap in NextVisualizer ${e.stackTraceToString()}")
