@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
 import android.content.res.Configuration
 import android.database.SQLException
 import android.graphics.Bitmap
@@ -21,6 +22,7 @@ import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.MediaDescriptionCompat
@@ -29,6 +31,7 @@ import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
+import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
@@ -36,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
@@ -957,7 +961,19 @@ class PlayerService : InvincibleService(),
                     Timber.e("maybeRestoreFromDiskPlayerQueue PlayerService startForegroundService ${it.stackTraceToString()}")
                 }
                 runCatching {
-                    startForeground(NotificationId, notification())
+                    //startForeground(NotificationId, notification())
+                    notification()?.let {
+                        ServiceCompat.startForeground(
+                            this@PlayerService,
+                            NotificationId,
+                            it,
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                            } else {
+                                0
+                            }
+                        )
+                    }
                 }.onFailure {
                     Timber.e("maybeRestoreFromDiskPlayerQueue PlayerService startForeground ${it.stackTraceToString()}")
                 }
@@ -1070,7 +1086,19 @@ class PlayerService : InvincibleService(),
                     Timber.e("maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
                 }
                 runCatching {
-                    startForeground(NotificationId, notification())
+                    //startForeground(NotificationId, notification())
+                    notification()?.let {
+                        ServiceCompat.startForeground(
+                            this@PlayerService,
+                            NotificationId,
+                            it,
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                            } else {
+                                0
+                            }
+                        )
+                    }
                 }.onFailure {
                     Timber.e("maybeRestorePlayerQueue startForeground ${it.stackTraceToString()}")
                 }
@@ -1285,7 +1313,19 @@ class PlayerService : InvincibleService(),
                     Timber.e("Failed startForegroundService in PlayerService onEvents ${it.stackTraceToString()}")
                 }
                 kotlin.runCatching {
-                    startForeground(NotificationId, notification)
+                    //startForeground(NotificationId, notification)
+                    notification()?.let {
+                        ServiceCompat.startForeground(
+                            this@PlayerService,
+                            NotificationId,
+                            it,
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                            } else {
+                                0
+                            }
+                        )
+                    }
                 }.onFailure {
                     Timber.e("Failed startForeground in PlayerService onEvents ${it.stackTraceToString()}")
                 }
@@ -2196,6 +2236,46 @@ class PlayerService : InvincibleService(),
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             if (query.isNullOrBlank()) return
             binder.playFromSearch(query)
+        }
+
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+            mediaButtonEvent?.let {
+                if (it.action == Intent.ACTION_MEDIA_BUTTON) {
+                    if (it.extras?.getBoolean(Intent.EXTRA_KEY_EVENT) == true) {
+                        val keyEvent = it.extras?.getParcelable<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+                        when(keyEvent?.keyCode) {
+                            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                                if (player.isPlaying)
+                                    onPause()
+                                else onPlay()
+
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                                onSkipToNext()
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                                onSkipToPrevious()
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_STOP -> {
+                                onStop()
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_PLAY -> {
+                                onPlay()
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+                                onPause()
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+            return super.onMediaButtonEvent(mediaButtonEvent)
         }
 
     }

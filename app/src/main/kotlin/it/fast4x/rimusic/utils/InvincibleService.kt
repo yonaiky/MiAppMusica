@@ -6,9 +6,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.os.Binder
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import androidx.core.app.ServiceCompat
 import timber.log.Timber
 
 // https://stackoverflow.com/q/53502244/16885569
@@ -78,7 +81,17 @@ abstract class InvincibleService : Service() {
                 Intent.ACTION_SCREEN_OFF -> notification()?.let { notification ->
                     handler.removeCallbacks(this)
                     runCatching {
-                        startForeground(notificationId, notification)
+                        //startForeground(notificationId, notification)
+                            ServiceCompat.startForeground(
+                                this@InvincibleService,
+                                notificationId,
+                                notification,
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                                } else {
+                                    0
+                                }
+                            )
                     }.onFailure {
                         Timber.e("Failed startForeground in InvincibleService onReceive ${it.stackTraceToString()}")
                     }
@@ -111,7 +124,17 @@ abstract class InvincibleService : Service() {
             if (shouldBeInvincible() && isAllowedToStartForegroundServices) {
                 notification()?.let { notification ->
                     runCatching {
-                        startForeground(notificationId, notification)
+                        //startForeground(notificationId, notification)
+                        ServiceCompat.startForeground(
+                            this@InvincibleService,
+                            notificationId,
+                            notification,
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                            } else {
+                                0
+                            }
+                        )
                     }.onFailure {
                         Timber.e("Failed startForeground in InvincibleService run ${it.stackTraceToString()}")
                     }
