@@ -16,7 +16,7 @@ class FileLoggingTree(private val logFile: File) : Timber.DebugTree() {
 
     private val maxLogSize = 5 * 1024 * 1024 // 5 MB
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS", Locale.US)
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
 
     private fun getPriorityString(priority: Int): String {
         return when (priority) {
