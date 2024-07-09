@@ -1111,6 +1111,7 @@ fun PlayerModern(
         )
     }
     var textoutline by rememberPreference(textoutlineKey, false)
+    var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
 
     fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
         return if (condition) {
@@ -1505,7 +1506,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-                        if (!isLandscape || !showthumbnail)
+                        if (!isLandscape || (landscapeLayout == LandscapeLayout.Layout1) && !showthumbnail)
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
@@ -1654,7 +1655,6 @@ fun PlayerModern(
         val player = binder?.player ?: return
         val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
         var extraspace by rememberPreference(extraspaceKey, false)
-        var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
         val nextMediaItem = if (binder.player.hasNextMediaItem())
             binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
         else MediaItem.EMPTY
@@ -1668,7 +1668,7 @@ fun PlayerModern(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = if ((landscapeLayout == LandscapeLayout.Layout1) || !showthumbnail) 40.dp else 20.dp)
+                    .padding(top = if (landscapeLayout == LandscapeLayout.Layout1) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
@@ -1798,51 +1798,52 @@ fun PlayerModern(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    AnimatedVisibility(visible = (showthumbnail && landscapeLayout == LandscapeLayout.Layout2)) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillMaxHeight(0.6f)
-                            /*modifier = Modifier
+                     if (landscapeLayout == LandscapeLayout.Layout2) {
+                         Box(
+                             contentAlignment = Alignment.Center,
+                             modifier = Modifier
+                                 .fillMaxHeight(0.6f)
+                             /*modifier = Modifier
                             .weight(1f)*/
-                            //.padding(vertical = 10.dp)
-                        ) {
-                            if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
-                                if (!hideprevnext) {
-                                    AsyncImage(
-                                        model = prevMediaItem.mediaMetadata.artworkUri.toString()
-                                            .resize(1200, 1200),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .padding(
-                                                all = playerThumbnailSize.size.dp + 40.dp
-                                            )
-                                            .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)), 0.dp)
-                                            .clip(thumbnailRoundness.shape())
-                                    )
-                                    AsyncImage(
-                                        model = nextMediaItem.mediaMetadata.artworkUri.toString()
-                                            .resize(1200, 1200),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .padding(
-                                                all = playerThumbnailSize.size.dp + 40.dp
-                                            )
-                                            .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp), 0.dp)
-                                            .clip(thumbnailRoundness.shape())
-                                    )
-                                }
-                                thumbnailContent(
-                                    modifier = Modifier
-                                        .padding(
-                                            all = playerThumbnailSize.size.dp
-                                        )
-                                        .thumbnailpause(
-                                            shouldBePlaying = shouldBePlaying
-                                        )
-                                )
+                             //.padding(vertical = 10.dp)
+                         ) {
+                             if (showthumbnail) {
+                                 if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
+                                     if (!hideprevnext) {
+                                         AsyncImage(
+                                             model = prevMediaItem.mediaMetadata.artworkUri.toString()
+                                                 .resize(1200, 1200),
+                                             contentDescription = null,
+                                             contentScale = ContentScale.Fit,
+                                             modifier = Modifier
+                                                 .padding(
+                                                     all = playerThumbnailSize.size.dp + 40.dp
+                                                 )
+                                                 .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)
+                                                 .clip(thumbnailRoundness.shape())
+                                         )
+                                         AsyncImage(
+                                             model = nextMediaItem.mediaMetadata.artworkUri.toString()
+                                                 .resize(1200, 1200),
+                                             contentDescription = null,
+                                             contentScale = ContentScale.Fit,
+                                             modifier = Modifier
+                                                 .padding(
+                                                     all = playerThumbnailSize.size.dp + 40.dp
+                                                 )
+                                                 .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp),0.dp)
+                                                 .clip(thumbnailRoundness.shape())
+                                         )
+                                     }
+                                     thumbnailContent(
+                                         modifier = Modifier
+                                             .padding(
+                                                 all = playerThumbnailSize.size.dp
+                                             )
+                                             .thumbnailpause(
+                                                 shouldBePlaying = shouldBePlaying)
+                                     )
+                                 }
                             }
                             if (isShowingVisualizer && !showvisthumbnail) {
                                 Box(
