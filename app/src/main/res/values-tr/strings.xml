@@ -641,8 +641,8 @@
     <string name="do_not_translate">Tercüme etme</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Uyku zamanlayıcısı şarkı sonuna ertelendi</string>
     <string name="lyricsbackground">Şarkı sözleri arka planı</string>
-    <string name="landscapelayout">Landscape Layout</string>
-    <string name="layout">Layout</string>
-    <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
-    <string name="hideprevnext">Hide Previous and Next Songs</string>
+    <string name="landscapelayout">Yatay Görünüm</string>
+    <string name="layout">Düzen</string>
+    <string name="layoutinfo">Düzen 2 Yalnızca Büyük Ekranlar İçin Önerilir</string>
+    <string name="hideprevnext">Önceki ve Sonraki Şarkıları Gizle</string>
 </resources>
