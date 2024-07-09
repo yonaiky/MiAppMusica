@@ -643,4 +643,8 @@
     <string name="do_not_translate">Ne pas traduire</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Délai de mise en veille reporté à la fin du titre</string>
     <string name="lyricsbackground">Arrière-plan des paroles</string>
+    <string name="landscapelayout">Landscape Layout</string>
+    <string name="layout">Layout</string>
+    <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
 </resources>
