@@ -1712,7 +1712,7 @@ fun PlayerModern(
                                 )
                         }
                     }
-                    if (isShowingVisualizer && !showvisthumbnail) {
+                    if (isShowingVisualizer && !showvisthumbnail && landscapeLayout == LandscapeLayout.Layout1) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
@@ -1843,6 +1843,36 @@ fun PlayerModern(
                                             shouldBePlaying = shouldBePlaying
                                         )
                                 )
+                            }
+                            if (isShowingVisualizer && !showvisthumbnail) {
+                                Box(
+                                    modifier = Modifier
+                                        .pointerInput(Unit) {
+                                            detectHorizontalDragGestures(
+                                                onHorizontalDrag = { change, dragAmount ->
+                                                    deltaX = dragAmount
+                                                },
+                                                onDragStart = {
+                                                },
+                                                onDragEnd = {
+                                                    if (!disablePlayerHorizontalSwipe) {
+                                                        if (deltaX > 5) {
+                                                            binder.player.seekToPreviousMediaItem()
+                                                        } else if (deltaX < -5) {
+                                                            binder.player.forceSeekToNext()
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            )
+                                        }
+                                ) {
+                                    NextVisualizer(
+                                        isDisplayed = isShowingVisualizer
+                                    )
+                                }
                             }
                         }
                     }
