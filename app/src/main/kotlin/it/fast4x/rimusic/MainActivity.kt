@@ -301,9 +301,13 @@ class MainActivity :
         super.onStart()
         runCatching {
             startService(Intent(this, PlayerService::class.java))
+        }.onFailure {
+            Timber.e("MainActivity.onStart startService ${it.stackTraceToString()}")
+        }
+        runCatching {
             bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
         }.onFailure {
-            Timber.e("MainActivity.onStart ${it.stackTraceToString()}")
+            Timber.e("MainActivity.onStart bindService ${it.stackTraceToString()}")
         }
     }
 
@@ -1141,7 +1145,11 @@ class MainActivity :
     override fun onRetainCustomNonConfigurationInstance() = persistMap
 
     override fun onStop() {
-        unbindService(serviceConnection)
+        runCatching {
+            unbindService(serviceConnection)
+        }.onFailure {
+            Timber.e("MainActivity.onStop unbindService ${it.stackTraceToString()}")
+        }
         super.onStop()
     }
 
