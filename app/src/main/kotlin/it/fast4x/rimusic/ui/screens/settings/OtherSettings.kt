@@ -335,7 +335,7 @@ fun OtherSettings() {
         AnimatedVisibility(visible = isPipedEnabled) {
             Column {
                 ButtonBarSettingEntry(
-                    isEnabled = pipedApiToken.isEmpty(),
+                    //isEnabled = pipedApiToken.isEmpty(),
                     title = stringResource(R.string.piped_change_instance),
                     text = pipedInstanceName,
                     icon = R.drawable.open,
@@ -345,14 +345,14 @@ fun OtherSettings() {
                 )
 
                 TextDialogSettingEntry(
-                    isEnabled = pipedApiToken.isEmpty(),
+                    //isEnabled = pipedApiToken.isEmpty(),
                     title = stringResource(R.string.piped_username),
                     text = pipedUsername,
                     currentText = pipedUsername,
                     onTextSave = { pipedUsername = it }
                 )
                 TextDialogSettingEntry(
-                    isEnabled = pipedApiToken.isEmpty(),
+                    //isEnabled = pipedApiToken.isEmpty(),
                     title = stringResource(R.string.piped_password),
                     text = if (pipedPassword.isNotEmpty()) "********" else "",
                     currentText = pipedPassword,
