@@ -237,7 +237,6 @@ import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
-import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
