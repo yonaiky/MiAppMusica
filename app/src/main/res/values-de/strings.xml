@@ -644,5 +644,7 @@
     <string name="landscapelayout">Querformat-Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 wird nur für große Bildschirme empfohlen</string>
-    <string name="hideprevnext">Vorherigen und nächsten Titel ausblenden</string>
+    <string name="hideprevnext">Queue Songs in Player</string>
+    <string name="onesong">One Song</string>
+    <string name="twosongs">Two Songs</string>
 </resources>

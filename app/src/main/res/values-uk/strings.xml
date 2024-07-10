@@ -644,5 +644,7 @@
     <string name="landscapelayout">Горизонтальний Макет</string>
     <string name="layout">Макет</string>
     <string name="layoutinfo">Макет 2 Рекомендований лише для великих екранів</string>
-    <string name="hideprevnext">Приховати Попередні та Наступні Пісні</string>
+    <string name="hideprevnext">Queue Songs in Player</string>
+    <string name="onesong">One Song</string>
+    <string name="twosongs">Two Songs</string>
 </resources>
