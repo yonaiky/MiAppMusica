@@ -9,6 +9,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -67,6 +68,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -252,14 +254,14 @@ fun PlayerEssential(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.Top,
             modifier = Modifier
-                .combinedClickable (
+                .combinedClickable(
                     onLongClick = {
                         navController?.navigate(NavRoutes.queue.name);
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     },
                     onClick = {
                         //if (showPlayer != null)
-                            showPlayer()
+                        showPlayer()
                         //else
                         //    navController?.navigate("player")
                     }
@@ -340,6 +342,8 @@ fun PlayerEssential(
                         style = typography.xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .basicMarquee(iterations = Int.MAX_VALUE)
                     )
                 }
 
@@ -348,6 +352,8 @@ fun PlayerEssential(
                     style = typography.xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .basicMarquee(iterations = Int.MAX_VALUE)
                 )
             }
 
