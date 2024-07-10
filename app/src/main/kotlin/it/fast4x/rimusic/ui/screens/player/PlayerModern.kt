@@ -212,7 +212,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.LandscapeLayout
+import it.fast4x.rimusic.enums.PlayerPlayButtonType
+import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
@@ -228,15 +231,20 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -1663,6 +1671,9 @@ fun PlayerModern(
         else MediaItem.EMPTY
         var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
         var hideprevnext by rememberPreference(hideprevnextKey, false)
+        var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+        var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
+        val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
 
         if (isLandscape) {
             Row(
@@ -1802,7 +1813,7 @@ fun PlayerModern(
                          Box(
                              contentAlignment = Alignment.Center,
                              modifier = Modifier
-                                 .fillMaxHeight(0.6f)
+                                 .weight(1f)
                              /*modifier = Modifier
                             .weight(1f)*/
                              //.padding(vertical = 10.dp)
@@ -1819,7 +1830,10 @@ fun PlayerModern(
                                                  .padding(
                                                      all = playerThumbnailSize.size.dp + 40.dp
                                                  )
+                                                 .padding(start = playerPlayButtonType.height.dp - 60.dp)
+                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(start = 40.dp)}
                                                  .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
                                                  .clip(thumbnailRoundness.shape())
                                          )
                                          AsyncImage(
@@ -1831,7 +1845,10 @@ fun PlayerModern(
                                                  .padding(
                                                      all = playerThumbnailSize.size.dp + 40.dp
                                                  )
+                                                 .padding(end = playerPlayButtonType.height.dp - 60.dp)
+                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(end = 40.dp)}
                                                  .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp),0.dp)
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
                                                  .clip(thumbnailRoundness.shape())
                                          )
                                      }
@@ -1880,8 +1897,8 @@ fun PlayerModern(
                     controlsContent(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
-                            .fillMaxHeight()
-                            .weight(1f)
+                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {fillMaxHeight()}
+                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {weight(1f)}
                     )
 
                     actionsBarContent(
