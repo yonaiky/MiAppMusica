@@ -220,6 +220,7 @@ const val showalbumcoverKey = "showalbumcover"
 const val lyricsBackgroundKey = "lyricsBackground"
 const val landscapeLayoutKey = "landscapeLayout"
 const val hideprevnextKey = "hideprevnext"
+const val prevNextSongsKey = "prevNextSongs"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
