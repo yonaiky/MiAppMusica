@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -107,17 +108,26 @@ fun appBar(
                     contentDescription = null,
                     modifier = Modifier
                         .size(36.dp)
-                        .combinedClickable (
+                        .combinedClickable(
                             onClick = {
                                 countForReveal++
                                 if (countForReveal == 3) {
-                                    SmartToast("Do you like clicking? Then continue...", durationLong = true)
+                                    SmartToast(
+                                        "Do you like clicking? Then continue...",
+                                        durationLong = true
+                                    )
                                 }
                                 if (countForReveal == 6) {
-                                    SmartToast("Okay, you’re looking for something, keep...", durationLong = true)
+                                    SmartToast(
+                                        "Okay, you’re looking for something, keep...",
+                                        durationLong = true
+                                    )
                                 }
                                 if (countForReveal == 9) {
-                                    SmartToast("You are a number one, click and enjoy the surprise", durationLong = true)
+                                    SmartToast(
+                                        "You are a number one, click and enjoy the surprise",
+                                        durationLong = true
+                                    )
                                 }
                                 if (countForReveal == 10) {
                                     countForReveal = 0
@@ -127,7 +137,10 @@ fun appBar(
                                 //    navController.navigate(NavRoutes.home.name)
                             },
                             onLongClick = {
-                                SmartToast("You are a number one, click and enjoy the surprise", durationLong = true)
+                                SmartToast(
+                                    "You are a number one, click and enjoy the surprise",
+                                    durationLong = true
+                                )
                                 navController.navigate(NavRoutes.gameSnake.name)
                             }
                         )
@@ -150,9 +163,10 @@ fun appBar(
                 )
 
                 val logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
+                val context = LocalContext.current
                 if (logDebugEnabled)
                     BasicText(
-                        text = "Debug Mode Enabled",
+                        text = stringResource(R.string.info_debug_mode_enabled),
                         style = TextStyle(
                             fontSize = typography.xs.bold.fontSize,
                             fontWeight = typography.xs.bold.fontWeight,
@@ -161,7 +175,7 @@ fun appBar(
                         ),
                         modifier = Modifier
                             .clickable {
-                                SmartToast("Debug mode is enabled, remember to disable it in settings", durationLong = true)
+                                SmartToast(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true)
                                     navController.navigate(NavRoutes.settings.name)
                             }
                     )

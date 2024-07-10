@@ -645,4 +645,6 @@
     <string name="layout">Düzen</string>
     <string name="layoutinfo">Düzen 2 Yalnızca Büyük Ekranlar İçin Önerilir</string>
     <string name="hideprevnext">Önceki ve Sonraki Şarkıları Gizle</string>
+    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
+    <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
 </resources>
