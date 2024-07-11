@@ -221,6 +221,7 @@ const val lyricsBackgroundKey = "lyricsBackground"
 const val landscapeLayoutKey = "landscapeLayout"
 const val hideprevnextKey = "hideprevnext"
 const val prevNextSongsKey = "prevNextSongs"
+const val tapqueueKey = "tapqueue"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
