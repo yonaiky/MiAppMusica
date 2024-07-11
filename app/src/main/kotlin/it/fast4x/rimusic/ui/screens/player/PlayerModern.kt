@@ -61,12 +61,14 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -244,6 +246,7 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
+import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 
@@ -589,6 +592,7 @@ fun PlayerModern(
     }
     var showtwosongs by rememberPreference(showtwosongsKey, true)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
+    var tapqueue by rememberPreference(tapqueueKey, true)
 
     if (isShowingSleepTimerDialog) {
         if (sleepTimerMillisLeft != null) {
@@ -1155,7 +1159,7 @@ fun PlayerModern(
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .clickable { showQueue = true }
+                    .conditional(tapqueue) {clickable { showQueue = true }}
                     .background(
                         colorPalette.background2.copy(
                             alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
@@ -1650,7 +1654,6 @@ fun PlayerModern(
                                     }
                                 },
                                 modifier = Modifier
-                                    .padding(end = 12.dp)
                                     .size(24.dp)
                             )
                         }

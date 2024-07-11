@@ -73,6 +73,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -96,6 +97,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.bold
@@ -527,12 +529,18 @@ fun ArtistOverviewModern(
                             listMediaItems.add(song.asMediaItem)
                             downloadState = getDownloadState(song.asMediaItem.mediaId)
                             val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
-                            SongItem(
-                                song = song,
-                                isDownloaded = isDownloaded,
-                                onDownloadClick = {
-                                    binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    query {
+                            SwipeablePlaylistItem(
+                                mediaItem = song.asMediaItem,
+                                onSwipeToLeft = {
+                                    binder?.player?.addNext(song.asMediaItem)
+                                }
+                            ) {
+                                SongItem(
+                                    song = song,
+                                    isDownloaded = isDownloaded,
+                                    onDownloadClick = {
+                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                        query {
                                             Database.insert(
                                                 Song(
                                                     id = song.asMediaItem.mediaId,
@@ -542,37 +550,39 @@ fun ArtistOverviewModern(
                                                     durationText = null
                                                 )
                                             )
-                                    }
+                                        }
 
-                                    manageDownload(
-                                        context = context,
-                                        songId = song.asMediaItem.mediaId,
-                                        songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                        downloadState = isDownloaded
-                                    )
-                                },
-                                downloadState = downloadState,
-                                thumbnailSizeDp = songThumbnailSizeDp,
-                                thumbnailSizePx = songThumbnailSizePx,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
+                                        manageDownload(
+                                            context = context,
+                                            songId = song.asMediaItem.mediaId,
+                                            songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                            downloadState = isDownloaded
+                                        )
+                                    },
+                                    downloadState = downloadState,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                menuState.display {
+                                                    NonQueuedMediaItemMenu(
+                                                        navController = navController,
+                                                        onDismiss = menuState::hide,
+                                                        mediaItem = song.asMediaItem,
+                                                    )
+                                                };
+                                                hapticFeedback.performHapticFeedback(
+                                                    HapticFeedbackType.LongPress
                                                 )
-                                            };
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        },
-                                        onClick = {
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                listMediaItems.distinct(),
-                                                index
-                                            )
-                                            /*
+                                            },
+                                            onClick = {
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayAtIndex(
+                                                    listMediaItems.distinct(),
+                                                    index
+                                                )
+                                                /*
                                             val mediaItem = song.asMediaItem
                                             binder?.stopRadio()
                                             binder?.player?.forcePlay(mediaItem)
@@ -580,10 +590,11 @@ fun ArtistOverviewModern(
                                                 NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
                                             )
                                              */
-                                        }
-                                    )
-                                    .padding(endPaddingValues)
-                            )
+                                            }
+                                        )
+                                        .padding(endPaddingValues)
+                                )
+                            }
                         }
                     }
 

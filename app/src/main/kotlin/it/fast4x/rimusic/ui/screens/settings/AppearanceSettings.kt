@@ -123,7 +123,6 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
-import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -132,6 +131,7 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.tapqueueKey
 
 
 @ExperimentalAnimationApi
@@ -267,6 +267,7 @@ fun AppearanceSettings() {
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
+    var tapqueue by rememberPreference(tapqueueKey, true)
 
     Column(
         modifier = Modifier
@@ -1075,6 +1076,19 @@ fun AppearanceSettings() {
                 isChecked = actionspacedevenly,
                 onCheckedChange = { actionspacedevenly = it }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.tapqueue).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.tapqueue),
+                text = "",
+                isChecked = tapqueue,
+                onCheckedChange = { tapqueue = it }
+            )
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
                 filterCharSequence,
