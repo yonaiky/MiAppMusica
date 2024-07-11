@@ -59,6 +59,7 @@ import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
+import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -130,6 +131,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.prevNextSongsKey
 
 
 @ExperimentalAnimationApi
@@ -264,7 +266,7 @@ fun AppearanceSettings() {
     var showtwosongs by rememberPreference(showtwosongsKey, true)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
-    var hideprevnext by rememberPreference(hideprevnextKey, false)
+    var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
 
     Column(
         modifier = Modifier
@@ -422,17 +424,19 @@ fun AppearanceSettings() {
                     }
                 )
             if (landscapeLayout == LandscapeLayout.Layout2 && showthumbnail) {
-                if (filter.isNullOrBlank() || stringResource(R.string.hideprevnext).contains(
-                        filterCharSequence,
-                        true
-                    )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.hideprevnext),
+                    titleSecondary = "",
+                    selectedValue = prevNextSongs,
+                    onValueSelected = { prevNextSongs = it },
+                    valueText = {
+                        when (it) {
+                            PrevNextSongs.Hide -> stringResource(R.string.hide)
+                            PrevNextSongs.onesong -> stringResource(R.string.onesong)
+                            PrevNextSongs.twosongs -> stringResource(R.string.twosongs)
+                        }
+                    }
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.hideprevnext),
-                        text = "",
-                        isChecked = hideprevnext,
-                        onCheckedChange = { hideprevnext = it }
-                    )
             }
         }
         

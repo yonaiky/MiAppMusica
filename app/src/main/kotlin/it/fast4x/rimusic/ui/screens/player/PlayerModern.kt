@@ -212,7 +212,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.LandscapeLayout
+import it.fast4x.rimusic.enums.PlayerPlayButtonType
+import it.fast4x.rimusic.enums.PlayerTimelineType
+import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
@@ -228,15 +232,20 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
+import it.fast4x.rimusic.utils.playerTimelineTypeKey
+import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -1111,6 +1120,7 @@ fun PlayerModern(
         )
     }
     var textoutline by rememberPreference(textoutlineKey, false)
+    var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
 
     fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
         return if (condition) {
@@ -1505,7 +1515,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-                        if (!isLandscape || !showthumbnail)
+                        if (!isLandscape || (landscapeLayout == LandscapeLayout.Layout1) && !showthumbnail)
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
@@ -1654,21 +1664,36 @@ fun PlayerModern(
         val player = binder?.player ?: return
         val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
         var extraspace by rememberPreference(extraspaceKey, false)
-        var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
+        val nextMediaItemIndex = binder.player.nextMediaItemIndex
+        val prevMediaItemIndex = binder.player.previousMediaItemIndex
         val nextMediaItem = if (binder.player.hasNextMediaItem())
             binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
         else MediaItem.EMPTY
+        val nextNextMediaItem = try {
+            binder.player.getMediaItemAt(nextMediaItemIndex + 1)
+        } catch (e: Exception) {
+            MediaItem.EMPTY
+        }
         val prevMediaItem = if (binder.player.hasPreviousMediaItem())
             binder.player.getMediaItemAt(binder.player.previousMediaItemIndex)
         else MediaItem.EMPTY
+        val prevPrevMediaItem = try {
+            binder.player.getMediaItemAt(prevMediaItemIndex - 1)
+        } catch (e: Exception) {
+            MediaItem.EMPTY
+        }
         var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
         var hideprevnext by rememberPreference(hideprevnextKey, false)
+        var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+        var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
+        val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+        var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
 
         if (isLandscape) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = if ((landscapeLayout == LandscapeLayout.Layout1) || !showthumbnail) 40.dp else 20.dp)
+                    .padding(top = if (landscapeLayout == LandscapeLayout.Layout1) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
@@ -1798,51 +1823,118 @@ fun PlayerModern(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    AnimatedVisibility(visible = (showthumbnail && landscapeLayout == LandscapeLayout.Layout2)) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillMaxHeight(0.6f)
-                            /*modifier = Modifier
+                     if (landscapeLayout == LandscapeLayout.Layout2) {
+                         Box(
+                             contentAlignment = Alignment.Center,
+                             modifier = Modifier
+                                 .weight(1f)
+                             /*modifier = Modifier
                             .weight(1f)*/
-                            //.padding(vertical = 10.dp)
-                        ) {
-                            if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
-                                if (!hideprevnext) {
-                                    AsyncImage(
-                                        model = prevMediaItem.mediaMetadata.artworkUri.toString()
-                                            .resize(1200, 1200),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .padding(
-                                                all = playerThumbnailSize.size.dp + 40.dp
-                                            )
-                                            .offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)), 0.dp)
-                                            .clip(thumbnailRoundness.shape())
-                                    )
-                                    AsyncImage(
-                                        model = nextMediaItem.mediaMetadata.artworkUri.toString()
-                                            .resize(1200, 1200),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .padding(
-                                                all = playerThumbnailSize.size.dp + 40.dp
-                                            )
-                                            .offset((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp), 0.dp)
-                                            .clip(thumbnailRoundness.shape())
-                                    )
-                                }
-                                thumbnailContent(
-                                    modifier = Modifier
-                                        .padding(
-                                            all = playerThumbnailSize.size.dp
-                                        )
-                                        .thumbnailpause(
-                                            shouldBePlaying = shouldBePlaying
-                                        )
-                                )
+                             //.padding(vertical = 10.dp)
+                         ) {
+                             if (showthumbnail) {
+                                 if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
+                                     if (prevNextSongs != PrevNextSongs.Hide) {
+                                         if (prevNextSongs == PrevNextSongs.twosongs) {
+                                             AsyncImage(
+                                                 model = prevPrevMediaItem.mediaMetadata.artworkUri.toString()
+                                                     .resize(1200, 1200),
+                                                 contentDescription = null,
+                                                 contentScale = ContentScale.Fit,
+                                                 modifier = Modifier
+                                                     .padding(
+                                                         all = playerThumbnailSize.size.dp + 60.dp
+                                                     )
+                                                     .padding(start = playerPlayButtonType.height.dp - 60.dp)
+                                                     .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
+                                                         padding(
+                                                             start = 40.dp
+                                                         )
+                                                     }
+                                                     .offset(
+                                                         -((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
+                                                         0.dp
+                                                     )
+                                                     .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                         doubleShadowDrop(
+                                                             thumbnailRoundness.shape(),
+                                                             4.dp,
+                                                             8.dp
+                                                         )
+                                                     }
+                                                     .clip(thumbnailRoundness.shape())
+                                             )
+                                             AsyncImage(
+                                                 model = nextNextMediaItem.mediaMetadata.artworkUri.toString()
+                                                     .resize(1200, 1200),
+                                                 contentDescription = null,
+                                                 contentScale = ContentScale.Fit,
+                                                 modifier = Modifier
+                                                     .padding(
+                                                         all = playerThumbnailSize.size.dp + 60.dp
+                                                     )
+                                                     .padding(start = playerPlayButtonType.height.dp - 60.dp)
+                                                     .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
+                                                         padding(
+                                                             start = 40.dp
+                                                         )
+                                                     }
+                                                     .offset(
+                                                         ((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
+                                                         0.dp
+                                                     )
+                                                     .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                         doubleShadowDrop(
+                                                             thumbnailRoundness.shape(),
+                                                             4.dp,
+                                                             8.dp
+                                                         )
+                                                     }
+                                                     .clip(thumbnailRoundness.shape())
+                                             )
+                                         }
+                                         AsyncImage(
+                                             model = prevMediaItem.mediaMetadata.artworkUri.toString()
+                                                 .resize(1200, 1200),
+                                             contentDescription = null,
+                                             contentScale = ContentScale.Fit,
+                                             modifier = Modifier
+                                                 .padding(
+                                                     all = playerThumbnailSize.size.dp + 40.dp
+                                                 )
+                                                 .padding(start = playerPlayButtonType.height.dp - 60.dp)
+                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(start = 40.dp)}
+                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)}
+                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {offset(-((thumbnailSizeDp/3) - 2*(playerThumbnailSize.size.dp)),0.dp)}
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
+                                                 .clip(thumbnailRoundness.shape())
+                                         )
+                                         AsyncImage(
+                                             model = nextMediaItem.mediaMetadata.artworkUri.toString()
+                                                 .resize(1200, 1200),
+                                             contentDescription = null,
+                                             contentScale = ContentScale.Fit,
+                                             modifier = Modifier
+                                                 .padding(
+                                                     all = playerThumbnailSize.size.dp + 40.dp
+                                                 )
+                                                 .padding(end = playerPlayButtonType.height.dp - 60.dp)
+                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(end = 40.dp)}
+                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {offset(((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)}
+                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {offset(((thumbnailSizeDp/3) - 2*(playerThumbnailSize.size.dp)),0.dp)}
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
+                                                 .clip(thumbnailRoundness.shape())
+                                         )
+                                     }
+                                     thumbnailContent(
+                                         modifier = Modifier
+                                             .padding(
+                                                 all = playerThumbnailSize.size.dp
+                                             )
+                                             .thumbnailpause(
+                                                 shouldBePlaying = shouldBePlaying)
+                                     )
+                                 }
                             }
                             if (isShowingVisualizer && !showvisthumbnail) {
                                 Box(
@@ -1879,8 +1971,8 @@ fun PlayerModern(
                     controlsContent(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
-                            .fillMaxHeight()
-                            .weight(1f)
+                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {fillMaxHeight()}
+                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {weight(1f)}
                     )
 
                     actionsBarContent(
