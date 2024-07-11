@@ -1414,7 +1414,7 @@ fun LocalPlaylistSongs(
 
                 SwipeablePlaylistItem(
                     mediaItem = song.asMediaItem,
-                    onSwipeToLeft = {
+                    onSwipeToRight = {
                             binder?.player?.addNext(song.asMediaItem)
                     }
                 ) {
