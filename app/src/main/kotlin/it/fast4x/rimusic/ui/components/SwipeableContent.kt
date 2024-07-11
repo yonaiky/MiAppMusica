@@ -96,31 +96,17 @@ fun SwipeableContent(
 fun SwipeableQueueItem(
     mediaItem: MediaItem,
     onSwipeToLeft: () -> Unit,
+    onSwipeToRight: () -> Unit,
     content: @Composable () -> Unit
 ) {
 
     val context = LocalContext.current
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
-    LaunchedEffect(mediaItem.mediaId) {
-            Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
-    var updateLike by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(updateLike) {
-        if (updateLike) {
-            mediaItemToggleLike(mediaItem)
-            updateLike = false
-            if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites))
-            else SmartToast(context.getString(R.string.removed_from_favorites))
-        }
-    }
 
     SwipeableContent(
         swipeToLeftIcon = R.drawable.trash,
-        swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
+        swipeToRightIcon = R.drawable.play_skip_forward,
         onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = { updateLike = true }
+        onSwipeToRight = onSwipeToRight
     ) {
         content()
     }
@@ -130,7 +116,7 @@ fun SwipeableQueueItem(
 @Composable
 fun SwipeablePlaylistItem(
     mediaItem: MediaItem,
-    onSwipeToLeft: () -> Unit,
+    onSwipeToRight: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
@@ -151,10 +137,10 @@ fun SwipeablePlaylistItem(
     }
 
     SwipeableContent(
-        swipeToLeftIcon = R.drawable.play_skip_forward,
-        swipeToRightIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart ,
-        onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = { updateLike = true }
+        swipeToLeftIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+        swipeToRightIcon = R.drawable.play_skip_forward,
+        onSwipeToLeft = { updateLike = true },
+        onSwipeToRight = onSwipeToRight
     ) {
         content()
     }

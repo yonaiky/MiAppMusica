@@ -171,7 +171,7 @@ fun SearchResultScreen(
                                     val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
-                                        onSwipeToLeft = {
+                                        onSwipeToRight = {
                                             binder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
@@ -335,7 +335,7 @@ fun SearchResultScreen(
                                 itemContent = { video ->
                                     SwipeablePlaylistItem(
                                         mediaItem = video.asMediaItem,
-                                        onSwipeToLeft = {
+                                        onSwipeToRight = {
                                             binder?.player?.addNext(video.asMediaItem)
                                         }
                                     ) {

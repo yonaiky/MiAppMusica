@@ -115,6 +115,8 @@ import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
@@ -377,7 +379,8 @@ fun QueueModern(
                             mediaItem = window.mediaItem,
                             onSwipeToLeft = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
-                            }
+                            },
+                            onSwipeToRight = { binder.player.addNext(window.mediaItem, context) }
                         ) {
                             SongItem(
                                 song = window.mediaItem,

@@ -712,7 +712,7 @@ fun AlbumSongs(
                             val checkedState = rememberSaveable { mutableStateOf(false) }
                             SwipeablePlaylistItem(
                                 mediaItem = song.asMediaItem,
-                                onSwipeToLeft = {
+                                onSwipeToRight = {
                                     binder?.player?.addNext(song.asMediaItem)
                                 }
                             ) {
