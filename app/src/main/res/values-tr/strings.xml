@@ -644,7 +644,7 @@
     <string name="landscapelayout">Yatay Görünüm</string>
     <string name="layout">Düzen</string>
     <string name="layoutinfo">Düzen 2 Yalnızca Büyük Ekranlar İçin Önerilir</string>
-    <string name="hideprevnext">Queue Songs in Player</string>
-    <string name="onesong">One Song</string>
-    <string name="twosongs">Two Songs</string>
+    <string name="hideprevnext">Şarkıları Oynatıcıda Kuyruğa Al</string>
+    <string name="onesong">Bir Şarkı</string>
+    <string name="twosongs">İki Şarkı</string>
 </resources>
