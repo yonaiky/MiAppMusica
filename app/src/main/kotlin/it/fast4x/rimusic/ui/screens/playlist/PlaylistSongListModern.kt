@@ -90,6 +90,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
@@ -112,6 +113,7 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -744,56 +746,64 @@ fun PlaylistSongListModern(
                     val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                     val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                    SongItem(
-                        song = song,
-                        isDownloaded = isDownloaded,
-                        onDownloadClick = {
-                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                            query {
-                                Database.insert(
-                                    Song(
-                                        id = song.asMediaItem.mediaId,
-                                        title = song.asMediaItem.mediaMetadata.title.toString(),
-                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                        thumbnailUrl = song.thumbnail?.url,
-                                        durationText = null
-                                    )
-                                )
-                            }
-
-                            if (!isLocal)
-                            manageDownload(
-                                context = context,
-                                songId = song.asMediaItem.mediaId,
-                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                downloadState = isDownloaded
-                            )
-                        },
-                        downloadState = downloadState,
-                        thumbnailSizePx = songThumbnailSizePx,
-                        thumbnailSizeDp = songThumbnailSizeDp,
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        NonQueuedMediaItemMenu(
-                                            navController = navController,
-                                            onDismiss = menuState::hide,
-                                            mediaItem = song.asMediaItem,
+                    SwipeablePlaylistItem(
+                        mediaItem = song.asMediaItem,
+                        onSwipeToRight = {
+                            binder?.player?.addNext(song.asMediaItem)
+                        }
+                    ) {
+                        SongItem(
+                            song = song,
+                            isDownloaded = isDownloaded,
+                            onDownloadClick = {
+                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                query {
+                                    Database.insert(
+                                        Song(
+                                            id = song.asMediaItem.mediaId,
+                                            title = song.asMediaItem.mediaMetadata.title.toString(),
+                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                            thumbnailUrl = song.thumbnail?.url,
+                                            durationText = null
                                         )
-                                    };
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                },
-                                onClick = {
-                                    searching = false
-                                    filter = null
-                                    playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(mediaItems, index)
-                                    }
+                                    )
                                 }
-                            )
-                    )
+
+                                if (!isLocal)
+                                    manageDownload(
+                                        context = context,
+                                        songId = song.asMediaItem.mediaId,
+                                        songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                        downloadState = isDownloaded
+                                    )
+                            },
+                            downloadState = downloadState,
+                            thumbnailSizePx = songThumbnailSizePx,
+                            thumbnailSizeDp = songThumbnailSizeDp,
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            NonQueuedMediaItemMenu(
+                                                navController = navController,
+                                                onDismiss = menuState::hide,
+                                                mediaItem = song.asMediaItem,
+                                            )
+                                        };
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        searching = false
+                                        filter = null
+                                        playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)
+                                            ?.let { mediaItems ->
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayAtIndex(mediaItems, index)
+                                            }
+                                    }
+                                )
+                        )
+                    }
                 }
 
                 item(
