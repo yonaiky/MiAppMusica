@@ -1274,13 +1274,13 @@ fun PlaybackParamsDialog(
     val (colorPalette) = LocalAppearance.current
     val defaultSpeed = 1f
     val defaultPitch = 1f
-    val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
-    val defaultDeviceVolume = getDeviceVolume(context)
+    //val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
+    //val defaultDeviceVolume = getDeviceVolume(context)
     val defaultDuration = 0f
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
-    var playbackVolume  by rememberPreference(playbackVolumeKey, defaultVolume)
-    var playbackDeviceVolume  by rememberPreference(playbackDeviceVolumeKey, defaultDeviceVolume)
+    var playbackVolume  by rememberPreference(playbackVolumeKey, 0.5f)
+    var playbackDeviceVolume  by rememberPreference(playbackDeviceVolumeKey, getDeviceVolume(context))
     var playbackDuration by rememberPreference(playbackDurationKey, defaultDuration)
 
     DefaultDialog(
@@ -1530,7 +1530,7 @@ fun PlaybackParamsDialog(
             ) {
                 IconButton(
                     onClick = {
-                        playbackVolume = defaultVolume
+                        playbackVolume = 0.5f
                         binder?.player?.volume = playbackVolume
                     },
                     icon = R.drawable.volume_up,
@@ -1606,7 +1606,7 @@ fun PlaybackParamsDialog(
             ) {
                 IconButton(
                     onClick = {
-                        playbackDeviceVolume = defaultDeviceVolume
+                        playbackDeviceVolume = getDeviceVolume(context)
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     icon = R.drawable.master_volume,
