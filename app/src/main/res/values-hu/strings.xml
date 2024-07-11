@@ -649,4 +649,5 @@
     <string name="hideprevnext">Queue Songs in Player</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
+    <string name="tapqueue">Tap to open Queue</string>
 </resources>
