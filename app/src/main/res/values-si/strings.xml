@@ -645,7 +645,7 @@ CC-BY-SA 3.0</string>
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
-    <string name="hideprevnext">Queue Songs in Player</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
