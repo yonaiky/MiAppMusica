@@ -644,8 +644,8 @@
     <string name="landscapelayout">Горизонтальний Макет</string>
     <string name="layout">Макет</string>
     <string name="layoutinfo">Макет 2 Рекомендований лише для великих екранів</string>
-    <string name="hideprevnext">Queue Songs in Player</string>
-    <string name="onesong">One Song</string>
-    <string name="twosongs">Two Songs</string>
-    <string name="tapqueue">Tap to open Queue</string>
+    <string name="hideprevnext">Пісні Черги у Плеєрі</string>
+    <string name="onesong">Одна Пісня</string>
+    <string name="twosongs">Дві Пісні</string>
+    <string name="tapqueue">Нажміть щоб відкрити Чергу</string>
 </resources>
