@@ -644,7 +644,7 @@
     <string name="landscapelayout">Горизонтальний Макет</string>
     <string name="layout">Макет</string>
     <string name="layoutinfo">Макет 2 Рекомендований лише для великих екранів</string>
-    <string name="hideprevnext">Пісні Черги у Плеєрі</string>
+    <string name="hideprevnext">Приховати Попередні та Наступні Пісні</string>
     <string name="onesong">Одна Пісня</string>
     <string name="twosongs">Дві Пісні</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
