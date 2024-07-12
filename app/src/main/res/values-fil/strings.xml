@@ -644,7 +644,7 @@
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Recommended lang ang layout 2 para sa malaki na screen</string>
-    <string name="hideprevnext">I-queue ang mga Kanta sa player</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">Isang kanta</string>
     <string name="twosongs">Dalawang kanta</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
