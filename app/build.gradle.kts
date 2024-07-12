@@ -1,12 +1,3 @@
-/*
-plugins {
-    id("com.android.application")
-    kotlin("android")
-    //kotlin("kapt")
-    kotlin("ksp")
-}
-
- */
 
 plugins {
     alias(libs.plugins.android.application)
@@ -31,8 +22,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 42
-        versionName = "0.6.42"
+        versionCode = 43
+        versionName = "0.6.43"
         //buildConfigField("String", "VERSION_NAME", "\"$versionName\"" )
     }
 
@@ -96,14 +87,6 @@ ksp {
 }
 
 /*
-kapt {
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
-}
- */
-
-/*
 android {
     lint {
         baseline = file("lint-baseline.xml")
@@ -150,7 +133,6 @@ dependencies {
 
     implementation(libs.room)
     ksp(libs.room.compiler)
-    //kapt(libs.room.compiler)
 
     implementation(projects.innertube)
     implementation(projects.innertubes)
