@@ -11,10 +11,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,13 +20,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,7 +36,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +71,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -95,10 +88,8 @@ import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -165,11 +156,8 @@ import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSongSortByKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.recommendationsNumberKey
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
@@ -180,7 +168,6 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -221,7 +208,7 @@ fun LocalPlaylistSongs(
 
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
-            .collect{ playlistSongs = it }
+            .collect { playlistSongs = it }
     }
 
     LaunchedEffect(Unit) {
@@ -229,13 +216,16 @@ fun LocalPlaylistSongs(
     }
 
     //**** SMART RECOMMENDATION
-    val recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
+    val recommendationsNumber by rememberPreference(
+        recommendationsNumberKey,
+        RecommendationsNumber.`5`
+    )
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
     var relatedSongsRecommendationResult by persist<Result<Innertube.RelatedSongs?>?>(tag = "home/relatedSongsResult")
     var songBaseRecommendation by persist<Song?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
     if (isRecommendationEnabled) {
-        LaunchedEffect(Unit,isRecommendationEnabled) {
+        LaunchedEffect(Unit, isRecommendationEnabled) {
             Database.songsPlaylist(playlistId, sortBy, sortOrder).distinctUntilChanged()
                 .collect { songs ->
                     val song = songs.firstOrNull()
@@ -265,8 +255,14 @@ fun LocalPlaylistSongs(
     if (!filter.isNullOrBlank())
         playlistSongs =
             playlistSongs.filter { songItem ->
-                songItem.asMediaItem.mediaMetadata.title?.contains(filterCharSequence,true) ?: false
-                        || songItem.asMediaItem.mediaMetadata.artist?.contains(filterCharSequence,true) ?: false
+                songItem.asMediaItem.mediaMetadata.title?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
+                        || songItem.asMediaItem.mediaMetadata.artist?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
             }
 
     var searching by rememberSaveable { mutableStateOf(false) }
@@ -274,7 +270,8 @@ fun LocalPlaylistSongs(
     var totalPlayTimes = 0L
     playlistSongs.forEach {
         totalPlayTimes += it.durationText?.let { it1 ->
-            durationTextToMillis(it1) }?.toLong() ?: 0
+            durationTextToMillis(it1)
+        }?.toLong() ?: 0
     }
 
 
@@ -347,7 +344,7 @@ fun LocalPlaylistSongs(
                 query {
                     playlistSongs.forEachIndexed { index, song ->
                         playlistPreview?.playlist?.let {
-                            Database.updateSongPosition( it.id, song.id, index )
+                            Database.updateSongPosition(it.id, song.id, index)
                         }
                     }
                 }
@@ -394,17 +391,17 @@ fun LocalPlaylistSongs(
         mutableStateOf(false)
     }
      */
-/*
-    var showAddPlaylistSelectDialog by remember {
-        mutableStateOf(false)
-    }
-    var isCreatingNewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var showPlaylistSelectDialog by remember {
-        mutableStateOf(false)
-    }
-    */
+    /*
+        var showAddPlaylistSelectDialog by remember {
+            mutableStateOf(false)
+        }
+        var isCreatingNewPlaylist by rememberSaveable {
+            mutableStateOf(false)
+        }
+        var showPlaylistSelectDialog by remember {
+            mutableStateOf(false)
+        }
+        */
     var listMediaItems = remember {
         mutableListOf<MediaItem>()
     }
@@ -433,37 +430,45 @@ fun LocalPlaylistSongs(
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
 
-                context.applicationContext.contentResolver.openOutputStream(uri)
-                    ?.use { outputStream ->
-                        csvWriter().open(outputStream){
-                            writeRow("PlaylistBrowseId", "PlaylistName", "MediaId", "Title", "Artists", "Duration", "ThumbnailUrl")
-                            if (listMediaItems.isEmpty()) {
-                                playlistSongs.forEach {
-                                    writeRow(
-                                        playlistPreview?.playlist?.browseId,
-                                        plistName,
-                                        it.id,
-                                        it.title,
-                                        it.artistsText,
-                                        it.durationText,
-                                        it.thumbnailUrl
-                                    )
-                                }
-                            } else {
-                                listMediaItems.forEach {
-                                    writeRow(
-                                        playlistPreview?.playlist?.browseId,
-                                        plistName,
-                                        it.mediaId,
-                                        it.mediaMetadata.title,
-                                        it.mediaMetadata.artist,
-                                        "",
-                                        it.mediaMetadata.artworkUri
-                                    )
-                                }
+            context.applicationContext.contentResolver.openOutputStream(uri)
+                ?.use { outputStream ->
+                    csvWriter().open(outputStream) {
+                        writeRow(
+                            "PlaylistBrowseId",
+                            "PlaylistName",
+                            "MediaId",
+                            "Title",
+                            "Artists",
+                            "Duration",
+                            "ThumbnailUrl"
+                        )
+                        if (listMediaItems.isEmpty()) {
+                            playlistSongs.forEach {
+                                writeRow(
+                                    playlistPreview?.playlist?.browseId,
+                                    plistName,
+                                    it.id,
+                                    it.title,
+                                    it.artistsText,
+                                    it.durationText,
+                                    it.thumbnailUrl
+                                )
+                            }
+                        } else {
+                            listMediaItems.forEach {
+                                writeRow(
+                                    playlistPreview?.playlist?.browseId,
+                                    plistName,
+                                    it.mediaId,
+                                    it.mediaMetadata.title,
+                                    it.mediaMetadata.artist,
+                                    "",
+                                    it.mediaMetadata.artworkUri
+                                )
                             }
                         }
                     }
+                }
 
         }
 
@@ -472,65 +477,65 @@ fun LocalPlaylistSongs(
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
 
-                context.applicationContext.contentResolver.openInputStream(uri)
-                    ?.use { inputStream ->
-                        csvReader().open(inputStream) {
-                            readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
+            context.applicationContext.contentResolver.openInputStream(uri)
+                ?.use { inputStream ->
+                    csvReader().open(inputStream) {
+                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
 
-                                transaction {
+                            transaction {
+                                plistId = row["PlaylistName"]?.let {
+                                    Database.playlistExistByName(
+                                        it
+                                    )
+                                } ?: 0L
+
+                                if (plistId == 0L) {
                                     plistId = row["PlaylistName"]?.let {
-                                        Database.playlistExistByName(
-                                            it
+                                        Database.insert(
+                                            Playlist(
+                                                name = it,
+                                                browseId = row["PlaylistBrowseId"]
+                                            )
                                         )
-                                    } ?: 0L
-
-                                   if (plistId == 0L) {
-                                       plistId = row["PlaylistName"]?.let {
-                                           Database.insert(
-                                               Playlist(
-                                                   name = it,
-                                                   browseId = row["PlaylistBrowseId"]
-                                               )
-                                           )
-                                       }!!
-                                   } else {
-                                       /**/
-                                       if (row["MediaId"] != null && row["Title"] != null) {
-                                           val song =
-                                               row["MediaId"]?.let {
-                                                   row["Title"]?.let { it1 ->
-                                                       Song(
-                                                           id = it,
-                                                           title = it1,
-                                                           artistsText = row["Artists"],
-                                                           durationText = row["Duration"],
-                                                           thumbnailUrl = row["ThumbnailUrl"]
-                                                       )
-                                                   }
-                                               }
-                                            transaction {
-                                                if (song != null) {
-                                                    Database.insert(song)
-                                                    Database.insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.id,
-                                                            playlistId = plistId,
-                                                            position = index
-                                                        )
+                                    }!!
+                                } else {
+                                    /**/
+                                    if (row["MediaId"] != null && row["Title"] != null) {
+                                        val song =
+                                            row["MediaId"]?.let {
+                                                row["Title"]?.let { it1 ->
+                                                    Song(
+                                                        id = it,
+                                                        title = it1,
+                                                        artistsText = row["Artists"],
+                                                        durationText = row["Duration"],
+                                                        thumbnailUrl = row["ThumbnailUrl"]
                                                     )
                                                 }
                                             }
+                                        transaction {
+                                            if (song != null) {
+                                                Database.insert(song)
+                                                Database.insert(
+                                                    SongPlaylistMap(
+                                                        songId = song.id,
+                                                        playlistId = plistId,
+                                                        position = index
+                                                    )
+                                                )
+                                            }
+                                        }
 
 
-                                       }
-                                       /**/
-                                   }
+                                    }
+                                    /**/
                                 }
-
                             }
-                        }
 
+                        }
                     }
+
+                }
         }
 
     var isRenaming by rememberSaveable {
@@ -540,7 +545,7 @@ fun LocalPlaylistSongs(
         mutableStateOf(false)
     }
 
-    if (isRenaming|| isExporting) {
+    if (isRenaming || isExporting) {
         InputTextDialog(
             onDismiss = {
                 isRenaming = false
@@ -559,20 +564,23 @@ fun LocalPlaylistSongs(
                         renamePipedPlaylist(
                             context = context,
                             coroutineScope = coroutineScope,
-                            pipedSession = pipedSession.toApiSession() ,
+                            pipedSession = pipedSession.toApiSession(),
                             id = UUID.fromString(playlistPreview?.playlist?.browseId),
                             name = text
                         )
 
                 }
-                if(isExporting) {
+                if (isExporting) {
                     plistName = text
                     try {
                         @SuppressLint("SimpleDateFormat")
                         val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
                         exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(Date())}")
                     } catch (e: ActivityNotFoundException) {
-                        SmartToast(context.resources.getString(R.string.info_not_find_app_create_doc), type = PopupType.Warning)
+                        SmartToast(
+                            context.resources.getString(R.string.info_not_find_app_create_doc),
+                            type = PopupType.Warning
+                        )
                     }
                 }
 
@@ -580,11 +588,16 @@ fun LocalPlaylistSongs(
         )
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+    val navigationBarPosition by rememberPreference(
+        navigationBarPositionKey,
+        NavigationBarPosition.Bottom
+    )
+    val maxSongsInQueue by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    val playlistNotMonthlyType = playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX,0,true) == false
-    val playlistNotPipedType = playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX,0,true) == false
+    val playlistNotMonthlyType =
+        playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false
+    val playlistNotPipedType =
+        playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
     val hapticFeedback = LocalHapticFeedback.current
 
 
@@ -622,12 +635,12 @@ fun LocalPlaylistSongs(
 
                     HeaderWithIcon(
                         //title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
-                        title = playlistPreview?.playlist?.name?.let {name ->
-                            if (name.startsWith(PINNED_PREFIX,0,true))
+                        title = playlistPreview?.playlist?.name?.let { name ->
+                            if (name.startsWith(PINNED_PREFIX, 0, true))
                                 name.substringAfter(PINNED_PREFIX) else
-                                if (name.startsWith(MONTHLY_PREFIX,0,true))
+                                if (name.startsWith(MONTHLY_PREFIX, 0, true))
                                     getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
-                                    if (name.startsWith(PIPED_PREFIX,0,true))
+                                    if (name.startsWith(PIPED_PREFIX, 0, true))
                                         name.substringAfter(PIPED_PREFIX) else name
                             //if (playlistNotMonthlyType) cleanPrefix(it)
                             //else getTitleMonthlyPlaylist(cleanPrefix(it))
@@ -667,7 +680,7 @@ fun LocalPlaylistSongs(
                     }
 
 
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
@@ -695,7 +708,7 @@ fun LocalPlaylistSongs(
                         Spacer(modifier = Modifier.height(30.dp))
                     }
 
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -725,7 +738,9 @@ fun LocalPlaylistSongs(
                                     onClick = {
                                         playlistSongs.let { songs ->
                                             if (songs.isNotEmpty()) {
-                                                val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
+                                                val itemsLimited =
+                                                    if (songs.size > maxSongsInQueue.number) songs.shuffled()
+                                                        .take(maxSongsInQueue.number.toInt()) else songs
                                                 binder?.stopRadio()
                                                 binder?.player?.forcePlayFromBeginning(
                                                     itemsLimited.shuffled().map(Song::asMediaItem)
@@ -765,14 +780,24 @@ fun LocalPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.pin,
                             enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                            color = if (playlistPreview?.playlist?.name?.startsWith(
+                                    PINNED_PREFIX,
+                                    0,
+                                    true
+                                ) == true
+                            )
                                 colorPalette.text else colorPalette.textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
                                         query {
-                                            if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                            if (playlistPreview?.playlist?.name?.startsWith(
+                                                    PINNED_PREFIX,
+                                                    0,
+                                                    true
+                                                ) == true
+                                            )
                                                 Database.unPinPlaylist(playlistId) else
                                                 Database.pinPlaylist(playlistId)
                                         }
@@ -797,7 +822,8 @@ fun LocalPlaylistSongs(
                                         } else {
                                             SmartToast(
                                                 context.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
-                                                type = PopupType.Warning)
+                                                type = PopupType.Warning
+                                            )
                                         }
                                     },
                                     onLongClick = {
@@ -988,7 +1014,10 @@ fun LocalPlaylistSongs(
                                         playlist = playlistPreview,
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.enqueue(playlistSongs.map(Song::asMediaItem), context)
+                                                binder?.player?.enqueue(
+                                                    playlistSongs.map(Song::asMediaItem),
+                                                    context
+                                                )
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -997,7 +1026,10 @@ fun LocalPlaylistSongs(
                                         },
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.addNext(playlistSongs.map(Song::asMediaItem), context)
+                                                binder?.player?.addNext(
+                                                    playlistSongs.map(Song::asMediaItem),
+                                                    context
+                                                )
                                             } else {
                                                 binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1006,7 +1038,12 @@ fun LocalPlaylistSongs(
                                         },
                                         showOnSyncronize = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                         onSyncronize = {
-                                            if (!playlistPreview.playlist.name.startsWith(PIPED_PREFIX,0,true)) {
+                                            if (!playlistPreview.playlist.name.startsWith(
+                                                    PIPED_PREFIX,
+                                                    0,
+                                                    true
+                                                )
+                                            ) {
                                                 transaction {
                                                     runBlocking(Dispatchers.IO) {
                                                         withContext(Dispatchers.IO) {
@@ -1040,7 +1077,9 @@ fun LocalPlaylistSongs(
                                                     context = context,
                                                     coroutineScope = coroutineScope,
                                                     pipedSession = pipedSession.toApiSession(),
-                                                    idPipedPlaylist = UUID.fromString(playlistPreview.playlist.browseId),
+                                                    idPipedPlaylist = UUID.fromString(
+                                                        playlistPreview.playlist.browseId
+                                                    ),
                                                     playlistId = playlistPreview.playlist.id
 
                                                 )
@@ -1075,13 +1114,17 @@ fun LocalPlaylistSongs(
                                                 }
                                                 //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
+                                                if (playlistPreview.playlist.name.startsWith(
+                                                        PIPED_PREFIX
+                                                    ) && isPipedEnabled && pipedSession.token.isNotEmpty()
+                                                )
                                                     addToPipedPlaylist(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
-                                                        pipedSession = pipedSession.toApiSession() ,
+                                                        pipedSession = pipedSession.toApiSession(),
                                                         id = UUID.fromString(playlistPreview.playlist.browseId),
-                                                        videos = listMediaItems.map { it.mediaId }.toList()
+                                                        videos = listMediaItems.map { it.mediaId }
+                                                            .toList()
                                                     )
                                             } else {
                                                 listMediaItems.forEachIndexed { index, song ->
@@ -1100,13 +1143,17 @@ fun LocalPlaylistSongs(
                                                 }
                                                 println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
+                                                if (playlistPreview.playlist.name.startsWith(
+                                                        PIPED_PREFIX
+                                                    ) && isPipedEnabled && pipedSession.token.isNotEmpty()
+                                                )
                                                     addToPipedPlaylist(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
-                                                        pipedSession = pipedSession.toApiSession() ,
+                                                        pipedSession = pipedSession.toApiSession(),
                                                         id = UUID.fromString(playlistPreview.playlist.browseId),
-                                                        videos = listMediaItems.map { it.mediaId }.toList()
+                                                        videos = listMediaItems.map { it.mediaId }
+                                                            .toList()
                                                     )
                                                 listMediaItems.clear()
                                                 selectItems = false
@@ -1173,7 +1220,7 @@ fun LocalPlaylistSongs(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 /*        */
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -1198,7 +1245,12 @@ fun LocalPlaylistSongs(
                             PlaylistSongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
                             PlaylistSongSortBy.DateLiked -> stringResource(R.string.sort_date_liked)
                             PlaylistSongSortBy.Artist -> stringResource(R.string.sort_artist)
-                            PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}"
+                            PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${
+                                stringResource(
+                                    R.string.sort_album
+                                )
+                            }"
+
                             PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
@@ -1208,7 +1260,7 @@ fun LocalPlaylistSongs(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .clickable {
-                                menuState.display{
+                                menuState.display {
                                     SortMenu(
                                         title = stringResource(R.string.sorting_order),
                                         onDismiss = menuState::hide,
@@ -1216,10 +1268,12 @@ fun LocalPlaylistSongs(
                                         onAlbum = { sortBy = PlaylistSongSortBy.Album },
                                         onAlbumYear = { sortBy = PlaylistSongSortBy.AlbumYear },
                                         onDatePlayed = { sortBy = PlaylistSongSortBy.DatePlayed },
-                                        onDateLiked = { sortBy = PlaylistSongSortBy.DateLiked},
+                                        onDateLiked = { sortBy = PlaylistSongSortBy.DateLiked },
                                         onPosition = { sortBy = PlaylistSongSortBy.Position },
                                         onArtist = { sortBy = PlaylistSongSortBy.Artist },
-                                        onArtistAndAlbum = { sortBy = PlaylistSongSortBy.ArtistAndAlbum },
+                                        onArtistAndAlbum = {
+                                            sortBy = PlaylistSongSortBy.ArtistAndAlbum
+                                        },
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
                                         onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
@@ -1229,7 +1283,7 @@ fun LocalPlaylistSongs(
                             }
                     )
 
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -1279,7 +1333,7 @@ fun LocalPlaylistSongs(
                 }
 
 
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
@@ -1367,7 +1421,6 @@ fun LocalPlaylistSongs(
                 }
 
 
-
             }
 
             itemsIndexed(
@@ -1377,8 +1430,9 @@ fun LocalPlaylistSongs(
             ) { index, song ->
 
                 if (index in positionsRecommendationList.distinct()) {
-                    val songRecommended = relatedSongsRecommendationResult?.getOrNull()?.songs?.shuffled()
-                        ?.lastOrNull()
+                    val songRecommended =
+                        relatedSongsRecommendationResult?.getOrNull()?.songs?.shuffled()
+                            ?.lastOrNull()
                     val duration = songRecommended?.durationText
                     songRecommended?.asMediaItem?.let {
                         SongItem(
@@ -1402,17 +1456,13 @@ fun LocalPlaylistSongs(
                     }
                 }
 
-                //BehindMotionSwipe(
-                //    content = {
-                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                        downloadState = getDownloadState(song.asMediaItem.mediaId)
-                        val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                        val checkedState = rememberSaveable { mutableStateOf(false) }
-                        val playlist: PlaylistPreview? = null
-                        val positionInPlaylist: Int = index
-                        //if (isDownloaded && !listDownloadedMedia.contains(song)) listDownloadedMedia.add(song)
-                        //if (!isDownloaded) listDownloadedMedia.dropWhile {  it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
-                        //Log.d("mediaItem", "loop items listDownloadedMedia ${listDownloadedMedia.distinct().size} ${listDownloadedMedia.distinct()}")
+                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                downloadState = getDownloadState(song.asMediaItem.mediaId)
+                val isDownloaded =
+                    if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                val checkedState = rememberSaveable { mutableStateOf(false) }
+                val positionInPlaylist: Int = index
+
 
                 SwipeableQueueItem(
                     mediaItem = song.asMediaItem,
@@ -1422,14 +1472,15 @@ fun LocalPlaylistSongs(
                             Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
                         }
 
-                        if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                        if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                             removeFromPipedPlaylist(
                                 context = context,
                                 coroutineScope = coroutineScope,
-                                pipedSession = pipedSession.toApiSession() ,
-                                id = UUID.fromString(playlist.playlist.browseId),
+                                pipedSession = pipedSession.toApiSession(),
+                                id = UUID.fromString(playlistPreview?.playlist?.browseId),
                                 positionInPlaylist
                             )
+                        }
 
                     },
                     onSwipeToRight = {
@@ -1597,22 +1648,22 @@ fun LocalPlaylistSongs(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if(uiType == UiType.ViMusic || showFloatingIcon)
-        FloatingActionsContainerWithScrollToTop(
-            lazyListState = lazyListState,
-            iconId = R.drawable.shuffle,
-            visible = !reorderingState.isDragging,
-            onClick = {
-                playlistSongs.let { songs ->
-                    if (songs.isNotEmpty()) {
-                        binder?.stopRadio()
-                        binder?.player?.forcePlayFromBeginning(
-                            songs.shuffled().map(Song::asMediaItem)
-                        )
+        if (uiType == UiType.ViMusic || showFloatingIcon)
+            FloatingActionsContainerWithScrollToTop(
+                lazyListState = lazyListState,
+                iconId = R.drawable.shuffle,
+                visible = !reorderingState.isDragging,
+                onClick = {
+                    playlistSongs.let { songs ->
+                        if (songs.isNotEmpty()) {
+                            binder?.stopRadio()
+                            binder?.player?.forcePlayFromBeginning(
+                                songs.shuffled().map(Song::asMediaItem)
+                            )
+                        }
                     }
                 }
-            }
-        )
+            )
 
 
     }
