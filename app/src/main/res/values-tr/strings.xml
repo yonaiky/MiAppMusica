@@ -647,7 +647,7 @@
     <string name="hideprevnext">Şarkıları Oynatıcıda Kuyruğa Al</string>
     <string name="onesong">Bir Şarkı</string>
     <string name="twosongs">İki Şarkı</string>
-    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
-    <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
+    <string name="info_debug_mode_enabled">Hata Ayıklama Modu Etkin</string>
+    <string name="info_debug_mode_is_enabled">Hata ayıklama modu etkinleştirildi, ayarlardan devre dışı bırakmayı unutmayın</string>
     <string name="tapqueue">Oynatma sırasını açmak için dokunun</string>
 </resources>
