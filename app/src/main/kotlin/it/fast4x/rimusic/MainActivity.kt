@@ -1064,82 +1064,32 @@ class MainActivity :
     }
 
     override fun onResume() {
-        sensorManager?.registerListener(sensorListener, sensorManager!!.getDefaultSensor(
-            Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL
-        )
         super.onResume()
+        kotlin.runCatching {
+            sensorManager?.registerListener(
+                sensorListener, sensorManager!!.getDefaultSensor(
+                    Sensor.TYPE_ACCELEROMETER
+                ), SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }.onFailure {
+            Timber.e("MainActivity.onResume registerListener sensorManager ${it.stackTraceToString()}")
+        }
+
     }
 
     override fun onPause() {
-        sensorManager!!.unregisterListener(sensorListener)
         super.onPause()
+        runCatching {
+            sensorManager!!.unregisterListener(sensorListener)
+        }.onFailure {
+            Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
+        }
     }
 
     @UnstableApi
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
-
-/*
-               val action = intent.action
-               val type = intent.type
-               val data = intent.data
-
-               Log.d("ShareActionInfo","Share action received action / type / data ${action} / ${type} / ${data}")
-               if ("android.intent.action.SEND" == action && type != null && "text/plain" == type) {
-                   Log.d("ShareActionTextExtra", intent.getStringExtra("android.intent.extra.TEXT")!!)
-               }
-*/
-/*
-        //val uri = intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
-        val uri = intent.data ?: intent.getStringExtra("android.intent.extra.TEXT")?.toUri() ?: return
-        //val uri = intent?.data ?: return
-
-        intent.data = null
-        this.intent = null
-
-        Toast.makeText(this, "${"RiMusic "}${getString(R.string.opening_url)}", Toast.LENGTH_LONG).show()
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            when (val path = uri.pathSegments.firstOrNull()) {
-                "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
-                    val browseId = "VL$playlistId"
-
-                    if (playlistId.startsWith("OLAK5uy_")) {
-                        Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
-                            it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
-                                //albumRoute.ensureGlobal(browseId)
-
-
-                            }
-                        }
-                    } else {
-                        //playlistRoute.ensureGlobal(browseId)
-                        //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"))
-                        //playlistRoute.ensureGlobal(browseId,null)
-                        playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
-                    }
-                }
-
-                "channel", "c" -> uri.lastPathSegment?.let { channelId ->
-                    artistRoute.ensureGlobal(channelId)
-                }
-
-                else -> when {
-                    path == "watch" -> uri.getQueryParameter("v")
-                    uri.host == "youtu.be" -> path
-                    else -> null
-                }?.let { videoId ->
-                    Innertube.song(videoId)?.getOrNull()?.let { song ->
-                        val binder = snapshotFlow { binder }.filterNotNull().first()
-                        withContext(Dispatchers.Main) {
-                            binder.player.forcePlay(song.asMediaItem)
-                        }
-                    }
-                }
-            }
-        }
-        */
 
     }
 
@@ -1158,9 +1108,7 @@ class MainActivity :
     @UnstableApi
     override fun onDestroy() {
         super.onDestroy()
-        //stopService(Intent(this, MyDownloadService::class.java))
-        //stopService(Intent(this, PlayerService::class.java))
-        //Log.d("rimusic debug","onDestroy")
+
         if (!isChangingConfigurations) {
             persistMap.clear()
         }
