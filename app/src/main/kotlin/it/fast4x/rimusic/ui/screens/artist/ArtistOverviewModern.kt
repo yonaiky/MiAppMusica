@@ -531,7 +531,7 @@ fun ArtistOverviewModern(
                             val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                             SwipeablePlaylistItem(
                                 mediaItem = song.asMediaItem,
-                                onSwipeToLeft = {
+                                onSwipeToRight = {
                                     binder?.player?.addNext(song.asMediaItem)
                                 }
                             ) {

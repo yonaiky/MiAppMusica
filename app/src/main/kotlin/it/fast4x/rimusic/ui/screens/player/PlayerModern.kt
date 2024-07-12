@@ -1319,10 +1319,18 @@ fun PlayerModern(
                                 }
                             }
                             if (!showtwosongs) {
-                                Row(
-                                    modifier = modifier
-                                        .weight(0.07f)
-                                ){}
+                              IconButton(
+                                 icon = R.drawable.trash,
+                                 color = Color.White,
+                                 enabled = true,
+                                 onClick = {
+                                     binder.player.removeMediaItem(nextMediaItemIndex)
+                                 },
+                                 modifier = Modifier
+                                     .weight(0.07f)
+                                     .size(40.dp)
+                                     .padding(vertical = 7.5.dp),
+                                 )
                             }
 
                             if (showtwosongs) {

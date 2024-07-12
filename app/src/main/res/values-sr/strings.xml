@@ -591,8 +591,8 @@
     <string name="piped_connected_to_s">Повезано на %s</string>
     <string name="fake_audio_bar">Лажни Аудио Бар</string>
     <string name="copy_crash_log_to_clipboard">Копирајте запис грешке у привремену меморију</string>
-    <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
-    <string name="message_excluded_s_songs">Excluded %s songs</string>
+    <string name="title_backup_and_restore">РЕЗЕРВНА КОПИЈА И ПОВРАТАК РЕЗЕРВНЕ КОПИЈЕ</string>
+    <string name="message_excluded_s_songs">Изузете %s песме</string>
     <string name="show_thumbnail">Прикажи Сличицу</string>
     <string name="show_lyrics_thumbnail">Прикажи Сличицу za Стихове</string>
     <string name="large">Велики</string>
@@ -602,7 +602,7 @@
     <string name="accent">Наглашена боја</string>
     <string name="lyrics_size">Величина Стихова</string>
     <string name="translate">Преведи</string>
-    <string name="transparentbar">Transparent Timeline Bar</string>
+    <string name="transparentbar">Провидни Бар Временске Линије</string>
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>

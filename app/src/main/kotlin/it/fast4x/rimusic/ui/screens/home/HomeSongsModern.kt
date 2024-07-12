@@ -1231,7 +1231,7 @@ fun HomeSongsModern(
                     ) { index, song ->
                         SwipeablePlaylistItem(
                             mediaItem = song.asMediaItem,
-                            onSwipeToLeft = {
+                            onSwipeToRight = {
                                 binder?.player?.addNext(song.asMediaItem)
                             }
                         ) {
@@ -1335,7 +1335,7 @@ fun HomeSongsModern(
 
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
-                        onSwipeToLeft = {
+                        onSwipeToRight = {
                             binder?.player?.addNext(song.asMediaItem)
                         }
                     ) {
