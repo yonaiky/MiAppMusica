@@ -116,7 +116,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -171,6 +171,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.secondary
@@ -1408,14 +1409,32 @@ fun LocalPlaylistSongs(
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
+                        val playlist: PlaylistPreview? = null
+                        val positionInPlaylist: Int = index
                         //if (isDownloaded && !listDownloadedMedia.contains(song)) listDownloadedMedia.add(song)
                         //if (!isDownloaded) listDownloadedMedia.dropWhile {  it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                         //Log.d("mediaItem", "loop items listDownloadedMedia ${listDownloadedMedia.distinct().size} ${listDownloadedMedia.distinct()}")
 
-                SwipeablePlaylistItem(
+                SwipeableQueueItem(
                     mediaItem = song.asMediaItem,
+                    onSwipeToLeft = {
+                        transaction {
+                            Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
+                            Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
+                        }
+
+                        if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedApiToken.isNotEmpty())
+                            removeFromPipedPlaylist(
+                                context = context,
+                                coroutineScope = coroutineScope,
+                                pipedSession = pipedSession.toApiSession() ,
+                                id = UUID.fromString(playlist.playlist.browseId),
+                                positionInPlaylist
+                            )
+
+                    },
                     onSwipeToRight = {
-                            binder?.player?.addNext(song.asMediaItem)
+                        binder?.player?.addNext(song.asMediaItem)
                     }
                 ) {
                     SongItem(
