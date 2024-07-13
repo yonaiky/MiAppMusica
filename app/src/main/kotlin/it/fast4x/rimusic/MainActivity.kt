@@ -1026,6 +1026,8 @@ class MainActivity :
             }
 
         }
+
+        //throw RuntimeException("This is a simulated exception to crash");
     }
 
 
