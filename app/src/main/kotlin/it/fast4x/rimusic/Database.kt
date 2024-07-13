@@ -92,6 +92,10 @@ interface Database {
     fun listAllSongsAsFlow(): Flow<List<Song>>
 
     @Transaction
+    @Query("SELECT count(playlistId) FROM SongPlaylistMap WHERE songId = :id")
+    fun songUsedInPlaylists(id: String): Int
+
+    @Transaction
     @Query("SELECT * FROM Song")
     fun listAllSongs(): List<Song>
 

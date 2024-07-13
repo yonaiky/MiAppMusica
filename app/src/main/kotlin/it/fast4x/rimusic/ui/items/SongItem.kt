@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +43,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.screens.player.conditional
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -47,9 +51,13 @@ import it.fast4x.rimusic.ui.styling.primaryButton
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 const val EXPLICIT_PREFIX = "e:"
 
@@ -296,6 +304,16 @@ fun SongItem(
     mediaId: String
 ) {
     val (colorPalette, typography) = LocalAppearance.current
+    var songPlaylist by remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(Unit, mediaId) {
+        withContext(Dispatchers.IO) {
+            songPlaylist = Database.songUsedInPlaylists(mediaId)
+        }
+    }
+
+    var playlistindicator by rememberPreference(playlistindicatorKey,false)
 
     ItemContainer(
         alternative = false,
@@ -394,6 +412,19 @@ fun SongItem(
                             .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
+                    if (playlistindicator) {
+                        IconButton(
+                            icon = R.drawable.checkmark,
+                            color = if (songPlaylist > 0) Color.White else Color.Transparent,
+                            enabled = true,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(18.dp)
+                                .conditional(songPlaylist > 0) {background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)}
+                                .conditional(songPlaylist > 0) { padding(all = 3.dp) }
+                        )
+                    }
+
                     it()
                 }
             } ?: Row(verticalAlignment = Alignment.CenterVertically) {
@@ -423,8 +454,21 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .basicMarquee(iterations = Int.MAX_VALUE)
+                            .weight(1f)
+                    )
+                if (playlistindicator) {
+                    IconButton(
+                        icon = R.drawable.checkmark,
+                        color = if (songPlaylist > 0) Color.White else Color.Transparent,
+                        enabled = true,
+                        onClick = {},
+                        modifier = Modifier
+                            .size(18.dp)
+                            .conditional(songPlaylist > 0) {background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)}
+                            .conditional(songPlaylist > 0) { padding(all = 3.dp) }
                     )
                 }
+            }
 
 
             Row(verticalAlignment = Alignment.CenterVertically) {

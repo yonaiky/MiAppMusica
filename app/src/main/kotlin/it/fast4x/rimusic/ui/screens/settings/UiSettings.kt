@@ -156,6 +156,7 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
+import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
@@ -311,6 +312,7 @@ fun  UiSettings() {
     var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+    var playlistindicator by rememberPreference(playlistindicatorKey, false)
 
 
     Column(
@@ -686,6 +688,15 @@ fun  UiSettings() {
                         MaxSongs.`2000` -> MaxSongs.`2000`.name
                         MaxSongs.`3000` -> MaxSongs.`3000`.name
                     }
+                }
+            )
+        if (filter.isNullOrBlank() || stringResource(R.string.playlistindicator).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.playlistindicator),
+                text = stringResource(R.string.playlistindicatorinfo),
+                isChecked = playlistindicator,
+                onCheckedChange = {
+                    playlistindicator = it
                 }
             )
 
