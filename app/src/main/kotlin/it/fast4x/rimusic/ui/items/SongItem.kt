@@ -412,16 +412,16 @@ fun SongItem(
                             .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
-                    if (playlistindicator) {
+                    if (playlistindicator && (songPlaylist > 0)) {
                         IconButton(
                             icon = R.drawable.checkmark,
-                            color = if (songPlaylist > 0) Color.White else Color.Transparent,
+                            color = Color.White,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
                                 .size(18.dp)
-                                .conditional(songPlaylist > 0) {background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)}
-                                .conditional(songPlaylist > 0) { padding(all = 3.dp) }
+                                .background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)
+                                .padding(all = 3.dp)
                         )
                     }
 
@@ -456,16 +456,16 @@ fun SongItem(
                             .basicMarquee(iterations = Int.MAX_VALUE)
                             .weight(1f)
                     )
-                if (playlistindicator) {
+                if (playlistindicator && (songPlaylist > 0)) {
                     IconButton(
                         icon = R.drawable.checkmark,
-                        color = if (songPlaylist > 0) Color.White else Color.Transparent,
+                        color = Color.White,
                         enabled = true,
                         onClick = {},
                         modifier = Modifier
                             .size(18.dp)
-                            .conditional(songPlaylist > 0) {background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)}
-                            .conditional(songPlaylist > 0) { padding(all = 3.dp) }
+                            .background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)
+                            .padding(all = 3.dp)
                     )
                 }
             }
