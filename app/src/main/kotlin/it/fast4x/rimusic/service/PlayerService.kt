@@ -515,16 +515,17 @@ class PlayerService : InvincibleService(),
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
             .setAudioAttributes(
                 AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .setUsage(C.USAGE_MEDIA)
                     .build(),
                 true
             )
-            .setWakeMode(C.WAKE_MODE_LOCAL)
+            //.setWakeMode(C.WAKE_MODE_LOCAL)
+            .setWakeMode(C.WAKE_MODE_NETWORK)
             .setHandleAudioBecomingNoisy(true)
             .setSeekForwardIncrementMs(5000)
             .setSeekBackIncrementMs(5000)
-            .setUsePlatformDiagnostics(false)
+            //.setUsePlatformDiagnostics(false)
             .build()
 
         player.repeatMode = when {
@@ -1625,7 +1626,7 @@ class PlayerService : InvincibleService(),
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
             .setAudioProcessorChain(
                 DefaultAudioProcessorChain(
-                    arrayOf(),
+                    emptyArray(),
                     SilenceSkippingAudioProcessor(
                         2_000_000,
                         20_000,
