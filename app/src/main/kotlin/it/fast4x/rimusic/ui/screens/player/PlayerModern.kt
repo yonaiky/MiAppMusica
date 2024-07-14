@@ -209,6 +209,7 @@ import java.math.RoundingMode
 import kotlin.math.absoluteValue
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
@@ -241,6 +242,7 @@ import it.fast4x.rimusic.utils.hideprevnextKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
+import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
@@ -1134,6 +1136,16 @@ fun PlayerModern(
         }
     }
 
+    var songPlaylist by remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(Unit, mediaItem.mediaId) {
+        withContext(Dispatchers.IO) {
+            songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
+        }
+    }
+    var playlistindicator by rememberPreference(playlistindicatorKey, false)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -1467,7 +1479,7 @@ fun PlayerModern(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = colorPalette.accent,
+                                color = if (songPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1485,6 +1497,8 @@ fun PlayerModern(
                                 modifier = Modifier
                                     //.padding(horizontal = 4.dp)
                                     .size(24.dp)
+                                    .conditional(songPlaylist > 0 && playlistindicator) {background(colorPalette.accent,CircleShape)}
+                                    .conditional(songPlaylist > 0 && playlistindicator) {padding(all = 5.dp)}
                             )
 
 
