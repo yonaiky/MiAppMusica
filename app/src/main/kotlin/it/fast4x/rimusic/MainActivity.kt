@@ -398,8 +398,9 @@ class MainActivity :
             if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
                     LocalePreferenceItem(
-                        Locale.getDefault().toLanguageTag(),
-                        Locale.getDefault().country
+                        hl = Locale.getDefault().toLanguageTag(),
+                        //Locale.getDefault().country
+                        gl = ""
                     )
         }
 
