@@ -75,7 +75,7 @@ class BitmapProvider(
                     .data(uri.thumbnail(bitmapSize))
                     .allowHardware(false)
                     .diskCacheKey(uri.thumbnail(bitmapSize).toString())
-                    .memoryCacheKey(uri.thumbnail(bitmapSize).toString())
+                    //.memoryCacheKey(uri.thumbnail(bitmapSize).toString())
                     .listener(
                         onError = { _, result ->
                             Timber.e("Failed to load bitmap ${result.throwable.stackTraceToString()}")
