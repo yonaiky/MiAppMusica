@@ -171,9 +171,10 @@ fun Podcast(
 
     }
 
-    /*
+
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
+    /*
     //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
     if (!filter.isNullOrBlank())
         playlistPage?.songsPage?.items =
@@ -200,19 +201,6 @@ fun Podcast(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
-/*
-    var showAddPlaylistSelectDialog by remember {
-        mutableStateOf(false)
-    }
-
-    val playlistPreviews by remember {
-        Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
-    }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
-
-    var showPlaylistSelectDialog by remember {
-        mutableStateOf(false)
-    }
- */
 
     var totalPlayTimes = 0L
     podcastPage?.listEpisode?.forEach {
@@ -716,16 +704,30 @@ fun Podcast(
                     }
                 }
 
-                itemsIndexed(items = podcastPage?.listEpisode ?: emptyList()) { index, song ->
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                    val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                itemsIndexed(
+                    items = podcastPage?.listEpisode?.filter {item ->
+                        if (!filter.isNullOrBlank()) {
+                            item.asMediaItem.mediaMetadata.title?.contains(
+                                filterCharSequence,
+                                true
+                            ) ?: false
+                                    || item.asMediaItem.mediaMetadata.artist?.contains(
+                                filterCharSequence,
+                                true
+                            ) ?: false
+                        } else true
+                    } ?: emptyList())
+                { index, song ->
+
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
                         onSwipeToRight = {
                             binder?.player?.addNext(song.asMediaItem)
                         }
                     ) {
+                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                        val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
                         SongItem(
                             song = song.asMediaItem,
                             isDownloaded = isDownloaded,

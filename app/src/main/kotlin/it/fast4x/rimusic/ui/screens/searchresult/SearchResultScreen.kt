@@ -138,7 +138,7 @@ fun SearchResultScreen(
                     Item(3, stringResource(R.string.videos), R.drawable.video)
                     Item(4, stringResource(R.string.playlists), R.drawable.playlist)
                     Item(5, stringResource(R.string.featured), R.drawable.featured_playlist)
-                    Item(6, "Podcasts", R.drawable.featured_playlist)
+                    Item(6, stringResource(R.string.podcasts), R.drawable.podcast)
                 }
             ) { tabIndex ->
                 saveableStateHolder.SaveableStateProvider(tabIndex) {

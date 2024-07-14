@@ -657,4 +657,6 @@ CC-BY-SA 3.0</string>
     <string name="past_year">Past year</string>
     <string name="all_time">All time</string>
     <string name="header_view_top_of">View top %s of …</string>
+    <string name="podcast_episodes">Episodes</string>
+    <string name="podcasts">Podcasts</string>
 </resources>

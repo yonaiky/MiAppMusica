@@ -59,7 +59,7 @@ fun PodcastScreen(
                     navController.navigate(NavRoutes.home.name)
                 },
                 tabColumnContent = { Item ->
-                    Item(0, "Episodes", R.drawable.play)
+                    Item(0, stringResource(R.string.podcast_episodes), R.drawable.podcast)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

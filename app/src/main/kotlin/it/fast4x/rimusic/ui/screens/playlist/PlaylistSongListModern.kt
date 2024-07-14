@@ -744,15 +744,16 @@ fun PlaylistSongListModern(
                 }
 
                 itemsIndexed(items = playlistPage?.songsPage?.items ?: emptyList()) { index, song ->
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                    val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
                         onSwipeToRight = {
                             binder?.player?.addNext(song.asMediaItem)
                         }
                     ) {
+                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                        val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
                         SongItem(
                             song = song,
                             isDownloaded = isDownloaded,
