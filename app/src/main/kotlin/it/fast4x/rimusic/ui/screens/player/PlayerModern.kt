@@ -2206,11 +2206,8 @@ fun PlayerModern(
                     modifier = Modifier
                         .height(10.dp)
                 )
-                /*Row(
 
-                ){
-                    Text()
-                }*/
+
 
                 controlsContent(
                     modifier = Modifier
