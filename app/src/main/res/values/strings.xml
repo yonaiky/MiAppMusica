@@ -652,4 +652,5 @@
     <string name="tapqueue">Tap to open Queue</string>
     <string name="playlistindicator">Playlist Indicator</string>
     <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="deleted">Deleted</string>
 </resources>
