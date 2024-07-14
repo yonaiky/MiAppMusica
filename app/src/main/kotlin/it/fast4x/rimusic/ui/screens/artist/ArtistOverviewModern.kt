@@ -58,9 +58,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.NavigationEndpoint
-import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.requests.artistPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
