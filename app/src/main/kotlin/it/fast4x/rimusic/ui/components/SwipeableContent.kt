@@ -11,6 +11,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.ViewConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -46,6 +49,7 @@ fun SwipeableContent(
     val (colorPalette) = LocalAppearance.current
     val hapticFeedback = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState(
+        positionalThreshold = { distance: Float -> distance * 0.25f },
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.StartToEnd) {onSwipeToRight();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
             else if (value == SwipeToDismissBoxValue.EndToStart) {onSwipeToLeft();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
@@ -55,40 +59,52 @@ fun SwipeableContent(
     )
     val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
 
-    SwipeToDismissBox(
-        gesturesEnabled = isSwipeToActionEnabled,
-        modifier = Modifier,
+    val current = LocalViewConfiguration.current
+    CompositionLocalProvider(LocalViewConfiguration provides object : ViewConfiguration by current{
+        override val touchSlop: Float
+            get() = current.touchSlop * 5f
+    }) {
+        SwipeToDismissBox(
+            gesturesEnabled = isSwipeToActionEnabled,
+            modifier = Modifier,
             //.padding(horizontal = 16.dp)
             //.clip(RoundedCornerShape(12.dp)),
-        state = dismissState,
-        backgroundContent = {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    //.background(colorPalette.background1)
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
-                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
-                    SwipeToDismissBoxValue.Settled -> Arrangement.Center
-                },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val icon = when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(swipeToRightIcon)
-                    SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(swipeToLeftIcon)
-                    SwipeToDismissBoxValue.Settled -> null
+            state = dismissState,
+            backgroundContent = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        //.background(colorPalette.background1)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                        SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                        SwipeToDismissBoxValue.Settled -> Arrangement.Center
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val icon = when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(
+                            swipeToRightIcon
+                        )
+
+                        SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(
+                            swipeToLeftIcon
+                        )
+
+                        SwipeToDismissBoxValue.Settled -> null
+                    }
+                    if (icon != null)
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = colorPalette.accent,
+                        )
                 }
-                if (icon != null)
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = colorPalette.accent,
-                    )
             }
+        ) {
+            content()
         }
-    ) {
-        content()
     }
 }
 
