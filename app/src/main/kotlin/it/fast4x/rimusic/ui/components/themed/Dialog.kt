@@ -1319,7 +1319,7 @@ fun PlaybackParamsDialog(
                 },
                 valueRange = 1f..60f,
                 gap = 1,
-                showIndicator = true,
+                //showIndicator = true,
                 thumb = { thumbValue ->
                     CustomSliderDefaults.Thumb(
                         thumbValue = "%.0f".format(playbackDuration),
@@ -1397,7 +1397,7 @@ fun PlaybackParamsDialog(
                     },
                     valueRange = 0.1f..5f,
                     gap = 1,
-                    showIndicator = true,
+                    //showIndicator = true,
                     thumb = { thumbValue ->
                         CustomSliderDefaults.Thumb(
                             thumbValue = "%.1fx".format(playbackSpeed),
@@ -1475,7 +1475,7 @@ fun PlaybackParamsDialog(
                     },
                     valueRange = 0.1f..5f,
                     gap = 1,
-                    showIndicator = true,
+                    //showIndicator = true,
                     thumb = { thumbValue ->
                         CustomSliderDefaults.Thumb(
                             thumbValue = "%.1fx".format(playbackPitch),
@@ -1551,7 +1551,7 @@ fun PlaybackParamsDialog(
                     },
                     valueRange = 0.0f..1.0f,
                     gap = 1,
-                    showIndicator = true,
+                    //showIndicator = true,
                     thumb = { thumbValue ->
                         CustomSliderDefaults.Thumb(
                             thumbValue = "%.1f".format(playbackVolume),
@@ -1627,7 +1627,7 @@ fun PlaybackParamsDialog(
                     },
                     valueRange = 0.0f..1.0f,
                     gap = 1,
-                    showIndicator = true,
+                    //showIndicator = true,
                     thumb = { thumbValue ->
                         CustomSliderDefaults.Thumb(
                             thumbValue = "%.1f".format(playbackDeviceVolume),
