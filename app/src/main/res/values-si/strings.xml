@@ -122,7 +122,7 @@ CC-BY-SA 3.0</string>
     <string name="synchronized_lyrics">සමමුහුර්ත කරන ලද ලිරික්ස්</string>
     <string name="provided_by">ලබාදෙන ලද්දේ</string>
     <string name="delete_playback_events">ධාවන අවස්ථා %1$s විනාශ කරන්න</string>
-    <string name="existing_data_will_be_overwritten">Existing data will be overwritten.\n%1$s will automatically close itself after restoring the database.</string>
+    <string name="existing_data_will_be_overwritten">දැනට ඇති දත්ත ඉවත් වේ. කාර්යය අවසන් වූ පසු \n%1$s ස්වයංක්‍රීයව වැසෙයි.</string>
     <string name="folder_cache">ෆෝල්ඩර කෑෂ්</string>
     <string name="cache_reset_by_clicking_button">අවදනයයි!! පහත බටනය එබීමෙන් කෑශ් ෆෝල්ඩරය ඇති ස්ථානය වෙනස් වේ</string>
     <string name="cache_location_folder">ෆෝල්ඩර ස්ථානය</string>
@@ -133,9 +133,9 @@ CC-BY-SA 3.0</string>
     <string name="when_app_swipe_out_from_task_manager">ක්‍රියා මැනේජරයෙන් ඉවත් කළ විට</string>
     <string name="opening_url">ලෝඩ් වෙමින් පවතී...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">ලීරික්ස් ලබාගැනීමේදී ගැටලුවක් ඇතිවිය</string>
-    <string name="are_not_available_for_this_song">are not available for this song</string>
-    <string name="error_a_network_error_has_occurred">A network error has occurred</string>
-    <string name="error_couldn_t_find_a_playable_audio_format">Couldn\'t find a playable audio format</string>
+    <string name="are_not_available_for_this_song">මෙම සිංදුවට නැත</string>
+    <string name="error_a_network_error_has_occurred">ජාලාවේ දෝෂයක් සිදුවී ඇත</string>
+    <string name="error_couldn_t_find_a_playable_audio_format">වාදනය කළහැකි ෆෝමැට් එකක් සොයාගැනීමට නොහැකිය</string>
     <string name="error_the_original_video_source_of_this_song_has_been_deleted">The original video source of this song has been deleted</string>
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">This song cannot be played due to server restrictions</string>
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">The returned video id doesn\'t match the requested one</string>
@@ -645,7 +645,7 @@ CC-BY-SA 3.0</string>
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
-    <string name="hideprevnext">Queue Songs in Player</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
