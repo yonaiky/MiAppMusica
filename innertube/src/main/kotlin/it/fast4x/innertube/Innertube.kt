@@ -109,6 +109,7 @@ object Innertube {
             val Artist = SearchFilter("EgWKAQIgAWoKEAkQChAFEAMQBA%3D%3D")
             val CommunityPlaylist = SearchFilter("EgeKAQQoAEABagoQAxAEEAoQCRAF")
             val FeaturedPlaylist = SearchFilter("EgeKAQQoADgBagwQDhAKEAMQBRAJEAQ%3D")
+            val Podcast = SearchFilter("EgWKAQJQAWoIEBAQERADEBU%3D")
         }
     }
 
@@ -261,6 +262,27 @@ object Innertube {
     data class ChartsPage(
         val playlists: List<PlaylistItem>? = null
     )
+
+    data class Podcast(
+        val title: String,
+        //val author: ArtistItem,
+        val author: String?,
+        val authorThumbnail: String?,
+        val thumbnail: List<Thumbnail>,
+        val description: String?,
+        val listEpisode: List<EpisodeItem>
+    ) {
+        data class EpisodeItem(
+            val title: String,
+            //val author: ArtistItem,
+            val author: String?,
+            val description: String?,
+            val thumbnail: List<Thumbnail>,
+            val createdDay: String?,
+            val durationString: String?,
+            val videoId: String
+        )
+    }
 
     fun MusicNavigationButtonRenderer.toMood(): Mood.Item? {
         return Mood.Item(

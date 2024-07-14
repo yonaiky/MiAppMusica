@@ -78,6 +78,7 @@ import it.fast4x.rimusic.ui.screens.player.PlayerModern
 import it.fast4x.rimusic.ui.screens.player.QueueModern
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
+import it.fast4x.rimusic.ui.screens.podcast.PodcastScreen
 import it.fast4x.rimusic.ui.screens.search.SearchScreen
 import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
 import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
@@ -286,6 +287,24 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
             PlaylistScreen(
+                navController = navController,
+                browseId = id,
+                params = null,
+                playerEssential = playerEssential,
+            )
+        }
+
+        composable(
+            route = "${NavRoutes.podcast.name}/{id}",
+            arguments = listOf(
+                navArgument(
+                    name = "id",
+                    builder = { type = NavType.StringType }
+                )
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id") ?: ""
+            PodcastScreen(
                 navController = navController,
                 browseId = id,
                 params = null,

@@ -20,5 +20,6 @@ enum class NavRoutes {
     settings,
     statistics,
     newAlbums,
-    moodsPage
+    moodsPage,
+    podcast
 }

@@ -1678,8 +1678,11 @@ class PlayerService : InvincibleService(),
                     )
             ) { !it.isLocal }
         ) { dataSpec ->
+            Log.d("mediaItem","dataSpec " + dataSpec.toString())
             val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
                 ?: error("A key must be set")
+
+            Log.d("mediaItem","dataSpec isLocal ${dataSpec.isLocal} key ${videoId} all ${dataSpec.toString()}")
 
             when {
                 dataSpec.isLocal ||
@@ -1693,11 +1696,14 @@ class PlayerService : InvincibleService(),
                     dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
 
                 else -> {
+                    Log.d("mediaItem","createDataSourceResolverFactory videoId $videoId")
                     val body = runBlocking(Dispatchers.IO) {
                         Innertube.player(PlayerBody(videoId = videoId))
                     }?.getOrThrow()
 
                     if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
+
+                    Log.d("mediaItem","bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat

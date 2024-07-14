@@ -32,6 +32,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
         } != null) "e:" else ""
 
+    /*
     println("mediaItem badges ${
         renderer
             .badges
@@ -39,6 +40,8 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
                 it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
             } != null
     }")
+
+     */
 
     return Innertube.SongItem(
         info = renderer

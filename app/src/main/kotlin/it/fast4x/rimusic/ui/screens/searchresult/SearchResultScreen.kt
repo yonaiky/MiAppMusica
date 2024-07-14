@@ -138,6 +138,7 @@ fun SearchResultScreen(
                     Item(3, stringResource(R.string.videos), R.drawable.video)
                     Item(4, stringResource(R.string.playlists), R.drawable.playlist)
                     Item(5, stringResource(R.string.featured), R.drawable.featured_playlist)
+                    Item(6, "Podcasts", R.drawable.featured_playlist)
                 }
             ) { tabIndex ->
                 saveableStateHolder.SaveableStateProvider(tabIndex) {
@@ -382,13 +383,17 @@ fun SearchResultScreen(
                             //val thumbnailSizePx = thumbnailSizeDp.px
 
                             ItemsPage(
-                                tag = "searchResults/$query/${if (tabIndex == 4) "playlists" else "featured"}",
+                                tag = "searchResults/$query/${
+                                    when (tabIndex) {
+                                        4 -> "playlists"
+                                        else -> "featured"
+                                    }
+                                }",
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
-                                        val filter = if (tabIndex == 4) {
-                                            Innertube.SearchFilter.CommunityPlaylist
-                                        } else {
-                                            Innertube.SearchFilter.FeaturedPlaylist
+                                        val filter = when (tabIndex) {
+                                            4 -> Innertube.SearchFilter.CommunityPlaylist
+                                            else -> Innertube.SearchFilter.FeaturedPlaylist
                                         }
 
                                         Innertube.searchPage(
@@ -414,6 +419,50 @@ fun SearchResultScreen(
                                             .clickable(onClick = {
                                                 //playlistRoute(playlist.key)
                                                 navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                            })
+                                    )
+                                },
+                                itemPlaceholderContent = {
+                                    PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
+                                }
+                            )
+                        }
+                        6 -> {
+                            val thumbnailSizeDp = Dimensions.thumbnails.playlist
+                            val thumbnailSizePx = thumbnailSizeDp.px
+                            //val thumbnailSizeDp = 108.dp
+                            //val thumbnailSizePx = thumbnailSizeDp.px
+
+                            ItemsPage(
+                                tag = "searchResults/$query/podcasts",
+                                itemsPageProvider = { continuation ->
+                                    if (continuation == null) {
+                                        val filter = Innertube.SearchFilter.Podcast
+
+                                        Innertube.searchPage(
+                                            body = SearchBody(query = query, params = filter.value),
+                                            fromMusicShelfRendererContent = Innertube.PlaylistItem::from
+                                        )
+                                    } else {
+                                        Innertube.searchPage(
+                                            body = ContinuationBody(continuation = continuation),
+                                            fromMusicShelfRendererContent = Innertube.PlaylistItem::from
+                                        )
+                                    }
+                                },
+                                emptyItemsText = emptyItemsText,
+                                headerContent = headerContent,
+                                itemContent = { playlist ->
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        thumbnailSizePx = thumbnailSizePx,
+                                        thumbnailSizeDp = thumbnailSizeDp,
+                                        showSongsCount = false,
+                                        modifier = Modifier
+                                            .clickable(onClick = {
+                                                //playlistRoute(playlist.key)
+                                                println("mediaItem searchResultScreen playlist key ${playlist.key}")
+                                                navController.navigate("${NavRoutes.podcast.name}/${playlist.key}")
                                             })
                                     )
                                 },

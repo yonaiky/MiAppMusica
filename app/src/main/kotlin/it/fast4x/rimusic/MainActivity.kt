@@ -397,7 +397,10 @@ class MainActivity :
             }
             if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
-                    LocalePreferenceItem(Locale.getDefault().toLanguageTag(), "")
+                    LocalePreferenceItem(
+                        Locale.getDefault().toLanguageTag(),
+                        Locale.getDefault().country
+                    )
         }
 
         with(encryptedPreferences) {

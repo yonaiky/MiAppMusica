@@ -1,4 +1,4 @@
-package it.fast4x.rimusic.ui.screens.playlist
+package it.fast4x.rimusic.ui.screens.podcast
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -16,14 +16,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -55,7 +53,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
@@ -67,7 +64,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -75,7 +71,6 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.podcastPage
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
@@ -96,9 +91,6 @@ import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
-import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
@@ -129,14 +121,12 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -151,7 +141,7 @@ import timber.log.Timber
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun PlaylistSongListModern(
+fun Podcast(
     navController: NavController,
     browseId: String,
     params: String?,
@@ -163,43 +153,26 @@ fun PlaylistSongListModern(
     val menuState = LocalMenuState.current
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
-    var playlistPage by persist<Innertube.PlaylistOrAlbumPage?>("playlist/$browseId/playlistPage")
+    var podcastPage by persist<Innertube.Podcast?>("podcast/$browseId/listEpisodes")
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
     val hapticFeedback = LocalHapticFeedback.current
 
     LaunchedEffect(Unit, filter) {
-        if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
+        if (podcastPage != null) return@LaunchedEffect
 
-        playlistPage = withContext(Dispatchers.IO) {
-            Innertube.playlistPage(BrowseBody(browseId = browseId)).completed()?.getOrNull()
+        podcastPage = withContext(Dispatchers.IO) {
+            Innertube.podcastPage(BrowseBody(browseId = browseId)).getOrNull()
         }
 
-        /*
-        playlistPage = withContext(Dispatchers.IO) {
-            Innertube
-                .playlistPage(BrowseBody(browseId = browseId, params = params))
-                ?.completed()
-                ?.getOrNull()
-        }
-         */
-        //Log.d("mediaPlaylist", "${playlistPage?.title} songs ${playlistPage?.songsPage?.items?.size} continuation ${playlistPage?.songsPage?.continuation}")
-
-/*
-                playlistPage = withContext(Dispatchers.IO) {
-                    Innertube.playlistPage(BrowseBody(browseId = browseId, params = params))
-                        ?.completed(maxDepth = maxDepth ?: Int.MAX_VALUE)?.getOrNull()
-                }
- */
+        println("mediaItem playlists podcasts call " + withContext(Dispatchers.IO) {
+            Innertube.podcastPage(BrowseBody(browseId = browseId)).getOrNull()
+        })
 
 
-/*
-        playlistPage = withContext(Dispatchers.IO) {
-            Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
-        }
-*/
     }
 
+    /*
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
     //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
@@ -209,6 +182,7 @@ fun PlaylistSongListModern(
                 songItem.asMediaItem.mediaMetadata.title?.contains(filterCharSequence,true) ?: false
                         || songItem.asMediaItem.mediaMetadata.artist?.contains(filterCharSequence,true) ?: false
             }
+    */
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
@@ -242,8 +216,8 @@ fun PlaylistSongListModern(
  */
 
     var totalPlayTimes = 0L
-    playlistPage?.songsPage?.items?.forEach {
-        totalPlayTimes += it.durationText?.let { it1 ->
+    podcastPage?.listEpisode?.forEach {
+        totalPlayTimes += it.durationString?.let { it1 ->
             durationTextToMillis(it1) }?.toLong() ?: 0
     }
 
@@ -251,15 +225,15 @@ fun PlaylistSongListModern(
         InputTextDialog(
             onDismiss = { isImportingPlaylist = false },
             title = stringResource(R.string.enter_the_playlist_name),
-            value = playlistPage?.title ?: "",
+            value = podcastPage?.title ?: "",
             placeholder = "https://........",
             setValue = { text ->
                 query {
                     transaction {
                         val playlistId = Database.insert(Playlist(name = text, browseId = browseId))
 
-                        playlistPage?.songsPage?.items
-                            ?.map(Innertube.SongItem::asMediaItem)
+                        podcastPage?.listEpisode
+                            ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
                             ?.onEach(Database::insert)
                             ?.mapIndexed { index, mediaItem ->
                                 SongPlaylistMap(
@@ -279,7 +253,7 @@ fun PlaylistSongListModern(
         mutableIntStateOf(0)
     }
 
-    val thumbnailContent = adaptiveThumbnailContent(playlistPage == null, playlistPage?.thumbnail?.url)
+    val thumbnailContent = adaptiveThumbnailContent(podcastPage == null, podcastPage?.thumbnail?.firstOrNull()?.url)
 
     val lazyListState = rememberLazyListState()
 
@@ -317,10 +291,10 @@ fun PlaylistSongListModern(
                     Box(
                         modifier = modifierArt
                     ) {
-                        if (playlistPage != null) {
+                        if (podcastPage != null) {
                             if(!isLandscape)
                                 AsyncImage(
-                                    model = playlistPage!!.thumbnail?.url?.resize(1200, 900),
+                                    model = podcastPage!!.thumbnail.firstOrNull()?.url?.resize(1200, 900),
                                     contentDescription = "loading...",
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -334,7 +308,7 @@ fun PlaylistSongListModern(
                                 )
 
                             AutoResizeText(
-                                text = playlistPage?.title ?: "",
+                                text = podcastPage?.title ?: "",
                                 style = typography.l.semiBold,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
                                 fontWeight = typography.l.semiBold.fontWeight,
@@ -350,7 +324,7 @@ fun PlaylistSongListModern(
                             )
 
                             BasicText(
-                                text = playlistPage!!.songsPage?.items?.size.toString() + " "
+                                text = podcastPage!!.listEpisode.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
                                 style = typography.xs.medium,
@@ -369,7 +343,7 @@ fun PlaylistSongListModern(
                                     .align(Alignment.TopEnd)
                                     .padding(top = 5.dp, end= 5.dp),
                                 onClick = {
-                                    (playlistPage?.url ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
+                                    ("https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
                                             type = "text/plain"
@@ -423,7 +397,7 @@ fun PlaylistSongListModern(
 
                         //if (!isLandscape) thumbnailContent()
 
-                        if (playlistPage != null) {
+                        if (podcastPage != null) {
 
                             //actionsContent()
 
@@ -445,8 +419,8 @@ fun PlaylistSongListModern(
                                     .combinedClickable(
                                         onClick = {
                                             downloadState = Download.STATE_DOWNLOADING
-                                            if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
-                                                playlistPage?.songsPage?.items?.forEach {
+                                            if (podcastPage?.listEpisode?.isNotEmpty() == true)
+                                                podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     query {
                                                         Database.insert(
@@ -454,7 +428,7 @@ fun PlaylistSongListModern(
                                                                 id = it.asMediaItem.mediaId,
                                                                 title = it.asMediaItem.mediaMetadata.title.toString(),
                                                                 artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                                                thumbnailUrl = it.thumbnail?.url,
+                                                                thumbnailUrl = it.thumbnail?.firstOrNull()?.url,
                                                                 durationText = null
                                                             )
                                                         )
@@ -482,8 +456,8 @@ fun PlaylistSongListModern(
                                     .combinedClickable(
                                         onClick = {
                                             downloadState = Download.STATE_DOWNLOADING
-                                            if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
-                                                playlistPage?.songsPage?.items?.forEach {
+                                            if (podcastPage?.listEpisode?.isNotEmpty() == true)
+                                                podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     manageDownload(
                                                         context = context,
@@ -503,14 +477,14 @@ fun PlaylistSongListModern(
 
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                                color =  if (playlistPage?.songsPage?.items?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
+                                color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
-                                            playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)?.let { mediaItems ->
+                                            podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)?.let { mediaItems ->
                                                 binder?.player?.enqueue(mediaItems, context)
                                             }
                                         },
@@ -522,16 +496,16 @@ fun PlaylistSongListModern(
 
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                                color = if (playlistPage?.songsPage?.items?.isNotEmpty() ==true) colorPalette.text else colorPalette.textDisabled,
+                                enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
+                                color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) colorPalette.text else colorPalette.textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
-                                            if (playlistPage?.songsPage?.items?.isNotEmpty() == true) {
+                                            if (podcastPage?.listEpisode?.isNotEmpty() == true) {
                                                 binder?.stopRadio()
-                                                playlistPage?.songsPage?.items?.shuffled()?.map(Innertube.SongItem::asMediaItem)
+                                                podcastPage?.listEpisode?.shuffled()?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
                                                     ?.let {
                                                         binder?.player?.forcePlayFromBeginning(
                                                             it
@@ -547,7 +521,7 @@ fun PlaylistSongListModern(
 
                             HeaderIconButton(
                                 icon = R.drawable.radio,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
+                                enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
                                 color = colorPalette.text,
                                 onClick = {},
                                 modifier = Modifier
@@ -560,7 +534,7 @@ fun PlaylistSongListModern(
                                                     NavigationEndpoint.Endpoint.Watch( videoId =
                                                         if (binder.player.currentMediaItem?.mediaId != null)
                                                             binder.player.currentMediaItem?.mediaId
-                                                        else playlistPage?.songsPage?.items?.first()?.asMediaItem?.mediaId
+                                                        else podcastPage?.listEpisode?.first()?.asMediaItem?.mediaId
                                                     )
                                                 )
                                             }
@@ -596,7 +570,7 @@ fun PlaylistSongListModern(
                                                             playlistPreview.songCount.minus(1) ?: 0
                                                         if (position > 0) position++ else position = 0
 
-                                                        playlistPage!!.songsPage?.items?.forEachIndexed { index, song ->
+                                                        podcastPage?.listEpisode?.forEachIndexed { index, song ->
                                                             runCatching {
                                                                 Database.insert(song.asMediaItem)
                                                                 Database.insert(
@@ -743,7 +717,7 @@ fun PlaylistSongListModern(
                     }
                 }
 
-                itemsIndexed(items = playlistPage?.songsPage?.items ?: emptyList()) { index, song ->
+                itemsIndexed(items = podcastPage?.listEpisode ?: emptyList()) { index, song ->
                     val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                     downloadState = getDownloadState(song.asMediaItem.mediaId)
                     val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
@@ -754,7 +728,7 @@ fun PlaylistSongListModern(
                         }
                     ) {
                         SongItem(
-                            song = song,
+                            song = song.asMediaItem,
                             isDownloaded = isDownloaded,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
@@ -764,7 +738,7 @@ fun PlaylistSongListModern(
                                             id = song.asMediaItem.mediaId,
                                             title = song.asMediaItem.mediaMetadata.title.toString(),
                                             artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = song.thumbnail?.url,
+                                            thumbnailUrl = song.thumbnail.firstOrNull()?.url,
                                             durationText = null
                                         )
                                     )
@@ -796,7 +770,7 @@ fun PlaylistSongListModern(
                                     onClick = {
                                         searching = false
                                         filter = null
-                                        playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)
+                                        podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
                                             ?.let { mediaItems ->
                                                 binder?.stopRadio()
                                                 binder?.player?.forcePlayAtIndex(mediaItems, index)
@@ -814,7 +788,7 @@ fun PlaylistSongListModern(
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                 }
 
-                if (playlistPage == null) {
+                if (podcastPage == null) {
                     item(key = "loading") {
                         ShimmerHost(
                             modifier = Modifier
@@ -834,11 +808,11 @@ fun PlaylistSongListModern(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
                 onClick = {
-                    playlistPage?.songsPage?.items?.let { songs ->
+                    podcastPage?.listEpisode?.let { songs ->
                         if (songs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Innertube.SongItem::asMediaItem)
+                                songs.shuffled().map(Innertube.Podcast.EpisodeItem::asMediaItem)
                             )
                         }
                     }

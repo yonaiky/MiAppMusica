@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
+import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.BrowseResult
 import it.fast4x.innertube.requests.browse
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -78,7 +78,7 @@ fun MoodList(
     var moodPage by persist<Result<BrowseResult>>("playlist/$browseId${mood.params?.let { "/$it" } ?: ""}")
 
     LaunchedEffect(Unit) {
-        moodPage = Innertube.browse(BrowseBodyWithLocale(browseId = browseId, params = mood.params))
+        moodPage = Innertube.browse(BrowseBody(browseId = browseId, params = mood.params))
     }
 
     val thumbnailSizeDp = Dimensions.thumbnails.album
