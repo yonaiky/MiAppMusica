@@ -171,6 +171,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -1479,6 +1480,12 @@ fun LocalPlaylistSongs(
                                 pipedSession = pipedSession.toApiSession(),
                                 id = UUID.fromString(playlistPreview?.playlist?.browseId),
                                 positionInPlaylist
+                            )
+                        };
+                        coroutineScope.launch {
+                            SmartToast(
+                                context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " \"",
+                                type = PopupType.Info
                             )
                         }
 

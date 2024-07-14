@@ -464,45 +464,46 @@ fun AppearanceSettings() {
                 isChecked = showthumbnail,
                 onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it; showvisthumbnail = it }
             )
-        if (showthumbnail){
-            if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.thumbnailpause),
-                    text = "",
-                    isChecked = thumbnailpause,
-                    onCheckedChange = { thumbnailpause = it }
-                )
-
-            if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.show_lyrics_thumbnail),
-                    text = "",
-                    isChecked = showlyricsthumbnail,
-                    onCheckedChange = { showlyricsthumbnail = it }
-                )
-            if (visualizerEnabled) {
-                if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
+        AnimatedVisibility(visible = showthumbnail){
+            Column {
+                if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
                         filterCharSequence,
                         true
                     )
                 )
                     SwitchSettingEntry(
-                        title = stringResource(R.string.showvisthumbnail),
+                        title = stringResource(R.string.thumbnailpause),
                         text = "",
-                        isChecked = showvisthumbnail,
-                        onCheckedChange = { showvisthumbnail = it }
+                        isChecked = thumbnailpause,
+                        onCheckedChange = { thumbnailpause = it }
                     )
-            }
 
-            if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.show_lyrics_thumbnail),
+                        text = "",
+                        isChecked = showlyricsthumbnail,
+                        onCheckedChange = { showlyricsthumbnail = it }
+                    )
+                if (visualizerEnabled) {
+                    if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
+                            filterCharSequence,
+                            true
+                        )
+                    )
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.showvisthumbnail),
+                            text = "",
+                            isChecked = showvisthumbnail,
+                            onCheckedChange = { showvisthumbnail = it }
+                        )
+                }
+
+                if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
                         filterCharSequence,
                         true
                     )
@@ -521,26 +522,26 @@ fun AppearanceSettings() {
                             }
                         }
                     )
-            if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
-                    filterCharSequence,
-                    true
+                if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
+                        filterCharSequence,
+                        true
+                    )
                 )
-            )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.thumbnailtype),
-                    selectedValue = thumbnailType,
-                    onValueSelected = {
-                        thumbnailType = it
-                    },
-                    valueText = {
-                        when (it) {
-                            ThumbnailType.Modern -> stringResource(R.string.pcontrols_modern)
-                            ThumbnailType.Essential -> stringResource(R.string.pcontrols_essential)
-                        }
-                    },
-                )
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.thumbnailtype),
+                        selectedValue = thumbnailType,
+                        onValueSelected = {
+                            thumbnailType = it
+                        },
+                        valueText = {
+                            when (it) {
+                                ThumbnailType.Modern -> stringResource(R.string.pcontrols_modern)
+                                ThumbnailType.Essential -> stringResource(R.string.pcontrols_essential)
+                            }
+                        },
+                    )
 
-            if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
+                if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
                         filterCharSequence,
                         true
                     )
@@ -573,6 +574,7 @@ fun AppearanceSettings() {
                             }
                         }
                     )
+            }
         }
         if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(

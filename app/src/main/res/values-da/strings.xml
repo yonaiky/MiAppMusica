@@ -644,7 +644,7 @@
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 anbefales kun til store skærme</string>
-    <string name="hideprevnext">Sæt Sange i Kø i Afspiller</string>
+    <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">Én Sang</string>
     <string name="twosongs">To Sange</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
@@ -658,4 +658,8 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">Playlist Indicator</string>
+    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="deleted">Deleted</string>
+    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
 </resources>

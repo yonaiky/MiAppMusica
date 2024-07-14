@@ -224,6 +224,7 @@ const val landscapeLayoutKey = "landscapeLayout"
 const val hideprevnextKey = "hideprevnext"
 const val prevNextSongsKey = "prevNextSongs"
 const val tapqueueKey = "tapqueue"
+const val playlistindicatorKey = "playlistindicator"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

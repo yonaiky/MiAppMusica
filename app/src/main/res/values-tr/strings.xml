@@ -647,8 +647,8 @@
     <string name="hideprevnext">Şarkıları Oynatıcıda Kuyruğa Al</string>
     <string name="onesong">Bir Şarkı</string>
     <string name="twosongs">İki Şarkı</string>
-    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
-    <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
+    <string name="info_debug_mode_enabled">Hata Ayıklama Modu Etkin</string>
+    <string name="info_debug_mode_is_enabled">Hata ayıklama modu etkinleştirildi, ayarlardan devre dışı bırakmayı unutmayın</string>
     <string name="tapqueue">Oynatma sırasını açmak için dokunun</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
@@ -658,4 +658,8 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">Playlist Indicator</string>
+    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="deleted">Deleted</string>
+    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
 </resources>

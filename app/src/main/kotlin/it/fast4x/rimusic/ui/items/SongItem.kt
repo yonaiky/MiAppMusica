@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.items
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +44,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.screens.player.conditional
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -47,9 +52,13 @@ import it.fast4x.rimusic.ui.styling.primaryButton
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 const val EXPLICIT_PREFIX = "e:"
 
@@ -277,6 +286,7 @@ fun SongItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @UnstableApi
 @Composable
 fun SongItem(
@@ -296,6 +306,17 @@ fun SongItem(
     mediaId: String
 ) {
     val (colorPalette, typography) = LocalAppearance.current
+    var songPlaylist by remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(Unit, mediaId) {
+        withContext(Dispatchers.IO) {
+            songPlaylist = Database.songUsedInPlaylists(mediaId)
+        }
+    }
+
+    var playlistindicator by rememberPreference(playlistindicatorKey,false)
+    val context = LocalContext.current
 
     ItemContainer(
         alternative = false,
@@ -394,6 +415,20 @@ fun SongItem(
                             .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
+                    if (playlistindicator && (songPlaylist > 0)) {
+                        IconButton(
+                            icon = R.drawable.add_in_playlist,
+                            color = colorPalette.text,
+                            enabled = true,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(18.dp)
+                                .background(colorPalette.accent, CircleShape)
+                                .padding(all = 3.dp)
+                                .combinedClickable(onClick = {}, onLongClick = {SmartToast(context.getString(R.string.playlistindicatorinfo2))})
+                        )
+                    }
+
                     it()
                 }
             } ?: Row(verticalAlignment = Alignment.CenterVertically) {
@@ -423,8 +458,22 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .basicMarquee(iterations = Int.MAX_VALUE)
+                            .weight(1f)
+                    )
+                if (playlistindicator && (songPlaylist > 0)) {
+                    IconButton(
+                        icon = R.drawable.add_in_playlist,
+                        color = colorPalette.text,
+                        enabled = true,
+                        onClick = {},
+                        modifier = Modifier
+                            .size(18.dp)
+                            .background(colorPalette.accent, CircleShape)
+                            .padding(all = 3.dp)
+                            .combinedClickable(onClick = {}, onLongClick = {SmartToast(context.getString(R.string.playlistindicatorinfo2))})
                     )
                 }
+            }
 
 
             Row(verticalAlignment = Alignment.CenterVertically) {
