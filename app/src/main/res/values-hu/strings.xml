@@ -650,4 +650,10 @@
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
     <string name="tapqueue">Tap to open Queue</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="all_time">All time</string>
+    <string name="header_view_top_of">View top %s of …</string>
 </resources>

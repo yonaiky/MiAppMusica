@@ -650,4 +650,10 @@
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
     <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
     <string name="tapqueue">Tryk for at åbne Kø</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="all_time">All time</string>
+    <string name="header_view_top_of">View top %s of …</string>
 </resources>
