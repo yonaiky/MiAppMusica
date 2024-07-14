@@ -23,7 +23,7 @@ data class Context(
         val clientVersion: String,
         //val platform: String,
         val hl: String? = "en",
-        val gl: String? = "US",
+        //val gl: String? = "US",
         //val hl: String = Locale.getDefault().toLanguageTag(), //"en",
         //val hl: String = Innertube.localeHl,
         val visitorData: String = "CgtEUlRINDFjdm1YayjX1pSaBg%3D%3D",
@@ -90,32 +90,37 @@ data class Context(
                 referer = REFERER_YOUTUBE_MUSIC,
                 //visitorData = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-                hl = LocalePreferences.preference?.hl,
+
+                //Locale is managed with DefaultWebWithLocale
+                //hl = LocalePreferences.preference?.hl,
                 //gl = LocalePreferences.preference?.gl
 
             )
         )
 
-        /*
+
         //val hl = if (LocalePreferences.preference?.useLocale == true) LocalePreferences.preference!!.hl else ""
         val hl = LocalePreferences.preference?.hl
-        val gl = LocalePreferences.preference?.gl
+        //val gl = LocalePreferences.preference?.gl
 
 
         val DefaultWebWithLocale = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20220606.03.00",
+                //clientVersion = "1.20220606.03.00",
+                clientVersion = "1.20230731.00.00",
                 //platform = "DESKTOP",
-                userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+                //userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+                userAgent = USER_AGENT_WEB,
+                referer = REFERER_YOUTUBE_MUSIC,
                 //visitorData = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
                 //hl = Locale.getDefault().toLanguageTag()
                 hl = hl,
-                gl = gl,
+                //gl = gl,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
-        */
+
 
         val DefaultAndroid = Context(
             client = Client(

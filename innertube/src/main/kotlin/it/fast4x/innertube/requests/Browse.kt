@@ -7,10 +7,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 
-suspend fun Innertube.browse(body: BrowseBody) = runCatchingNonCancellable {
+suspend fun Innertube.browse(body: BrowseBodyWithLocale) = runCatchingNonCancellable {
     val response = client.post(browse) {
         setBody(body)
     }.body<BrowseResponse>()

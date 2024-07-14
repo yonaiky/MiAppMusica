@@ -6,6 +6,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
@@ -13,7 +14,7 @@ import it.fast4x.innertube.models.v0624.charts.MusicResponsiveListItemRenderer
 
 suspend fun Innertube.chartsPage() = runCatching {
     val response = client.post(browse) {
-        setBody(BrowseBody(browseId = "FEmusic_charts"))
+        setBody(BrowseBodyWithLocale(browseId = "FEmusic_charts"))
     }.body<BrowseChartsResponse0624>()
 
     val musicDetailRenderer =
