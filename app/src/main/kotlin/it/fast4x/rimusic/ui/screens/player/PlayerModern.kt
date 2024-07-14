@@ -1478,8 +1478,8 @@ fun PlayerModern(
 
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
-                                icon = if (songPlaylist > 0 && playlistindicator) R.drawable.checkmark else R.drawable.add_in_playlist,
-                                color = if (songPlaylist > 0 && playlistindicator) Color.White else colorPalette.accent,
+                                icon = R.drawable.add_in_playlist,
+                                color = if (songPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1497,8 +1497,8 @@ fun PlayerModern(
                                 modifier = Modifier
                                     //.padding(horizontal = 4.dp)
                                     .size(24.dp)
-                                    .conditional(songPlaylist > 0 && playlistindicator) {background(Color.Black.copy(0.7f).compositeOver(Color.Green),CircleShape)}
-                                    .conditional(songPlaylist > 0 && playlistindicator) {padding(all = 3.dp)}
+                                    .conditional(songPlaylist > 0 && playlistindicator) {background(colorPalette.accent,CircleShape)}
+                                    .conditional(songPlaylist > 0 && playlistindicator) {padding(all = 5.dp)}
                             )
 
 
@@ -2206,8 +2206,11 @@ fun PlayerModern(
                     modifier = Modifier
                         .height(10.dp)
                 )
+                /*Row(
 
-
+                ){
+                    Text()
+                }*/
 
                 controlsContent(
                     modifier = Modifier

@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.items
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
@@ -285,6 +286,7 @@ fun SongItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @UnstableApi
 @Composable
 fun SongItem(
@@ -314,6 +316,7 @@ fun SongItem(
     }
 
     var playlistindicator by rememberPreference(playlistindicatorKey,false)
+    val context = LocalContext.current
 
     ItemContainer(
         alternative = false,
@@ -414,14 +417,15 @@ fun SongItem(
 
                     if (playlistindicator && (songPlaylist > 0)) {
                         IconButton(
-                            icon = R.drawable.checkmark,
-                            color = Color.White,
+                            icon = R.drawable.add_in_playlist,
+                            color = colorPalette.text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
                                 .size(18.dp)
-                                .background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)
+                                .background(colorPalette.accent, CircleShape)
                                 .padding(all = 3.dp)
+                                .combinedClickable(onClick = {}, onLongClick = {SmartToast(context.getString(R.string.playlistindicatorinfo2))})
                         )
                     }
 
@@ -458,14 +462,15 @@ fun SongItem(
                     )
                 if (playlistindicator && (songPlaylist > 0)) {
                     IconButton(
-                        icon = R.drawable.checkmark,
-                        color = Color.White,
+                        icon = R.drawable.add_in_playlist,
+                        color = colorPalette.text,
                         enabled = true,
                         onClick = {},
                         modifier = Modifier
                             .size(18.dp)
-                            .background(Color.Black.copy(0.7f).compositeOver(Color.Green), CircleShape)
+                            .background(colorPalette.accent, CircleShape)
                             .padding(all = 3.dp)
+                            .combinedClickable(onClick = {}, onLongClick = {SmartToast(context.getString(R.string.playlistindicatorinfo2))})
                     )
                 }
             }
