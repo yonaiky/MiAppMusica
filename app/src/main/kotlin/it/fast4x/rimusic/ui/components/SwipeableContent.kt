@@ -148,7 +148,7 @@ fun SwipeablePlaylistItem(
             mediaItemToggleLike(mediaItem)
             updateLike = false
             if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites))
-            else SmartToast(context.getString(R.string.removed_from_favorites))
+            else SmartToast("\"" + mediaItem.mediaMetadata.title?.toString() + "\" " + context.getString(R.string.removed_from_favorites))
         }
     }
 
