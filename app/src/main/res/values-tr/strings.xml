@@ -650,8 +650,8 @@
     <string name="info_debug_mode_enabled">Hata Ayıklama Modu Etkin</string>
     <string name="info_debug_mode_is_enabled">Hata ayıklama modu etkinleştirildi, ayarlardan devre dışı bırakmayı unutmayın</string>
     <string name="tapqueue">Oynatma sırasını açmak için dokunun</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
+    <string name="playlistindicator">Oynatma Listesi Göstergesi</string>
+    <string name="playlistindicatorinfo">Şarkının bir oynatma listesine eklenmiş olup olmadığını gösterir</string>
+    <string name="deleted">Silindi</string>
+    <string name="playlistindicatorinfo2">Şarkı oynatma listelerinden birinde mevcut</string>
 </resources>
