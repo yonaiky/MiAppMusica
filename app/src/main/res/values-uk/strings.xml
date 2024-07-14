@@ -647,8 +647,8 @@
     <string name="hideprevnext">Приховати Попередні та Наступні Пісні</string>
     <string name="onesong">Одна Пісня</string>
     <string name="twosongs">Дві Пісні</string>
-    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
-    <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
+    <string name="info_debug_mode_enabled">Режим Налагодження Увімкнено</string>
+    <string name="info_debug_mode_is_enabled">Увімкнено режим налагодження, не забудьте вимкнути його в налаштуваннях</string>
     <string name="tapqueue">Нажміть щоб відкрити Чергу</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
@@ -658,8 +658,8 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
+    <string name="playlistindicator">Індикатор Плейлиста</string>
+    <string name="playlistindicatorinfo">Зазначає, якщо пісня вже додана в Плейлист</string>
+    <string name="deleted">Видалено</string>
+    <string name="playlistindicatorinfo2">Пісня Присутня в одному із Плейлістів</string>
 </resources>
