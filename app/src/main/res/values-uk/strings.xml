@@ -654,4 +654,5 @@
     <string name="playlistindicatorinfo">Зазначає, якщо пісня вже додана в Плейлист</string>
     <string name="deleted">Видалено</string>
     <string name="playlistindicatorinfo2">Пісня Присутня в одному із Плейлістів</string>
+    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
 </resources>
