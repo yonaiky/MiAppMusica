@@ -143,6 +143,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 fun Controls(
     navController: NavController,
     onCollapse: () -> Unit,
+    onBlurScaleChange: (Float) -> Unit,
     expandedplayer: Boolean,
     layoutState: PlayerSheetState,
     media: UiMedia,
@@ -335,7 +336,12 @@ fun Controls(
                     position = position,
                     shouldBePlaying = shouldBePlaying,
                     likedAt = likedAt,
-                    mediaId = mediaId
+                    mediaId = mediaId,
+                    onBlurScaleChange = onBlurScaleChange
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
                 )
                 if (((playerControlsType == PlayerControlsType.Modern) || (!transparentBackgroundActionBarPlayer)) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
                     Spacer(
@@ -404,7 +410,8 @@ fun Controls(
                         position = position,
                         shouldBePlaying = shouldBePlaying,
                         likedAt = likedAt,
-                        mediaId = mediaId
+                        mediaId = mediaId,
+                        onBlurScaleChange = onBlurScaleChange
                     )
                     Spacer(
                         modifier = Modifier
@@ -416,7 +423,8 @@ fun Controls(
                         position = position,
                         shouldBePlaying = shouldBePlaying,
                         likedAt = likedAt,
-                        mediaId = mediaId
+                        mediaId = mediaId,
+                        onBlurScaleChange = onBlurScaleChange
                     )
                     Spacer(
                         modifier = Modifier
@@ -499,7 +507,8 @@ fun Controls(
                     position = position,
                     shouldBePlaying = shouldBePlaying,
                     likedAt = likedAt,
-                    mediaId = mediaId
+                    mediaId = mediaId,
+                    onBlurScaleChange = onBlurScaleChange
                 )
                 Spacer(
                     modifier = Modifier
@@ -513,7 +522,8 @@ fun Controls(
                     position = position,
                     shouldBePlaying = shouldBePlaying,
                     likedAt = likedAt,
-                    mediaId = mediaId
+                    mediaId = mediaId,
+                    onBlurScaleChange = onBlurScaleChange
                 )
                 Spacer(
                     modifier = Modifier

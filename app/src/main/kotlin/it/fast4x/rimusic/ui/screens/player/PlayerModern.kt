@@ -1129,7 +1129,8 @@ fun PlayerModern(
             shouldBePlaying = shouldBePlaying,
             position = positionAndDuration.first,
             duration = positionAndDuration.second,
-            modifier = modifier
+            modifier = modifier,
+            onBlurScaleChange = { blurStrength = it }
         )
     }
     var textoutline by rememberPreference(textoutlineKey, false)

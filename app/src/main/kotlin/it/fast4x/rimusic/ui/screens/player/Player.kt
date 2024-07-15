@@ -1213,7 +1213,8 @@ fun Player(
                 shouldBePlaying = shouldBePlaying,
                 position = positionAndDuration.first,
                 duration = positionAndDuration.second,
-                modifier = modifier
+                modifier = modifier,
+                onBlurScaleChange = {}
             )
         }
 
