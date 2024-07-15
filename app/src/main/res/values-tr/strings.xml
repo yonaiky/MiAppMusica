@@ -654,5 +654,5 @@
     <string name="playlistindicatorinfo">Şarkının bir oynatma listesine eklenmiş olup olmadığını gösterir</string>
     <string name="deleted">Silindi</string>
     <string name="playlistindicatorinfo2">Şarkı oynatma listelerinden birinde mevcut</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="statsfornerdsplayer">Oynatıcıda meraklısı için istatistikleri göster</string>
 </resources>
