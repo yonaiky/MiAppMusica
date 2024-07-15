@@ -663,4 +663,5 @@ CC-BY-SA 3.0</string>
     <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
     <string name="deleted">Deleted</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
+    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
 </resources>

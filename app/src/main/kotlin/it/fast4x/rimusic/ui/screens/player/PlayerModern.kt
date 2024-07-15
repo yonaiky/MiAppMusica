@@ -248,6 +248,7 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
+import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -1713,7 +1714,7 @@ fun PlayerModern(
         var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
         var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
-
+        var statsfornerds by rememberPreference(statsfornerdsKey, false)
         if (isLandscape) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -1999,7 +2000,13 @@ fun PlayerModern(
                             .conditional(landscapeLayout == LandscapeLayout.Layout1) {fillMaxHeight()}
                             .conditional(landscapeLayout == LandscapeLayout.Layout1) {weight(1f)}
                     )
-
+                    if (!showthumbnail) {
+                        StatsForNerds(
+                            mediaId = mediaItem.mediaId,
+                            isDisplayed = statsfornerds,
+                            onDismiss = {}
+                        )
+                    }
                     actionsBarContent(
                         modifier = Modifier
                     )
@@ -2207,8 +2214,6 @@ fun PlayerModern(
                         .height(10.dp)
                 )
 
-
-
                 controlsContent(
                     modifier = Modifier
                         .padding(vertical = 4.dp)
@@ -2216,6 +2221,13 @@ fun PlayerModern(
                         .weight(1f)
                 )
 
+                if (!showthumbnail) {
+                    StatsForNerds(
+                        mediaId = mediaItem.mediaId,
+                        isDisplayed = statsfornerds,
+                        onDismiss = {}
+                    )
+                }
                 actionsBarContent(
                     modifier = Modifier
                         .padding(vertical = 10.dp)

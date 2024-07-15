@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -37,15 +38,21 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -84,6 +91,17 @@ fun StatsForNerds(
         var format by remember {
             mutableStateOf<Format?>(null)
         }
+        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        val transparentBackgroundActionBarPlayer by rememberPreference(
+            transparentBackgroundPlayerActionBarKey,
+            false
+        )
+        var blackgradient by rememberPreference(blackgradientKey, false)
+        val playerBackgroundColors by rememberPreference(
+            playerBackgroundColorsKey,
+            PlayerBackgroundColors.ThemeColor
+        )
+        var statsfornerdsfull by remember {mutableStateOf(false)}
 
         LaunchedEffect(mediaId) {
             Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
@@ -142,6 +160,7 @@ fun StatsForNerds(
             }
         }
 
+    if (showthumbnail) {
         Box(
             modifier = modifier
                 .pointerInput(Unit) {
@@ -279,6 +298,173 @@ fun StatsForNerds(
                     }
                 }
             }
+        }
+    } else {
+            Column(
+                modifier = modifier
+                    .pointerInput(Unit) {detectTapGestures(onLongPress = {statsfornerdsfull = !statsfornerdsfull})}
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = modifier
+                        .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                        .padding(vertical = 5.dp)
+                        .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier.weight(1f)
+                    ) {
+                        if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                            BasicText(
+                                text = "Quality : " + when (format?.itag?.toString()) {
+                                    "251" -> stringResource(R.string.audio_quality_format_high)
+                                    "141" -> stringResource(R.string.audio_quality_format_high)
+                                    "250" -> stringResource(R.string.audio_quality_format_medium)
+                                    "140" -> stringResource(R.string.audio_quality_format_medium)
+                                    "249" -> stringResource(R.string.audio_quality_format_low)
+                                    "139" -> stringResource(R.string.audio_quality_format_low)
+                                    else -> stringResource(R.string.audio_quality_format_unknown)
+                                },
+                                maxLines = 1,
+                                style = typography.xs.medium.color(colorPalette.text)
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier.weight(1f)
+                    ) {
+                        BasicText(
+                            text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
+                                ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
+                            maxLines = 1,
+                            style = typography.xs.medium.color(colorPalette.text)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier.weight(1f)
+                    ) {
+                        BasicText(
+                            text = format?.contentLength
+                                ?.let {stringResource(R.string.size) + " : " + Formatter.formatShortFileSize(context,it)}
+                                ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
+                            maxLines = 1,
+                            style = typography.xs.medium.color(colorPalette.text)
+                        )
+                    }
+                }
+                AnimatedVisibility(visible = statsfornerdsfull) {
+                  Column {
+                      Row(
+                          verticalAlignment = Alignment.CenterVertically,
+                          horizontalArrangement = Arrangement.Center,
+                          modifier = modifier
+                              .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .padding(vertical = 5.dp)
+                              .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                      ) {
+                          Box(
+                              contentAlignment = Alignment.Center,
+                              modifier = modifier.weight(1f)
+                          ) {
+                              BasicText(
+                                  text = stringResource(R.string.id) + " : " + mediaId,
+                                  maxLines = 1,
+                                  style = typography.xs.medium.color(colorPalette.onOverlay)
+                              )
+                          }
+                          if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                              Box(
+                                  contentAlignment = Alignment.Center,
+                                  modifier = modifier.weight(1f)
+                              ) {
+                                  BasicText(
+                                      text = stringResource(R.string.itag) + " : " + format?.itag?.toString()
+                                          ?: stringResource(R.string.itag) + " : " + stringResource(
+                                              R.string.audio_quality_format_unknown
+                                          ),
+                                      maxLines = 1,
+                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                  )
+                              }
+                          }
+                      }
+                      Row(
+                          verticalAlignment = Alignment.CenterVertically,
+                          horizontalArrangement = Arrangement.Center,
+                          modifier = modifier
+                              .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .padding(vertical = 5.dp)
+                              .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                      ) {
+                          if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true) {
+                              Box(
+                                  contentAlignment = Alignment.Center,
+                                  modifier = modifier.weight(1f)
+                              ) {
+                                  BasicText(
+                                      text = stringResource(R.string.cached) + " : " + "100%",
+                                      maxLines = 1,
+                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                  )
+                              }
+                          }
+                          if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                              Box(
+                                  contentAlignment = Alignment.Center,
+                                  modifier = modifier.weight(1f)
+                              ) {
+                                  BasicText(
+                                      text = buildString {
+                                          if (cachedBytes > downloadCachedBytes)
+                                              append(
+                                                  stringResource(R.string.cached) + " : " + Formatter.formatShortFileSize(
+                                                      context,
+                                                      cachedBytes
+                                                  )
+                                              )
+                                          else append(
+                                              stringResource(R.string.downloaded) + " : " + Formatter.formatShortFileSize(
+                                                  context,
+                                                  downloadCachedBytes
+                                              )
+                                          )
+                                          format?.contentLength?.let {
+                                              if (cachedBytes > downloadCachedBytes)
+                                                  append(" (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)")
+                                              else append(" (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)")
+                                          }
+                                      },
+                                      maxLines = 1,
+                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                  )
+                              }
+                              Box(
+                                  contentAlignment = Alignment.Center,
+                                  modifier = modifier.weight(1f)
+                              ) {
+                                  BasicText(
+                                      text = format?.loudnessDb?.let {
+                                          stringResource(R.string.loudness) + " : " + "%.2f dB".format(
+                                              it
+                                          )
+                                      }
+                                          ?: (stringResource(R.string.loudness) + " : " + stringResource(
+                                              R.string.audio_quality_format_unknown
+                                          )),
+                                      maxLines = 1,
+                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                  )
+                              }
+                          }
+                      }
+                  }
+                }
+            }
+
         }
     }
 }

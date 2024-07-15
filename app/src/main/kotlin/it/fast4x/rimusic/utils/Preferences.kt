@@ -225,6 +225,8 @@ const val hideprevnextKey = "hideprevnext"
 const val prevNextSongsKey = "prevNextSongs"
 const val tapqueueKey = "tapqueue"
 const val playlistindicatorKey = "playlistindicator"
+const val statsfornerdsKey = "statsfornerds"
+const val statsfornerdsfullKey = "statsfornerdsfull"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

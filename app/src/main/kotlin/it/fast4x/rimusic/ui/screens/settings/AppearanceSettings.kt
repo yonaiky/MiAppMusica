@@ -131,6 +131,7 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 
 
@@ -268,6 +269,7 @@ fun AppearanceSettings() {
     var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
+    var statsfornerds by rememberPreference(statsfornerdsKey, false)
 
     Column(
         modifier = Modifier
@@ -575,6 +577,19 @@ fun AppearanceSettings() {
                         }
                     )
             }
+        }
+        if (!showthumbnail){
+            if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.statsfornerdsplayer),
+                    text = "",
+                    isChecked = statsfornerds,
+                    onCheckedChange = { statsfornerds = it }
+                )
         }
         if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
