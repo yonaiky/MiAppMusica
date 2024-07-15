@@ -98,7 +98,7 @@ fun Thumbnail(
         it to (it - 64.dp).px
     }
 
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var nullableWindow by remember {
         mutableStateOf(player.currentWindow)
     }
@@ -127,7 +127,7 @@ fun Thumbnail(
     }
 
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
-    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 
     player.DisposableListener {

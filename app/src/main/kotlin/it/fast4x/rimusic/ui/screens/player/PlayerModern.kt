@@ -284,7 +284,7 @@ fun PlayerModern(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -315,7 +315,7 @@ fun PlayerModern(
 
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
-    val defaultStrength = 25f
+    val defaultStrength = 5f
     val defaultDarkenFactor = 0.2f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     //var blurStrength2 by rememberPreference(blurStrength2Key, defaultStrength)
@@ -326,7 +326,7 @@ fun PlayerModern(
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
-    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
@@ -347,6 +347,8 @@ fun PlayerModern(
             darkenFactorValue = { blurDarkenFactor = it}
          )*/
     }
+
+
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -553,7 +555,7 @@ fun PlayerModern(
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = downloadedStateMedia(mediaItem.mediaId)
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
 
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
@@ -748,7 +750,7 @@ fun PlayerModern(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
-        PlayerBackgroundColors.ThemeColor
+        PlayerBackgroundColors.BlurredCoverColor
     )
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
@@ -833,20 +835,24 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
-                  if (showthumbnail) {
+                  //if (showthumbnail) {
                       BlurTransformation(
                           scale = 0.5f,
                           radius = blurStrength.toInt(),
                           //darkenFactor = blurDarkenFactor
                       )
-                  }
+
+                 /* }
                    else
+
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
                         radius = if (isShowingLyrics && !isShowingVisualizer) blurStrength.toInt() else 0,
                         //darkenFactor = blurDarkenFactor
                     )
+
+                     */
                 )
             )
             .build()
@@ -965,7 +971,7 @@ fun PlayerModern(
                     indication = null,
                     onClick = {
                         if (thumbnailTapEnabled) {
-                            if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
+                            if (isShowingVisualizer) isShowingVisualizer = false
                             isShowingLyrics = !isShowingLyrics
                         }
                     },
@@ -974,7 +980,7 @@ fun PlayerModern(
                             showthumbnail = !showthumbnail
                     },
                     onLongClick = {
-                        if (showthumbnail || (isShowingLyrics && !isShowingVisualizer))
+                        //if (showthumbnail || (isShowingLyrics && !isShowingVisualizer))
                         showBlurPlayerDialog = true
                     }
                 )

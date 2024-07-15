@@ -145,7 +145,7 @@ fun AppearanceSettings() {
         true
     )
 
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
     var transparentbar by rememberPreference(transparentbarKey, true)
     var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
@@ -239,7 +239,7 @@ fun AppearanceSettings() {
     )
     var playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
-        PlayerBackgroundColors.ThemeColor
+        PlayerBackgroundColors.BlurredCoverColor
     )
 
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)

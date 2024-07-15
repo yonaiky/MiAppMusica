@@ -104,7 +104,7 @@ fun InfoAlbumAndArtistModern(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val (colorPalette, typography) = LocalAppearance.current
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }

@@ -228,7 +228,7 @@ fun Player(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -642,7 +642,7 @@ fun Player(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
-        PlayerBackgroundColors.ThemeColor
+        PlayerBackgroundColors.BlurredCoverColor
     )
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
@@ -1070,7 +1070,7 @@ fun Player(
             }
 
         }
-        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        var showthumbnail by rememberPreference(showthumbnailKey, false)
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }
             //var direction by remember { mutableIntStateOf(-1)}

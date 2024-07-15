@@ -181,8 +181,8 @@ fun Lyrics(
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player
 
-        var showthumbnail by rememberPreference(showthumbnailKey, true)
-        var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+        var showthumbnail by rememberPreference(showthumbnailKey, false)
+        var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
         var isPicking by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
@@ -196,7 +196,7 @@ fun Lyrics(
         )
         val playerBackgroundColors by rememberPreference(
             playerBackgroundColorsKey,
-            PlayerBackgroundColors.ThemeColor
+            PlayerBackgroundColors.BlurredCoverColor
         )
         var lyricsFontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
 
@@ -233,7 +233,7 @@ fun Lyrics(
         }
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
-        var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.None)
+        var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
 
         if (showLanguagesList) {
             translateEnabled = false

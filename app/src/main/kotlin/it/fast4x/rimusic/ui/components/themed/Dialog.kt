@@ -1021,7 +1021,7 @@ fun BlurParamsDialog(
     darkenFactorValue: (Float) -> Unit
 ) {
     val (colorPalette) = LocalAppearance.current
-    val defaultStrength = 25f
+    val defaultStrength = 5f
     val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
     var blurStrength  by rememberPreference(blurStrengthKey, defaultStrength)
@@ -1031,7 +1031,7 @@ fun BlurParamsDialog(
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
 
   //if (!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
     DefaultDialog(

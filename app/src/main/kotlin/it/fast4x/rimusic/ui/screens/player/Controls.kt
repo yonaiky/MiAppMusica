@@ -265,14 +265,14 @@ fun Controls(
         playerSwapControlsWithTimelineKey,
         false
     )
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
         false
     )
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
     var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
     val expandedlandscape = (landscapeLayout == LandscapeLayout.Layout2) || (expandedplayer && !showthumbnail)
 
