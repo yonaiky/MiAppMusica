@@ -145,10 +145,10 @@ fun AppearanceSettings() {
         true
     )
 
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
     var transparentbar by rememberPreference(transparentbarKey, false)
     var blackgradient by rememberPreference(blackgradientKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.Rectangular
