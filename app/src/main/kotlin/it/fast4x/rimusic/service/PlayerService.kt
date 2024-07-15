@@ -2170,34 +2170,6 @@ class PlayerService : InvincibleService(),
         }
     }
 
-    /*
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    private fun toggleLikeAction() = mediaItemState.value?.let { mediaItem ->
-            transaction {
-                Database.like(
-                    mediaItem.mediaId,
-                    if (isLikedState.value) null else System.currentTimeMillis()
-                )
-            }
-        }.let {  }
-
-
-
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    private fun toggleDownloadAction() = mediaDownloadedItemState.value?.let { mediaItem ->
-        manageDownload(
-            context = this,
-            songId = mediaItem.mediaId,
-            songTitle = mediaItem.mediaMetadata.title.toString(),
-            downloadState = isDownloadedState.value
-        )
-
-    }.let { }
-
-     */
-
     private inner class SessionCallback(private val player: Player) : MediaSessionCompat.Callback() {
         override fun onPlay() = player.play()
         override fun onPause() = player.pause()
@@ -2245,6 +2217,7 @@ class PlayerService : InvincibleService(),
             binder.playFromSearch(query)
         }
 
+        /*
         override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
             mediaButtonEvent?.let {
                 if (it.action == Intent.ACTION_MEDIA_BUTTON) {
@@ -2284,6 +2257,7 @@ class PlayerService : InvincibleService(),
             }
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
+        */
 
     }
 
