@@ -28,6 +28,7 @@ enum class Languages {
     Irish,
     Japanese,
     Korean,
+    Malayalam,
     Odia,
     Persian,
     Polish,
@@ -76,6 +77,7 @@ enum class Languages {
             Hungarian -> "hu"
             Spanish -> "es"
             French -> "fr"
+            Malayalam -> "ml"
             Odia -> "or"
             Persian -> "fa"
             Polish -> "pl"

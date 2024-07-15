@@ -655,4 +655,5 @@
     <string name="deleted">Deleted</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="lang_malayalam">Malayalam</string>
 </resources>
