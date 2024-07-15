@@ -1097,7 +1097,12 @@ fun BlurParamsDialog(
                             modifier = Modifier
                                 .progress(sliderPositions = sliderPositions)
                                 .background(
-                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
+                                    brush = Brush.linearGradient(
+                                        listOf(
+                                            colorPalette.favoritesIcon,
+                                            Color.Red
+                                        )
+                                    )
                                 )
                         )
                     }
@@ -1295,7 +1300,16 @@ fun PlaybackParamsDialog(
             onDismiss()
         }
     ) {
+        TitleSection(stringResource(R.string.controls_header_customize))
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_blur_effect))
+        }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -1309,7 +1323,7 @@ fun PlaybackParamsDialog(
                 icon = R.drawable.droplet,
                 color = colorPalette.favoritesIcon,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(20.dp)
             )
 
             CustomSlider(
@@ -1351,7 +1365,12 @@ fun PlaybackParamsDialog(
                             modifier = Modifier
                                 .progress(sliderPositions = sliderPositions)
                                 .background(
-                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
+                                    brush = Brush.linearGradient(
+                                        listOf(
+                                            colorPalette.favoritesIcon,
+                                            Color.Red
+                                        )
+                                    )
                                 )
                         )
                     }
@@ -1359,6 +1378,14 @@ fun PlaybackParamsDialog(
             )
         }
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_medley_duration))
+        }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -1372,13 +1399,13 @@ fun PlaybackParamsDialog(
                 icon = R.drawable.playbackduration,
                 color = colorPalette.favoritesIcon,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(20.dp)
             )
 
             CustomSlider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 13.dp)
+                    //.padding(top = 13.dp)
                     .padding(horizontal = 5.dp),
                 value = playbackDuration,
                 onValueChange = {
@@ -1433,6 +1460,14 @@ fun PlaybackParamsDialog(
             )
         }
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_playback_speed))
+        }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1448,13 +1483,13 @@ fun PlaybackParamsDialog(
                     icon = R.drawable.slow_motion,
                     color = colorPalette.favoritesIcon,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                 )
 
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 13.dp)
+                        //.padding(top = 13.dp)
                         .padding(horizontal = 5.dp),
                     value = playbackSpeed,
                     onValueChange = {
@@ -1511,6 +1546,14 @@ fun PlaybackParamsDialog(
                 )
             }
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_playback_pitch))
+        }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1532,7 +1575,7 @@ fun PlaybackParamsDialog(
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 13.dp)
+                        //.padding(top = 13.dp)
                         .padding(horizontal = 5.dp),
                     value = playbackPitch,
                     onValueChange = {
@@ -1589,6 +1632,14 @@ fun PlaybackParamsDialog(
                 )
             }
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_playback_volume))
+        }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1603,13 +1654,13 @@ fun PlaybackParamsDialog(
                     icon = R.drawable.volume_up,
                     color = colorPalette.favoritesIcon,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                 )
 
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 13.dp)
+                        //.padding(top = 13.dp)
                         .padding(horizontal = 5.dp),
                     value = playbackVolume,
                     onValueChange = {
@@ -1665,6 +1716,14 @@ fun PlaybackParamsDialog(
                 )
             }
 
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.controls_title_device_volume))
+        }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1679,13 +1738,13 @@ fun PlaybackParamsDialog(
                     icon = R.drawable.master_volume,
                     color = colorPalette.favoritesIcon,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                 )
 
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 13.dp)
+                        //.padding(top = 13.dp)
                         .padding(horizontal = 5.dp),
                     value = playbackDeviceVolume,
                     onValueChange = {

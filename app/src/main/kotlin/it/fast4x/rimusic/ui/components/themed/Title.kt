@@ -88,3 +88,25 @@ fun TitleSection(
 
 
 }
+
+@Composable
+fun TitleMiniSection(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    val (colorPalette, typography) = LocalAppearance.current
+
+    Text(
+        text = title,
+        style = TextStyle(
+            fontSize = typography.xs.bold.fontSize,
+            fontWeight = typography.xs.bold.fontWeight,
+            color = colorPalette.text,
+            textAlign = TextAlign.Start
+        ),
+        modifier = modifier.padding(top = 5.dp)
+
+    )
+
+
+}

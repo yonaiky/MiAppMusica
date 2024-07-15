@@ -663,4 +663,11 @@
     <string name="deleted">Silindi</string>
     <string name="playlistindicatorinfo2">Şarkı oynatma listelerinden birinde mevcut</string>
     <string name="statsfornerdsplayer">Oynatıcıda meraklısı için istatistikleri göster</string>
+    <string name="controls_header_customize">Customize</string>
+    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_playback_speed">Playback speed</string>
+    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_volume">Playback Volume</string>
+    <string name="controls_title_device_volume">Device volume</string>
 </resources>
