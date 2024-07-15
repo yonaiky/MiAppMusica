@@ -208,6 +208,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
 - **RiMusic Logo and icons** [@ikanakova](https://github.com/ikanakova)
 - **RiMusic Website and other features** [JZITNIK-github](https://github.com/JZITNIK-github)
+- **RiMusic New player and lyrics layout** [aneesh1122](https://github.com/aneesh1122)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
 - [**Rubik** Font](https://fonts.google.com/specimen/Rubik): Rubik is RiMusic's default font.
