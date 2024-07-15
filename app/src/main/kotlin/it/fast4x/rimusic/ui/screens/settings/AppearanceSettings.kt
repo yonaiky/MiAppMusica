@@ -145,8 +145,8 @@ fun AppearanceSettings() {
         true
     )
 
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
-    var transparentbar by rememberPreference(transparentbarKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var transparentbar by rememberPreference(transparentbarKey, true)
     var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var playerPlayButtonType by rememberPreference(
@@ -181,7 +181,7 @@ fun AppearanceSettings() {
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+        PlayerThumbnailSize.Biggest
     )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
@@ -216,7 +216,7 @@ fun AppearanceSettings() {
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.MiniPlayer
+        BackgroundProgress.Both
     )
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
@@ -235,7 +235,7 @@ fun AppearanceSettings() {
 
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
-        MiniPlayerType.Essential
+        MiniPlayerType.Modern
     )
     var playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
@@ -260,8 +260,8 @@ fun AppearanceSettings() {
     )
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
-    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
-    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
     var showtwosongs by rememberPreference(showtwosongsKey, true)

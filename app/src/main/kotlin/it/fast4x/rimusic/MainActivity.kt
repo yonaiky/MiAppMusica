@@ -263,8 +263,9 @@ import it.fast4x.rimusic.utils.showthumbnailKey
 class MainActivity :
     //MonetCompatActivity(),
     AppCompatActivity(),
-    MonetColorsChangedListener,
-    PersistMapOwner {
+    MonetColorsChangedListener
+    //,PersistMapOwner
+{
 
     var downloadUtil = DownloadUtil
 
@@ -286,7 +287,7 @@ class MainActivity :
     private var binder by mutableStateOf<PlayerService.Binder?>(null)
     private var intentUriData by mutableStateOf<Uri?>(null)
 
-    override lateinit var persistMap: PersistMap
+    //override lateinit var persistMap: PersistMap
 
     private var sensorManager: SensorManager? = null
     private var acceleration = 0f
@@ -322,8 +323,8 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         MonetCompat.enablePaletteCompat()
 
-        @Suppress("DEPRECATION", "UNCHECKED_CAST")
-        persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
+        //@Suppress("DEPRECATION", "UNCHECKED_CAST")
+        //persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -940,7 +941,7 @@ class MainActivity :
                         //if (playerSheetState.isDismissed) {
                         if (launchedFromNotification) {
                             intent.replaceExtras(Bundle())
-                            if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                            if (preferences.getBoolean(keepPlayerMinimizedKey, false))
                                 //playerSheetState.collapse(tween(700))
                                 showPlayer = false
                             else showPlayer = true //playerSheetState.expand(tween(500))
@@ -955,7 +956,7 @@ class MainActivity :
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
-                                    if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                                    if (preferences.getBoolean(keepPlayerMinimizedKey, false))
                                         //playerSheetState.collapse(tween(700))
                                         showPlayer = false
                                     else showPlayer = true //playerSheetState.expand(tween(500))
@@ -1099,8 +1100,8 @@ class MainActivity :
 
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
-    override fun onRetainCustomNonConfigurationInstance() = persistMap
+    //@Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
+    //override fun onRetainCustomNonConfigurationInstance() = persistMap
 
     override fun onStop() {
         runCatching {
@@ -1115,11 +1116,15 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
 
-        if (!isChangingConfigurations) {
-            persistMap.clear()
+        //if (!isChangingConfigurations) {
+        //    persistMap.clear()
+        //}
+        runCatching {
+            monet.removeMonetColorsChangedListener(this)
+            _monet = null
+        }.onFailure {
+            Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }
-        monet.removeMonetColorsChangedListener(this)
-        _monet = null
 
     }
 

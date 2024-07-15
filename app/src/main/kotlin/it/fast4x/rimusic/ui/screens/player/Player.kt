@@ -224,7 +224,7 @@ fun Player(
 
     val playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+        PlayerThumbnailSize.Biggest
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)

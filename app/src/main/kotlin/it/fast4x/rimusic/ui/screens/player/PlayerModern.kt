@@ -280,7 +280,7 @@ fun PlayerModern(
 
     val playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+        PlayerThumbnailSize.Biggest
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
@@ -575,7 +575,7 @@ fun PlayerModern(
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     val backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.MiniPlayer
+        BackgroundProgress.Both
     )
     /*
     val playlistPreviews by remember {

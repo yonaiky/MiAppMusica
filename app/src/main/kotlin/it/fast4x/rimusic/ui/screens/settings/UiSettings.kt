@@ -216,7 +216,7 @@ fun  UiSettings() {
 
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     //var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)
@@ -226,7 +226,7 @@ fun  UiSettings() {
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     //var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Biggest)
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
@@ -277,13 +277,13 @@ fun  UiSettings() {
     var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
-    var showPlaylists by rememberPreference(showPlaylistsKey, true)
+    //var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
-    var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
+    //var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
 
     var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
     var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
