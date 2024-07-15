@@ -138,6 +138,8 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.languageDestination
+import it.fast4x.rimusic.utils.languageDestinationName
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lastPlayerThumbnailSizeKey
 import it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
@@ -495,6 +497,8 @@ fun  UiSettings() {
                 selectedValue = languageApp,
                 onValueSelected = {languageApp = it },
                 valueText = {
+                    languageDestinationName(it)
+                    /*
                     when (it){
                         Languages.System -> stringResource(R.string.system_language)
                         Languages.Afrikaans -> stringResource(R.string.lang_afrikaans)
@@ -542,6 +546,7 @@ fun  UiSettings() {
                         Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
                         Languages.Vietnamese -> stringResource(R.string.lang_vietnamese)
                     }
+                     */
                 }
             )
 
