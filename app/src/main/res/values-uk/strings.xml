@@ -655,4 +655,6 @@
     <string name="deleted">Видалено</string>
     <string name="playlistindicatorinfo2">Пісня Присутня в одному із Плейлістів</string>
     <string name="statsfornerdsplayer">Показувати Статистику для Ботаніків в Плеєрі</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>
