@@ -655,4 +655,6 @@
     <string name="deleted">삭제됨</string>
     <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>
