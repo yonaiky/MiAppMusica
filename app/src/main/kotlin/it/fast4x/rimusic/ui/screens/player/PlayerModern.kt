@@ -235,6 +235,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
@@ -284,7 +285,7 @@ fun PlayerModern(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -1708,8 +1709,33 @@ fun PlayerModern(
         } catch (e: Exception) {
             MediaItem.EMPTY
         }
+
+        var songPlaylist1 by remember {
+            mutableStateOf(0)
+        }
+        LaunchedEffect(Unit, nextMediaItem.mediaId) {
+            withContext(Dispatchers.IO) {
+                songPlaylist1 = Database.songUsedInPlaylists(nextMediaItem.mediaId)
+            }
+        }
+
+        var songLiked by remember {
+            mutableStateOf(0)
+        }
+
+        LaunchedEffect(Unit, nextMediaItem.mediaId) {
+            withContext(Dispatchers.IO) {
+                songLiked = Database.songliked(nextMediaItem.mediaId)
+            }
+        }
+
+        var discover by rememberPreference(discoverKey, false)
+
+        if (discover && (songPlaylist1 > 0 || songLiked > 0)) {
+            binder.player.removeMediaItem(nextMediaItemIndex)
+        }
+
         var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
-        var hideprevnext by rememberPreference(hideprevnextKey, false)
         var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
         var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)

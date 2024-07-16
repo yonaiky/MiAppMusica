@@ -122,6 +122,7 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
@@ -148,7 +149,7 @@ fun AppearanceSettings() {
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     var transparentbar by rememberPreference(transparentbarKey, false)
     var blackgradient by rememberPreference(blackgradientKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.Rectangular
@@ -270,6 +271,7 @@ fun AppearanceSettings() {
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
     var statsfornerds by rememberPreference(statsfornerdsKey, false)
+    var discover by rememberPreference(discoverKey, false)
 
     Column(
         modifier = Modifier
@@ -623,7 +625,17 @@ fun AppearanceSettings() {
                     }
                 }
             )
-
+        if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.discover),
+                text = stringResource(R.string.discoverinfo),
+                isChecked = discover,
+                onCheckedChange = { discover = it }
+            )
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,
                 true

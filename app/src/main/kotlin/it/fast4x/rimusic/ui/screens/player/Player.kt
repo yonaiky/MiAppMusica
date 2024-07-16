@@ -228,7 +228,7 @@ fun Player(
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
 
     val binder = LocalPlayerServiceBinder.current
