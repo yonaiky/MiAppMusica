@@ -227,6 +227,7 @@ const val tapqueueKey = "tapqueue"
 const val playlistindicatorKey = "playlistindicator"
 const val statsfornerdsKey = "statsfornerds"
 const val statsfornerdsfullKey = "statsfornerdsfull"
+const val discoverKey = "discover"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

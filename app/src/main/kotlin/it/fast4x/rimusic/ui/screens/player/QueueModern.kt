@@ -118,6 +118,7 @@ import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
@@ -134,7 +135,9 @@ import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.windows
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.absoluteValue
@@ -374,6 +377,29 @@ fun QueueModern(
                                 downloadState = getDownloadState(window.mediaItem.mediaId)
                                 val isDownloaded =
                                     if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
+
+                        var songPlaylist by remember {
+                            mutableStateOf(0)
+                        }
+                        LaunchedEffect(Unit, window.mediaItem.mediaId) {
+                            withContext(Dispatchers.IO) {
+                                songPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
+                            }
+                        }
+
+                        var songLiked by remember {
+                            mutableStateOf(0)
+                        }
+                        LaunchedEffect(Unit, window.mediaItem.mediaId) {
+                            withContext(Dispatchers.IO) {
+                                songLiked = Database.songliked(window.mediaItem.mediaId)
+                            }
+                        }
+                        var discover by rememberPreference(discoverKey, false)
+
+                        if (discover && currentItem.firstPeriodIndex > 0 && (songPlaylist > 0 || songLiked > 0)) {
+                            player.removeMediaItem(currentItem.firstPeriodIndex)
+                        }
 
                         SwipeableQueueItem(
                             mediaItem = window.mediaItem,
