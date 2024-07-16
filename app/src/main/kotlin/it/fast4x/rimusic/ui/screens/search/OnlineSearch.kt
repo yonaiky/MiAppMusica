@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.screens.search
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -41,9 +42,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -51,26 +55,44 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.core.text.htmlEncode
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
 import it.fast4x.innertube.requests.searchSuggestions
+import it.fast4x.innertube.requests.searchSuggestionsWithItems
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
+import it.fast4x.rimusic.ui.items.AlbumItem
+import it.fast4x.rimusic.ui.items.ArtistItem
+import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
@@ -81,19 +103,17 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 
+@UnstableApi
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
+@ExperimentalTextApi
 @Composable
 fun OnlineSearch(
+    navController: NavController,
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
     onSearch: (String) -> Unit,
-    onViewPlaylist: (String) -> Unit,
     decorationBox: @Composable (@Composable () -> Unit) -> Unit,
-    onAction1: () -> Unit,
-    onAction2: () -> Unit,
-    onAction3: () -> Unit,
-    onAction4: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -113,13 +133,18 @@ fun OnlineSearch(
         }
     }
 
-    var suggestionsResult by persist<Result<List<String>?>?>("search/online/suggestionsResult")
+    //var suggestionsResult by persist<Result<List<String>?>?>("search/online/suggestionsResult")
+    var suggestionsResult by remember {
+        mutableStateOf<Result<Innertube.SearchSuggestions>?>(null)
+    }
 
     LaunchedEffect(textFieldValue.text) {
         if (textFieldValue.text.isNotEmpty()) {
             delay(200)
+            //suggestionsResult =
+            //    Innertube.searchSuggestions(SearchSuggestionsBody(input = textFieldValue.text))
             suggestionsResult =
-                Innertube.searchSuggestions(SearchSuggestionsBody(input = textFieldValue.text))
+                Innertube.searchSuggestionsWithItems(SearchSuggestionsBody(input = textFieldValue.text))
         }
     }
 
@@ -154,15 +179,27 @@ fun OnlineSearch(
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
+    var downloadState by remember {
+        mutableStateOf(Download.STATE_STOPPED)
+    }
+    val songThumbnailSizeDp = Dimensions.thumbnails.song
+    val songThumbnailSizePx = songThumbnailSizeDp.px
+    val menuState = LocalMenuState.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val binder = LocalPlayerServiceBinder.current
+
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = lazyListState,
@@ -309,6 +346,144 @@ fun OnlineSearch(
                 )
             }
 
+            suggestionsResult?.getOrNull()?.let { suggestions ->
+
+                item {
+                    TitleMiniSection(title = stringResource(R.string.searches_suggestions),
+                        modifier = Modifier.padding(start = 12.dp).padding(vertical = 10.dp)
+                    )
+                }
+
+                suggestions.recommendedSong.let {
+                    item{
+                        it?.asMediaItem?.let { mediaItem ->
+                            SongItem(
+                                song = mediaItem,
+                                thumbnailSizePx = songThumbnailSizePx,
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                                isDownloaded = false,
+                                onDownloadClick = {},
+                                downloadState = downloadState,
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onLongClick = {
+                                            menuState.display {
+                                                NonQueuedMediaItemMenu(
+                                                    navController = navController,
+                                                    onDismiss = menuState::hide,
+                                                    mediaItem = mediaItem,
+                                                )
+                                            };
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        },
+                                        onClick = {
+                                            binder?.player?.forcePlay(mediaItem)
+                                        }
+                                    )
+                            )
+                        }
+                    }
+                }
+                suggestions.recommendedAlbum.let {
+                    item{
+                        it?.let { album ->
+                            AlbumItem(
+                                yearCentered = false,
+                                album = album,
+                                thumbnailSizePx = songThumbnailSizePx,
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                                modifier = Modifier
+                                    .clickable {
+                                        navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                    }
+
+                            )
+                        }
+                    }
+                }
+                suggestions.recommendedArtist.let {
+                    item{
+                        it?.let { artist ->
+                            ArtistItem(
+                                artist = artist,
+                                thumbnailSizePx = songThumbnailSizePx,
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                                modifier = Modifier
+                                    .clickable {
+                                        navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
+                                    }
+
+                            )
+                        }
+                    }
+                }
+
+                items(items = suggestions.queries) { query ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable(onClick = { onSearch(query.replace("/", "", true)) })
+                            .fillMaxWidth()
+                            .padding(all = 16.dp)
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .size(20.dp)
+                        )
+
+                        BasicText(
+                            text = query,
+                            style = typography.s.secondary,
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .weight(1f)
+                        )
+
+                        Image(
+                            painter = arrowForwardIconPainter,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(colorPalette.textDisabled),
+                            modifier = Modifier
+                                .clickable(
+                                    indication = rippleIndication,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = {
+                                        onTextFieldValueChanged(
+                                            TextFieldValue(
+                                                text = query,
+                                                selection = TextRange(query.length)
+                                            )
+                                        )
+                                    }
+                                )
+                                .rotate(225f)
+                                .padding(horizontal = 8.dp)
+                                .size(22.dp)
+                        )
+                    }
+                }
+            } ?: suggestionsResult?.exceptionOrNull()?.let {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        BasicText(
+                            text = stringResource(R.string.error),
+                            style = typography.s.secondary.center,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        )
+                    }
+                }
+            }
+
+            if(history.isNotEmpty())
+                item {
+                    TitleMiniSection(title = stringResource(R.string.searches_saved_searches), modifier = Modifier.padding(start = 12.dp))
+                }
+
             items(
                 items = history,
                 key = SearchQuery::id
@@ -316,7 +491,7 @@ fun OnlineSearch(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable(onClick = { onSearch(searchQuery.query.replace("/","",true)) })
+                        .clickable(onClick = { onSearch(searchQuery.query.replace("/", "", true)) })
                         .fillMaxWidth()
                         .padding(all = 16.dp)
                 ) {
@@ -381,74 +556,15 @@ fun OnlineSearch(
                                     )
                                 }
                             )
-                            .rotate(225f)
+                            .rotate(310f)
                             .padding(horizontal = 8.dp)
                             .size(22.dp)
                     )
                 }
             }
 
-            suggestionsResult?.getOrNull()?.let { suggestions ->
-                items(items = suggestions) { suggestion ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clickable(onClick = { onSearch(suggestion.replace("/","",true)) })
-                            .fillMaxWidth()
-                            .padding(all = 16.dp)
-                    ) {
-                        Spacer(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .size(20.dp)
-                        )
 
-                        BasicText(
-                            text = suggestion,
-                            style = typography.s.secondary,
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .weight(1f)
-                        )
 
-                        Image(
-                            painter = arrowForwardIconPainter,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textDisabled),
-                            modifier = Modifier
-                                .clickable(
-                                    indication = rippleIndication,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = {
-                                        onTextFieldValueChanged(
-                                            TextFieldValue(
-                                                text = suggestion,
-                                                selection = TextRange(suggestion.length)
-                                            )
-                                        )
-                                    }
-                                )
-                                .rotate(225f)
-                                .padding(horizontal = 8.dp)
-                                .size(22.dp)
-                        )
-                    }
-                }
-            } ?: suggestionsResult?.exceptionOrNull()?.let {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        BasicText(
-                            text = stringResource(R.string.error),
-                            style = typography.s.secondary.center,
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
-                    }
-                }
-            }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)

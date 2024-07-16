@@ -672,4 +672,6 @@ CC-BY-SA 3.0</string>
     <string name="controls_title_playback_volume">Playback Volume</string>
     <string name="controls_title_device_volume">Device volume</string>
     <string name="lang_malayalam">Malayalam</string>
+    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_saved_searches">Saved searches</string>
 </resources>

@@ -284,6 +284,15 @@ object Innertube {
         )
     }
 
+    data class SearchSuggestions(
+        val queries: List<String>,
+        val recommendedSong: SongItem?,
+        val recommendedAlbum: AlbumItem?,
+        val recommendedArtist: ArtistItem?,
+        val recommendedPlaylist: PlaylistItem?,
+        val recommendedVideo: VideoItem?,
+    )
+
     fun MusicNavigationButtonRenderer.toMood(): Mood.Item? {
         return Mood.Item(
             title = buttonText.runs.firstOrNull()?.text ?: return null,
