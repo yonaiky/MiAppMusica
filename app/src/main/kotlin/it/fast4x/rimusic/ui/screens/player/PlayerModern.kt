@@ -1710,12 +1710,13 @@ fun PlayerModern(
             MediaItem.EMPTY
         }
 
+        val nextmedia = binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1)
         var songPlaylist1 by remember {
             mutableStateOf(0)
         }
-        LaunchedEffect(Unit, nextMediaItem.mediaId) {
+        LaunchedEffect(Unit, nextmedia.mediaId) {
             withContext(Dispatchers.IO) {
-                songPlaylist1 = Database.songUsedInPlaylists(nextMediaItem.mediaId)
+                songPlaylist1 = Database.songUsedInPlaylists(nextmedia.mediaId)
             }
         }
 
@@ -1723,16 +1724,16 @@ fun PlayerModern(
             mutableStateOf(0)
         }
 
-        LaunchedEffect(Unit, nextMediaItem.mediaId) {
+        LaunchedEffect(Unit, nextmedia.mediaId) {
             withContext(Dispatchers.IO) {
-                songLiked = Database.songliked(nextMediaItem.mediaId)
+                songLiked = Database.songliked(nextmedia.mediaId)
             }
         }
 
         var discover by rememberPreference(discoverKey, false)
 
         if (discover && (songPlaylist1 > 0 || songLiked > 0)) {
-            binder.player.removeMediaItem(nextMediaItemIndex)
+            binder.player.removeMediaItem(binder.player.currentMediaItemIndex + 1)
         }
 
         var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
