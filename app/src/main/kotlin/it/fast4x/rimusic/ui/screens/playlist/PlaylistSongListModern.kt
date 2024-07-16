@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -116,6 +117,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -139,6 +141,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -284,6 +287,8 @@ fun PlaylistSongListModern(
     val lazyListState = rememberLazyListState()
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
+
+    val coroutineScope = rememberCoroutineScope()
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -590,7 +595,6 @@ fun PlaylistSongListModern(
                                                         isImportingPlaylist = true
                                                     },
 
-                                                    //NOT NECESSARY IN ONLINE PLAYLIST USE IMPORT
                                                     onAddToPlaylist = { playlistPreview ->
                                                         position =
                                                             playlistPreview.songCount.minus(1) ?: 0
@@ -598,14 +602,16 @@ fun PlaylistSongListModern(
 
                                                         playlistPage!!.songsPage?.items?.forEachIndexed { index, song ->
                                                             runCatching {
-                                                                Database.insert(song.asMediaItem)
-                                                                Database.insert(
-                                                                    SongPlaylistMap(
-                                                                        songId = song.asMediaItem.mediaId,
-                                                                        playlistId = playlistPreview.playlist.id,
-                                                                        position = position + index
+                                                                 coroutineScope.launch(Dispatchers.IO) {
+                                                                    Database.insert(song.asSong)
+                                                                    Database.insert(
+                                                                        SongPlaylistMap(
+                                                                            songId = song.asMediaItem.mediaId,
+                                                                            playlistId = playlistPreview.playlist.id,
+                                                                            position = position + index
+                                                                        )
                                                                     )
-                                                                )
+                                                                }
                                                             }.onFailure {
                                                                 Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
                                                             }
@@ -614,6 +620,7 @@ fun PlaylistSongListModern(
                                                             SmartToast(context.resources.getString(R.string.done), type = PopupType.Success)
                                                         }
                                                     },
+
                                                     onGoToPlaylist = {
                                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                                     }

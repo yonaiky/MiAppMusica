@@ -216,6 +216,7 @@ fun SearchScreen(
                         )
 
                         2 -> GoToLink(
+                            navController = navController,
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
                             decorationBox = decorationBox,
