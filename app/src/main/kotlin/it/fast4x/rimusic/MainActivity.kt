@@ -201,6 +201,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
@@ -405,11 +406,18 @@ class MainActivity :
                     )
         }
 
-        with(encryptedPreferences) {
-            MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
-            MainApplication.pipedInstanceName = getString(pipedInstanceNameKey, "").toString()
-            MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
-            MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
+        if (preferences.getBoolean(isPipedEnabledKey, false)) {
+            runCatching {
+                with(encryptedPreferences) {
+                    MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
+                    MainApplication.pipedInstanceName =
+                        getString(pipedInstanceNameKey, "").toString()
+                    MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
+                    MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
+                }
+            }.onFailure {
+                Timber.e("MainActivity.onCreate get encryptedPreferences ${it.stackTraceToString()}")
+            }
         }
 
         setContent {
