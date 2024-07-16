@@ -686,7 +686,26 @@ class PlayerService : InvincibleService(),
 
         maybeResumePlaybackWhenDeviceConnected()
 
+        //workaround for android 12+
+        runCatching {
+            notification()?.let {
+                ServiceCompat.startForeground(
+                    this@PlayerService,
+                    NotificationId,
+                    it,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                    } else {
+                        0
+                    }
+                )
+            }
+        }.onFailure {
+            Timber.e("PlayerService oncreate startForeground ${it.stackTraceToString()}")
+        }
+
     }
+
 
     /*
     @kotlin.OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
