@@ -1031,7 +1031,7 @@ fun BlurParamsDialog(
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
 
   //if (!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
     DefaultDialog(
