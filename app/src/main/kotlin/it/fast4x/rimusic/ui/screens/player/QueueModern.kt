@@ -599,7 +599,9 @@ fun QueueModern(
                             .align(Alignment.TopCenter)
                     ){
                         PlayerEssential(
-                            showPlayer = { navController.navigate(NavRoutes.player.name)},
+                            showPlayer = {
+                                //navController.navigate(NavRoutes.player.name)
+                            },
                             hidePlayer = {})
                     }
 
