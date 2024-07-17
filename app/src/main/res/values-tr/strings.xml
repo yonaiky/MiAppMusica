@@ -655,4 +655,6 @@
     <string name="deleted">Silindi</string>
     <string name="playlistindicatorinfo2">Şarkı oynatma listelerinden birinde mevcut</string>
     <string name="statsfornerdsplayer">Oynatıcıda meraklısı için istatistikleri göster</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>
