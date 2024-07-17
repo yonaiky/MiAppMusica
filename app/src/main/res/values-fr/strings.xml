@@ -657,6 +657,6 @@
     <string name="deleted">Supprimé</string>
     <string name="playlistindicatorinfo2">Le titre est présent dans une des playlists</string>
     <string name="statsfornerdsplayer">Afficher les statistiques pour les nerds dans le lecteur</string>
-    <string name="discover">Discover</string>
+    <string name="discover">Découvrir</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>
