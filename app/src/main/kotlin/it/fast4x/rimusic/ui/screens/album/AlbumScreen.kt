@@ -123,7 +123,7 @@ fun AlbumScreen(
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-                                
+
 
                                 Database.upsert(
                                     Album(

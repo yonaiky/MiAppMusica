@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
@@ -311,10 +312,11 @@ fun  UiSettings() {
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
-    var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
+    //var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
 
 
     Column(
@@ -647,6 +649,19 @@ fun  UiSettings() {
                     }
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.discover),
+                text = stringResource(R.string.discoverinfo),
+                isChecked = discoverIsEnabled,
+                onCheckedChange = { discoverIsEnabled = it }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.playlistindicator).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.playlistindicator),

@@ -3,7 +3,6 @@ package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -19,7 +18,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,14 +34,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults.colors
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,14 +53,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -85,19 +76,13 @@ import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
-import it.fast4x.rimusic.ui.components.BottomSheet
-import it.fast4x.rimusic.ui.components.BottomSheetState
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MusicBars
-import it.fast4x.rimusic.ui.components.SwipeableContent
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -111,21 +96,17 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
@@ -133,14 +114,12 @@ import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
-import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.math.absoluteValue
 
 
 @ExperimentalTextApi
@@ -198,13 +177,13 @@ fun QueueModern(
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     mediaItemIndex = player.currentMediaItemIndex
-                        //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
+                    //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     windows = timeline.windows
                     mediaItemIndex = player.currentMediaItemIndex
-                        //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
+                    //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -282,8 +261,16 @@ fun QueueModern(
 
                 context.applicationContext.contentResolver.openOutputStream(uri)
                     ?.use { outputStream ->
-                        csvWriter().open(outputStream){
-                            writeRow("PlaylistBrowseId", "PlaylistName", "MediaId", "Title", "Artists", "Duration", "ThumbnailUrl")
+                        csvWriter().open(outputStream) {
+                            writeRow(
+                                "PlaylistBrowseId",
+                                "PlaylistName",
+                                "MediaId",
+                                "Title",
+                                "Artists",
+                                "Duration",
+                                "ThumbnailUrl"
+                            )
                             if (listMediaItems.isEmpty()) {
                                 windows.forEach {
                                     writeRow(
@@ -331,18 +318,64 @@ fun QueueModern(
                     try {
                         @SuppressLint("SimpleDateFormat")
                         val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-                        exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(
-                            Date()
-                        )}")
+                        exportLauncher.launch(
+                            "RMPlaylist_${text.take(20)}_${
+                                dateFormat.format(
+                                    Date()
+                                )
+                            }"
+                        )
                     } catch (e: ActivityNotFoundException) {
-                        SmartToast(context.resources.getString(R.string.info_not_find_app_create_doc), type = PopupType.Warning)
+                        SmartToast(
+                            context.resources.getString(R.string.info_not_find_app_create_doc),
+                            type = PopupType.Warning
+                        )
                     }
                 }
             )
         }
 
-        val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
+        //val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
         val hapticFeedback = LocalHapticFeedback.current
+
+        var discoverIsEnabled by rememberPreference(discoverKey, false)
+        if (discoverIsEnabled) ApplyDiscoverToQueue()
+
+        /*
+        /*   DISCOVER  */
+
+        var songInPlaylist by remember {
+            mutableStateOf(0)
+        }
+        var songIsLiked by remember {
+            mutableStateOf(0)
+        }
+        if (discoverIsEnabled) {
+            LaunchedEffect(Unit) {
+                listMediaItemsIndex.clear()
+                windows.forEach { window ->
+                    withContext(Dispatchers.IO) {
+                        songInPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
+                        songIsLiked = Database.songliked(window.mediaItem.mediaId)
+                    }
+                    if (songInPlaylist > 0 || songIsLiked > 0) {
+                        listMediaItemsIndex.add(window.firstPeriodIndex)
+                    }
+                }.also {
+                    if (listMediaItemsIndex.isNotEmpty()) {
+                        val mediacount = listMediaItemsIndex.size - 1
+                        listMediaItemsIndex.sort()
+                        for (i in mediacount.downTo(0)) {
+                            binder.player.removeMediaItem(listMediaItemsIndex[i])
+                        }
+                        listMediaItemsIndex.clear()
+                    }
+                }
+
+            }
+        }
+        /*   DISCOVER  */
+        */
 
         Column {
             Box(
@@ -358,7 +391,7 @@ fun QueueModern(
                         .asPaddingValues(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        //.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
+                    //.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
 
                 ) {
                     items(
@@ -369,42 +402,19 @@ fun QueueModern(
                         val currentItem by rememberUpdatedState(window)
                         val checkedState = rememberSaveable { mutableStateOf(false) }
 
-                                var deltaX by remember { mutableStateOf(0f) }
-                                val isPlayingThisMediaItem =
-                                    mediaItemIndex == window.firstPeriodIndex
-                                //val currentItem by rememberUpdatedState(window)
-                                val isLocal by remember { derivedStateOf { window.mediaItem.isLocal } }
-                                downloadState = getDownloadState(window.mediaItem.mediaId)
-                                val isDownloaded =
-                                    if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
-
-                        /*var songPlaylist by remember {
-                            mutableStateOf(0)
-                        }
-                        LaunchedEffect(Unit, window.mediaItem.mediaId) {
-                            withContext(Dispatchers.IO) {
-                                songPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
-                            }
-                        }
-
-                        var songLiked by remember {
-                            mutableStateOf(0)
-                        }
-                        LaunchedEffect(Unit, window.mediaItem.mediaId) {
-                            withContext(Dispatchers.IO) {
-                                songLiked = Database.songliked(window.mediaItem.mediaId)
-                            }
-                        }
-                        var discover by rememberPreference(discoverKey, false)
-
-                        if (discover && currentItem.firstPeriodIndex > 0 && (songPlaylist > 0 || songLiked > 0)) {
-                            player.removeMediaItem(currentItem.firstPeriodIndex)
-                        }*/
+                        //var deltaX by remember { mutableStateOf(0f) }
+                        val isPlayingThisMediaItem =
+                            mediaItemIndex == window.firstPeriodIndex
+                        //val currentItem by rememberUpdatedState(window)
+                        val isLocal by remember { derivedStateOf { window.mediaItem.isLocal } }
+                        downloadState = getDownloadState(window.mediaItem.mediaId)
+                        val isDownloaded =
+                            if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
 
                         SwipeableQueueItem(
                             mediaItem = window.mediaItem,
                             onSwipeToLeft = {
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
+                                player.removeMediaItem(currentItem.firstPeriodIndex)
                             },
                             onSwipeToRight = { binder.player.addNext(window.mediaItem, context) }
                         ) {
@@ -515,7 +525,7 @@ fun QueueModern(
 
                                                 )
                                             }
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         },
                                         onClick = {
                                             if (!selectQueueItems) {
@@ -587,7 +597,6 @@ fun QueueModern(
                 //FloatingActionsContainerWithScrollToTop(lazyListState = reorderingState.lazyListState)
 
 
-
             }
 
             //val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
@@ -601,21 +610,21 @@ fun QueueModern(
                     //.padding(horizontal = 8.dp)
                     //.padding(horizontalBottomPaddingValues)
                     .height(60.dp) //bottom bar queue
-                    /*
-                    .drawBehind {
-                        if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
-                            drawRect(
-                                color = colorPalette.favoritesOverlay,
-                                topLeft = Offset.Zero,
-                                size = Size(
-                                    width = positionAndDuration.first.toFloat() /
-                                            positionAndDuration.second.absoluteValue * size.width,
-                                    height = size.maxDimension
-                                )
+                /*
+                .drawBehind {
+                    if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
+                        drawRect(
+                            color = colorPalette.favoritesOverlay,
+                            topLeft = Offset.Zero,
+                            size = Size(
+                                width = positionAndDuration.first.toFloat() /
+                                        positionAndDuration.second.absoluteValue * size.width,
+                                height = size.maxDimension
                             )
-                        }
+                        )
                     }
-                     */
+                }
+                 */
             ) {
 
                 if (!isLandscape)
@@ -623,7 +632,7 @@ fun QueueModern(
                         modifier = Modifier
                             .absoluteOffset(0.dp, -65.dp)
                             .align(Alignment.TopCenter)
-                    ){
+                    ) {
                         PlayerEssential(
                             showPlayer = {
                                 //navController.navigate(NavRoutes.player.name)
@@ -644,21 +653,21 @@ fun QueueModern(
                     )
 
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .padding(horizontal = 4.dp)
-                    .align(Alignment.CenterStart)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .align(Alignment.CenterStart)
 
-            ) {
+                ) {
 
-                 BasicText(
-                    text = "${binder.player.mediaItemCount} " + stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
-                    style = typography.xxs.medium,
-                )
+                    BasicText(
+                        text = "${binder.player.mediaItemCount} " + stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
+                        style = typography.xxs.medium,
+                    )
 
-            }
+                }
 
 
                 Row(
@@ -667,9 +676,30 @@ fun QueueModern(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(horizontal = 4.dp)
-                       // .fillMaxHeight()
+                    // .fillMaxHeight()
 
                 ) {
+
+                    IconButton(
+                        icon = R.drawable.star_brilliant,
+                        color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(24.dp)
+                            .combinedClickable(
+                                onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                onLongClick = {
+                                    SmartToast(context.getString(R.string.discoverinfo))
+                                }
+
+                            )
+                    )
+
+                    Spacer(
+                        modifier = Modifier
+                            .width(12.dp)
+                    )
 
                     IconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
@@ -745,8 +775,8 @@ fun QueueModern(
                                      */
                                     onDelete = {
                                         if (listMediaItemsIndex.isNotEmpty())
-                                            //showSelectTypeClearQueue = true else
-                                            {
+                                        //showSelectTypeClearQueue = true else
+                                        {
                                             val mediacount = listMediaItemsIndex.size - 1
                                             listMediaItemsIndex.sort()
                                             for (i in mediacount.downTo(0)) {
@@ -835,6 +865,6 @@ fun QueueModern(
         FloatingActionsContainerWithScrollToTop(
             lazyListState = reorderingState.lazyListState,
             modifier = Modifier.padding(bottom = Dimensions.collapsedPlayer)
-            )
+        )
     }
 }

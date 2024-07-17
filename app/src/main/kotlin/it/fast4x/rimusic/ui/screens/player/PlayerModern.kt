@@ -220,6 +220,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
+import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
@@ -932,15 +933,8 @@ fun PlayerModern(
     var blackgradient by rememberPreference(blackgradientKey, false)
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-        /*
-        .padding(
-            windowInsets
-                .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                .asPaddingValues()
-        )
-         */
-        //.padding(bottom = playerSheetState.collapsedBound)
-        //.padding(bottom = horizontalBottomPaddingValues.calculateBottomPadding())
+
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
 
 
     if (!isGradientBackgroundEnabled) {
@@ -1466,6 +1460,22 @@ fun PlayerModern(
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth()
                     ) {
+
+                        IconButton(
+                            icon = R.drawable.star_brilliant,
+                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(24.dp)
+                                .combinedClickable(
+                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.discoverinfo))
+                                    }
+
+                                )
+                        )
+
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
                                 icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
@@ -1717,7 +1727,10 @@ fun PlayerModern(
             MediaItem.EMPTY
         }
 
-        val nextmedia = if(binder.player.mediaItemCount>1) binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
+        val nextmedia = if(binder.player.mediaItemCount > 1
+            && binder.player.currentMediaItemIndex + 1 <= binder.player.mediaItemCount )
+            binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
+
         var songPlaylist1 by remember {
             mutableStateOf(0)
         }
@@ -1737,18 +1750,17 @@ fun PlayerModern(
             }
         }
 
-        var discover by rememberPreference(discoverKey, false)
-
-        if (discover && (songPlaylist1 > 0 || songLiked > 0)) {
-            binder.player.removeMediaItem(binder.player.currentMediaItemIndex + 1)
-        }
-
-        var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
-        var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-        var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
+        val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+        val playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey,PlayerPlayButtonType.Rectangular)
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
-        var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
-        var statsfornerds by rememberPreference(statsfornerdsKey, false)
+        val prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
+        val statsfornerds by rememberPreference(statsfornerdsKey, false)
+
+
+        if (discoverIsEnabled) ApplyDiscoverToQueue()
+
+
         if (isLandscape) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
