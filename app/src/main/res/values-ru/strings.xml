@@ -663,6 +663,8 @@
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>

@@ -675,4 +675,6 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
+    <string name="discover">Découvrir</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>

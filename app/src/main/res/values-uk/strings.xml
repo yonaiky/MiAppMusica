@@ -663,6 +663,8 @@
     <string name="deleted">Видалено</string>
     <string name="playlistindicatorinfo2">Пісня Присутня в одному із Плейлістів</string>
     <string name="statsfornerdsplayer">Показувати Статистику для Ботаніків в Плеєрі</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
