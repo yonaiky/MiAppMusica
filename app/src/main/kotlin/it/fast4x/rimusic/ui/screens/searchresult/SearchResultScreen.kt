@@ -26,6 +26,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
+import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistMap
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.innertube.Innertube
@@ -41,10 +42,10 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.themed.Header
-import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.Header
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -55,11 +56,7 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
-import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -71,6 +68,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -85,13 +83,19 @@ fun SearchResultScreen(
     query: String, onSearchAgain: () -> Unit
 ) {
     val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabIndexChanges) = rememberPreference(searchResultScreenTabIndexKey, 0)
+    var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("albumsearch/albumPage")
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
     val hapticFeedback = LocalHapticFeedback.current
+
+    var loadAlbum by remember {
+        mutableStateOf(false)
+    }
 
     PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
@@ -115,13 +119,13 @@ fun SearchResultScreen(
             }
 
             val emptyItemsText = stringResource(R.string.no_results_found)
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+            val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = if (uiType == UiType.RiMusic) false else true,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
@@ -154,7 +158,10 @@ fun SearchResultScreen(
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
                                         Innertube.searchPage(
-                                            body = SearchBody(query = query, params = Innertube.SearchFilter.Song.value),
+                                            body = SearchBody(
+                                                query = query,
+                                                params = Innertube.SearchFilter.Song.value
+                                            ),
                                             fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
                                         )
                                     } else {
@@ -169,59 +176,62 @@ fun SearchResultScreen(
                                 itemContent = { song ->
                                     //Log.d("mediaItem",song.toString())
                                     downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                    val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
+                                    val isDownloaded =
+                                        downloadedStateMedia(song.asMediaItem.mediaId)
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
                                         onSwipeToRight = {
                                             binder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
-                                    SongItem(
-                                        song = song,
-                                        isDownloaded = isDownloaded,
-                                        onDownloadClick = {
-                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                            query {
-                                                Database.insert(
-                                                    Song(
-                                                        id = song.asMediaItem.mediaId,
-                                                        title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                        thumbnailUrl = song.thumbnail?.url,
-                                                        durationText = null
+                                        SongItem(
+                                            song = song,
+                                            isDownloaded = isDownloaded,
+                                            onDownloadClick = {
+                                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                query {
+                                                    Database.insert(
+                                                        Song(
+                                                            id = song.asMediaItem.mediaId,
+                                                            title = song.asMediaItem.mediaMetadata.title.toString(),
+                                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                                            thumbnailUrl = song.thumbnail?.url,
+                                                            durationText = null
+                                                        )
                                                     )
-                                                )
-                                            }
-
-                                            manageDownload(
-                                                context = context,
-                                                songId = song.asMediaItem.mediaId,
-                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                                downloadState = isDownloaded
-                                            )
-                                        },
-                                        downloadState = downloadState,
-                                        thumbnailSizePx = thumbnailSizePx,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onLongClick = {
-                                                    menuState.display {
-                                                        NonQueuedMediaItemMenu(
-                                                            navController = navController,
-                                                            onDismiss = menuState::hide,
-                                                            mediaItem = song.asMediaItem,
-                                    )
-                                                    };
-                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                },
-                                                onClick = {
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlay(song.asMediaItem)
-                                                    binder?.setupRadio(song.info?.endpoint)
                                                 }
-                                            )
-                                       )
+
+                                                manageDownload(
+                                                    context = context,
+                                                    songId = song.asMediaItem.mediaId,
+                                                    songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                                    downloadState = isDownloaded
+                                                )
+                                            },
+                                            downloadState = downloadState,
+                                            thumbnailSizePx = thumbnailSizePx,
+                                            thumbnailSizeDp = thumbnailSizeDp,
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onLongClick = {
+                                                        menuState.display {
+                                                            NonQueuedMediaItemMenu(
+                                                                navController = navController,
+                                                                onDismiss = menuState::hide,
+                                                                mediaItem = song.asMediaItem,
+                                                            )
+                                                        };
+                                                        hapticFeedback.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
+                                                    },
+                                                    onClick = {
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlay(song.asMediaItem)
+                                                        binder?.setupRadio(song.info?.endpoint)
+                                                    }
+                                                )
+                                        )
                                     }
                                 },
                                 itemPlaceholderContent = {
@@ -239,7 +249,10 @@ fun SearchResultScreen(
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
                                         Innertube.searchPage(
-                                            body = SearchBody(query = query, params = Innertube.SearchFilter.Album.value),
+                                            body = SearchBody(
+                                                query = query,
+                                                params = Innertube.SearchFilter.Album.value
+                                            ),
                                             fromMusicShelfRendererContent = Innertube.AlbumItem::from
                                         )
                                     } else {
@@ -258,10 +271,104 @@ fun SearchResultScreen(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable(onClick = {
-                                                //albumRoute(album.key)
-                                                navController.navigate("${NavRoutes.album.name}/${album.key}")
-                                            })
+                                            .combinedClickable(
+                                                onClick = {
+                                                    //albumRoute(album.key)
+                                                    navController.navigate("${NavRoutes.album.name}/${album.key}")
+                                                },
+                                                onLongClick = {
+                                                    /*
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                    Database
+                                                        .album(album.key)
+                                                        .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
+                                                        .collect { (
+                                                                       currentAlbum,
+                                                                   // tabIndex
+                                                                   ) ->
+                                                           // album = currentAlbum
+
+                                                            //if (albumPage == null
+                                                            //&& (currentAlbum?.timestamp == null || tabIndex == 1)
+                                                            //) {
+                                                                //println("mediaItem home album launch start browseId $browseId")
+                                                                withContext(Dispatchers.IO) {
+                                                                    Innertube.albumPage(
+                                                                        BrowseBody(
+                                                                            browseId = album.key
+                                                                        )
+                                                                    )
+                                                                        ?.onSuccess { currentAlbumPage ->
+                                                                            albumPage =
+                                                                                currentAlbumPage
+
+                                                                            //println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
+                                                                            //println("mediaItem success home album description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
+                                                                            //Database.clearAlbum(browseId)
+
+                                                                            Database.upsert(
+                                                                                Album(
+                                                                                    id = album.key,
+                                                                                    title = currentAlbumPage?.title,
+                                                                                    thumbnailUrl = currentAlbumPage?.thumbnail?.url,
+                                                                                    year = currentAlbumPage?.year,
+                                                                                    authorsText = currentAlbumPage?.authors
+                                                                                        ?.joinToString(
+                                                                                            ""
+                                                                                        ) {
+                                                                                            it.name
+                                                                                                ?: ""
+                                                                                        },
+                                                                                    shareUrl = currentAlbumPage?.url,
+                                                                                    timestamp = System.currentTimeMillis(),
+                                                                                    //bookmarkedAt = null
+                                                                                ),
+                                                                                currentAlbumPage
+                                                                                    ?.songsPage
+                                                                                    ?.items
+                                                                                    ?.map(Innertube.SongItem::asMediaItem)
+                                                                                    ?.onEach(
+                                                                                        Database::insert
+                                                                                    )
+                                                                                    ?.mapIndexed { position, mediaItem ->
+                                                                                        SongAlbumMap(
+                                                                                            songId = mediaItem.mediaId,
+                                                                                            albumId = album.key,
+                                                                                            position = position
+                                                                                        )
+                                                                                    } ?: emptyList()
+                                                                            )
+                                                                                withContext(Dispatchers.Main) {
+                                                                                    currentAlbumPage
+                                                                                        ?.songsPage
+                                                                                        ?.items
+                                                                                        ?.map(
+                                                                                            Innertube.SongItem::asMediaItem
+                                                                                        )
+                                                                                        ?.let { it1 ->
+                                                                                            binder?.player?.enqueue(
+                                                                                                it1,
+                                                                                                context
+                                                                                            )
+                                                                                        }
+                                                                                    println("mediaItem success home album songsPage ${currentAlbumPage
+                                                                                        ?.songsPage
+                                                                                        ?.items?.size}")
+                                                                                }
+
+                                                                        }
+                                                                    ?.onFailure {
+                                                                        println("mediaItem error searchResultScreen albumt ${it.message}")
+                                                                    }
+
+                                                                }
+
+                                                            //}
+                                                        }
+                                                        }
+                                                    */
+                                                }
+                                            )
                                     )
 
                                 },
@@ -280,7 +387,10 @@ fun SearchResultScreen(
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
                                         Innertube.searchPage(
-                                            body = SearchBody(query = query, params = Innertube.SearchFilter.Artist.value),
+                                            body = SearchBody(
+                                                query = query,
+                                                params = Innertube.SearchFilter.Artist.value
+                                            ),
                                             fromMusicShelfRendererContent = Innertube.ArtistItem::from
                                         )
                                     } else {
@@ -321,7 +431,10 @@ fun SearchResultScreen(
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
                                         Innertube.searchPage(
-                                            body = SearchBody(query = query, params = Innertube.SearchFilter.Video.value),
+                                            body = SearchBody(
+                                                query = query,
+                                                params = Innertube.SearchFilter.Video.value
+                                            ),
                                             fromMusicShelfRendererContent = Innertube.VideoItem::from
                                         )
                                     } else {
@@ -427,6 +540,7 @@ fun SearchResultScreen(
                                 }
                             )
                         }
+
                         6 -> {
                             val thumbnailSizeDp = Dimensions.thumbnails.playlist
                             val thumbnailSizePx = thumbnailSizeDp.px
