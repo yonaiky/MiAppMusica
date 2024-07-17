@@ -40,3 +40,20 @@ select {
 @keyframes l15{ 
   100%{transform: rotate(1turn)}
 }
+.footer-links > li > a{
+    white-space: nowrap
+}
+@media (max-width: 740px) {
+    .footer-links {   
+        flex-direction: column;
+        text-align: right
+    }
+    .footer-links > li {
+        margin: 2px !important  /* play with the value until links are easy to tap on touch devices */
+    }
+}
+@media (max-width: 640px) {
+    .footer-links {   
+        text-align: center;
+    }
+}
