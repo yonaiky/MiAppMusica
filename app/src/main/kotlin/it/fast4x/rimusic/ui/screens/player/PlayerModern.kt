@@ -1710,7 +1710,7 @@ fun PlayerModern(
             MediaItem.EMPTY
         }
 
-        val nextmedia = binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1)
+        /*val nextmedia = binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
         var songPlaylist1 by remember {
             mutableStateOf(0)
         }
@@ -1734,7 +1734,7 @@ fun PlayerModern(
 
         if (discover && (songPlaylist1 > 0 || songLiked > 0)) {
             binder.player.removeMediaItem(binder.player.currentMediaItemIndex + 1)
-        }
+        }*/
 
         var thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
         var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
