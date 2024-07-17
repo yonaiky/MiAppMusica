@@ -625,7 +625,7 @@ fun AppearanceSettings() {
                     }
                 }
             )
-        if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
+        /*if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
                 filterCharSequence,
                 true
             )
@@ -635,7 +635,7 @@ fun AppearanceSettings() {
                 text = stringResource(R.string.discoverinfo),
                 isChecked = discover,
                 onCheckedChange = { discover = it }
-            )
+            )*/
         if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
                 filterCharSequence,
                 true

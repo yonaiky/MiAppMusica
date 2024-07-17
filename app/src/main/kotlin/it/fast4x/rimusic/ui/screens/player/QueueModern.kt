@@ -378,7 +378,7 @@ fun QueueModern(
                                 val isDownloaded =
                                     if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
 
-                        var songPlaylist by remember {
+                        /*var songPlaylist by remember {
                             mutableStateOf(0)
                         }
                         LaunchedEffect(Unit, window.mediaItem.mediaId) {
@@ -399,7 +399,7 @@ fun QueueModern(
 
                         if (discover && currentItem.firstPeriodIndex > 0 && (songPlaylist > 0 || songLiked > 0)) {
                             player.removeMediaItem(currentItem.firstPeriodIndex)
-                        }
+                        }*/
 
                         SwipeableQueueItem(
                             mediaItem = window.mediaItem,
