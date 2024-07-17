@@ -650,11 +650,11 @@
     <string name="info_debug_mode_enabled">Naka-enable ang debug mode</string>
     <string name="info_debug_mode_is_enabled">Naka-enable ang debug mode, huwag ikalimutang i-disable ito sa settings</string>
     <string name="tapqueue">Mag-tap para ma-buksan ang queue</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="playlistindicator">Indicator ng playlist</string>
+    <string name="playlistindicatorinfo">Nag-iindicate kapang naka add na ang kanta sa playlist</string>
+    <string name="deleted">Binura</string>
+    <string name="playlistindicatorinfo2">Naka add na ang kanta sa isang playlist</string>
+    <string name="statsfornerdsplayer">Ipakita ang \"stats for nerds\" sa player</string>
     <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="discoverinfo">Nag-reremove ng Liked at Playlist na kanta sa queue</string>
 </resources>
