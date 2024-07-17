@@ -589,7 +589,7 @@
     <string name="piped_disconnect">Trennen</string>
     <string name="piped_connect">Verbinden</string>
     <string name="piped_connected_to_s">Verbunden mit %s</string>
-    <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="fake_audio_bar">Falsche Wellenform</string>
     <string name="copy_crash_log_to_clipboard">Absturzprotokoll in Zwischenablage kopieren</string>
     <string name="title_backup_and_restore">SICHERN UND WIEDERHERSTELLEN</string>
     <string name="message_excluded_s_songs">%s Lieder ausgeschlossen</string>
@@ -603,7 +603,7 @@
     <string name="lyrics_size">Liedtext-Größe</string>
     <string name="translate">Übersetzen</string>
     <string name="transparentbar">Transparente Zeitleiste</string>
-    <string name="timelinesize">Player Timeline Size</string>
+    <string name="timelinesize">Größe der Zeitachse im Player</string>
     <string name="actionspacedevenly">Gleichmäßiger Abstand</string>
     <string name="expandedplayer">Erweiterter Player</string>
     <string name="expandedlyrics">Erweiterte Songtext-Ansicht</string>
@@ -650,11 +650,11 @@
     <string name="info_debug_mode_enabled">Debug-Modus aktiviert</string>
     <string name="info_debug_mode_is_enabled">Der Debug-Modus ist aktiviert, denke daran, diesen in den Einstellungen zu deaktivieren</string>
     <string name="tapqueue">Zum Öffnen der Warteschlange tippen</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="playlistindicator">Wiedergabelisten-Indikator</string>
+    <string name="playlistindicatorinfo">Zeigt an, ob der Titel bereits zur Wiedergabeliste hinzugefügt wurde</string>
     <string name="deleted">Gelöscht</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
-    <string name="discover">Discover</string>
+    <string name="playlistindicatorinfo2">Titel ist in einer der Wiedergabelisten vorhanden</string>
+    <string name="statsfornerdsplayer">Zeige Statistiken für Nerds im Player</string>
+    <string name="discover">Entdecken</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
 </resources>
