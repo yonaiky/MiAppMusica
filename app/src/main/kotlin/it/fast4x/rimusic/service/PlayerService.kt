@@ -914,7 +914,7 @@ class PlayerService : InvincibleService(),
 
     private fun maybeProcessRadio() {
         radio?.let { radio ->
-            if (player.mediaItemCount - player.currentMediaItemIndex <= 3) {
+            if ((player.mediaItemCount < 50) || player.mediaItemCount - player.currentMediaItemIndex <= 3) {
                 coroutineScope.launch(Dispatchers.Main) {
                     player.addMediaItems(radio.process())
                 }
