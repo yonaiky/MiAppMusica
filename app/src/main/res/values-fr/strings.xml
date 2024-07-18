@@ -658,5 +658,5 @@
     <string name="playlistindicatorinfo2">Le titre est présent dans une des playlists</string>
     <string name="statsfornerdsplayer">Afficher les statistiques pour les nerds dans le lecteur</string>
     <string name="discover">Découvrir</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="discoverinfo">Supprime les titres aimés et les listes de lecture de la file d\'attente</string>
 </resources>
