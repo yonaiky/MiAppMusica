@@ -40,6 +40,9 @@ select {
 @keyframes l15{ 
   100%{transform: rotate(1turn)}
 }
+#languageSelect{
+  padding:0 5px 0 5px
+}
 .footer-links > li > a{
     white-space: nowrap
 }
