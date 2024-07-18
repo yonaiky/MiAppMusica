@@ -397,7 +397,7 @@ fun QueueModern(
                         }
                         var discover by rememberPreference(discoverKey, false)
 
-                        if (discover && currentItem.firstPeriodIndex > 0 && (songPlaylist > 0 || songLiked > 0)) {
+                        if (discover && currentItem.firstPeriodIndex != player.currentMediaItemIndex && (songPlaylist > 0 || songLiked > 0)) {
                             player.removeMediaItem(currentItem.firstPeriodIndex)
                         }*/
 
