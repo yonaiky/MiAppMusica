@@ -1728,7 +1728,7 @@ fun PlayerModern(
         }
 
         val nextmedia = if(binder.player.mediaItemCount > 1
-            && binder.player.currentMediaItemIndex + 1 <= binder.player.mediaItemCount )
+            && binder.player.currentMediaItemIndex + 1 < binder.player.mediaItemCount )
             binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
 
         var songPlaylist1 by remember {
