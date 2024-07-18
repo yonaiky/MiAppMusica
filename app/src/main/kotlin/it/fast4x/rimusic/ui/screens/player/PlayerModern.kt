@@ -764,7 +764,7 @@ fun PlayerModern(
         playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
     ) {
-        val context = LocalContext.current
+        //val context = LocalContext.current
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             try {
@@ -1008,8 +1008,8 @@ fun PlayerModern(
         } else {
             containerModifier = containerModifier
                 .background(
-                    dynamicColorPalette.background1
-                    //colorPalette.background1
+                    //dynamicColorPalette.background1
+                    colorPalette.background1
                 )
         }
     } else {
