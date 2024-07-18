@@ -650,11 +650,11 @@
     <string name="info_debug_mode_enabled">Режим отладки включен</string>
     <string name="info_debug_mode_is_enabled">Режим отладки включен, не забудьте отключить его в настройках</string>
     <string name="tapqueue">Нажмите, чтобы открыть очередь</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="playlistindicator">Индикатор плейлиста</string>
+    <string name="playlistindicatorinfo">Показывает если песня уже добавлена в плейлист</string>
+    <string name="deleted">Удалено</string>
+    <string name="playlistindicatorinfo2">Песня присутствует в одном из плейлистов</string>
+    <string name="statsfornerdsplayer">Показать статистику для \"гиков\" в плеере</string>
     <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="discoverinfo">Убирает понравившиеся песни и плейлисты из очереди</string>
 </resources>
