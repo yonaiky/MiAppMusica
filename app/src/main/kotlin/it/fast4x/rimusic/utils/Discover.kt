@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ApplyDiscoverToQueue(){
+fun ApplyDiscoverToQueue() {
     /*   DISCOVER  */
     val discoverIsEnabled by rememberPreference(discoverKey, false)
     if (!discoverIsEnabled) return
@@ -39,10 +39,11 @@ fun ApplyDiscoverToQueue(){
     var songIsLiked by remember {
         mutableStateOf(0)
     }
-    if (discoverIsEnabled) {
-        LaunchedEffect(Unit) {
-            listMediaItemsIndex.clear()
-            windows.forEach { window ->
+
+    LaunchedEffect(Unit) {
+        listMediaItemsIndex.clear()
+        windows.forEach { window ->
+            if (window.firstPeriodIndex != player.currentMediaItemIndex) {
                 withContext(Dispatchers.IO) {
                     songInPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
                     songIsLiked = Database.songliked(window.mediaItem.mediaId)
@@ -50,19 +51,20 @@ fun ApplyDiscoverToQueue(){
                 if (songInPlaylist > 0 || songIsLiked > 0) {
                     listMediaItemsIndex.add(window.firstPeriodIndex)
                 }
-            }.also {
-                if (listMediaItemsIndex.isNotEmpty()) {
-                    val mediacount = listMediaItemsIndex.size - 1
-                    listMediaItemsIndex.sort()
-                    for (i in mediacount.downTo(0)) {
-                        binder.player.removeMediaItem(listMediaItemsIndex[i])
-                    }
-                    listMediaItemsIndex.clear()
-                }
             }
-
+        }.also {
+            if (listMediaItemsIndex.isNotEmpty()) {
+                val mediacount = listMediaItemsIndex.size - 1
+                listMediaItemsIndex.sort()
+                for (i in mediacount.downTo(0)) {
+                    binder.player.removeMediaItem(listMediaItemsIndex[i])
+                }
+                listMediaItemsIndex.clear()
+            }
         }
+
     }
+
     /*   DISCOVER  */
 
 }
