@@ -182,6 +182,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
+import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
 
@@ -282,6 +283,7 @@ fun  UiSettings() {
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     //var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
+    var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
@@ -737,6 +739,18 @@ fun  UiSettings() {
                     volumeNormalization = it
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.event_volumekeys),
+                text = stringResource(R.string.event_volumekeysinfo),
+                isChecked = useVolumeKeysToChangeSong,
+                onCheckedChange = {
+                    useVolumeKeysToChangeSong = it
+                }
+            )
+            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
             SwitchSettingEntry(

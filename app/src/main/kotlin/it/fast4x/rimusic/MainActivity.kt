@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -194,6 +195,8 @@ import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.invokeOnReady
@@ -258,6 +261,7 @@ import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 
 
 @UnstableApi
@@ -363,6 +367,20 @@ class MainActivity :
                 .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
 
     }
+
+    /*
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            binder?.player?.forceSeekToPrevious()
+            return true
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            binder?.player?.forceSeekToNext()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+     */
 
     @OptIn(ExperimentalTextApi::class,
         ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -575,6 +593,7 @@ class MainActivity :
                             UiTypeKey,
                             disablePlayerHorizontalSwipeKey,
                             audioQualityFormatKey,
+                                /*
                             showButtonPlayerArrowKey,
                             showButtonPlayerAddToPlaylistKey,
                             showButtonPlayerDownloadKey,
@@ -583,15 +602,17 @@ class MainActivity :
                             showButtonPlayerShuffleKey,
                             showButtonPlayerSleepTimerKey,
                             showButtonPlayerMenuKey,
+
+                                 */
                             disableClosingPlayerSwipingDownKey,
                             showSearchTabKey,
                             navigationBarPositionKey,
                             navigationBarTypeKey,
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
-                            showButtonPlayerSystemEqualizerKey,
+                            //showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
-                            playbackFadeDurationKey,
+                            //playbackFadeDurationKey,
                             playerBackgroundColorsKey,
                             miniPlayerTypeKey
                             -> {

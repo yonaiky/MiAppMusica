@@ -677,4 +677,6 @@
     <string name="searches_saved_searches">Saved searches</string>
     <string name="discover">Découvrir</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
 </resources>
