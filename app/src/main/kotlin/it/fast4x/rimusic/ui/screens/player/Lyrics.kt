@@ -1661,7 +1661,6 @@ fun Lyrics(
                             .size(30.dp)
                     )
 
-                /*
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.minmax,
@@ -1673,8 +1672,6 @@ fun Lyrics(
                             .align(Alignment.BottomStart)
                             .size(20.dp)
                     )
-                 */
-
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.text,

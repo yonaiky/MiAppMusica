@@ -744,11 +744,9 @@ fun PlayerModern(
         }
     }
 
-    /*
     var position by remember {
         mutableIntStateOf(0)
     }
-     */
 
     var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
