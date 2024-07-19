@@ -652,6 +652,14 @@
     <string name="info_debug_mode_enabled">Mode debug activé</string>
     <string name="info_debug_mode_is_enabled">Le mode débogage est activé, n\'oubliez pas de le désactiver dans les paramètres</string>
     <string name="tapqueue">Appuyez pour ouvrir la file d\'attente</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="all_time">All time</string>
+    <string name="header_view_top_of">View top %s of …</string>
+    <string name="podcast_episodes">Episodes</string>
+    <string name="podcasts">Podcasts</string>
     <string name="playlistindicator">Indicateur de la playlist</string>
     <string name="playlistindicatorinfo">Indique si le titre est déjà ajouté à une playlist</string>
     <string name="deleted">Supprimé</string>
@@ -659,4 +667,18 @@
     <string name="statsfornerdsplayer">Afficher les statistiques pour les nerds dans le lecteur</string>
     <string name="discover">Découvrir</string>
     <string name="discoverinfo">Supprime les titres aimés et les listes de lecture de la file d\'attente</string>
+    <string name="controls_header_customize">Customize</string>
+    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_playback_speed">Playback speed</string>
+    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_volume">Playback Volume</string>
+    <string name="controls_title_device_volume">Device volume</string>
+    <string name="lang_malayalam">Malayalam</string>
+    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_saved_searches">Saved searches</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
 </resources>
