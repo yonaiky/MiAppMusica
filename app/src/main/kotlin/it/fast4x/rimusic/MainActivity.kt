@@ -1039,6 +1039,10 @@ class MainActivity :
                             }
                         }
 
+                        "search" -> uri.getQueryParameter("q")?.let { query ->
+                            navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                        }
+
                         else -> when {
                             path == "watch" -> uri.getQueryParameter("v")
                             uri.host == "youtu.be" -> path
