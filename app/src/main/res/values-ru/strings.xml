@@ -639,11 +639,11 @@
     <string name="showtwosongs">Показать следующие две песни в очереди</string>
     <string name="showalbumcover">Показать обложку альбома</string>
     <string name="do_not_translate">Не переводить</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Таймер сна с задержкой в конце песни</string>
     <string name="lyricsbackground">Фон текста песни</string>
     <string name="landscapelayout">Альбомный вид</string>
-    <string name="layout">Layout</string>
-    <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
+    <string name="layout">Лэйаут</string>
+    <string name="layoutinfo">Лэйаут 2 рекомендуется для больших экранов</string>
     <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">Одна песня</string>
     <string name="twosongs">Две песни</string>
