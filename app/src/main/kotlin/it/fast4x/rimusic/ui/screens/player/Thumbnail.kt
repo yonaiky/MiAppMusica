@@ -319,11 +319,11 @@ fun Thumbnail(
                     )
                 }
 
-                //var errorCounter by remember { mutableIntStateOf(0) }
+                var errorCounter by remember { mutableIntStateOf(0) }
 
                 if (error != null) {
-                    //errorCounter = errorCounter.plus(1)
-                    //if (errorCounter < 3) {
+                    errorCounter = errorCounter.plus(1)
+                    if (errorCounter < 3) {
                         SmartToast(
                             if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
                             else when (error?.cause?.cause) {
@@ -337,7 +337,7 @@ fun Thumbnail(
                             }, PopupType.Error
                         )
                     //    player.seekToNext()
-                    //} else errorCounter = 0
+                    } else errorCounter = 0
                 }
             }
             /*

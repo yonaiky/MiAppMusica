@@ -1731,6 +1731,7 @@ fun Lyrics(
                     .fillMaxWidth(0.2f)
             ) {
 
+
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.translate,
@@ -1738,7 +1739,8 @@ fun Lyrics(
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled
-                            showPlaceholder = if (!translateEnabled) false else true
+                            //showPlaceholder = if (!translateEnabled) false else true
+                            if (translateEnabled) showLanguagesList = true
                         },
                         modifier = Modifier
                             //.padding(horizontal = 8.dp)
@@ -1746,6 +1748,8 @@ fun Lyrics(
                             .align(Alignment.BottomStart)
                             .size(24.dp)
                     )
+
+
                 Image(
                     painter = painterResource(R.drawable.ellipsis_vertical),
                     contentDescription = null,
@@ -1950,7 +1954,8 @@ fun Lyrics(
                                                     }
                                                 }
                                             )
-                                        if (!showlyricsthumbnail)
+
+                                        //if (!showlyricsthumbnail)
                                             MenuEntry(
                                                 icon = R.drawable.translate,
                                                 text = stringResource(R.string.translate),
