@@ -650,6 +650,14 @@
     <string name="info_debug_mode_enabled">디버그 모드 활성화됨</string>
     <string name="info_debug_mode_is_enabled">디버그 모드가 작동합니다, 끄기 위해선 설정으로 가는 걸 잊지 마세요</string>
     <string name="tapqueue">눌러서 대기열 열기</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="all_time">All time</string>
+    <string name="header_view_top_of">View top %s of …</string>
+    <string name="podcast_episodes">Episodes</string>
+    <string name="podcasts">Podcasts</string>
     <string name="playlistindicator">플레이리스트 지표</string>
     <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
     <string name="deleted">삭제됨</string>
@@ -657,4 +665,18 @@
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="controls_header_customize">Customize</string>
+    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_playback_speed">Playback speed</string>
+    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_volume">Playback Volume</string>
+    <string name="controls_title_device_volume">Device volume</string>
+    <string name="lang_malayalam">Malayalam</string>
+    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_saved_searches">Saved searches</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
 </resources>
