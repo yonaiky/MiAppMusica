@@ -1026,7 +1026,6 @@ class MainActivity :
                                     }
                                 }
                             } else {
-                                //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
                                 navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
                             }
                         }
@@ -1035,12 +1034,12 @@ class MainActivity :
                             try {
                                 navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
                             } catch (e:Exception) {
-                                //println("mediaItem error $e.message")
+                                Timber.e("MainActivity.onCreate intentUriData ${e.stackTraceToString()}")
                             }
                         }
 
                         "search" -> uri.getQueryParameter("q")?.let { query ->
-                            navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                                navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
                         }
 
                         else -> when {

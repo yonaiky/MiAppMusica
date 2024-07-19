@@ -222,12 +222,11 @@ fun GoToLink(
                                 }
 
                                 "channel", "c" -> uri.lastPathSegment?.let { channelId ->
-                                    //artistRoute.ensureGlobal(channelId)
                                     navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
                                 }
 
                                 "search" -> uri.getQueryParameter("q")?.let { query ->
-                                    navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                                        navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
                                 }
 
                                 else -> when {
