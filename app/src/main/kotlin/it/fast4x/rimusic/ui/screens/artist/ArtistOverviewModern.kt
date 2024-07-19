@@ -68,6 +68,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -117,10 +118,12 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -188,8 +191,14 @@ fun ArtistOverviewModern(
 
     val listMediaItems = remember { mutableListOf<MediaItem>() }
 
-    val artist by persist<Artist?>("artist/$browseId/artist")
+    var artist by persist<Artist?>("artist/$browseId/artist")
     val hapticFeedback = LocalHapticFeedback.current
+
+    LaunchedEffect(Unit) {
+        if (browseId != null) {
+            Database.artist(browseId).collect { artist = it }
+        }
+    }
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -346,12 +355,13 @@ fun ArtistOverviewModern(
                         onClick = {
                             val bookmarkedAt =
                                 if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                            query {
-                                artist
-                                    ?.copy(bookmarkedAt = bookmarkedAt)
-                                    ?.let(Database::update)
-                            }
+                            //CoroutineScope(Dispatchers.IO).launch {
+                                transaction {
+                                    artist
+                                        ?.copy(bookmarkedAt = bookmarkedAt)
+                                        ?.let(Database::update)
+                                }
+                            //}
                         },
                         alternative = if (artist?.bookmarkedAt == null) true else false,
                         modifier = Modifier.padding(end = 30.dp)
@@ -490,7 +500,10 @@ fun ArtistOverviewModern(
                                 .padding(horizontal = 5.dp)
                                 .combinedClickable(
                                     onClick = {
-                                        binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem), context)
+                                        binder?.player?.enqueue(
+                                            songs.map(Innertube.SongItem::asMediaItem),
+                                            context
+                                        )
                                     },
                                     onLongClick = {
                                         SmartToast(context.getString(R.string.info_enqueue_songs))
