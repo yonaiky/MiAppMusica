@@ -469,12 +469,17 @@ fun OnlineSearch(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
+                        TitleMiniSection(title = stringResource(R.string.searches_no_suggestions),
+                            modifier = Modifier.padding(start = 12.dp).padding(vertical = 10.dp)
+                        )
+                        /*
                         BasicText(
                             text = stringResource(R.string.error),
                             style = typography.s.secondary.center,
                             modifier = Modifier
                                 .align(Alignment.Center)
                         )
+                         */
                     }
                 }
             }

@@ -678,4 +678,5 @@
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
 </resources>
