@@ -16,8 +16,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.textCopyFromClipboard
 
 @Composable
 inline fun InputTextField(
@@ -40,6 +43,14 @@ inline fun InputTextField(
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
+
+    var copyText by remember { mutableStateOf(true) }
+    if (copyText) {
+        txtField.value = textCopyFromClipboard()
+        copyText = false
+    }
+
+    txtField.value
 
     Column(
         modifier = modifier
@@ -121,6 +132,15 @@ inline fun InputTextField(
             )
 
             DialogTextButton(
+                text = stringResource(R.string.paste),
+                onClick = {
+                    //txtField.value = ""
+                    copyText = true
+                },
+                modifier = Modifier
+            )
+
+            DialogTextButton(
                 text = stringResource(R.string.clear),
                 onClick = { txtField.value = "" },
                 modifier = Modifier
@@ -131,3 +151,5 @@ inline fun InputTextField(
 
 
 }
+
+

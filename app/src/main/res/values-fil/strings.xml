@@ -677,4 +677,5 @@
     <string name="discoverinfo">Nag-reremove ng Liked at Playlist na kanta sa queue</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
 </resources>
