@@ -60,21 +60,3 @@ select {
         text-align: center;
     }
 }
-@media (max-width: 840px) {
-  @media (min-width: 641px) {
-    .feature-extended-body {
-      width: 40%;
-    }
-
-  }
-.feature-extended-image {
-    margin-right: 12% !important;
-    margin-left: 12% !important;
-  }
-}
-.feature-extended-body{
-  z-index: 500 !important;
-  p {
-    color: #36517c;
-  }
-}
