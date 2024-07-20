@@ -131,6 +131,7 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
 import it.fast4x.rimusic.utils.landscapeLayoutKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 
@@ -206,6 +207,7 @@ fun AppearanceSettings() {
         showButtonPlayerSystemEqualizerKey,
         false
     )
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
@@ -1107,6 +1109,17 @@ fun AppearanceSettings() {
                 onCheckedChange = { tapqueue = it }
             )
 
+        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.action_bar_show_discover_button),
+                text = "",
+                isChecked = showButtonPlayerDiscover,
+                onCheckedChange = { showButtonPlayerDiscover = it }
+            )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
                 filterCharSequence,

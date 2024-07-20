@@ -247,6 +247,7 @@ import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -572,6 +573,7 @@ fun PlayerModern(
         showButtonPlayerSystemEqualizerKey,
         false
     )
+    val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(
         disableClosingPlayerSwipingDownKey,
         true
@@ -1461,6 +1463,7 @@ fun PlayerModern(
                             .fillMaxWidth()
                     ) {
 
+                        if (showButtonPlayerDiscover)
                         IconButton(
                             icon = R.drawable.star_brilliant,
                             color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
