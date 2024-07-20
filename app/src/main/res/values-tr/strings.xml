@@ -62,7 +62,7 @@
     <string name="request_a_feature_or_suggest_an_idea">Bir özellik iste veya bir fikir öner</string>
     <string name="theme">Tema</string>
     <string name="theme_mode">Tema modu</string>
-    <string name="thumbnail_roundness">Küçük resim yuvarlaklığı</string>
+    <string name="thumbnail_roundness">Albüm kapağı yuvarlaklığı</string>
     <string name="use_system_font">Sistem yazı tipini kullan</string>
     <string name="use_font_by_the_system">Sistem tarafından uygulanan yazı tipini kullan</string>
     <string name="apply_font_padding">Yazı tipi dolgusu uygula</string>
@@ -142,7 +142,7 @@
     <string name="tips">Öneriler</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">Şarkının önerilere veya hızlı seçimlere dahil edilebilmesi için gereken minimum dinleme süresi</string>
     <string name="min_listening_time">Minimum dinleme süresi</string>
-    <string name="player_thumbnail_size">Küçük resim boyutu</string>
+    <string name="player_thumbnail_size">Albüm Kapağı Boyutu</string>
     <string name="restarting_rimusic_is_required">Yeniden başlatma gerekli</string>
     <string name="small">Küçük</string>
     <string name="medium">Orta</string>
@@ -204,7 +204,7 @@
     <string name="wavy_timeline">Dalgalı</string>
     <string name="play_next">Bundan sonra oynat</string>
     <string name="toggle_lyrics">Şarkı sözlerini aç/kapat</string>
-    <string name="by_tapping_on_the_thumbnail">Küçük resme dokunarak</string>
+    <string name="by_tapping_on_the_thumbnail">Albüm kapağına dokunarak</string>
     <string name="require_mic_permission">Görselleştirici efekti mikrofon izni gerektirir, lütfen izin ver.</string>
     <string name="vt_fancy">Havalı</string>
     <string name="vt_circular">Dairesel</string>
@@ -593,8 +593,8 @@
     <string name="copy_crash_log_to_clipboard">Çökme günlüğünü panoya kopyala</string>
     <string name="title_backup_and_restore">YEDEKLEME VE GERİ YÜKLEME</string>
     <string name="message_excluded_s_songs">%s Şarkı hariçtir</string>
-    <string name="show_thumbnail">Küçük Resimleri Göster</string>
-    <string name="show_lyrics_thumbnail">Şarkı Sözleri için Küçük Resim Göster</string>
+    <string name="show_thumbnail">Küçük resmi göster</string>
+    <string name="show_lyrics_thumbnail">Şarkı sözlerinde albüm kapağını göster</string>
     <string name="large">Geniş</string>
     <string name="miniplayertype">Mini Oynatıcı Tipi</string>
     <string name="expanded">Genişletilmiş</string>
@@ -623,8 +623,8 @@
     <string name="info_private_cache_location_can_t_cleaned">Özel önbellek konumu, sistem tarafından temizlenemez</string>
     <string name="error_file_unsupported_format">Bu dosya desteklenmeyen bir biçime sahip gibi görünüyor</string>
     <string name="charts">Grafikler</string>
-    <string name="thumbnailtype">Küçük Resim Tipi</string>
-    <string name="showvisthumbnail">Görselleştirici için küçük resim göster</string>
+    <string name="thumbnailtype">Albüm Kapağı Tipi</string>
+    <string name="showvisthumbnail">Görselleştiricide albüm kapağını göster</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Üstte ekstra boşluk</string>
     <string name="game_restart">Yeniden Başlat</string>
@@ -634,7 +634,7 @@
     <string name="highlight">Vurgula</string>
     <string name="thin_bar">İnce Çubuk</string>
     <string name="buttonzoomout">Düğme Uzaklaştırma Animasyonu</string>
-    <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
+    <string name="thumbnailpause">Duraklatıldığında albüm kapağını küçült</string>
     <string name="upnext">Sıradaki</string>
     <string name="showtwosongs">Sıradaki sonraki iki şarkıyı göster</string>
     <string name="showalbumcover">Albüm Kapağını Göster</string>
@@ -676,7 +676,7 @@
     <string name="searches_suggestions">Öneriler</string>
     <string name="searches_saved_searches">Kayıtlı aramalar</string>
     <string name="event_volumekeys">Ses tuşları ile şarkı değiştirme</string>
-    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
-    <string name="paste">Paste</string>
-    <string name="searches_no_suggestions">No suggestions</string>
+    <string name="event_volumekeysinfo">Sonraki şarkı için ses AÇMA ve önceki şarkı için ses KISMA</string>
+    <string name="paste">Yapıştır</string>
+    <string name="searches_no_suggestions">Öneri yok</string>
 </resources>
