@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -70,6 +71,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
@@ -1457,131 +1459,160 @@ fun LocalPlaylistSongs(
                     }
                 }
 
-                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                downloadState = getDownloadState(song.asMediaItem.mediaId)
-                val isDownloaded =
-                    if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                val checkedState = rememberSaveable { mutableStateOf(false) }
-                val positionInPlaylist: Int = index
-
-
-                SwipeableQueueItem(
-                    mediaItem = song.asMediaItem,
-                    onSwipeToLeft = {
-                        transaction {
-                            Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                            Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
-                        }
-
-                        if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                            removeFromPipedPlaylist(
-                                context = context,
-                                coroutineScope = coroutineScope,
-                                pipedSession = pipedSession.toApiSession(),
-                                id = UUID.fromString(playlistPreview?.playlist?.browseId),
-                                positionInPlaylist
-                            )
-                        };
-                        coroutineScope.launch {
-                            SmartToast(
-                                context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                type = PopupType.Info
-                            )
-                        }
-
-                    },
-                    onSwipeToRight = {
-                        binder?.player?.addNext(song.asMediaItem)
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .draggedItem(
+                            reorderingState = reorderingState,
+                            index = index
+                        )
+                        .zIndex(10f)
                 ) {
-                    SongItem(
-                        song = song,
-                        isDownloaded = isDownloaded,
-                        onDownloadClick = {
-                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                            query {
-                                Database.insert(
-                                    Song(
-                                        id = song.asMediaItem.mediaId,
-                                        title = song.asMediaItem.mediaMetadata.title.toString(),
-                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                        thumbnailUrl = song.thumbnailUrl,
-                                        durationText = null
-                                    )
+                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                    downloadState = getDownloadState(song.asMediaItem.mediaId)
+                    val isDownloaded =
+                        if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                    val checkedState = rememberSaveable { mutableStateOf(false) }
+                    val positionInPlaylist: Int = index
+
+                    if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                        IconButton(
+                            icon = R.drawable.reorder,
+                            color = colorPalette.textDisabled,
+                            indication = rippleIndication,
+                            onClick = {},
+                            modifier = Modifier
+                                .reorder(
+                                    reorderingState = reorderingState,
+                                    index = index
                                 )
+                                .size(24.dp)
+                                .align(Alignment.TopEnd)
+                                .offset(x = -15.dp)
+                                .zIndex(10f)
+                        )
+                    }
+
+
+                    SwipeableQueueItem(
+                        mediaItem = song.asMediaItem,
+                        onSwipeToLeft = {
+                            transaction {
+                                Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
+                                Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
                             }
 
-                            if (!isLocal) {
-                                manageDownload(
+                            if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                                removeFromPipedPlaylist(
                                     context = context,
-                                    songId = song.asMediaItem.mediaId,
-                                    songTitle = song.asMediaItem.mediaMetadata.title.toString(),
-                                    downloadState = isDownloaded
+                                    coroutineScope = coroutineScope,
+                                    pipedSession = pipedSession.toApiSession(),
+                                    id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                                    positionInPlaylist
                                 )
-                            }
-                            //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
-                            //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
-                        },
-                        downloadState = downloadState,
-                        thumbnailSizePx = thumbnailSizePx,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        trailingContent = {
-                            if (selectItems)
-                                Checkbox(
-                                    checked = checkedState.value,
-                                    onCheckedChange = {
-                                        checkedState.value = it
-                                        if (it) listMediaItems.add(song.asMediaItem) else
-                                            listMediaItems.remove(song.asMediaItem)
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorPalette.accent,
-                                        uncheckedColor = colorPalette.text
-                                    ),
-                                    modifier = Modifier
-                                        .scale(0.7f)
-                                )
-                            else checkedState.value = false
-
-                            if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                                IconButton(
-                                    icon = R.drawable.reorder,
-                                    color = colorPalette.textDisabled,
-                                    indication = rippleIndication,
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .reorder(
-                                            reorderingState = reorderingState,
-                                            index = index
-                                        )
-                                        .size(18.dp)
-                                )
-                            }
-                        },
-                        onThumbnailContent = {
-                            if (sortBy == PlaylistSongSortBy.PlayTime) {
-                                BasicText(
-                                    text = song.formattedTotalPlayTime,
-                                    style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            brush = Brush.verticalGradient(
-                                                colors = listOf(
-                                                    Color.Transparent,
-                                                    colorPalette.overlay
-                                                )
-                                            ),
-                                            shape = thumbnailShape
-                                        )
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                        .align(Alignment.BottomCenter)
+                            };
+                            coroutineScope.launch {
+                                SmartToast(
+                                    context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
+                                    type = PopupType.Info
                                 )
                             }
 
-                            /*
+                        },
+                        onSwipeToRight = {
+                            binder?.player?.addNext(song.asMediaItem)
+                        }
+                    ) {
+                        SongItem(
+                            song = song,
+                            isDownloaded = isDownloaded,
+                            onDownloadClick = {
+                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                query {
+                                    Database.insert(
+                                        Song(
+                                            id = song.asMediaItem.mediaId,
+                                            title = song.asMediaItem.mediaMetadata.title.toString(),
+                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                            thumbnailUrl = song.thumbnailUrl,
+                                            durationText = null
+                                        )
+                                    )
+                                }
+
+                                if (!isLocal) {
+                                    manageDownload(
+                                        context = context,
+                                        songId = song.asMediaItem.mediaId,
+                                        songTitle = song.asMediaItem.mediaMetadata.title.toString(),
+                                        downloadState = isDownloaded
+                                    )
+                                }
+                                //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
+                                //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
+                            },
+                            downloadState = downloadState,
+                            thumbnailSizePx = thumbnailSizePx,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            trailingContent = {
+                                if (selectItems)
+                                    Checkbox(
+                                        checked = checkedState.value,
+                                        onCheckedChange = {
+                                            checkedState.value = it
+                                            if (it) listMediaItems.add(song.asMediaItem) else
+                                                listMediaItems.remove(song.asMediaItem)
+                                        },
+                                        colors = CheckboxDefaults.colors(
+                                            checkedColor = colorPalette.accent,
+                                            uncheckedColor = colorPalette.text
+                                        ),
+                                        modifier = Modifier
+                                            .scale(0.7f)
+                                    )
+                                else checkedState.value = false
+
+                                /*
+                                if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                    IconButton(
+                                        icon = R.drawable.reorder,
+                                        color = colorPalette.textDisabled,
+                                        indication = rippleIndication,
+                                        onClick = {},
+                                        modifier = Modifier
+                                            .reorder(
+                                                reorderingState = reorderingState,
+                                                index = index
+                                            )
+                                            .size(18.dp)
+                                    )
+                                }
+                                */
+                            },
+                            onThumbnailContent = {
+                                if (sortBy == PlaylistSongSortBy.PlayTime) {
+                                    BasicText(
+                                        text = song.formattedTotalPlayTime,
+                                        style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette.overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+                                }
+
+                                /*
                                 if (sortBy == PlaylistSongSortBy.Position)
                                     BasicText(
                                         text = (index + 1).toString(),
@@ -1604,44 +1635,46 @@ fun LocalPlaylistSongs(
                                     )
                                  */
 
-                            if (nowPlayingItem > -1)
-                                NowPlayingShow(song.asMediaItem.mediaId)
-                        },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        InPlaylistMediaItemMenu(
-                                            navController = navController,
-                                            playlist = playlistPreview,
-                                            playlistId = playlistId,
-                                            positionInPlaylist = index,
-                                            song = song,
-                                            onDismiss = menuState::hide
-                                        )
+                                if (nowPlayingItem > -1)
+                                    NowPlayingShow(song.asMediaItem.mediaId)
+                            },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            InPlaylistMediaItemMenu(
+                                                navController = navController,
+                                                playlist = playlistPreview,
+                                                playlistId = playlistId,
+                                                positionInPlaylist = index,
+                                                song = song,
+                                                onDismiss = menuState::hide
+                                            )
+                                        }
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        if (!selectItems) {
+                                            searching = false
+                                            filter = null
+                                            playlistSongs
+                                                .map(Song::asMediaItem)
+                                                .let { mediaItems ->
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        mediaItems,
+                                                        index
+                                                    )
+                                                }
+                                        } else checkedState.value = !checkedState.value
                                     }
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                },
-                                onClick = {
-                                    if (!selectItems) {
-                                        searching = false
-                                        filter = null
-                                        playlistSongs
-                                            .map(Song::asMediaItem)
-                                            .let { mediaItems ->
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    mediaItems,
-                                                    index
-                                                )
-                                            }
-                                    } else checkedState.value = !checkedState.value
-                                }
-                            )
-                            .draggedItem(reorderingState = reorderingState, index = index)
-                            .background(color = colorPalette.background0)
-                    )
+                                )
+                                .draggedItem(reorderingState = reorderingState, index = index)
+                                .background(color = colorPalette.background0)
+                        )
+                    }
                 }
+
             }
 
             item(
