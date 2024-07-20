@@ -293,10 +293,10 @@
     <string name="lang_hebrew">Hebrew</string>
     <string name="customize_album">Albümü özelleştir</string>
     <string name="update_title">Şarkı Adını Güncelle</string>
-    <string name="update_authors">Yazarları Güncelle</string>
+    <string name="update_authors">Sanatçıları Güncelle</string>
     <string name="update_cover">Albüm kapağını güncelle</string>
     <string name="title">Şarkı Adı</string>
-    <string name="authors">Yazarlar</string>
+    <string name="authors">Sanatçılar</string>
     <string name="cover">Kapak</string>
     <string name="lang_japanese">Japonca (日本語)</string>
     <string name="paste_or_type_a_valid_url">Geçerli bir URL yapıştırın veya yazın</string>
