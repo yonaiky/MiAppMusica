@@ -133,7 +133,7 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.Default)
@@ -158,7 +158,7 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.ThinBar)
@@ -183,7 +183,7 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.Wavy) {
@@ -232,7 +232,7 @@ fun GetSeekBar(
                 isActive = binder.player.isPlaying,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
         }
 
@@ -247,7 +247,7 @@ fun GetSeekBar(
                 },
                 modifier = Modifier
                     .height(40.dp)
-                    .pulsatingEffect(currentValue = position.toFloat() / duration.toFloat(), isVisible = true)
+                    //.pulsatingEffect(currentValue = position.toFloat() / duration.toFloat(), isVisible = true)
             )
 
         /*
