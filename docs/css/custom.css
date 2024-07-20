@@ -84,3 +84,9 @@ select {
 .feature-extended-body p {
     color: #36517c;
 }
+.device-mockup{
+  border-radius:10px
+}
+.hero-inner .device-mockup{
+  border-radius:12px
+}
