@@ -656,14 +656,14 @@
     <string name="past_year">Прошлый год</string>
     <string name="all_time">Всё время</string>
     <string name="header_view_top_of">Посмотреть топ %s из …</string>
-    <string name="podcast_episodes">Episodes</string>
+    <string name="podcast_episodes">Эпизоды</string>
     <string name="podcasts">Подкасты</string>
     <string name="playlistindicator">Индикатор плейлиста</string>
     <string name="playlistindicatorinfo">Показывает если песня уже добавлена в плейлист</string>
     <string name="deleted">Удалено</string>
     <string name="playlistindicatorinfo2">Песня присутствует в одном из плейлистов</string>
     <string name="statsfornerdsplayer">Показать статистику для \"гиков\" в плеере</string>
-    <string name="discover">Discover</string>
+    <string name="discover">Открытия</string>
     <string name="discoverinfo">Убирает понравившиеся песни и плейлисты из очереди</string>
     <string name="controls_header_customize">Настроить</string>
     <string name="controls_title_blur_effect">Эффект размытия</string>
