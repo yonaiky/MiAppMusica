@@ -657,4 +657,26 @@
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">past_week</string>
+    <string name="past_month">past_month</string>
+    <string name="past_year">past_year</string>
+    <string name="all_time">all_time</string>
+    <string name="header_view_top_of">header_view_top_of</string>
+    <string name="podcast_episodes">podcast_episodes</string>
+    <string name="podcasts">podcasts</string>
+    <string name="controls_header_customize">controls_header_customize</string>
+    <string name="controls_title_blur_effect">controls_title_blur_effect</string>
+    <string name="controls_title_medley_duration">controls_title_medley_duration</string>
+    <string name="controls_title_playback_speed">controls_title_playback_speed</string>
+    <string name="controls_title_playback_pitch">controls_title_playback_pitch</string>
+    <string name="controls_title_playback_volume">controls_title_playback_volume</string>
+    <string name="controls_title_device_volume">controls_title_device_volume</string>
+    <string name="lang_malayalam">lang_malayalam</string>
+    <string name="searches_suggestions">searches_suggestions</string>
+    <string name="searches_saved_searches">searches_saved_searches</string>
+    <string name="event_volumekeys">event_volumekeys</string>
+    <string name="event_volumekeysinfo">event_volumekeysin</string>
+    <string name="paste">paste</string>
+    <string name="searches_no_suggestions">searches_no_suggestions</string>
 </resources>
