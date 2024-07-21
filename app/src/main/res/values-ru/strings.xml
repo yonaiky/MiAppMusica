@@ -669,7 +669,7 @@
     <string name="controls_title_blur_effect">Эффект размытия</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Скорость воспроизведения</string>
-    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_pitch">Топ воспроизведения</string>
     <string name="controls_title_playback_volume">Громкость воспроизведения</string>
     <string name="controls_title_device_volume">Громкость устройства</string>
     <string name="lang_malayalam">Малаялам (മലയാളം)</string>
