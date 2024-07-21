@@ -1318,6 +1318,30 @@ fun HomeSongsModern(
                                 binder?.player?.addNext(song.asMediaItem)
                             }
                         ) {
+                            Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            InHistoryMediaItemMenu(
+                                                navController = navController,
+                                                song = song,
+                                                onDismiss = menuState::hide
+                                            )
+                                        }
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        if (!selectItems) {
+                                            searching = false
+                                            filter = null
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                filteredSongs.map(Song::asMediaItem),
+                                                index
+                                            )
+                                        }
+                                    }
+                                )
                             SongItem(
                                 song = song,
                                 isDownloaded = true,
@@ -1350,31 +1374,10 @@ fun HomeSongsModern(
                                         )
                                     else checkedState.value = false
                                 },
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                InHistoryMediaItemMenu(
-                                                    navController = navController,
-                                                    song = song,
-                                                    onDismiss = menuState::hide
-                                                )
-                                            }
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        },
-                                        onClick = {
-                                            if (!selectItems) {
-                                                searching = false
-                                                filter = null
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    filteredSongs.map(Song::asMediaItem),
-                                                    index
-                                                )
-                                            }
-                                        }
-                                    )
-                                    .animateItemPlacement()
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = null,
+                                    fadeOutSpec = null
+                                )
                             )
                         }
                     }
