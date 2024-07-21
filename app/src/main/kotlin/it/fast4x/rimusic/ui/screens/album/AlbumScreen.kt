@@ -162,6 +162,7 @@ fun AlbumScreen(
             }
     }
 
+    /*
     LaunchedEffect(Unit ) {
         withContext(Dispatchers.IO) {
             Innertube.albumPage(BrowseBody(browseId = browseId))
@@ -172,6 +173,8 @@ fun AlbumScreen(
             //println("mediaItem home albumscreen albumPage songPage ${albumPage?.songsPage}")
         }
     }
+
+     */
 
 
     RouteHandler(listenToGlobalEmitter = true) {
@@ -286,6 +289,7 @@ fun AlbumScreen(
                         0 -> AlbumDetailsModern(
                             navController = navController,
                             browseId = browseId,
+                            albumPage = albumPage,
                             headerContent = headerContent,
                             thumbnailContent = thumbnailContent,
                             onSearchClick = {
