@@ -324,7 +324,9 @@ fun PlaylistsItemMenu(
                 Menu(
                     modifier = modifier
                         //.onPlaced { height = with(density) { it.size.height.toDp() } }
-                        .fillMaxHeight(0.7f)
+                        .onPlaced {
+                            height = it.size.height.dp * 0.5f
+                        }
                 ) {
                     val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
