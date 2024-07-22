@@ -87,7 +87,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
-import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.LyricsFontSize
@@ -149,7 +148,6 @@ import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.lyricsBackgroundKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
-import it.fast4x.rimusic.utils.landscapeLayoutKey
 
 
 @UnstableApi
@@ -323,7 +321,6 @@ fun Lyrics(
             mutableStateOf(false)
         }
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
-        var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -645,7 +642,6 @@ fun Lyrics(
                         //val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
                         val centerOffset = with(density) {
                             (-thumbnailSize.div(if (expandedplayer && !showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
-                                                else if ((landscapeLayout == LandscapeLayout.Layout2) && showlyricsthumbnail && isLandscape) if (trailingContent == null) 4 else 3
                                                 else if (trailingContent == null) 3 else 2))
                                 .roundToPx()
                         }

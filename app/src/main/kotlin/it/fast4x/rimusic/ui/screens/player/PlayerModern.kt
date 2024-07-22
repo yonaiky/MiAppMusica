@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -55,6 +56,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -80,6 +86,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -134,6 +141,7 @@ import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.rememberBottomSheetState
 import it.fast4x.rimusic.ui.components.themed.BlurParamsDialog
+import it.fast4x.rimusic.ui.components.themed.thumbnailOffsetDialog
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -211,12 +219,17 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.util.lerp
+import androidx.compose.ui.zIndex
+import it.fast4x.rimusic.enums.CarousalSize
 import it.fast4x.rimusic.enums.ClickLyricsText
-import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineType
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -231,6 +244,8 @@ import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.carousalKey
+import it.fast4x.rimusic.utils.carousalSizeKey
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -240,10 +255,14 @@ import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.fadingedgeKey
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.hideprevnextKey
-import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.horizontalFadingEdge
+import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
+import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
@@ -252,8 +271,11 @@ import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
+import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
+import it.fast4x.rimusic.utils.verticalFadingEdge
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -319,10 +341,17 @@ fun PlayerModern(
 
     val defaultStrength = 5f
     val defaultDarkenFactor = 0.2f
+    val defaultOffset = 0f
+    val defaultSpacing = 0f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
+    var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
+    var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
     //var blurStrength2 by rememberPreference(blurStrength2Key, defaultStrength)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showThumbnailOffsetDialog by rememberSaveable {
         mutableStateOf(false)
     }
     var isShowingLyrics by rememberSaveable {
@@ -332,7 +361,7 @@ fun PlayerModern(
     var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
-    var expandedlyrics by rememberPreference(expandedlyricsKey, false)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
 
     if (showBlurPlayerDialog) {
 
@@ -348,6 +377,15 @@ fun PlayerModern(
             scaleValue = { blurStrength2 = it },
             darkenFactorValue = { blurDarkenFactor = it}
          )*/
+    }
+
+    if (showThumbnailOffsetDialog) {
+
+        thumbnailOffsetDialog(
+            onDismiss = { showThumbnailOffsetDialog = false},
+            scaleValue = { thumbnailOffset = it },
+            spacingValue = { thumbnailSpacing = it }
+        )
     }
 
 
@@ -600,6 +638,9 @@ fun PlayerModern(
     var showtwosongs by rememberPreference(showtwosongsKey, true)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var tapqueue by rememberPreference(tapqueueKey, true)
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    var noblur by rememberPreference(noblurKey, true)
+    var fadingedge by rememberPreference(fadingedgeKey, false)
 
     if (isShowingSleepTimerDialog) {
         if (sleepTimerMillisLeft != null) {
@@ -837,24 +878,20 @@ fun PlayerModern(
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
-                  //if (showthumbnail) {
+                  if (showthumbnail) {
                       BlurTransformation(
                           scale = 0.5f,
                           radius = blurStrength.toInt(),
                           //darkenFactor = blurDarkenFactor
                       )
 
-                 /* }
-                   else
-
+                 } else
                     BlurTransformation(
                         scale = 0.5f,
                         //radius = blurStrength2.toInt(),
-                        radius = if (isShowingLyrics && !isShowingVisualizer) blurStrength.toInt() else 0,
+                        radius = if ((isShowingLyrics && !isShowingVisualizer) || !noblur) blurStrength.toInt() else 0,
                         //darkenFactor = blurDarkenFactor
                     )
-
-                     */
                 )
             )
             .build()
@@ -975,7 +1012,7 @@ fun PlayerModern(
                             showthumbnail = !showthumbnail
                     },
                     onLongClick = {
-                        //if (showthumbnail || (isShowingLyrics && !isShowingVisualizer))
+                        if (showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur)
                         showBlurPlayerDialog = true
                     }
                 )
@@ -988,7 +1025,7 @@ fun PlayerModern(
                             //Log.d("mediaItemGesture","ondragStart offset ${it}")
                         },
                         onDragEnd = {
-                            if (!disablePlayerHorizontalSwipe) {
+                            if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
                                     binder.player.seekToPreviousMediaItem()
                                     //binder.player.forceSeekToPrevious()
@@ -1088,7 +1125,7 @@ fun PlayerModern(
                             //Log.d("mediaItemGesture","ondragStart offset ${it}")
                         },
                         onDragEnd = {
-                            if (!disablePlayerHorizontalSwipe) {
+                            if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
                                     binder.player.seekToPreviousMediaItem()
                                     //binder.player.forceSeekToPrevious()
@@ -1129,7 +1166,6 @@ fun PlayerModern(
         )
     }
     var textoutline by rememberPreference(textoutlineKey, false)
-    var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
 
     fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
         return if (condition) {
@@ -1148,6 +1184,8 @@ fun PlayerModern(
         }
     }
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    var carousal by rememberPreference(carousalKey, true)
+    var carousalSize by rememberPreference(carousalSizeKey, CarousalSize.Biggest)
 
     Box(
         modifier = Modifier
@@ -1560,7 +1598,7 @@ fun PlayerModern(
                                 modifier = Modifier
                                     .size(24.dp),
                             )
-                        if (!isLandscape || (landscapeLayout == LandscapeLayout.Layout1) && !showthumbnail)
+                        if (!isLandscape || ((playerType == PlayerType.Essential) && !showthumbnail))
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
@@ -1765,7 +1803,7 @@ fun PlayerModern(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = if (landscapeLayout == LandscapeLayout.Layout1) 40.dp else 20.dp)
+                    .padding(top = if (playerType == PlayerType.Essential) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
@@ -1788,7 +1826,7 @@ fun PlayerModern(
                         .animateContentSize()
                        // .border(BorderStroke(1.dp, Color.Blue))
                 ) {
-                    if (showthumbnail && landscapeLayout == LandscapeLayout.Layout1) {
+                    if (showthumbnail && (playerType == PlayerType.Essential)) {
                         Box(
                             contentAlignment = Alignment.Center,
                             /*modifier = Modifier
@@ -1809,7 +1847,7 @@ fun PlayerModern(
                                 )
                         }
                     }
-                    if (isShowingVisualizer && !showvisthumbnail && landscapeLayout == LandscapeLayout.Layout1) {
+                    if (isShowingVisualizer && !showvisthumbnail && playerType == PlayerType.Essential) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
@@ -1821,7 +1859,7 @@ fun PlayerModern(
                                         onDragStart = {
                                         },
                                         onDragEnd = {
-                                            if (!disablePlayerHorizontalSwipe) {
+                                            if (!disablePlayerHorizontalSwipe  && playerType == PlayerType.Essential) {
                                                 if (deltaX > 5) {
                                                     binder.player.seekToPreviousMediaItem()
                                                 } else if (deltaX < -5) {
@@ -1895,7 +1933,7 @@ fun PlayerModern(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                     if (landscapeLayout == LandscapeLayout.Layout2) {
+                    if (playerType == PlayerType.Modern) {
                          Box(
                              contentAlignment = Alignment.Center,
                              modifier = Modifier
@@ -1906,106 +1944,97 @@ fun PlayerModern(
                          ) {
                              if (showthumbnail) {
                                  if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
-                                     if (prevNextSongs != PrevNextSongs.Hide) {
-                                         if (prevNextSongs == PrevNextSongs.twosongs) {
-                                             AsyncImage(
-                                                 model = prevPrevMediaItem.mediaMetadata.artworkUri.toString()
-                                                     .resize(1200, 1200),
-                                                 contentDescription = null,
-                                                 contentScale = ContentScale.Fit,
-                                                 modifier = Modifier
-                                                     .padding(
-                                                         all = playerThumbnailSize.size.dp + 60.dp
-                                                     )
-                                                     .padding(start = playerPlayButtonType.height.dp - 60.dp)
-                                                     .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
-                                                         padding(
-                                                             start = 40.dp
-                                                         )
-                                                     }
-                                                     .offset(
-                                                         -((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                     .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                         doubleShadowDrop(
-                                                             thumbnailRoundness.shape(),
-                                                             4.dp,
-                                                             8.dp
-                                                         )
-                                                     }
-                                                     .clip(thumbnailRoundness.shape())
-                                             )
-                                             AsyncImage(
-                                                 model = nextNextMediaItem.mediaMetadata.artworkUri.toString()
-                                                     .resize(1200, 1200),
-                                                 contentDescription = null,
-                                                 contentScale = ContentScale.Fit,
-                                                 modifier = Modifier
-                                                     .padding(
-                                                         all = playerThumbnailSize.size.dp + 60.dp
-                                                     )
-                                                     .padding(start = playerPlayButtonType.height.dp - 60.dp)
-                                                     .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
-                                                         padding(
-                                                             start = 40.dp
-                                                         )
-                                                     }
-                                                     .offset(
-                                                         ((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                     .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                         doubleShadowDrop(
-                                                             thumbnailRoundness.shape(),
-                                                             4.dp,
-                                                             8.dp
-                                                         )
-                                                     }
-                                                     .clip(thumbnailRoundness.shape())
-                                             )
+                                     val pagerState = rememberPagerState(pageCount = { binder.player.mediaItemCount })
+                                     val configuration = LocalConfiguration.current
+                                     val screenWidth = configuration.screenWidthDp.dp
+                                     val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
+                                     val pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp)
+                                     HorizontalPager(
+                                         state = pagerState,
+                                         pageSize = PageSize.Fixed(thumbnailSizeDp),
+                                         pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp),
+                                         contentPadding = PaddingValues(start = thumbnailOffset.toInt()*0.01*(screenWidth), end = thumbnailOffset.toInt()*0.01*(screenWidth) + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
+                                         beyondViewportPageCount = 3,
+                                         flingBehavior = fling,
+                                         modifier = Modifier
+                                             .padding(all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
+                                             .conditional(fadingedge){horizontalFadingEdge()}
+                                         ) { it ->
+
+                                         LaunchedEffect(mediaItem.mediaId) {
+                                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                          }
+
+                                         LaunchedEffect(pagerState.settledPage, ) {
+                                             var previousPage = pagerState.settledPage
+                                             var previousID = mediaItem.mediaId
+                                             snapshotFlow { pagerState.settledPage }.collect {
+                                                 if (previousPage != it) {
+                                                     if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                 }
+                                                 previousPage = it;
+                                                 previousID = mediaItem.mediaId
+                                             }
+                                         }
+
                                          AsyncImage(
-                                             model = prevMediaItem.mediaMetadata.artworkUri.toString()
-                                                 .resize(1200, 1200),
-                                             contentDescription = null,
+                                             model = ImageRequest.Builder(LocalContext.current)
+                                                 .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                                 .build(),
+                                             contentDescription = "",
                                              contentScale = ContentScale.Fit,
                                              modifier = Modifier
-                                                 .padding(
-                                                     all = playerThumbnailSize.size.dp + 40.dp
-                                                 )
-                                                 .padding(start = playerPlayButtonType.height.dp - 60.dp)
-                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(start = 40.dp)}
-                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {offset(-((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)}
-                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {offset(-((thumbnailSizeDp/3) - 2*(playerThumbnailSize.size.dp)),0.dp)}
-                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
+                                                 .padding(all = playerThumbnailSize.size.dp)
+                                                 .zIndex(if (it == pagerState.currentPage) 1f
+                                                         else if (it > binder.player.currentMediaItemIndex) (1f/(it+1))
+                                                         else 0f)
+                                                 .graphicsLayer {
+                                                     val pageOffSet = ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                                     alpha = lerp(
+                                                         start = 0.9f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleY = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f else 0.7f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleX = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f else 0.7f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                 }
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                     doubleShadowDrop(
+                                                         thumbnailRoundness.shape(),
+                                                         4.dp,
+                                                         8.dp
+                                                     )
+                                                 }
                                                  .clip(thumbnailRoundness.shape())
-                                         )
-                                         AsyncImage(
-                                             model = nextMediaItem.mediaMetadata.artworkUri.toString()
-                                                 .resize(1200, 1200),
-                                             contentDescription = null,
-                                             contentScale = ContentScale.Fit,
-                                             modifier = Modifier
-                                                 .padding(
-                                                     all = playerThumbnailSize.size.dp + 40.dp
+                                                 .combinedClickable(
+                                                     interactionSource = remember { MutableInteractionSource() },
+                                                     indication = null,
+                                                     onClick = {
+                                                         if (it == pagerState.settledPage && thumbnailTapEnabled) {
+                                                             if (isShowingVisualizer) isShowingVisualizer = false
+                                                             isShowingLyrics = !isShowingLyrics
+                                                         }
+                                                         if (it != pagerState.settledPage){
+                                                             binder.player.forcePlayAtIndex(mediaItems,it)
+                                                         }
+                                                     },
+                                                     onLongClick = {
+                                                         if (it == pagerState.settledPage)
+                                                             showThumbnailOffsetDialog = true
+                                                     }
                                                  )
-                                                 .padding(end = playerPlayButtonType.height.dp - 60.dp)
-                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {padding(end = 40.dp)}
-                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {offset(((thumbnailSizeDp/2) - 2*(playerThumbnailSize.size.dp)),0.dp)}
-                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {offset(((thumbnailSizeDp/3) - 2*(playerThumbnailSize.size.dp)),0.dp)}
-                                                 .conditional(thumbnailType == ThumbnailType.Modern) {doubleShadowDrop(thumbnailRoundness.shape(), 4.dp, 8.dp)}
-                                                 .clip(thumbnailRoundness.shape())
+
                                          )
                                      }
-                                     thumbnailContent(
-                                         modifier = Modifier
-                                             .padding(
-                                                 all = playerThumbnailSize.size.dp
-                                             )
-                                             .thumbnailpause(
-                                                 shouldBePlaying = shouldBePlaying)
-                                     )
                                  }
                             }
                             if (isShowingVisualizer && !showvisthumbnail) {
@@ -2019,7 +2048,7 @@ fun PlayerModern(
                                                 onDragStart = {
                                                 },
                                                 onDragEnd = {
-                                                    if (!disablePlayerHorizontalSwipe) {
+                                                    if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                         if (deltaX > 5) {
                                                             binder.player.seekToPreviousMediaItem()
                                                         } else if (deltaX < -5) {
@@ -2043,8 +2072,8 @@ fun PlayerModern(
                     controlsContent(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
-                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {fillMaxHeight()}
-                            .conditional(landscapeLayout == LandscapeLayout.Layout1) {weight(1f)}
+                            .conditional(playerType == PlayerType.Essential) {fillMaxHeight()}
+                            .conditional(playerType == PlayerType.Essential) {weight(1f)}
                     )
                     if (!showthumbnail) {
                         StatsForNerds(
@@ -2163,20 +2192,122 @@ fun PlayerModern(
                     modifier = Modifier
                         .weight(1.2f)
                 ) {
-                   if (showthumbnail) {
-                       if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
-                           thumbnailContent(
-                               modifier = Modifier
-                                   .clip(thumbnailShape)
-                                   .padding(
-                                       horizontal = playerThumbnailSize.size.dp,
-                                       vertical = 4.dp,
-                                   )
-                                   .thumbnailpause(
-                                       shouldBePlaying = shouldBePlaying
-                                   )
-                           )
-                   }
+                      if (showthumbnail) {
+                         if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
+                             if (playerType == PlayerType.Modern) {
+                                 val pagerState =
+                                     rememberPagerState(pageCount = { binder.player.mediaItemCount })
+                                 val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
+                                 val configuration = LocalConfiguration.current
+                                 val screenHeight = configuration.screenHeightDp.dp
+                                 val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousal) (3*carousalSize.size.dp) else (2*playerThumbnailSize.size.dp))
+                                 VerticalPager(
+                                     state = pagerState,
+                                     pageSize = PageSize.Fixed(thumbnailSizeDp),
+                                     contentPadding = PaddingValues(top = if (expandedplayer) (thumbnailOffset.toInt()*0.01*(screenHeight)) else 0.dp, bottom = (thumbnailOffset.toInt()*0.01*(screenHeight)) + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
+                                     pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousal) (3*carousalSize.size.dp) else (2*playerThumbnailSize.size.dp)) else 10.dp,
+                                     beyondViewportPageCount = 2,
+                                     flingBehavior = fling,
+                                     modifier = modifier
+                                         .padding(top = if (expandedplayer) 0.dp else 8.dp)
+                                         .padding(all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
+                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 15.dp)}
+                                         .conditional(fadingedge){verticalFadingEdge()}
+                                 ){ it ->
+
+                                     LaunchedEffect(mediaItem.mediaId) {
+                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                     }
+
+                                     LaunchedEffect(pagerState.settledPage) {
+                                         var previousPage = pagerState.settledPage
+                                         var previousID = mediaItem.mediaId
+                                         snapshotFlow { pagerState.settledPage }.collect {
+                                             if (previousPage != it) {
+                                                 if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                             }
+                                             previousPage = it;
+                                             previousID = mediaItem.mediaId
+                                         }
+                                     }
+
+                                     AsyncImage(
+                                         model = ImageRequest.Builder(LocalContext.current)
+                                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                             .build(),
+                                         contentDescription = "",
+                                         contentScale = ContentScale.Fit,
+                                         modifier = Modifier
+                                             .padding(all = if (carousal && expandedplayer) carousalSize.size.dp else playerThumbnailSize.size.dp)
+                                             .zIndex(if (it == pagerState.currentPage) 1f
+                                                    else if (it > binder.player.currentMediaItemIndex) (1f/(it+1))
+                                                    else 0f)
+                                             .conditional(carousal)
+                                             {
+                                                 graphicsLayer {
+                                                     val pageOffSet =
+                                                         ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                                     alpha = lerp(
+                                                         start = 0.9f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleY = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.7f else 0.5f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleX = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.7f else 0.5f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                 }
+                                             }
+                                             .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
+                                             .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                 doubleShadowDrop(
+                                                     thumbnailRoundness.shape(),
+                                                     4.dp,
+                                                     8.dp
+                                                 )
+                                             }
+                                             .clip(thumbnailRoundness.shape())
+                                             .combinedClickable(
+                                                 interactionSource = remember { MutableInteractionSource() },
+                                                 indication = null,
+                                                 onClick = {
+                                                     if (it == pagerState.settledPage && thumbnailTapEnabled) {
+                                                         if (isShowingVisualizer) isShowingVisualizer = false
+                                                         isShowingLyrics = !isShowingLyrics
+                                                     }
+                                                     if (it != pagerState.settledPage){
+                                                         binder.player.forcePlayAtIndex(mediaItems,it)
+                                                     }
+                                                 },
+                                                 onLongClick = {
+                                                     if (it == pagerState.settledPage)
+                                                         showThumbnailOffsetDialog = true
+                                                 }
+                                             )
+
+                                     )
+                                 }
+                             } else {
+                                 thumbnailContent(
+                                     modifier = Modifier
+                                         .clip(thumbnailShape)
+                                         .padding(
+                                             horizontal = playerThumbnailSize.size.dp,
+                                             vertical = 4.dp,
+                                         )
+                                         .thumbnailpause(
+                                             shouldBePlaying = shouldBePlaying
+                                         )
+                                 )
+                             }
+                         }
+                      }
                    Box(
                         modifier = Modifier
                             .pointerInput(Unit) {

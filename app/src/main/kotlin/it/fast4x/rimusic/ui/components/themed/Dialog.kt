@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,6 +52,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
@@ -69,13 +75,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.times
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.common.collect.ImmutableList
+import it.fast4x.compose.persist.persist
+import it.fast4x.innertube.Innertube
 import it.fast4x.lrclib.models.Track
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -88,6 +102,7 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getDeviceVolume
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playbackDeviceVolumeKey
 import it.fast4x.rimusic.utils.playbackPitchKey
@@ -102,7 +117,11 @@ import progress
 import track
 import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.playbackDurationKey
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.thumbnailOffsetKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -472,6 +491,93 @@ inline fun SelectorDialog(
                     onClick = onDismiss,
                     modifier = Modifier
                 )
+            }
+        }
+    }
+}
+
+@Composable
+inline fun SelectorDialog2(
+    noinline onDismiss: () -> Unit,
+    title: String,
+    values: List<Info>?,
+    crossinline onValueSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    showItemsIcon: Boolean = false
+) {
+    val (colorPalette, typography) = LocalAppearance.current
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+    val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
+
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = modifier
+                .requiredSize(if (isLandscape) (0.85*screenHeight) else (0.85*screenWidth))
+                .clip(thumbnailRoundness.shape())
+                .background(color = colorPalette.background1)
+        ) {
+            if (values != null) {
+                    val pagerState = rememberPagerState(pageCount = { values.size })
+                    Box(
+
+                    ) {
+                        HorizontalPager(state = pagerState) {
+                            val browseId = values[it].id
+                            var artistPage by persist<Innertube.ArtistPage?>("artist/$browseId/artistPage")
+                            Box(
+
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(artistPage?.thumbnail?.url?.resize(1200, 1200))
+                                        .build(),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .clickable(
+                                            onClick = {
+                                                onDismiss()
+                                                onValueSelected(browseId)
+                                            }
+                                        )
+                                        .align(Alignment.Center)
+                                )
+                                values[it].name?.let { it1 ->
+                                    BasicText(
+                                        text = it1,
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = typography.xs.medium,
+                                        modifier = Modifier
+                                            .padding(bottom = 20.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+                                }
+                            }
+
+                        }
+                        Row(
+                            Modifier
+                                .height(20.dp)
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            repeat(values.size) { iteration ->
+                                val color = if (pagerState.currentPage == iteration) colorPalette.text else colorPalette.text.copy(alpha = 0.5f)
+                                Box(
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                        .size(10.dp)
+
+                                )
+                            }
+                        }
+                    }
             }
         }
     }
@@ -1109,6 +1215,177 @@ fun BlurParamsDialog(
                 }
             )
         }
+    }
+}
+    @androidx.annotation.OptIn(UnstableApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun thumbnailOffsetDialog(
+        onDismiss: () -> Unit,
+        scaleValue: (Float) -> Unit,
+        spacingValue: (Float) -> Unit,
+    ) {
+        val (colorPalette) = LocalAppearance.current
+        val defaultOffset = 10f
+        val defaultSpacing = 0f
+        var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)
+        var thumbnailSpacing by rememberPreference(thumbnailSpacingKey, defaultOffset)
+
+        DefaultDialog(
+            onDismiss = {
+                scaleValue(thumbnailOffset)
+                spacingValue(thumbnailSpacing)
+                onDismiss()
+            }
+        ) {
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = {
+                        thumbnailOffset = defaultOffset
+                    },
+                    icon = R.drawable.up_right_arrow,
+                    color = colorPalette.favoritesIcon,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .rotate(if (isLandscape) 45f else 135f)
+                )
+
+                CustomSlider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    value = thumbnailOffset,
+                    onValueChange = {
+                        thumbnailOffset = it
+                    },
+                    valueRange = 0f..50f,
+                    gap = 1,
+                    //showIndicator = true,
+                    thumb = { thumbValue ->
+                        CustomSliderDefaults.Thumb(
+                            thumbValue = "%.0f".format(thumbnailOffset),
+                            color = Color.Transparent,
+                            size = 40.dp,
+                            modifier = Modifier.background(
+                                brush = Brush.linearGradient(
+                                    listOf(
+                                        colorPalette.background1,
+                                        colorPalette.favoritesIcon
+                                    )
+                                ),
+                                shape = CircleShape
+                            )
+                        )
+                    },
+                    track = { sliderPositions ->
+                        Box(
+                            modifier = Modifier
+                                .track()
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.LightGray.copy(alpha = 0.4f),
+                                    shape = CircleShape
+                                )
+                                .background(Color.White)
+                                .padding(1.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .progress(sliderPositions = sliderPositions)
+                                    .background(
+                                        brush = Brush.linearGradient(
+                                            listOf(
+                                                colorPalette.favoritesIcon,
+                                                Color.Red
+                                            )
+                                        )
+                                    )
+                            )
+                        }
+                    }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = {
+                        thumbnailSpacing = defaultSpacing
+                    },
+                    icon = R.drawable.burger,
+                    color = colorPalette.favoritesIcon,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+
+                CustomSlider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    value = thumbnailSpacing,
+                    onValueChange = {
+                        thumbnailSpacing = it
+                    },
+                    valueRange = -50f..50f,
+                    gap = 1,
+                    //showIndicator = true,
+                    thumb = { thumbValue ->
+                        CustomSliderDefaults.Thumb(
+                            thumbValue = "%.0f".format(thumbnailSpacing),
+                            color = Color.Transparent,
+                            size = 40.dp,
+                            modifier = Modifier.background(
+                                brush = Brush.linearGradient(
+                                    listOf(
+                                        colorPalette.background1,
+                                        colorPalette.favoritesIcon
+                                    )
+                                ),
+                                shape = CircleShape
+                            )
+                        )
+                    },
+                    track = { sliderPositions ->
+                        Box(
+                            modifier = Modifier
+                                .track()
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.LightGray.copy(alpha = 0.4f),
+                                    shape = CircleShape
+                                )
+                                .background(Color.White)
+                                .padding(1.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .progress(sliderPositions = sliderPositions)
+                                    .background(
+                                        brush = Brush.linearGradient(
+                                            listOf(
+                                                colorPalette.favoritesIcon,
+                                                Color.Red
+                                            )
+                                        )
+                                    )
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
 
   /*if (isShowingLyrics && !showlyricsthumbnail)
       DefaultDialog(
@@ -1261,9 +1538,6 @@ fun BlurParamsDialog(
             )
         }
          */
-
-    }
-}
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
