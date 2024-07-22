@@ -681,6 +681,7 @@
     <string name="event_volumekeysinfo">Гучність ВВЕРХ наступна і гучність ВНИЗ минула пісня</string>
     <string name="paste">Вставити</string>
     <string name="searches_no_suggestions">Немає пропозицій</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="fadingedge">Fading Edge</string>
     <string name="carousal">Carousal View</string>
     <string name="carousalsize">Size of Carousal</string>
