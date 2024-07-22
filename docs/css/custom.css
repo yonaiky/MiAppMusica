@@ -101,6 +101,10 @@ select {
   --color: #4fc17c!important;
   cursor: pointer
 }
+body,
+.body-wrap  {
+  transition: background-color 250ms ;
+}
 body.dark {
   background-color: #0d1117;
   #toggledark {
