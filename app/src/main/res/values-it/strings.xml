@@ -681,6 +681,7 @@
     <string name="event_volumekeysinfo">Volume SU brano successivo e volume GIÙ brano precedente</string>
     <string name="paste">Incolla</string>
     <string name="searches_no_suggestions">Nessun suggerimento</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="fadingedge">Fading Edge</string>
     <string name="carousal">Carousal View</string>
     <string name="carousalsize">Size of Carousal</string>
