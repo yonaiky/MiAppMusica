@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -77,6 +78,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.times
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
@@ -506,16 +508,15 @@ inline fun SelectorDialog2(
     val (colorPalette, typography) = LocalAppearance.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
     val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = modifier
-                .padding(all = screenWidth/8)
+                .requiredSize(if (isLandscape) (0.85*screenHeight) else (0.85*screenWidth))
                 .clip(thumbnailRoundness.shape())
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
-                .aspectRatio(1f)
-
+                .background(color = colorPalette.background1)
         ) {
             if (values != null) {
                     val pagerState = rememberPagerState(pageCount = { values.size })
@@ -535,13 +536,13 @@ inline fun SelectorDialog2(
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
                                     modifier = Modifier
-                                        .aspectRatio(1f)
                                         .clickable(
                                             onClick = {
                                                 onDismiss()
                                                 onValueSelected(browseId)
                                             }
                                         )
+                                        .align(Alignment.Center)
                                 )
                                 values[it].name?.let { it1 ->
                                     BasicText(
@@ -578,7 +579,6 @@ inline fun SelectorDialog2(
                         }
                     }
             }
-
         }
     }
 }
