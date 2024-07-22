@@ -83,7 +83,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
-import it.fast4x.rimusic.ui.components.themed.SelectorDialog2
+import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.utils.doubleShadowDrop
 
 
@@ -250,7 +250,7 @@ fun InfoAlbumAndArtistModern(
     ) {
 
         if (showSelectDialog)
-            SelectorDialog2(
+            SelectorArtistsDialog(
                 title = stringResource(R.string.artists),
                 onDismiss = { showSelectDialog = false },
                 values = artistIds,
@@ -433,7 +433,14 @@ fun ControlsModern(
                   colorFilter = ColorFilter.tint(colorPalette.background2.copy(0.95f)),
                   modifier = Modifier
                       .rotate(rotationAngle)
-                      .dropShadow(CircleShape,if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,6.dp,0.dp,0.dp,0.dp)
+                      .dropShadow(
+                          CircleShape,
+                          if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,
+                          6.dp,
+                          0.dp,
+                          0.dp,
+                          0.dp
+                      )
                       .size(100.dp),
                   contentDescription = "Background Image",
                   contentScale = ContentScale.Fit

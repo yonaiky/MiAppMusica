@@ -87,10 +87,13 @@ import com.google.common.collect.ImmutableList
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.lrclib.models.Track
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
+import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -497,7 +500,7 @@ inline fun SelectorDialog(
 }
 
 @Composable
-inline fun SelectorDialog2(
+inline fun SelectorArtistsDialog(
     noinline onDismiss: () -> Unit,
     title: String,
     values: List<Info>?,
@@ -519,19 +522,20 @@ inline fun SelectorDialog2(
                 .background(color = colorPalette.background1)
         ) {
             if (values != null) {
-                    val pagerState = rememberPagerState(pageCount = { values.size })
-                    Box(
+                val pagerState = rememberPagerState(pageCount = { values.size })
 
-                    ) {
-                        HorizontalPager(state = pagerState) {
-                            val browseId = values[it].id
-                            var artistPage by persist<Innertube.ArtistPage?>("artist/$browseId/artistPage")
-                            Box(
+                    Box {
+                        HorizontalPager(state = pagerState) { idArtist ->
+                            val browseId = values[idArtist].id
+                            var artist by persist<Artist?>("artist/$browseId/artist")
+                            LaunchedEffect(browseId) {
+                                Database.artist(values[idArtist].id).collect{artist = it}
+                            }
 
-                            ) {
+                            Box {
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
-                                        .data(artistPage?.thumbnail?.url?.resize(1200, 1200))
+                                        .data(artist?.thumbnailUrl?.resize(1200, 1200))
                                         .build(),
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
@@ -544,7 +548,7 @@ inline fun SelectorDialog2(
                                         )
                                         .align(Alignment.Center)
                                 )
-                                values[it].name?.let { it1 ->
+                                values[idArtist].name?.let { it1 ->
                                     BasicText(
                                         text = it1,
                                         maxLines = 3,

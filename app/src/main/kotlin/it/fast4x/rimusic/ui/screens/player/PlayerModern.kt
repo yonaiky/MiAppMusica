@@ -267,7 +267,6 @@ import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
-import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -280,7 +279,7 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "RememberReturnType")
 @ExperimentalFoundationApi
@@ -587,15 +586,6 @@ fun PlayerModern(
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
 
-    var songInPlaylist by remember {
-        mutableStateOf(0)
-    }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            songInPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
-        }
-    }
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
@@ -621,7 +611,6 @@ fun PlayerModern(
         showButtonPlayerSystemEqualizerKey,
         false
     )
-    val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     val disableClosingPlayerSwipingDown by rememberPreference(
         disableClosingPlayerSwipingDownKey,
         true
@@ -1187,8 +1176,15 @@ fun PlayerModern(
         }
     }
 
-
-    val playlistindicator by rememberPreference(playlistindicatorKey, false)
+    var songPlaylist by remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(Unit, mediaItem.mediaId) {
+        withContext(Dispatchers.IO) {
+            songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
+        }
+    }
+    var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var carousal by rememberPreference(carousalKey, true)
     var carousalSize by rememberPreference(carousalSizeKey, CarousalSize.Biggest)
 
@@ -1217,7 +1213,7 @@ fun PlayerModern(
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .conditional(tapqueue) { clickable { showQueue = true } }
+                    .conditional(tapqueue) {clickable { showQueue = true }}
                     .background(
                         colorPalette.background2.copy(
                             alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
@@ -1504,21 +1500,20 @@ fun PlayerModern(
                             .fillMaxWidth()
                     ) {
 
-                        if (showButtonPlayerDiscover)
-                            IconButton(
-                                icon = R.drawable.star_brilliant,
-                                color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .combinedClickable(
-                                        onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                        onLongClick = {
-                                            SmartToast(context.getString(R.string.discoverinfo))
-                                        }
+                        IconButton(
+                            icon = R.drawable.star_brilliant,
+                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(24.dp)
+                                .combinedClickable(
+                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                    onLongClick = {
+                                        SmartToast(context.getString(R.string.discoverinfo))
+                                    }
 
-                                    )
-                            )
+                                )
+                        )
 
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
@@ -1539,10 +1534,10 @@ fun PlayerModern(
                             )
 
 
-                        if (showButtonPlayerAddToPlaylist) {
+                        if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = if (songInPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
+                                color = if (songPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1550,7 +1545,7 @@ fun PlayerModern(
                                             onDismiss = {
                                                 menuState.hide()
                                                 transaction {
-                                                    songInPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
+                                                    songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
                                                 }
                                             },
                                             mediaItem = mediaItem,
@@ -1565,19 +1560,10 @@ fun PlayerModern(
                                 modifier = Modifier
                                     //.padding(horizontal = 4.dp)
                                     .size(24.dp)
-                                    .conditional(songInPlaylist > 0 && playlistindicator) {
-                                        background(
-                                            colorPalette.accent,
-                                            CircleShape
-                                        )
-                                    }
-                                    .conditional(songInPlaylist > 0 && playlistindicator) {
-                                        padding(
-                                            all = 5.dp
-                                        )
-                                    }
+                                    .conditional(songPlaylist > 0 && playlistindicator) {background(colorPalette.accent,CircleShape)}
+                                    .conditional(songPlaylist > 0 && playlistindicator) {padding(all = 5.dp)}
                             )
-                        }
+
 
 
                         if (showButtonPlayerLoop)
@@ -2025,79 +2011,8 @@ fun PlayerModern(
                                                          stop = 1f,
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
-                                                     .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                         doubleShadowDrop(
-                                                             thumbnailRoundness.shape(),
-                                                             4.dp,
-                                                             8.dp
-                                                         )
-                                                     }
-                                                     .clip(thumbnailRoundness.shape())
-                                             )
-                                         }
-                                         AsyncImage(
-                                             model = prevMediaItem.mediaMetadata.artworkUri.toString()
-                                                 .resize(1200, 1200),
-                                             contentDescription = null,
-                                             contentScale = ContentScale.Fit,
-                                             modifier = Modifier
-                                                 .padding(
-                                                     all = playerThumbnailSize.size.dp + 40.dp
-                                                 )
-                                                 .padding(start = playerPlayButtonType.height.dp - 60.dp)
-                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
-                                                     padding(
-                                                         start = 40.dp
-                                                     )
                                                  }
-                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {
-                                                     offset(
-                                                         -((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                 }
-                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {
-                                                     offset(
-                                                         -((thumbnailSizeDp / 3) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                 }
-                                                 .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                     doubleShadowDrop(
-                                                         thumbnailRoundness.shape(),
-                                                         4.dp,
-                                                         8.dp
-                                                     )
-                                                 }
-                                                 .clip(thumbnailRoundness.shape())
-                                         )
-                                         AsyncImage(
-                                             model = nextMediaItem.mediaMetadata.artworkUri.toString()
-                                                 .resize(1200, 1200),
-                                             contentDescription = null,
-                                             contentScale = ContentScale.Fit,
-                                             modifier = Modifier
-                                                 .padding(
-                                                     all = playerThumbnailSize.size.dp + 40.dp
-                                                 )
-                                                 .padding(end = playerPlayButtonType.height.dp - 60.dp)
-                                                 .conditional(playerTimelineType == PlayerTimelineType.FakeAudioBar) {
-                                                     padding(
-                                                         end = 40.dp
-                                                     )
-                                                 }
-                                                 .conditional(prevNextSongs == PrevNextSongs.onesong) {
-                                                     offset(
-                                                         ((thumbnailSizeDp / 2) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                 }
-                                                 .conditional(prevNextSongs == PrevNextSongs.twosongs) {
-                                                     offset(
-                                                         ((thumbnailSizeDp / 3) - 2 * (playerThumbnailSize.size.dp)),
-                                                         0.dp
-                                                     )
-                                                 }
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
                                                  .conditional(thumbnailType == ThumbnailType.Modern) {
                                                      doubleShadowDrop(
                                                          thumbnailRoundness.shape(),
@@ -2126,17 +2041,6 @@ fun PlayerModern(
 
                                          )
                                      }
-                                         )
-                                     }
-                                     thumbnailContent(
-                                         modifier = Modifier
-                                             .padding(
-                                                 all = playerThumbnailSize.size.dp
-                                             )
-                                             .thumbnailpause(
-                                                 shouldBePlaying = shouldBePlaying
-                                             )
-                                     )
                                  }
                             }
                             if (isShowingVisualizer && !showvisthumbnail) {
