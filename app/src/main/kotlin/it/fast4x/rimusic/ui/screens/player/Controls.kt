@@ -68,7 +68,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteName
-import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerControlsType
@@ -77,6 +76,7 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
@@ -127,7 +127,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
@@ -274,8 +274,8 @@ fun Controls(
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
     var showthumbnail by rememberPreference(showthumbnailKey, false)
-    var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
-    val expandedlandscape = (landscapeLayout == LandscapeLayout.Layout2) || (expandedplayer && !showthumbnail)
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    val expandedlandscape = (isLandscape && playerType == PlayerType.Modern) || (expandedplayer && !showthumbnail)
 
     Box(
         modifier = Modifier

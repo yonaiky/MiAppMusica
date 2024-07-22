@@ -83,6 +83,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import it.fast4x.rimusic.ui.components.themed.SelectorDialog2
 import it.fast4x.rimusic.utils.doubleShadowDrop
 
 
@@ -249,7 +250,7 @@ fun InfoAlbumAndArtistModern(
     ) {
 
         if (showSelectDialog)
-            SelectorDialog(
+            SelectorDialog2(
                 title = stringResource(R.string.artists),
                 onDismiss = { showSelectDialog = false },
                 values = artistIds,

@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.CarousalSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
-import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -58,6 +58,7 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -122,19 +123,22 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
+import it.fast4x.rimusic.utils.carousalKey
+import it.fast4x.rimusic.utils.carousalSizeKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showtwosongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
-import it.fast4x.rimusic.utils.landscapeLayoutKey
+import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
-
+import it.fast4x.rimusic.utils.noblurKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -268,11 +272,15 @@ fun AppearanceSettings() {
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
     var showtwosongs by rememberPreference(showtwosongsKey, true)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
-    var landscapeLayout by rememberPreference(landscapeLayoutKey,LandscapeLayout.Layout1)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
     var statsfornerds by rememberPreference(statsfornerdsKey, false)
 
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    var noblur by rememberPreference(noblurKey, true)
+    var fadingedge by rememberPreference(fadingedgeKey, false)
+    var carousal by rememberPreference(carousalKey, true)
+    var carousalSize by rememberPreference(carousalSizeKey, CarousalSize.Biggest)
 
     Column(
         modifier = Modifier
@@ -409,43 +417,9 @@ fun AppearanceSettings() {
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
+        if (!showthumbnail) showlyricsthumbnail = false; showvisthumbnail = false
         if (showlyricsthumbnail) expandedlyrics = false
-        
-        if (isLandscape) {
-            if (filter.isNullOrBlank() || stringResource(R.string.landscapelayout).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.landscapelayout),
-                    titleSecondary = stringResource(R.string.layoutinfo),
-                    selectedValue = landscapeLayout,
-                    onValueSelected = { landscapeLayout = it },
-                    valueText = {
-                        when (it) {
-                            LandscapeLayout.Layout1 -> stringResource(R.string.layout) + " 1"
-                            LandscapeLayout.Layout2 -> stringResource(R.string.layout) + " 2"
-                        }
-                    }
-                )
-            if (landscapeLayout == LandscapeLayout.Layout2 && showthumbnail) {
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.hideprevnext),
-                    titleSecondary = "",
-                    selectedValue = prevNextSongs,
-                    onValueSelected = { prevNextSongs = it },
-                    valueText = {
-                        when (it) {
-                            PrevNextSongs.Hide -> stringResource(R.string.hide)
-                            PrevNextSongs.onesong -> stringResource(R.string.onesong)
-                            PrevNextSongs.twosongs -> stringResource(R.string.twosongs)
-                        }
-                    }
-                )
-            }
-        }
-        
+
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                 filterCharSequence,
                 true
@@ -457,20 +431,89 @@ fun AppearanceSettings() {
                 isChecked = showTopActionsBar,
                 onCheckedChange = { showTopActionsBar = it }
             )
-        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-        if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.playertype).contains(
                 filterCharSequence,
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_thumbnail),
-                text = "",
-                isChecked = showthumbnail,
-                onCheckedChange = { showthumbnail = it;showlyricsthumbnail = it; showvisthumbnail = it }
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.playertype),
+                selectedValue = playerType,
+                onValueSelected = {
+                    playerType = it
+                },
+                valueText = {
+                    when (it) {
+                        PlayerType.Modern -> stringResource(R.string.pcontrols_modern)
+                        PlayerType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
             )
-        AnimatedVisibility(visible = showthumbnail){
+        if (playerType == PlayerType.Modern) {
+            if (filter.isNullOrBlank() || stringResource(R.string.fadingedge).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.fadingedge),
+                    text = "",
+                    isChecked = fadingedge,
+                    onCheckedChange = { fadingedge = it }
+                )
+        }
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+            if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_thumbnail),
+                    text = "",
+                    isChecked = showthumbnail,
+                    onCheckedChange = {
+                        showthumbnail = it;showlyricsthumbnail = it; showvisthumbnail = it
+                    }
+                )
+        }
+        AnimatedVisibility(visible = showthumbnail) {
             Column {
+                if (playerType == PlayerType.Modern && !isLandscape) {
+                    if (filter.isNullOrBlank() || stringResource(R.string.carousal).contains(
+                            filterCharSequence,
+                            true
+                        )
+                    )
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.carousal),
+                            text = "",
+                            isChecked = carousal,
+                            onCheckedChange = { carousal = it }
+                        )
+                    if (carousal) {
+                        if (filter.isNullOrBlank() || stringResource(R.string.carousalsize).contains(
+                                filterCharSequence,
+                                true
+                            )
+                        )
+                            EnumValueSelectorSettingsEntry(
+                                title = stringResource(R.string.carousalsize),
+                                selectedValue = carousalSize,
+                                onValueSelected = { carousalSize = it },
+                                valueText = {
+                                    when (it) {
+                                        CarousalSize.Small -> stringResource(R.string.small)
+                                        CarousalSize.Medium -> stringResource(R.string.medium)
+                                        CarousalSize.Big -> stringResource(R.string.big)
+                                        CarousalSize.Biggest -> stringResource(R.string.biggest)
+                                        CarousalSize.Expanded -> stringResource(R.string.expanded)
+                                    }
+                                }
+                            )
+                    }
+                }
+
                 if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
                         filterCharSequence,
                         true
@@ -581,7 +624,19 @@ fun AppearanceSettings() {
                     )
             }
         }
-        if (!showthumbnail){
+        if (!showthumbnail) {
+            if (filter.isNullOrBlank() || stringResource(R.string.noblur).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.noblur),
+                    text = "",
+                    isChecked = noblur,
+                    onCheckedChange = { noblur = it }
+                )
+
             if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
                     filterCharSequence,
                     true

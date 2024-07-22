@@ -24,6 +24,22 @@ fun Modifier.verticalFadingEdge() =
             )
         }
 
+fun Modifier.horizontalFadingEdge() =
+    graphicsLayer(alpha = 0.95f)
+        .drawWithContent {
+            drawContent()
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    listOf(
+                        Color.Transparent,
+                        Color.Black, Color.Black, Color.Black,
+                        Color.Transparent
+                    )
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+
 fun Modifier.fadingEdge(
     left: Dp? = null,
     top: Dp? = null,
