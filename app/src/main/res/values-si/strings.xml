@@ -682,6 +682,7 @@ CC-BY-SA 3.0</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="fadingedge">Fading Edge</string>
     <string name="carousal">Carousal View</string>
     <string name="carousalsize">Size of Carousal</string>
