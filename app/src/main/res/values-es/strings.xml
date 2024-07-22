@@ -665,6 +665,8 @@
     <string name="statsfornerdsplayer">Mostrar estadísticas para nerds en el reproductor</string>
     <string name="discover">Descubrir</string>
     <string name="discoverinfo">Quitar de la cola las canciones que te gustan o que estén en una lista de reproducción</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -679,4 +681,7 @@
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
+    <string name="fadingedge">Fading Edge</string>
+    <string name="carousal">Carousal View</string>
+    <string name="carousalsize">Size of Carousal</string>
 </resources>
