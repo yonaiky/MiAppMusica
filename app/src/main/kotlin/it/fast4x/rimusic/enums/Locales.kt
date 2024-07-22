@@ -28,6 +28,7 @@ enum class Languages {
     Irish,
     Japanese,
     Korean,
+    Malayalam,
     Odia,
     Persian,
     Polish,
@@ -46,7 +47,7 @@ enum class Languages {
     Ukrainian,
     Vietnamese;
 
-    var code: String = "en"
+    val code: String
         get() = when (this) {
             System -> "system"
             Afrikaans -> "af"
@@ -76,6 +77,7 @@ enum class Languages {
             Hungarian -> "hu"
             Spanish -> "es"
             French -> "fr"
+            Malayalam -> "ml"
             Odia -> "or"
             Persian -> "fa"
             Polish -> "pl"
@@ -95,4 +97,229 @@ enum class Languages {
         }
 
 
+}
+
+enum class Countries {
+    AR,
+    DZ,
+    AU,
+    AT,
+    AZ,
+    BH,
+    BD,
+    BY,
+    BE,
+    BO,
+    BA,
+    BR,
+    BG,
+    KH,
+    CA,
+    CL,
+    HK,
+    CO,
+    CR,
+    HR,
+    CY,
+    CZ,
+    DK,
+    DO,
+    EC,
+    EG,
+    SV,
+    EE,
+    FI,
+    FR,
+    GE,
+    DE,
+    GH,
+    GR,
+    GT,
+    HN,
+    HU,
+    IS,
+    IN,
+    ID,
+    IQ,
+    IE,
+    IL,
+    IT,
+    JM,
+    JP,
+    JO,
+    KZ,
+    KE,
+    KR,
+    KW,
+    LA,
+    LV,
+    LB,
+    LY,
+    LI,
+    LT,
+    LU,
+    MK,
+    MY,
+    MT,
+    MX,
+    ME,
+    MA,
+    NP,
+    NL,
+    NZ,
+    NI,
+    NG,
+    NO,
+    OM,
+    PK,
+    PA,
+    PG,
+    PY,
+    PE,
+    PH,
+    PL,
+    PT,
+    PR,
+    QA,
+    RO,
+    RU,
+    SA,
+    SN,
+    RS,
+    SG,
+    SK,
+    SI,
+    ZA,
+    ES,
+    LK,
+    SE,
+    CH,
+    TW,
+    TZ,
+    TH,
+    TN,
+    TR,
+    UG,
+    UA,
+    AE,
+    GB,
+    US,
+    UY,
+    VE,
+    VN,
+    YE,
+    ZW;
+
+    val country: String
+        get() = when (this) {
+            AR -> "Argentina"
+            DZ -> "Algeria"
+            AU -> "Australia"
+            AT -> "Austria"
+            AZ -> "Azerbaijan"
+            BH -> "Bahrain"
+            BD -> "Bangladesh"
+            BY -> "Belarus"
+            BE -> "Belgium"
+            BO -> "Bolivia"
+            BA -> "Bosnia and Herzegovina"
+            BR -> "Brazil"
+            BG -> "Bulgaria"
+            KH -> "Cambodia"
+            CA -> "Canada"
+            CL -> "Chile"
+            HK -> "Hong Kong"
+            CO -> "Colombia"
+            CR -> "Costa Rica"
+            HR -> "Croatia"
+            CY -> "Cyprus"
+            CZ -> "Czech Republic"
+            DK -> "Denmark"
+            DO -> "Dominican Republic"
+            EC -> "Ecuador"
+            EG -> "Egypt"
+            SV -> "El Salvador"
+            EE -> "Es->nia"
+            FI -> "Finland"
+            FR -> "France"
+            GE -> "Georgia"
+            DE -> "Germany"
+            GH -> "Ghana"
+            GR -> "Greece"
+            GT -> "Guatemala"
+            HN -> "Honduras"
+            HU -> "Hungary"
+            IS -> "Iceland"
+            IN -> "India"
+            ID -> "Indonesia"
+            IQ -> "Iraq"
+            IE -> "Ireland"
+            IL -> "Israel"
+            IT -> "Italy"
+            JM -> "Jamaica"
+            JP -> "Japan"
+            JO -> "Jordan"
+            KZ -> "Kazakhstan"
+            KE -> "Kenya"
+            KR -> "South Korea"
+            KW -> "Kuwait"
+            LA -> "Lao"
+            LV -> "Latvia"
+            LB -> "Lebanon"
+            LY -> "Libya"
+            LI -> "Liechtenstein"
+            LT -> "Lithuania"
+            LU -> "Luxembourg"
+            MK -> "Macedonia"
+            MY -> "Malaysia"
+            MT -> "Malta"
+            MX -> "Mexico"
+            ME -> "Montenegro"
+            MA -> "Morocco"
+            NP -> "Nepal"
+            NL -> "Netherlands"
+            NZ -> "New Zealand"
+            NI -> "Nicaragua"
+            NG -> "Nigeria"
+            NO -> "Norway"
+            OM -> "Oman"
+            PK -> "Pakistan"
+            PA -> "Panama"
+            PG -> "Papua New Guinea"
+            PY -> "Paraguay"
+            PE -> "Peru"
+            PH -> "Philippines"
+            PL -> "Poland"
+            PT -> "Portugal"
+            PR -> "Puer-> Rico"
+            QA -> "Qatar"
+            RO -> "Romania"
+            RU -> "Russian Federation"
+            SA -> "Saudi Arabia"
+            SN -> "Senegal"
+            RS -> "Serbia"
+            SG -> "Singapore"
+            SK -> "Slovakia"
+            SI -> "Slovenia"
+            ZA -> "South Africa"
+            ES -> "Spain"
+            LK -> "Sri Lanka"
+            SE -> "Sweden"
+            CH -> "Switzerland"
+            TW -> "Taiwan"
+            TZ -> "Tanzania"
+            TH -> "Thailand"
+            TN -> "Tunisia"
+            TR -> "Turkey"
+            UG -> "Uganda"
+            UA -> "Ukraine"
+            AE -> "United Arab Emirates"
+            GB -> "United Kingdom"
+            US -> "United States"
+            UY -> "Uruguay"
+            VE -> "Venezuela (Bolivarian Republic)"
+            VN -> "Vietnam"
+            YE -> "Yemen"
+            ZW -> "Zimbabwe"
+        }
 }

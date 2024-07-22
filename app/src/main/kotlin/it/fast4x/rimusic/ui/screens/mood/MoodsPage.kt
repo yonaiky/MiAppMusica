@@ -43,40 +43,25 @@ import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
-import it.fast4x.innertube.requests.BrowseResult
-import it.fast4x.innertube.requests.browse
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import it.fast4x.rimusic.ui.items.ArtistItem
-import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
-import it.fast4x.rimusic.ui.screens.home.MoodGridItem
 import it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
-import it.fast4x.rimusic.ui.screens.home.MoodItem
-import it.fast4x.rimusic.ui.screens.home.MoodItemColored
-import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi

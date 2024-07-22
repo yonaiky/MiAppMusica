@@ -5,6 +5,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.ContinuationResponse
+import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.SearchResponse
 import it.fast4x.innertube.models.bodies.ContinuationBody
@@ -59,4 +60,12 @@ private fun <T : Innertube.Item> MusicShelfRenderer?.toItemsPage(mapper: (MusicS
             ?.firstOrNull()
             ?.nextContinuationData
             ?.continuation
+    )
+
+private fun <T : Innertube.Item> MusicResponsiveListItemRenderer?.toItemsPage(mapper: (MusicResponsiveListItemRenderer.FlexColumn) -> T?) =
+    Innertube.ItemsPage(
+        items = this
+            ?.flexColumns
+            ?.mapNotNull(mapper),
+        continuation = null
     )

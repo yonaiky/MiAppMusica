@@ -34,17 +34,18 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.song
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextField
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
@@ -73,6 +74,7 @@ import kotlinx.coroutines.withContext
 @UnstableApi
 @Composable
 fun GoToLink(
+    navController: NavController,
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
     decorationBox: @Composable (@Composable () -> Unit) -> Unit,
@@ -92,10 +94,11 @@ fun GoToLink(
         mutableStateOf("")
     }
 
-    val context = LocalContext.current
+    //val context = LocalContext.current
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
+
 
     Box(
         modifier = Modifier
@@ -198,7 +201,7 @@ fun GoToLink(
                     val uri = textLink.toUri()
 
                     LaunchedEffect(Unit) {
-                        coroutineScope.launch(Dispatchers.IO) {
+                        coroutineScope.launch(Dispatchers.Main) {
                             when (val path = uri.pathSegments.firstOrNull()) {
                                 "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
                                     val browseId = "VL$playlistId"
@@ -207,17 +210,23 @@ fun GoToLink(
                                         Innertube.playlistPage(BrowseBody(browseId = browseId))
                                             ?.getOrNull()?.let {
                                                 it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
-                                                    albumRoute.ensureGlobal(browseId)
+                                                    //albumRoute.ensureGlobal(browseId)
+                                                    navController.navigate(route = "${NavRoutes.album.name}/$browseId")
                                                 }
                                             }
                                     } else {
                                         //playlistRoute.ensureGlobal(browseId, null)
-                                        playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
+                                        //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
+                                        navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
                                     }
                                 }
 
                                 "channel", "c" -> uri.lastPathSegment?.let { channelId ->
-                                    artistRoute.ensureGlobal(channelId)
+                                    navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
+                                }
+
+                                "search" -> uri.getQueryParameter("q")?.let { query ->
+                                        navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
                                 }
 
                                 else -> when {

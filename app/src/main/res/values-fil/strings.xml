@@ -650,6 +650,24 @@
     <string name="info_debug_mode_enabled">Naka-enable ang debug mode</string>
     <string name="info_debug_mode_is_enabled">Naka-enable ang debug mode, huwag ikalimutang i-disable ito sa settings</string>
     <string name="tapqueue">Mag-tap para ma-buksan ang queue</string>
+    <string name="past_day">Past day</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="all_time">All time</string>
+    <string name="header_view_top_of">View top %s of …</string>
+    <string name="podcast_episodes">Episodes</string>
+    <string name="podcasts">Podcasts</string>
+    <string name="controls_header_customize">Customize</string>
+    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_playback_speed">Playback speed</string>
+    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_volume">Playback Volume</string>
+    <string name="controls_title_device_volume">Device volume</string>
+    <string name="lang_malayalam">Malayalam</string>
+    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_saved_searches">Saved searches</string>
     <string name="playlistindicator">Indicator ng playlist</string>
     <string name="playlistindicatorinfo">Nag-iindicate kapang naka add na ang kanta sa playlist</string>
     <string name="deleted">Binura</string>
@@ -657,4 +675,9 @@
     <string name="statsfornerdsplayer">Ipakita ang \"stats for nerds\" sa player</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Nag-reremove ng Liked at Playlist na kanta sa queue</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
 </resources>

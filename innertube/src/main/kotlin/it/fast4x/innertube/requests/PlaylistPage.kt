@@ -20,9 +20,6 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         body.context.apply()
     }.body<BrowseResponse>()
 
-    println("mediaItem twoColumnBrowseResultsRenderer ${response.contents?.twoColumnBrowseResultsRenderer}")
-
-
     if (response.contents?.twoColumnBrowseResultsRenderer == null) {
         /* OLD */
         val header = response
@@ -99,10 +96,13 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
             ?.firstOrNull()
             ?.musicResponsiveHeaderRenderer
 
+        /*
         println("mediaItem header album year ${
             header
                 ?.subtitle?.runs?.getOrNull(2)?.text
         }")
+
+         */
 
         val contents = response
             .contents

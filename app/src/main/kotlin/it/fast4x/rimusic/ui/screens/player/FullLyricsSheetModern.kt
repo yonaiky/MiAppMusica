@@ -82,18 +82,21 @@ fun FullLyricsSheetModern(
     }
 
     val binder = LocalPlayerServiceBinder.current
+    binder?.player ?: return
+    val player = binder.player
+
     var shouldBePlaying by remember {
         mutableStateOf(false)
     }
-    shouldBePlaying = binder?.player?.shouldBePlaying == true
+    shouldBePlaying = binder.player.shouldBePlaying == true
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
     val playPauseRoundness by shouldBePlayingTransition.animateDp(
         transitionSpec = { tween(durationMillis = 100, easing = LinearEasing) },
         label = "playPauseRoundness",
-        targetValueByState = { if (it == true) 24.dp else 12.dp }
+        targetValueByState = { if (it) 24.dp else 12.dp }
     )
 
-    binder?.player?.DisposableListener {
+    binder.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {}
 
@@ -108,10 +111,13 @@ fun FullLyricsSheetModern(
     }
 
 
+    /*
     val size = thumbnailSizeDp
     var mediaId by remember {
         mutableStateOf(binder?.player?.currentMediaItem?.mediaId ?: "")
     }
+
+     */
 
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
@@ -120,9 +126,7 @@ fun FullLyricsSheetModern(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val binder = LocalPlayerServiceBinder.current
-        binder?.player ?: return
-        val player = binder.player
+
 
         Column(
             verticalArrangement = Arrangement.Top,
@@ -264,7 +268,7 @@ fun FullLyricsSheetModern(
                                                 .size(42.dp)
                                         ) {
                                             Image(
-                                                painter = painterResource(if (shouldBePlaying == true) R.drawable.pause else R.drawable.play),
+                                                painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                                                 contentDescription = null,
                                                 colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
                                                 modifier = Modifier

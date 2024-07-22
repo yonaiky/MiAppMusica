@@ -186,7 +186,7 @@ fun PlayerEssential(
         }
     )
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-    val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
+    val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.Both)
     val effectRotationEnabled by rememberPreference(effectRotationKey, true)
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
     val playPauseRoundness by shouldBePlayingTransition.animateDp(

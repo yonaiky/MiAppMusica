@@ -19,6 +19,8 @@ suspend fun Innertube.player(body: PlayerBody) = runCatchingNonCancellable {
         mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
     }.body<PlayerResponse>()
 
+    println("mediaItem requests Player response $response")
+
     if (response.playabilityStatus?.status == "OK") {
         response
     } else {

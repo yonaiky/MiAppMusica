@@ -71,6 +71,7 @@ import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
+import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 
@@ -127,7 +128,7 @@ fun Thumbnail(
     }
 
     val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
-    var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 
     player.DisposableListener {
@@ -143,8 +144,8 @@ fun Thumbnail(
             override fun onPlayerError(playbackException: PlaybackException) {
                 error = playbackException
                 binder.stopRadio()
-                context.stopService(context.intent<PlayerService>())
-                context.stopService(context.intent<MyDownloadService>())
+                //context.stopService(context.intent<PlayerService>())
+                //context.stopService(context.intent<MyDownloadService>())
             }
         }
     }
@@ -324,6 +325,7 @@ fun Thumbnail(
                 if (error != null) {
                     errorCounter = errorCounter.plus(1)
                     if (errorCounter < 3) {
+                        Timber.e("Playback error: ${error?.cause?.cause}")
                         SmartToast(
                             if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
                             else when (error?.cause?.cause) {
@@ -336,7 +338,7 @@ fun Thumbnail(
                                 else -> unknownplaybackerror
                             }, PopupType.Error
                         )
-                        player.seekToNext()
+                    //    player.seekToNext()
                     } else errorCounter = 0
                 }
             }

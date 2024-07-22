@@ -1,5 +1,8 @@
 package it.fast4x.rimusic.enums
 
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+
 enum class MaxTopPlaylistItems {
     `10`,
     `20`,
@@ -26,4 +29,21 @@ enum class MaxTopPlaylistItems {
             `200` -> 200
         }
 
+}
+
+enum class TopPlaylistPeriod {
+    PastDay,
+    PastWeek,
+    PastMonth,
+    PastYear,
+    AllTime;
+
+    val duration: Duration
+        get() = when (this) {
+            PastDay -> 1.days
+            PastWeek -> 7.days
+            PastMonth -> 30.days
+            PastYear -> 365.days
+            AllTime -> Duration.INFINITE
+        }
 }

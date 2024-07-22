@@ -91,7 +91,7 @@ fun StatsForNerds(
         var format by remember {
             mutableStateOf<Format?>(null)
         }
-        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        var showthumbnail by rememberPreference(showthumbnailKey, false)
         val transparentBackgroundActionBarPlayer by rememberPreference(
             transparentBackgroundPlayerActionBarKey,
             false
@@ -99,7 +99,7 @@ fun StatsForNerds(
         var blackgradient by rememberPreference(blackgradientKey, false)
         val playerBackgroundColors by rememberPreference(
             playerBackgroundColorsKey,
-            PlayerBackgroundColors.ThemeColor
+            PlayerBackgroundColors.BlurredCoverColor
         )
         var statsfornerdsfull by remember {mutableStateOf(false)}
 

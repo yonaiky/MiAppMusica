@@ -87,7 +87,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
-import it.fast4x.rimusic.enums.LandscapeLayout
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.LyricsFontSize
@@ -149,7 +148,6 @@ import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.lyricsBackgroundKey
 import it.fast4x.rimusic.utils.isShowingLyricsKey
-import it.fast4x.rimusic.utils.landscapeLayoutKey
 
 
 @UnstableApi
@@ -181,7 +179,7 @@ fun Lyrics(
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player
 
-        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        var showthumbnail by rememberPreference(showthumbnailKey, false)
         var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
@@ -196,7 +194,7 @@ fun Lyrics(
         )
         val playerBackgroundColors by rememberPreference(
             playerBackgroundColorsKey,
-            PlayerBackgroundColors.ThemeColor
+            PlayerBackgroundColors.BlurredCoverColor
         )
         var lyricsFontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
 
@@ -233,7 +231,7 @@ fun Lyrics(
         }
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
-        var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.None)
+        var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
 
         if (showLanguagesList) {
             translateEnabled = false
@@ -323,7 +321,6 @@ fun Lyrics(
             mutableStateOf(false)
         }
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
-        var landscapeLayout by rememberPreference(landscapeLayoutKey, LandscapeLayout.Layout1)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -645,7 +642,6 @@ fun Lyrics(
                         //val centerOffset = with(density) { (-thumbnailSize / 3).roundToPx() }
                         val centerOffset = with(density) {
                             (-thumbnailSize.div(if (expandedplayer && !showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
-                                                else if ((landscapeLayout == LandscapeLayout.Layout2) && showlyricsthumbnail && isLandscape) if (trailingContent == null) 4 else 3
                                                 else if (trailingContent == null) 3 else 2))
                                 .roundToPx()
                         }
@@ -1731,6 +1727,7 @@ fun Lyrics(
                     .fillMaxWidth(0.2f)
             ) {
 
+
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.translate,
@@ -1738,7 +1735,8 @@ fun Lyrics(
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled
-                            showPlaceholder = if (!translateEnabled) false else true
+                            //showPlaceholder = if (!translateEnabled) false else true
+                            if (translateEnabled) showLanguagesList = true
                         },
                         modifier = Modifier
                             //.padding(horizontal = 8.dp)
@@ -1746,6 +1744,8 @@ fun Lyrics(
                             .align(Alignment.BottomStart)
                             .size(24.dp)
                     )
+
+
                 Image(
                     painter = painterResource(R.drawable.ellipsis_vertical),
                     contentDescription = null,
@@ -1950,7 +1950,8 @@ fun Lyrics(
                                                     }
                                                 }
                                             )
-                                        if (!showlyricsthumbnail)
+
+                                        //if (!showlyricsthumbnail)
                                             MenuEntry(
                                                 icon = R.drawable.translate,
                                                 text = stringResource(R.string.translate),

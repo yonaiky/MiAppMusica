@@ -85,6 +85,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.buttonStateKey
@@ -113,7 +114,7 @@ fun InfoAlbumAndArtistEssential(
     val (colorPalette, typography) = LocalAppearance.current
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
     var textoutline by rememberPreference(textoutlineKey, false)
@@ -241,7 +242,7 @@ fun InfoAlbumAndArtistEssential(
     ) {
 
         if (showSelectDialog)
-            SelectorDialog(
+            SelectorArtistsDialog(
                 title = stringResource(R.string.artists),
                 onDismiss = { showSelectDialog = false },
                 values = artistIds,

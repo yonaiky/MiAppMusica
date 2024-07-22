@@ -45,6 +45,7 @@ fun languageDestination (
         Languages.Japanese -> Language.JAPANESE
         Languages.Korean -> Language.KOREAN
         Languages.Italian -> Language.ITALIAN
+        Languages.Malayalam -> Language.MALAYALAM
         Languages.Odia -> Language.ODIA
         Languages.Persian -> Language.PERSIAN
         Languages.Polish -> Language.POLISH
@@ -100,6 +101,7 @@ fun languageDestinationName (
         Languages.Japanese -> stringResource(R.string.lang_japanese)
         Languages.Korean -> stringResource(R.string.korean)
         Languages.Italian -> stringResource(R.string.italian)
+        Languages.Malayalam -> stringResource(R.string.lang_malayalam)
         Languages.Odia -> stringResource(R.string.odia)
         Languages.Persian -> stringResource(R.string.persian)
         Languages.Polish -> stringResource(R.string.polish)

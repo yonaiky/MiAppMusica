@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -322,12 +323,15 @@ fun PlaylistsItemMenu(
             } else {
                 Menu(
                     modifier = modifier
-                        .onPlaced { height = with(density) { it.size.height.toDp() } }
+                        //.onPlaced { height = with(density) { it.size.height.toDp() } }
+                        .onPlaced {
+                            height = it.size.height.dp * 0.5f
+                        }
                 ) {
                     val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
-                    val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
-                    val thumbnailArtistSizePx = thumbnailArtistSizeDp.px
+                    //val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
+                    //val thumbnailArtistSizePx = thumbnailArtistSizeDp.px
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

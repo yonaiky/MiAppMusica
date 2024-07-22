@@ -119,6 +119,31 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
     }
 }
 
+val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
+    @UnstableApi
+    get() = MediaItem.Builder()
+        .setMediaId(videoId)
+        .setUri(videoId)
+        .setCustomCacheKey(videoId)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(title)
+                .setArtist(author.toString())
+                .setAlbumTitle(title)
+                .setArtworkUri(thumbnail.firstOrNull()?.url?.toUri())
+                .setExtras(
+                    bundleOf(
+                        //"albumId" to album?.endpoint?.browseId,
+                        "durationText" to durationString,
+                        "artistNames" to author,
+                        //"artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
+                    )
+                )
+
+                .build()
+        )
+        .build()
+
 val Innertube.SongItem.asMediaItem: MediaItem
     @UnstableApi
     get() = MediaItem.Builder()

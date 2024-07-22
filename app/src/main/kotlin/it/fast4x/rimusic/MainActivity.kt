@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -194,6 +195,8 @@ import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.invokeOnReady
@@ -201,6 +204,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
@@ -257,14 +261,16 @@ import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 
 
 @UnstableApi
 class MainActivity :
     //MonetCompatActivity(),
     AppCompatActivity(),
-    MonetColorsChangedListener,
-    PersistMapOwner {
+    MonetColorsChangedListener
+    //,PersistMapOwner
+{
 
     var downloadUtil = DownloadUtil
 
@@ -286,7 +292,7 @@ class MainActivity :
     private var binder by mutableStateOf<PlayerService.Binder?>(null)
     private var intentUriData by mutableStateOf<Uri?>(null)
 
-    override lateinit var persistMap: PersistMap
+    //override lateinit var persistMap: PersistMap
 
     private var sensorManager: SensorManager? = null
     private var acceleration = 0f
@@ -322,8 +328,8 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         MonetCompat.enablePaletteCompat()
 
-        @Suppress("DEPRECATION", "UNCHECKED_CAST")
-        persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
+        //@Suppress("DEPRECATION", "UNCHECKED_CAST")
+        //persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -362,6 +368,20 @@ class MainActivity :
 
     }
 
+    /*
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            binder?.player?.forceSeekToPrevious()
+            return true
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            binder?.player?.forceSeekToNext()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+     */
+
     @OptIn(ExperimentalTextApi::class,
         ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
         ExperimentalMaterial3Api::class
@@ -397,14 +417,25 @@ class MainActivity :
             }
             if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
-                    LocalePreferenceItem(Locale.getDefault().toLanguageTag(), "")
+                    LocalePreferenceItem(
+                        hl = Locale.getDefault().toLanguageTag(),
+                        //Locale.getDefault().country
+                        gl = ""
+                    )
         }
 
-        with(encryptedPreferences) {
-            MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
-            MainApplication.pipedInstanceName = getString(pipedInstanceNameKey, "").toString()
-            MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
-            MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
+        if (preferences.getBoolean(isPipedEnabledKey, false)) {
+            runCatching {
+                with(encryptedPreferences) {
+                    MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
+                    MainApplication.pipedInstanceName =
+                        getString(pipedInstanceNameKey, "").toString()
+                    MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
+                    MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
+                }
+            }.onFailure {
+                Timber.e("MainActivity.onCreate get encryptedPreferences ${it.stackTraceToString()}")
+            }
         }
 
         setContent {
@@ -562,6 +593,7 @@ class MainActivity :
                             UiTypeKey,
                             disablePlayerHorizontalSwipeKey,
                             audioQualityFormatKey,
+                                /*
                             showButtonPlayerArrowKey,
                             showButtonPlayerAddToPlaylistKey,
                             showButtonPlayerDownloadKey,
@@ -570,15 +602,17 @@ class MainActivity :
                             showButtonPlayerShuffleKey,
                             showButtonPlayerSleepTimerKey,
                             showButtonPlayerMenuKey,
+
+                                 */
                             disableClosingPlayerSwipingDownKey,
                             showSearchTabKey,
                             navigationBarPositionKey,
                             navigationBarTypeKey,
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
-                            showButtonPlayerSystemEqualizerKey,
+                            //showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
-                            playbackFadeDurationKey,
+                            //playbackFadeDurationKey,
                             playerBackgroundColorsKey,
                             miniPlayerTypeKey
                             -> {
@@ -936,7 +970,7 @@ class MainActivity :
                         //if (playerSheetState.isDismissed) {
                         if (launchedFromNotification) {
                             intent.replaceExtras(Bundle())
-                            if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                            if (preferences.getBoolean(keepPlayerMinimizedKey, false))
                                 //playerSheetState.collapse(tween(700))
                                 showPlayer = false
                             else showPlayer = true //playerSheetState.expand(tween(500))
@@ -951,7 +985,7 @@ class MainActivity :
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
-                                    if (preferences.getBoolean(keepPlayerMinimizedKey, true))
+                                    if (preferences.getBoolean(keepPlayerMinimizedKey, false))
                                         //playerSheetState.collapse(tween(700))
                                         showPlayer = false
                                     else showPlayer = true //playerSheetState.expand(tween(500))
@@ -992,7 +1026,6 @@ class MainActivity :
                                     }
                                 }
                             } else {
-                                //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
                                 navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
                             }
                         }
@@ -1001,8 +1034,12 @@ class MainActivity :
                             try {
                                 navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
                             } catch (e:Exception) {
-                                //println("mediaItem error $e.message")
+                                Timber.e("MainActivity.onCreate intentUriData ${e.stackTraceToString()}")
                             }
+                        }
+
+                        "search" -> uri.getQueryParameter("q")?.let { query ->
+                                navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
                         }
 
                         else -> when {
@@ -1026,6 +1063,8 @@ class MainActivity :
             }
 
         }
+
+        //throw RuntimeException("This is a simulated exception to crash");
     }
 
 
@@ -1093,8 +1132,8 @@ class MainActivity :
 
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
-    override fun onRetainCustomNonConfigurationInstance() = persistMap
+    //@Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
+    //override fun onRetainCustomNonConfigurationInstance() = persistMap
 
     override fun onStop() {
         runCatching {
@@ -1109,11 +1148,15 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
 
-        if (!isChangingConfigurations) {
-            persistMap.clear()
+        //if (!isChangingConfigurations) {
+        //    persistMap.clear()
+        //}
+        runCatching {
+            monet.removeMonetColorsChangedListener(this)
+            _monet = null
+        }.onFailure {
+            Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }
-        monet.removeMonetColorsChangedListener(this)
-        _monet = null
 
     }
 

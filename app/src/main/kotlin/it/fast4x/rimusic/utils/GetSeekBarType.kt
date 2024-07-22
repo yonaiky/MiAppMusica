@@ -64,8 +64,8 @@ fun GetSeekBar(
     position: Long,
     duration: Long,
     mediaId: String,
-    media: UiMedia,
-){
+    media: UiMedia
+    ) {
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
     val (colorPalette, typography) = LocalAppearance.current
@@ -73,7 +73,7 @@ fun GetSeekBar(
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
-    var transparentbar by rememberPreference(transparentbarKey, false)
+    var transparentbar by rememberPreference(transparentbarKey, true)
     val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
@@ -132,7 +132,8 @@ fun GetSeekBar(
                 },
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.Default)
@@ -157,6 +158,7 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.ThinBar)
@@ -181,6 +183,7 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
                 shape = RoundedCornerShape(8.dp),
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
         if (playerTimelineType == PlayerTimelineType.Wavy) {
@@ -228,7 +231,8 @@ fun GetSeekBar(
                 color = colorPalette.collapsedPlayerProgressBar,
                 isActive = binder.player.isPlaying,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
         }
 
@@ -241,7 +245,9 @@ fun GetSeekBar(
                     scrubbingPosition = (it.value * duration.toFloat()).toLong()
                     binder.player.seekTo(scrubbingPosition!!)
                 },
-                modifier = Modifier.height(40.dp)
+                modifier = Modifier
+                    .height(40.dp)
+                    //.pulsatingEffect(currentValue = position.toFloat() / duration.toFloat(), isVisible = true)
             )
 
         /*

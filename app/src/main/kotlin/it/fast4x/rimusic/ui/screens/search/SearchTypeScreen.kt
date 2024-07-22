@@ -165,6 +165,7 @@ fun SearchTypeScreen(
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {
                     when (currentTabIndex) {
                         0 -> OnlineSearch(
+                            navController = navController,
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
                             onSearch = {
@@ -181,15 +182,7 @@ fun SearchTypeScreen(
                                     }
                             },
                              */
-                            onViewPlaylist = {}, //onViewPlaylist,
-                            decorationBox = decorationBox,
-                            onAction1 = { onTabChanged(0) },
-                            onAction2 = { onTabChanged(1) },
-                            onAction3 = { onTabChanged(2) },
-                            onAction4 = {
-                                //onGoToHome()
-                                navController.navigate(NavRoutes.home.name)
-                            }
+                            decorationBox = decorationBox
                         )
 
                         1 -> LocalSongSearch(
@@ -207,6 +200,7 @@ fun SearchTypeScreen(
                         )
 
                         2 -> GoToLink(
+                            navController = navController,
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
                             decorationBox = decorationBox,
