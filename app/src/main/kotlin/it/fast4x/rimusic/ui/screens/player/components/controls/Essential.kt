@@ -85,6 +85,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.ui.components.themed.SelectorDialog2
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.buttonStateKey
@@ -241,7 +242,7 @@ fun InfoAlbumAndArtistEssential(
     ) {
 
         if (showSelectDialog)
-            SelectorDialog(
+            SelectorDialog2(
                 title = stringResource(R.string.artists),
                 onDismiss = { showSelectDialog = false },
                 values = artistIds,
