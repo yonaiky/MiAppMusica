@@ -665,6 +665,8 @@
     <string name="statsfornerdsplayer">Показувати Статистику для Ботаніків в Плеєрі</string>
     <string name="discover">Огляд</string>
     <string name="discoverinfo">Видаляє з черги Улюблені пісні та пісні з Плейлиста</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Персоналізувати</string>
     <string name="controls_title_blur_effect">Ефект розмиття</string>
     <string name="controls_title_medley_duration">Тривалість медлі</string>
@@ -679,4 +681,7 @@
     <string name="event_volumekeysinfo">Гучність ВВЕРХ наступна і гучність ВНИЗ минула пісня</string>
     <string name="paste">Вставити</string>
     <string name="searches_no_suggestions">Немає пропозицій</string>
+    <string name="fadingedge">Fading Edge</string>
+    <string name="carousal">Carousal View</string>
+    <string name="carousalsize">Size of Carousal</string>
 </resources>
