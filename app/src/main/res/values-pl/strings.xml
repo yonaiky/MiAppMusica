@@ -665,6 +665,8 @@
     <string name="statsfornerdsplayer">Pokaż statystyki dla nerdów w odtwarzaczu</string>
     <string name="discover">Odkryj</string>
     <string name="discoverinfo">Usuwa utwory polubione i w playlistach z kolejki</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Personalizuj</string>
     <string name="controls_title_blur_effect">Efekt rozmycia</string>
     <string name="controls_title_medley_duration">Czas trwania składanki</string>
@@ -679,4 +681,7 @@
     <string name="event_volumekeysinfo">GÓRNY (następny utwór) i DOLNY (poprzedni utwór)</string>
     <string name="paste">Wklej</string>
     <string name="searches_no_suggestions">Brak sugestii</string>
+    <string name="fadingedge">Fading Edge</string>
+    <string name="carousal">Carousal View</string>
+    <string name="carousalsize">Size of Carousal</string>
 </resources>
