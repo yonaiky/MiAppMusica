@@ -650,13 +650,6 @@
     <string name="info_debug_mode_enabled">Debug-Modus aktiviert</string>
     <string name="info_debug_mode_is_enabled">Der Debug-Modus ist aktiviert, denke daran, diesen in den Einstellungen zu deaktivieren</string>
     <string name="tapqueue">Zum Öffnen der Warteschlange tippen</string>
-    <string name="playlistindicator">Wiedergabelisten-Indikator</string>
-    <string name="playlistindicatorinfo">Zeigt an, ob der Titel bereits zur Wiedergabeliste hinzugefügt wurde</string>
-    <string name="deleted">Gelöscht</string>
-    <string name="playlistindicatorinfo2">Titel ist in einer der Wiedergabelisten vorhanden</string>
-    <string name="statsfornerdsplayer">Zeige Statistiken für Nerds im Player</string>
-    <string name="discover">Entdecken</string>
-    <string name="discoverinfo">Markierte Titel und Titel einer Wiedergabeliste werden aus Warteschlange entfernt</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -665,6 +658,15 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">Wiedergabelisten-Indikator</string>
+    <string name="playlistindicatorinfo">Zeigt an, ob der Titel bereits zur Wiedergabeliste hinzugefügt wurde</string>
+    <string name="deleted">Gelöscht</string>
+    <string name="playlistindicatorinfo2">Titel ist in einer der Wiedergabelisten vorhanden</string>
+    <string name="statsfornerdsplayer">Zeige Statistiken für Nerds im Player</string>
+    <string name="discover">Entdecken</string>
+    <string name="discoverinfo">Markierte Titel und Titel einer Wiedergabeliste werden aus Warteschlange entfernt</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -680,4 +682,5 @@
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="fadingedge">Fading Edge</string>
 </resources>

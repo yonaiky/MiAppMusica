@@ -663,6 +663,10 @@
     <string name="deleted">Eliminado</string>
     <string name="playlistindicatorinfo2">La canción está presente en una de las listas de reproducción</string>
     <string name="statsfornerdsplayer">Mostrar estadísticas para nerds en el reproductor</string>
+    <string name="discover">Descubrir</string>
+    <string name="discoverinfo">Quitar de la cola las canciones que te gustan o que estén en una lista de reproducción</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -673,11 +677,10 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
-    <string name="discover">Descubrir</string>
-    <string name="discoverinfo">Quitar de la cola las canciones que te gustan o que estén en una lista de reproducción</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="fadingedge">Fading Edge</string>
 </resources>

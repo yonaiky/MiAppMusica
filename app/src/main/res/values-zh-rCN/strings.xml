@@ -650,13 +650,6 @@
     <string name="info_debug_mode_enabled">已打开调试模式。</string>
     <string name="info_debug_mode_is_enabled">调试模式已启用，请记得在设置中禁用它</string>
     <string name="tapqueue">点击以打开队列</string>
-    <string name="playlistindicator">播放列表指示器</string>
-    <string name="playlistindicatorinfo">提示歌曲是否已添加到播放列表</string>
-    <string name="deleted">已删除</string>
-    <string name="playlistindicatorinfo2">歌曲已存在于一个播放列表中</string>
-    <string name="statsfornerdsplayer">在播放器中显示详细统计信息</string>
-    <string name="discover">探索</string>
-    <string name="discoverinfo">从队列中移除已喜欢和播放列表中的歌曲</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -665,7 +658,9 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
-     <string name="controls_header_customize">Customize</string>
+     <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
+    <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Playback speed</string>
@@ -680,4 +675,5 @@
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="fadingedge">Fading Edge</string>
 </resources>

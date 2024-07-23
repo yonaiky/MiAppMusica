@@ -652,11 +652,6 @@
     <string name="info_debug_mode_enabled">Mode debug activé</string>
     <string name="info_debug_mode_is_enabled">Le mode débogage est activé, n\'oubliez pas de le désactiver dans les paramètres</string>
     <string name="tapqueue">Appuyez pour ouvrir la file d\'attente</string>
-    <string name="playlistindicator">Indicateur de la playlist</string>
-    <string name="playlistindicatorinfo">Indique si le titre est déjà ajouté à une playlist</string>
-    <string name="deleted">Supprimé</string>
-    <string name="playlistindicatorinfo2">Le titre est présent dans une des playlists</string>
-    <string name="statsfornerdsplayer">Afficher les statistiques pour les nerds dans le lecteur</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -665,7 +660,9 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
-     <string name="controls_header_customize">Customize</string>
+     <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
+    <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Playback speed</string>
@@ -682,4 +679,5 @@
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="fadingedge">Fading Edge</string>
 </resources>

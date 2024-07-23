@@ -665,6 +665,8 @@
     <string name="statsfornerdsplayer">Oynatıcıda meraklısı için istatistikleri göster</string>
     <string name="discover">Keşfet</string>
     <string name="discoverinfo">Oynatma sırasından beğenilen ve oynatma listesinde bulunan şarkıları kaldırır</string>
+    <string name="playertype">Oynatıcı Türü</string>
+    <string name="noblur">Şarkı Sözleri Devre Dışı Bırakıldığında Bulanıklık Yok</string>
     <string name="controls_header_customize">Özelleştir</string>
     <string name="controls_title_blur_effect">Bulanıklık efekti</string>
     <string name="controls_title_medley_duration">Potpuri süresi</string>
@@ -679,9 +681,6 @@
     <string name="event_volumekeysinfo">Sonraki şarkı için ses AÇMA ve önceki şarkı için ses KISMA</string>
     <string name="paste">Yapıştır</string>
     <string name="searches_no_suggestions">Öneri yok</string>
-    <string name="event_volumekeys">Change song with the volume keys</string>
-    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
-    <string name="paste">Paste</string>
-    <string name="searches_no_suggestions">No suggestions</string>
-    <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="action_bar_show_discover_button">Keşfet düğmesini göster</string>
+    <string name="fadingedge">Solan Kenar</string>
 </resources>
