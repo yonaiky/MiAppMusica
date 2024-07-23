@@ -1723,20 +1723,20 @@ class PlayerService : InvincibleService(),
                         Innertube.player(PlayerBody(videoId = videoId))
                     }?.getOrThrow()
 
-                    if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
+                    //if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                    Log.d("mediaItem", "bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
+                    Log.d("mediaItem", "bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
                     val format = when (audioQualityFormat) {
-                        AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
-                        AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
-                        AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
-                        AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
+                        AudioQualityFormat.Auto -> body?.streamingData?.autoMaxQualityFormat
+                        AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
+                        AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
+                        AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
                     }
 
-                    val url = when (val status = body.playabilityStatus?.status) {
+                    val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format?.let { formatIn ->
                             val mediaItem = findMediaItem(videoId)
                             if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
