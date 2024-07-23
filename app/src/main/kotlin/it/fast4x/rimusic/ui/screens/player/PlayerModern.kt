@@ -419,7 +419,6 @@ fun PlayerModern(
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 mediaItems = timeline.mediaItems
                 mediaItemIndex = binder.player.currentMediaItemIndex
-                println("mediaItem timelinechanged mediaItems ${mediaItems.size}")
             }
         }
     }
