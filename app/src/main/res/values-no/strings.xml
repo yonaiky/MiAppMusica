@@ -645,6 +645,7 @@
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
     <string name="hideprevnext">Hide Previous and Next Songs</string>
+    <string name="onesong">One Song</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
     <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
