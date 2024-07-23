@@ -663,6 +663,10 @@
     <string name="deleted">Apagado</string>
     <string name="playlistindicatorinfo2">Música está presente em uma das playlists</string>
     <string name="statsfornerdsplayer">Exibir Estatísticas para Nerds no reprodutor</string>
+    <string name="discover">Descubra</string>
+    <string name="discoverinfo">Remove músicas curtidas e da playlist da fila</string>
+    <string name="playertype">Player Type</string>
+    <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -673,11 +677,12 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
-    <string name="discover">Descubra</string>
-    <string name="discoverinfo">Remove músicas curtidas e da playlist da fila</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="fadingedge">Fading Edge</string>
+    <string name="carousel">Carousel View</string>
+    <string name="carouselsize">Size of Carousel</string>
 </resources>
