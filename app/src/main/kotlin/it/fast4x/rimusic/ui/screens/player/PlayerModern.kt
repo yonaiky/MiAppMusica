@@ -225,7 +225,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
-import it.fast4x.rimusic.enums.CarousalSize
+import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineType
@@ -245,8 +245,8 @@ import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
-import it.fast4x.rimusic.utils.carousalKey
-import it.fast4x.rimusic.utils.carousalSizeKey
+import it.fast4x.rimusic.utils.carouselKey
+import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -1185,8 +1185,8 @@ fun PlayerModern(
         }
     }
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
-    var carousal by rememberPreference(carousalKey, true)
-    var carousalSize by rememberPreference(carousalSizeKey, CarousalSize.Biggest)
+    var carousel by rememberPreference(carouselKey, true)
+    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
 
     Box(
         modifier = Modifier
@@ -1992,8 +1992,12 @@ fun PlayerModern(
                                              modifier = Modifier
                                                  .padding(all = playerThumbnailSize.size.dp)
                                                  .zIndex(if (it == pagerState.currentPage) 1f
-                                                         else if (it > binder.player.currentMediaItemIndex) (1f/(it+1))
-                                                         else 0f)
+                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                     else 0.57f)
                                                  .graphicsLayer {
                                                      val pageOffSet = ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
                                                      alpha = lerp(
@@ -2002,12 +2006,22 @@ fun PlayerModern(
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
                                                      scaleY = lerp(
-                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f else 0.7f,
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                                 else 0.57f,
                                                          stop = 1f,
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
                                                      scaleX = lerp(
-                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f else 0.7f,
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                                 else 0.57f,
                                                          stop = 1f,
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
@@ -2206,12 +2220,12 @@ fun PlayerModern(
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                  val configuration = LocalConfiguration.current
                                  val screenHeight = configuration.screenHeightDp.dp
-                                 val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousal) (3*carousalSize.size.dp) else (2*playerThumbnailSize.size.dp))
+                                 val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
                                  VerticalPager(
                                      state = pagerState,
                                      pageSize = PageSize.Fixed(thumbnailSizeDp),
                                      contentPadding = PaddingValues(top = if (expandedplayer) (thumbnailOffset.toInt()*0.01*(screenHeight)) else 0.dp, bottom = (thumbnailOffset.toInt()*0.01*(screenHeight)) + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
-                                     pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousal) (3*carousalSize.size.dp) else (2*playerThumbnailSize.size.dp)) else 10.dp,
+                                     pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp)) else 10.dp,
                                      beyondViewportPageCount = 2,
                                      flingBehavior = fling,
                                      modifier = modifier
@@ -2244,31 +2258,44 @@ fun PlayerModern(
                                          contentDescription = "",
                                          contentScale = ContentScale.Fit,
                                          modifier = Modifier
-                                             .padding(all = if (carousal && expandedplayer) carousalSize.size.dp else playerThumbnailSize.size.dp)
+                                             .padding(all = if (carousel && expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
                                              .zIndex(if (it == pagerState.currentPage) 1f
-                                                    else if (it > binder.player.currentMediaItemIndex) (1f/(it+1))
-                                                    else 0f)
-                                             .conditional(carousal)
+                                                    else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                    else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                    else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                    else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                    else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                    else 0.57f)
+                                             .conditional(carousel)
                                              {
                                                  graphicsLayer {
-                                                     val pageOffSet =
-                                                         ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
-                                                     alpha = lerp(
-                                                         start = 0.9f,
-                                                         stop = 1f,
-                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                     )
-                                                     scaleY = lerp(
-                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.7f else 0.5f,
-                                                         stop = 1f,
-                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                     )
-                                                     scaleX = lerp(
-                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.7f else 0.5f,
-                                                         stop = 1f,
-                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                     )
-                                                 }
+                                                 val pageOffSet = ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                                 alpha = lerp(
+                                                     start = 0.9f,
+                                                     stop = 1f,
+                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                 )
+                                                 scaleY = lerp(
+                                                     start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                     else 0.57f,
+                                                     stop = 1f,
+                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                 )
+                                                 scaleX = lerp(
+                                                     start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                     else 0.57f,
+                                                     stop = 1f,
+                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                 )
+                                               }
                                              }
                                              .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
                                              .conditional(thumbnailType == ThumbnailType.Modern) {

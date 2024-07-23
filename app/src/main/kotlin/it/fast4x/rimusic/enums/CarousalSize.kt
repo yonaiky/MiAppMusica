@@ -1,6 +1,6 @@
 package it.fast4x.rimusic.enums
 
-enum class CarousalSize {
+enum class CarouselSize {
     Small,
     Medium,
     Big,

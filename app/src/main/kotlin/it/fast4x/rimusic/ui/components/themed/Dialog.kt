@@ -540,6 +540,7 @@ inline fun SelectorArtistsDialog(
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
                                     modifier = Modifier
+                                        .requiredSize(if (isLandscape) (0.85*screenHeight) else (0.85*screenWidth))
                                         .clickable(
                                             onClick = {
                                                 onDismiss()
