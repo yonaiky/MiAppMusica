@@ -117,15 +117,13 @@ fun AlbumScreen(
                 if (albumPage == null
                     //&& (currentAlbum?.timestamp == null || tabIndex == 1)
                     ) {
-                    println("mediaItem home album launch start browseId $browseId")
+
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-                                //println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
-                                println("mediaItem success home album description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
-                                //Database.clearAlbum(browseId)
+
 
                                 Database.upsert(
                                     Album(
@@ -164,6 +162,7 @@ fun AlbumScreen(
             }
     }
 
+    /*
     LaunchedEffect(Unit ) {
         withContext(Dispatchers.IO) {
             Innertube.albumPage(BrowseBody(browseId = browseId))
@@ -174,6 +173,8 @@ fun AlbumScreen(
             //println("mediaItem home albumscreen albumPage songPage ${albumPage?.songsPage}")
         }
     }
+
+     */
 
 
     RouteHandler(listenToGlobalEmitter = true) {
@@ -288,6 +289,7 @@ fun AlbumScreen(
                         0 -> AlbumDetailsModern(
                             navController = navController,
                             browseId = browseId,
+                            albumPage = albumPage,
                             headerContent = headerContent,
                             thumbnailContent = thumbnailContent,
                             onSearchClick = {

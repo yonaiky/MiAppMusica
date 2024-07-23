@@ -74,4 +74,6 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingNonCancellable {
             ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
             ?.mapNotNull(Innertube.ArtistItem::from),
     )
+}?.onFailure {
+    println("ERROR in Innertube Failed relatedPage ${it.stackTraceToString()}")
 }

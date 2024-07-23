@@ -135,6 +135,7 @@ import timber.log.Timber
 fun AlbumDetailsModern(
     navController: NavController,
     browseId: String,
+    albumPage: Innertube.PlaylistOrAlbumPage?,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
     onSearchClick: () -> Unit,
@@ -147,7 +148,7 @@ fun AlbumDetailsModern(
 
     var songs by persistList<Song>("album/$browseId/songs")
     var album by persist<Album?>("album/$browseId")
-    val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
+    //val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect { songs = it }

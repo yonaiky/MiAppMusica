@@ -178,7 +178,7 @@ fun PlaylistsItemGridMenu(
             Menu(
                 modifier = modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
+                    .fillMaxHeight(0.7f)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,

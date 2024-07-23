@@ -439,6 +439,18 @@ interface Database {
     fun songsByPlayTimeDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
 
     @Transaction
+    @Query(
+        """
+        SELECT * FROM Song
+        WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%'
+        ORDER BY totalPlayTimeMs DESC
+        LIMIT :limit
+        """
+    )
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<Song>>
+
+    @Transaction
     @Query("SELECT DISTINCT S.* FROM Song S " +
             "LEFT JOIN Event E ON E.songId=S.id " +
             "WHERE (S.totalPlayTimeMs > :showHiddenSongs OR S.likedAt NOT NULL) AND S.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
@@ -540,7 +552,7 @@ interface Database {
     @Query("UPDATE Playlist SET name = REPLACE(name,'${PINNED_PREFIX}','') WHERE id = :playlistId")
     fun unPinPlaylist(playlistId: Long): Int
 
-    @Query("SELECT count(id) FROM Song WHERE id = :songId and likedAt is not NULL")
+    @Query("SELECT count(id) FROM Song WHERE id = :songId and likedAt IS NOT NULL")
     fun songliked(songId: String): Int
 
     @Query("SELECT * FROM Song WHERE id = :id")

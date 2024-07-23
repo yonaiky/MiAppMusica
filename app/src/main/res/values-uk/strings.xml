@@ -679,4 +679,19 @@
     <string name="event_volumekeysinfo">Гучність ВВЕРХ наступна і гучність ВНИЗ минула пісня</string>
     <string name="paste">Вставити</string>
     <string name="searches_no_suggestions">Немає пропозицій</string>
+    <string name="controls_header_customize">Customize</string>
+    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_playback_speed">Playback speed</string>
+    <string name="controls_title_playback_pitch">Playback pitch</string>
+    <string name="controls_title_playback_volume">Playback Volume</string>
+    <string name="controls_title_device_volume">Device volume</string>
+    <string name="lang_malayalam">Malayalam</string>
+    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_saved_searches">Saved searches</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
 </resources>

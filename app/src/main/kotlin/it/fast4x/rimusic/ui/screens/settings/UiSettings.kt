@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
@@ -138,6 +139,8 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.languageDestination
+import it.fast4x.rimusic.utils.languageDestinationName
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lastPlayerThumbnailSizeKey
 import it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
@@ -179,6 +182,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
+import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
 
@@ -216,7 +220,7 @@ fun  UiSettings() {
 
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     //var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)
@@ -226,7 +230,7 @@ fun  UiSettings() {
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     //var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Biggest)
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
     var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
@@ -277,13 +281,14 @@ fun  UiSettings() {
     var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
-    var showPlaylists by rememberPreference(showPlaylistsKey, true)
+    //var showPlaylists by rememberPreference(showPlaylistsKey, true)
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
+    var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
-    var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
+    //var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
 
     var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
     var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
@@ -309,10 +314,11 @@ fun  UiSettings() {
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
-    var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
+    //var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
 
 
     Column(
@@ -495,52 +501,7 @@ fun  UiSettings() {
                 selectedValue = languageApp,
                 onValueSelected = {languageApp = it },
                 valueText = {
-                    when (it){
-                        Languages.System -> stringResource(R.string.system_language)
-                        Languages.Afrikaans -> stringResource(R.string.lang_afrikaans)
-                        Languages.Arabic -> stringResource(R.string.arabic)
-                        Languages.Bashkir -> stringResource(R.string.bashkir)
-                        Languages.Bengali -> stringResource(R.string.lang_bengali)
-                        Languages.Catalan -> stringResource(R.string.catalan)
-                        Languages.ChineseSimplified -> stringResource(R.string.chinese_simplified)
-                        Languages.ChineseTraditional -> stringResource(R.string.chinese_traditional)
-                        Languages.Czech -> stringResource(R.string.czech)
-                        Languages.Danish -> stringResource(R.string.lang_danish)
-                        Languages.Dutch -> stringResource(R.string.lang_dutch)
-                        Languages.English -> stringResource(R.string.english)
-                        Languages.Esperanto -> stringResource(R.string.esperanto)
-                        Languages.Estonian -> stringResource(R.string.lang_estonian)
-                        Languages.Filipino -> stringResource(R.string.lang_filipino)
-                        Languages.Finnish -> stringResource(R.string.lang_finnish)
-                        Languages.French -> stringResource(R.string.french)
-                        Languages.German -> stringResource(R.string.german)
-                        Languages.Greek -> stringResource(R.string.greek)
-                        Languages.Hebrew -> stringResource(R.string.lang_hebrew)
-                        Languages.Hindi -> stringResource(R.string.lang_hindi)
-                        Languages.Hungarian -> stringResource(R.string.hungarian)
-                        Languages.Indonesian -> stringResource(R.string.indonesian)
-                        Languages.Irish -> stringResource(R.string.lang_irish)
-                        Languages.Japanese -> stringResource(R.string.lang_japanese)
-                        Languages.Korean -> stringResource(R.string.korean)
-                        Languages.Italian -> stringResource(R.string.italian)
-                        Languages.Odia -> stringResource(R.string.odia)
-                        Languages.Persian -> stringResource(R.string.persian)
-                        Languages.Polish -> stringResource(R.string.polish)
-                        Languages.PortugueseBrazilian -> stringResource(R.string.portuguese_brazilian)
-                        Languages.Portuguese -> stringResource(R.string.portuguese)
-                        Languages.Romanian -> stringResource(R.string.romanian)
-                        //Languages.RomanianEmo -> stringResource(R.string.romanian_emoticons_rom_n)
-                        Languages.Russian -> stringResource(R.string.russian)
-                        Languages.SerbianCyrillic -> stringResource(R.string.lang_serbian_cyrillic)
-                        Languages.SerbianLatin -> stringResource(R.string.lang_serbian_latin)
-                        Languages.Sinhala -> stringResource(R.string.lang_sinhala)
-                        Languages.Spanish -> stringResource(R.string.spanish)
-                        Languages.Swedish -> stringResource(R.string.lang_swedish)
-                        Languages.Telugu -> stringResource(R.string.lang_telugu)
-                        Languages.Turkish -> stringResource(R.string.turkish)
-                        Languages.Ukrainian -> stringResource(R.string.lang_ukrainian)
-                        Languages.Vietnamese -> stringResource(R.string.lang_vietnamese)
-                    }
+                    languageDestinationName(it)
                 }
             )
 
@@ -690,6 +651,19 @@ fun  UiSettings() {
                     }
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.discover),
+                text = stringResource(R.string.discoverinfo),
+                isChecked = discoverIsEnabled,
+                onCheckedChange = { discoverIsEnabled = it }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.playlistindicator).contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.playlistindicator),
@@ -765,6 +739,18 @@ fun  UiSettings() {
                     volumeNormalization = it
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.event_volumekeys),
+                text = stringResource(R.string.event_volumekeysinfo),
+                isChecked = useVolumeKeysToChangeSong,
+                onCheckedChange = {
+                    useVolumeKeysToChangeSong = it
+                }
+            )
+            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
             SwitchSettingEntry(

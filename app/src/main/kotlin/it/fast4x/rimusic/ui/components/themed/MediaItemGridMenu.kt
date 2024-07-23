@@ -246,6 +246,7 @@ fun MiniMediaItemGridMenu(
                     )
                 )
             }
+            onDismiss()
         },
         onGoToPlaylist = {
             navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")

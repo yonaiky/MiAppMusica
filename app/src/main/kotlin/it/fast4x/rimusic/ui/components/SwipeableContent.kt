@@ -44,6 +44,7 @@ fun SwipeableContent(
     swipeToRightIcon: Int,
     onSwipeToLeft: () -> Unit,
     onSwipeToRight: () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val (colorPalette) = LocalAppearance.current
@@ -66,7 +67,7 @@ fun SwipeableContent(
     }) {
         SwipeToDismissBox(
             gesturesEnabled = isSwipeToActionEnabled,
-            modifier = Modifier,
+            modifier = modifier,
             //.padding(horizontal = 16.dp)
             //.clip(RoundedCornerShape(12.dp)),
             state = dismissState,
@@ -113,16 +114,16 @@ fun SwipeableQueueItem(
     mediaItem: MediaItem,
     onSwipeToLeft: () -> Unit,
     onSwipeToRight: () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-
-    val context = LocalContext.current
 
     SwipeableContent(
         swipeToLeftIcon = R.drawable.trash,
         swipeToRightIcon = R.drawable.play_skip_forward,
         onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = onSwipeToRight
+        onSwipeToRight = onSwipeToRight,
+        modifier = modifier
     ) {
         content()
     }

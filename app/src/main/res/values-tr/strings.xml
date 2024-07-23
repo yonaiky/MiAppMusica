@@ -679,4 +679,9 @@
     <string name="event_volumekeysinfo">Sonraki şarkı için ses AÇMA ve önceki şarkı için ses KISMA</string>
     <string name="paste">Yapıştır</string>
     <string name="searches_no_suggestions">Öneri yok</string>
+    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="paste">Paste</string>
+    <string name="searches_no_suggestions">No suggestions</string>
+    <string name="action_bar_show_discover_button">Show discover button</string>
 </resources>

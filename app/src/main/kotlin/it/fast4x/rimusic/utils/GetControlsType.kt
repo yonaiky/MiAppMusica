@@ -32,6 +32,7 @@ fun GetControls(
     shouldBePlaying: Boolean,
     likedAt: Long?,
     mediaId: String,
+    onBlurScaleChange: (Float) -> Unit
 ) {
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val playerPlayButtonType by rememberPreference(
@@ -61,7 +62,8 @@ fun GetControls(
             durationValue = {
                 playbackDuration = it
                 setPlaybackDuration = true
-            }
+            },
+            scaleValue = onBlurScaleChange
         )
     }
 

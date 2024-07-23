@@ -48,15 +48,19 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .crossfade(true)
+            .networkCachePolicy(CachePolicy.ENABLED)
+            .respectCacheHeaders(false)
             .placeholder(R.drawable.loader)
             .error(R.drawable.app_icon)
             .fallback(R.drawable.app_icon)
+            /*
             .memoryCachePolicy(CachePolicy.ENABLED)
             .memoryCache(
                 MemoryCache.Builder(this)
                     .maxSizePercent(0.25)
                     .build()
             )
+             */
             .diskCachePolicy(CachePolicy.ENABLED)
             .diskCache(
                 DiskCache.Builder()
@@ -69,8 +73,6 @@ class MainApplication : Application(), ImageLoaderFactory {
                     )
                     .build()
             )
-            .networkCachePolicy(CachePolicy.ENABLED)
-            .respectCacheHeaders(false)
             .build()
     }
 

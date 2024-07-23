@@ -125,6 +125,9 @@ fun HomeSearch(
             }
 
             item(key = "gotolink") {
+                Modifier
+                    .clip(thumbnailShape)
+                    .clickable(onClick = { onSearchType(SearchType.Gotolink) })
                 PlaylistItem(
                     icon = R.drawable.query_stats,
                     colorTint = colorPalette.favoritesIcon,
@@ -132,10 +135,7 @@ fun HomeSearch(
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
-                    modifier = Modifier
-                        .clip(thumbnailShape)
-                        .clickable(onClick = { onSearchType(SearchType.Gotolink) })
-                        .animateItemPlacement()
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
             }
 

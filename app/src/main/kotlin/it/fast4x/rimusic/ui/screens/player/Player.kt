@@ -224,7 +224,7 @@ fun Player(
 
     val playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+        PlayerThumbnailSize.Biggest
     )
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
@@ -642,7 +642,7 @@ fun Player(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
-        PlayerBackgroundColors.ThemeColor
+        PlayerBackgroundColors.BlurredCoverColor
     )
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
@@ -1070,7 +1070,7 @@ fun Player(
             }
 
         }
-        var showthumbnail by rememberPreference(showthumbnailKey, true)
+        var showthumbnail by rememberPreference(showthumbnailKey, false)
         val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
             var deltaX by remember { mutableStateOf(0f) }
             //var direction by remember { mutableIntStateOf(-1)}
@@ -1213,7 +1213,8 @@ fun Player(
                 shouldBePlaying = shouldBePlaying,
                 position = positionAndDuration.first,
                 duration = positionAndDuration.second,
-                modifier = modifier
+                modifier = modifier,
+                onBlurScaleChange = {}
             )
         }
 
