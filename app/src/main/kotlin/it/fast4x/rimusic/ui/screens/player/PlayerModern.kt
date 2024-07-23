@@ -225,6 +225,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
+import androidx.media3.common.Timeline
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
@@ -394,16 +395,18 @@ fun PlayerModern(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    var mediaItems by remember {
+        mutableStateOf(binder.player.currentTimeline.mediaItems)
+    }
+    var mediaItemIndex by remember {
+        mutableIntStateOf(if (binder.player.mediaItemCount == 0) -1 else binder.player.currentMediaItemIndex)
+    }
+
+
     binder.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
-                /*
-                if (playbackFadeDuration != DurationInSeconds.Disabled) {
-                    binder.player.volume = 0f
-                    audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
-                }
-                 */
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -412,6 +415,11 @@ fun PlayerModern(
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 shouldBePlaying = binder.player.shouldBePlaying
+            }
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                mediaItems = timeline.mediaItems
+                mediaItemIndex = binder.player.currentMediaItemIndex
+                println("mediaItem timelinechanged mediaItems ${mediaItems.size}")
             }
         }
     }
@@ -898,20 +906,7 @@ fun PlayerModern(
             .build()
     )
 
-    //val imageState = painter.state
 
-    /*
-    OnGlobalRoute {
-        layoutState.collapseSoft()
-    }
-     */
-
-    //val onGoToHome = homeRoute::global
-
-
-    val mediaItems by remember {
-        mutableStateOf(binder.player.currentTimeline.mediaItems)
-    }
 
     var totalPlayTimes = 0L
     mediaItems.forEach {
