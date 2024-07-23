@@ -683,4 +683,6 @@
     <string name="searches_no_suggestions">Öneri yok</string>
     <string name="action_bar_show_discover_button">Keşfet düğmesini göster</string>
     <string name="fadingedge">Solan Kenar</string>
+    <string name="carousel">Carousel View</string>
+    <string name="carouselsize">Size of Carousel</string>
 </resources>

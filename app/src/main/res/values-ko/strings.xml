@@ -650,10 +650,6 @@
     <string name="info_debug_mode_enabled">디버그 모드 활성화됨</string>
     <string name="info_debug_mode_is_enabled">디버그 모드가 작동합니다, 끄기 위해선 설정으로 가는 걸 잊지 마세요</string>
     <string name="tapqueue">눌러서 대기열 열기</string>
-    <string name="playlistindicator">플레이리스트 지표</string>
-    <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
-    <string name="deleted">삭제됨</string>
-    <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -662,6 +658,10 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">플레이리스트 지표</string>
+    <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
+    <string name="deleted">삭제됨</string>
+    <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
@@ -683,4 +683,6 @@
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="fadingedge">Fading Edge</string>
+    <string name="carousel">Carousel View</string>
+    <string name="carouselsize">Size of Carousel</string>
 </resources>
