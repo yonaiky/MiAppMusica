@@ -233,8 +233,8 @@ const val playerTypeKey = "playerType"
 const val noblurKey = "noblur"
 const val fadingedgeKey = "fadingedge"
 const val thumbnailOffsetKey = "thumbnailOffset"
-const val carousalKey = "carousal"
-const val carousalSizeKey = "carousalSize"
+const val carouselKey = "carousel"
+const val carouselSizeKey = "carouselSize"
 const val thumbnailSpacingKey = "thumbnailSpacing"
 /**** CUSTOM THEME **** */
 

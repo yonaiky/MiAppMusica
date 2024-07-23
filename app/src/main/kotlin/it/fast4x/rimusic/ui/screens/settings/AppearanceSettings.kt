@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
-import it.fast4x.rimusic.enums.CarousalSize
+import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.LyricsColor
@@ -123,8 +123,8 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
-import it.fast4x.rimusic.utils.carousalKey
-import it.fast4x.rimusic.utils.carousalSizeKey
+import it.fast4x.rimusic.utils.carouselKey
+import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
@@ -279,8 +279,8 @@ fun AppearanceSettings() {
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     var noblur by rememberPreference(noblurKey, true)
     var fadingedge by rememberPreference(fadingedgeKey, false)
-    var carousal by rememberPreference(carousalKey, true)
-    var carousalSize by rememberPreference(carousalSizeKey, CarousalSize.Biggest)
+    var carousel by rememberPreference(carouselKey, true)
+    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
 
     Column(
         modifier = Modifier
@@ -480,34 +480,34 @@ fun AppearanceSettings() {
         AnimatedVisibility(visible = showthumbnail) {
             Column {
                 if (playerType == PlayerType.Modern && !isLandscape) {
-                    if (filter.isNullOrBlank() || stringResource(R.string.carousal).contains(
+                    if (filter.isNullOrBlank() || stringResource(R.string.carousel).contains(
                             filterCharSequence,
                             true
                         )
                     )
                         SwitchSettingEntry(
-                            title = stringResource(R.string.carousal),
+                            title = stringResource(R.string.carousel),
                             text = "",
-                            isChecked = carousal,
-                            onCheckedChange = { carousal = it }
+                            isChecked = carousel,
+                            onCheckedChange = { carousel = it }
                         )
-                    if (carousal) {
-                        if (filter.isNullOrBlank() || stringResource(R.string.carousalsize).contains(
+                    if (carousel) {
+                        if (filter.isNullOrBlank() || stringResource(R.string.carouselsize).contains(
                                 filterCharSequence,
                                 true
                             )
                         )
                             EnumValueSelectorSettingsEntry(
-                                title = stringResource(R.string.carousalsize),
-                                selectedValue = carousalSize,
-                                onValueSelected = { carousalSize = it },
+                                title = stringResource(R.string.carouselsize),
+                                selectedValue = carouselSize,
+                                onValueSelected = { carouselSize = it },
                                 valueText = {
                                     when (it) {
-                                        CarousalSize.Small -> stringResource(R.string.small)
-                                        CarousalSize.Medium -> stringResource(R.string.medium)
-                                        CarousalSize.Big -> stringResource(R.string.big)
-                                        CarousalSize.Biggest -> stringResource(R.string.biggest)
-                                        CarousalSize.Expanded -> stringResource(R.string.expanded)
+                                        CarouselSize.Small -> stringResource(R.string.small)
+                                        CarouselSize.Medium -> stringResource(R.string.medium)
+                                        CarouselSize.Big -> stringResource(R.string.big)
+                                        CarouselSize.Biggest -> stringResource(R.string.biggest)
+                                        CarouselSize.Expanded -> stringResource(R.string.expanded)
                                     }
                                 }
                             )
