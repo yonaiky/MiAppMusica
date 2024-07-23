@@ -1911,7 +1911,6 @@ fun PlayerModern(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
-                                    //if (thumbnailTapEnabled)
                                         isShowingLyrics = false
                                 },
                                 ensureSongInserted = { Database.insert(mediaItem) },
@@ -2229,6 +2228,7 @@ fun PlayerModern(
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
 
+
                                      LaunchedEffect(mediaItem.mediaId) {
                                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                      }
@@ -2364,9 +2364,7 @@ fun PlayerModern(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
-                                    if (thumbnailTapEnabled) {
                                         isShowingLyrics = false
-                                    }
                                 },
                                 ensureSongInserted = { Database.insert(mediaItem) },
                                 size = 1000.dp,
