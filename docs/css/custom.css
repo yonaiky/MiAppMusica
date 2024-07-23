@@ -14,7 +14,6 @@ select {
   opacity: 1;
   transition: ease 0.4s opacity;
 }
-
 .loader {
   width: 100px;
   aspect-ratio: 1;
@@ -52,14 +51,14 @@ select {
         text-align: right
     }
     .footer-links > li {
-        margin: 2px !important  /* play with the value until links are easy to tap on touch devices */
+        margin: 2px !important  
     }
 }
 @media (max-width: 640px) {
     .footer-links {   
         text-align: center;
     }
-}
+} 
 @media (max-width: 840px) {
   @media (min-width: 641px) {
     .feature-extended-body {
@@ -67,12 +66,12 @@ select {
     }
     .container > div:nth-child(even) {
       img.device-mockup{
-        left: calc(0vw -(95px - 12vw) *2) !important
+        left: calc(0vw - (95px - 12vw) *2) !important
       }
     }
     .container > div:nth-child(odd) {
       img.device-mockup{
-        right: calc(0vw -(95px - 12vw) *2) !important
+        right: calc(0vw - (95px - 12vw) *2) !important
       }
     }
   }
@@ -83,6 +82,68 @@ select {
 }
 .feature-extended-body p {
     color: #36517c;
+}
+.hero-bg,
+.site-footer {
+  background-color: #181d36 !important
+}
+.hero-paragraph,
+.site-footer a,
+.site-footer p {
+  color: #ABBAD0 !important
+}
+#toggledark {
+  --color: #ABBAD0;
+  --moon: 0.4;
+  --sun: 0.95
+}
+.focustoggle:hover {
+  --color: #4fc17c!important;
+  cursor: pointer
+}
+body,
+.body-wrap  {
+  transition: background-color 250ms ;
+}
+body.dark {
+  background-color: #0d1117;
+  #toggledark {
+    --sun: 0.4 !important;
+    --moon: 0.95 !important
+  }
+  #languageSelect > option{
+    color:#15182b
+  }
+  .hero-paragraph,
+  .site-footer a,
+  .site-footer p {
+    color: #ABBAD0 important;
+  }
+  .feature-extended p {
+    color: #ABBAD0;
+  }
+  .hero-bg,
+  .site-footer {
+    background-color: #0B0D19 !important;
+  }
+  .body-wrap {
+    background-color: #15182b;
+  }
+  .mockup-bg>img {
+    opacity: 0.35
+  }
+  .boxed-container {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.15)
+  }
+  .feature-extended h3 {
+      color: rgb(79, 193, 124)
+  }
+}
+.container-sm a img{
+  opacity: 0.7
+}
+a > img:hover{
+  opacity: 1
 }
 .device-mockup{
   border-radius:10px
