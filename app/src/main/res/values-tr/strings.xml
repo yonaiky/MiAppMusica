@@ -681,7 +681,7 @@
     <string name="event_volumekeysinfo">Sonraki şarkı için ses AÇMA ve önceki şarkı için ses KISMA</string>
     <string name="paste">Yapıştır</string>
     <string name="searches_no_suggestions">Öneri yok</string>
-    <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="action_bar_show_discover_button">Keşfet düğmesini göster</string>
     <string name="fadingedge">Solan Kenar</string>
     <string name="carousal">Döngü Görünümü</string>
     <string name="carousalsize">Döngü Boyutu</string>
