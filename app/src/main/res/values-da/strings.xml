@@ -683,6 +683,6 @@
     <string name="searches_no_suggestions">Ingen forslag</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="fadingedge">Fading Edge</string>
-    <string name="carousal">Carousal View</string>
-    <string name="carousalsize">Size of Carousal</string>
+    <string name="carousel">Carousel View</string>
+    <string name="carouselsize">Size of Carousel</string>
 </resources>
