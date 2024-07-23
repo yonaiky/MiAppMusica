@@ -361,10 +361,16 @@ class MainActivity :
          */
         //onNewIntent(intent)
 
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        Objects.requireNonNull(sensorManager)
-            ?.registerListener(sensorListener, sensorManager!!
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
+        if (preferences.getBoolean(shakeEventEnabledKey, false)) {
+            sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+            Objects.requireNonNull(sensorManager)
+                ?.registerListener(
+                    sensorListener,
+                    sensorManager!!
+                        .getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+        }
 
     }
 
