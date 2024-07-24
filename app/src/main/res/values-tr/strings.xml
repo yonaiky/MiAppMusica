@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Düğme Uzaklaştırma Animasyonu</string>
     <string name="thumbnailpause">Duraklatıldığında albüm kapağını küçült</string>
     <string name="upnext">Sıradaki</string>
-    <string name="showtwosongs">Sıradaki sonraki iki şarkıyı göster</string>
+    <string name="showtwosongs">Sonraki iki şarkıyı göster</string>
     <string name="showalbumcover">Albüm Kapağını Göster</string>
     <string name="do_not_translate">Tercüme etme</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Uyku zamanlayıcısı şarkı sonuna ertelendi</string>
