@@ -70,3 +70,32 @@ enum class DurationInMinutes {
             `60` -> 60
         } * 3600000L
 }
+
+enum class DurationInMilliseconds {
+    Disabled,
+    `100ms`,
+    `200ms`,
+    `300ms`,
+    `400ms`,
+    `500ms`,
+    `600ms`,
+    `700ms`,
+    `800ms`,
+    `900ms`,
+    `1000ms`;
+
+    val milliSeconds: Int get() =
+        when (this) {
+            Disabled -> 0
+            `100ms` -> 100
+            `200ms` -> 200
+            `300ms` -> 300
+            `400ms` -> 400
+            `500ms` -> 500
+            `600ms` -> 600
+            `700ms` -> 700
+            `800ms` -> 800
+            `900ms` -> 900
+            `1000ms` -> 1000
+        }
+}

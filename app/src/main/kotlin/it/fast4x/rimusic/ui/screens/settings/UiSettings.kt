@@ -61,6 +61,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.DurationInSeconds
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
@@ -153,6 +154,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerPositionKey
@@ -315,6 +317,7 @@ fun  UiSettings() {
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
     //var playbackFadeDuration by rememberPreference(playbackFadeDurationKey, DurationInSeconds.Disabled)
+    var playbackFadeAudioDuration by rememberPreference(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled)
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
@@ -586,7 +589,23 @@ fun  UiSettings() {
                 }
             )
 
-/*
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.effect_fade_audio),
+                titleSecondary = stringResource(R.string.effect_fade_audio_description),
+                selectedValue = playbackFadeAudioDuration,
+                onValueSelected = { playbackFadeAudioDuration = it },
+                valueText = {
+                    when (it) {
+                        DurationInMilliseconds.Disabled -> stringResource(R.string.vt_disabled)
+                        else -> {
+                            it.toString()
+                        }
+                    }
+                }
+            )
+
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_songs).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_songs),
@@ -608,8 +627,9 @@ fun  UiSettings() {
                     }
                 }
             )
+         */
 
- */
+
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))

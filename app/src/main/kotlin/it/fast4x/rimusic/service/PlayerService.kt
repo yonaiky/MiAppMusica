@@ -91,6 +91,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
@@ -134,6 +135,7 @@ import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
@@ -141,6 +143,7 @@ import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipSilenceKey
+import it.fast4x.rimusic.utils.startFadeAnimator
 import it.fast4x.rimusic.utils.timer
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
@@ -727,7 +730,8 @@ class PlayerService : InvincibleService(),
                             AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
                         )
                         if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
-                            binder.player.pause()
+                            //binder.player.pause()
+                            binder.callPause({ binder.player.pause() } )
                             SmartToast(resources.getString(R.string.info_paused_with_volume_zero))
                         }
                     } else  {
@@ -1402,12 +1406,20 @@ class PlayerService : InvincibleService(),
 
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        super.onIsPlayingChanged(isPlaying)
+        if (isPlaying)
+            startFadeAnimator(
+                player = binder.player,
+                duration = 1000,
+                fadeIn = isPlaying
+            )
 
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
+
+        super.onIsPlayingChanged(isPlaying)
     }
+
 
     @UnstableApi
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -2203,16 +2215,35 @@ class PlayerService : InvincibleService(),
                 }
             }
         }
+
+        fun callPause(onPause: () -> Unit) {
+            val force = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
+            val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
+            if (player.isPlaying) {
+                if (force) {
+                    player.pause()
+                    onPause()
+                } else {
+                    startFadeAnimator(player, duration, false) {
+                        //Code to run when Animator Ends
+                        player.pause()
+                        onPause()
+                    }
+                }
+            }
+        }
     }
 
     private inner class SessionCallback(private val player: Player) :
         MediaSessionCompat.Callback() {
         override fun onPlay() = player.play()
-        override fun onPause() = player.pause()
+        //override fun onPause() = player.pause()
+        override fun onPause() = binder.callPause({ player.pause() } )
         override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
         override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
-        override fun onStop() = player.pause()
+        //override fun onStop() = player.pause()
+        override fun onStop() = binder.callPause({ player.pause() } )
         override fun onRewind() = player.seekToDefaultPosition()
         override fun onSkipToQueueItem(id: Long) =
             runCatching { player.seekToDefaultPosition(id.toInt()) }.let { }
@@ -2319,7 +2350,8 @@ class PlayerService : InvincibleService(),
         // Prior Android 11
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                Action.pause.value -> player.pause()
+                //Action.pause.value -> player.pause()
+                Action.pause.value -> binder.callPause({ player.pause() } )
                 Action.play.value -> player.play()
                 Action.next.value -> player.forceSeekToNext()
                 Action.previous.value -> player.forceSeekToPrevious()

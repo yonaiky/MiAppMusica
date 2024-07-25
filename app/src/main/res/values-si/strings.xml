@@ -687,4 +687,6 @@ CC-BY-SA 3.0</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
+    <string name="effect_fade_audio">Fade audio</string>
+    <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
 </resources>
