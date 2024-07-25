@@ -23,6 +23,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,7 +41,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -120,6 +125,7 @@ import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
@@ -128,7 +134,7 @@ import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
-import it.fast4x.rimusic.utils.showtwosongsKey
+import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -270,7 +276,7 @@ fun AppearanceSettings() {
     var expandedlyrics by rememberPreference(expandedlyricsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
-    var showtwosongs by rememberPreference(showtwosongsKey, true)
+    var showsongs by rememberPreference(showsongsKey, "2")
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
@@ -449,19 +455,7 @@ fun AppearanceSettings() {
                     }
                 },
             )
-        if (playerType == PlayerType.Modern) {
-            if (filter.isNullOrBlank() || stringResource(R.string.fadingedge).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.fadingedge),
-                    text = "",
-                    isChecked = fadingedge,
-                    onCheckedChange = { fadingedge = it }
-                )
-        }
+
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
             if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
                     filterCharSequence,
@@ -479,6 +473,21 @@ fun AppearanceSettings() {
         }
         AnimatedVisibility(visible = showthumbnail) {
             Column {
+                if (playerType == PlayerType.Modern) {
+                    if (filter.isNullOrBlank() || stringResource(R.string.fadingedge).contains(
+                            filterCharSequence,
+                            true
+                        )
+                    )
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.fadingedge),
+                            text = "",
+                            isChecked = fadingedge,
+                            onCheckedChange = { fadingedge = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                }
+
                 if (playerType == PlayerType.Modern && !isLandscape) {
                     if (filter.isNullOrBlank() || stringResource(R.string.carousel).contains(
                             filterCharSequence,
@@ -489,7 +498,8 @@ fun AppearanceSettings() {
                             title = stringResource(R.string.carousel),
                             text = "",
                             isChecked = carousel,
-                            onCheckedChange = { carousel = it }
+                            onCheckedChange = { carousel = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
                     if (carousel) {
                         if (filter.isNullOrBlank() || stringResource(R.string.carouselsize).contains(
@@ -509,7 +519,8 @@ fun AppearanceSettings() {
                                         CarouselSize.Biggest -> stringResource(R.string.biggest)
                                         CarouselSize.Expanded -> stringResource(R.string.expanded)
                                     }
-                                }
+                                },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                             )
                     }
                 }
@@ -523,7 +534,8 @@ fun AppearanceSettings() {
                         title = stringResource(R.string.thumbnailpause),
                         text = "",
                         isChecked = thumbnailpause,
-                        onCheckedChange = { thumbnailpause = it }
+                        onCheckedChange = { thumbnailpause = it },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
 
                 if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
@@ -535,7 +547,8 @@ fun AppearanceSettings() {
                         title = stringResource(R.string.show_lyrics_thumbnail),
                         text = "",
                         isChecked = showlyricsthumbnail,
-                        onCheckedChange = { showlyricsthumbnail = it }
+                        onCheckedChange = { showlyricsthumbnail = it },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
                 if (visualizerEnabled) {
                     if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
@@ -547,7 +560,8 @@ fun AppearanceSettings() {
                             title = stringResource(R.string.showvisthumbnail),
                             text = "",
                             isChecked = showvisthumbnail,
-                            onCheckedChange = { showvisthumbnail = it }
+                            onCheckedChange = { showvisthumbnail = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
                 }
 
@@ -568,7 +582,8 @@ fun AppearanceSettings() {
                                 PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
                                 PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
                             }
-                        }
+                        },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
                 if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
                         filterCharSequence,
@@ -587,6 +602,7 @@ fun AppearanceSettings() {
                                 ThumbnailType.Essential -> stringResource(R.string.pcontrols_essential)
                             }
                         },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
 
                 if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
@@ -620,7 +636,8 @@ fun AppearanceSettings() {
                                 ThumbnailRoundness.Heavy -> stringResource(R.string.heavy)
                                 ThumbnailRoundness.Medium -> stringResource(R.string.medium)
                             }
-                        }
+                        },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
             }
         }
@@ -953,18 +970,29 @@ fun AppearanceSettings() {
                 isChecked = showNextSongsInPlayer,
                 onCheckedChange = { showNextSongsInPlayer = it }
             )
-        if (showNextSongsInPlayer) {
-            if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.showtwosongs),
-                    text = "",
-                    isChecked = showtwosongs,
-                    onCheckedChange = { showtwosongs = it }
-                )
+        AnimatedVisibility( visible = showNextSongsInPlayer) {
+          Column {
+              if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(filterCharSequence,true))
+              OutlinedTextField(
+                  value = showsongs,
+                  onValueChange = { showsongs = it },
+                  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                  textStyle = TextStyle(
+                      textAlign = TextAlign.Left,
+                      color = colorPalette.text,
+                      fontStyle = typography.xs.bold.fontStyle,
+                      fontWeight = typography.xs.bold.fontWeight,
+                      fontSize = typography.xs.bold.fontSize,
+                      fontFamily = typography.xs.bold.fontFamily
+                  ),
+                  label = { Text(stringResource(R.string.showtwosongs), color = colorPalette.text) },
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(horizontal = 50.dp)
+              )
+              if (showsongs == "0") showsongs = "1"
+              if (showsongs != "" && showsongs.toInt() > 9) showsongs = "9"
+
             if (filter.isNullOrBlank() || stringResource(R.string.showalbumcover).contains(
                     filterCharSequence,
                     true
@@ -974,8 +1002,10 @@ fun AppearanceSettings() {
                     title = stringResource(R.string.showalbumcover),
                     text = "",
                     isChecked = showalbumcover,
-                    onCheckedChange = { showalbumcover = it }
-                )
+                    onCheckedChange = { showalbumcover = it },
+                      modifier = Modifier.padding(start = 25.dp)
+                  )
+          }
         }
 
         if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(
