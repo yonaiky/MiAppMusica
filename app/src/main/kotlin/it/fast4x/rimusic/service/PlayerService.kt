@@ -726,7 +726,6 @@ class PlayerService : InvincibleService(),
                             STREAM_TYPE,
                             AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
                         )
-                        println("mediaItem currentVolume ${audio?.getStreamVolume(STREAM_TYPE)}")
                         if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
                             binder.player.pause()
                             SmartToast(resources.getString(R.string.info_paused_with_volume_zero))
