@@ -972,11 +972,7 @@ fun AppearanceSettings() {
             )
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
-              if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(
-                      filterCharSequence,
-                      true
-                  )
-              )
+              if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(filterCharSequence,true))
               OutlinedTextField(
                   value = showsongs,
                   onValueChange = { showsongs = it },
