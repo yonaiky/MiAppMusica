@@ -419,7 +419,7 @@
     <string name="lang_danish">Taani</string>
     <string name="lang_serbian_latin">Serbia (ladina)</string>
     <string name="item_deselect">Tühista valik</string>
-    <string name="show_next_songs_in_player">Kuva pleieris järgmised lood</string>
+    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
     <string name="show_remaining_song_time">Kuva loo kestvuse aeg</string>
     <string name="full_screen">Täisekraan</string>
     <string name="click_lyrics_text">Puudutage laulusõnu</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
@@ -685,4 +685,5 @@
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
+    <string name="addednext">Added to play next</string>
 </resources>

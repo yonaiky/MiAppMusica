@@ -419,7 +419,7 @@
     <string name="lang_danish">Dänisch (Dansk)</string>
     <string name="lang_serbian_latin">Serbisch - Latein (srpski)</string>
     <string name="item_deselect">Auswahl aufheben</string>
-    <string name="show_next_songs_in_player">Nächste Titel im Player anzeigen</string>
+    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
     <string name="show_remaining_song_time">Verbleibende Songzeit anzeigen</string>
     <string name="full_screen">Vollbild</string>
     <string name="click_lyrics_text">Tippe auf Songtext</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Animation des Zoom-Buttons</string>
     <string name="thumbnailpause">Thumbnail verkleinern, wenn pausiert</string>
     <string name="upnext">Als nächstes</string>
-    <string name="showtwosongs">Zeige die nächsten zwei Songs in der Warteschlange an</string>
+    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
     <string name="showalbumcover">Albumcover anzeigen</string>
     <string name="do_not_translate">Nicht übersetzen</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Schlaf-Timer erst am Ende des Songs beenden</string>
@@ -650,13 +650,6 @@
     <string name="info_debug_mode_enabled">Debug-Modus aktiviert</string>
     <string name="info_debug_mode_is_enabled">Der Debug-Modus ist aktiviert, denke daran, diesen in den Einstellungen zu deaktivieren</string>
     <string name="tapqueue">Zum Öffnen der Warteschlange tippen</string>
-    <string name="playlistindicator">Wiedergabelisten-Indikator</string>
-    <string name="playlistindicatorinfo">Zeigt an, ob der Titel bereits zur Wiedergabeliste hinzugefügt wurde</string>
-    <string name="deleted">Gelöscht</string>
-    <string name="playlistindicatorinfo2">Titel ist in einer der Wiedergabelisten vorhanden</string>
-    <string name="statsfornerdsplayer">Zeige Statistiken für Nerds im Player</string>
-    <string name="discover">Entdecken</string>
-    <string name="discoverinfo">Markierte Titel und Titel einer Wiedergabeliste werden aus Warteschlange entfernt</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -665,6 +658,13 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">Wiedergabelisten-Indikator</string>
+    <string name="playlistindicatorinfo">Zeigt an, ob der Titel bereits zur Wiedergabeliste hinzugefügt wurde</string>
+    <string name="deleted">Gelöscht</string>
+    <string name="playlistindicatorinfo2">Titel ist in einer der Wiedergabelisten vorhanden</string>
+    <string name="statsfornerdsplayer">Zeige Statistiken für Nerds im Player</string>
+    <string name="discover">Entdecken</string>
+    <string name="discoverinfo">Markierte Titel und Titel einer Wiedergabeliste werden aus Warteschlange entfernt</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -685,4 +685,5 @@
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
+    <string name="addednext">Added to play next</string>
 </resources>
