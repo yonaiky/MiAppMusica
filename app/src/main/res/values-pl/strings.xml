@@ -685,4 +685,5 @@
     <string name="fadingedge">Krawędź zanikania</string>
     <string name="carousel">Widok karuzeli</string>
     <string name="carouselsize">Rozmiar karuzeli</string>
+    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
 </resources>

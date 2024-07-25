@@ -685,4 +685,5 @@
     <string name="fadingedge">Borda Desvanecente</string>
     <string name="carousel">Visão de carrossel</string>
     <string name="carouselsize">Tamanho do Carrossel</string>
+    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
 </resources>

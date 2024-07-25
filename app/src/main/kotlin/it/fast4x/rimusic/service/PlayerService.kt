@@ -102,6 +102,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.utils.ConditionalCacheDataSourceFactory
 import it.fast4x.rimusic.utils.InvincibleService
 import it.fast4x.rimusic.utils.RingBuffer
@@ -547,7 +548,7 @@ class PlayerService : InvincibleService(),
         mediaSession.setSessionActivity(sessionActivityPendingIntent)
         mediaSession.setCallback(SessionCallback(player))
 
-        if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
+        //if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
             mediaSession.setPlaybackToRemote(getVolumeProvider())
 
 
@@ -718,32 +719,46 @@ class PlayerService : InvincibleService(),
 
         return object :
             VolumeProviderCompat(VOLUME_CONTROL_RELATIVE, maxVolume!!, currentVolume!!) {
-            override fun onAdjustVolume(direction: Int) {
-                // Up = 1, Down = -1, Release = 0
-                // Replace with your action, if you don't want to adjust system volume
-                if (direction == VOLUME_UP) {
-                    binder.player.forceSeekToNext()
-                    /*
-                    audio?.adjustStreamVolume(
-                        STREAM_TYPE,
-                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                    )
-                     */
-                } else if (direction == VOLUME_DOWN) {
-                    binder.player.forceSeekToPrevious()
-                    /*
-                    audio?.adjustStreamVolume(
-                        STREAM_TYPE,
-                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                    )
-                     */
+
+                override fun onAdjustVolume(direction: Int) {
+                    if (!preferences.getBoolean(useVolumeKeysToChangeSongKey, false)) {
+                        audio?.adjustStreamVolume(
+                            STREAM_TYPE,
+                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                        )
+                        println("mediaItem currentVolume ${audio?.getStreamVolume(STREAM_TYPE)}")
+                        if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
+                            binder.player.pause()
+                            SmartToast(resources.getString(R.string.info_paused_with_volume_zero))
+                        }
+                    } else  {
+                        // Up = 1, Down = -1, Release = 0
+                        // Replace with your action, if you don't want to adjust system volume
+                        if (direction == VOLUME_UP) {
+                            binder.player.forceSeekToNext()
+                            /*
+                        audio?.adjustStreamVolume(
+                            STREAM_TYPE,
+                            AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                        )
+                         */
+                        } else if (direction == VOLUME_DOWN) {
+                            binder.player.forceSeekToPrevious()
+                            /*
+                        audio?.adjustStreamVolume(
+                            STREAM_TYPE,
+                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                        )
+                         */
+                        }
+                        /*
+                        if (audio != null) {
+                            setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
+                        }
+                         */
+                    }
                 }
-                /*
-                if (audio != null) {
-                    setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
-                }
-                 */
-            }
+
         }
     }
 

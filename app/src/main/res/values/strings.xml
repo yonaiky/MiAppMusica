@@ -685,4 +685,5 @@
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
+    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
 </resources>

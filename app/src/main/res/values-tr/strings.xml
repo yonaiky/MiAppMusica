@@ -685,4 +685,5 @@
     <string name="fadingedge">Solan Kenar</string>
     <string name="carousel">Atlıkarınca Görünümü</string>
     <string name="carouselsize">Atlıkarınca Boyutu</string>
+    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
 </resources>
