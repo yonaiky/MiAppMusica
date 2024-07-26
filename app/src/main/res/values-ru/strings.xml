@@ -686,4 +686,5 @@
     <string name="carousel">\"Карусель\"</string>
     <string name="carouselsize">Размер карусели</string>
     <string name="addednext">Добавлено в очередь</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
 </resources>
