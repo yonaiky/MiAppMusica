@@ -686,4 +686,5 @@
     <string name="carousel">轮播视图</string>
     <string name="carouselsize">轮播视图大小</string>
     <string name="addednext">Added to play next</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
 </resources>
