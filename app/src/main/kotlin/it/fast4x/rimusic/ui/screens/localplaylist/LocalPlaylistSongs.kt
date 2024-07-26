@@ -408,7 +408,7 @@ fun LocalPlaylistSongs(
         }
     }
 
-    if (autosync) {sync()}
+    if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank()} == true) {sync()}
 
     var isReorderDisabled by rememberPreference(reorderInQueueEnabledKey, defaultValue = true)
 
