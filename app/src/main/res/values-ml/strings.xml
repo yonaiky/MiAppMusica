@@ -419,7 +419,7 @@
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show next songs in player</string>
+    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
     <string name="show_remaining_song_time">Show remaining song time</string>
     <string name="full_screen">Full screen</string>
     <string name="click_lyrics_text">Click lyrics text</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
@@ -650,11 +650,6 @@
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
     <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
     <string name="tapqueue">Tap to open Queue</string>
-    <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
-    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -663,6 +658,13 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">Playlist Indicator</string>
+    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="deleted">Deleted</string>
+    <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
+    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -673,8 +675,6 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
-    <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
@@ -685,6 +685,7 @@
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
+    <string name="addednext">Added to play next</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>

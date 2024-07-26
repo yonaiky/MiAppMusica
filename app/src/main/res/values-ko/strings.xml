@@ -419,7 +419,7 @@
     <string name="lang_danish">덴마크어</string>
     <string name="lang_serbian_latin">세르비아어(라틴어)</string>
     <string name="item_deselect">선택 해제</string>
-    <string name="show_next_songs_in_player">플레이어에서 다음 곡 표시</string>
+    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
     <string name="show_remaining_song_time">남은 노래 재생 시간 표시</string>
     <string name="full_screen">전체화면</string>
     <string name="click_lyrics_text">가사 클릭</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">버튼 줌 아웃 애니메이션</string>
     <string name="thumbnailpause">일시 정지 때 썸네일 축소</string>
     <string name="upnext">다음</string>
-    <string name="showtwosongs">대기열에서 다음 두 곡 표시</string>
+    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
     <string name="showalbumcover">앨범 커버 표시</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">곡이 끝날 때 수면 타이머 지연</string>
@@ -650,10 +650,6 @@
     <string name="info_debug_mode_enabled">디버그 모드 활성화됨</string>
     <string name="info_debug_mode_is_enabled">디버그 모드가 작동합니다, 끄기 위해선 설정으로 가는 걸 잊지 마세요</string>
     <string name="tapqueue">눌러서 대기열 열기</string>
-    <string name="playlistindicator">플레이리스트 지표</string>
-    <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
-    <string name="deleted">삭제됨</string>
-    <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
     <string name="past_day">Past day</string>
     <string name="past_week">Past week</string>
     <string name="past_month">Past month</string>
@@ -662,7 +658,13 @@
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
+    <string name="playlistindicator">플레이리스트 지표</string>
+    <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
+    <string name="deleted">삭제됨</string>
+    <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="discover">Discover</string>
+    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -673,8 +675,6 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
-    <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
@@ -685,6 +685,7 @@
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
+    <string name="addednext">Added to play next</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
