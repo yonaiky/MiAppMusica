@@ -158,7 +158,7 @@ fun PlayerEssential(
     }
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
-        MiniPlayerType.Essential
+        MiniPlayerType.Modern
     )
     LaunchedEffect(mediaItem.mediaId) {
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }

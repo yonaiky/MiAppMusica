@@ -423,7 +423,7 @@ fun AppearanceSettings() {
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
-        if (!showthumbnail) showlyricsthumbnail = false; showvisthumbnail = false
+        if (!showthumbnail) {showlyricsthumbnail = false; showvisthumbnail = false}
         if (showlyricsthumbnail) expandedlyrics = false
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
@@ -466,9 +466,7 @@ fun AppearanceSettings() {
                     title = stringResource(R.string.show_thumbnail),
                     text = "",
                     isChecked = showthumbnail,
-                    onCheckedChange = {
-                        showthumbnail = it;showlyricsthumbnail = it; showvisthumbnail = it
-                    }
+                    onCheckedChange = {showthumbnail = it},
                 )
         }
         AnimatedVisibility(visible = showthumbnail) {
