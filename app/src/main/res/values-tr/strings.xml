@@ -686,5 +686,5 @@
     <string name="carousel">Atlıkarınca Görünümü</string>
     <string name="carouselsize">Atlıkarınca Boyutu</string>
     <string name="addednext">Sıradaki şarkı olarak eklendi</string>
-    <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="autosync">İçe Aktarılan Oynatma Listelerini Otomatik Senkronize Et</string>
 </resources>
