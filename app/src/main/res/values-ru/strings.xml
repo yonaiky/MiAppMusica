@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Анимация кнопки \"Уменьшить масштаб\"</string>
     <string name="thumbnailpause">Сжать миниатюру во время паузы</string>
     <string name="upnext">Далее</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Количество треков в мини-очереди (от 1 до 9)</string>
     <string name="showalbumcover">Показать обложку альбома</string>
     <string name="do_not_translate">Не переводить</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Таймер сна с задержкой в конце песни</string>
@@ -679,11 +679,11 @@
     <string name="event_volumekeysinfo">Громкость ВВЕРХ следующая и громкость ВНИЗ предыдущая песня</string>
     <string name="paste">Вставить</string>
     <string name="searches_no_suggestions">Нет рекомендаций</string>
-    <string name="action_bar_show_discover_button">Show discover button</string>
-    <string name="playertype">Player Type</string>
-    <string name="noblur">No Blur when Lyrics is Disabled</string>
+    <string name="action_bar_show_discover_button">Показать кнопку \"Открытия\"</string>
+    <string name="playertype">Тип плеера</string>
+    <string name="noblur">Без размытия, если текст песни отключён</string>
     <string name="fadingedge">Fading Edge</string>
-    <string name="carousel">Carousel View</string>
-    <string name="carouselsize">Size of Carousel</string>
-    <string name="addednext">Added to play next</string>
+    <string name="carousel">\"Карусель\"</string>
+    <string name="carouselsize">Размер карусели</string>
+    <string name="addednext">Добавлено в очередь</string>
 </resources>
