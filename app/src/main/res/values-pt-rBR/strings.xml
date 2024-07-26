@@ -686,4 +686,5 @@
     <string name="carousel">Visão de carrossel</string>
     <string name="carouselsize">Tamanho do Carrossel</string>
     <string name="addednext">Added to play next</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
 </resources>
