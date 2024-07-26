@@ -1269,7 +1269,7 @@ fun PlayerModern(
                                       .weight(0.07f)
                               ){
                                   Icon(
-                                      painter = painterResource(id = R.drawable.chevron_forward),
+                                      painter = painterResource(id = if (pagerStateQueue.settledPage >= binder.player.currentMediaItemIndex) R.drawable.chevron_forward else R.drawable.chevron_back),
                                       contentDescription = null,
                                       modifier = Modifier
                                           .size(25.dp)
