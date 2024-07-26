@@ -688,4 +688,5 @@
     <string name="carousel">Carousel View</string>
     <string name="carouselsize">Size of Carousel</string>
     <string name="addednext">Added to play next</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
 </resources>
