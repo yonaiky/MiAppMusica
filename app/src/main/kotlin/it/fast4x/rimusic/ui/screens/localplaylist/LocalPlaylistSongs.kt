@@ -408,8 +408,6 @@ fun LocalPlaylistSongs(
         }
     }
 
-    if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank()} == true) {sync()}
-
     var isReorderDisabled by rememberPreference(reorderInQueueEnabledKey, defaultValue = true)
 
     val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
@@ -1223,6 +1221,8 @@ fun LocalPlaylistSongs(
                     )
                     //}
                 }
+
+                if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank()} == true) {sync()}
 
                 Spacer(modifier = Modifier.height(10.dp))
 
