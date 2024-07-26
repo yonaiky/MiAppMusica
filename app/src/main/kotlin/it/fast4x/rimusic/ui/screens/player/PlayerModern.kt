@@ -2058,10 +2058,7 @@ fun PlayerModern(
                         state = pagerState,
                         snapPositionalThreshold = 0.20f
                     )
-
-                   LocalContext.current // needed because of a java.lang.VerifyError
-
-                   HorizontalPager(
+                    HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 1,
                         flingBehavior = fling,
