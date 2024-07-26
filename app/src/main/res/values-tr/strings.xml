@@ -685,5 +685,5 @@
     <string name="fadingedge">Solan Kenar</string>
     <string name="carousel">Atlıkarınca Görünümü</string>
     <string name="carouselsize">Atlıkarınca Boyutu</string>
-    <string name="addednext">Added to play next</string>
+    <string name="addednext">Sıradaki şarkı olarak eklendi</string>
 </resources>
