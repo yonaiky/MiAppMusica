@@ -236,6 +236,7 @@ const val thumbnailOffsetKey = "thumbnailOffset"
 const val carouselKey = "carousel"
 const val carouselSizeKey = "carouselSize"
 const val thumbnailSpacingKey = "thumbnailSpacing"
+const val autosyncKey = "autosync"
 /**** CUSTOM THEME **** */
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

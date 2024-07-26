@@ -102,6 +102,7 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -319,6 +320,7 @@ fun  UiSettings() {
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var discoverIsEnabled by rememberPreference(discoverKey, false)
+    var autosync by rememberPreference(autosyncKey, false)
 
 
     Column(
@@ -629,6 +631,16 @@ fun  UiSettings() {
                 isChecked = disableClosingPlayerSwipingDown,
                 onCheckedChange = {
                     disableClosingPlayerSwipingDown = it
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.autosync).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.autosync),
+                text = "",
+                isChecked = autosync,
+                onCheckedChange = {
+                    autosync = it
                 }
             )
 

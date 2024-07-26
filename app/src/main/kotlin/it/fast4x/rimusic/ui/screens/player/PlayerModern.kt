@@ -79,6 +79,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
@@ -981,6 +982,7 @@ fun PlayerModern(
 
     var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
+    val pagerState =rememberPagerState(pageCount = { binder.player.mediaItemCount })
 
 
     if (!isGradientBackgroundEnabled) {
@@ -1893,7 +1895,6 @@ fun PlayerModern(
                          ) {
                              if (showthumbnail) {
                                  if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
-                                     val pagerState = rememberPagerState(pageCount = { binder.player.mediaItemCount })
                                      val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                      val pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp)
                                      HorizontalPager(
@@ -2030,12 +2031,36 @@ fun PlayerModern(
                             }
                         }
                     }
-                    controlsContent(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .conditional(playerType == PlayerType.Essential) {fillMaxHeight()}
-                            .conditional(playerType == PlayerType.Essential) {weight(1f)}
-                    )
+                    if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
+                        controlsContent(
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .fillMaxHeight()
+                                .weight(1f)
+                        )
+                    } else {
+                        key(pagerState.currentPage) {
+                            Controls(
+                                navController = navController,
+                                onCollapse = onDismiss,
+                                expandedplayer = expandedplayer,
+                                layoutState = layoutState,
+                                media = mediaItem.toUiMedia(positionAndDuration.second),
+                                mediaId = mediaItem.mediaId,
+                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                    ?: "",
+                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                artistIds = artistsInfo,
+                                albumId = albumId,
+                                shouldBePlaying = shouldBePlaying,
+                                position = positionAndDuration.first,
+                                duration = positionAndDuration.second,
+                                modifier = Modifier
+                                    .padding(vertical = 8.dp),
+                                onBlurScaleChange = { blurStrength = it }
+                            )
+                        }
+                    }
                     if (!showthumbnail) {
                         StatsForNerds(
                             mediaId = mediaItem.mediaId,
@@ -2250,10 +2275,7 @@ fun PlayerModern(
                       if (showthumbnail) {
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                              if (playerType == PlayerType.Modern) {
-                                 val pagerState =
-                                     rememberPagerState(pageCount = { binder.player.mediaItemCount })
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
-                                 val configuration = LocalConfiguration.current
                                  val screenHeight = configuration.screenHeightDp.dp
                                  val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
                                  VerticalPager(
@@ -2458,13 +2480,38 @@ fun PlayerModern(
                     modifier = Modifier
                         .height(10.dp)
                 )
-
-                controlsContent(
-                    modifier = Modifier
-                        .padding(vertical = 4.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
+                if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
+                    controlsContent(
+                        modifier = Modifier
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+                } else {
+                    key(pagerState.currentPage) {
+                        Controls(
+                            navController = navController,
+                            onCollapse = onDismiss,
+                            expandedplayer = expandedplayer,
+                            layoutState = layoutState,
+                            media = mediaItem.toUiMedia(positionAndDuration.second),
+                            mediaId = mediaItem.mediaId,
+                            title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                ?: "",
+                            artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                            artistIds = artistsInfo,
+                            albumId = albumId,
+                            shouldBePlaying = shouldBePlaying,
+                            position = positionAndDuration.first,
+                            duration = positionAndDuration.second,
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .fillMaxWidth()
+                                .weight(1f),
+                            onBlurScaleChange = { blurStrength = it }
+                        )
+                    }
+                }
 
                 if (!showthumbnail) {
                     StatsForNerds(

@@ -137,6 +137,7 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.color
@@ -227,6 +228,8 @@ fun LocalPlaylistSongs(
     var relatedSongsRecommendationResult by persist<Result<Innertube.RelatedSongs?>?>(tag = "home/relatedSongsResult")
     var songBaseRecommendation by persist<Song?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
+    var autosync by rememberPreference(autosyncKey, false)
+
     if (isRecommendationEnabled) {
         LaunchedEffect(Unit, isRecommendationEnabled) {
             Database.songsPlaylist(playlistId, sortBy, sortOrder).distinctUntilChanged()
@@ -355,6 +358,57 @@ fun LocalPlaylistSongs(
             }
         )
     }
+    fun sync() {
+        playlistPreview?.let { playlistPreview ->
+            if (!playlistPreview.playlist.name.startsWith(
+                    PIPED_PREFIX,
+                    0,
+                    true
+                )
+            ) {
+                transaction {
+                    runBlocking(Dispatchers.IO) {
+                        withContext(Dispatchers.IO) {
+                            Innertube.playlistPage(
+                                BrowseBody(
+                                    browseId = playlistPreview.playlist.browseId
+                                        ?: ""
+                                )
+                            )
+                                ?.completed()
+                        }
+                    }?.getOrNull()?.let { remotePlaylist ->
+                        Database.clearPlaylist(playlistId)
+
+                        remotePlaylist.songsPage
+                            ?.items
+                            ?.map(Innertube.SongItem::asMediaItem)
+                            ?.onEach(Database::insert)
+                            ?.mapIndexed { position, mediaItem ->
+                                SongPlaylistMap(
+                                    songId = mediaItem.mediaId,
+                                    playlistId = playlistId,
+                                    position = position
+                                )
+                            }?.let(Database::insertSongPlaylistMaps)
+                    }
+                }
+            } else {
+                syncSongsInPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession(),
+                    idPipedPlaylist = UUID.fromString(
+                        playlistPreview.playlist.browseId
+                    ),
+                    playlistId = playlistPreview.playlist.id
+
+                )
+            }
+        }
+    }
+
+    if (autosync) {sync()}
 
     var isReorderDisabled by rememberPreference(reorderInQueueEnabledKey, defaultValue = true)
 
@@ -1040,55 +1094,7 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         showOnSyncronize = !playlistPreview.playlist.browseId.isNullOrBlank(),
-                                        onSyncronize = {
-                                            if (!playlistPreview.playlist.name.startsWith(
-                                                    PIPED_PREFIX,
-                                                    0,
-                                                    true
-                                                )
-                                            ) {
-                                                transaction {
-                                                    runBlocking(Dispatchers.IO) {
-                                                        withContext(Dispatchers.IO) {
-                                                            Innertube.playlistPage(
-                                                                BrowseBody(
-                                                                    browseId = playlistPreview.playlist.browseId
-                                                                        ?: ""
-                                                                )
-                                                            )
-                                                                ?.completed()
-                                                        }
-                                                    }?.getOrNull()?.let { remotePlaylist ->
-                                                        Database.clearPlaylist(playlistId)
-
-                                                        remotePlaylist.songsPage
-                                                            ?.items
-                                                            ?.map(Innertube.SongItem::asMediaItem)
-                                                            ?.onEach(Database::insert)
-                                                            ?.mapIndexed { position, mediaItem ->
-                                                                SongPlaylistMap(
-                                                                    songId = mediaItem.mediaId,
-                                                                    playlistId = playlistId,
-                                                                    position = position
-                                                                )
-                                                            }?.let(Database::insertSongPlaylistMaps)
-                                                    }
-                                                }
-                                                SmartToast(context.getString(R.string.done))
-                                            } else {
-                                                syncSongsInPipedPlaylist(
-                                                    context = context,
-                                                    coroutineScope = coroutineScope,
-                                                    pipedSession = pipedSession.toApiSession(),
-                                                    idPipedPlaylist = UUID.fromString(
-                                                        playlistPreview.playlist.browseId
-                                                    ),
-                                                    playlistId = playlistPreview.playlist.id
-
-                                                )
-                                                SmartToast(context.getString(R.string.done))
-                                            }
-                                        },
+                                        onSyncronize = {sync();SmartToast(context.getString(R.string.done))},
                                         onRename = {
                                             if (playlistNotMonthlyType || playlistNotPipedType)
                                                 isRenaming = true
@@ -1216,8 +1222,6 @@ fun LocalPlaylistSongs(
                         }
                     )
                     //}
-
-
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
