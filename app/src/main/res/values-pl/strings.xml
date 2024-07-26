@@ -686,4 +686,5 @@
     <string name="carousel">Widok karuzeli</string>
     <string name="carouselsize">Rozmiar karuzeli</string>
     <string name="addednext">Dodano jako kolejny do odtwarzania</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
 </resources>
