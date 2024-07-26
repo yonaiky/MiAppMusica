@@ -2077,8 +2077,6 @@ fun PlayerModern(
         } else {
            Box {
                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && !showthumbnail) {
-                    val pagerState =
-                        rememberPagerState(pageCount = { binder.player.mediaItemCount })
                     val fling = PagerDefaults.flingBehavior(
                         state = pagerState,
                         snapPositionalThreshold = 0.20f
