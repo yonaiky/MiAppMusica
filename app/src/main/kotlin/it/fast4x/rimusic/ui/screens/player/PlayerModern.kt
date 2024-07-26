@@ -986,7 +986,7 @@ fun PlayerModern(
 
 
     if (!isGradientBackgroundEnabled) {
-        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || showthumbnail)) {
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || showthumbnail || isLandscape)) {
             containerModifier = containerModifier
                 .background(dynamicColorPalette.background1)
                 .paint(
@@ -2031,7 +2031,7 @@ fun PlayerModern(
                             }
                         }
                     }
-                    if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
+                    if (playerType == PlayerType.Essential || isShowingVisualizer || !showthumbnail) {
                         controlsContent(
                             modifier = Modifier
                                 .padding(vertical = 8.dp)
