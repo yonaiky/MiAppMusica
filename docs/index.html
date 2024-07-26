@@ -321,7 +321,8 @@
                     <option value="hu">Magyar</option>
                     <option value="it">Italiano</option>
                     <option value="ko">한국어</option>
-                    <option value="nl">Nederlands</option>
+                    <option value="nl">Nederlands</option>    
+                    <option value="pl">język polski</option>
                     <option value="pt-rBR">Português Brasileiro</option>
                     <option value="ru">Русский</option>
                     <option value="ro">Română</option>
@@ -352,7 +353,7 @@
     <script src="js/main.min.js"></script>
     <script>
       // Load the locales
-      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn"]);
+      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn",pl]);
       (async () => {
         await multilingual.loadStrings();
         multilingual.updateDom();
