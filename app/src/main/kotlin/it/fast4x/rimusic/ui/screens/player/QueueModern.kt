@@ -422,26 +422,32 @@ fun QueueModern(
                                 )
 
                         ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .zIndex(5f)
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = -15.dp)
 
-                            if (!isReorderDisabled) {
-                                IconButton(
-                                    icon = R.drawable.reorder,
-                                    color = colorPalette.textDisabled,
-                                    indication = rippleIndication,
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .reorder(
-                                            reorderingState = reorderingState,
-                                            index = window.firstPeriodIndex
-                                        )
-                                        .width(44.dp)
-                                        .height(24.dp)
-                                        .align(Alignment.TopEnd)
-                                        .offset(x = 0.dp)
-                                        .zIndex(5f)
-                                )
+                            ) {
+
+                                if (!isReorderDisabled) {
+                                    IconButton(
+                                        icon = R.drawable.reorder,
+                                        color = colorPalette.textDisabled,
+                                        indication = rippleIndication,
+                                        onClick = {},
+                                        modifier = Modifier
+                                            .reorder(
+                                                reorderingState = reorderingState,
+                                                index = window.firstPeriodIndex
+                                            )
+                                            .size(24.dp)
+                                            .align(Alignment.TopEnd)
+                                               .zIndex(5f)
+                                    )
+                                }
                             }
-
 
                             SwipeableQueueItem(
                                 mediaItem = window.mediaItem,
