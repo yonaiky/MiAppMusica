@@ -388,6 +388,26 @@ fun SongItem(
                                 .size(18.dp)
                         )
 
+                    if (playlistindicator && (songPlaylist > 0)) {
+                        IconButton(
+                            icon = R.drawable.add_in_playlist,
+                            color = colorPalette.text,
+                            enabled = true,
+                            onClick = {},
+                            modifier = Modifier
+                                .size(14.dp)
+                                .background(colorPalette.accent, CircleShape)
+                                .padding(all = 3.dp)
+                                .combinedClickable(onClick = {}, onLongClick = {
+                                    SmartMessage(
+                                        context.getString(R.string.playlistindicatorinfo2),
+                                        context = context
+                                    )
+                                })
+                        )
+                        Spacer(modifier = Modifier.padding(horizontal = 3.dp))
+                    }
+
                     if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
                         IconButton(
                             icon = R.drawable.explicit,
@@ -415,6 +435,7 @@ fun SongItem(
                             .basicMarquee(iterations = Int.MAX_VALUE)
                     )
 
+                    /*
                     if (playlistindicator && (songPlaylist > 0)) {
                         IconButton(
                             icon = R.drawable.add_in_playlist,
@@ -430,6 +451,7 @@ fun SongItem(
                                 })
                         )
                     }
+                     */
 
                     it()
                 }

@@ -632,12 +632,7 @@ fun AlbumDetails(
                                                                 }"
                                                             )
                                                         } catch (e: ActivityNotFoundException) {
-                                                            /*
-                                                            SmartToast(
-                                                                "Couldn't find an application to create documents",
-                                                                type = PopupType.Warning
-                                                            )
-                                                             */
+
                                                             SmartMessage(
                                                                 "Couldn't find an application to create documents",
                                                                 type = PopupType.Warning, context = context

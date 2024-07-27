@@ -114,12 +114,6 @@ fun appBar(
                             onClick = {
                                 countForReveal++
                                 if (countForReveal == 3) {
-                                    /*
-                                    SmartToast(
-                                        "Do you like clicking? Then continue...",
-                                        durationLong = true
-                                    )
-                                     */
                                     SmartMessage(
                                         "Do you like clicking? Then continue...",
                                         durationLong = true, context = context
