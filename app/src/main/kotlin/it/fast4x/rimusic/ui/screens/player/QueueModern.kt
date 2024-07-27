@@ -440,9 +440,10 @@ fun QueueModern(
                                             reorderingState = reorderingState,
                                             index = window.firstPeriodIndex
                                         )
-                                        .size(24.dp)
+                                        .width(44.dp)
+                                        .height(24.dp)
                                         .align(Alignment.TopEnd)
-                                        .offset(x = -15.dp)
+                                        .offset(x = 0.dp)
                                         .zIndex(5f)
                                 )
                             }

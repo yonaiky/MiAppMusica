@@ -502,7 +502,8 @@ fun Queue(
                                                         reorderingState = reorderingState,
                                                         index = window.firstPeriodIndex
                                                     )
-                                                    .size(18.dp)
+                                                    .width(36.dp)
+                                                    .height(20.dp)
                                             )
                                         }
                                     },

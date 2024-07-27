@@ -682,11 +682,11 @@
     <string name="action_bar_show_discover_button">Показать кнопку \"Открытия\"</string>
     <string name="playertype">Тип плеера</string>
     <string name="noblur">Без размытия, если текст песни отключён</string>
-    <string name="fadingedge">Fading Edge</string>
+    <string name="fadingedge">Затухающий Край</string>
     <string name="carousel">\"Карусель\"</string>
     <string name="carouselsize">Размер карусели</string>
     <string name="addednext">Добавлено в очередь</string>
-    <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="autosync">Автоматически импортировать синхронизированные плейлисты</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
