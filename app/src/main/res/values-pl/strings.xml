@@ -419,7 +419,7 @@
     <string name="lang_danish">Duński</string>
     <string name="lang_serbian_latin">Serbski łaciński</string>
     <string name="item_deselect">Odznacz</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Pokaż mini kolejkę w odtwarzaczu</string>
     <string name="show_remaining_song_time">Pokaż pozostały czas utworu</string>
     <string name="full_screen">Pełny ekran</string>
     <string name="click_lyrics_text">Kliknij tekst tekstu</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Animacja oddalenia przycisku</string>
     <string name="thumbnailpause">Zmniejsz miniaturę, kiedy wstrzymano</string>
     <string name="upnext">Następny</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Liczba utworów w mini kolejce (1 do 9)</string>
     <string name="showalbumcover">Pokazuj okładkę albumu</string>
     <string name="do_not_translate">Nie tłumacz</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Czas uśpienia opóźniony na koniec utworu</string>
@@ -685,7 +685,8 @@
     <string name="fadingedge">Krawędź zanikania</string>
     <string name="carousel">Widok karuzeli</string>
     <string name="carouselsize">Rozmiar karuzeli</string>
-    <string name="addednext">Added to play next</string>
+    <string name="addednext">Dodano jako kolejny do odtwarzania</string>
+    <string name="autosync">Auto Sync Imported Playlists</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>

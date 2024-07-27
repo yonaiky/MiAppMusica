@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -111,6 +112,7 @@ import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
@@ -350,6 +352,7 @@ fun HomeLibraryModern(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+    var autosync by rememberPreference(autosyncKey, false)
 
     Box(
         modifier = Modifier
@@ -430,6 +433,18 @@ fun HomeLibraryModern(
                                         )
                                     }
                                 }
+                            )
+                    )
+
+                    HeaderIconButton(
+                        onClick = {},
+                        icon = R.drawable.sync,
+                        color = if (autosync) colorPalette.text else colorPalette.textDisabled,
+                        iconSize = 24.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 2.dp)
+                            .combinedClickable(onClick = {autosync = !autosync},
+                                               onLongClick = {SmartToast(context.getString(R.string.autosync))}
                             )
                     )
 
