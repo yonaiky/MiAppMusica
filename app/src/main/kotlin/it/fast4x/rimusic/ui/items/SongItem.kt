@@ -43,7 +43,6 @@ import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.screens.player.conditional
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -427,7 +426,6 @@ fun SongItem(
                                 .background(colorPalette.accent, CircleShape)
                                 .padding(all = 3.dp)
                                 .combinedClickable(onClick = {}, onLongClick = {
-                                    //SmartToast(context.getString(R.string.playlistindicatorinfo2))
                                     SmartMessage(context.getString(R.string.playlistindicatorinfo2), context = context)
                                 })
                         )
@@ -475,7 +473,6 @@ fun SongItem(
                             .background(colorPalette.accent, CircleShape)
                             .padding(all = 3.dp)
                             .combinedClickable(onClick = {}, onLongClick = {
-                                //SmartToast(context.getString(R.string.playlistindicatorinfo2))
                                 SmartMessage(context.getString(R.string.playlistindicatorinfo2), context = context)
                             })
                     )

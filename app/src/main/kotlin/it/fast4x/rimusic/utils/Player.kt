@@ -11,7 +11,7 @@ import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.DurationInMinutes
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -185,7 +185,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
             val excludedSongs = mediaItems.size - filteredMediaItems.size
             if (excludedSongs > 0)
                 CoroutineScope(Dispatchers.Main).launch {
-                        SmartToast(context.getString(R.string.message_excluded_s_songs).format(excludedSongs))
+                        SmartMessage(context.getString(R.string.message_excluded_s_songs).format(excludedSongs), context = context)
                 }
         }
     }.onFailure {
@@ -206,7 +206,7 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
 
             if (excludedSong)
                 CoroutineScope(Dispatchers.Main).launch {
-                    SmartToast(context.getString(R.string.message_excluded_s_songs).format(1))
+                    SmartMessage(context.getString(R.string.message_excluded_s_songs).format(1), context = context)
                 }
 
             return excludedSong

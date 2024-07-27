@@ -89,7 +89,6 @@ import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -683,7 +682,6 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_bookmark_album))
                                         SmartMessage(context.getString(R.string.info_bookmark_album), context = context)
                                     }
                                 ),
@@ -700,7 +698,6 @@ fun AlbumDetailsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_download_all_songs))
                                         SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
@@ -717,7 +714,6 @@ fun AlbumDetailsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                                         SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
@@ -762,7 +758,6 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_shuffle))
                                         SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
@@ -785,7 +780,6 @@ fun AlbumDetailsModern(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
                                         SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                     }
                                 ),
@@ -1134,7 +1128,6 @@ fun AlbumDetailsModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_translation))
                                             SmartMessage(context.getString(R.string.info_translation), context = context)
                                         }
                                     )

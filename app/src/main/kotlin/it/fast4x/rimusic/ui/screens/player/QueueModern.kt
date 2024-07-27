@@ -93,7 +93,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -328,9 +328,15 @@ fun QueueModern(
                             }"
                         )
                     } catch (e: ActivityNotFoundException) {
+                        /*
                         SmartToast(
                             context.resources.getString(R.string.info_not_find_app_create_doc),
                             type = PopupType.Warning
+                        )
+                         */
+                        SmartMessage(
+                            context.resources.getString(R.string.info_not_find_app_create_doc),
+                            type = PopupType.Warning, context = context
                         )
                     }
                 }
@@ -735,7 +741,7 @@ fun QueueModern(
                             .combinedClickable(
                                 onClick = { discoverIsEnabled = !discoverIsEnabled },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.discoverinfo))
+                                    SmartMessage(context.getString(R.string.discoverinfo), context = context)
                                 }
 
                             )

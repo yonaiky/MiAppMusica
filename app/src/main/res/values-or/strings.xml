@@ -690,4 +690,7 @@
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="message_type">Message type</string>
+    <string name="message_type_modern">Modern</string>
+    <string name="message_type_essential">Essential</string>
 </resources>

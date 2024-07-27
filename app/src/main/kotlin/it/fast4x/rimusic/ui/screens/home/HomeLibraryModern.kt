@@ -97,7 +97,6 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.TitleSection
@@ -444,7 +443,9 @@ fun HomeLibraryModern(
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
                             .combinedClickable(onClick = {autosync = !autosync},
-                                               onLongClick = {SmartToast(context.getString(R.string.autosync))}
+                                               onLongClick = {
+                                                   SmartMessage(context.getString(R.string.autosync), context = context)
+                                               }
                             )
                     )
 

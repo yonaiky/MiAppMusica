@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
@@ -148,8 +148,10 @@ fun SwipeablePlaylistItem(
         if (updateLike) {
             mediaItemToggleLike(mediaItem)
             updateLike = false
-            if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites))
-            else SmartToast("\"" + mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString() + "\" " + context.getString(R.string.removed_from_favorites))
+            if (likedAt == null)
+                SmartMessage(context.getString(R.string.added_to_favorites), context = context)
+            else
+                SmartMessage("\"" + mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString() + "\" " + context.getString(R.string.removed_from_favorites), context = context)
         }
     }
 

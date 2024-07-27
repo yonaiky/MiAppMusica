@@ -72,6 +72,7 @@ import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.MenuStyle
+import it.fast4x.rimusic.enums.MessageType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
@@ -92,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
@@ -151,6 +151,7 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.menuStyleKey
+import it.fast4x.rimusic.utils.messageTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
@@ -323,6 +324,8 @@ fun  UiSettings() {
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var discoverIsEnabled by rememberPreference(discoverKey, false)
+
+    var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
 
 
     Column(
@@ -797,7 +800,6 @@ fun  UiSettings() {
                     try {
                         activityResultLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
-                        //SmartToast(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
                         SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                     }
                 }
@@ -1116,6 +1118,19 @@ fun  UiSettings() {
                     when (it) {
                         MenuStyle.Grid -> stringResource(R.string.style_grid)
                         MenuStyle.List -> stringResource(R.string.style_list)
+                    }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.message_type).contains(filterCharSequence,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.message_type),
+                selectedValue = messageType,
+                onValueSelected = { messageType = it },
+                valueText = {
+                    when (it) {
+                        MessageType.Modern -> stringResource(R.string.message_type_modern)
+                        MessageType.Essential -> stringResource(R.string.message_type_essential)
                     }
                 }
             )

@@ -107,7 +107,7 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -490,7 +490,7 @@ fun DeviceListSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartToast(context.getString(R.string.info_shuffle))
+                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -604,7 +604,7 @@ fun DeviceListSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             )
                     )

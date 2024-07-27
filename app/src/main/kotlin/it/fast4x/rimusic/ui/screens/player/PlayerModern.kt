@@ -151,7 +151,6 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -239,6 +238,7 @@ import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
@@ -452,7 +452,7 @@ fun PlayerModern(
             binder.cancelSleepTimer()
             binder.startSleepTimer(timeRemaining.toLong())
             delayedSleepTimer = true
-            SmartToast(stringResource(R.string.info_sleep_timer_delayed_at_end_of_song))
+            SmartMessage(stringResource(R.string.info_sleep_timer_delayed_at_end_of_song), context = context)
         }
 
     /*
@@ -1308,7 +1308,7 @@ fun PlayerModern(
                                             },
                                             onLongClick = {
                                                 binder.player.addNext(binder.player.getMediaItemAt(it + 1));
-                                                SmartToast(context.getString(R.string.addednext), type = PopupType.Info);
+                                                SmartMessage(context.getString(R.string.addednext), type = PopupType.Info, context = context)
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             }
                                         )
@@ -1448,7 +1448,7 @@ fun PlayerModern(
                                 .combinedClickable(
                                     onClick = { discoverIsEnabled = !discoverIsEnabled },
                                     onLongClick = {
-                                        SmartToast(context.getString(R.string.discoverinfo))
+                                        SmartMessage(context.getString(R.string.discoverinfo), context = context)
                                     }
 
                                 )
@@ -1610,9 +1610,15 @@ fun PlayerModern(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
+                                        /*
                                         SmartToast(
                                             context.resources.getString(R.string.info_not_find_application_audio),
                                             type = PopupType.Warning
+                                        )
+                                         */
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_not_find_application_audio),
+                                            type = PopupType.Warning, context = context
                                         )
                                     }
                                 },

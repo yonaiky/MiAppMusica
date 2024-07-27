@@ -84,7 +84,6 @@ import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -379,7 +378,6 @@ fun ArtistOverviewModern(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    //SmartToast(context.getString(R.string.info_download_all_songs))
                                     SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                 }
                             )
@@ -428,7 +426,6 @@ fun ArtistOverviewModern(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                                     SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                 }
                             )
@@ -469,7 +466,6 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_shuffle))
                                         SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
@@ -489,7 +485,6 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_start_radio))
                                         SmartMessage(context.getString(R.string.info_start_radio), context = context)
                                     }
                                 )
@@ -511,7 +506,6 @@ fun ArtistOverviewModern(
                                         )
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_enqueue_songs))
                                         SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
                                     }
                                 )
@@ -755,7 +749,7 @@ fun ArtistOverviewModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_translation))
+                                            SmartMessage(context.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

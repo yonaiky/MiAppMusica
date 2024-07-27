@@ -106,7 +106,6 @@ import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -274,7 +273,6 @@ fun PlaylistSongListModern(
                             }?.let(Database::insertSongPlaylistMaps)
                     }
                 }
-                //SmartToast(context.resources.getString(R.string.done), PopupType.Success)
                 SmartMessage(context.resources.getString(R.string.done), PopupType.Success, context = context)
             }
         )
@@ -475,7 +473,7 @@ fun PlaylistSongListModern(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_download_all_songs))
+                                            SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                         }
                                     )
                             )
@@ -501,7 +499,7 @@ fun PlaylistSongListModern(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                            SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                         }
                                     )
                             )
@@ -522,7 +520,7 @@ fun PlaylistSongListModern(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_enqueue_songs))
+                                            SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
                                         }
                                     )
                             )
@@ -547,7 +545,7 @@ fun PlaylistSongListModern(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_shuffle))
+                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                             )
@@ -574,7 +572,7 @@ fun PlaylistSongListModern(
 
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_start_radio))
+                                            SmartMessage(context.getString(R.string.info_start_radio), context = context)
                                         }
                                     )
                             )
@@ -619,7 +617,7 @@ fun PlaylistSongListModern(
                                                             }
                                                         }
                                                         CoroutineScope(Dispatchers.Main).launch {
-                                                            SmartToast(context.resources.getString(R.string.done), type = PopupType.Success)
+                                                            SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
                                                         }
                                                     },
 
@@ -632,7 +630,7 @@ fun PlaylistSongListModern(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_add_in_playlist))
+                                            SmartMessage(context.getString(R.string.info_add_in_playlist), context = context)
                                         }
                                     )
                             )

@@ -51,7 +51,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.TextCopyToClipboard
@@ -241,7 +240,6 @@ fun OtherSettings() {
             }
         }
         if (noInstances) {
-            //SmartToast("No instances found", type = PopupType.Info)
             SmartMessage("No instances found", type = PopupType.Info, context = context)
         }
 
@@ -256,7 +254,6 @@ fun OtherSettings() {
                     )?.onFailure {
                         Timber.e("Failed piped login ${it.stackTraceToString()}")
                         isLoading = false
-                        //SmartToast("Piped login failed", type = PopupType.Error)
                         SmartMessage("Piped login failed", type = PopupType.Error, context = context)
                         loadInstances = false
                         session = null
@@ -265,7 +262,6 @@ fun OtherSettings() {
                     if (session?.isSuccess == false)
                         return@launch
 
-                    //SmartToast("Piped login successful", type = PopupType.Success)
                     SmartMessage("Piped login successful", type = PopupType.Success, context = context)
                     Timber.i("Piped login successful")
 
@@ -495,7 +491,6 @@ fun OtherSettings() {
                             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
                         )
                     } catch (e: ActivityNotFoundException) {
-                        //SmartToast("$msgNoBatteryOptim RiMusic", type = PopupType.Info)
                         SmartMessage("$msgNoBatteryOptim RiMusic", type = PopupType.Info, context = context)
                     }
                 }
@@ -608,7 +603,6 @@ fun OtherSettings() {
                     text = file.readText()
                     copyToClipboard = true
                 } else
-                    //SmartToast(noLogAvailable, type = PopupType.Info)
                     SmartMessage(noLogAvailable, type = PopupType.Info, context = context)
             }
         )
@@ -623,7 +617,6 @@ fun OtherSettings() {
                     text = file.readText()
                     copyToClipboard = true
                 } else
-                    //SmartToast(noLogAvailable, type = PopupType.Info)
                     SmartMessage(noLogAvailable, type = PopupType.Info, context = context)
             }
         )

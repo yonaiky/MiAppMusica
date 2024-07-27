@@ -103,7 +103,6 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette

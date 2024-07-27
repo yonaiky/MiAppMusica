@@ -50,7 +50,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
@@ -450,7 +450,7 @@ fun ColorSettingEntry(
         DialogColorPicker(onDismiss = { showColorPicker = false }) {
             onColorSelected(it)
             showColorPicker = false
-            SmartToast(context.getString(R.string.info_color_s_applied).format(title))
+            SmartMessage(context.getString(R.string.info_color_s_applied).format(title), context = context)
         }
 
 }

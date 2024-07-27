@@ -199,6 +199,8 @@ const val customThemeDark_textSecondaryKey = "customThemeDark_textSecondary"
 const val customThemeDark_textDisabledKey = "customThemeDark_textDisabled"
 const val customThemeDark_iconButtonPlayerKey = "customThemeDark_iconButtonPlayer"
 const val customThemeDark_accentKey = "customThemeDark_accent"
+/**** CUSTOM THEME **** */
+
 const val showthumbnailKey = "showthumbnail"
 const val showlyricsthumbnailKey = "showlyricsthumbnail"
 const val miniPlayerTypeKey = "miniPlayerType"
@@ -238,13 +240,15 @@ const val carouselKey = "carousel"
 const val carouselSizeKey = "carouselSize"
 const val thumbnailSpacingKey = "thumbnailSpacing"
 const val autosyncKey = "autosync"
-/**** CUSTOM THEME **** */
+
 
 const val parentalControlEnabledKey = "parentalControlEnabled"
 const val playerPositionKey = "playerPosition"
 const val excludeSongsWithDurationLimitKey = "excludeSongsWithDurationLimit"
 const val logDebugEnabledKey = "logDebugEnabled"
 const val isPipedEnabledKey = "isPipedEnabled"
+
+const val messageTypeKey = "messageType"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

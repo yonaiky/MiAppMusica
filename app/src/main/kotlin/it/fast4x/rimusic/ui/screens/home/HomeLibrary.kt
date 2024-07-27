@@ -76,7 +76,7 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -753,9 +753,15 @@ fun HomeLibrary(
                                             )
                                         )
                                     } catch (e: ActivityNotFoundException) {
+                                        /*
                                         SmartToast(
                                             context.getString(R.string.info_not_find_app_open_doc),
                                             type = PopupType.Warning
+                                        )
+                                         */
+                                        SmartMessage(
+                                            context.getString(R.string.info_not_find_app_open_doc),
+                                            type = PopupType.Warning, context = context
                                         )
                                     }
                                 },

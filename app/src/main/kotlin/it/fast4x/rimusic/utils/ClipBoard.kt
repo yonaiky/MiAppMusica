@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 
 @Composable
 fun TextCopyToClipboard(textCopied:String) {
@@ -23,12 +22,10 @@ fun TextCopyToClipboard(textCopied:String) {
     runCatching {
         clipboardManager.setPrimaryClip(ClipData.newPlainText("", textCopied))
     }.onFailure {
-        //SmartToast("Failed to copy text to clipbaoard ${it.stackTraceToString()}", type = PopupType.Error)
         SmartMessage("Failed to copy text to clipbaoard ${it.stackTraceToString()}", type = PopupType.Error, context = context)
     }
     // Only show a toast for Android 12 and lower.
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-        //SmartToast(context.resources.getString(R.string.value_copied), type = PopupType.Info)
         SmartMessage(context.resources.getString(R.string.value_copied), type = PopupType.Info, context = context)
 }
 
@@ -40,7 +37,6 @@ fun textCopyFromClipboard(): String {
     runCatching {
         textCopied = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context).toString()
     }.onFailure {
-        //SmartToast("Failed to copy text from clipbaoard ${it.stackTraceToString()}", type = PopupType.Error)
         SmartMessage("Failed to copy text from clipbaoard ${it.stackTraceToString()}", type = PopupType.Error, context = context)
     }
     // Only show a toast for Android 12 and lower.

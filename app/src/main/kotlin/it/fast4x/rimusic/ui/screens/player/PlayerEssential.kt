@@ -83,7 +83,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -103,6 +102,7 @@ import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.cleanPrefix
@@ -170,8 +170,10 @@ fun PlayerEssential(
         if (updateLike) {
             mediaItemToggleLike(mediaItem)
             updateLike = false
-            if (likedAt == null) SmartToast(context.getString(R.string.added_to_favorites)) 
-            else SmartToast(context.getString(R.string.removed_from_favorites))
+            if (likedAt == null)
+                SmartMessage(context.getString(R.string.added_to_favorites), context = context)
+            else
+                SmartMessage(context.getString(R.string.removed_from_favorites), context = context)
         }
     }
 
@@ -276,7 +278,8 @@ fun PlayerEssential(
                                     binder.stopRadio()
                                     binder.player.clearMediaItems()
                                     hidePlayer()
-                                } else SmartToast(context.getString(R.string.player_swiping_down_is_disabled))
+                                } else
+                                    SmartMessage(context.getString(R.string.player_swiping_down_is_disabled), context = context)
                             }
                         }
                     )

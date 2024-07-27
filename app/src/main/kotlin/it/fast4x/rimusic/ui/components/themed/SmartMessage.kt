@@ -3,13 +3,19 @@ package it.fast4x.rimusic.ui.components.themed
 import android.content.Context
 import androidx.annotation.OptIn
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import com.coder.vincent.smart_snackbar.SNACK_BAR_ICON_POSITION_LEFT
 import com.coder.vincent.smart_snackbar.SmartSnackBar
+import com.coder.vincent.smart_snackbar.bean.SnackBarStyle
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.MessageType
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.messageTypeKey
+import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.toast
+import it.fast4x.rimusic.utils.toastLong
 
 @OptIn(UnstableApi::class)
 fun SmartMessage(
@@ -19,24 +25,25 @@ fun SmartMessage(
     durationLong: Boolean? = false,
     context: Context,
 ) {
-    var smartMessage = SmartSnackBar.bottom(context as MainActivity)
+    if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
+        val smartMessage = SmartSnackBar.bottom(context as MainActivity)
 
-    backgroundColor?.let {
         smartMessage.config()
-            .backgroundColor(backgroundColor.hashCode())
-            //.backgroundColorResource(com.coder.vincent.smart_toast.R.color.colorPrimaryDark)
-            .icon(when (type) {
-                PopupType.Info -> R.drawable.information_circle
-                PopupType.Error -> R.drawable.alert_circle
-                PopupType.Warning -> R.drawable.alert_circle_not_filled
-                PopupType.Success -> R.drawable.checked
-                null -> R.drawable.information_circle
-            }
+            //.backgroundColor(backgroundColor.hashCode())
+            .themeStyle(SnackBarStyle.AUTO)
+            .icon(
+                when (type) {
+                    PopupType.Info, PopupType.Success  -> R.drawable.information
+                    PopupType.Error, PopupType.Warning -> R.drawable.alert
+                    else -> R.drawable.information
+                }
             )
             .iconSizeDp(24f)
             .iconPosition(SNACK_BAR_ICON_POSITION_LEFT)
             .apply()
-    }
-    if (durationLong == true) smartMessage.showLong(message) else smartMessage.show(message)
+        if (durationLong == true) smartMessage.showLong(message) else smartMessage.show(message)
+
+    } else
+        if (durationLong == true) context.toastLong(message) else context.toast(message)
 }
 

@@ -129,7 +129,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -1705,9 +1705,15 @@ fun Player(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
+                                        /*
                                         SmartToast(
                                             context.resources.getString(R.string.info_not_find_application_audio),
                                             type = PopupType.Warning
+                                        )
+                                         */
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_not_find_application_audio),
+                                            type = PopupType.Warning, context = context
                                         )
                                     }
                                 },

@@ -73,6 +73,8 @@ fun appBar(
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
 
+    val context = LocalContext.current
+
     if (showGames) {
         Pacman()
     }
@@ -112,21 +114,39 @@ fun appBar(
                             onClick = {
                                 countForReveal++
                                 if (countForReveal == 3) {
+                                    /*
                                     SmartToast(
                                         "Do you like clicking? Then continue...",
                                         durationLong = true
                                     )
+                                     */
+                                    SmartMessage(
+                                        "Do you like clicking? Then continue...",
+                                        durationLong = true, context = context
+                                    )
                                 }
                                 if (countForReveal == 6) {
+                                    /*
                                     SmartToast(
                                         "Okay, you’re looking for something, keep...",
                                         durationLong = true
                                     )
+                                     */
+                                    SmartMessage(
+                                        "Okay, you’re looking for something, keep...",
+                                        durationLong = true, context = context
+                                    )
                                 }
                                 if (countForReveal == 9) {
+                                    /*
                                     SmartToast(
                                         "You are a number one, click and enjoy the surprise",
                                         durationLong = true
+                                    )
+                                     */
+                                    SmartMessage(
+                                        "You are a number one, click and enjoy the surprise",
+                                        durationLong = true, context = context
                                     )
                                 }
                                 if (countForReveal == 10) {
@@ -137,9 +157,15 @@ fun appBar(
                                 //    navController.navigate(NavRoutes.home.name)
                             },
                             onLongClick = {
+                                /*
                                 SmartToast(
                                     "You are a number one, click and enjoy the surprise",
                                     durationLong = true
+                                )
+                                 */
+                                SmartMessage(
+                                    "You are a number one, click and enjoy the surprise",
+                                    durationLong = true, context = context
                                 )
                                 navController.navigate(NavRoutes.gameSnake.name)
                             }
@@ -175,8 +201,11 @@ fun appBar(
                         ),
                         modifier = Modifier
                             .clickable {
+                                /*
                                 SmartToast(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true)
-                                    navController.navigate(NavRoutes.settings.name)
+                                 */
+                                SmartMessage(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
+                                navController.navigate(NavRoutes.settings.name)
                             }
                     )
                 /*

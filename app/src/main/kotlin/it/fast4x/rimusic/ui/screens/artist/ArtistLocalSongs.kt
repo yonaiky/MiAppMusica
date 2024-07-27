@@ -48,7 +48,6 @@ import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -169,7 +168,6 @@ fun ArtistLocalSongs(
                                             showConfirmDownloadAllDialog = true
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_download_all_songs))
                                             SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                         }
                                     )
@@ -217,7 +215,6 @@ fun ArtistLocalSongs(
                                             showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                                             SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                         }
                                     )
@@ -255,7 +252,6 @@ fun ArtistLocalSongs(
                                             binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context)
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_enqueue_songs))
                                             SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
                                         }
                                     )
@@ -278,7 +274,6 @@ fun ArtistLocalSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_shuffle))
                                             SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                         }
                                     )

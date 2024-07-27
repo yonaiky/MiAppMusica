@@ -55,7 +55,7 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -326,7 +326,7 @@ fun Thumbnail(
                     errorCounter = errorCounter.plus(1)
                     if (errorCounter < 3) {
                         Timber.e("Playback error: ${error?.cause?.cause}")
-                        SmartToast(
+                        SmartMessage(
                             if (currentWindow.mediaItem.isLocal) localMusicFileNotFoundError
                             else when (error?.cause?.cause) {
                                 is UnresolvedAddressException, is UnknownHostException -> networkerror
@@ -336,7 +336,7 @@ fun Thumbnail(
                                 is VideoIdMismatchException -> videoidmismatcherror
                                 is PlayableFormatNonSupported -> formatUnsupported
                                 else -> unknownplaybackerror
-                            }, PopupType.Error
+                            }, PopupType.Error, context = context
                         )
                     //    player.seekToNext()
                     } else errorCounter = 0

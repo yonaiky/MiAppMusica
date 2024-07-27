@@ -89,7 +89,6 @@ import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -251,10 +250,9 @@ fun AlbumSongs(
                             outputStream.close()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
                             SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                         }
-                    } else //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                    } else
                         SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                 }
 
@@ -464,7 +462,6 @@ fun AlbumSongs(
                                                 showConfirmDownloadAllDialog = true
                                             },
                                             onLongClick = {
-                                                //SmartToast(context.getString(R.string.info_download_all_songs))
                                                 SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                             }
                                         )
@@ -480,7 +477,7 @@ fun AlbumSongs(
                                                 showConfirmDeleteDownloadDialog = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                                SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                             }
                                         )
                                 )
@@ -522,7 +519,7 @@ fun AlbumSongs(
                                                 }
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_shuffle))
+                                                SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                             }
                                         )
                                 )
@@ -544,7 +541,7 @@ fun AlbumSongs(
                                                     scrollToNowPlaying = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                                SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                             }
                                         ),
                                     icon = R.drawable.locate,
@@ -600,7 +597,7 @@ fun AlbumSongs(
                                                                 }"
                                                             )
                                                         } catch (e: ActivityNotFoundException) {
-                                                            SmartToast("Couldn't find an application to create documents", type = PopupType.Warning)
+                                                            SmartMessage("Couldn't find an application to create documents", type = PopupType.Warning, context = context)
                                                         }
                                                     },
                                                     onPlayNext = {

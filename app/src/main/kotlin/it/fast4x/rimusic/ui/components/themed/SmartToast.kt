@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.coder.vincent.smart_toast.SmartToast
 import it.fast4x.rimusic.enums.PopupType
 
-fun SmartToast(
+fun SmartToast_(
     message: String,
     type: PopupType? = PopupType.Info,
     backgroundColor: Color? = Color.DarkGray,

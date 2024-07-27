@@ -67,7 +67,6 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -346,7 +345,6 @@ fun ArtistScreen(
                                                 binder?.player?.enqueue(songs, context)
                                             },
                                             onLongClick = {
-                                                //SmartToast(context.getString(R.string.info_enqueue_songs))
                                                 SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
                                             }
                                         )

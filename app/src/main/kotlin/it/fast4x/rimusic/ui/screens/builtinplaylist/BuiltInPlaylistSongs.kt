@@ -147,7 +147,6 @@ import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
@@ -659,7 +658,6 @@ fun BuiltInPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_smart_recommendation))
                                         SmartMessage(context.getString(R.string.info_smart_recommendation), context = context)
                                     }
                                 )
@@ -684,7 +682,6 @@ fun BuiltInPlaylistSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            //SmartToast(context.getString(R.string.info_shuffle))
                                             SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
@@ -723,7 +720,6 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_download_all_songs))
                                         SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
@@ -764,7 +760,6 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                                         SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
@@ -829,7 +824,6 @@ fun BuiltInPlaylistSongs(
                                         cleanCacheOfflineSongs = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_clean_cached_congs))
                                         SmartMessage(context.getString(R.string.info_clean_cached_congs), context = context)
                                     }
                                 )
@@ -847,7 +841,6 @@ fun BuiltInPlaylistSongs(
                                         autoShuffle = !autoShuffle
                                     },
                                     onLongClick = {
-                                        //SmartToast("Random sorting")
                                         SmartMessage("Random sorting", context = context)
                                     }
                                 )
@@ -888,7 +881,6 @@ fun BuiltInPlaylistSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    //SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
                                     SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),

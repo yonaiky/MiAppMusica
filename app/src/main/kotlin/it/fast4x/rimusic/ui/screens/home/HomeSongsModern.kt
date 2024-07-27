@@ -128,7 +128,7 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PeriodMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.TitleSection
@@ -611,8 +611,13 @@ fun HomeSongsModern(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
+                    /*
                     SmartToast("Couldn't find an application to create documents",
                         type = PopupType.Warning)
+
+                     */
+                    SmartMessage("Couldn't find an application to create documents",
+                        type = PopupType.Warning, context = context)
                 }
             }
         )
@@ -816,7 +821,7 @@ fun HomeSongsModern(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),
                         icon = R.drawable.locate,
@@ -842,7 +847,7 @@ fun HomeSongsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartToast(context.getString(R.string.info_download_all_songs))
+                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -896,7 +901,7 @@ fun HomeSongsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -948,7 +953,7 @@ fun HomeSongsModern(
                                         showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
                                     },
                                     onLongClick = {
-                                        SmartToast(context.getString(R.string.info_show_hide_hidden_songs))
+                                        SmartMessage(context.getString(R.string.info_show_hide_hidden_songs), context = context)
                                     }
                                 )
                         )
@@ -978,7 +983,7 @@ fun HomeSongsModern(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_shuffle))
+                                    SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                 }
                             )
                     )
@@ -995,7 +1000,7 @@ fun HomeSongsModern(
                                         autoShuffle = !autoShuffle
                                     },
                                     onLongClick = {
-                                        SmartToast("Random sorting")
+                                        SmartMessage("Random sorting", context = context)
                                     }
                                 )
                         )
@@ -1072,13 +1077,21 @@ fun HomeSongsModern(
                                                 )
                                             }.onFailure {
                                                 Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
-                                                it.message?.let { it1 -> SmartToast(it1,PopupType.Error) }
+                                                it.message?.let { it1 ->
+                                                    SmartMessage(it1,PopupType.Error, context = context)
+                                                }
                                             }
                                         }
                                         CoroutineScope(Dispatchers.Main).launch {
+                                            /*
                                             SmartToast(
                                                 context.resources.getString(R.string.done),
                                                 type = PopupType.Success
+                                            )
+                                             */
+                                            SmartMessage(
+                                                context.resources.getString(R.string.done),
+                                                type = PopupType.Success, context = context
                                             )
                                         }
                                     },

@@ -122,7 +122,6 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
@@ -785,7 +784,6 @@ fun LocalPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_smart_recommendation))
                                         SmartMessage(context.getString(R.string.info_smart_recommendation), context = context)
                                     }
                                 )
@@ -812,7 +810,6 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_shuffle))
                                         SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
@@ -867,7 +864,6 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_pin_unpin_playlist))
                                         SmartMessage(context.getString(R.string.info_pin_unpin_playlist), context = context)
                                     }
                                 )
@@ -898,7 +894,6 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_lock_unlock_reorder_songs))
                                         SmartMessage(context.getString(R.string.info_lock_unlock_reorder_songs), context = context)
                                     }
                                 )
@@ -915,7 +910,6 @@ fun LocalPlaylistSongs(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    //SmartToast(context.getString(R.string.info_download_all_songs))
                                     SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                 }
                             )
@@ -979,7 +973,6 @@ fun LocalPlaylistSongs(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
                                     SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                 }
                             )
@@ -1164,7 +1157,7 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         */
-                                        onSyncronize = {sync();SmartToast(context.getString(R.string.done))},
+                                        onSyncronize = {sync();SmartMessage(context.getString(R.string.done), context = context) },
                                         onRename = {
                                             if (playlistNotMonthlyType || playlistNotPipedType)
                                                 isRenaming = true
@@ -1391,7 +1384,6 @@ fun LocalPlaylistSongs(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        //SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
                                         SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                     }
                                 ),

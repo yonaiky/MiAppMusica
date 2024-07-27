@@ -94,7 +94,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartToast
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -284,7 +284,7 @@ fun HomeSongs(
                             .combinedClickable(
                                 onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_show_hide_hidden_songs))
+                                    SmartMessage(context.getString(R.string.info_show_hide_hidden_songs), context = context)
                                 }
                             )
                     )
@@ -312,7 +312,7 @@ fun HomeSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_shuffle))
+                                    SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                 }
                             )
                     )
@@ -329,7 +329,7 @@ fun HomeSongs(
                                     includeLocalSongs = !includeLocalSongs
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_includes_excludes_songs_on_the_device))
+                                    SmartMessage(context.getString(R.string.info_includes_excludes_songs_on_the_device), context = context)
                                 }
                             )
                     )
@@ -367,7 +367,7 @@ fun HomeSongs(
                                                     }
                                                 }
                                                 CoroutineScope(Dispatchers.Main).launch {
-                                                    SmartToast(context.resources.getString(R.string.done), type = PopupType.Success)
+                                                    SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
                                                 }
                                             },
                                             onGoToPlaylist = {
@@ -379,7 +379,7 @@ fun HomeSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_add_in_playlist))
+                                    SmartMessage(context.getString(R.string.info_add_in_playlist), context = context)
                                 }
                             )
                     )
