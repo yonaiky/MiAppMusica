@@ -419,7 +419,7 @@
     <string name="lang_danish">Danois (Dansk)</string>
     <string name="lang_serbian_latin">Latin Serbe (Српски)</string>
     <string name="item_deselect">Désélectionner</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Afficher les titres suivants dans le lecteur</string>
     <string name="show_remaining_song_time">Afficher le temps restant du titre</string>
     <string name="full_screen">Plein écran</string>
     <string name="click_lyrics_text">Cliquer sur le texte des paroles</string>
@@ -638,7 +638,7 @@
     <string name="buttonzoomout">Animation de zoom arrière du bouton</string>
     <string name="thumbnailpause">Réduire la miniature quand c\'est en pause</string>
     <string name="upnext">Suivant</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Afficher les deux titres suivants dans la file d\'attente</string>
     <string name="showalbumcover">Afficher la pochette de l\'album</string>
     <string name="do_not_translate">Ne pas traduire</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Délai de mise en veille reporté à la fin du titre</string>

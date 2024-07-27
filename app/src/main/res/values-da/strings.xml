@@ -419,7 +419,7 @@
     <string name="lang_danish">Dansk</string>
     <string name="lang_serbian_latin">Serbisk latin</string>
     <string name="item_deselect">Fravælg</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Vis næste sange i afspiller</string>
     <string name="show_remaining_song_time">Vis resterende sangtid</string>
     <string name="full_screen">Fuld skærm</string>
     <string name="click_lyrics_text">Klik på sangtekst</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Den Næste</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Vis de næste to sange i køen</string>
     <string name="showalbumcover">Vis Albumcover</string>
     <string name="do_not_translate">Oversæt ikke</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Søvntimer forsinket ved sangens slutning</string>

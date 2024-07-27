@@ -419,7 +419,7 @@
     <string name="lang_danish">Danski</string>
     <string name="lang_serbian_latin">Srpski Latinica</string>
     <string name="item_deselect">Poništi</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Prikaži sledeće pesme u plejeru</string>
     <string name="show_remaining_song_time">Prikaži preostalo vreme pesme</string>
     <string name="full_screen">Celi ekran</string>
     <string name="click_lyrics_text">Klik na tekst stihova</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Animacija za Udalji Dugme</string>
     <string name="thumbnailpause">Smanji sličicu kada je pauza</string>
     <string name="upnext">Sledeće</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Prikaži Sledeće Dve Pesme u Redosledu</string>
     <string name="showalbumcover">Prikaži Omot Albuma</string>
     <string name="do_not_translate">Ne prevodi</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Tajmer za spavanje je odložen na kraju pesme</string>

@@ -419,7 +419,7 @@
     <string name="lang_danish">Dinamarquês</string>
     <string name="lang_serbian_latin">Latin sérvio</string>
     <string name="item_deselect">Desmarcar</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Mostrar próximas músicas no player</string>
     <string name="show_remaining_song_time">Mostrar o tempo restante da música</string>
     <string name="full_screen">Tela cheia</string>
     <string name="click_lyrics_text">Clique nas letras</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Animação do botão de zoom</string>
     <string name="thumbnailpause">Diminuir a thumbnail quando pausado</string>
     <string name="upnext">A Seguir</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Mostrar as próximas duas músicas na fila</string>
     <string name="showalbumcover">Mostrar capa do álbum</string>
     <string name="do_not_translate">Não traduza</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Timer de sono atrasado ao final da música</string>
