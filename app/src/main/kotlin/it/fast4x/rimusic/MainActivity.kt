@@ -132,6 +132,7 @@ import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.screens.AppNavigation
@@ -1017,7 +1018,8 @@ class MainActivity :
             LaunchedEffect(intentUriData) {
                 val uri = intentUriData ?: return@LaunchedEffect
 
-                SmartToast( message ="${"RiMusic "}${getString(R.string.opening_url)}", durationLong = true)
+                //SmartToast( message ="${"RiMusic "}${getString(R.string.opening_url)}", durationLong = true)
+                SmartMessage( message ="${"RiMusic "}${getString(R.string.opening_url)}", durationLong = true, context = this@MainActivity)
 
                 lifecycleScope.launch(Dispatchers.Main) {
                     when (val path = uri.pathSegments.firstOrNull()) {
@@ -1059,7 +1061,8 @@ class MainActivity :
                                     if (!song.explicit && !preferences.getBoolean(parentalControlEnabledKey, false))
                                         binder.player.forcePlay(song.asMediaItem)
                                     else
-                                        SmartToast("Parental control is enabled", PopupType.Warning)
+                                        //SmartToast("Parental control is enabled", PopupType.Warning)
+                                        SmartMessage("Parental control is enabled", PopupType.Warning, context = this@MainActivity)
                                 }
                             }
                         }

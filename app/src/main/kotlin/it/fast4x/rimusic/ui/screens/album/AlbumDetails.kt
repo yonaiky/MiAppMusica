@@ -98,6 +98,7 @@ import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -275,9 +276,11 @@ fun AlbumDetails(
                             outputStream.close()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                            //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                            SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                         }
-                    } else SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                    } else //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                        SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                 }
 
         }
@@ -497,7 +500,8 @@ fun AlbumDetails(
                                                 showConfirmDownloadAllDialog = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_download_all_songs))
+                                                //SmartToast(context.getString(R.string.info_download_all_songs))
+                                                SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                             }
                                         )
                                 )
@@ -512,7 +516,8 @@ fun AlbumDetails(
                                                 showConfirmDeleteDownloadDialog = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                                //SmartToast(context.getString(R.string.info_remove_all_downloaded_songs))
+                                                SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                             }
                                         )
                                 )
@@ -553,7 +558,8 @@ fun AlbumDetails(
                                                 }
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_shuffle))
+                                                //SmartToast(context.getString(R.string.info_shuffle))
+                                                SmartMessage(context.getString(R.string.info_shuffle), context = context)
                                             }
                                         )
                                 )
@@ -575,7 +581,8 @@ fun AlbumDetails(
                                                     scrollToNowPlaying = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                                //SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
+                                                SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                             }
                                         ),
                                     icon = R.drawable.locate,
@@ -631,9 +638,15 @@ fun AlbumDetails(
                                                                 }"
                                                             )
                                                         } catch (e: ActivityNotFoundException) {
+                                                            /*
                                                             SmartToast(
                                                                 "Couldn't find an application to create documents",
                                                                 type = PopupType.Warning
+                                                            )
+                                                             */
+                                                            SmartMessage(
+                                                                "Couldn't find an application to create documents",
+                                                                type = PopupType.Warning, context = context
                                                             )
                                                         }
                                                     },
@@ -939,7 +952,8 @@ fun AlbumDetails(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartToast(context.getString(R.string.info_translation))
+                                            //SmartToast(context.getString(R.string.info_translation))
+                                            SmartMessage(context.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

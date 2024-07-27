@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.Piped
@@ -17,12 +18,14 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import kotlinx.serialization.Serializable
@@ -91,11 +94,12 @@ fun TestPipedPlaylists() {
 fun ImportPipedPlaylists(){
 
     val coroutineScope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val pipedSession = getPipedSession()
     if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
-       SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+       //SmartToast(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+        SmartMessage(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
         return
     }
 
@@ -221,7 +225,8 @@ fun String.toID(): String {
 fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
     if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
-        SmartToast(context.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+        //SmartToast(context.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning)
+        SmartMessage(context.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
         return false
     }
     return true

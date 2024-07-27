@@ -31,6 +31,7 @@ kotlin-csv = "1.9.3"
 monetcompat = "0.4.1"
 navigation = "2.7.7"
 smarttoast = "4.1.6"
+smartsnackbar = "4.1.2"
 timber = "5.0.1"
 crypto = "1.1.0-alpha06"
 loggingInterceptor = "4.12.0"
@@ -80,6 +81,7 @@ kotlin-csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", versio
 monetcompat = { group = "com.github.KieronQuinn", name = "MonetCompat", version.ref = "monetcompat"}
 navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation"}
 smarttoast = { group = "io.github.vincent-series", name = "smart-toast", version.ref = "smarttoast"}
+smartsnackbar = { group = "io.github.vincent-series", name = "smart-snackbar", version.ref = "smartsnackbar"}
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
 crypto = { group = "androidx.security", name = "security-crypto", version.ref = "crypto"}
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }

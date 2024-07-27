@@ -91,6 +91,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -796,7 +797,8 @@ fun  UiSettings() {
                     try {
                         activityResultLauncher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
-                        SmartToast(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
+                        //SmartToast(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning)
+                        SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                     }
                 }
             )

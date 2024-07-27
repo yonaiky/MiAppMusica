@@ -88,6 +88,7 @@ import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -250,9 +251,11 @@ fun AlbumSongs(
                             outputStream.close()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                            //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                            SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                         }
-                    } else SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                    } else //SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
+                        SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
                 }
 
         }
@@ -461,7 +464,8 @@ fun AlbumSongs(
                                                 showConfirmDownloadAllDialog = true
                                             },
                                             onLongClick = {
-                                                SmartToast(context.getString(R.string.info_download_all_songs))
+                                                //SmartToast(context.getString(R.string.info_download_all_songs))
+                                                SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
                                             }
                                         )
                                 )

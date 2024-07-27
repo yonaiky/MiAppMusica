@@ -103,6 +103,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.utils.ConditionalCacheDataSourceFactory
 import it.fast4x.rimusic.utils.InvincibleService
@@ -732,7 +733,8 @@ class PlayerService : InvincibleService(),
                         if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
                             //binder.player.pause()
                             binder.callPause({ binder.player.pause() } )
-                            SmartToast(resources.getString(R.string.info_paused_with_volume_zero))
+                            //SmartToast(resources.getString(R.string.info_paused_with_volume_zero))
+                            SmartMessage(resources.getString(R.string.info_paused_with_volume_zero), context = this@PlayerService)
                         }
                     } else  {
                         // Up = 1, Down = -1, Release = 0

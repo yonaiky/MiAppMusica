@@ -125,6 +125,7 @@ dependencies {
     implementation(libs.androidmaterial)
     implementation(libs.navigation)
     implementation(libs.smarttoast)
+    implementation(libs.smartsnackbar)
     implementation(libs.timber)
     implementation(libs.crypto)
     implementation(libs.logging.interceptor)

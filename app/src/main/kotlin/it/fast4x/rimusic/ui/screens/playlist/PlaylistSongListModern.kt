@@ -105,6 +105,7 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SmartToast
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -273,7 +274,8 @@ fun PlaylistSongListModern(
                             }?.let(Database::insertSongPlaylistMaps)
                     }
                 }
-                SmartToast(context.resources.getString(R.string.done), PopupType.Success)
+                //SmartToast(context.resources.getString(R.string.done), PopupType.Success)
+                SmartMessage(context.resources.getString(R.string.done), PopupType.Success, context = context)
             }
         )
     }
