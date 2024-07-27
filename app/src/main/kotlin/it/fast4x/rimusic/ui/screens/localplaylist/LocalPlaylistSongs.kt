@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -1550,26 +1549,28 @@ fun LocalPlaylistSongs(
                         if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
                     val checkedState = rememberSaveable { mutableStateOf(false) }
                     val positionInPlaylist: Int = index
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .zIndex(10f)
+                            .align(Alignment.TopEnd)
+                            .offset(x = -15.dp)
 
-                    if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
-                        IconButton(
-                            icon = R.drawable.reorder,
-                            color = colorPalette.textDisabled,
-                            indication = rippleIndication,
-                            onClick = {},
-                            modifier = Modifier
-                                .reorder(
-                                    reorderingState = reorderingState,
-                                    index = index
-                                )
-                                .width(44.dp)
-                                .height(24.dp)
-                                .align(Alignment.TopEnd)
-                                .offset(x = 0.dp)
-                                .zIndex(10f)
-                        )
+                    ) {
+                        if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                            IconButton(
+                                icon = R.drawable.reorder,
+                                color = colorPalette.textDisabled,
+                                indication = rippleIndication,
+                                onClick = {},
+                                modifier = Modifier
+                                    .reorder(
+                                        reorderingState = reorderingState,
+                                        index = index
+                                    )
+                            )
+                        }
                     }
-
 
                     SwipeableQueueItem(
                         mediaItem = song.asMediaItem,
@@ -1791,4 +1792,10 @@ fun LocalPlaylistSongs(
 
     }
 }
+
+
+
+
+
+
 
