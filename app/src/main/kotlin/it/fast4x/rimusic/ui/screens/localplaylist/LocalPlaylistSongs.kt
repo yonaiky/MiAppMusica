@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -1490,9 +1491,10 @@ fun LocalPlaylistSongs(
                                     reorderingState = reorderingState,
                                     index = index
                                 )
-                                .size(24.dp)
+                                .width(44.dp)
+                                .height(24.dp)
                                 .align(Alignment.TopEnd)
-                                .offset(x = -15.dp)
+                                .offset(x = -0.dp)
                                 .zIndex(10f)
                         )
                     }
@@ -1712,10 +1714,4 @@ fun LocalPlaylistSongs(
 
     }
 }
-
-
-
-
-
-
 
