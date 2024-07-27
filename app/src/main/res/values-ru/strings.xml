@@ -682,9 +682,9 @@
     <string name="action_bar_show_discover_button">Показать кнопку \"Открытия\"</string>
     <string name="playertype">Тип плеера</string>
     <string name="noblur">Без размытия, если текст песни отключён</string>
-    <string name="fadingedge">Fading Edge</string>
+    <string name="fadingedge">Затухающий Край</string>
     <string name="carousel">\"Карусель\"</string>
     <string name="carouselsize">Размер карусели</string>
     <string name="addednext">Добавлено в очередь</string>
-    <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="autosync">Автоматически импортировать синхронизированные плейлисты</string>
 </resources>
