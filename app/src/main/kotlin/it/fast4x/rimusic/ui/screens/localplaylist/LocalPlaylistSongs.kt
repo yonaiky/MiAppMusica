@@ -1494,7 +1494,7 @@ fun LocalPlaylistSongs(
                                 .width(44.dp)
                                 .height(24.dp)
                                 .align(Alignment.TopEnd)
-                                .offset(x = -0.dp)
+                                .offset(x = 0.dp)
                                 .zIndex(10f)
                         )
                     }
