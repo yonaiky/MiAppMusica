@@ -1125,7 +1125,8 @@ class MainActivity :
     override fun onPause() {
         super.onPause()
         runCatching {
-            sensorManager!!.unregisterListener(sensorListener)
+            sensorListener.let { sensorManager?.unregisterListener(it) }
+                //sensorManager!!.unregisterListener(sensorListener)
         }.onFailure {
             Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
         }
