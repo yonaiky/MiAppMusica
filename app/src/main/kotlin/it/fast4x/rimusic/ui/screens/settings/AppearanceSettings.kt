@@ -975,6 +975,7 @@ fun AppearanceSettings() {
                   value = showsongs,
                   onValueChange = { showsongs = it },
                   keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                  singleLine = true,
                   textStyle = TextStyle(
                       textAlign = TextAlign.Left,
                       color = colorPalette.text,
