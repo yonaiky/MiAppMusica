@@ -567,67 +567,7 @@ fun Queue(
                                         .background(color = colorPalette.background0)
 
                                 )
-                            /*
-                            },
-                            leftActionsContent = {
-                                if (!reorderingState.isDragging)
-                                    LeftAction(
-                                        icon = R.drawable.share_social,
-                                        backgroundColor = Color.Transparent, //colorPalette.background4,
-                                        onClick = {
-                                            val sendIntent = Intent().apply {
-                                                action = Intent.ACTION_SEND
-                                                type = "text/plain"
-                                                putExtra(
-                                                    Intent.EXTRA_TEXT,
-                                                    "https://music.youtube.com/watch?v=${window.mediaItem.mediaId}"
-                                                )
-                                            }
 
-                                            context.startActivity(Intent.createChooser(sendIntent, null))
-                                        }
-                                    )
-                            },
-                            rightActionsContent = {
-                                if (!reorderingState.isDragging) {
-                                    //val currentItem by rememberUpdatedState(window)
-                                    var likedAt by remember {
-                                        mutableStateOf<Long?>(null)
-                                    }
-                                    LaunchedEffect(Unit, window.mediaItem.mediaId) {
-                                        Database.likedAt(window.mediaItem.mediaId).collect { likedAt = it }
-                                    }
-
-                                    RightActions(
-                                        iconAction1 = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-                                        backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
-                                        onClickAction1 = {
-                                            query {
-                                                if (Database.like(
-                                                        window.mediaItem.mediaId,
-                                                        if (likedAt == null) System.currentTimeMillis() else null
-                                                    ) == 0
-                                                ) {
-                                                    Database.insert(window.mediaItem, Song::toggleLike)
-                                                }
-                                            }
-                                        },
-                                        iconAction2 = R.drawable.trash,
-                                        backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
-                                        onClickAction2 = {
-                                                player.removeMediaItem(currentItem.firstPeriodIndex)
-                                        }
-                                    )
-
-                                }
-                            },
-                            onHorizontalSwipeWhenActionDisabled = {
-                                if (!isReorderDisabled && !isSwipeToActionEnabled)
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
-                                else SmartToast(context.resources.getString(R.string.locked), type = PopupType.Warning)
-                            }
-                        )
-                        */
                     }
 
                     item {

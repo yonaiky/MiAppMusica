@@ -1,14 +1,11 @@
 package it.fast4x.rimusic.ui.components.themed
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.ui.graphics.Color
 import androidx.media3.common.util.UnstableApi
-import com.coder.vincent.smart_snackbar.SNACK_BAR_ICON_POSITION_LEFT
-import com.coder.vincent.smart_snackbar.SmartSnackBar
-import com.coder.vincent.smart_snackbar.bean.SnackBarStyle
-import it.fast4x.rimusic.MainActivity
-import it.fast4x.rimusic.R
+import es.dmoral.toasty.Toasty
 import it.fast4x.rimusic.enums.MessageType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.utils.getEnum
@@ -25,28 +22,19 @@ fun SmartMessage(
     durationLong: Boolean? = false,
     context: Context,
 ) {
+    val length = if (durationLong == true) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+
     if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
-
-        /*
-        val smartMessage = SmartSnackBar.bottom(context as MainActivity)
-        smartMessage.config()
-            //.backgroundColor(backgroundColor.hashCode())
-            .themeStyle(SnackBarStyle.AUTO)
-            .icon(
-                when (type) {
-                    PopupType.Info, PopupType.Success  -> R.drawable.information
-                    PopupType.Error, PopupType.Warning -> R.drawable.alert
-                    else -> R.drawable.information
-                }
-            )
-            .iconSizeDp(24f)
-            .iconPosition(SNACK_BAR_ICON_POSITION_LEFT)
-            .apply()
-        if (durationLong == true) smartMessage.showLong(message) else smartMessage.show(message)
-
-         */
+        when (type) {
+            PopupType.Info -> Toasty.info(context, message, length, true).show()
+            PopupType.Success -> Toasty.success(context, message, length, true).show()
+            PopupType.Error -> Toasty.error(context, message, length, true).show()
+            PopupType.Warning -> Toasty.warning(context, message, length, true).show()
+            null -> Toasty.normal(context, message, length).show()
+        }
 
     } else
-        if (durationLong == true) context.toastLong(message) else context.toast(message)
+        //if (durationLong == true) context.toastLong(message) else context.toast(message)
+        Toasty.normal(context, message, length).show()
 }
 

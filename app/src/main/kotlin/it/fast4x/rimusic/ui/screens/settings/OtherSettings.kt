@@ -579,12 +579,7 @@ fun OtherSettings() {
                         filec.delete()
 
 
-                } else /*
-                    SmartToast(
-                    context.getString(R.string.restarting_rimusic_is_required),
-                    type = PopupType.Info
-                )
-                */
+                } else
                     SmartMessage(
                         context.getString(R.string.restarting_rimusic_is_required),
                         type = PopupType.Info, context = context

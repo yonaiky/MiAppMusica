@@ -79,7 +79,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import com.coder.vincent.smart_toast.SmartToast
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -611,11 +610,6 @@ fun HomeSongsModern(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
-                    /*
-                    SmartToast("Couldn't find an application to create documents",
-                        type = PopupType.Warning)
-
-                     */
                     SmartMessage("Couldn't find an application to create documents",
                         type = PopupType.Warning, context = context)
                 }
@@ -1005,25 +999,6 @@ fun HomeSongsModern(
                                 )
                         )
 
-                    /*
-                    if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                        HeaderIconButton(
-                            onClick = {  },
-                            icon = R.drawable.devices,
-                            color = if (includeLocalSongs) colorPalette.text else colorPalette.textDisabled,
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                                .combinedClickable(
-                                    onClick = {
-                                        includeLocalSongs = !includeLocalSongs
-                                    },
-                                    onLongClick = {
-                                        SmartToast(context.getString(R.string.info_includes_excludes_songs_on_the_device))
-                                    }
-                                )
-                        )
-                     */
-
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
                         color = colorPalette.text,
@@ -1083,12 +1058,6 @@ fun HomeSongsModern(
                                             }
                                         }
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            /*
-                                            SmartToast(
-                                                context.resources.getString(R.string.done),
-                                                type = PopupType.Success
-                                            )
-                                             */
                                             SmartMessage(
                                                 context.resources.getString(R.string.done),
                                                 type = PopupType.Success, context = context

@@ -683,7 +683,7 @@ fun  UiSettings() {
         )
             SwitchSettingEntry(
                 title = stringResource(R.string.discover),
-                text = stringResource(R.string.discoverinfo),
+                text = stringResource(R.string.discoverinforadio),
                 isChecked = discoverIsEnabled,
                 onCheckedChange = { discoverIsEnabled = it }
             )

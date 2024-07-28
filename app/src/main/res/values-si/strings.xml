@@ -694,4 +694,5 @@ CC-BY-SA 3.0</string>
     <string name="message_type">Message type</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
+    <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
 </resources>

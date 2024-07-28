@@ -632,12 +632,6 @@ fun LocalPlaylistSongs(
                         val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
                         exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(Date())}")
                     } catch (e: ActivityNotFoundException) {
-                        /*
-                        SmartToast(
-                            context.resources.getString(R.string.info_not_find_app_create_doc),
-                            type = PopupType.Warning
-                        )
-                         */
                         SmartMessage(
                             context.resources.getString(R.string.info_not_find_app_create_doc),
                             type = PopupType.Warning, context = context
@@ -881,12 +875,6 @@ fun LocalPlaylistSongs(
                                         if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
                                             isReorderDisabled = !isReorderDisabled
                                         } else {
-                                            /*
-                                            SmartToast(
-                                                context.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
-                                                type = PopupType.Warning
-                                            )
-                                             */
                                             SmartMessage(
                                                 context.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
                                                 type = PopupType.Warning, context = context
@@ -1590,12 +1578,6 @@ fun LocalPlaylistSongs(
                                 )
                             };
                             coroutineScope.launch {
-                                /*
-                                SmartToast(
-                                    context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                    type = PopupType.Info
-                                )
-                                 */
                                 SmartMessage(
                                     context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
                                     type = PopupType.Info, context = context

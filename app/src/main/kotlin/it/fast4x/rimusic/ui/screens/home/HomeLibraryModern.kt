@@ -478,12 +478,6 @@ fun HomeLibraryModern(
                                     )
                                 )
                             } catch (e: ActivityNotFoundException) {
-                                /*
-                                SmartToast(
-                                    context.getString(R.string.info_not_find_app_open_doc),
-                                    type = PopupType.Warning
-                                )
-                                 */
                                 SmartMessage(
                                     context.getString(R.string.info_not_find_app_open_doc),
                                     type = PopupType.Warning, context = context

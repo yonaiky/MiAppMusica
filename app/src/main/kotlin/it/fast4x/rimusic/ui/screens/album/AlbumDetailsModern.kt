@@ -239,42 +239,6 @@ fun AlbumDetailsModern(
     }
     val hapticFeedback = LocalHapticFeedback.current
 
-    /*
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(album?.thumbnailUrl)
-            .size(Size.ORIGINAL)
-            .build()
-    )
-
-    var bitmap = remember<Bitmap?> {
-        null
-    }
-    val imageState = painter.state
-
-    val exportLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            context.applicationContext.contentResolver.openOutputStream(uri)
-                ?.use { outputStream ->
-                    if (imageState is AsyncImagePainter.State.Success) {
-                        bitmap = imageState.result.drawable.toBitmap()
-                        try {
-                            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                            outputStream.flush()
-                            outputStream.close()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
-                        }
-                    } else SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
-                }
-
-        }
-
-     */
-
     if (showSelectCustomizeAlbumDialog)
         SelectorDialog(
             title = stringResource(R.string.customize_album),
@@ -825,27 +789,6 @@ fun AlbumDetailsModern(
                                             onChangeAlbumCover = {
                                                 showDialogChangeAlbumCover = true
                                             },
-                                            /*
-                                            onDownloadAlbumCover = {
-                                                try {
-                                                    @SuppressLint("SimpleDateFormat")
-                                                    val dateFormat =
-                                                        SimpleDateFormat("yyyyMMddHHmmss")
-                                                    exportLauncher.launch(
-                                                        "ImageCover_${
-                                                            dateFormat.format(
-                                                                Date()
-                                                            )
-                                                        }"
-                                                    )
-                                                } catch (e: ActivityNotFoundException) {
-                                                    SmartToast(
-                                                        "Couldn't find an application to create documents",
-                                                        type = PopupType.Warning
-                                                    )
-                                                }
-                                            },
-                                             */
                                             onPlayNext = {
                                                 if (listMediaItems.isEmpty()) {
                                                     binder?.player?.addNext(

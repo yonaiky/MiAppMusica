@@ -1705,12 +1705,6 @@ fun Player(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        /*
-                                        SmartToast(
-                                            context.resources.getString(R.string.info_not_find_application_audio),
-                                            type = PopupType.Warning
-                                        )
-                                         */
                                         SmartMessage(
                                             context.resources.getString(R.string.info_not_find_application_audio),
                                             type = PopupType.Warning, context = context

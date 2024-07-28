@@ -328,12 +328,6 @@ fun QueueModern(
                             }"
                         )
                     } catch (e: ActivityNotFoundException) {
-                        /*
-                        SmartToast(
-                            context.resources.getString(R.string.info_not_find_app_create_doc),
-                            type = PopupType.Warning
-                        )
-                         */
                         SmartMessage(
                             context.resources.getString(R.string.info_not_find_app_create_doc),
                             type = PopupType.Warning, context = context
@@ -346,7 +340,7 @@ fun QueueModern(
         //val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
         val hapticFeedback = LocalHapticFeedback.current
 
-        var discoverIsEnabled by rememberPreference(discoverKey, false)
+        //var discoverIsEnabled by rememberPreference(discoverKey, false)
         //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
 
@@ -701,7 +695,7 @@ fun QueueModern(
 
                 ) {
 
-
+                    /*
                     IconButton(
                         icon = R.drawable.star_brilliant,
                         color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
@@ -722,7 +716,7 @@ fun QueueModern(
                         modifier = Modifier
                             .width(12.dp)
                     )
-
+                    */
 
 
                     IconButton(
