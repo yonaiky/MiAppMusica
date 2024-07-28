@@ -2349,7 +2349,7 @@ fun PlayerModern(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .weight(1.2f)
+                        .weight(1f)
                 ) {
                       if (showthumbnail) {
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
@@ -2367,7 +2367,7 @@ fun PlayerModern(
                                      modifier = modifier
                                          .padding(top = if (expandedplayer) 0.dp else 8.dp)
                                          .padding(all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
-                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 15.dp)}
+                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 2.5.dp)}
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
 
@@ -2526,7 +2526,11 @@ fun PlayerModern(
                     }
                 }
 
-
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                    .conditional(!expandedplayer){weight(1f)}
+                ){
                 if (showTotalTimeQueue)
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -2555,36 +2559,39 @@ fun PlayerModern(
                     modifier = Modifier
                         .height(10.dp)
                 )
-                if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
-                    controlsContent(
-                        modifier = Modifier
-                            .padding(vertical = 4.dp)
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
-                } else {
-                    key(pagerState.currentPage) {
-                        Controls(
-                            navController = navController,
-                            onCollapse = onDismiss,
-                            expandedplayer = expandedplayer,
-                            layoutState = layoutState,
-                            media = mediaItem.toUiMedia(positionAndDuration.second),
-                            mediaId = mediaItem.mediaId,
-                            title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
-                                ?: "",
-                            artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
-                            artistIds = artistsInfo,
-                            albumId = albumId,
-                            shouldBePlaying = shouldBePlaying,
-                            position = positionAndDuration.first,
-                            duration = positionAndDuration.second,
+                Box(modifier = Modifier
+                    .conditional(!expandedplayer){weight(1f)}) {
+                    if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
+                        controlsContent(
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
-                                .weight(1f),
-                            onBlurScaleChange = { blurStrength = it }
+                            //.weight(1f)
                         )
+                    } else {
+                        key(pagerState.currentPage) {
+                            Controls(
+                                navController = navController,
+                                onCollapse = onDismiss,
+                                expandedplayer = expandedplayer,
+                                layoutState = layoutState,
+                                media = mediaItem.toUiMedia(positionAndDuration.second),
+                                mediaId = mediaItem.mediaId,
+                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                    ?: "",
+                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                artistIds = artistsInfo,
+                                albumId = albumId,
+                                shouldBePlaying = shouldBePlaying,
+                                position = positionAndDuration.first,
+                                duration = positionAndDuration.second,
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .fillMaxWidth(),
+                                        //.weight(1f),
+                                    onBlurScaleChange = { blurStrength = it }
+                            )
+                        }
                     }
                 }
 
@@ -2600,6 +2607,7 @@ fun PlayerModern(
                         .padding(vertical = 10.dp)
                 )
               }
+            }
            }
         }
 
