@@ -81,7 +81,12 @@ class Multilingual {
       }
     });
   }
-  updateLanguage(lang) {
+  updateLanguage(el) {
+    const lang = el.value;
+
+    // Calculate width for the new language that is selected
+    this._calculateWidth(el);
+
     localStorage.setItem("language", lang);
     window.location.reload();
   }
@@ -89,9 +94,25 @@ class Multilingual {
     for (const option of el.children) {
       if (option.value == this.language) {
         option.selected = true;
-        return;
+        break;
       }
     }
+    this._calculateWidth(el);
+  }
+  _calculateWidth(el) {
+    const option = el.options[el.selectedIndex].textContent;
+
+    // Calculate width of the text
+    const tempSpan = document.createElement("span");
+    tempSpan.textContent = option;
+    tempSpan.style.visibility = "hidden";
+    tempSpan.style.fontSize = "14px";
+    const spanEl = document.body.appendChild(tempSpan);
+
+    const textWidth = tempSpan.getBoundingClientRect().width;
+    el.style.width = `${Math.round(textWidth)}px`;
+
+    spanEl.remove();
   }
   setAttribute(el) {
     el.setAttribute("lang", this.language);

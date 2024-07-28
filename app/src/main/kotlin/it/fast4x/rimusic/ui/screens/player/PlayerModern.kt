@@ -1527,7 +1527,7 @@ fun PlayerModern(
                                 enabled = true,
                                 onClick = {
                                     binder?.player?.shuffleQueue()
-                                    binder.player.forceSeekToNext()
+                                    //binder.player.forceSeekToNext()
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
@@ -1761,15 +1761,13 @@ fun PlayerModern(
                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                      }
 
-                     LaunchedEffect(pagerState.settledPage) {
+                     LaunchedEffect(pagerState) {
                          var previousPage = pagerState.settledPage
-                         var previousID = mediaItem.mediaId
-                         snapshotFlow { pagerState.settledPage }.collect {
+                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                              if (previousPage != it) {
-                                 if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems, it)
+                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                              }
-                             previousPage = it;
-                             previousID = mediaItem.mediaId
+                             previousPage = it
                          }
                      }
 
@@ -1994,15 +1992,13 @@ fun PlayerModern(
                                              pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                          }
 
-                                         LaunchedEffect(pagerState.settledPage) {
+                                         LaunchedEffect(pagerState) {
                                              var previousPage = pagerState.settledPage
-                                             var previousID = mediaItem.mediaId
-                                             snapshotFlow { pagerState.settledPage }.collect {
+                                             snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                                  if (previousPage != it) {
-                                                     if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                     if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                                  }
-                                                 previousPage = it;
-                                                 previousID = mediaItem.mediaId
+                                                 previousPage = it
                                              }
                                          }
 
@@ -2173,15 +2169,13 @@ fun PlayerModern(
                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                         }
 
-                        LaunchedEffect(pagerState.settledPage) {
+                        LaunchedEffect(pagerState) {
                             var previousPage = pagerState.settledPage
-                            var previousID = mediaItem.mediaId
-                            snapshotFlow { pagerState.settledPage }.collect {
+                            snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                 if (previousPage != it) {
-                                    if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems, it)
+                                    if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                 }
-                                previousPage = it;
-                                previousID = mediaItem.mediaId
+                                previousPage = it
                             }
                         }
 
@@ -2346,7 +2340,7 @@ fun PlayerModern(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .weight(1.2f)
+                        .weight(1f)
                 ) {
                       if (showthumbnail) {
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
@@ -2364,24 +2358,21 @@ fun PlayerModern(
                                      modifier = modifier
                                          .padding(top = if (expandedplayer) 0.dp else 8.dp)
                                          .padding(all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
-                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 15.dp)}
+                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 2.5.dp)}
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
-
 
                                      LaunchedEffect(mediaItem.mediaId) {
                                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                      }
 
-                                     LaunchedEffect(pagerState.settledPage) {
+                                     LaunchedEffect(pagerState) {
                                          var previousPage = pagerState.settledPage
-                                         var previousID = mediaItem.mediaId
-                                         snapshotFlow { pagerState.settledPage }.collect {
+                                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                              if (previousPage != it) {
-                                                 if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                              }
-                                             previousPage = it;
-                                             previousID = mediaItem.mediaId
+                                             previousPage = it
                                          }
                                      }
 
@@ -2526,7 +2517,11 @@ fun PlayerModern(
                     }
                 }
 
-
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                    .conditional(!expandedplayer){weight(1f)}
+                ){
                 if (showTotalTimeQueue)
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -2555,36 +2550,39 @@ fun PlayerModern(
                     modifier = Modifier
                         .height(10.dp)
                 )
-                if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
-                    controlsContent(
-                        modifier = Modifier
-                            .padding(vertical = 4.dp)
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
-                } else {
-                    key(pagerState.currentPage) {
-                        Controls(
-                            navController = navController,
-                            onCollapse = onDismiss,
-                            expandedplayer = expandedplayer,
-                            layoutState = layoutState,
-                            media = mediaItem.toUiMedia(positionAndDuration.second),
-                            mediaId = mediaItem.mediaId,
-                            title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
-                                ?: "",
-                            artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
-                            artistIds = artistsInfo,
-                            albumId = albumId,
-                            shouldBePlaying = shouldBePlaying,
-                            position = positionAndDuration.first,
-                            duration = positionAndDuration.second,
+                Box(modifier = Modifier
+                    .conditional(!expandedplayer){weight(1f)}) {
+                    if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
+                        controlsContent(
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
-                                .weight(1f),
-                            onBlurScaleChange = { blurStrength = it }
+                            //.weight(1f)
                         )
+                    } else {
+                        key(pagerState.currentPage) {
+                            Controls(
+                                navController = navController,
+                                onCollapse = onDismiss,
+                                expandedplayer = expandedplayer,
+                                layoutState = layoutState,
+                                media = mediaItem.toUiMedia(positionAndDuration.second),
+                                mediaId = mediaItem.mediaId,
+                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                    ?: "",
+                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                artistIds = artistsInfo,
+                                albumId = albumId,
+                                shouldBePlaying = shouldBePlaying,
+                                position = positionAndDuration.first,
+                                duration = positionAndDuration.second,
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .fillMaxWidth(),
+                                        //.weight(1f),
+                                    onBlurScaleChange = { blurStrength = it }
+                            )
+                        }
                     }
                 }
 
@@ -2600,6 +2598,7 @@ fun PlayerModern(
                         .padding(vertical = 10.dp)
                 )
               }
+            }
            }
         }
 
