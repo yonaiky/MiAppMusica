@@ -1774,7 +1774,7 @@ fun PlayerModern(
                          var previousPage = pagerState.settledPage
                          snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                              if (previousPage != it) {
-                                 if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                              }
                              previousPage = it
                          }
@@ -2005,7 +2005,7 @@ fun PlayerModern(
                                              var previousPage = pagerState.settledPage
                                              snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                                  if (previousPage != it) {
-                                                     if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                     if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                                  }
                                                  previousPage = it
                                              }
@@ -2182,7 +2182,7 @@ fun PlayerModern(
                             var previousPage = pagerState.settledPage
                             snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                 if (previousPage != it) {
-                                    if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                    if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                 }
                                 previousPage = it
                             }
@@ -2379,7 +2379,7 @@ fun PlayerModern(
                                          var previousPage = pagerState.settledPage
                                          snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                              if (previousPage != it) {
-                                                 if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
                                              }
                                              previousPage = it
                                          }
