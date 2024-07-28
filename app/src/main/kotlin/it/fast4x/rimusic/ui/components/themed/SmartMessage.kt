@@ -13,6 +13,9 @@ import it.fast4x.rimusic.utils.messageTypeKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.toast
 import it.fast4x.rimusic.utils.toastLong
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
 fun SmartMessage(
@@ -22,19 +25,21 @@ fun SmartMessage(
     durationLong: Boolean? = false,
     context: Context,
 ) {
-    val length = if (durationLong == true) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+    CoroutineScope(Dispatchers.Main).launch {
+        val length = if (durationLong == true) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
 
-    if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
-        when (type) {
-            PopupType.Info -> Toasty.info(context, message, length, true).show()
-            PopupType.Success -> Toasty.success(context, message, length, true).show()
-            PopupType.Error -> Toasty.error(context, message, length, true).show()
-            PopupType.Warning -> Toasty.warning(context, message, length, true).show()
-            null -> Toasty.normal(context, message, length).show()
-        }
+        if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
+            when (type) {
+                PopupType.Info -> Toasty.info(context, message, length, true).show()
+                PopupType.Success -> Toasty.success(context, message, length, true).show()
+                PopupType.Error -> Toasty.error(context, message, length, true).show()
+                PopupType.Warning -> Toasty.warning(context, message, length, true).show()
+                null -> Toasty.normal(context, message, length).show()
+            }
 
-    } else
+        } else
         //if (durationLong == true) context.toastLong(message) else context.toast(message)
-        Toasty.normal(context, message, length).show()
+            Toasty.normal(context, message, length).show()
+    }
 }
 
