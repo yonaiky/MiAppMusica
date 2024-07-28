@@ -686,11 +686,11 @@
     <string name="carousel">Atlıkarınca Görünümü</string>
     <string name="carouselsize">Atlıkarınca Boyutu</string>
     <string name="addednext">Sıradaki şarkı olarak eklendi</string>
+    <string name="info_paused_with_volume_zero">Ses seviyesi sıfıra düşürüldüğünden duraklatıldı</string>
+    <string name="effect_fade_audio">Kademeli ses</string>
+    <string name="effect_fade_audio_description">Şarkı duraklatıldığında veya oynatıldığında sesi kademeli bitir veya başlat</string>
     <string name="autosync">İçe Aktarılan Oynatma Listelerini Otomatik Senkronize Et</string>
-    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
-    <string name="effect_fade_audio">Fade audio</string>
-    <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
-    <string name="message_type">Message type</string>
+    <string name="message_type">Mesaj tipi</string>
     <string name="message_type_modern">Modern</string>
-    <string name="message_type_essential">Essential</string>
+    <string name="message_type_essential">Temel</string>
 </resources>

@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>

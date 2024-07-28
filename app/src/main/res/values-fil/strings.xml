@@ -419,7 +419,7 @@
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
     <string name="item_deselect">Deselect</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Ipakita ang susunod na kanta sa player</string>
     <string name="show_remaining_song_time">Ipakita ang remaining song time</string>
     <string name="full_screen">Full screen</string>
     <string name="click_lyrics_text">I-click ang lyrics text</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Zoom out animation ng button</string>
     <string name="thumbnailpause">I-shrink ang thumbnail kapag naka pause ito</string>
     <string name="upnext">Ang Susunod</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Ipakita ang susunod na dalawang kanta sa queue</string>
     <string name="showalbumcover">Ipakita ang Album Cover</string>
     <string name="do_not_translate">Huwag i-translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Delayed ang sleep timer sa pagkatapos ng kanta</string>
