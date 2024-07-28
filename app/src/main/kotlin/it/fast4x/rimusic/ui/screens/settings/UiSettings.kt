@@ -764,6 +764,7 @@ fun  UiSettings() {
                 }
             )
 
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_volumekeys),
@@ -775,6 +776,7 @@ fun  UiSettings() {
             )
             ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
+         */
 
         if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
             SwitchSettingEntry(
