@@ -341,7 +341,7 @@ fun Controls(
                 )
                 Spacer(
                     modifier = Modifier
-                        .height(10.dp)
+                        .height(5.dp)
                 )
                 if (((playerControlsType == PlayerControlsType.Modern) || (!transparentBackgroundActionBarPlayer)) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
                     Spacer(
@@ -356,7 +356,7 @@ fun Controls(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = playerTimelineSize.size.dp)
-                    .fillMaxHeight(0.40f)
+                    //.fillMaxHeight(0.40f)
             ) {
 
                 if (playerInfoType == PlayerInfoType.Modern)

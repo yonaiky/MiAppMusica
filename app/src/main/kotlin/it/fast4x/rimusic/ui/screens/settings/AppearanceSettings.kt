@@ -424,6 +424,7 @@ fun AppearanceSettings() {
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
         if (!showthumbnail) {showlyricsthumbnail = false; showvisthumbnail = false}
+        if (playerType == PlayerType.Modern) {showlyricsthumbnail = false; showvisthumbnail = false; thumbnailpause = false}
         if (showlyricsthumbnail) expandedlyrics = false
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
@@ -522,45 +523,46 @@ fun AppearanceSettings() {
                             )
                     }
                 }
-
-                if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
-                        filterCharSequence,
-                        true
-                    )
-                )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.thumbnailpause),
-                        text = "",
-                        isChecked = thumbnailpause,
-                        onCheckedChange = { thumbnailpause = it },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                    )
-
-                if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
-                        filterCharSequence,
-                        true
-                    )
-                )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_lyrics_thumbnail),
-                        text = "",
-                        isChecked = showlyricsthumbnail,
-                        onCheckedChange = { showlyricsthumbnail = it },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                    )
-                if (visualizerEnabled) {
-                    if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
+                if (playerType == PlayerType.Essential) {
+                    if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
                             filterCharSequence,
                             true
                         )
                     )
                         SwitchSettingEntry(
-                            title = stringResource(R.string.showvisthumbnail),
+                            title = stringResource(R.string.thumbnailpause),
                             text = "",
-                            isChecked = showvisthumbnail,
-                            onCheckedChange = { showvisthumbnail = it },
+                            isChecked = thumbnailpause,
+                            onCheckedChange = { thumbnailpause = it },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
+
+                    if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
+                            filterCharSequence,
+                            true
+                        )
+                    )
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.show_lyrics_thumbnail),
+                            text = "",
+                            isChecked = showlyricsthumbnail,
+                            onCheckedChange = { showlyricsthumbnail = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                    if (visualizerEnabled) {
+                        if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
+                                filterCharSequence,
+                                true
+                            )
+                        )
+                            SwitchSettingEntry(
+                                title = stringResource(R.string.showvisthumbnail),
+                                text = "",
+                                isChecked = showvisthumbnail,
+                                onCheckedChange = { showvisthumbnail = it },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                    }
                 }
 
                 if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
