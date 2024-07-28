@@ -551,8 +551,9 @@ class PlayerService : InvincibleService(),
         mediaSession.setSessionActivity(sessionActivityPendingIntent)
         mediaSession.setCallback(SessionCallback(player))
 
+        //TODO: to fix with another register type
         //if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
-            mediaSession.setPlaybackToRemote(getVolumeProvider())
+            //mediaSession.setPlaybackToRemote(getVolumeProvider())
 
 
         if (showLikeButton && showDownloadButton)
@@ -732,7 +733,7 @@ class PlayerService : InvincibleService(),
                         if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
                             //binder.player.pause()
                             binder.callPause({ binder.player.pause() } )
-                            SmartMessage(resources.getString(R.string.info_paused_with_volume_zero), context = this@PlayerService)
+                            //SmartMessage(resources.getString(R.string.info_paused_with_volume_zero), context = this@PlayerService)
                         }
                     } else  {
                         // Up = 1, Down = -1, Release = 0

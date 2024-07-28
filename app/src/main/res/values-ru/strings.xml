@@ -686,11 +686,11 @@
     <string name="carousel">\"Карусель\"</string>
     <string name="carouselsize">Размер карусели</string>
     <string name="addednext">Добавлено в очередь</string>
+    <string name="info_paused_with_volume_zero">Пауза при нулевой громкости</string>
+    <string name="effect_fade_audio">Затухание аудио</string>
+    <string name="effect_fade_audio_description">Затухает звук, когда трек ставится на паузу или воспроизводится вновь</string>
     <string name="autosync">Автоматически импортировать синхронизированные плейлисты</string>
-    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
-    <string name="effect_fade_audio">Fade audio</string>
-    <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
-    <string name="message_type">Message type</string>
-    <string name="message_type_modern">Modern</string>
-    <string name="message_type_essential">Essential</string>
+    <string name="message_type">Тип сообщения</string>
+    <string name="message_type_modern">Современное</string>
+    <string name="message_type_essential">Основное</string>
 </resources>

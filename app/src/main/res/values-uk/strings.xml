@@ -419,7 +419,7 @@
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Srpski Latinica)</string>
     <string name="item_deselect">Скасовувати виділення</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Показати наступну пісню в програвачі</string>
     <string name="show_remaining_song_time">Показати час до закінчення пісні</string>
     <string name="full_screen">Повний екран</string>
     <string name="click_lyrics_text">Натиснути на текст пісні</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Анімація Зменшення Кнопки</string>
     <string name="thumbnailpause">Стиснути Мініатюру Коли На Паузі</string>
     <string name="upnext">До Наступного</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Показати Наступні Дві Пісні у Черзі</string>
     <string name="showalbumcover">Показати Обкладинку Альбому</string>
     <string name="do_not_translate">Не перекладати</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Таймер сну відкладено в кінці пісні</string>

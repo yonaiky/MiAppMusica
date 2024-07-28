@@ -419,7 +419,7 @@
     <string name="lang_danish">Dánština (Dansk)</string>
     <string name="lang_serbian_latin">Srbská latinka (Srpski latinica)</string>
     <string name="item_deselect">Odznačit</string>
-    <string name="show_next_songs_in_player">Show Mini Queue in Player</string>
+    <string name="show_next_songs_in_player">Zobrazení dalších skladeb v přehrávači</string>
     <string name="show_remaining_song_time">Zobrazit zbývající čas skladby</string>
     <string name="full_screen">Celá obrazovka</string>
     <string name="click_lyrics_text">Klikněte na text písňového textu</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Animace oddálení tlačítka</string>
     <string name="thumbnailpause">Zmenšit miniaturu při pozastavení</string>
     <string name="upnext">Další</string>
-    <string name="showtwosongs">Number of Songs in Mini Queue(1 to 9)</string>
+    <string name="showtwosongs">Zobrazit další dvě skladby ve frontě</string>
     <string name="showalbumcover">Zobrazit obal alba</string>
     <string name="do_not_translate">Nepřekládat</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Časovač spánku byl odložen na konec skladby</string>
