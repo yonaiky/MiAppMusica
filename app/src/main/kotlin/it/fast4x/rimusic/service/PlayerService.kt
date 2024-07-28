@@ -115,6 +115,7 @@ import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
@@ -138,6 +139,7 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -566,23 +568,6 @@ class PlayerService : InvincibleService(),
             mediaSession.setPlaybackState(stateBuilderWithoutCustomAction.build())
 
         mediaSession.isActive = true
-
-        /*
-        coroutineScope.launch {
-            currentMedia.collect {
-                updateNotification()
-            }
-        }
-
-        currentMediaLiked = media.flatMapLatest { mediaItem ->
-            if (mediaItem?.mediaId?.let { Database.songliked(it) } == 0) flowOf(false) else flowOf(true)
-        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
-
-        currentMediaDownloaded = media.flatMapLatest { mediaItem ->
-            val downloads = DownloadUtil.downloads.value
-            flowOf(downloads[mediaItem?.mediaId]?.state == Download.STATE_COMPLETED)
-        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
-         */
 
         updatePlaybackState()
 
@@ -2013,6 +1998,8 @@ class PlayerService : InvincibleService(),
         var isLoadingRadio by mutableStateOf(false)
             private set
 
+        var mediaItems = mutableListOf<MediaItem>()
+
         fun setBitmapListener(listener: ((Bitmap?) -> Unit)?) {
             bitmapProvider.listener = listener
         }
@@ -2122,6 +2109,7 @@ class PlayerService : InvincibleService(),
             }
         }
 
+        /*
         @UnstableApi
         private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
             radioJob?.cancel()
@@ -2146,6 +2134,67 @@ class PlayerService : InvincibleService(),
                     } else {
                         player.forcePlayFromBeginning(it.process())
                     }
+                    radio = it
+                    isLoadingRadio = false
+                }
+            }
+        }
+         */
+
+        @UnstableApi
+        private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
+            radioJob?.cancel()
+            radio = null
+            YouTubeRadio(
+                endpoint?.videoId,
+                endpoint?.playlistId,
+                endpoint?.playlistSetVideoId,
+                endpoint?.params
+            ).let {
+                val discoverIsEnabled =  applicationContext.preferences.getBoolean(discoverKey, false)
+                var songInPlaylist = 0
+                var songIsLiked = 0
+                mediaItems = mutableListOf()
+
+                isLoadingRadio = true
+                radioJob = coroutineScope.launch(Dispatchers.Main) {
+                    println("mediaItem playerservice startRadio discoverIsEnabled $discoverIsEnabled")
+                    println("mediaItem playerservice startRadio mediaItems from process ${it.process().size}")
+                    if (discoverIsEnabled) {
+                        it.process().forEach {
+                            withContext(Dispatchers.IO) {
+                                songInPlaylist = Database.songUsedInPlaylists(it.mediaId)
+                                songIsLiked = Database.songliked(it.mediaId)
+                            }
+                            println("mediaItem playerservice startRadio song ${it.mediaId} songInPlaylist $songInPlaylist songIsLiked $songIsLiked")
+                                if (songInPlaylist == 0 && songIsLiked == 0) {
+                                    mediaItems.add(it)
+                                    transaction {
+                                        Database.insert(it)
+                                    }
+                                }
+
+                        }.also {
+                            if (justAdd)
+                                player.addMediaItems(mediaItems)
+                            else
+                                player.forcePlayFromBeginning(mediaItems)
+
+                            println("mediaItem playerservice startRadio mediaItems after process ${mediaItems.size}")
+                        }
+                    } else {
+                        if (justAdd)
+                            player.addMediaItems(it.process())
+                        else
+                            player.forcePlayFromBeginning(it.process())
+
+                        it.process().forEach {
+                            transaction {
+                                Database.insert(it)
+                            }
+                        }
+                    }
+
                     radio = it
                     isLoadingRadio = false
                 }

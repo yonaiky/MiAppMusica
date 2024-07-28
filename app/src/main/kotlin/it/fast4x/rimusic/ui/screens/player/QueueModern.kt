@@ -347,43 +347,9 @@ fun QueueModern(
         val hapticFeedback = LocalHapticFeedback.current
 
         var discoverIsEnabled by rememberPreference(discoverKey, false)
-        if (discoverIsEnabled) ApplyDiscoverToQueue()
+        //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
-        /*
-        /*   DISCOVER  */
 
-        var songInPlaylist by remember {
-            mutableStateOf(0)
-        }
-        var songIsLiked by remember {
-            mutableStateOf(0)
-        }
-        if (discoverIsEnabled) {
-            LaunchedEffect(Unit) {
-                listMediaItemsIndex.clear()
-                windows.forEach { window ->
-                    withContext(Dispatchers.IO) {
-                        songInPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
-                        songIsLiked = Database.songliked(window.mediaItem.mediaId)
-                    }
-                    if (songInPlaylist > 0 || songIsLiked > 0) {
-                        listMediaItemsIndex.add(window.firstPeriodIndex)
-                    }
-                }.also {
-                    if (listMediaItemsIndex.isNotEmpty()) {
-                        val mediacount = listMediaItemsIndex.size - 1
-                        listMediaItemsIndex.sort()
-                        for (i in mediacount.downTo(0)) {
-                            binder.player.removeMediaItem(listMediaItemsIndex[i])
-                        }
-                        listMediaItemsIndex.clear()
-                    }
-                }
-
-            }
-        }
-        /*   DISCOVER  */
-        */
 
         Column {
             Box(
@@ -735,6 +701,7 @@ fun QueueModern(
 
                 ) {
 
+
                     IconButton(
                         icon = R.drawable.star_brilliant,
                         color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
@@ -755,6 +722,8 @@ fun QueueModern(
                         modifier = Modifier
                             .width(12.dp)
                     )
+
+
 
                     IconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,

@@ -26,8 +26,9 @@ fun SmartMessage(
     context: Context,
 ) {
     if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
-        val smartMessage = SmartSnackBar.bottom(context as MainActivity)
 
+        /*
+        val smartMessage = SmartSnackBar.bottom(context as MainActivity)
         smartMessage.config()
             //.backgroundColor(backgroundColor.hashCode())
             .themeStyle(SnackBarStyle.AUTO)
@@ -42,6 +43,8 @@ fun SmartMessage(
             .iconPosition(SNACK_BAR_ICON_POSITION_LEFT)
             .apply()
         if (durationLong == true) smartMessage.showLong(message) else smartMessage.show(message)
+
+         */
 
     } else
         if (durationLong == true) context.toastLong(message) else context.toast(message)

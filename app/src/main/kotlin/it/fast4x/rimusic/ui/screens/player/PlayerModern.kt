@@ -974,7 +974,7 @@ fun PlayerModern(
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    var discoverIsEnabled by rememberPreference(discoverKey, false)
+    //var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
     val pagerState =rememberPagerState(pageCount = { binder.player.mediaItemCount })
 
@@ -1439,6 +1439,7 @@ fun PlayerModern(
                             .fillMaxWidth()
                     ) {
 
+                        /*
                         IconButton(
                             icon = R.drawable.star_brilliant,
                             color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
@@ -1453,6 +1454,7 @@ fun PlayerModern(
 
                                 )
                         )
+                         */
 
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
@@ -1744,7 +1746,7 @@ fun PlayerModern(
         val statsfornerds by rememberPreference(statsfornerdsKey, false)
 
 
-        if (discoverIsEnabled) ApplyDiscoverToQueue()
+        //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
 
         if (isLandscape) {
