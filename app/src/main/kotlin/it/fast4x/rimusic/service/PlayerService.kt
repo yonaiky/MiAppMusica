@@ -95,6 +95,7 @@ import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
@@ -2158,15 +2159,15 @@ class PlayerService : InvincibleService(),
 
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
-                    println("mediaItem playerservice startRadio discoverIsEnabled $discoverIsEnabled")
-                    println("mediaItem playerservice startRadio mediaItems from process ${it.process().size}")
+                    //println("mediaItem playerservice startRadio discoverIsEnabled $discoverIsEnabled")
+                    //println("mediaItem playerservice startRadio mediaItems from process ${it.process().size}")
                     if (discoverIsEnabled) {
                         it.process().forEach {
                             withContext(Dispatchers.IO) {
                                 songInPlaylist = Database.songUsedInPlaylists(it.mediaId)
                                 songIsLiked = Database.songliked(it.mediaId)
                             }
-                            println("mediaItem playerservice startRadio song ${it.mediaId} songInPlaylist $songInPlaylist songIsLiked $songIsLiked")
+                            //println("mediaItem playerservice startRadio song ${it.mediaId} songInPlaylist $songInPlaylist songIsLiked $songIsLiked")
                                 if (songInPlaylist == 0 && songIsLiked == 0) {
                                     mediaItems.add(it)
                                     transaction {
@@ -2180,8 +2181,9 @@ class PlayerService : InvincibleService(),
                             else
                                 player.forcePlayFromBeginning(mediaItems)
 
-                            println("mediaItem playerservice startRadio mediaItems after process ${mediaItems.size}")
+                            //println("mediaItem playerservice startRadio mediaItems after process ${mediaItems.size}")
                         }
+                        SmartMessage(getString(R.string.discover_has_been_applied_to_radio).format(it.process().size - mediaItems.size), PopupType.Success, context = applicationContext)
                     } else {
                         if (justAdd)
                             player.addMediaItems(it.process())

@@ -692,4 +692,5 @@
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
     <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
+    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
 </resources>
