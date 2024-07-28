@@ -1530,7 +1530,7 @@ fun PlayerModern(
                                 enabled = true,
                                 onClick = {
                                     binder?.player?.shuffleQueue()
-                                    binder.player.forceSeekToNext()
+                                    //binder.player.forceSeekToNext()
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
