@@ -1576,11 +1576,11 @@ fun LocalPlaylistSongs(
                                     id = UUID.fromString(playlistPreview?.playlist?.browseId),
                                     positionInPlaylist
                                 )
-                            };
+                            }
                             coroutineScope.launch {
                                 SmartMessage(
                                     context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                    type = PopupType.Info, context = context
+                                    type = PopupType.Warning, context = context
                                 )
                             }
 
