@@ -274,6 +274,7 @@ import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -610,7 +611,7 @@ fun PlayerModern(
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = downloadedStateMedia(mediaItem.mediaId)
     var showthumbnail by rememberPreference(showthumbnailKey, false)
-
+    val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
     val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
@@ -1438,21 +1439,25 @@ fun PlayerModern(
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth()
                     ) {
+                        if (showButtonPlayerDiscover) {
+                            IconButton(
+                                icon = R.drawable.star_brilliant,
+                                color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .combinedClickable(
+                                        onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                        onLongClick = {
+                                            SmartMessage(
+                                                context.getString(R.string.discoverinfo),
+                                                context = context
+                                            )
+                                        }
 
-                        IconButton(
-                            icon = R.drawable.star_brilliant,
-                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .size(24.dp)
-                                .combinedClickable(
-                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                    onLongClick = {
-                                        SmartMessage(context.getString(R.string.discoverinfo), context = context)
-                                    }
-
-                                )
-                        )
+                                    )
+                            )
+                        }
 
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
@@ -1765,15 +1770,13 @@ fun PlayerModern(
                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                      }
 
-                     LaunchedEffect(pagerState.settledPage) {
+                     LaunchedEffect(pagerState) {
                          var previousPage = pagerState.settledPage
-                         var previousID = mediaItem.mediaId
-                         snapshotFlow { pagerState.settledPage }.collect {
+                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                              if (previousPage != it) {
-                                 if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems, it)
+                                 if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
                              }
-                             previousPage = it;
-                             previousID = mediaItem.mediaId
+                             previousPage = it
                          }
                      }
 
@@ -1998,15 +2001,13 @@ fun PlayerModern(
                                              pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                          }
 
-                                         LaunchedEffect(pagerState.settledPage) {
+                                         LaunchedEffect(pagerState) {
                                              var previousPage = pagerState.settledPage
-                                             var previousID = mediaItem.mediaId
-                                             snapshotFlow { pagerState.settledPage }.collect {
+                                             snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                                  if (previousPage != it) {
-                                                     if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                     if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
                                                  }
-                                                 previousPage = it;
-                                                 previousID = mediaItem.mediaId
+                                                 previousPage = it
                                              }
                                          }
 
@@ -2177,15 +2178,13 @@ fun PlayerModern(
                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                         }
 
-                        LaunchedEffect(pagerState.settledPage) {
+                        LaunchedEffect(pagerState) {
                             var previousPage = pagerState.settledPage
-                            var previousID = mediaItem.mediaId
-                            snapshotFlow { pagerState.settledPage }.collect {
+                            snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                 if (previousPage != it) {
-                                    if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems, it)
+                                    if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
                                 }
-                                previousPage = it;
-                                previousID = mediaItem.mediaId
+                                previousPage = it
                             }
                         }
 
@@ -2372,20 +2371,17 @@ fun PlayerModern(
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
 
-
                                      LaunchedEffect(mediaItem.mediaId) {
                                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                      }
 
-                                     LaunchedEffect(pagerState.settledPage) {
+                                     LaunchedEffect(pagerState) {
                                          var previousPage = pagerState.settledPage
-                                         var previousID = mediaItem.mediaId
-                                         snapshotFlow { pagerState.settledPage }.collect {
+                                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
                                              if (previousPage != it) {
-                                                 if (previousID != binder.player.getMediaItemAt(it).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
+                                                 if (binder.player.getMediaItemAt(it).mediaId != binder.player.getMediaItemAt(binder.player.currentMediaItemIndex).mediaId) binder.player.forcePlayAtIndex(mediaItems,it)
                                              }
-                                             previousPage = it;
-                                             previousID = mediaItem.mediaId
+                                             previousPage = it
                                          }
                                      }
 
