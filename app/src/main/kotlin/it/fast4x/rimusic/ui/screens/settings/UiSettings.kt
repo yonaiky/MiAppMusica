@@ -138,6 +138,7 @@ import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
@@ -324,6 +325,7 @@ fun  UiSettings() {
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var discoverIsEnabled by rememberPreference(discoverKey, false)
+    var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
 
@@ -590,6 +592,16 @@ fun  UiSettings() {
                         PauseBetweenSongs.`50` -> "50s"
                         PauseBetweenSongs.`60` -> "60s"
                     }
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_pause_on_volume_zero),
+                text = stringResource(R.string.info_pauses_player_when_volume_zero),
+                isChecked = isPauseOnVolumeZeroEnabled,
+                onCheckedChange = {
+                    isPauseOnVolumeZeroEnabled = it
                 }
             )
 

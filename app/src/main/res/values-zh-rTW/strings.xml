@@ -697,4 +697,6 @@
     <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
     <string name="songs_number_to_show">Songs number to show</string>
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
+    <string name="player_pause_on_volume_zero">Pause on volume zero</string>
+    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
 </resources>

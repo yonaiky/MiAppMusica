@@ -96,6 +96,8 @@ import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
+import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
@@ -133,6 +135,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
+import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
@@ -203,12 +206,14 @@ val Song.isLocal get() = id.startsWith(LOCAL_KEY_PREFIX)
 class PlayerService : InvincibleService(),
     Player.Listener,
     PlaybackStatsListener.Callback,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    OnAudioVolumeChangedListener {
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var cache: SimpleCache
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
+    private lateinit var audioVolumeObserver: AudioVolumeObserver
 
 
     private val actions = PlaybackStateCompat.ACTION_PLAY or
@@ -559,6 +564,10 @@ class PlayerService : InvincibleService(),
             //mediaSession.setPlaybackToRemote(getVolumeProvider())
 
 
+        audioVolumeObserver = AudioVolumeObserver(this)
+        audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
+
+
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())
         if (showLikeButton && !showDownloadButton)
@@ -784,8 +793,8 @@ class PlayerService : InvincibleService(),
             mediaSession.release()
             cache.release()
             //downloadCache.release()
-
             loudnessEnhancer?.release()
+            audioVolumeObserver.unregister()
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
@@ -796,6 +805,18 @@ class PlayerService : InvincibleService(),
         return !player.shouldBePlaying
     }
 
+    private var pausedByZeroVolume = false
+    override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
+        if (preferences.getBoolean(isPauseOnVolumeZeroEnabledKey, false)) {
+            if (player.isPlaying && currentVolume < 1) {
+                binder.callPause {}
+                pausedByZeroVolume = true
+            } else if (pausedByZeroVolume && currentVolume >= 1) {
+                binder.player.play()
+                pausedByZeroVolume = false
+            }
+        }
+    }
 
     @ExperimentalCoroutinesApi
     @FlowPreview
