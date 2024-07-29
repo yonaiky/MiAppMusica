@@ -536,8 +536,8 @@
     <string name="title_reset_customized_dark_colors">Reset customized dark colors</string>
     <string name="click_to_reset_default_dark_colors">Click to reset default dark colors</string>
     <string name="info_color_s_applied">Color %s applied</string>
-    <string name="time_seconds">seconds</string>
-    <string name="info_bookmark_album">Bookmark album</string>
+    <string name="time_seconds">秒</string>
+    <string name="info_bookmark_album">ブックマークアルバム</string>
     <string name="effect_fade_songs">Fade songs</string>
     <string name="bg_colors_fluid_gradient_background_from_theme">Fluid gradient background from theme</string>
     <string name="bg_colors_fluid_gradient_background_from_cover">Fluid gradient background from cover</string>
@@ -598,7 +598,7 @@
     <string name="large">Large</string>
     <string name="miniplayertype">Mini Player Type</string>
     <string name="expanded">Expanded</string>
-    <string name="lyricscolor">Lyrics Color</string>
+    <string name="lyricscolor">歌詞の色</string>
     <string name="accent">Accent</string>
     <string name="lyrics_size">歌詞のサイズ</string>
     <string name="translate">翻訳</string>
@@ -627,8 +627,8 @@
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
-    <string name="game_restart">Restart</string>
-    <string name="game_over">Game Over!</string>
+    <string name="game_restart">リスタート</string>
+    <string name="game_over">ゲームオーバー！</string>
     <string name="white">White</string>
     <string name="black">Black</string>
     <string name="highlight">Highlight</string>
@@ -657,15 +657,15 @@
     <string name="all_time">All time</string>
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
-    <string name="podcasts">Podcasts</string>
+    <string name="podcasts">ポッドキャスト</string>
     <string name="playlistindicator">Playlist Indicator</string>
     <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
+    <string name="deleted">削除済み</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
-    <string name="controls_header_customize">Customize</string>
+    <string name="controls_header_customize">カスタマイズ</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Playback speed</string>
@@ -690,7 +690,7 @@
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
-    <string name="message_type">Message type</string>
+    <string name="message_type">メッセージタイプ</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
 </resources>
