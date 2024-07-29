@@ -819,12 +819,16 @@ class PlayerService : InvincibleService(),
     }
 
     override fun onAudioVolumeDirectionChanged(direction: Int) {
+        /*
         if (direction == 0) {
             binder.player.seekToPreviousMediaItem()
         } else {
             binder.player.seekToNextMediaItem()
         }
+
+         */
     }
+
 
     @ExperimentalCoroutinesApi
     @FlowPreview
