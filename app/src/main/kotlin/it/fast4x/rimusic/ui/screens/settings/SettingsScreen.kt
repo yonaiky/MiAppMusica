@@ -327,7 +327,8 @@ fun SettingsDescription(
         style = typography.xxs.secondary,
         modifier = modifier
             .padding(start = 16.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 8.dp)
     )
 }
 

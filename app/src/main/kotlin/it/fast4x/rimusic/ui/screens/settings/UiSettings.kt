@@ -593,7 +593,7 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true)){
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_audio),
                 selectedValue = playbackFadeAudioDuration,
