@@ -235,6 +235,7 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
+import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
@@ -649,7 +650,7 @@ fun PlayerModern(
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
-    var showsongs by rememberPreference(showsongsKey, "2")
+    var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var tapqueue by rememberPreference(tapqueueKey, true)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
@@ -1280,13 +1281,13 @@ fun PlayerModern(
                                       tint = colorPalette.accent
                                   )
                               }
-                            if (showsongs == "") showsongs = "1"
+
                             val threePagesPerViewport = object : PageSize {
                                 override fun Density.calculateMainAxisPageSize(
                                     availableSpace: Int,
                                     pageSpacing: Int
                                 ): Int {
-                                    return if (showsongs.toInt() == 1) (availableSpace) else ((availableSpace - 2 * pageSpacing)/(showsongs.toInt()))
+                                    return if (showsongs == SongsNumber.`1`) (availableSpace) else ((availableSpace - 2 * pageSpacing)/(showsongs.number))
                                 }
                             }
 
@@ -1414,7 +1415,7 @@ fun PlayerModern(
                                     }
                                 }
                             }
-                                if (showsongs.toInt() == 1) {
+                                if (showsongs == SongsNumber.`1`) {
                                     IconButton(
                                         icon = R.drawable.trash,
                                         color = Color.White,

@@ -66,6 +66,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PrevNextSongs
+import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -276,7 +277,7 @@ fun AppearanceSettings() {
     var expandedlyrics by rememberPreference(expandedlyricsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
-    var showsongs by rememberPreference(showsongsKey, "2")
+    var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
@@ -973,26 +974,17 @@ fun AppearanceSettings() {
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
               if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(filterCharSequence,true))
-              OutlinedTextField(
-                  value = showsongs,
-                  onValueChange = { showsongs = it },
-                  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                  singleLine = true,
-                  textStyle = TextStyle(
-                      textAlign = TextAlign.Left,
-                      color = colorPalette.text,
-                      fontStyle = typography.xs.bold.fontStyle,
-                      fontWeight = typography.xs.bold.fontWeight,
-                      fontSize = typography.xs.bold.fontSize,
-                      fontFamily = typography.xs.bold.fontFamily
-                  ),
-                  label = { Text(stringResource(R.string.showtwosongs), color = colorPalette.text) },
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(horizontal = 50.dp)
-              )
-              if (showsongs == "0") showsongs = "1"
-              if (showsongs != "" && showsongs.toInt() > 9) showsongs = "9"
+                  EnumValueSelectorSettingsEntry(
+                      title = stringResource(R.string.max_size),
+                      selectedValue = showsongs,
+                      onValueSelected = {
+                          showsongs = it
+                      },
+                      valueText = {
+                          it.name
+                      },
+                  )
+
 
             if (filter.isNullOrBlank() || stringResource(R.string.showalbumcover).contains(
                     filterCharSequence,
