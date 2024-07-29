@@ -677,7 +677,7 @@
     <string name="searches_saved_searches">Saved searches</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
-    <string name="paste">Paste</string>
+    <string name="paste">Klistra in</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="playertype">Player Type</string>
