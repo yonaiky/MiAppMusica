@@ -668,7 +668,7 @@
     <string name="discover">Découvrir</string>
     <string name="discoverinfo">Supprime les titres aimés et les listes de lecture de la file d\'attente</string>
     <string name="controls_header_customize">Customize</string>
-    <string name="controls_title_blur_effect">Blur effect</string>
+    <string name="controls_title_blur_effect">Effet de flou</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Playback speed</string>
     <string name="controls_title_playback_pitch">Playback pitch</string>
