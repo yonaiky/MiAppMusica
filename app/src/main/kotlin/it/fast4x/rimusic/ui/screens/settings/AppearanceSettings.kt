@@ -975,7 +975,7 @@ fun AppearanceSettings() {
           Column {
               if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(filterCharSequence,true))
                   EnumValueSelectorSettingsEntry(
-                      title = stringResource(R.string.max_size),
+                      title = stringResource(R.string.songs_number_to_show),
                       selectedValue = showsongs,
                       onValueSelected = {
                           showsongs = it
@@ -983,6 +983,8 @@ fun AppearanceSettings() {
                       valueText = {
                           it.name
                       },
+                      modifier = Modifier
+                          .padding(start = 25.dp)
                   )
 
 
