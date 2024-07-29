@@ -696,4 +696,5 @@
     <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
     <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
     <string name="songs_number_to_show">Songs number to show</string>
+    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
 </resources>

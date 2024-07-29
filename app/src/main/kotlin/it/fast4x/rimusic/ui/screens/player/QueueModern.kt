@@ -114,6 +114,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.windows
@@ -339,8 +340,8 @@ fun QueueModern(
 
         //val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
         val hapticFeedback = LocalHapticFeedback.current
-
-        //var discoverIsEnabled by rememberPreference(discoverKey, false)
+        val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+        var discoverIsEnabled by rememberPreference(discoverKey, false)
         //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
 
@@ -696,29 +697,32 @@ fun QueueModern(
 
                 ) {
 
-                    /*
-                    IconButton(
-                        icon = R.drawable.star_brilliant,
-                        color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(24.dp)
-                            .combinedClickable(
-                                onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                onLongClick = {
-                                    SmartMessage(context.getString(R.string.discoverinfo), context = context)
-                                }
+                    if (showButtonPlayerDiscover) {
+                        IconButton(
+                            icon = R.drawable.star_brilliant,
+                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(24.dp)
+                                .combinedClickable(
+                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.getString(R.string.discoverinfo),
+                                            context = context
+                                        )
+                                    }
 
-                            )
-                    )
+                                )
+                        )
 
-                    Spacer(
-                        modifier = Modifier
-                            .width(12.dp)
-                    )
-                    */
+                        Spacer(
+                            modifier = Modifier
+                                .width(12.dp)
+                        )
 
+                    }
 
                     IconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,

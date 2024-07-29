@@ -275,6 +275,7 @@ import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -975,7 +976,7 @@ fun PlayerModern(
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    //var discoverIsEnabled by rememberPreference(discoverKey, false)
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
     val pagerState =rememberPagerState(pageCount = { binder.player.mediaItemCount })
 
@@ -1191,9 +1192,11 @@ fun PlayerModern(
             songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
         }
     }
-    var playlistindicator by rememberPreference(playlistindicatorKey, false)
-    var carousel by rememberPreference(carouselKey, true)
-    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    val playlistindicator by rememberPreference(playlistindicatorKey, false)
+    val carousel by rememberPreference(carouselKey, true)
+    val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
 
     Box(
         modifier = Modifier
@@ -1440,22 +1443,22 @@ fun PlayerModern(
                             .fillMaxWidth()
                     ) {
 
-                        /*
-                        IconButton(
-                            icon = R.drawable.star_brilliant,
-                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .size(24.dp)
-                                .combinedClickable(
-                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                    onLongClick = {
-                                        SmartMessage(context.getString(R.string.discoverinfo), context = context)
-                                    }
+                        if (showButtonPlayerDiscover)
+                            IconButton(
+                                icon = R.drawable.star_brilliant,
+                                color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .combinedClickable(
+                                        onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                        onLongClick = {
+                                            SmartMessage(context.getString(R.string.discoverinfo), context = context)
+                                        }
 
-                                )
-                        )
-                         */
+                                    )
+                            )
+
 
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(

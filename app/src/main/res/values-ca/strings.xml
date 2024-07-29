@@ -696,4 +696,5 @@
     <string name="songs_number_to_show">Songs number to show</string>
     <string name="addednext">Added to play next</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
 </resources>

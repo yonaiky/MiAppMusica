@@ -1999,7 +1999,7 @@ class PlayerService : InvincibleService(),
         var isLoadingRadio by mutableStateOf(false)
             private set
 
-        var mediaItems = mutableListOf<MediaItem>()
+        //var mediaItems = mutableListOf<MediaItem>()
 
         fun setBitmapListener(listener: ((Bitmap?) -> Unit)?) {
             bitmapProvider.listener = listener
@@ -2047,7 +2047,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 var mediaItems = listOf<MediaItem>()
                 runBlocking {
@@ -2064,7 +2066,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 var songs = listOf<Song>()
                 runBlocking {
@@ -2083,7 +2087,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 isLoadingRadio = true
                 coroutineScope.launch(Dispatchers.Main) {
@@ -2110,16 +2116,19 @@ class PlayerService : InvincibleService(),
             }
         }
 
-        /*
+
         @UnstableApi
         private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
             radioJob?.cancel()
             radio = null
+            val isDiscoverEnabled =  applicationContext.preferences.getBoolean(discoverKey, false)
             YouTubeRadio(
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                isDiscoverEnabled,
+                applicationContext
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
@@ -2135,68 +2144,6 @@ class PlayerService : InvincibleService(),
                     } else {
                         player.forcePlayFromBeginning(it.process())
                     }
-                    radio = it
-                    isLoadingRadio = false
-                }
-            }
-        }
-         */
-
-        @UnstableApi
-        private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
-            radioJob?.cancel()
-            radio = null
-            YouTubeRadio(
-                endpoint?.videoId,
-                endpoint?.playlistId,
-                endpoint?.playlistSetVideoId,
-                endpoint?.params
-            ).let {
-                val discoverIsEnabled =  applicationContext.preferences.getBoolean(discoverKey, false)
-                var songInPlaylist = 0
-                var songIsLiked = 0
-                mediaItems = mutableListOf()
-
-                isLoadingRadio = true
-                radioJob = coroutineScope.launch(Dispatchers.Main) {
-                    //println("mediaItem playerservice startRadio discoverIsEnabled $discoverIsEnabled")
-                    //println("mediaItem playerservice startRadio mediaItems from process ${it.process().size}")
-                    if (discoverIsEnabled) {
-                        it.process().forEach {
-                            withContext(Dispatchers.IO) {
-                                songInPlaylist = Database.songUsedInPlaylists(it.mediaId)
-                                songIsLiked = Database.songliked(it.mediaId)
-                            }
-                            //println("mediaItem playerservice startRadio song ${it.mediaId} songInPlaylist $songInPlaylist songIsLiked $songIsLiked")
-                                if (songInPlaylist == 0 && songIsLiked == 0) {
-                                    mediaItems.add(it)
-                                    transaction {
-                                        Database.insert(it)
-                                    }
-                                }
-
-                        }.also {
-                            if (justAdd)
-                                player.addMediaItems(mediaItems)
-                            else
-                                player.forcePlayFromBeginning(mediaItems)
-
-                            //println("mediaItem playerservice startRadio mediaItems after process ${mediaItems.size}")
-                        }
-                        SmartMessage(getString(R.string.discover_has_been_applied_to_radio).format(it.process().size - mediaItems.size), PopupType.Success, context = applicationContext)
-                    } else {
-                        if (justAdd)
-                            player.addMediaItems(it.process())
-                        else
-                            player.forcePlayFromBeginning(it.process())
-
-                        it.process().forEach {
-                            transaction {
-                                Database.insert(it)
-                            }
-                        }
-                    }
-
                     radio = it
                     isLoadingRadio = false
                 }
