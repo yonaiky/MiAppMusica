@@ -691,6 +691,6 @@
     <string name="effect_fade_audio_description">Desvanecer áudio ao pausar ou reproduzir a música</string>
     <string name="autosync">Sincronizar Automaticamente Playlists Importadas</string>
     <string name="message_type">Tipo de mensagem</string>
-    <string name="message_type_modern">Modern</string>
+    <string name="message_type_modern">Moderna</string>
     <string name="message_type_essential">Essencial</string>
 </resources>
