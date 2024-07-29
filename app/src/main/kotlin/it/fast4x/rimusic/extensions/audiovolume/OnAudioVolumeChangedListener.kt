@@ -15,4 +15,5 @@ package it.fast4x.rimusic.extensions.audiovolume
 
 interface OnAudioVolumeChangedListener {
     fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int)
+    fun onAudioVolumeDirectionChanged(direction: Int)
 }

@@ -34,12 +34,20 @@ class AudioVolumeContentObserver internal constructor(
         if (mAudioManager != null && mListener != null) {
             val maxVolume = mAudioManager.getStreamMaxVolume(mAudioStreamType)
             val currentVolume = mAudioManager.getStreamVolume(mAudioStreamType)
+
+            if (currentVolume > mLastVolume)
+                mListener.onAudioVolumeDirectionChanged(1)
+            else
+                mListener.onAudioVolumeDirectionChanged(0)
+
             if (currentVolume.toFloat() != mLastVolume) {
                 mLastVolume = currentVolume.toFloat()
                 mListener.onAudioVolumeChanged(currentVolume, maxVolume)
             }
         }
     }
+
+
 
     init {
         mAudioManager = audioManager
