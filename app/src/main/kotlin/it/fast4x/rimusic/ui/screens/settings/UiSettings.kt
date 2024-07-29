@@ -593,10 +593,9 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true)){
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_audio),
-                titleSecondary = stringResource(R.string.effect_fade_audio_description),
                 selectedValue = playbackFadeAudioDuration,
                 onValueSelected = { playbackFadeAudioDuration = it },
                 valueText = {
@@ -608,6 +607,8 @@ fun  UiSettings() {
                     }
                 }
             )
+            SettingsDescription(text = stringResource(R.string.effect_fade_audio_description))
+        }
 
         /*
         if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_songs).contains(filterCharSequence,true))
