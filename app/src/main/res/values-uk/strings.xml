@@ -683,7 +683,7 @@
     <string name="playertype">Тип плеєра</string>
     <string name="noblur">Немає розмиття, коли тексти пісень вимкнено</string>
     <string name="fadingedge">Затухання краю</string>
-    <string name="carousel">Перегляд каруселі</string>
+    <string name="carousel">Режим Каруселі</string>
     <string name="carouselsize">Розмір каруселі</string>
     <string name="addednext">Додано, щоб грати далі</string>
     <string name="info_paused_with_volume_zero">Призупинено з нульовою гучністю</string>
