@@ -2243,7 +2243,7 @@ class PlayerService : InvincibleService(),
         fun callPause(onPause: () -> Unit) {
             val fadeDisabled = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
             val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
-            println("mediaItem callPause fadeDisabled $fadeDisabled duration $duration")
+            //println("mediaItem callPause fadeDisabled $fadeDisabled duration $duration")
             if (player.isPlaying) {
                 if (fadeDisabled) {
                     player.pause()
