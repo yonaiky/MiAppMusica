@@ -168,6 +168,7 @@ import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
+import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.secondary
@@ -331,6 +332,8 @@ fun  UiSettings() {
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+
+    val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
 
 
     Column(
@@ -810,6 +813,8 @@ fun  UiSettings() {
             SettingsEntry(
                 title = stringResource(R.string.equalizer),
                 text = stringResource(R.string.interact_with_the_system_equalizer),
+                onClick = launchEqualizer
+                /*
                 onClick = {
                     val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
                         putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder?.player?.audioSessionId)
@@ -823,6 +828,7 @@ fun  UiSettings() {
                         SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                     }
                 }
+                 */
             )
 
         SettingsGroupSpacer()
