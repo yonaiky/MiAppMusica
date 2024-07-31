@@ -15,7 +15,12 @@ android {
         includeInBundle = false
     }
 
-    android.buildFeatures.buildConfig=true
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
+    //android.buildFeatures.buildConfig=true
+
     compileSdk = 34
 
     defaultConfig {
@@ -50,13 +55,24 @@ android {
         }
     }
 
+    flavorDimensions += "version"
+    productFlavors {
+        create("foss") {
+            dimension = "version"
+        }
+    }
+    productFlavors {
+        create("accrescent") {
+            dimension = "version"
+            manifestPlaceholders["appName"] = "RiMusic-Acc"
+        }
+    }
+
     sourceSets.all {
         kotlin.srcDir("src/$name/kotlin")
     }
 
-    buildFeatures {
-        compose = true
-    }
+
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
