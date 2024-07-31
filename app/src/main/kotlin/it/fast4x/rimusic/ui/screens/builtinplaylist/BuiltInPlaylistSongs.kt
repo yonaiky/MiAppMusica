@@ -263,7 +263,11 @@ fun BuiltInPlaylistSongs(
              BuiltInPlaylist.Favorites, BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> Database
                  .songsFavorites(sortBy, sortOrder)
 
-             BuiltInPlaylist.Offline -> Database
+
+             BuiltInPlaylist.Offline -> {
+                 Database.songsOffline(sortBy, sortOrder)
+                 /*
+                 Database
                  .songsOffline(sortBy, sortOrder)
                  .flowOn(Dispatchers.IO)
                  .map { songs ->
@@ -273,6 +277,10 @@ fun BuiltInPlaylistSongs(
                          } ?: false
                      }.map(SongWithContentLength::song)
                  }
+
+              */
+             }
+
 
              BuiltInPlaylist.Top ->
                  Database.trending(maxTopPlaylistItems.number.toInt())

@@ -358,6 +358,7 @@ fun HomeSongsModern(
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
+                        /*
                         .flowOn(Dispatchers.IO)
                         .map { songs ->
                             songs.filter { song ->
@@ -366,6 +367,7 @@ fun HomeSongsModern(
                                 } ?: false
                             }.map(SongWithContentLength::song)
                         }
+                         */
                         .collect {
                             items = it
                         }
