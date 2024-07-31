@@ -352,7 +352,7 @@ fun Lyrics(
                                 )
                                     coroutineScope.launch {
                                         SmartMessage(
-                                            context.getString(R.string.info_lyrics_found_on_s)
+                                            context.resources.getString(R.string.info_lyrics_found_on_s)
                                                 .format("LrcLib.net"),
                                             type = PopupType.Success, context = context
                                         )
@@ -362,7 +362,7 @@ fun Lyrics(
                                         coroutineScope.launch {
 
                                             SmartMessage(
-                                                context.getString(R.string.info_lyrics_not_found_on_s)
+                                                context.resources.getString(R.string.info_lyrics_not_found_on_s)
                                                     .format("LrcLib.net"),
                                                 type = PopupType.Error,
                                                 durationLong = true, context = context
@@ -382,7 +382,7 @@ fun Lyrics(
                                 if (playerEnableLyricsPopupMessage)
                                     coroutineScope.launch {
                                         SmartMessage(
-                                            context.getString(R.string.info_lyrics_not_found_on_s_try_on_s)
+                                            context.resources.getString(R.string.info_lyrics_not_found_on_s_try_on_s)
                                                 .format("LrcLib.net", "KuGou.com"),
                                             type = PopupType.Error,
                                             durationLong = true, context = context
@@ -402,7 +402,7 @@ fun Lyrics(
                                         )
                                             coroutineScope.launch {
                                                 SmartMessage(
-                                                    context.getString(R.string.info_lyrics_found_on_s)
+                                                    context.resources.getString(R.string.info_lyrics_found_on_s)
                                                         .format("KuGou.com"),
                                                     type = PopupType.Success, context = context
                                                 )
@@ -411,7 +411,7 @@ fun Lyrics(
                                             if (playerEnableLyricsPopupMessage)
                                                 coroutineScope.launch {
                                                     SmartMessage(
-                                                        context.getString(R.string.info_lyrics_not_found_on_s)
+                                                        context.resources.getString(R.string.info_lyrics_not_found_on_s)
                                                             .format("KuGou.com"),
                                                         type = PopupType.Error,
                                                         durationLong = true, context = context
@@ -431,7 +431,7 @@ fun Lyrics(
                                         if (playerEnableLyricsPopupMessage)
                                             coroutineScope.launch {
                                                 SmartMessage(
-                                                    context.getString(R.string.info_lyrics_not_found_on_s)
+                                                    context.resources.getString(R.string.info_lyrics_not_found_on_s)
                                                         .format("KuGou.com"),
                                                     type = PopupType.Error,
                                                     durationLong = true, context = context
@@ -517,7 +517,7 @@ fun Lyrics(
                         if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
                                 SmartMessage(
-                                    context.getString(R.string.info_lyrics_tracks_found_on_s)
+                                    context.resources.getString(R.string.info_lyrics_tracks_found_on_s)
                                         .format("LrcLib.net"),
                                     type = PopupType.Success, context = context
                                 )
@@ -526,7 +526,7 @@ fun Lyrics(
                             if (playerEnableLyricsPopupMessage)
                                 coroutineScope.launch {
                                     SmartMessage(
-                                        context.getString(R.string.info_lyrics_tracks_not_found_on_s)
+                                        context.resources.getString(R.string.info_lyrics_tracks_not_found_on_s)
                                             .format("LrcLib.net"),
                                         type = PopupType.Error,
                                         durationLong = true, context = context
@@ -541,7 +541,7 @@ fun Lyrics(
                         if (playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
                                 SmartMessage(
-                                    context.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics)
+                                    context.resources.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics)
                                         .format("LrcLib.net"),
                                     type = PopupType.Error,
                                     durationLong = true, context = context
@@ -2107,7 +2107,7 @@ fun Lyrics(
                                                     )
                                                 } catch (e: ActivityNotFoundException) {
                                                     SmartMessage(
-                                                        context.getString(R.string.info_not_find_app_browse_internet),
+                                                        context.resources.getString(R.string.info_not_find_app_browse_internet),
                                                         type = PopupType.Warning, context = context
                                                     )
                                                 }

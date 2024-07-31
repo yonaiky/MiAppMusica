@@ -490,7 +490,7 @@ fun DeviceListSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -604,7 +604,7 @@ fun DeviceListSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             )
                     )
@@ -649,7 +649,7 @@ fun DeviceListSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartToast(context.getString(R.string.info_shuffle))
+                                    SmartToast(context.resources.getString(R.string.info_shuffle))
                                 }
                             )
                     )

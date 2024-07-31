@@ -223,7 +223,7 @@ fun String.toID(): String {
 fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
     if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
-        SmartMessage(context.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
+        SmartMessage(context.resources.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
         return false
     }
     return true

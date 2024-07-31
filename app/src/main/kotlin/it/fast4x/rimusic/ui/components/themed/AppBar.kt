@@ -177,7 +177,7 @@ fun appBar(
                         ),
                         modifier = Modifier
                             .clickable {
-                                SmartMessage(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
+                                SmartMessage(context.resources.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
                                 navController.navigate(NavRoutes.settings.name)
                             }
                     )

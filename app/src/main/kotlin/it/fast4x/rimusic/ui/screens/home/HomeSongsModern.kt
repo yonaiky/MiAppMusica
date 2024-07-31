@@ -815,7 +815,7 @@ fun HomeSongsModern(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),
                         icon = R.drawable.locate,
@@ -841,7 +841,7 @@ fun HomeSongsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -895,7 +895,7 @@ fun HomeSongsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -947,7 +947,7 @@ fun HomeSongsModern(
                                         showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_show_hide_hidden_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_show_hide_hidden_songs), context = context)
                                     }
                                 )
                         )
@@ -977,7 +977,7 @@ fun HomeSongsModern(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                 }
                             )
                     )

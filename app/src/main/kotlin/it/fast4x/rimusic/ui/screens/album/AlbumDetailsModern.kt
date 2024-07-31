@@ -646,7 +646,7 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_bookmark_album), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_bookmark_album), context = context)
                                     }
                                 ),
                             onClick = {}
@@ -662,7 +662,7 @@ fun AlbumDetailsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -678,7 +678,7 @@ fun AlbumDetailsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -722,7 +722,7 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -744,7 +744,7 @@ fun AlbumDetailsModern(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -1071,7 +1071,7 @@ fun AlbumDetailsModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

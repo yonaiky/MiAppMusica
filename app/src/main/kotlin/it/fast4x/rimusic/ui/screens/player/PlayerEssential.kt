@@ -171,9 +171,9 @@ fun PlayerEssential(
             mediaItemToggleLike(mediaItem)
             updateLike = false
             if (likedAt == null)
-                SmartMessage(context.getString(R.string.added_to_favorites), context = context)
+                SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
             else
-                SmartMessage(context.getString(R.string.removed_from_favorites), context = context)
+                SmartMessage(context.resources.getString(R.string.removed_from_favorites), context = context)
         }
     }
 
@@ -279,7 +279,7 @@ fun PlayerEssential(
                                     binder.player.clearMediaItems()
                                     hidePlayer()
                                 } else
-                                    SmartMessage(context.getString(R.string.player_swiping_down_is_disabled), context = context)
+                                    SmartMessage(context.resources.getString(R.string.player_swiping_down_is_disabled), context = context)
                             }
                         }
                     )

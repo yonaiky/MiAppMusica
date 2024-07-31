@@ -345,7 +345,7 @@ fun ArtistScreen(
                                                 binder?.player?.enqueue(songs, context)
                                             },
                                             onLongClick = {
-                                                SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                             }
                                         )
                                 )

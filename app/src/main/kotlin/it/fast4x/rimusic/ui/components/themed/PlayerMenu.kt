@@ -102,7 +102,7 @@ fun PlayerMenu(
                         }
                     )
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
+                    SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                 }
             },
             onHideFromDatabase = { isHiding = true },
@@ -127,7 +127,7 @@ fun PlayerMenu(
                         }
                     )
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
+                    SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                 }
             },
             onShowSleepTimer = {},

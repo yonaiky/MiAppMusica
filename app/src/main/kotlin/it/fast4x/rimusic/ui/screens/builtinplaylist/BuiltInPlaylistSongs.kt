@@ -653,7 +653,7 @@ fun BuiltInPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_smart_recommendation), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_smart_recommendation), context = context)
                                     }
                                 )
                         )
@@ -677,7 +677,7 @@ fun BuiltInPlaylistSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                         )
@@ -715,7 +715,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -755,7 +755,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -819,7 +819,7 @@ fun BuiltInPlaylistSongs(
                                         cleanCacheOfflineSongs = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_clean_cached_congs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_clean_cached_congs), context = context)
                                     }
                                 )
                         )
@@ -876,7 +876,7 @@ fun BuiltInPlaylistSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),
                         icon = R.drawable.locate,

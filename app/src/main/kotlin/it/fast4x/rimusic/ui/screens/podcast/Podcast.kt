@@ -429,7 +429,7 @@ fun Podcast(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                         }
                                     )
                             )
@@ -455,7 +455,7 @@ fun Podcast(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                         }
                                     )
                             )
@@ -476,7 +476,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                         }
                                     )
                             )
@@ -501,7 +501,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                             )
@@ -528,7 +528,7 @@ fun Podcast(
 
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_start_radio), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
                                         }
                                     )
                             )
@@ -584,7 +584,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_add_in_playlist), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_add_in_playlist), context = context)
                                         }
                                     )
                             )

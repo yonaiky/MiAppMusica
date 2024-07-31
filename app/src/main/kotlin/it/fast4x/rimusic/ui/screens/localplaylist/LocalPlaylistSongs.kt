@@ -778,7 +778,7 @@ fun LocalPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_smart_recommendation), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_smart_recommendation), context = context)
                                     }
                                 )
                         )
@@ -804,7 +804,7 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -858,7 +858,7 @@ fun LocalPlaylistSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_pin_unpin_playlist), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
                                     }
                                 )
                         )
@@ -876,13 +876,13 @@ fun LocalPlaylistSongs(
                                             isReorderDisabled = !isReorderDisabled
                                         } else {
                                             SmartMessage(
-                                                context.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
+                                                context.resources.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
                                                 type = PopupType.Warning, context = context
                                             )
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_lock_unlock_reorder_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_lock_unlock_reorder_songs), context = context)
                                     }
                                 )
                         )
@@ -898,7 +898,7 @@ fun LocalPlaylistSongs(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                 }
                             )
                     )
@@ -961,7 +961,7 @@ fun LocalPlaylistSongs(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                 }
                             )
                     )
@@ -1127,8 +1127,8 @@ fun LocalPlaylistSongs(
                                                             }?.let(Database::insertSongPlaylistMaps)
                                                     }
                                                 }
-                                                //SmartToast(context.getString(R.string.done))
-                                                SmartMessage(context.getString(R.string.done), context = context)
+                                                //SmartToast(context.resources.getString(R.string.done))
+                                                SmartMessage(context.resources.getString(R.string.done), context = context)
                                             } else {
                                                 syncSongsInPipedPlaylist(
                                                     context = context,
@@ -1140,20 +1140,20 @@ fun LocalPlaylistSongs(
                                                     playlistId = playlistPreview.playlist.id
 
                                                 )
-                                                //SmartToast(context.getString(R.string.done))
-                                                SmartMessage(context.getString(R.string.done), context = context)
+                                                //SmartToast(context.resources.getString(R.string.done))
+                                                SmartMessage(context.resources.getString(R.string.done), context = context)
                                             }
                                         },
                                         */
-                                        onSyncronize = {sync();SmartMessage(context.getString(R.string.done), context = context) },
+                                        onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
                                         onRename = {
                                             if (playlistNotMonthlyType || playlistNotPipedType)
                                                 isRenaming = true
                                             else
                                                 /*
-                                                SmartToast(context.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist))
+                                                SmartToast(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist))
                                                  */
-                                                SmartMessage(context.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
                                         },
                                         onAddToPlaylist = { playlistPreview ->
                                             position =
@@ -1227,9 +1227,9 @@ fun LocalPlaylistSongs(
                                                 isRenumbering = true
                                             else
                                                 /*
-                                                SmartToast(context.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
+                                                SmartToast(context.resources.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
                                                  */
-                                                SmartMessage(context.getString(R.string.info_cannot_renumbering_a_monthly_playlist), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_cannot_renumbering_a_monthly_playlist), context = context)
                                         },
                                         onDelete = {
                                             isDeleting = true
@@ -1237,7 +1237,7 @@ fun LocalPlaylistSongs(
                                             if (playlistNotMonthlyType)
                                                 isDeleting = true
                                             else
-                                                SmartToast(context.getString(R.string.info_cannot_delete_a_monthly_playlist))
+                                                SmartToast(context.resources.getString(R.string.info_cannot_delete_a_monthly_playlist))
 
                                              */
                                         },
@@ -1372,7 +1372,7 @@ fun LocalPlaylistSongs(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -1579,7 +1579,7 @@ fun LocalPlaylistSongs(
                             }
                             coroutineScope.launch {
                                 SmartMessage(
-                                    context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
+                                    context.resources.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
                                     type = PopupType.Warning, context = context
                                 )
                             }

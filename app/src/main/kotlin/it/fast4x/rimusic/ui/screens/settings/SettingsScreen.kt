@@ -451,7 +451,7 @@ fun ColorSettingEntry(
         DialogColorPicker(onDismiss = { showColorPicker = false }) {
             onColorSelected(it)
             showColorPicker = false
-            SmartMessage(context.getString(R.string.info_color_s_applied).format(title), context = context)
+            SmartMessage(context.resources.getString(R.string.info_color_s_applied).format(title), context = context)
         }
 
 }

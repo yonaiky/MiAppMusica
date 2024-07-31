@@ -444,7 +444,7 @@ fun HomeLibraryModern(
                             .padding(horizontal = 2.dp)
                             .combinedClickable(onClick = {autosync = !autosync},
                                                onLongClick = {
-                                                   SmartMessage(context.getString(R.string.autosync), context = context)
+                                                   SmartMessage(context.resources.getString(R.string.autosync), context = context)
                                                }
                             )
                     )
@@ -479,7 +479,7 @@ fun HomeLibraryModern(
                                 )
                             } catch (e: ActivityNotFoundException) {
                                 SmartMessage(
-                                    context.getString(R.string.info_not_find_app_open_doc),
+                                    context.resources.getString(R.string.info_not_find_app_open_doc),
                                     type = PopupType.Warning, context = context
                                 )
                             }

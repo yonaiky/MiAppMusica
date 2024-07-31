@@ -754,7 +754,7 @@ fun HomeLibrary(
                                         )
                                     } catch (e: ActivityNotFoundException) {
                                         SmartMessage(
-                                            context.getString(R.string.info_not_find_app_open_doc),
+                                            context.resources.getString(R.string.info_not_find_app_open_doc),
                                             type = PopupType.Warning, context = context
                                         )
                                     }

@@ -1312,7 +1312,7 @@ fun PlayerModern(
                                             },
                                             onLongClick = {
                                                 binder.player.addNext(binder.player.getMediaItemAt(it + 1));
-                                                SmartMessage(context.getString(R.string.addednext), type = PopupType.Info, context = context)
+                                                SmartMessage(context.resources.getString(R.string.addednext), type = PopupType.Info, context = context)
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             }
                                         )
@@ -1453,7 +1453,7 @@ fun PlayerModern(
                                     .combinedClickable(
                                         onClick = { discoverIsEnabled = !discoverIsEnabled },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.discoverinfo), context = context)
+                                            SmartMessage(context.resources.getString(R.string.discoverinfo), context = context)
                                         }
 
                                     )

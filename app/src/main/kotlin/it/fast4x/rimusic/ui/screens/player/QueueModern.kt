@@ -417,7 +417,7 @@ fun QueueModern(
                                 mediaItem = window.mediaItem,
                                 onSwipeToLeft = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
-                                    SmartMessage("${context.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
+                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
                                 },
                                 onSwipeToRight = {
                                     binder.player.addNext(
@@ -709,7 +709,7 @@ fun QueueModern(
                                     onClick = { discoverIsEnabled = !discoverIsEnabled },
                                     onLongClick = {
                                         SmartMessage(
-                                            context.getString(R.string.discoverinfo),
+                                            context.resources.getString(R.string.discoverinfo),
                                             context = context
                                         )
                                     }

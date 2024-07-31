@@ -378,7 +378,7 @@ fun ArtistOverviewModern(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                 }
                             )
                     )
@@ -426,7 +426,7 @@ fun ArtistOverviewModern(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                 }
                             )
                     )
@@ -466,7 +466,7 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -485,7 +485,7 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_start_radio), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
                                     }
                                 )
                         )
@@ -506,7 +506,7 @@ fun ArtistOverviewModern(
                                         )
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                     }
                                 )
                         )
@@ -528,7 +528,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.songsEndpoint?.browseId != null) {
                                         onViewAllSongsClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_songs_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_songs_yet))
                                 },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
@@ -621,7 +621,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                         onViewAllAlbumsClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_albums_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
                                 }
                             )
                             /*
@@ -676,7 +676,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
                                         onViewAllSinglesClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_singles_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_singles_yet))
                                 }
                             )
                             /*
@@ -749,7 +749,7 @@ fun ArtistOverviewModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

@@ -560,9 +560,8 @@ class PlayerService : InvincibleService(),
         mediaSession.setCallback(SessionCallback(player))
 
         //TODO: to fix with another register type
-        //if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
-            //mediaSession.setPlaybackToRemote(getVolumeProvider())
-
+        if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
+            mediaSession.setPlaybackToRemote(getVolumeProvider())
 
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
@@ -720,42 +719,33 @@ class PlayerService : InvincibleService(),
             VolumeProviderCompat(VOLUME_CONTROL_RELATIVE, maxVolume!!, currentVolume!!) {
 
                 override fun onAdjustVolume(direction: Int) {
-                    if (!preferences.getBoolean(useVolumeKeysToChangeSongKey, false)) {
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                        if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
-                            //binder.player.pause()
-                            binder.callPause({ binder.player.pause() } )
-                            //SmartMessage(resources.getString(R.string.info_paused_with_volume_zero), context = this@PlayerService)
-                        }
-                    } else  {
+                        val useVolumeKeysToChangeSong = preferences.getBoolean(useVolumeKeysToChangeSongKey, false)
                         // Up = 1, Down = -1, Release = 0
-                        // Replace with your action, if you don't want to adjust system volume
                         if (direction == VOLUME_UP) {
-                            binder.player.forceSeekToNext()
-                            /*
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                         */
+                            if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
+                                binder.player.seekToNextMediaItem()
+                            } else {
+                                audio?.adjustStreamVolume(
+                                    STREAM_TYPE,
+                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                                )
+                                if (audio != null) {
+                                    setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
+                                }
+                            }
                         } else if (direction == VOLUME_DOWN) {
-                            binder.player.forceSeekToPrevious()
-                            /*
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                         */
+                            if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
+                                binder.player.seekToPreviousMediaItem()
+                            } else {
+                                audio?.adjustStreamVolume(
+                                    STREAM_TYPE,
+                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                                )
+                                if (audio != null) {
+                                    setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
+                                }
+                            }
                         }
-                        /*
-                        if (audio != null) {
-                            setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
-                        }
-                         */
-                    }
                 }
 
         }
