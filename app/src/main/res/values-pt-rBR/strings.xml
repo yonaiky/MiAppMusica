@@ -693,4 +693,5 @@
     <string name="message_type">Tipo de mensagem</string>
     <string name="message_type_modern">Moderna</string>
     <string name="message_type_essential">Essencial</string>
+    <string name="quality">Quality</string>
 </resources>
