@@ -1580,7 +1580,7 @@ fun LocalPlaylistSongs(
                             coroutineScope.launch {
                                 SmartMessage(
                                     context.resources.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                    type = PopupType.Warning, context = context
+                                    type = PopupType.Warning, context = context, durationLong = true
                                 )
                             }
 

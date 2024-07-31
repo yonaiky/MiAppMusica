@@ -683,7 +683,7 @@
     <string name="playertype">Тип плеєра</string>
     <string name="noblur">Немає розмиття, коли тексти пісень вимкнено</string>
     <string name="fadingedge">Затухання краю</string>
-    <string name="carousel">Перегляд каруселі</string>
+    <string name="carousel">Режим Каруселі</string>
     <string name="carouselsize">Розмір каруселі</string>
     <string name="addednext">Додано, щоб грати далі</string>
     <string name="info_paused_with_volume_zero">Призупинено з нульовою гучністю</string>
@@ -699,4 +699,5 @@
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="quality">Quality</string>
 </resources>
