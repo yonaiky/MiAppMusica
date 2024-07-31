@@ -1416,11 +1416,13 @@ class PlayerService : InvincibleService(),
 
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if (isPlaying)
+        val fadeDisabled = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
+        val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
+        if (isPlaying && !fadeDisabled)
             startFadeAnimator(
                 player = binder.player,
-                duration = 1000,
-                fadeIn = isPlaying
+                duration = duration,
+                fadeIn = true
             )
 
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
@@ -2239,15 +2241,16 @@ class PlayerService : InvincibleService(),
         }
 
         fun callPause(onPause: () -> Unit) {
-            val force = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
+            val fadeDisabled = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
             val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
+            println("mediaItem callPause fadeDisabled $fadeDisabled duration $duration")
             if (player.isPlaying) {
-                if (force) {
+                if (fadeDisabled) {
                     player.pause()
                     onPause()
                 } else {
+                    //fadeOut
                     startFadeAnimator(player, duration, false) {
-                        //Code to run when Animator Ends
                         player.pause()
                         onPause()
                     }
@@ -2260,12 +2263,12 @@ class PlayerService : InvincibleService(),
         MediaSessionCompat.Callback() {
         override fun onPlay() = player.play()
         //override fun onPause() = player.pause()
-        override fun onPause() = binder.callPause({ player.pause() } )
+        override fun onPause() = binder.callPause({})
         override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
         override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
         //override fun onStop() = player.pause()
-        override fun onStop() = binder.callPause({ player.pause() } )
+        override fun onStop() = binder.callPause({} )
         override fun onRewind() = player.seekToDefaultPosition()
         override fun onSkipToQueueItem(id: Long) =
             runCatching { player.seekToDefaultPosition(id.toInt()) }.let { }
