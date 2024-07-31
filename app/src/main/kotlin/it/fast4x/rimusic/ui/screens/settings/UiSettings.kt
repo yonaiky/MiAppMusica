@@ -80,6 +80,7 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
@@ -162,6 +163,7 @@ import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
+import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
@@ -326,6 +328,7 @@ fun  UiSettings() {
     var discoverIsEnabled by rememberPreference(discoverKey, false)
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
 
 
     Column(
@@ -637,15 +640,17 @@ fun  UiSettings() {
 
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_keep_minimized),
-                text = stringResource(R.string.when_click_on_a_song_player_start_minimized),
-                isChecked = keepPlayerMinimized,
-                onCheckedChange = {
-                    keepPlayerMinimized = it
-                }
-            )
+        if (playerType == PlayerType.Essential) {
+            if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))
+                SwitchSettingEntry(
+                    title = stringResource(R.string.player_keep_minimized),
+                    text = stringResource(R.string.when_click_on_a_song_player_start_minimized),
+                    isChecked = keepPlayerMinimized,
+                    onCheckedChange = {
+                        keepPlayerMinimized = it
+                    }
+                )
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(filterCharSequence,true))
             SwitchSettingEntry(

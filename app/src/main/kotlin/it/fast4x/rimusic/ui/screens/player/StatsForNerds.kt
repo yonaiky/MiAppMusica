@@ -190,7 +190,7 @@ fun StatsForNerds(
                             style = typography.xs.medium.color(colorPalette.onOverlay)
                         )
                         BasicText(
-                            text = "Quality",
+                            text = stringResource(R.string.quality),
                             style = typography.xs.medium.color(colorPalette.onOverlay)
                         )
                     }
@@ -318,7 +318,7 @@ fun StatsForNerds(
                     ) {
                         if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                             BasicText(
-                                text = "Quality : " + when (format?.itag?.toString()) {
+                                text = stringResource(R.string.quality) + " : " + when (format?.itag?.toString()) {
                                     "251" -> stringResource(R.string.audio_quality_format_high)
                                     "141" -> stringResource(R.string.audio_quality_format_high)
                                     "250" -> stringResource(R.string.audio_quality_format_medium)
