@@ -246,7 +246,7 @@ fun GoToLink(
                                 uri.pathSegments.firstOrNull()?.let { channelId ->
                                     navController.navigate(route = "${NavRoutes.artist.name}/${channelId.removePrefix("@")}")
                                 }
-                                
+
  */
 
                         }
