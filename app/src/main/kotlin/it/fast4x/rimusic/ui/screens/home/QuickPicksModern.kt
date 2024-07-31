@@ -154,6 +154,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 
 
 @ExperimentalMaterialApi
@@ -221,13 +223,16 @@ fun QuickPicksModern(
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val refreshScope = rememberCoroutineScope()
+    val now = System.currentTimeMillis()
+    val last50Year: Duration = 18250.days
+    val from = last50Year.inWholeMilliseconds
 
     suspend fun loadData() {
         runCatching {
             refreshScope.launch(Dispatchers.IO) {
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
-                        Database.trendingReal().distinctUntilChanged().collect { songs ->
+                        Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged().collect { songs ->
                             val song = songs.firstOrNull()
                             if (relatedPageResult == null || trending?.id != song?.id) {
                                 relatedPageResult = Innertube.relatedPage(
