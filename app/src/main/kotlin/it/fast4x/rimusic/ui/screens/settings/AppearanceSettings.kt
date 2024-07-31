@@ -145,6 +145,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.noblurKey
+import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -287,6 +288,7 @@ fun AppearanceSettings() {
     var fadingedge by rememberPreference(fadingedgeKey, false)
     var carousel by rememberPreference(carouselKey, true)
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
 
     Column(
         modifier = Modifier
@@ -424,7 +426,7 @@ fun AppearanceSettings() {
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
         if (!showthumbnail) {showlyricsthumbnail = false; showvisthumbnail = false}
-        if (playerType == PlayerType.Modern) {showlyricsthumbnail = false; showvisthumbnail = false; thumbnailpause = false}
+        if (playerType == PlayerType.Modern) {showlyricsthumbnail = false; showvisthumbnail = false; thumbnailpause = false; keepPlayerMinimized = false}
         if (showlyricsthumbnail) expandedlyrics = false
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
