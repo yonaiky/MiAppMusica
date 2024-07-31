@@ -241,11 +241,13 @@ fun GoToLink(
                                     }
                                 }
                             }
-
+/*
                             if (uri.pathSegments.firstOrNull()?.startsWith("@") == true)
                                 uri.pathSegments.firstOrNull()?.let { channelId ->
                                     navController.navigate(route = "${NavRoutes.artist.name}/${channelId.removePrefix("@")}")
                                 }
+                                
+ */
 
                         }
 
