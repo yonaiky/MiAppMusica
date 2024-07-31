@@ -89,6 +89,7 @@ import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
+import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -142,6 +143,7 @@ fun ArtistOverviewModern(
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
+    onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
@@ -603,6 +605,45 @@ fun ArtistOverviewModern(
                                             }
                                         )
                                         .padding(endPaddingValues)
+                                )
+                            }
+                        }
+                    }
+
+                    youtubeArtistPage.playlists?.let { playlists ->
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(endPaddingValues)
+                        ) {
+                            Title(
+                                title = stringResource(R.string.playlists),
+                                onClick = {
+                                    //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
+                                    //onViewAllAlbumsClick()
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
+                                }
+                            )
+                        }
+
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(
+                                items = playlists,
+                                key = Innertube.PlaylistItem::key
+                            ) { playlist ->
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
                                 )
                             }
                         }

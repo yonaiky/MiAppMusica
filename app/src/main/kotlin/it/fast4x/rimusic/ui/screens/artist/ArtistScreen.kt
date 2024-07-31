@@ -427,7 +427,6 @@ fun ArtistScreen(
                 showButton2 = false,
                 tabIndex = tabIndex,
                 onHomeClick = {
-                    //homeRoute()
                     navController.navigate(NavRoutes.home.name)
                 },
                 onTabChanged = { tabIndex = it },
@@ -449,18 +448,18 @@ fun ArtistScreen(
                                 thumbnailContent = thumbnailContent,
                                 headerContent = headerContent,
                                 onAlbumClick = {
-                                    //albumRoute(it)
                                     navController.navigate(route = "${NavRoutes.album.name}/$it")
+                                },
+                                onPlaylistClick = {
+                                    navController.navigate(route = "${NavRoutes.playlist.name}/$it")
                                 },
                                 onViewAllSongsClick = { tabIndex = 1 },
                                 onViewAllAlbumsClick = { tabIndex = 2 },
                                 onViewAllSinglesClick = { tabIndex = 3 },
                                 onSearchClick = {
-                                    //searchRoute("")
                                     navController.navigate(NavRoutes.search.name)
                                 },
                                 onSettingsClick = {
-                                    //settingsRoute()
                                     navController.navigate(NavRoutes.settings.name)
                                 }
                             )
