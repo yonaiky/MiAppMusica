@@ -1598,7 +1598,7 @@ fun LocalPlaylistSongs(
                                  */
                                 SmartMessage(
                                     context.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                    type = PopupType.Info, context = context
+                                    type = PopupType.Info, context = context, durationLong = true
                                 )
                             }
 
