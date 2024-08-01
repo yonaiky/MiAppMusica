@@ -1311,9 +1311,21 @@ fun PlayerModern(
                                                 binder.player.forcePlayAtIndex(mediaItems,it + 1)
                                             },
                                             onLongClick = {
-                                                binder.player.addNext(binder.player.getMediaItemAt(it + 1));
-                                                SmartMessage(context.resources.getString(R.string.addednext), type = PopupType.Info, context = context)
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                if (it < mediaItems.size) {
+                                                    binder.player.addNext(
+                                                        binder.player.getMediaItemAt(
+                                                            it + 1
+                                                        )
+                                                    )
+                                                    SmartMessage(
+                                                        context.resources.getString(R.string.addednext),
+                                                        type = PopupType.Info,
+                                                        context = context
+                                                    )
+                                                    hapticFeedback.performHapticFeedback(
+                                                        HapticFeedbackType.LongPress
+                                                    )
+                                                }
                                             }
                                         )
                                         //.width(IntrinsicSize.Min)
