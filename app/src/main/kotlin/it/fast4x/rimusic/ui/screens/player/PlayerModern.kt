@@ -2579,8 +2579,7 @@ fun PlayerModern(
                         key(pagerState.currentPage) {
                             val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
                                 pagerState.currentPage
-
-                            println("mediaItem pagerState.currentPage: ${pagerState.currentPage} index $index windowCount ${binder.player.currentTimeline.windowCount}")
+                            
                             Controls(
                                 navController = navController,
                                 onCollapse = onDismiss,
