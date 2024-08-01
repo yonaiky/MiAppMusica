@@ -1035,25 +1035,36 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
             contentResolver.query(collection, projection, null, null, sortBySQL)
                 ?.use { cursor ->
                     val idIdx = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
+                    Timber.i(" DeviceListSongs colums idIdx $idIdx")
                     val nameIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)
+                    Timber.i(" DeviceListSongs colums nameIdx $nameIdx")
                     val durationIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
+                    Timber.i(" DeviceListSongs colums durationIdx $durationIdx")
                     val artistIdx = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
+                    Timber.i(" DeviceListSongs colums artistIdx $artistIdx")
                     val albumIdIdx = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
+                    Timber.i(" DeviceListSongs colums albumIdIdx $albumIdIdx")
                     val relativePathIdx = if (isAtLeastAndroid10) {
                         cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
                     } else {
                         cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
                     }
+                    Timber.i(" DeviceListSongs colums relativePathIdx $relativePathIdx")
                     val titleIdx = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
+                    Timber.i(" DeviceListSongs colums titleIdx $titleIdx")
                     val isMusicIdx = cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)
-
+                    Timber.i(" DeviceListSongs colums isMusicIdx $isMusicIdx")
                     val mimeTypeIdx = cursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE)
+                    Timber.i(" DeviceListSongs colums mimeTypeIdx $mimeTypeIdx")
                     val bitrateIdx = if (isAtLeastAndroid11) cursor.getColumnIndex(MediaStore.Audio.Media.BITRATE) else -1
+                    Timber.i(" DeviceListSongs colums bitrateIdx $bitrateIdx")
                     val dateModifiedIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
+                    Timber.i(" DeviceListSongs colums dateModifiedIdx $dateModifiedIdx")
+
 
                     val blacklist = OnDeviceBlacklist(context = context)
 
-                    Timber.i(" sdk int ${Build.VERSION.SDK_INT}")
+                    Timber.i(" DeviceListSongs SDK ${Build.VERSION.SDK_INT} initialize columns complete")
 
                     buildList {
                         while (cursor.moveToNext()) {
@@ -1061,6 +1072,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                             val id = cursor.getLong(idIdx)
                             val name = cursor.getString(nameIdx).substringBeforeLast(".")
                             val trackName = cursor.getString(titleIdx)
+                            Timber.i(" DeviceListSongs trackName $trackName loaded")
                             val duration = cursor.getInt(durationIdx)
                             if (duration == 0) continue
                             val artist = cursor.getString(artistIdx)
@@ -1111,7 +1123,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                         song
                                     )
                                 }.onFailure {
-                                    Timber.e(it.message)
+                                    Timber.e("DeviceListSongs addSong error ${it.stackTraceToString()}")
                                 }
                             }
                         }
@@ -1120,7 +1132,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                     runCatching {
                         emit(it)
                     }.onFailure {
-                        Timber.e(it.message)
+                        Timber.e("DeviceListSongs emit error ${it.stackTraceToString()}")
                     }
                 }
         }
