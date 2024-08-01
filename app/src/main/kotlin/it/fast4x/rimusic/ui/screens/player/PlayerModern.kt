@@ -2577,6 +2577,10 @@ fun PlayerModern(
                         )
                     } else {
                         key(pagerState.currentPage) {
+                            val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
+                                pagerState.currentPage
+
+                            println("mediaItem pagerState.currentPage: ${pagerState.currentPage} index $index windowCount ${binder.player.currentTimeline.windowCount}")
                             Controls(
                                 navController = navController,
                                 onCollapse = onDismiss,
@@ -2584,9 +2588,9 @@ fun PlayerModern(
                                 layoutState = layoutState,
                                 media = mediaItem.toUiMedia(positionAndDuration.second),
                                 mediaId = mediaItem.mediaId,
-                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
                                     ?: "",
-                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                 artistIds = artistsInfo,
                                 albumId = albumId,
                                 shouldBePlaying = shouldBePlaying,
