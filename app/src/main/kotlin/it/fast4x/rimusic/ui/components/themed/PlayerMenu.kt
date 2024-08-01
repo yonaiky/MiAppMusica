@@ -122,7 +122,6 @@ fun PlayerMenu(
                 binder.stopRadio()
                 binder.player.seamlessPlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
-                println("mediaItem after setupRadio: ${mediaItem.mediaId}")
             },
             onGoToEqualizer = launchEqualizer,
             onShowSleepTimer = {},
