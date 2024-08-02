@@ -529,7 +529,9 @@ fun OtherSettings() {
                     title = stringResource(R.string.proxy_host),
                     text = proxyHost, //stringResource(R.string.set_proxy_hostname),
                     currentText = proxyHost,
-                    onTextSave = { proxyHost = it })
+                    onTextSave = { proxyHost = it },
+                    validationType = ValidationType.Ip
+                )
                 TextDialogSettingEntry(
                     title = stringResource(R.string.proxy_port),
                     text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),
