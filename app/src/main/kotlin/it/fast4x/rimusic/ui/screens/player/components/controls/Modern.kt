@@ -642,11 +642,13 @@ fun ControlsModern(
                           onClick = {
                               if (shouldBePlaying) {
                                   //binder.player.pause()
-                                  binder.callPause({ binder.player.pause() } )
+                                  binder.callPause({} )
                               } else {
+                                  /*
                                   if (binder.player.playbackState == Player.STATE_IDLE) {
                                       binder.player.prepare()
                                   }
+                                   */
                                   binder.player.play()
                               }
                               if (effectRotationEnabled) isRotated = !isRotated
