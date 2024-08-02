@@ -159,6 +159,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -781,6 +782,8 @@ class PlayerService : InvincibleService(),
             //downloadCache.release()
             loudnessEnhancer?.release()
             audioVolumeObserver.unregister()
+
+            coroutineScope.cancel()
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
