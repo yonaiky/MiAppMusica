@@ -208,6 +208,7 @@ fun About() {
                 "JZITNIK-github \n" +
                 "Locxter \n"+
                  "lrusso96 \n"+
+                 "martkol \n"+
                 "Roklc \n"+
                 "sharunkumar \n" +
                 "SuhasDissa \n"
