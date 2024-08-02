@@ -44,6 +44,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -527,7 +528,9 @@ fun OtherSettings() {
                     title = stringResource(R.string.proxy_host),
                     text = proxyHost, //stringResource(R.string.set_proxy_hostname),
                     currentText = proxyHost,
-                    onTextSave = { proxyHost = it })
+                    onTextSave = { proxyHost = it },
+                    validationType = ValidationType.Ip
+                )
                 TextDialogSettingEntry(
                     title = stringResource(R.string.proxy_port),
                     text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -40,6 +41,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,6 +93,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.query
@@ -119,6 +122,7 @@ import kotlinx.coroutines.delay
 import progress
 import track
 import it.fast4x.rimusic.utils.isShowingLyricsKey
+import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.playbackDurationKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
@@ -732,6 +736,7 @@ inline fun InputTextDialog(
     setValueRequireNotNull: Boolean = true,
     placeholder: String,
     crossinline setValue: (String) -> Unit,
+    validationType: ValidationType = ValidationType.None,
     modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
@@ -739,6 +744,7 @@ inline fun InputTextDialog(
     val txtField = remember { mutableStateOf(value) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
     val value_must_be_greater = stringResource(R.string.value_must_be_greater_than)
+    val value_must_be_ip_address = stringResource(R.string.value_must_be_ip_address)
 
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -774,7 +780,7 @@ inline fun InputTextDialog(
                         unfocusedIndicatorColor = colorPalette.textDisabled
                     ),
                     leadingIcon = {
-/*
+                        /*
                         Image(
                             painter = painterResource(R.drawable.app_icon),
                             contentDescription = null,
@@ -783,18 +789,16 @@ inline fun InputTextDialog(
                                 .width(30.dp)
                                 .height(30.dp)
                                 .clickable(
-                                    indication = rememberRipple(bounded = false),
-                                    interactionSource = remember { MutableInteractionSource() },
                                     enabled = true,
                                     onClick = { onDismiss() }
                                 )
                         )
+                         */
 
- */
                     },
                     placeholder = { Text(text = placeholder) },
                     value = txtField.value,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = if (validationType == ValidationType.Ip) KeyboardType.Number else KeyboardType.Text),
                     onValueChange = {
                         txtField.value = it
                     })
@@ -821,10 +825,16 @@ inline fun InputTextDialog(
                             txtFieldError.value = value_cannot_empty
                             return@DialogTextButton
                         }
-                        //if (txtField.value.isNotEmpty() && !setValueRequireNotNull) {
+                        if (txtField.value.isNotEmpty() && validationType == ValidationType.Ip) {
+                            if (!isValidIP(txtField.value)) {
+                                txtFieldError.value = value_must_be_ip_address
+                                return@DialogTextButton
+                            }
+                        }
+
                         setValue(txtField.value)
                         onDismiss()
-                        //}
+
                     },
                     primary = true
                 )
