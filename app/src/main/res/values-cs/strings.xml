@@ -642,12 +642,12 @@
     <string name="info_sleep_timer_delayed_at_end_of_song">Časovač spánku byl odložen na konec skladby</string>
     <string name="lyricsbackground">Lyrics Background</string>
     <string name="landscapelayout">Landscape Layout</string>
-    <string name="layout">Layout</string>
-    <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
+    <string name="layout">Rozložení</string>
+    <string name="layoutinfo">Rozložení 2 je doporučeno pouze pro velké obrazovky</string>
     <string name="hideprevnext">Hide Previous and Next Songs</string>
-    <string name="onesong">One Song</string>
-    <string name="twosongs">Two Songs</string>
-    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
+    <string name="onesong">Jedna skladba</string>
+    <string name="twosongs">Dvě skladby</string>
+    <string name="info_debug_mode_enabled">Režim ladění povolen</string>
     <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
     <string name="tapqueue">Tap to open Queue</string>
     <string name="past_day">Past day</string>

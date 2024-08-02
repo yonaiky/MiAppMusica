@@ -99,7 +99,7 @@
     <string name="ignore_battery_optimizations">Ignora ottimizzazione batteria</string>
     <string name="already_unrestricted">Già senza restrizioni</string>
     <string name="disable_background_restrictions">Disabilita le restrizioni sullo sfondo</string>
-    <string name="invincible_service">Invincible service</string>
+    <string name="invincible_service">Servizio invincibile</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Quando disattivare le ottimizzazioni della batteria non è sufficiente</string>
     <string name="player">Player</string>
     <string name="persistent_queue">Coda persistente</string>
@@ -699,6 +699,6 @@
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
-    <string name="quality">Quality</string>
+    <string name="quality">Qualità</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
 </resources>
