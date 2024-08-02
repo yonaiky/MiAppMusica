@@ -514,14 +514,10 @@ class PlayerService : InvincibleService(),
         */
 
         cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
-
-        //val downloadDirectory = getExternalFilesDir(null) ?: filesDir
-        //downloadCache = SimpleCache(downloadDirectory, cacheEvictor, StandaloneDatabaseProvider(this))
-
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
-            .setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
+            //.setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -532,8 +528,8 @@ class PlayerService : InvincibleService(),
             //.setWakeMode(C.WAKE_MODE_LOCAL)
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .setHandleAudioBecomingNoisy(true)
-            .setSeekForwardIncrementMs(5000)
-            .setSeekBackIncrementMs(5000)
+            //.setSeekForwardIncrementMs(5000)
+            //.setSeekBackIncrementMs(5000)
             //.setUsePlatformDiagnostics(false)
             .build()
 
@@ -1674,6 +1670,7 @@ class PlayerService : InvincibleService(),
     private fun createRendersFactory(): RenderersFactory {
         //val minimumSilenceDuration = PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
         val audioSink = DefaultAudioSink.Builder(applicationContext)
+
             .setEnableFloatOutput(false)
             .setEnableAudioTrackPlaybackParams(false)
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
@@ -1706,7 +1703,7 @@ class PlayerService : InvincibleService(),
         }
     }
 
-    //@Suppress("CyclomaticComplexMethod")
+
     private fun createDataSourceResolverFactory(
         findMediaItem: (videoId: String) -> MediaItem?,
         context: Context,
@@ -1833,175 +1830,6 @@ class PlayerService : InvincibleService(),
     }
 
     /** NEW METHOD **/
-
-
-    /** ORIGINAL START **/
-    /*
-    @UnstableApi
-    private fun createMediaSourceFactory(): MediaSource.Factory {
-        return DefaultMediaSourceFactory(createDataSourceFactory(), createExtractorsFactory())
-    }
-
-    @UnstableApi
-    private fun createExtractorsFactory() = DefaultExtractorsFactory()
-
-    @UnstableApi
-    private fun createRendersFactory(): RenderersFactory {
-        val audioSink = DefaultAudioSink.Builder(applicationContext)
-            .setEnableFloatOutput(false)
-            .setEnableAudioTrackPlaybackParams(false)
-            .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
-            .setAudioProcessorChain(
-                DefaultAudioProcessorChain(
-                    emptyArray(),
-                    SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
-                    SonicAudioProcessor()
-                )
-            )
-            .build()
-            .apply {
-                if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
-            }
-
-        return RenderersFactory { handler: Handler?, _, audioListener: AudioRendererEventListener?, _, _ ->
-            arrayOf(
-                MediaCodecAudioRenderer(
-                    this,
-                    MediaCodecSelector.DEFAULT,
-                    handler,
-                    audioListener,
-                    audioSink
-                )
-            )
-        }
-    }
-
-
-    @UnstableApi
-    private fun createCacheDataSource() = ConditionalCacheDataSourceFactory(
-        cacheDataSourceFactory = CacheDataSource.Factory().setCache(downloadCache)
-            .setCacheWriteDataSinkFactory(null)
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR),
-        upstreamDataSourceFactory = CacheDataSource.Factory()
-            .setCache(cache)
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-            .setUpstreamDataSourceFactory(
-                DefaultDataSource.Factory(
-                    this,
-                    OkHttpDataSource.Factory(okHttpClient())
-                        .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-                    /*
-                    DefaultHttpDataSource.Factory()
-                        .setConnectTimeoutMs(16000)
-                        .setReadTimeoutMs(8000)
-                        .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-
-                     */
-                )
-            )
-    ) { !it.isLocal }
-
-
-    @UnstableApi
-    private fun createDataSourceFactory(): DataSource.Factory {
-        val chunkLength = 512 * 1024L
-        val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
-
-        return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
-            val videoId = dataSpec.key ?: error("A key must be set")
-
-            //if(dataSpec.isLocal) videoId = videoId.removePrefix("local:")
-            //Log.d("mediaItem","dataSpec isLocal ${dataSpec.isLocal} key ${videoId} all ${dataSpec.toString()}")
-
-            //Log.d("mediaItem","dataSpec " + dataSpec.toString())
-            //Log.d("downloadMedia", downloadCache.isCached(videoId, dataSpec.position, chunkLength).toString())
-            //Log.d("downloadMedia", downloadCache.getCachedBytes(videoId, 0, -1).toString())
-
-            //Log.d("mediaItemDatasource","dataSpec ${dataSpec.toString()} islocal ${dataSpec.isLocal}")
-            //Log.d("mediaItemDatasource","dataSpecUri ${dataSpec.uri}")
-
-            when {
-                dataSpec.isLocal ||
-                        cache.isCached(videoId, dataSpec.position, chunkLength) ||
-                        downloadCache.isCached(videoId, dataSpec.position, chunkLength) -> dataSpec
-
-                videoId == ringBuffer.getOrNull(0)?.first ->
-                    dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
-
-                videoId == ringBuffer.getOrNull(1)?.first ->
-                    dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
-
-                else -> {
-                    val body = runBlocking(Dispatchers.IO) {
-                        Innertube.player(PlayerBody(videoId = videoId))
-                    }?.getOrThrow()
-
-                    //Log.d("mediaItemDatasource","bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
-
-                    if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
-
-                    val url = when (val status = body.playabilityStatus?.status) {
-                        //"OK" -> body.streamingData?.highestQualityFormat?.let { format ->
-                        "OK" -> when (audioQualityFormat) {
-                            AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
-                            AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
-                            AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
-                            AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
-                        }?.let { format ->
-                            //Log.d("formatAudioQuality",format.audioQuality.toString())
-                            val mediaItem = runBlocking(Dispatchers.Main) {
-                                player.findNextMediaItemById(videoId)
-                            }
-
-                            if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
-                                format.approxDurationMs?.div(1000)
-                                    ?.let(DateUtils::formatElapsedTime)?.removePrefix("0")
-                                    ?.let { durationText ->
-                                        mediaItem?.mediaMetadata?.extras?.putString(
-                                            "durationText",
-                                            durationText
-                                        )
-                                        Database.updateDurationText(videoId, durationText)
-                                    }
-
-                            query {
-                                mediaItem?.let(Database::insert)
-
-                                Database.insert(
-                                    it.vfsfitvnm.vimusic.models.Format(
-                                        songId = videoId,
-                                        itag = format.itag,
-                                        mimeType = format.mimeType,
-                                        bitrate = format.bitrate,
-                                        loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                        contentLength = format.contentLength,
-                                        lastModified = format.lastModified
-                                    )
-                                )
-                            }
-
-                            format.url
-                        } ?: throw PlayableFormatNotFoundException()
-
-                        "UNPLAYABLE" -> throw UnplayableException()
-                        "LOGIN_REQUIRED" -> throw LoginRequiredException()
-
-                        else -> throw PlaybackException(
-                            status,
-                            null,
-                            PlaybackException.ERROR_CODE_REMOTE_ERROR
-                        )
-                    }
-
-                    ringBuffer.append(videoId to url.toUri())
-                    dataSpec.withUri(url.toUri()).subrange(dataSpec.uriPositionOffset, chunkLength)
-                }
-            }
-        }
-    }
-
-     */
-    /** ORIGINAL END **/
 
     inner class Binder : AndroidBinder() {
         val player: ExoPlayer
