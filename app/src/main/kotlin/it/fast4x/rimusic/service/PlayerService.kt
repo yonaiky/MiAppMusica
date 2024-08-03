@@ -1773,6 +1773,7 @@ class PlayerService : InvincibleService(),
                         AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
                     }
+                    Log.d("mediaItem", "PlayerService format $format")
 
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format?.let { formatIn ->
