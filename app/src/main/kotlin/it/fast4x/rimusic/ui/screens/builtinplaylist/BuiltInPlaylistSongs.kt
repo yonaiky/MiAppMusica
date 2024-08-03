@@ -263,7 +263,11 @@ fun BuiltInPlaylistSongs(
              BuiltInPlaylist.Favorites, BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> Database
                  .songsFavorites(sortBy, sortOrder)
 
-             BuiltInPlaylist.Offline -> Database
+
+             BuiltInPlaylist.Offline -> {
+                 Database.songsOffline(sortBy, sortOrder)
+                 /*
+                 Database
                  .songsOffline(sortBy, sortOrder)
                  .flowOn(Dispatchers.IO)
                  .map { songs ->
@@ -273,6 +277,10 @@ fun BuiltInPlaylistSongs(
                          } ?: false
                      }.map(SongWithContentLength::song)
                  }
+
+              */
+             }
+
 
              BuiltInPlaylist.Top ->
                  Database.trending(maxTopPlaylistItems.number.toInt())
@@ -653,7 +661,7 @@ fun BuiltInPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_smart_recommendation), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_smart_recommendation), context = context)
                                     }
                                 )
                         )
@@ -677,7 +685,7 @@ fun BuiltInPlaylistSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                         )
@@ -715,7 +723,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -755,7 +763,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -819,7 +827,7 @@ fun BuiltInPlaylistSongs(
                                         cleanCacheOfflineSongs = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_clean_cached_congs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_clean_cached_congs), context = context)
                                     }
                                 )
                         )
@@ -876,7 +884,7 @@ fun BuiltInPlaylistSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),
                         icon = R.drawable.locate,
@@ -1041,53 +1049,7 @@ fun BuiltInPlaylistSongs(
 
                     }
 
-                    /*
-                    Row (
-                        horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        HeaderIconButton(
-                            modifier = Modifier.padding(horizontal = 5.dp)
-                                .combinedClickable(
-                                    onClick = {
-                                        nowPlayingItem = -1
-                                        scrollToNowPlaying = false
-                                        songs
-                                            .forEachIndexed { index, song ->
-                                                if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                                    nowPlayingItem = index
-                                            }
 
-                                        if (nowPlayingItem > -1)
-                                            scrollToNowPlaying = true
-                                    },
-                                    onLongClick = {
-                                        SmartToast(context.getString(R.string.info_find_the_song_that_is_playing))
-                                    }
-                                ),
-                            icon = R.drawable.locate,
-                            enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {}
-                        )
-                        LaunchedEffect(scrollToNowPlaying) {
-                            if (scrollToNowPlaying)
-                                lazyListState.scrollToItem(nowPlayingItem, 1)
-                            scrollToNowPlaying = false
-                        }
-                        /*
-                        HeaderIconButton(
-                            modifier = Modifier.padding(horizontal = 5.dp),
-                            onClick = { searching = !searching },
-                            icon = R.drawable.search_circle,
-                            color = colorPalette.text,
-                            iconSize = 24.dp
-                        )
-                         */
-                    }
-                    */
                     Spacer(
                         modifier = Modifier
                             .width(30.dp)

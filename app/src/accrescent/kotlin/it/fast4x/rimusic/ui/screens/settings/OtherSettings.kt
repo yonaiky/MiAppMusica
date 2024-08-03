@@ -44,6 +44,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -131,7 +132,7 @@ fun OtherSettings() {
 
     var isKeepScreenOnEnabled by rememberPreference(isKeepScreenOnEnabledKey, false)
 
-    var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
+    //var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
@@ -182,6 +183,7 @@ fun OtherSettings() {
             onClick = {}
         )
 
+        /*
         SettingsEntryGroupText(title = stringResource(R.string.check_update))
         EnumValueSelectorSettingsEntry(
             title = stringResource(R.string.enable_check_for_update),
@@ -197,6 +199,7 @@ fun OtherSettings() {
             }
         )
         SettingsDescription(text = stringResource(R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup))
+         */
 
 
         /****** PIPED ******/
@@ -527,7 +530,9 @@ fun OtherSettings() {
                     title = stringResource(R.string.proxy_host),
                     text = proxyHost, //stringResource(R.string.set_proxy_hostname),
                     currentText = proxyHost,
-                    onTextSave = { proxyHost = it })
+                    onTextSave = { proxyHost = it },
+                    validationType = ValidationType.Ip
+                )
                 TextDialogSettingEntry(
                     title = stringResource(R.string.proxy_port),
                     text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),
@@ -579,14 +584,9 @@ fun OtherSettings() {
                         filec.delete()
 
 
-                } else /*
-                    SmartToast(
-                    context.getString(R.string.restarting_rimusic_is_required),
-                    type = PopupType.Info
-                )
-                */
+                } else
                     SmartMessage(
-                        context.getString(R.string.restarting_rimusic_is_required),
+                        context.resources.getString(R.string.restarting_rimusic_is_required),
                         type = PopupType.Info, context = context
                     )
             }

@@ -235,6 +235,7 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
+import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
@@ -611,7 +612,7 @@ fun PlayerModern(
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = downloadedStateMedia(mediaItem.mediaId)
     var showthumbnail by rememberPreference(showthumbnailKey, false)
-    val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
     val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
@@ -650,7 +651,7 @@ fun PlayerModern(
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
-    var showsongs by rememberPreference(showsongsKey, "2")
+    var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var tapqueue by rememberPreference(tapqueueKey, true)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
@@ -1191,9 +1192,11 @@ fun PlayerModern(
             songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
         }
     }
-    var playlistindicator by rememberPreference(playlistindicatorKey, false)
-    var carousel by rememberPreference(carouselKey, true)
-    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    val playlistindicator by rememberPreference(playlistindicatorKey, false)
+    val carousel by rememberPreference(carouselKey, true)
+    val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
 
     Box(
         modifier = Modifier
@@ -1281,13 +1284,13 @@ fun PlayerModern(
                                       tint = colorPalette.accent
                                   )
                               }
-                            if (showsongs == "") showsongs = "1"
+
                             val threePagesPerViewport = object : PageSize {
                                 override fun Density.calculateMainAxisPageSize(
                                     availableSpace: Int,
                                     pageSpacing: Int
                                 ): Int {
-                                    return if (showsongs.toInt() == 1) (availableSpace) else ((availableSpace - 2 * pageSpacing)/(showsongs.toInt()))
+                                    return if (showsongs == SongsNumber.`1`) (availableSpace) else ((availableSpace - 2 * pageSpacing)/(showsongs.number))
                                 }
                             }
 
@@ -1308,9 +1311,21 @@ fun PlayerModern(
                                                 binder.player.forcePlayAtIndex(mediaItems,it + 1)
                                             },
                                             onLongClick = {
-                                                binder.player.addNext(binder.player.getMediaItemAt(it + 1));
-                                                SmartMessage(context.getString(R.string.addednext), type = PopupType.Info, context = context)
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                if (it < mediaItems.size) {
+                                                    binder.player.addNext(
+                                                        binder.player.getMediaItemAt(
+                                                            it + 1
+                                                        )
+                                                    )
+                                                    SmartMessage(
+                                                        context.resources.getString(R.string.addednext),
+                                                        type = PopupType.Info,
+                                                        context = context
+                                                    )
+                                                    hapticFeedback.performHapticFeedback(
+                                                        HapticFeedbackType.LongPress
+                                                    )
+                                                }
                                             }
                                         )
                                         //.width(IntrinsicSize.Min)
@@ -1415,7 +1430,7 @@ fun PlayerModern(
                                     }
                                 }
                             }
-                                if (showsongs.toInt() == 1) {
+                                if (showsongs == SongsNumber.`1`) {
                                     IconButton(
                                         icon = R.drawable.trash,
                                         color = Color.White,
@@ -1439,7 +1454,8 @@ fun PlayerModern(
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth()
                     ) {
-                        if (showButtonPlayerDiscover) {
+
+                        if (showButtonPlayerDiscover)
                             IconButton(
                                 icon = R.drawable.star_brilliant,
                                 color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
@@ -1449,15 +1465,12 @@ fun PlayerModern(
                                     .combinedClickable(
                                         onClick = { discoverIsEnabled = !discoverIsEnabled },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.getString(R.string.discoverinfo),
-                                                context = context
-                                            )
+                                            SmartMessage(context.resources.getString(R.string.discoverinfo), context = context)
                                         }
 
                                     )
                             )
-                        }
+
 
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
@@ -1615,12 +1628,6 @@ fun PlayerModern(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        /*
-                                        SmartToast(
-                                            context.resources.getString(R.string.info_not_find_application_audio),
-                                            type = PopupType.Warning
-                                        )
-                                         */
                                         SmartMessage(
                                             context.resources.getString(R.string.info_not_find_application_audio),
                                             type = PopupType.Warning, context = context
@@ -1749,7 +1756,7 @@ fun PlayerModern(
         val statsfornerds by rememberPreference(statsfornerdsKey, false)
 
 
-        if (discoverIsEnabled) ApplyDiscoverToQueue()
+        //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
 
         if (isLandscape) {
@@ -2570,6 +2577,9 @@ fun PlayerModern(
                         )
                     } else {
                         key(pagerState.currentPage) {
+                            val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
+                                pagerState.currentPage
+
                             Controls(
                                 navController = navController,
                                 onCollapse = onDismiss,
@@ -2577,9 +2587,9 @@ fun PlayerModern(
                                 layoutState = layoutState,
                                 media = mediaItem.toUiMedia(positionAndDuration.second),
                                 mediaId = mediaItem.mediaId,
-                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
+                                title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
                                     ?: "",
-                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                 artistIds = artistsInfo,
                                 albumId = albumId,
                                 shouldBePlaying = shouldBePlaying,

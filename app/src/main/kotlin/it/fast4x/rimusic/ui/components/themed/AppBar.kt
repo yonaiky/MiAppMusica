@@ -120,24 +120,12 @@ fun appBar(
                                     )
                                 }
                                 if (countForReveal == 6) {
-                                    /*
-                                    SmartToast(
-                                        "Okay, you’re looking for something, keep...",
-                                        durationLong = true
-                                    )
-                                     */
                                     SmartMessage(
                                         "Okay, you’re looking for something, keep...",
                                         durationLong = true, context = context
                                     )
                                 }
                                 if (countForReveal == 9) {
-                                    /*
-                                    SmartToast(
-                                        "You are a number one, click and enjoy the surprise",
-                                        durationLong = true
-                                    )
-                                     */
                                     SmartMessage(
                                         "You are a number one, click and enjoy the surprise",
                                         durationLong = true, context = context
@@ -151,12 +139,6 @@ fun appBar(
                                 //    navController.navigate(NavRoutes.home.name)
                             },
                             onLongClick = {
-                                /*
-                                SmartToast(
-                                    "You are a number one, click and enjoy the surprise",
-                                    durationLong = true
-                                )
-                                 */
                                 SmartMessage(
                                     "You are a number one, click and enjoy the surprise",
                                     durationLong = true, context = context
@@ -195,10 +177,7 @@ fun appBar(
                         ),
                         modifier = Modifier
                             .clickable {
-                                /*
-                                SmartToast(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true)
-                                 */
-                                SmartMessage(context.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
+                                SmartMessage(context.resources.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
                                 navController.navigate(NavRoutes.settings.name)
                             }
                     )

@@ -400,7 +400,7 @@ fun SongItem(
                                 .padding(all = 3.dp)
                                 .combinedClickable(onClick = {}, onLongClick = {
                                     SmartMessage(
-                                        context.getString(R.string.playlistindicatorinfo2),
+                                        context.resources.getString(R.string.playlistindicatorinfo2),
                                         context = context
                                     )
                                 })
@@ -447,7 +447,7 @@ fun SongItem(
                                 .background(colorPalette.accent, CircleShape)
                                 .padding(all = 3.dp)
                                 .combinedClickable(onClick = {}, onLongClick = {
-                                    SmartMessage(context.getString(R.string.playlistindicatorinfo2), context = context)
+                                    SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
                                 })
                         )
                     }
@@ -495,7 +495,7 @@ fun SongItem(
                             .background(colorPalette.accent, CircleShape)
                             .padding(all = 3.dp)
                             .combinedClickable(onClick = {}, onLongClick = {
-                                SmartMessage(context.getString(R.string.playlistindicatorinfo2), context = context)
+                                SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
                             })
                     )
                 }

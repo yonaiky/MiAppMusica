@@ -35,6 +35,9 @@ suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>
         val songsSection = findSectionByTitle("Songs")?.musicShelfRenderer
         val albumsSection = findSectionByTitle("Albums")?.musicCarouselShelfRenderer
         val singlesSection = findSectionByTitle("Singles")?.musicCarouselShelfRenderer
+        val playlistsSection = findSectionByTitle("Playlists")?.musicCarouselShelfRenderer
+
+        println("mediaItem innertube artistPage playlistsSection $playlistsSection")
 
         Innertube.ArtistPage(
             name = response
@@ -109,5 +112,9 @@ suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>
                 ?.buttonRenderer
                 ?.navigationEndpoint
                 ?.browseEndpoint,
+            playlists = playlistsSection
+                ?.contents
+                ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
+                ?.mapNotNull(Innertube.PlaylistItem::from)
         )
     }

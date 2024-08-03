@@ -1,13 +1,23 @@
 package it.fast4x.rimusic.utils
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.media.audiofx.AudioEffect
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -75,3 +85,30 @@ fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
 
     return state
 }
+
+@Composable
+fun rememberEqualizerLauncher(
+    audioSessionId: () -> Int?,
+    contentType: Int = AudioEffect.CONTENT_TYPE_MUSIC
+): State<() -> Unit> {
+    val context = LocalContext.current
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+
+    return rememberUpdatedState {
+        try {
+            launcher.launch(
+                Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                    replaceExtras(EqualizerIntentBundleAccessor.bundle {
+                        audioSessionId()?.let { audioSession = it }
+                        packageName = context.packageName
+                        this.contentType = contentType
+                    })
+                }
+            )
+        } catch (e: ActivityNotFoundException) {
+            SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
+        }
+    }
+}
+

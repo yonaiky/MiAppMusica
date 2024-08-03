@@ -95,6 +95,9 @@ import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
+import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
@@ -115,6 +118,7 @@ import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
@@ -131,6 +135,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
+import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
@@ -138,6 +143,7 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -200,12 +206,14 @@ val Song.isLocal get() = id.startsWith(LOCAL_KEY_PREFIX)
 class PlayerService : InvincibleService(),
     Player.Listener,
     PlaybackStatsListener.Callback,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    OnAudioVolumeChangedListener {
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var cache: SimpleCache
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
+    private lateinit var audioVolumeObserver: AudioVolumeObserver
 
 
     private val actions = PlaybackStateCompat.ACTION_PLAY or
@@ -552,8 +560,11 @@ class PlayerService : InvincibleService(),
         mediaSession.setCallback(SessionCallback(player))
 
         //TODO: to fix with another register type
-        //if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
-            //mediaSession.setPlaybackToRemote(getVolumeProvider())
+        if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
+            mediaSession.setPlaybackToRemote(getVolumeProvider())
+
+        audioVolumeObserver = AudioVolumeObserver(this)
+        audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
 
 
         if (showLikeButton && showDownloadButton)
@@ -566,23 +577,6 @@ class PlayerService : InvincibleService(),
             mediaSession.setPlaybackState(stateBuilderWithoutCustomAction.build())
 
         mediaSession.isActive = true
-
-        /*
-        coroutineScope.launch {
-            currentMedia.collect {
-                updateNotification()
-            }
-        }
-
-        currentMediaLiked = media.flatMapLatest { mediaItem ->
-            if (mediaItem?.mediaId?.let { Database.songliked(it) } == 0) flowOf(false) else flowOf(true)
-        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
-
-        currentMediaDownloaded = media.flatMapLatest { mediaItem ->
-            val downloads = DownloadUtil.downloads.value
-            flowOf(downloads[mediaItem?.mediaId]?.state == Download.STATE_COMPLETED)
-        }.stateIn(coroutineScope, SharingStarted.Lazily, false)
-         */
 
         updatePlaybackState()
 
@@ -725,42 +719,33 @@ class PlayerService : InvincibleService(),
             VolumeProviderCompat(VOLUME_CONTROL_RELATIVE, maxVolume!!, currentVolume!!) {
 
                 override fun onAdjustVolume(direction: Int) {
-                    if (!preferences.getBoolean(useVolumeKeysToChangeSongKey, false)) {
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                        if (audio?.getStreamVolume(STREAM_TYPE) == 0) {
-                            //binder.player.pause()
-                            binder.callPause({ binder.player.pause() } )
-                            //SmartMessage(resources.getString(R.string.info_paused_with_volume_zero), context = this@PlayerService)
-                        }
-                    } else  {
+                        val useVolumeKeysToChangeSong = preferences.getBoolean(useVolumeKeysToChangeSongKey, false)
                         // Up = 1, Down = -1, Release = 0
-                        // Replace with your action, if you don't want to adjust system volume
                         if (direction == VOLUME_UP) {
-                            binder.player.forceSeekToNext()
-                            /*
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                         */
+                            if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
+                                binder.player.seekToNextMediaItem()
+                            } else {
+                                audio?.adjustStreamVolume(
+                                    STREAM_TYPE,
+                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                                )
+                                if (audio != null) {
+                                    setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
+                                }
+                            }
                         } else if (direction == VOLUME_DOWN) {
-                            binder.player.forceSeekToPrevious()
-                            /*
-                        audio?.adjustStreamVolume(
-                            STREAM_TYPE,
-                            AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-                        )
-                         */
+                            if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
+                                binder.player.seekToPreviousMediaItem()
+                            } else {
+                                audio?.adjustStreamVolume(
+                                    STREAM_TYPE,
+                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
+                                )
+                                if (audio != null) {
+                                    setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
+                                }
+                            }
                         }
-                        /*
-                        if (audio != null) {
-                            setCurrentVolume(audio.getStreamVolume(STREAM_TYPE))
-                        }
-                         */
-                    }
                 }
 
         }
@@ -798,8 +783,8 @@ class PlayerService : InvincibleService(),
             mediaSession.release()
             cache.release()
             //downloadCache.release()
-
             loudnessEnhancer?.release()
+            audioVolumeObserver.unregister()
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
@@ -808,6 +793,30 @@ class PlayerService : InvincibleService(),
 
     override fun shouldBeInvincible(): Boolean {
         return !player.shouldBePlaying
+    }
+
+    private var pausedByZeroVolume = false
+    override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
+        if (preferences.getBoolean(isPauseOnVolumeZeroEnabledKey, false)) {
+            if (player.isPlaying && currentVolume < 1) {
+                binder.callPause {}
+                pausedByZeroVolume = true
+            } else if (pausedByZeroVolume && currentVolume >= 1) {
+                binder.player.play()
+                pausedByZeroVolume = false
+            }
+        }
+    }
+
+    override fun onAudioVolumeDirectionChanged(direction: Int) {
+        /*
+        if (direction == 0) {
+            binder.player.seekToPreviousMediaItem()
+        } else {
+            binder.player.seekToNextMediaItem()
+        }
+
+         */
     }
 
 
@@ -1407,11 +1416,13 @@ class PlayerService : InvincibleService(),
 
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if (isPlaying)
+        val fadeDisabled = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
+        val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
+        if (isPlaying && !fadeDisabled)
             startFadeAnimator(
                 player = binder.player,
-                duration = 1000,
-                fadeIn = isPlaying
+                duration = duration,
+                fadeIn = true
             )
 
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
@@ -2013,6 +2024,8 @@ class PlayerService : InvincibleService(),
         var isLoadingRadio by mutableStateOf(false)
             private set
 
+        //var mediaItems = mutableListOf<MediaItem>()
+
         fun setBitmapListener(listener: ((Bitmap?) -> Unit)?) {
             bitmapProvider.listener = listener
         }
@@ -2059,7 +2072,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 var mediaItems = listOf<MediaItem>()
                 runBlocking {
@@ -2076,7 +2091,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 var songs = listOf<Song>()
                 runBlocking {
@@ -2095,7 +2112,9 @@ class PlayerService : InvincibleService(),
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                false,
+                applicationContext
             ).let {
                 isLoadingRadio = true
                 coroutineScope.launch(Dispatchers.Main) {
@@ -2122,15 +2141,19 @@ class PlayerService : InvincibleService(),
             }
         }
 
+
         @UnstableApi
         private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
             radioJob?.cancel()
             radio = null
+            val isDiscoverEnabled =  applicationContext.preferences.getBoolean(discoverKey, false)
             YouTubeRadio(
                 endpoint?.videoId,
                 endpoint?.playlistId,
                 endpoint?.playlistSetVideoId,
-                endpoint?.params
+                endpoint?.params,
+                isDiscoverEnabled,
+                applicationContext
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
@@ -2218,15 +2241,16 @@ class PlayerService : InvincibleService(),
         }
 
         fun callPause(onPause: () -> Unit) {
-            val force = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
+            val fadeDisabled = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled) == DurationInMilliseconds.Disabled
             val duration = preferences.getEnum(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled).milliSeconds
+            //println("mediaItem callPause fadeDisabled $fadeDisabled duration $duration")
             if (player.isPlaying) {
-                if (force) {
+                if (fadeDisabled) {
                     player.pause()
                     onPause()
                 } else {
+                    //fadeOut
                     startFadeAnimator(player, duration, false) {
-                        //Code to run when Animator Ends
                         player.pause()
                         onPause()
                     }
@@ -2239,12 +2263,12 @@ class PlayerService : InvincibleService(),
         MediaSessionCompat.Callback() {
         override fun onPlay() = player.play()
         //override fun onPause() = player.pause()
-        override fun onPause() = binder.callPause({ player.pause() } )
+        override fun onPause() = binder.callPause({})
         override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
         override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
         //override fun onStop() = player.pause()
-        override fun onStop() = binder.callPause({ player.pause() } )
+        override fun onStop() = binder.callPause({} )
         override fun onRewind() = player.seekToDefaultPosition()
         override fun onSkipToQueueItem(id: Long) =
             runCatching { player.seekToDefaultPosition(id.toInt()) }.let { }

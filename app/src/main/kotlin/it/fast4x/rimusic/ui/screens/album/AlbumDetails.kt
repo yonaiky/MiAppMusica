@@ -275,10 +275,10 @@ fun AlbumDetails(
                             outputStream.close()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
+                            SmartMessage(context.resources.getString(R.string.info_error), type = PopupType.Error, context = context)
                         }
                     } else
-                        SmartMessage(context.getString(R.string.info_error), type = PopupType.Error, context = context)
+                        SmartMessage(context.resources.getString(R.string.info_error), type = PopupType.Error, context = context)
                 }
 
         }
@@ -498,7 +498,7 @@ fun AlbumDetails(
                                                 showConfirmDownloadAllDialog = true
                                             },
                                             onLongClick = {
-                                                SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                             }
                                         )
                                 )
@@ -513,7 +513,7 @@ fun AlbumDetails(
                                                 showConfirmDeleteDownloadDialog = true
                                             },
                                             onLongClick = {
-                                                SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                             }
                                         )
                                 )
@@ -554,7 +554,7 @@ fun AlbumDetails(
                                                 }
                                             },
                                             onLongClick = {
-                                                SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                             }
                                         )
                                 )
@@ -576,7 +576,7 @@ fun AlbumDetails(
                                                     scrollToNowPlaying = true
                                             },
                                             onLongClick = {
-                                                SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                                SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                             }
                                         ),
                                     icon = R.drawable.locate,
@@ -941,7 +941,7 @@ fun AlbumDetails(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

@@ -64,7 +64,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import com.coder.vincent.smart_toast.SmartToast
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -284,7 +283,7 @@ fun HomeSongs(
                             .combinedClickable(
                                 onClick = { showHiddenSongs = if (showHiddenSongs == 0) -1 else 0 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_show_hide_hidden_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_show_hide_hidden_songs), context = context)
                                 }
                             )
                     )
@@ -312,7 +311,7 @@ fun HomeSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                 }
                             )
                     )
@@ -329,7 +328,7 @@ fun HomeSongs(
                                     includeLocalSongs = !includeLocalSongs
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_includes_excludes_songs_on_the_device), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_includes_excludes_songs_on_the_device), context = context)
                                 }
                             )
                     )
@@ -379,7 +378,7 @@ fun HomeSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_add_in_playlist), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_add_in_playlist), context = context)
                                 }
                             )
                     )

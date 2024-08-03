@@ -7,9 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,6 +29,7 @@ fun ApplyDiscoverToQueue() {
 
     binder?.player ?: return
 
+    val context = LocalContext.current
     val player = binder.player
 
     var listMediaItemsIndex = remember {
@@ -59,6 +65,7 @@ fun ApplyDiscoverToQueue() {
                 for (i in mediacount.downTo(0)) {
                     binder.player.removeMediaItem(listMediaItemsIndex[i])
                 }
+                SmartMessage(context.resources.getString(R.string.discover_has_been_applied_to_queue).format(listMediaItemsIndex.size), PopupType.Success, context = context)
                 listMediaItemsIndex.clear()
             }
         }

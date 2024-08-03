@@ -114,6 +114,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.windows
@@ -328,12 +329,6 @@ fun QueueModern(
                             }"
                         )
                     } catch (e: ActivityNotFoundException) {
-                        /*
-                        SmartToast(
-                            context.resources.getString(R.string.info_not_find_app_create_doc),
-                            type = PopupType.Warning
-                        )
-                         */
                         SmartMessage(
                             context.resources.getString(R.string.info_not_find_app_create_doc),
                             type = PopupType.Warning, context = context
@@ -345,45 +340,11 @@ fun QueueModern(
 
         //val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
         val hapticFeedback = LocalHapticFeedback.current
-
+        val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
         var discoverIsEnabled by rememberPreference(discoverKey, false)
-        if (discoverIsEnabled) ApplyDiscoverToQueue()
+        //if (discoverIsEnabled) ApplyDiscoverToQueue()
 
-        /*
-        /*   DISCOVER  */
 
-        var songInPlaylist by remember {
-            mutableStateOf(0)
-        }
-        var songIsLiked by remember {
-            mutableStateOf(0)
-        }
-        if (discoverIsEnabled) {
-            LaunchedEffect(Unit) {
-                listMediaItemsIndex.clear()
-                windows.forEach { window ->
-                    withContext(Dispatchers.IO) {
-                        songInPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
-                        songIsLiked = Database.songliked(window.mediaItem.mediaId)
-                    }
-                    if (songInPlaylist > 0 || songIsLiked > 0) {
-                        listMediaItemsIndex.add(window.firstPeriodIndex)
-                    }
-                }.also {
-                    if (listMediaItemsIndex.isNotEmpty()) {
-                        val mediacount = listMediaItemsIndex.size - 1
-                        listMediaItemsIndex.sort()
-                        for (i in mediacount.downTo(0)) {
-                            binder.player.removeMediaItem(listMediaItemsIndex[i])
-                        }
-                        listMediaItemsIndex.clear()
-                    }
-                }
-
-            }
-        }
-        /*   DISCOVER  */
-        */
 
         Column {
             Box(
@@ -456,6 +417,7 @@ fun QueueModern(
                                 mediaItem = window.mediaItem,
                                 onSwipeToLeft = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
+                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
                                 },
                                 onSwipeToRight = {
                                     binder.player.addNext(
@@ -735,26 +697,32 @@ fun QueueModern(
 
                 ) {
 
-                    IconButton(
-                        icon = R.drawable.star_brilliant,
-                        color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(24.dp)
-                            .combinedClickable(
-                                onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                onLongClick = {
-                                    SmartMessage(context.getString(R.string.discoverinfo), context = context)
-                                }
+                    if (showButtonPlayerDiscover) {
+                        IconButton(
+                            icon = R.drawable.star_brilliant,
+                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(24.dp)
+                                .combinedClickable(
+                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.discoverinfo),
+                                            context = context
+                                        )
+                                    }
 
-                            )
-                    )
+                                )
+                        )
 
-                    Spacer(
-                        modifier = Modifier
-                            .width(12.dp)
-                    )
+                        Spacer(
+                            modifier = Modifier
+                                .width(12.dp)
+                        )
+
+                    }
 
                     IconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,

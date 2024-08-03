@@ -206,6 +206,7 @@ import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
+import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
@@ -416,9 +417,13 @@ class MainActivity :
                 val hostName = getString(proxyHostnameKey, null)
                 val proxyPort = getInt(proxyPortKey, 8080)
                 val proxyMode = getEnum(proxyModeKey, Proxy.Type.HTTP)
-                hostName?.let { hName ->
-                    ProxyPreferences.preference =
-                        ProxyPreferenceItem(hName, proxyPort, proxyMode)
+                if (isValidIP(hostName)) {
+                    hostName?.let { hName ->
+                        ProxyPreferences.preference =
+                            ProxyPreferenceItem(hName, proxyPort, proxyMode)
+                    }
+                } else {
+                    SmartMessage("Your Proxy Hostname is invalid, please check it", PopupType.Warning, context = this@MainActivity)
                 }
             }
             if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
@@ -1125,7 +1130,8 @@ class MainActivity :
     override fun onPause() {
         super.onPause()
         runCatching {
-            sensorManager!!.unregisterListener(sensorListener)
+            sensorListener.let { sensorManager?.unregisterListener(it) }
+                //sensorManager!!.unregisterListener(sensorListener)
         }.onFailure {
             Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
         }

@@ -239,42 +239,6 @@ fun AlbumDetailsModern(
     }
     val hapticFeedback = LocalHapticFeedback.current
 
-    /*
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(album?.thumbnailUrl)
-            .size(Size.ORIGINAL)
-            .build()
-    )
-
-    var bitmap = remember<Bitmap?> {
-        null
-    }
-    val imageState = painter.state
-
-    val exportLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            context.applicationContext.contentResolver.openOutputStream(uri)
-                ?.use { outputStream ->
-                    if (imageState is AsyncImagePainter.State.Success) {
-                        bitmap = imageState.result.drawable.toBitmap()
-                        try {
-                            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                            outputStream.flush()
-                            outputStream.close()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
-                        }
-                    } else SmartToast(context.getString(R.string.info_error), type = PopupType.Error)
-                }
-
-        }
-
-     */
-
     if (showSelectCustomizeAlbumDialog)
         SelectorDialog(
             title = stringResource(R.string.customize_album),
@@ -682,7 +646,7 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_bookmark_album), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_bookmark_album), context = context)
                                     }
                                 ),
                             onClick = {}
@@ -698,7 +662,7 @@ fun AlbumDetailsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -714,7 +678,7 @@ fun AlbumDetailsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -758,7 +722,7 @@ fun AlbumDetailsModern(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -780,7 +744,7 @@ fun AlbumDetailsModern(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -825,27 +789,6 @@ fun AlbumDetailsModern(
                                             onChangeAlbumCover = {
                                                 showDialogChangeAlbumCover = true
                                             },
-                                            /*
-                                            onDownloadAlbumCover = {
-                                                try {
-                                                    @SuppressLint("SimpleDateFormat")
-                                                    val dateFormat =
-                                                        SimpleDateFormat("yyyyMMddHHmmss")
-                                                    exportLauncher.launch(
-                                                        "ImageCover_${
-                                                            dateFormat.format(
-                                                                Date()
-                                                            )
-                                                        }"
-                                                    )
-                                                } catch (e: ActivityNotFoundException) {
-                                                    SmartToast(
-                                                        "Couldn't find an application to create documents",
-                                                        type = PopupType.Warning
-                                                    )
-                                                }
-                                            },
-                                             */
                                             onPlayNext = {
                                                 if (listMediaItems.isEmpty()) {
                                                     binder?.player?.addNext(
@@ -1128,7 +1071,7 @@ fun AlbumDetailsModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

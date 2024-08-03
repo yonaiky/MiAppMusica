@@ -139,6 +139,7 @@ import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
@@ -167,6 +168,7 @@ import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
+import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.secondary
@@ -326,9 +328,12 @@ fun  UiSettings() {
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var discoverIsEnabled by rememberPreference(discoverKey, false)
+    var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+
+    val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
 
 
     Column(
@@ -596,10 +601,19 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_pause_on_volume_zero),
+                text = stringResource(R.string.info_pauses_player_when_volume_zero),
+                isChecked = isPauseOnVolumeZeroEnabled,
+                onCheckedChange = {
+                    isPauseOnVolumeZeroEnabled = it
+                }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_audio),
-                titleSecondary = stringResource(R.string.effect_fade_audio_description),
                 selectedValue = playbackFadeAudioDuration,
                 onValueSelected = { playbackFadeAudioDuration = it },
                 valueText = {
@@ -611,6 +625,8 @@ fun  UiSettings() {
                     }
                 }
             )
+            SettingsDescription(text = stringResource(R.string.effect_fade_audio_description))
+        }
 
         /*
         if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_songs).contains(filterCharSequence,true))
@@ -769,7 +785,7 @@ fun  UiSettings() {
                 }
             )
 
-        /*
+
         if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_volumekeys),
@@ -781,7 +797,7 @@ fun  UiSettings() {
             )
             ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
-         */
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
             SwitchSettingEntry(
@@ -797,6 +813,8 @@ fun  UiSettings() {
             SettingsEntry(
                 title = stringResource(R.string.equalizer),
                 text = stringResource(R.string.interact_with_the_system_equalizer),
+                onClick = launchEqualizer
+                /*
                 onClick = {
                     val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
                         putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder?.player?.audioSessionId)
@@ -810,6 +828,7 @@ fun  UiSettings() {
                         SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                     }
                 }
+                 */
             )
 
         SettingsGroupSpacer()

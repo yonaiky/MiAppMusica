@@ -249,6 +249,7 @@ const val logDebugEnabledKey = "logDebugEnabled"
 const val isPipedEnabledKey = "isPipedEnabled"
 
 const val messageTypeKey = "messageType"
+const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

@@ -115,7 +115,7 @@ fun startFadeAnimator(
     fadeIn: Boolean, /* fadeIn -> true  fadeOut -> false*/
     callback: Runnable? = null, /* Code to run when Animator Ends*/
 ) {
-    println("mediaItem startFadeAnimator: fadeIn $fadeIn duration $duration callback $callback")
+    //println("mediaItem startFadeAnimator: fadeIn $fadeIn duration $duration callback $callback")
     val fadeDuration = duration.toLong()
     if (fadeDuration == 0L) {
         callback?.run()

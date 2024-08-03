@@ -149,9 +149,9 @@ fun SwipeablePlaylistItem(
             mediaItemToggleLike(mediaItem)
             updateLike = false
             if (likedAt == null)
-                SmartMessage(context.getString(R.string.added_to_favorites), context = context)
+                SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
             else
-                SmartMessage("\"" + mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString() + "\" " + context.getString(R.string.removed_from_favorites), context = context, durationLong = true)
+                SmartMessage("\"" + mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString() + "\" " + context.resources.getString(R.string.removed_from_favorites), context = context, durationLong = true)
         }
     }
 

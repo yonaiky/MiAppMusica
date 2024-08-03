@@ -175,15 +175,16 @@ fun SearchResultScreen(
                                 headerContent = headerContent,
                                 itemContent = { song ->
                                     //Log.d("mediaItem",song.toString())
-                                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                    val isDownloaded =
-                                        downloadedStateMedia(song.asMediaItem.mediaId)
+
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
                                         onSwipeToRight = {
                                             binder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
+                                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                                        val isDownloaded =
+                                            downloadedStateMedia(song.asMediaItem.mediaId)
                                         SongItem(
                                             song = song,
                                             isDownloaded = isDownloaded,

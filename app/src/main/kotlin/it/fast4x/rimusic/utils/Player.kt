@@ -185,7 +185,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
             val excludedSongs = mediaItems.size - filteredMediaItems.size
             if (excludedSongs > 0)
                 CoroutineScope(Dispatchers.Main).launch {
-                        SmartMessage(context.getString(R.string.message_excluded_s_songs).format(excludedSongs), context = context)
+                        SmartMessage(context.resources.getString(R.string.message_excluded_s_songs).format(excludedSongs), context = context)
                 }
         }
     }.onFailure {
@@ -206,7 +206,7 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
 
             if (excludedSong)
                 CoroutineScope(Dispatchers.Main).launch {
-                    SmartMessage(context.getString(R.string.message_excluded_s_songs).format(1), context = context)
+                    SmartMessage(context.resources.getString(R.string.message_excluded_s_songs).format(1), context = context)
                 }
 
             return excludedSong

@@ -202,6 +202,7 @@ fun GoToLink(
 
                     LaunchedEffect(Unit) {
                         coroutineScope.launch(Dispatchers.Main) {
+                            println("mediaItem channelId: ${uri.pathSegments}")
                             when (val path = uri.pathSegments.firstOrNull()) {
                                 "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
                                     val browseId = "VL$playlistId"
@@ -215,8 +216,6 @@ fun GoToLink(
                                                 }
                                             }
                                     } else {
-                                        //playlistRoute.ensureGlobal(browseId, null)
-                                        //playlistRoute.ensureGlobal(browseId, uri.getQueryParameter("params"), null)
                                         navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
                                     }
                                 }
@@ -242,6 +241,14 @@ fun GoToLink(
                                     }
                                 }
                             }
+/*
+                            if (uri.pathSegments.firstOrNull()?.startsWith("@") == true)
+                                uri.pathSegments.firstOrNull()?.let { channelId ->
+                                    navController.navigate(route = "${NavRoutes.artist.name}/${channelId.removePrefix("@")}")
+                                }
+
+ */
+
                         }
 
                     }

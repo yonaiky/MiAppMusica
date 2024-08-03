@@ -691,6 +691,14 @@
     <string name="effect_fade_audio_description">Desvanecer áudio ao pausar ou reproduzir a música</string>
     <string name="autosync">Sincronizar Automaticamente Playlists Importadas</string>
     <string name="message_type">Tipo de mensagem</string>
-    <string name="message_type_modern">Modern</string>
+    <string name="message_type_modern">Moderna</string>
     <string name="message_type_essential">Essencial</string>
+    <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
+    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
+    <string name="songs_number_to_show">Songs number to show</string>
+    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
+    <string name="player_pause_on_volume_zero">Pause on volume zero</string>
+    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="quality">Quality</string>
+    <string name="value_must_be_ip_address">Value must be an ip address</string>
 </resources>

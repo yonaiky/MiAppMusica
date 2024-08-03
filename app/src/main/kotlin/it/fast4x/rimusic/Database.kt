@@ -320,54 +320,54 @@ interface Database {
     fun songCached(songId: String): Flow<SongWithContentLength?>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs")
-    fun songsOfflineByPlayTimeAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs")
+    fun songsOfflineByPlayTimeAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC")
-    fun songsOfflineByPlayTimeDesc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC")
+    fun songsOfflineByPlayTimeDesc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.title")
-    fun songsOfflineByTitleAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.title")
+    fun songsOfflineByTitleAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.title DESC")
-    fun songsOfflineByTitleDesc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.title DESC")
+    fun songsOfflineByTitleDesc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.ROWID")
-    fun songsOfflineByRowIdAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.ROWID")
+    fun songsOfflineByRowIdAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.ROWID DESC")
-    fun songsOfflineByRowIdDesc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.ROWID DESC")
+    fun songsOfflineByRowIdDesc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.likedAt")
-    fun songsOfflineByLikedAtAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.likedAt")
+    fun songsOfflineByLikedAtAsc(): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.likedAt DESC")
-    fun songsOfflineByLikedAtDesc(): Flow<List<SongWithContentLength>>
+    fun songsOfflineByLikedAtDesc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.artistsText")
-    fun songsOfflineByArtistAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.artistsText")
+    fun songsOfflineByArtistAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.artistsText DESC")
-    fun songsOfflineByArtistDesc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.artistsText DESC")
+    fun songsOfflineByArtistDesc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText")
-    fun songsOfflineByDurationAsc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText")
+    fun songsOfflineByDurationAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText DESC")
-    fun songsOfflineByDurationDesc(): Flow<List<SongWithContentLength>>
+    @Query("SELECT Song.* FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.durationText DESC")
+    fun songsOfflineByDurationDesc(): Flow<List<Song>>
 
-    fun songsOffline(sortBy: SongSortBy, sortOrder: SortOrder): Flow<List<SongWithContentLength>> {
+    fun songsOffline(sortBy: SongSortBy, sortOrder: SortOrder): Flow<List<Song>> {
         return when (sortBy) {
             SongSortBy.PlayTime, SongSortBy.DatePlayed -> when (sortOrder) {
                 SortOrder.Ascending -> songsOfflineByPlayTimeAsc()

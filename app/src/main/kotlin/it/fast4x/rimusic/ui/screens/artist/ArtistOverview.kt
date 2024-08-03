@@ -201,7 +201,7 @@ fun ArtistOverview(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -248,7 +248,7 @@ fun ArtistOverview(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -287,7 +287,7 @@ fun ArtistOverview(
                                             binder?.playRadio(endpoint)
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                             )
@@ -305,7 +305,7 @@ fun ArtistOverview(
                                             binder?.playRadio(endpoint)
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_start_radio), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
                                         }
                                     )
                             )
@@ -322,7 +322,7 @@ fun ArtistOverview(
                                             binder?.player?.enqueue(songs.map(Innertube.SongItem::asMediaItem), context)
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                         }
                                     )
                             )
@@ -551,7 +551,7 @@ fun ArtistOverview(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

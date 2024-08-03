@@ -70,7 +70,7 @@ fun GetControls(
 
         MedleyMode(
             binder = binder,
-            seconds = playbackDuration.roundToInt()
+            seconds = if (playbackDuration < 1f) 0 else playbackDuration.roundToInt()
         )
 
     Row(

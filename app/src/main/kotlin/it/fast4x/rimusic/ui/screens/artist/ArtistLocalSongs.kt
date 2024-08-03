@@ -168,7 +168,7 @@ fun ArtistLocalSongs(
                                             showConfirmDownloadAllDialog = true
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                         }
                                     )
                             )
@@ -215,7 +215,7 @@ fun ArtistLocalSongs(
                                             showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                         }
                                     )
                             )
@@ -252,7 +252,7 @@ fun ArtistLocalSongs(
                                             binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context)
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                         }
                                     )
                             )
@@ -274,7 +274,7 @@ fun ArtistLocalSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                         }
                                     )
                             )

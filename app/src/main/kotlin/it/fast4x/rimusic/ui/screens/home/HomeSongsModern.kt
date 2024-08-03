@@ -79,7 +79,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import com.coder.vincent.smart_toast.SmartToast
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -359,6 +358,7 @@ fun HomeSongsModern(
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
+                        /*
                         .flowOn(Dispatchers.IO)
                         .map { songs ->
                             songs.filter { song ->
@@ -367,6 +367,7 @@ fun HomeSongsModern(
                                 } ?: false
                             }.map(SongWithContentLength::song)
                         }
+                         */
                         .collect {
                             items = it
                         }
@@ -611,11 +612,6 @@ fun HomeSongsModern(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
-                    /*
-                    SmartToast("Couldn't find an application to create documents",
-                        type = PopupType.Warning)
-
-                     */
                     SmartMessage("Couldn't find an application to create documents",
                         type = PopupType.Warning, context = context)
                 }
@@ -821,7 +817,7 @@ fun HomeSongsModern(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
                                 }
                             ),
                         icon = R.drawable.locate,
@@ -847,7 +843,7 @@ fun HomeSongsModern(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                     }
                                 )
                         )
@@ -901,7 +897,7 @@ fun HomeSongsModern(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                     }
                                 )
                         )
@@ -953,7 +949,7 @@ fun HomeSongsModern(
                                         showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_show_hide_hidden_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_show_hide_hidden_songs), context = context)
                                     }
                                 )
                         )
@@ -983,7 +979,7 @@ fun HomeSongsModern(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                 }
                             )
                     )
@@ -1004,25 +1000,6 @@ fun HomeSongsModern(
                                     }
                                 )
                         )
-
-                    /*
-                    if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                        HeaderIconButton(
-                            onClick = {  },
-                            icon = R.drawable.devices,
-                            color = if (includeLocalSongs) colorPalette.text else colorPalette.textDisabled,
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                                .combinedClickable(
-                                    onClick = {
-                                        includeLocalSongs = !includeLocalSongs
-                                    },
-                                    onLongClick = {
-                                        SmartToast(context.getString(R.string.info_includes_excludes_songs_on_the_device))
-                                    }
-                                )
-                        )
-                     */
 
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
@@ -1083,12 +1060,6 @@ fun HomeSongsModern(
                                             }
                                         }
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            /*
-                                            SmartToast(
-                                                context.resources.getString(R.string.done),
-                                                type = PopupType.Success
-                                            )
-                                             */
                                             SmartMessage(
                                                 context.resources.getString(R.string.done),
                                                 type = PopupType.Success, context = context

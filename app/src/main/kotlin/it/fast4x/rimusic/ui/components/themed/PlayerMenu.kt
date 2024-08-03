@@ -27,6 +27,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.toast
@@ -49,6 +50,8 @@ fun PlayerMenu(
     )
 
     val context = LocalContext.current
+
+    val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
 
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
@@ -92,6 +95,8 @@ fun PlayerMenu(
                 binder.player.seamlessPlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
+            onGoToEqualizer = launchEqualizer,
+            /*
             onGoToEqualizer = {
                 try {
                     activityResultLauncher.launch(
@@ -102,9 +107,10 @@ fun PlayerMenu(
                         }
                     )
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
+                    SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
                 }
             },
+             */
             onHideFromDatabase = { isHiding = true },
             onClosePlayer = onClosePlayer
         )
@@ -117,19 +123,7 @@ fun PlayerMenu(
                 binder.player.seamlessPlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
-            onGoToEqualizer = {
-                try {
-                    activityResultLauncher.launch(
-                        Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, binder.player.audioSessionId)
-                            putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-                            putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                        }
-                    )
-                } catch (e: ActivityNotFoundException) {
-                    SmartMessage(context.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
-                }
-            },
+            onGoToEqualizer = launchEqualizer,
             onShowSleepTimer = {},
             onHideFromDatabase = { isHiding = true },
             onDismiss = onDismiss,

@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -47,6 +48,7 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
@@ -327,7 +329,8 @@ fun SettingsDescription(
         style = typography.xxs.secondary,
         modifier = modifier
             .padding(start = 16.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 8.dp)
     )
 }
 
@@ -380,7 +383,8 @@ fun TextDialogSettingEntry(
     currentText: String,
     onTextSave: (String) -> Unit,
     modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    validationType: ValidationType = ValidationType.None
 ) {
     var showDialog by remember { mutableStateOf(false) }
     //val context = LocalContext.current
@@ -394,7 +398,8 @@ fun TextDialogSettingEntry(
             setValue = {
                 onTextSave(it)
                 //context.toast("Preference Saved")
-            }
+            },
+            validationType = validationType
         )
         /*
         TextFieldDialog(hintText = title ,
@@ -450,7 +455,7 @@ fun ColorSettingEntry(
         DialogColorPicker(onDismiss = { showColorPicker = false }) {
             onColorSelected(it)
             showColorPicker = false
-            SmartMessage(context.getString(R.string.info_color_s_applied).format(title), context = context)
+            SmartMessage(context.resources.getString(R.string.info_color_s_applied).format(title), context = context)
         }
 
 }

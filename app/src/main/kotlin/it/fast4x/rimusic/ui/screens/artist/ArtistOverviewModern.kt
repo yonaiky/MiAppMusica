@@ -89,6 +89,7 @@ import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
+import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -142,6 +143,7 @@ fun ArtistOverviewModern(
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
+    onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
@@ -378,7 +380,7 @@ fun ArtistOverviewModern(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_download_all_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
                                 }
                             )
                     )
@@ -426,7 +428,7 @@ fun ArtistOverviewModern(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
                                 }
                             )
                     )
@@ -466,7 +468,7 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
                                     }
                                 )
                         )
@@ -485,7 +487,7 @@ fun ArtistOverviewModern(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_start_radio), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
                                     }
                                 )
                         )
@@ -506,7 +508,7 @@ fun ArtistOverviewModern(
                                         )
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.getString(R.string.info_enqueue_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
                                     }
                                 )
                         )
@@ -528,7 +530,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.songsEndpoint?.browseId != null) {
                                         onViewAllSongsClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_songs_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_songs_yet))
                                 },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
@@ -608,6 +610,45 @@ fun ArtistOverviewModern(
                         }
                     }
 
+                    youtubeArtistPage.playlists?.let { playlists ->
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(endPaddingValues)
+                        ) {
+                            Title(
+                                title = stringResource(R.string.playlists),
+                                onClick = {
+                                    //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
+                                    //onViewAllAlbumsClick()
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
+                                }
+                            )
+                        }
+
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(
+                                items = playlists,
+                                key = Innertube.PlaylistItem::key
+                            ) { playlist ->
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                )
+                            }
+                        }
+                    }
+
                     youtubeArtistPage.albums?.let { albums ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
@@ -621,7 +662,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                         onViewAllAlbumsClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_albums_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
                                 }
                             )
                             /*
@@ -676,7 +717,7 @@ fun ArtistOverviewModern(
                                 onClick = {
                                     //if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
                                         onViewAllSinglesClick()
-                                    //} else SmartToast(context.getString(R.string.info_no_singles_yet))
+                                    //} else SmartToast(context.resources.getString(R.string.info_no_singles_yet))
                                 }
                             )
                             /*
@@ -749,7 +790,7 @@ fun ArtistOverviewModern(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.getString(R.string.info_translation), context = context)
+                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
                                         }
                                     )
                             )

@@ -15,15 +15,20 @@ android {
         includeInBundle = false
     }
 
-    android.buildFeatures.buildConfig=true
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
+    //android.buildFeatures.buildConfig=true
+
     compileSdk = 34
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 46
-        versionName = "0.6.45.1"
+        versionCode = 47
+        versionName = "0.6.46"
     }
 
     splits {
@@ -50,13 +55,24 @@ android {
         }
     }
 
+    flavorDimensions += "version"
+    productFlavors {
+        create("foss") {
+            dimension = "version"
+        }
+    }
+    productFlavors {
+        create("accrescent") {
+            dimension = "version"
+            manifestPlaceholders["appName"] = "RiMusic-Acc"
+        }
+    }
+
     sourceSets.all {
         kotlin.srcDir("src/$name/kotlin")
     }
 
-    buildFeatures {
-        compose = true
-    }
+
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -124,12 +140,11 @@ dependencies {
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)
     implementation(libs.navigation)
-    implementation(libs.smarttoast)
-    implementation(libs.smartsnackbar)
     implementation(libs.timber)
     implementation(libs.crypto)
     implementation(libs.logging.interceptor)
     implementation(libs.math3)
+    implementation(libs.toasty)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
