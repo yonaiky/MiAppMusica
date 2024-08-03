@@ -211,7 +211,8 @@ fun About() {
                  "martkol \n"+
                 "Roklc \n"+
                 "sharunkumar \n" +
-                "SuhasDissa \n"
+                "SuhasDissa \n" +
+            "twistios \n"
         )
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)

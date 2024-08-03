@@ -204,6 +204,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [roklc](https://github.com/roklc)
 - [sharunkumar](https://github.com/sharunkumar/sharunkumar)
 - [SuhasDissa](https://github.com/SuhasDissa)
+- [twistios](https://github.com/twistios)
 
 
 ## 🫂 Acknowledgments
