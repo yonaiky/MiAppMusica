@@ -688,17 +688,17 @@
     <string name="addednext">Sıradaki şarkı olarak eklendi</string>
     <string name="info_paused_with_volume_zero">Ses seviyesi sıfıra düşürüldüğünden duraklatıldı</string>
     <string name="effect_fade_audio">Kademeli ses</string>
-    <string name="effect_fade_audio_description">Şarkı duraklatıldığında veya oynatıldığında sesi kademeli bitir veya başlat</string>
+    <string name="effect_fade_audio_description">Şarkı duraklatıldığında veya oynatıldığında sesi kademeli olarak bitir veya başlat</string>
     <string name="autosync">İçe Aktarılan Oynatma Listelerini Otomatik Senkronize Et</string>
     <string name="message_type">Mesaj tipi</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Temel</string>
-    <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
-    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
-    <string name="songs_number_to_show">Songs number to show</string>
-    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
-    <string name="player_pause_on_volume_zero">Pause on volume zero</string>
-    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="discoverinforadio">Radyodan, beğenilmiş ve oynatma listesindeki şarkıları çıkarır</string>
+    <string name="discover_has_been_applied_to_radio">Keşfet radyoya uygulandı, şu şarkılar çıkarıldı: %s</string>
+    <string name="songs_number_to_show">Gösterilecek şarkı sayısı</string>
+    <string name="discover_has_been_applied_to_queue">Keşfet oynatma sırasına uygulandı, şu şarkılar çıkarıldı: %s</string>
+    <string name="player_pause_on_volume_zero">Ses seviyesi sıfıra düşürüldüğünde duraklat</string>
+    <string name="info_pauses_player_when_volume_zero">Ses seviyesi 0\'a ulaştığında oynatıcıyı duraklatır ve 0\'dan büyük olduğunda çalmaya devam eder</string>
     <string name="quality">Kalite</string>
-    <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="value_must_be_ip_address">Değer bir ip adresi olmalıdır</string>
 </resources>
