@@ -198,7 +198,7 @@ fun InfoAlbumAndArtistEssential(
             //}
             if (playerControlsType == PlayerControlsType.Modern)
                 IconButton(
-                    color = colorPalette.favoritesIcon,
+                    color = if (likedAt == null) colorPalette.text else colorPalette.favoritesIcon,
                     icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
                     onClick = {
                         val currentMediaItem = binder.player.currentMediaItem
