@@ -83,8 +83,12 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.utils.doubleShadowDrop
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -109,6 +113,7 @@ fun InfoAlbumAndArtistModern(
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
+    val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -207,30 +212,42 @@ fun InfoAlbumAndArtistModern(
         }
 
         if (playerControlsType == PlayerControlsType.Modern)
-            IconButton(
-                color = if (likedAt == null) colorPalette.text else colorPalette.favoritesIcon,
-                icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
-                onClick = {
-                    val currentMediaItem = binder.player.currentMediaItem
-                    query {
-                        if (Database.like(
-                                mediaId,
-                                if (likedAt == null) System.currentTimeMillis() else null
-                            ) == 0
-                        ) {
-                            currentMediaItem
-                                ?.takeIf { it.mediaId == mediaId }
-                                ?.let {
-                                    Database.insert(currentMediaItem, Song::toggleLike)
-                                }
-                        }
-                    }
-                    if (effectRotationEnabled) isRotated = !isRotated
-                },
-                modifier = Modifier
-                    .padding(start = 5.dp)
-                    .size(24.dp)
-            )
+         Box{
+             IconButton(
+                 color = colorPalette.favoritesIcon,
+                 icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+                 onClick = {
+                     val currentMediaItem = binder.player.currentMediaItem
+                     query {
+                         if (Database.like(
+                                 mediaId,
+                                 if (likedAt == null) System.currentTimeMillis() else null
+                             ) == 0
+                         ) {
+                             currentMediaItem
+                                 ?.takeIf { it.mediaId == mediaId }
+                                 ?.let {
+                                     Database.insert(currentMediaItem, Song::toggleLike)
+                                 }
+                         }
+                     }
+                     if (effectRotationEnabled) isRotated = !isRotated
+                 },
+                 modifier = Modifier
+                     .padding(start = 5.dp)
+                     .size(24.dp)
+             )
+             if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+                 Icon(
+                     imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                     tint = colorPalette.text,
+                     contentDescription = null,
+                     modifier = Modifier
+                         .padding(start = 5.dp)
+                         .size(24.dp)
+                 )
+             }
+         }
 
 
     }

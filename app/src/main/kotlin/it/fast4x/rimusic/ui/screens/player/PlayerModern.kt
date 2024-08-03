@@ -59,6 +59,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -1260,7 +1261,10 @@ fun PlayerModern(
                             val nextMediaItemIndex = binder.player.nextMediaItemIndex
                             val pagerStateQueue = rememberPagerState(pageCount = { binder.player.mediaItemCount - 1})
                             val scope = rememberCoroutineScope()
-                            val fling = PagerDefaults.flingBehavior(state = pagerStateQueue,snapPositionalThreshold = 0.15f)
+                            val fling = PagerDefaults.flingBehavior(state = pagerStateQueue,snapPositionalThreshold = 0.15f, pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number))
+                            LaunchedEffect(mediaItem.mediaId) {
+                                pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
+                            }
                             Row(
                                   modifier = Modifier
                                       .padding(vertical = 7.5.dp)
@@ -1300,9 +1304,6 @@ fun PlayerModern(
                                 flingBehavior = fling,
                                 modifier = Modifier.weight(1f)
                             ) {
-                                LaunchedEffect(mediaItem.mediaId) {
-                                    pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                }
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier

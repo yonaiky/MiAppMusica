@@ -1016,18 +1016,19 @@ fun AppearanceSettings() {
                 isChecked = disableScrollingText,
                 onCheckedChange = { disableScrollingText = it }
             )
-
-        if (filter.isNullOrBlank() || stringResource(R.string.disable_horizontal_swipe).contains(
-                filterCharSequence,
-                true
+        if (playerType == PlayerType.Essential) {
+            if (filter.isNullOrBlank() || stringResource(R.string.disable_horizontal_swipe).contains(
+                    filterCharSequence,
+                    true
+                )
             )
-        )
-            SwitchSettingEntry(
-                title = stringResource(R.string.disable_horizontal_swipe),
-                text = stringResource(R.string.disable_song_switching_via_swipe),
-                isChecked = disablePlayerHorizontalSwipe,
-                onCheckedChange = { disablePlayerHorizontalSwipe = it }
-            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.disable_horizontal_swipe),
+                    text = stringResource(R.string.disable_song_switching_via_swipe),
+                    isChecked = disablePlayerHorizontalSwipe,
+                    onCheckedChange = { disablePlayerHorizontalSwipe = it }
+                )
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_rotating_buttons).contains(
                 filterCharSequence,
