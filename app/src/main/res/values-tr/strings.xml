@@ -64,8 +64,8 @@
     <string name="theme_mode">Tema modu</string>
     <string name="thumbnail_roundness">Albüm kapağı yuvarlaklığı</string>
     <string name="use_system_font">Sistem yazı tipini kullan</string>
-    <string name="use_font_by_the_system">Sistem tarafından uygulanan yazı tipini kullan</string>
-    <string name="apply_font_padding">Yazı tipi dolgusu uygula</string>
+    <string name="use_font_by_the_system">Uygulamada sistemin varsayılan yazı tipini kullan</string>
+    <string name="apply_font_padding">Metin dolgusu uygula</string>
     <string name="add_spacing_around_texts">Metinlerin etrafına boşluk ekle</string>
     <string name="lockscreen">KİLİT EKRANI</string>
     <string name="show_song_cover">Şarkı kapağını göster</string>
@@ -434,7 +434,7 @@
     <string name="click_to_switch_to">Şuna geçiş yapmak için tıkla:</string>
     <string name="direction_bottom">Altta</string>
     <string name="event_shake">Salla</string>
-    <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
+    <string name="shake_to_change_song">Şarkıyı değiştirmek için cihazı sallayın</string>
     <string name="history">Geçmiş</string>
     <string name="yesterday">Dün</string>
     <string name="this_week">Bu hafta</string>
@@ -555,7 +555,7 @@
     <string name="removed_from_favorites">Favorilerden çıkarıldı</string>
     <string name="lang_filipino">Filipino</string>
     <string name="action_bar_transparent_background">Şeffaf arkaplan</string>
-    <string name="pinfo_type">Bilgi türü</string>
+    <string name="pinfo_type">Bilgi tipi</string>
     <string name="pinfo_album_and_artist_name">Albüm ve sanatçı adı</string>
     <string name="show_player_top_actions_bar">Üst eylem çubuğunu göster</string>
     <string name="icon_like_button">Beğen düğmesi</string>
@@ -680,7 +680,7 @@
     <string name="paste">Yapıştır</string>
     <string name="searches_no_suggestions">Öneri yok</string>
     <string name="action_bar_show_discover_button">Keşfet düğmesini göster</string>
-    <string name="playertype">Oynatıcı Türü</string>
+    <string name="playertype">Oynatıcı Tipi</string>
     <string name="noblur">Şarkı Sözleri Devre Dışı Bırakıldığında Bulanıklık Yok</string>
     <string name="fadingedge">Solan Kenar</string>
     <string name="carousel">Atlıkarınca Görünümü</string>
