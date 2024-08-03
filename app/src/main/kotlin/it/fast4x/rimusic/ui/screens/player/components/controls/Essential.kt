@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,14 +84,18 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 
@@ -119,6 +124,7 @@ fun InfoAlbumAndArtistEssential(
     var showSelectDialog by remember { mutableStateOf(false) }
     var textoutline by rememberPreference(textoutlineKey, false)
     val buttonState by rememberPreference(buttonStateKey, ButtonState.Idle)
+    val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -197,30 +203,44 @@ fun InfoAlbumAndArtistEssential(
 
             //}
             if (playerControlsType == PlayerControlsType.Modern)
-                IconButton(
-                    color = colorPalette.favoritesIcon,
-                    icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
-                    onClick = {
-                        val currentMediaItem = binder.player.currentMediaItem
-                        query {
-                            if (Database.like(
-                                    mediaId,
-                                    if (likedAt == null) System.currentTimeMillis() else null
-                                ) == 0
-                            ) {
-                                currentMediaItem
-                                    ?.takeIf { it.mediaId == mediaId }
-                                    ?.let {
-                                        Database.insert(currentMediaItem, Song::toggleLike)
-                                    }
-                            }
-                        }
-                        if (effectRotationEnabled) isRotated = !isRotated
-                    },
-                    modifier = Modifier.weight(0.1f)
-                        .padding(start = 5.dp)
-                        .size(24.dp)
-                )
+             Box(
+                 modifier = Modifier.weight(0.1f)
+             ) {
+                 IconButton(
+                     color = colorPalette.favoritesIcon,
+                     icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+                     onClick = {
+                         val currentMediaItem = binder.player.currentMediaItem
+                         query {
+                             if (Database.like(
+                                     mediaId,
+                                     if (likedAt == null) System.currentTimeMillis() else null
+                                 ) == 0
+                             ) {
+                                 currentMediaItem
+                                     ?.takeIf { it.mediaId == mediaId }
+                                     ?.let {
+                                         Database.insert(currentMediaItem, Song::toggleLike)
+                                     }
+                             }
+                         }
+                         if (effectRotationEnabled) isRotated = !isRotated
+                     },
+                     modifier = Modifier
+                         .padding(start = 5.dp)
+                         .size(24.dp)
+                 )
+                 if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+                     Icon(
+                         imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                         tint = colorPalette.text,
+                         contentDescription = null,
+                         modifier = Modifier
+                             .padding(start = 5.dp)
+                             .size(24.dp)
+                     )
+                 }
+             }
             else
               Spacer(modifier = Modifier.weight(0.1f))
         }
@@ -335,31 +355,44 @@ fun ControlsEssential(
     )
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-
-    IconButton(
-        color = colorPalette.favoritesIcon,
-        icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
-        onClick = {
-            val currentMediaItem = binder.player.currentMediaItem
-            query {
-                if (Database.like(
-                        mediaId,
-                        if (likedAt == null) System.currentTimeMillis() else null
-                    ) == 0
-                ) {
-                    currentMediaItem
-                        ?.takeIf { it.mediaId == mediaId }
-                        ?.let {
-                            Database.insert(currentMediaItem, Song::toggleLike)
-                        }
+    val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
+    Box {
+        IconButton(
+            color = colorPalette.favoritesIcon,
+            icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+            onClick = {
+                val currentMediaItem = binder.player.currentMediaItem
+                query {
+                    if (Database.like(
+                            mediaId,
+                            if (likedAt == null) System.currentTimeMillis() else null
+                        ) == 0
+                    ) {
+                        currentMediaItem
+                            ?.takeIf { it.mediaId == mediaId }
+                            ?.let {
+                                Database.insert(currentMediaItem, Song::toggleLike)
+                            }
+                    }
                 }
-            }
-            if (effectRotationEnabled) isRotated = !isRotated
-        },
-        modifier = Modifier
-            .padding(10.dp)
-            .size(26.dp)
-    )
+                if (effectRotationEnabled) isRotated = !isRotated
+            },
+            modifier = Modifier
+                .padding(10.dp)
+                .size(26.dp)
+        )
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+            Icon(
+                imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                tint = colorPalette.text,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(26.dp)
+            )
+        }
+
+    }
 
     Image(
         painter = painterResource(R.drawable.play_skip_back),
