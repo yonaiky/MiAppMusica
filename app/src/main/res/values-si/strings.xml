@@ -703,4 +703,5 @@ CC-BY-SA 3.0</string>
     <string name="quality">Quality</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
     <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
+    <string name="pinfo_show_icons">Show info with icons</string>
 </resources>

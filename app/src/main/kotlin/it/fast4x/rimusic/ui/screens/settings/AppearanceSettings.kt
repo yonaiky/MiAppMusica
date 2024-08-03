@@ -137,6 +137,7 @@ import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
+import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import it.fast4x.rimusic.utils.swipeUpQueueKey
 
 @ExperimentalAnimationApi
@@ -282,6 +283,7 @@ fun AppearanceSettings() {
     var carousel by rememberPreference(carouselKey, true)
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
+    var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
 
     Column(
         modifier = Modifier
@@ -698,10 +700,9 @@ fun AppearanceSettings() {
                 filterCharSequence,
                 true
             )
-        )
+        ) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.pinfo_type),
-                titleSecondary = stringResource(R.string.pinfo_album_and_artist_name),
                 selectedValue = playerInfoType,
                 onValueSelected = {
                     playerInfoType = it
@@ -713,6 +714,29 @@ fun AppearanceSettings() {
                     }
                 },
             )
+            SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
+
+            AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
+                Column {
+                    if (filter.isNullOrBlank() || stringResource(R.string.pinfo_show_icons).contains(
+                            filterCharSequence,
+                            true
+                        )
+                    )
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.pinfo_show_icons),
+                            text = "",
+                            isChecked = playerInfoShowIcons,
+                            onCheckedChange = { playerInfoShowIcons = it },
+                            modifier = Modifier
+                                .padding(start = 25.dp)
+                        )
+                }
+            }
+
+        }
+
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.miniplayertype).contains(
                 filterCharSequence,
