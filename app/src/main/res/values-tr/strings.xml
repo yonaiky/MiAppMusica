@@ -64,8 +64,8 @@
     <string name="theme_mode">Tema modu</string>
     <string name="thumbnail_roundness">Albüm kapağı yuvarlaklığı</string>
     <string name="use_system_font">Sistem yazı tipini kullan</string>
-    <string name="use_font_by_the_system">Sistem tarafından uygulanan yazı tipini kullan</string>
-    <string name="apply_font_padding">Yazı tipi dolgusu uygula</string>
+    <string name="use_font_by_the_system">Uygulamada sistemin varsayılan yazı tipini kullan</string>
+    <string name="apply_font_padding">Metin dolgusu uygula</string>
     <string name="add_spacing_around_texts">Metinlerin etrafına boşluk ekle</string>
     <string name="lockscreen">KİLİT EKRANI</string>
     <string name="show_song_cover">Şarkı kapağını göster</string>
@@ -434,7 +434,7 @@
     <string name="click_to_switch_to">Şuna geçiş yapmak için tıkla:</string>
     <string name="direction_bottom">Altta</string>
     <string name="event_shake">Salla</string>
-    <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
+    <string name="shake_to_change_song">Şarkıyı değiştirmek için cihazı sallayın</string>
     <string name="history">Geçmiş</string>
     <string name="yesterday">Dün</string>
     <string name="this_week">Bu hafta</string>
@@ -555,7 +555,7 @@
     <string name="removed_from_favorites">Favorilerden çıkarıldı</string>
     <string name="lang_filipino">Filipino</string>
     <string name="action_bar_transparent_background">Şeffaf arkaplan</string>
-    <string name="pinfo_type">Bilgi türü</string>
+    <string name="pinfo_type">Bilgi tipi</string>
     <string name="pinfo_album_and_artist_name">Albüm ve sanatçı adı</string>
     <string name="show_player_top_actions_bar">Üst eylem çubuğunu göster</string>
     <string name="icon_like_button">Beğen düğmesi</string>
@@ -680,7 +680,7 @@
     <string name="paste">Yapıştır</string>
     <string name="searches_no_suggestions">Öneri yok</string>
     <string name="action_bar_show_discover_button">Keşfet düğmesini göster</string>
-    <string name="playertype">Oynatıcı Türü</string>
+    <string name="playertype">Oynatıcı Tipi</string>
     <string name="noblur">Şarkı Sözleri Devre Dışı Bırakıldığında Bulanıklık Yok</string>
     <string name="fadingedge">Solan Kenar</string>
     <string name="carousel">Atlıkarınca Görünümü</string>
@@ -688,17 +688,17 @@
     <string name="addednext">Sıradaki şarkı olarak eklendi</string>
     <string name="info_paused_with_volume_zero">Ses seviyesi sıfıra düşürüldüğünden duraklatıldı</string>
     <string name="effect_fade_audio">Kademeli ses</string>
-    <string name="effect_fade_audio_description">Şarkı duraklatıldığında veya oynatıldığında sesi kademeli bitir veya başlat</string>
+    <string name="effect_fade_audio_description">Şarkı duraklatıldığında veya oynatıldığında sesi kademeli olarak bitir veya başlat</string>
     <string name="autosync">İçe Aktarılan Oynatma Listelerini Otomatik Senkronize Et</string>
     <string name="message_type">Mesaj tipi</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Temel</string>
-    <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
-    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
-    <string name="songs_number_to_show">Songs number to show</string>
-    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
-    <string name="player_pause_on_volume_zero">Pause on volume zero</string>
-    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="discoverinforadio">Radyodan, beğenilmiş ve oynatma listesindeki şarkıları çıkarır</string>
+    <string name="discover_has_been_applied_to_radio">Keşfet radyoya uygulandı, şu şarkılar çıkarıldı: %s</string>
+    <string name="songs_number_to_show">Gösterilecek şarkı sayısı</string>
+    <string name="discover_has_been_applied_to_queue">Keşfet oynatma sırasına uygulandı, şu şarkılar çıkarıldı: %s</string>
+    <string name="player_pause_on_volume_zero">Ses seviyesi sıfıra düşürüldüğünde duraklat</string>
+    <string name="info_pauses_player_when_volume_zero">Ses seviyesi 0\'a ulaştığında oynatıcıyı duraklatır ve 0\'dan büyük olduğunda çalmaya devam eder</string>
     <string name="quality">Kalite</string>
-    <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="value_must_be_ip_address">Değer bir ip adresi olmalıdır</string>
 </resources>
