@@ -622,7 +622,7 @@
     <string name="set_cache_location">Önbellek konumu</string>
     <string name="info_private_cache_location_can_t_cleaned">Özel önbellek konumu, sistem tarafından temizlenemez</string>
     <string name="error_file_unsupported_format">Bu dosya desteklenmeyen bir biçime sahip gibi görünüyor</string>
-    <string name="charts">Grafikler</string>
+    <string name="charts">Listeler</string>
     <string name="thumbnailtype">Albüm Kapağı Tipi</string>
     <string name="showvisthumbnail">Görselleştiricide albüm kapağını göster</string>
     <string name="androidheadunit">Android Head unit</string>
