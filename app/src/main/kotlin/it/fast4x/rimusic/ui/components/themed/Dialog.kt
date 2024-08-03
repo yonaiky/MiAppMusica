@@ -1109,7 +1109,7 @@ fun NewVersionDialog (
                         .size(30.dp)
                         .clickable {
                             onDismiss()
-                            uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/download/$updatedVersionName/app-release.apk")
+                            uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/download/$updatedVersionName/app-foss-release.apk")
                         }
                 )
             }
