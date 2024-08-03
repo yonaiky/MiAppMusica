@@ -39,7 +39,6 @@ data class PlayerResponse(
                         it.itag == 249 || it.itag == 139
             }
 
-
         val highestQualityFormat: AdaptiveFormat?
             get() = adaptiveFormats?.findLast { it.itag == 251 || it.itag == 141 }
 
