@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Показать кнопку очереди</string>
     <string name="action_bar_show_shuffle_button">Показать кнопку перемешать</string>
     <string name="action_bar_show_lyrics_button">Показать кнопку текст песни</string>
-    <string name="action_bar_show_arrow_button">Показать кнопку просмотра списка воспроизведения</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Показать кнопку просмотра списка воспроизведения</string>
     <string name="lang_finnish">Финский (Suomi)</string>
     <string name="listening_time">Время прослушивания</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Показывает количество прослушанных песен и время их прослушивания</string>
@@ -701,4 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Качество</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
 </resources>

@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Mostra pulsante Ripeti</string>
     <string name="action_bar_show_shuffle_button">Mostra pulsante Shuffle</string>
     <string name="action_bar_show_lyrics_button">Mostra pulsante Lyrics</string>
-    <string name="action_bar_show_arrow_button">Mostra pulsante Freccia</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Mostra pulsante Freccia</string>
     <string name="lang_finnish">Finlandese</string>
     <string name="listening_time">Tempo di ascolto</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostra il numero di canzoni ascoltate ed il tempo impiegato</string>
@@ -701,4 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Qualità</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
 </resources>

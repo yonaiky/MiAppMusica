@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Döngü düğmesini göster</string>
     <string name="action_bar_show_shuffle_button">Karışık çal düğmesini göster</string>
     <string name="action_bar_show_lyrics_button">Şarkı sözleri düğmesini göster</string>
-    <string name="action_bar_show_arrow_button">Ok düğmesini göster</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Ok düğmesini göster</string>
     <string name="lang_finnish">Fince (Finnish)</string>
     <string name="listening_time">Dinleme süresi</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Dinlediğiniz şarkı sayısını ve dinlenme süresini gösterir</string>
@@ -701,4 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Ses seviyesi 0\'a ulaştığında oynatıcıyı duraklatır ve 0\'dan büyük olduğunda çalmaya devam eder</string>
     <string name="quality">Kalite</string>
     <string name="value_must_be_ip_address">Değer bir ip adresi olmalıdır</string>
+    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
 </resources>

@@ -23,8 +23,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,10 +39,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -53,7 +48,6 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
-import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
@@ -64,7 +58,6 @@ import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
-import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -87,7 +80,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
-import it.fast4x.rimusic.utils.lyricsColorKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -99,7 +91,6 @@ import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
-import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -126,7 +117,6 @@ import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.blackgradientKey
-import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
@@ -147,6 +137,7 @@ import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
+import it.fast4x.rimusic.utils.swipeUpQueueKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -282,6 +273,7 @@ fun AppearanceSettings() {
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     var tapqueue by rememberPreference(tapqueueKey, true)
+    var swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
     var statsfornerds by rememberPreference(statsfornerdsKey, false)
 
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
@@ -1192,6 +1184,18 @@ fun AppearanceSettings() {
                 onCheckedChange = { tapqueue = it }
             )
 
+        if (filter.isNullOrBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.swipe_up_to_open_the_queue),
+                text = "",
+                isChecked = swipeUpQueue,
+                onCheckedChange = { swipeUpQueue = it }
+            )
+
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
                 filterCharSequence,
                 true
@@ -1303,13 +1307,13 @@ fun AppearanceSettings() {
                 onCheckedChange = { showButtonPlayerSystemEqualizer = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_arrow_button).contains(
+        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
                 filterCharSequence,
                 true
             )
         )
             SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_arrow_button),
+                title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
                 text = "",
                 isChecked = showButtonPlayerArrow,
                 onCheckedChange = { showButtonPlayerArrow = it }

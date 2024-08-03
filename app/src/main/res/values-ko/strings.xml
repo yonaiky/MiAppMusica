@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">반복 버튼 표시</string>
     <string name="action_bar_show_shuffle_button">셔플 버튼 표시</string>
     <string name="action_bar_show_lyrics_button">가사 버튼 표시</string>
-    <string name="action_bar_show_arrow_button">화살표 버튼 표시</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">화살표 버튼 표시</string>
     <string name="lang_finnish">핀란드어</string>
     <string name="listening_time">재생 시간</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">들은 노래의 수와 청취 시간 표시</string>
@@ -701,4 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Quality</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
 </resources>
