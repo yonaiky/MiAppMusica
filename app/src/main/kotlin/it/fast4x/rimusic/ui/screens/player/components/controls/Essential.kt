@@ -355,31 +355,44 @@ fun ControlsEssential(
     )
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-
-    IconButton(
-        color = colorPalette.favoritesIcon,
-        icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
-        onClick = {
-            val currentMediaItem = binder.player.currentMediaItem
-            query {
-                if (Database.like(
-                        mediaId,
-                        if (likedAt == null) System.currentTimeMillis() else null
-                    ) == 0
-                ) {
-                    currentMediaItem
-                        ?.takeIf { it.mediaId == mediaId }
-                        ?.let {
-                            Database.insert(currentMediaItem, Song::toggleLike)
-                        }
+    val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
+    Box {
+        IconButton(
+            color = colorPalette.favoritesIcon,
+            icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+            onClick = {
+                val currentMediaItem = binder.player.currentMediaItem
+                query {
+                    if (Database.like(
+                            mediaId,
+                            if (likedAt == null) System.currentTimeMillis() else null
+                        ) == 0
+                    ) {
+                        currentMediaItem
+                            ?.takeIf { it.mediaId == mediaId }
+                            ?.let {
+                                Database.insert(currentMediaItem, Song::toggleLike)
+                            }
+                    }
                 }
-            }
-            if (effectRotationEnabled) isRotated = !isRotated
-        },
-        modifier = Modifier
-            .padding(10.dp)
-            .size(26.dp)
-    )
+                if (effectRotationEnabled) isRotated = !isRotated
+            },
+            modifier = Modifier
+                .padding(10.dp)
+                .size(26.dp)
+        )
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+            Icon(
+                imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                tint = colorPalette.text,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(26.dp)
+            )
+        }
+
+    }
 
     Image(
         painter = painterResource(R.drawable.play_skip_back),
