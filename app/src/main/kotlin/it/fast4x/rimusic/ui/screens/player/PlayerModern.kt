@@ -1263,7 +1263,7 @@ fun PlayerModern(
                             val pagerStateQueue = rememberPagerState(pageCount = { binder.player.mediaItemCount - 1})
                             val scope = rememberCoroutineScope()
                             val fling = PagerDefaults.flingBehavior(state = pagerStateQueue,snapPositionalThreshold = 0.15f, pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number))
-                            LaunchedEffect(mediaItem.mediaId) {
+                            LaunchedEffect(binder.player.currentMediaItemIndex) {
                                 pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
                             }
                             Row(
@@ -1775,7 +1775,7 @@ fun PlayerModern(
                      modifier = Modifier
                  ) { it ->
 
-                     LaunchedEffect(mediaItem.mediaId) {
+                     LaunchedEffect(binder.player.currentMediaItemIndex){
                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                      }
 
@@ -2006,7 +2006,7 @@ fun PlayerModern(
                                              .conditional(fadingedge){horizontalFadingEdge()}
                                          ) { it ->
 
-                                         LaunchedEffect(mediaItem.mediaId) {
+                                         LaunchedEffect(binder.player.currentMediaItemIndex){
                                              pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                          }
 
@@ -2183,7 +2183,7 @@ fun PlayerModern(
                         modifier = Modifier
                     ) { it ->
 
-                        LaunchedEffect(mediaItem.mediaId) {
+                        LaunchedEffect(binder.player.currentMediaItemIndex){
                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                         }
 
@@ -2380,7 +2380,7 @@ fun PlayerModern(
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
 
-                                     LaunchedEffect(mediaItem.mediaId) {
+                                     LaunchedEffect(binder.player.currentMediaItemIndex) {
                                          pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                      }
 
