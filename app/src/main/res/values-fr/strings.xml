@@ -695,12 +695,12 @@
     <string name="message_type">Type de message</string>
     <string name="message_type_modern">Moderne</string>
     <string name="message_type_essential">Minimale</string>
-    <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
-    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
-    <string name="songs_number_to_show">Songs number to show</string>
-    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
-    <string name="player_pause_on_volume_zero">Pause on volume zero</string>
-    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="discoverinforadio">Supprime les titres likés et les playlists de la file d\'attente</string>
+    <string name="discover_has_been_applied_to_radio">La découverte a été appliquée à la radio, chansons retirées : %s</string>
+    <string name="songs_number_to_show">Nombre de titres à afficher</string>
+    <string name="discover_has_been_applied_to_queue">La découverte a été appliquée à la radio, chansons retirées : %s</string>
+    <string name="player_pause_on_volume_zero">Mettre en pause quand le volume est à 0</string>
+    <string name="info_pauses_player_when_volume_zero">Met en pause le lecteur lorsque le volume atteint 0 et reprend lorsque le volume est supérieur à 0</string>
     <string name="quality">Qualité</string>
-    <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="value_must_be_ip_address">La valeur doit être une adresse ip</string>
 </resources>
