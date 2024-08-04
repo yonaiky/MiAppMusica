@@ -225,6 +225,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
@@ -2566,12 +2567,35 @@ fun PlayerModern(
                             contentDescription = "Background Image",
                             contentScale = ContentScale.Fit
                         )
-                        BasicText(
-                            text = " ${formatAsTime(totalPlayTimes)}",
-                            style = typography.xxs.semiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+
+                        Box {
+                            BasicText(
+                                text = " ${formatAsTime(totalPlayTimes)}",
+                                style = typography.xxs.semiBold.merge(TextStyle(
+                                    textAlign = TextAlign.Center,
+                                    color = colorPalette.text,
+                                )),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            BasicText(
+                                text = " ${formatAsTime(totalPlayTimes)}",
+                                style = typography.xxs.semiBold.merge(TextStyle(
+                                    textAlign = TextAlign.Center,
+                                    drawStyle = Stroke(
+                                        width = 1f,
+                                        join = StrokeJoin.Round
+                                    ),
+                                    color = if (!textoutline) Color.Transparent
+                                    else if (colorPaletteMode == ColorPaletteMode.Light ||
+                                        (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme())))
+                                        Color.White.copy(0.5f)
+                                    else Color.Black,
+                                )),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
 
 
