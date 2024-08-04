@@ -30,6 +30,7 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.playlistPageLong
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -118,6 +119,34 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
         //}
     }
 }
+
+fun albumItemToggleBookmarked( albumItem: Innertube.AlbumItem ) {
+    query {
+        //if (Database.albumExist(albumItem.key) == 0)
+        //    Database.insert(albumItem.asAlbum, Album::toggleLike)
+        //else {
+        if (Database.albumBookmarked(albumItem.key) == 0)
+            Database.bookmarkAlbum(
+                albumItem.key,
+                System.currentTimeMillis()
+            )
+        else Database.bookmarkAlbum(
+            albumItem.key,
+            null
+        )
+        //}
+    }
+}
+
+val Innertube.AlbumItem.asAlbum: Album
+    get() = Album (
+        id = key,
+        title = info?.name,
+        thumbnailUrl = thumbnail?.url,
+        year = year,
+        authorsText = authors?.joinToString("") { it.name ?: "" },
+        //shareUrl =
+    )
 
 val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
     @UnstableApi

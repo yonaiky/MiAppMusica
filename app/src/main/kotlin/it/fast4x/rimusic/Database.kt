@@ -564,6 +564,9 @@ interface Database {
     @Query("SELECT likedAt FROM Song WHERE id = :songId")
     fun likedAt(songId: String): Flow<Long?>
 
+    @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
+    fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
+
     @Query("UPDATE Song SET likedAt = :likedAt WHERE id = :songId")
     fun like(songId: String, likedAt: Long?): Int
 
@@ -609,6 +612,15 @@ interface Database {
 
     @Query("SELECT timestamp FROM Album WHERE id = :id")
     fun albumTimestamp(id: String): Long?
+
+    @Query("SELECT bookmarkedAt FROM Album WHERE id = :id")
+    fun albumBookmarkedAt(id: String): Flow<Long?>
+
+    @Query("SELECT count(id) FROM Album WHERE id = :id and bookmarkedAt IS NOT NULL")
+    fun albumBookmarked(id: String): Int
+
+    @Query("SELECT count(id) FROM Album WHERE id = :id")
+    fun albumExist(id: String): Int
 
     @Transaction
     @Query("SELECT * FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId WHERE SongAlbumMap.albumId = :albumId ORDER BY position")

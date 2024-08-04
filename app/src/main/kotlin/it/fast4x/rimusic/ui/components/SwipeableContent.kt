@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,14 +31,28 @@ import androidx.compose.ui.platform.ViewConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import it.fast4x.compose.persist.persist
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.albumItemToggleBookmarked
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SwipeableContent(
@@ -159,6 +175,44 @@ fun SwipeablePlaylistItem(
         swipeToLeftIcon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
         swipeToRightIcon = R.drawable.play_skip_forward,
         onSwipeToLeft = { updateLike = true },
+        onSwipeToRight = onSwipeToRight
+    ) {
+        content()
+    }
+
+}
+
+@OptIn(androidx.media3.common.util.UnstableApi::class)
+@Composable
+fun SwipeableAlbumItem(
+    albumItem: Innertube.AlbumItem,
+    onSwipeToLeft: () -> Unit,
+    onSwipeToRight: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    var bookmarkedAt by rememberSaveable {
+        mutableStateOf<Long?>(null)
+    }
+    LaunchedEffect(albumItem.key) {
+        Database.albumBookmarkedAt(albumItem.key).distinctUntilChanged().collect { bookmarkedAt = it }
+    }
+    var updateLike by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(updateLike) {
+        if (updateLike) {
+            albumItemToggleBookmarked(albumItem)
+            updateLike = false
+            if (bookmarkedAt == null)
+                SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
+            else
+                SmartMessage("\"" + albumItem.info?.name + " - " + albumItem.authors?.joinToString("") { it.name + "\" " + context.resources.getString(R.string.removed_from_favorites)}, context = context, durationLong = true)
+        }
+    }
+
+    SwipeableContent(
+        swipeToLeftIcon = R.drawable.play_skip_forward,
+        swipeToRightIcon = if (bookmarkedAt == null) R.drawable.bookmark_outline else R.drawable.bookmark,
+        onSwipeToLeft = onSwipeToLeft,
         onSwipeToRight = onSwipeToRight
     ) {
         content()
