@@ -701,4 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Ses seviyesi 0\'a ulaştığında oynatıcıyı duraklatır ve 0\'dan büyük olduğunda çalmaya devam eder</string>
     <string name="quality">Kalite</string>
     <string name="value_must_be_ip_address">Değer bir ip adresi olmalıdır</string>
+    <string name="queuetype">Queue Type</string>
 </resources>
