@@ -80,6 +80,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
@@ -110,6 +111,7 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.shouldBePlaying
@@ -146,6 +148,7 @@ fun QueueModern(
 
     val context = LocalContext.current
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
 
     Box(
         modifier = Modifier
@@ -349,7 +352,7 @@ fun QueueModern(
         Column {
             Box(
                 modifier = Modifier
-                    .background(colorPalette.background1)
+                    .background(if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background1)
                     .weight(1f)
             ) {
 
@@ -562,7 +565,7 @@ fun QueueModern(
                                         )
 
                                          */
-                                        .background(color = colorPalette.background0)
+                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background0)
 
                                 )
                             }

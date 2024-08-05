@@ -231,12 +231,17 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.media3.common.Timeline
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
+import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -276,6 +281,7 @@ import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
@@ -657,6 +663,7 @@ fun PlayerModern(
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var tapqueue by rememberPreference(tapqueueKey, true)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
     var noblur by rememberPreference(noblurKey, true)
     var fadingedge by rememberPreference(fadingedgeKey, false)
     val configuration = LocalConfiguration.current
@@ -1199,6 +1206,7 @@ fun PlayerModern(
     val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
 
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+    val hazeState = remember { HazeState() }
 
     Box(
         modifier = Modifier
@@ -1762,7 +1770,9 @@ fun PlayerModern(
 
 
         if (isLandscape) {
-         Box{
+         Box(
+             modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
+         ){
              if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && !showthumbnail) {
                  val fling = PagerDefaults.flingBehavior(
                      state = pagerState,
@@ -2170,7 +2180,9 @@ fun PlayerModern(
             }
          }
         } else {
-           Box {
+           Box(
+               modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
+           ) {
                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && !showthumbnail) {
                     val fling = PagerDefaults.flingBehavior(
                         state = pagerState,
@@ -2661,9 +2673,11 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showQueue,
             onDismissRequest = { showQueue = false },
-            containerColor = colorPalette.background2,
-            contentColor = colorPalette.background2,
-            modifier = Modifier.fillMaxWidth(),
+            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
+            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .hazeChild(state = hazeState),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
