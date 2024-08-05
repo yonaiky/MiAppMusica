@@ -32,7 +32,8 @@ data class SectionListRenderer(
             val description: MusicDescriptionShelfRenderer?,
             val subtitle: Runs?,
             val secondSubtitle: Runs?,
-            val thumbnail: ThumbnailRenderer?
+            val thumbnail: ThumbnailRenderer?,
+            val straplineTextOne: Runs?,
         )
     }
 
