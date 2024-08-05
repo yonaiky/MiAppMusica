@@ -1752,13 +1752,12 @@ class PlayerService : InvincibleService(),
                     )
             ) { !it.isLocal }
         ) { dataSpec ->
-            Log.d("mediaItem", "dataSpec " + dataSpec.toString())
+            Timber.i( "PlayerService createDataSourceResolverFactory dataSpec " + dataSpec.toString())
             val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
                 ?: error("A key must be set")
 
-            Log.d(
-                "mediaItem",
-                "dataSpec isLocal ${dataSpec.isLocal} key ${videoId} all ${dataSpec.toString()}"
+            Timber.i(
+                "PlayerService createDataSourceResolverFactory dataSpec isLocal ${dataSpec.isLocal} key ${videoId} all ${dataSpec.toString()}"
             )
 
             when {
@@ -1777,14 +1776,14 @@ class PlayerService : InvincibleService(),
                     dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
 
                 else -> {
-                    Log.d("mediaItem", "createDataSourceResolverFactory videoId $videoId")
+                    Timber.i("PlayerService createDataSourceResolverFactory videoId $videoId")
                     val body = runBlocking(Dispatchers.IO) {
                         Innertube.player(PlayerBody(videoId = videoId))
                     }?.getOrThrow()
 
                     //if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                    Log.d("mediaItem", "bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
+                    Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
@@ -1794,7 +1793,9 @@ class PlayerService : InvincibleService(),
                         AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
                     }
-                    Log.d("mediaItem", "PlayerService audioQualityFormat $format")
+
+                    Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat $format")
+                    if (format == null) throw PlayableFormatNotFoundException()
 
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format?.let { formatIn ->
