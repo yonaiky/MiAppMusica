@@ -241,6 +241,7 @@ const val carouselKey = "carousel"
 const val carouselSizeKey = "carouselSize"
 const val thumbnailSpacingKey = "thumbnailSpacing"
 const val autosyncKey = "autosync"
+const val queueTypeKey = "queueType"
 
 
 const val parentalControlEnabledKey = "parentalControlEnabled"

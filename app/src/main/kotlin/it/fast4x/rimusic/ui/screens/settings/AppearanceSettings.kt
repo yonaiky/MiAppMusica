@@ -59,6 +59,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
+import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -139,6 +140,7 @@ import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import it.fast4x.rimusic.utils.swipeUpQueueKey
+import it.fast4x.rimusic.utils.queueTypeKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -278,6 +280,7 @@ fun AppearanceSettings() {
     var statsfornerds by rememberPreference(statsfornerdsKey, false)
 
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
     var noblur by rememberPreference(noblurKey, true)
     var fadingedge by rememberPreference(fadingedgeKey, false)
     var carousel by rememberPreference(carouselKey, true)
@@ -450,6 +453,25 @@ fun AppearanceSettings() {
                     when (it) {
                         PlayerType.Modern -> stringResource(R.string.pcontrols_modern)
                         PlayerType.Essential -> stringResource(R.string.pcontrols_essential)
+                    }
+                },
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.queuetype).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.queuetype),
+                selectedValue = queueType,
+                onValueSelected = {
+                    queueType = it
+                },
+                valueText = {
+                    when (it) {
+                        QueueType.Modern -> stringResource(R.string.pcontrols_modern)
+                        QueueType.Essential -> stringResource(R.string.pcontrols_essential)
                     }
                 },
             )
