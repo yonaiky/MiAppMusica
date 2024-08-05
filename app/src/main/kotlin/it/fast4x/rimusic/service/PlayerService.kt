@@ -141,6 +141,7 @@ import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
+import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
@@ -842,6 +843,8 @@ class PlayerService : InvincibleService(),
         eventTime: AnalyticsListener.EventTime,
         playbackStats: PlaybackStats
     ) {
+        // if pause listen history is enabled, don't register statistic event
+        if (preferences.getBoolean(pauseListenHistoryKey, false)) return
 
         val mediaItem =
             eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
@@ -868,7 +871,8 @@ class PlayerService : InvincibleService(),
                             playTime = totalPlayTimeMs
                         )
                     )
-                } catch (_: SQLException) {
+                } catch (e: SQLException) {
+                    Timber.e("PlayerService onPlaybackStatsReady SQLException ${e.stackTraceToString()}")
                 }
             }
 

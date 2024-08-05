@@ -161,6 +161,7 @@ import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
+import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
@@ -337,6 +338,9 @@ fun  UiSettings() {
     val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
 
     var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
+
+    var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
+    var restartService by rememberSaveable { mutableStateOf(false) }
 
 
     Column(
@@ -542,6 +546,36 @@ fun  UiSettings() {
                     }
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_pause_listen_history),
+                text = "Does not save playback events used for statistics, history and suggestions in quick pics",
+                isChecked = pauseListenHistory,
+                onCheckedChange = {
+                    pauseListenHistory = it
+                    restartService = true
+                }
+            )
+            AnimatedVisibility(visible = restartService) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SettingsDescription(
+                        text = stringResource(R.string.minimum_silence_length_warning),
+                        important = true,
+                        modifier = Modifier.weight(2f)
+                    )
+                    SecondaryTextButton(
+                        text = stringResource(R.string.restart_service),
+                        onClick = {
+                            binder?.restartForegroundOrStop()?.let { restartService = false }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 24.dp)
+                    )
+                }
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.min_listening_time).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
@@ -781,7 +815,7 @@ fun  UiSettings() {
             AnimatedVisibility(visible = skipSilence) {
                 val initialValue by remember { derivedStateOf { minimumSilenceDuration.toFloat() / 1000L } }
                 var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
-                var changed by rememberSaveable { mutableStateOf(false) }
+
 
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
@@ -793,13 +827,13 @@ fun  UiSettings() {
                         onSlide = { newValue = it },
                         onSlideComplete = {
                             minimumSilenceDuration = newValue.toLong() * 1000L
-                            changed = true
+                            restartService = true
                         },
                         toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
                         range = 1.00f..2000.000f
                     )
 
-                    AnimatedVisibility(visible = changed) {
+                    AnimatedVisibility(visible = restartService) {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             SettingsDescription(
                                 text = stringResource(R.string.minimum_silence_length_warning),
@@ -809,7 +843,7 @@ fun  UiSettings() {
                             SecondaryTextButton(
                                 text = stringResource(R.string.restart_service),
                                 onClick = {
-                                    binder?.restartForegroundOrStop()?.let { changed = false }
+                                    binder?.restartForegroundOrStop()?.let { restartService = false }
                                 },
                                 modifier = Modifier
                                     .weight(1f)

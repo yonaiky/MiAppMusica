@@ -253,6 +253,7 @@ const val messageTypeKey = "messageType"
 const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"
 const val playerInfoShowIconsKey = "playerInfoShowIcons"
 const val minimumSilenceDurationKey = "minimumSilenceDuration"
+const val pauseListenHistoryKey = "pauseListenHistory"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
