@@ -18,6 +18,7 @@ import android.graphics.Color
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.MediaMetadata
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
@@ -150,6 +151,7 @@ import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.startFadeAnimator
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.timer
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
@@ -1183,7 +1185,11 @@ class PlayerService : InvincibleService(),
         val bitmap =
             if (isAtLeastAndroid13 || isShowingThumbnailInLockscreen) bitmapProvider.bitmap else null
 
+        val uri = player.mediaMetadata.artworkUri?.toString()?.thumbnail(512)
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ART_URI, uri)
+        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, uri)
 
         if (isAtLeastAndroid13 && player.currentMediaItemIndex == 0) {
             metadataBuilder.putText(
