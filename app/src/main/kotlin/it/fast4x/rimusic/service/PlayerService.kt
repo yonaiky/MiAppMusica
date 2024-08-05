@@ -958,13 +958,32 @@ class PlayerService : InvincibleService(),
     }
 
     private fun maybeProcessRadio() {
+        // Old feature add songs only if radio is started by user and when last song in player is played
         radio?.let { radio ->
-            if ((player.mediaItemCount < 50) || player.mediaItemCount - player.currentMediaItemIndex <= 3) {
+            if (player.mediaItemCount - player.currentMediaItemIndex == 1) {
                 coroutineScope.launch(Dispatchers.Main) {
                     player.addMediaItems(radio.process())
                 }
             }
         }
+
+        /* // New feature auto start radio in queue
+        if (radio == null) {
+            binder.setupRadio(
+                NavigationEndpoint.Endpoint.Watch(
+                    videoId = player.currentMediaItem?.mediaId
+                )
+            )
+        } else {
+            radio?.let { radio ->
+                if (player.mediaItemCount - player.currentMediaItemIndex <= 3) {
+                    coroutineScope.launch(Dispatchers.Main) {
+                        player.addMediaItems(radio.process())
+                    }
+                }
+            }
+        }
+        */
     }
 
     @ExperimentalCoroutinesApi
