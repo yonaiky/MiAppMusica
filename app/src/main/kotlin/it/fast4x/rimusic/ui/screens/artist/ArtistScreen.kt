@@ -502,15 +502,16 @@ fun ArtistScreen(
                                     })
                                 },
                                 itemContent = { song ->
-                                    listMediaItems.add(song.asMediaItem)
-                                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                    val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
+
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
                                         onSwipeToRight = {
                                             binder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
+                                        listMediaItems.add(song.asMediaItem)
+                                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                                        val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
                                         SongItem(
                                             song = song,
                                             isDownloaded = isDownloaded,

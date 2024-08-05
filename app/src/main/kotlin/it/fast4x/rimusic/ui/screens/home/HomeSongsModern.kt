@@ -1397,11 +1397,7 @@ fun HomeSongsModern(
                         )
                     }
 
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                    val isDownloaded =
-                        if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                    val checkedState = rememberSaveable { mutableStateOf(false) }
+
 
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
@@ -1409,6 +1405,11 @@ fun HomeSongsModern(
                             binder?.player?.addNext(song.asMediaItem)
                         }
                     ) {
+                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                        val isDownloaded =
+                            if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         SongItem(
                             song = song,
                             isDownloaded = isDownloaded,
