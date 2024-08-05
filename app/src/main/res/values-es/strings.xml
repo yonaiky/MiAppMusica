@@ -677,10 +677,10 @@
     <string name="searches_saved_searches">Búsquedas guardadas</string>
     <string name="event_volumekeys">Cambiar la canción con las teclas de volumen</string>
     <string name="event_volumekeysinfo">Volumen arriba, siguiente y volumen abajo, canción anterior</string>
-    <string name="paste">Paste</string>
+    <string name="paste">Pegar</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
-    <string name="playertype">Player Type</string>
+    <string name="playertype">Tipo de reproductor</string>
     <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="fadingedge">Fading Edge</string>
     <string name="carousel">Carousel View</string>
@@ -691,7 +691,7 @@
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
     <string name="message_type">Message type</string>
-    <string name="message_type_modern">Modern</string>
+    <string name="message_type_modern">Moderno</string>
     <string name="message_type_essential">Essential</string>
     <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
     <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
@@ -699,6 +699,7 @@
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
-    <string name="quality">Quality</string>
+    <string name="quality">Calidad</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="queuetype">Queue Type</string>
 </resources>
