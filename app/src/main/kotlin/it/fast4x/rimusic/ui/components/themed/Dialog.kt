@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,9 +78,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.times
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
@@ -92,6 +96,7 @@ import it.fast4x.lrclib.models.Track
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
@@ -105,6 +110,7 @@ import it.fast4x.rimusic.utils.blurStrengthKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getDeviceVolume
@@ -126,6 +132,7 @@ import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.playbackDurationKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
@@ -527,6 +534,8 @@ inline fun SelectorArtistsDialog(
         ) {
             if (values != null) {
                 val pagerState = rememberPagerState(pageCount = { values.size })
+                val textoutline by rememberPreference(textoutlineKey, false)
+                val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
 
                     Box {
                         HorizontalPager(state = pagerState) { idArtist ->
@@ -559,6 +568,19 @@ inline fun SelectorArtistsDialog(
                                         maxLines = 3,
                                         overflow = TextOverflow.Ellipsis,
                                         style = typography.xs.medium,
+                                        modifier = Modifier
+                                            .padding(bottom = 20.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+                                    BasicText(
+                                        text = it1,
+                                        style = typography.xs.medium.merge(TextStyle(
+                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
+                                            else Color.Black
+                                        )),
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
                                             .padding(bottom = 20.dp)
                                             .align(Alignment.BottomCenter)
