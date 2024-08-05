@@ -703,4 +703,5 @@
     <string name="info_pauses_player_when_volume_zero">Met en pause le lecteur lorsque le volume atteint 0 et reprend lorsque le volume est supérieur à 0</string>
     <string name="quality">Qualité</string>
     <string name="value_must_be_ip_address">La valeur doit être une adresse ip</string>
+    <string name="queuetype">Queue Type</string>
 </resources>
