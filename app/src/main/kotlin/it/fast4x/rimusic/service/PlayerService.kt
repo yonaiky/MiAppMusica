@@ -832,7 +832,7 @@ class PlayerService : InvincibleService(),
                     notificationManager?.notify(NotificationId, notification())
                 }
             }.onFailure {
-                Timber.e("Failed ononConfigurationChanged in PlayerService ${it.stackTraceToString()}")
+                Timber.e("Failed onConfigurationChanged in PlayerService ${it.stackTraceToString()}")
             }
         }
         super.onConfigurationChanged(newConfig)
