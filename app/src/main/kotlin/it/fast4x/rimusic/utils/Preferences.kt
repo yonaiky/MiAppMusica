@@ -252,6 +252,7 @@ const val isPipedEnabledKey = "isPipedEnabled"
 const val messageTypeKey = "messageType"
 const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"
 const val playerInfoShowIconsKey = "playerInfoShowIcons"
+const val minimumSilenceDurationKey = "minimumSilenceDuration"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
@@ -302,6 +303,16 @@ fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {
     return remember {
         mutableStatePreferenceOf(context.preferences.getFloat(key, defaultValue)) {
             context.preferences.edit { putFloat(key, it) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
+    val context = LocalContext.current
+    return remember {
+        mutableStatePreferenceOf(context.preferences.getLong(key, defaultValue)) {
+            context.preferences.edit { putLong(key, it) }
         }
     }
 }

@@ -33,7 +33,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -93,6 +95,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -154,6 +157,7 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.messageTypeKey
+import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
@@ -193,9 +197,6 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
-
-
-@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
@@ -334,6 +335,8 @@ fun  UiSettings() {
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
 
     val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
+
+    var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
 
 
     Column(
@@ -765,7 +768,7 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silent_parts_during_playback),
@@ -774,6 +777,50 @@ fun  UiSettings() {
                     skipSilence = it
                 }
             )
+
+            AnimatedVisibility(visible = skipSilence) {
+                val initialValue by remember { derivedStateOf { minimumSilenceDuration.toFloat() / 1000L } }
+                var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
+                var changed by rememberSaveable { mutableStateOf(false) }
+
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SliderSettingsEntry(
+                        title = stringResource(R.string.minimum_silence_length),
+                        text = stringResource(R.string.minimum_silence_length_description),
+                        state = newValue,
+                        onSlide = { newValue = it },
+                        onSlideComplete = {
+                            minimumSilenceDuration = newValue.toLong() * 1000L
+                            changed = true
+                        },
+                        toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
+                        range = 1.00f..2000.000f
+                    )
+
+                    AnimatedVisibility(visible = changed) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            SettingsDescription(
+                                text = stringResource(R.string.minimum_silence_length_warning),
+                                important = true,
+                                modifier = Modifier.weight(2f)
+                            )
+                            SecondaryTextButton(
+                                text = stringResource(R.string.restart_service),
+                                onClick = {
+                                    binder?.restartForegroundOrStop()?.let { changed = false }
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 24.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true))
             SwitchSettingEntry(

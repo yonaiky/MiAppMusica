@@ -140,6 +140,7 @@ import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
+import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
@@ -1677,7 +1678,8 @@ class PlayerService : InvincibleService(),
     )
 
     private fun createRendersFactory(): RenderersFactory {
-        //val minimumSilenceDuration = PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
+        val minimumSilenceDuration = preferences.getLong(
+            minimumSilenceDurationKey, 2_000_000L) //PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
         val audioSink = DefaultAudioSink.Builder(applicationContext)
 
             .setEnableFloatOutput(false)
@@ -1687,10 +1689,19 @@ class PlayerService : InvincibleService(),
                 DefaultAudioProcessorChain(
                     emptyArray(),
                     SilenceSkippingAudioProcessor(
+                        /* minimumSilenceDurationUs = */ minimumSilenceDuration,
+                        /* silenceRetentionRatio = */ 0.01f,
+                        /* maxSilenceToKeepDurationUs = */ minimumSilenceDuration,
+                        /* minVolumeToKeepPercentageWhenMuting = */ 0,
+                        /* silenceThresholdLevel = */ 256
+                    ),
+                    /*
+                    SilenceSkippingAudioProcessor(
                         2_000_000,
                         20_000,
                         256
                     ),
+                     */
                     SonicAudioProcessor()
                 )
             )
@@ -2029,6 +2040,15 @@ class PlayerService : InvincibleService(),
                     fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
                 )?.getOrNull()?.items?.firstOrNull()?.info?.endpoint?.let { playRadio(it) }
             }
+        }
+
+        /**
+         * This method should ONLY be called when the application (sc. activity) is in the foreground!
+         */
+        fun restartForegroundOrStop() {
+            player.pause()
+            isInvincibilityEnabled = false
+            stopSelf()
         }
 
         @ExperimentalCoroutinesApi
