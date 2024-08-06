@@ -37,6 +37,7 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +66,7 @@ fun cleanPrefix(text: String): String {
     cleanText = cleanText.substringAfter(MONTHLY_PREFIX)
     cleanText = cleanText.substringAfter(PIPED_PREFIX)
     cleanText = cleanText.substringAfter(EXPLICIT_PREFIX)
+    cleanText = cleanText.substringAfter(MODIFIED_PREFIX)
     return cleanText
 }
 

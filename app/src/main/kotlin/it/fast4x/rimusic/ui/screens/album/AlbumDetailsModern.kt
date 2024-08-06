@@ -93,6 +93,7 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -101,6 +102,7 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -239,25 +241,6 @@ fun AlbumDetailsModern(
     }
     val hapticFeedback = LocalHapticFeedback.current
 
-    if (showSelectCustomizeAlbumDialog)
-        SelectorDialog(
-            title = stringResource(R.string.customize_album),
-            onDismiss = { showSelectCustomizeAlbumDialog = false },
-            values = listOf(
-                Info("t", stringResource(R.string.update_title)),
-                Info("a", stringResource(R.string.update_authors)),
-                Info("c", stringResource(R.string.update_cover))
-            ),
-            onValueSelected = {
-                when (it) {
-                    "t" -> showDialogChangeAlbumTitle = true
-                    "a" -> showDialogChangeAlbumAuthors = true
-                    "c" -> showDialogChangeAlbumCover = true
-                }
-                showSelectCustomizeAlbumDialog = false
-            }
-        )
-
     if (showDialogChangeAlbumTitle)
         InputTextDialog(
             onDismiss = { showDialogChangeAlbumTitle = false },
@@ -271,7 +254,8 @@ fun AlbumDetailsModern(
                     }
                     //context.toast("Album Saved $it")
                 }
-            }
+            },
+            prefix = MODIFIED_PREFIX
         )
     if (showDialogChangeAlbumAuthors)
         InputTextDialog(
@@ -286,7 +270,8 @@ fun AlbumDetailsModern(
                     }
                     //context.toast("Album Saved $it")
                 }
-            }
+            },
+            prefix = MODIFIED_PREFIX
         )
 
     if (showDialogChangeAlbumCover)
@@ -302,7 +287,8 @@ fun AlbumDetailsModern(
                     }
                     //context.toast("Album Saved $it")
                 }
-            }
+            },
+            prefix = MODIFIED_PREFIX
         )
 
     if (isCreatingNewPlaylist)
@@ -502,7 +488,7 @@ fun AlbumDetailsModern(
                                 )
 
                             AutoResizeText(
-                                text = album?.title ?: "",
+                                text = cleanPrefix(album?.title ?: ""),
                                 style = typography.l.semiBold,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
                                 fontWeight = typography.l.semiBold.fontWeight,

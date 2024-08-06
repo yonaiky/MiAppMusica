@@ -37,6 +37,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -56,6 +58,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
@@ -97,14 +100,17 @@ import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getDeviceVolume
@@ -737,14 +743,19 @@ inline fun InputTextDialog(
     placeholder: String,
     crossinline setValue: (String) -> Unit,
     validationType: ValidationType = ValidationType.None,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    prefix: String = "",
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
-    val txtField = remember { mutableStateOf(value) }
+    val txtField = remember { mutableStateOf(cleanPrefix(value)) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
     val value_must_be_greater = stringResource(R.string.value_must_be_greater_than)
     val value_must_be_ip_address = stringResource(R.string.value_must_be_ip_address)
+    var checkedState = remember{
+        mutableStateOf(value.startsWith(prefix))
+    }
+
 
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -806,12 +817,40 @@ inline fun InputTextDialog(
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            if (prefix != "") {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                        Checkbox(
+                            checked = checkedState.value,
+                            onCheckedChange = {
+                                checkedState.value = it
+                            },
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = colorPalette.accent,
+                                uncheckedColor = colorPalette.text
+                            ),
+                            modifier = Modifier
+                                .scale(0.7f)
+                        )
+                        BasicText(
+                            text = "Custom value",
+                            style = typography.xs.medium,
+                            maxLines = 2,
+                            modifier = Modifier
+                        )
+
+                }
+            }
+
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-
                 DialogTextButton(
                     text = stringResource(R.string.cancel),
                     onClick = onDismiss,
@@ -831,8 +870,12 @@ inline fun InputTextDialog(
                                 return@DialogTextButton
                             }
                         }
+                        println("mediaItem ${checkedState.value} prefix ${prefix} value ${txtField.value}")
+                        if (checkedState.value && prefix.isNotEmpty())
+                            setValue(prefix + cleanPrefix(txtField.value))
+                        else
+                            setValue(txtField.value)
 
-                        setValue(txtField.value)
                         onDismiss()
 
                     },
