@@ -287,7 +287,7 @@ fun  UiSettings() {
     )
 
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
-    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    //var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
     var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
@@ -1364,6 +1364,7 @@ fun  UiSettings() {
                 isChecked = showFavoritesPlaylist,
                 onCheckedChange = { showFavoritesPlaylist = it }
             )
+        /*
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
@@ -1371,6 +1372,7 @@ fun  UiSettings() {
                 isChecked = showCachedPlaylist,
                 onCheckedChange = { showCachedPlaylist = it }
             )
+         */
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",

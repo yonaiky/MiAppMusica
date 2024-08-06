@@ -184,6 +184,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -313,8 +314,8 @@ fun HomeSongsModern(
     var buttonsList = listOf(BuiltInPlaylist.All to stringResource(R.string.all))
     if (showFavoritesPlaylist) buttonsList +=
         BuiltInPlaylist.Favorites to stringResource(R.string.favorites)
-    if (showCachedPlaylist) buttonsList +=
-        BuiltInPlaylist.Offline to stringResource(R.string.cached)
+    //if (showCachedPlaylist) buttonsList +=
+    //    BuiltInPlaylist.Offline to stringResource(R.string.cached)
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
@@ -339,6 +340,23 @@ fun HomeSongsModern(
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
+                            .combine(
+                                Database
+                                    .songsOffline(sortBy, sortOrder)
+                            ){ a, b ->
+                                a.filter { song ->
+                                    downloads[song.id]?.state == Download.STATE_COMPLETED
+                                }.union(
+                                    b.filter { binder?.isCached(it) ?: false }.map { it.song }
+                                )
+                            }
+                            .collect {
+                                items = it.toList()
+                            }
+
+                        /*
+                        val downloads = DownloadUtil.downloads.value
+                        Database.listAllSongsAsFlow()
                             .map {
                                 it.filter { song ->
                                     downloads[song.id]?.state == Download.STATE_COMPLETED
@@ -347,6 +365,7 @@ fun HomeSongsModern(
                             .collect {
                                 items = it
                             }
+                         */
                     }
 
                     if (builtInPlaylist == BuiltInPlaylist.Favorites) {
