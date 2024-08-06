@@ -360,7 +360,6 @@ fun HomeSongsModern(
                     }
 
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
-
                     Database
                         .songsOffline(sortBy, sortOrder)
                         .map { songs ->
