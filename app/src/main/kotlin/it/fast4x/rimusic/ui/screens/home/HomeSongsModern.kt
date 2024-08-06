@@ -51,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -187,6 +188,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -323,6 +325,8 @@ fun HomeSongsModern(
     val excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     val hapticFeedback = LocalHapticFeedback.current
 
+    val scope = rememberCoroutineScope()
+
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
             LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
@@ -356,21 +360,33 @@ fun HomeSongsModern(
                     }
 
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
-                    Database
-                        .songsOffline(sortBy, sortOrder)
-                        /*
-                        .flowOn(Dispatchers.IO)
-                        .map { songs ->
-                            songs.filter { song ->
-                                song.contentLength?.let {
-                                    binder?.cache?.isCached(song.song.id, 0, song.contentLength)
-                                } ?: false
-                            }.map(SongWithContentLength::song)
+                    runCatching {
+                        scope.launch {
+                            Database
+                                .songsOffline(sortBy, sortOrder)
+                                .map {
+                                    it.filter { song ->
+                                        song.contentLength?.let {
+                                            withContext(Dispatchers.Main) {
+                                            binder?.cache?.isCached(
+                                                song.song.id,
+                                                0,
+                                                song.contentLength
+                                            )
+                                                }
+                                        } ?: false
+                                    }.map(SongWithContentLength::song)
+                                }
+                                //.flowOn(Dispatchers.IO)
+                                .collect {
+                                    items = it
+                                }
                         }
-                         */
-                        .collect {
-                            items = it
-                        }
+                    }.onFailure {
+                        println("mediaItem offline items ${it.message}")
+                        Timber.e("HomeSongsModern cached items ${it.stackTraceToString()}")
+                    }
+
                 }
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
@@ -455,7 +471,7 @@ fun HomeSongsModern(
     }
     /********** */
 
-    if (!includeLocalSongs)
+    if (!includeLocalSongs && builtInPlaylist == BuiltInPlaylist.All)
         items = items
             .filter {
                 !it.id.startsWith(LOCAL_KEY_PREFIX)

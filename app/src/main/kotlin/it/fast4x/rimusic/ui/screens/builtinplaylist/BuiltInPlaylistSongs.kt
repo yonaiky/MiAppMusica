@@ -246,7 +246,7 @@ fun BuiltInPlaylistSongs(
 
     }
 
-
+/*
      LaunchedEffect(Unit, sortBy, sortOrder, filter, reloadSongs, autoShuffle) {
          when (builtInPlaylist) {
 
@@ -291,6 +291,7 @@ fun BuiltInPlaylistSongs(
              else it
          }
     }
+    */
 
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSizePx = thumbnailSizeDp.px
