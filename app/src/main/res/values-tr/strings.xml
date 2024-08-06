@@ -381,7 +381,7 @@
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Şarkıyı sola veya sağa kaydırarak eylem menüsünü etkinleştirin</string>
     <string name="smart_recommendations">AKILLI ÖNERİLER</string>
     <string name="player_collapsed_disable_swiping_down">Aşağı kaydırmayı devre dışı bırak</string>
-    <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Oynatıcı küçültülmüş haldeyken aşağı kaydırarak oynatıcıyı kapatmayı ve oynatma sırasını temizlemeyi kapat</string>
+    <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Oynatıcı küçültülmüş haldeyken, oynatıcıyı aşağı kaydırarak kapatmayı ve oynatma sırasını temizlemeyi devre dışı bırak</string>
     <string name="sort_date_liked">Beğenilme Tarihi</string>
     <string name="export_playlist">Oynatma listesini dışa aktar</string>
     <string name="lang_afrikaans">Afrikaans</string>
@@ -547,7 +547,7 @@
     <string name="pcontrols_modern">Modern</string>
     <string name="pcontrols_essential">Temel</string>
     <string name="pcontrols_type">Kontrol tipi</string>
-    <string name="player_swiping_down_is_disabled">Oynatıcıyı aşağıya kaydırma devre dışı</string>
+    <string name="player_swiping_down_is_disabled">Oynatıcıyı aşağı kaydırma devre dışıdır</string>
     <string name="player_position">Oynatıcı konumu</string>
     <string name="position_top">En Üst</string>
     <string name="position_bottom">En alt</string>
@@ -709,5 +709,5 @@
     <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
     <string name="restart_service">Restart service</string>
     <string name="player_pause_listen_history">Pause listen history</string>
-    <string name="queuetype">Queue Type</string>
+    <string name="queuetype">Sıra tipi</string>
 </resources>
