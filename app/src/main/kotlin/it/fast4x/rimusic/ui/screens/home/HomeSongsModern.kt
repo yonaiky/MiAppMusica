@@ -333,8 +333,7 @@ fun HomeSongsModern(
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
-            items = emptyList()
-            println("mediaItem songs filter ${filter} builtInPlaylist ${builtInPlaylist}")
+           
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
@@ -378,6 +377,7 @@ fun HomeSongsModern(
                             }
                     }
 
+                /*
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
@@ -414,6 +414,7 @@ fun HomeSongsModern(
 
                     */
                 }
+                */
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
                         if (topPlaylistPeriod.duration == Duration.INFINITE) {
