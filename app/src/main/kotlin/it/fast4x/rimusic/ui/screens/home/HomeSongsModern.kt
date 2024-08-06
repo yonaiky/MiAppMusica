@@ -105,6 +105,7 @@ import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.models.SongWithAlbum
 import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.DownloadUtil
@@ -222,6 +223,8 @@ fun HomeSongsModern(
 
     var items by persistList<Song>("home/songs")
 
+    var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
+
     /*
     var filterDownloaded by remember {
         mutableStateOf(false)
@@ -329,7 +332,9 @@ fun HomeSongsModern(
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
             LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
-                Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+                //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+                Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it.map { it.song } }
+
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
@@ -479,6 +484,8 @@ fun HomeSongsModern(
         }
     }
 
+    println("mediaItem songsWithAlbum: ${songsWithAlbum.size} filter ${filter} ${songsWithAlbum}")
+
     /********** OnDeviceDev */
     if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
         if (showFolders) {
@@ -508,7 +515,7 @@ fun HomeSongsModern(
         when (sortOrder) {
             SortOrder.Ascending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> items = items.sortedBy { it.title }
+                    SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedBy { it.title }
                     SongSortBy.PlayTime -> items = items.sortedBy { it.totalPlayTimeMs }
                     SongSortBy.Duration -> items = items.sortedBy { it.durationText }
                     SongSortBy.Artist -> items = items.sortedBy { it.artistsText }
@@ -519,7 +526,7 @@ fun HomeSongsModern(
             }
             SortOrder.Descending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> items = items.sortedByDescending { it.title }
+                    SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedByDescending { it.title }
                     SongSortBy.PlayTime -> items = items.sortedByDescending { it.totalPlayTimeMs }
                     SongSortBy.Duration -> items = items.sortedByDescending { it.durationText }
                     SongSortBy.Artist -> items = items.sortedByDescending { it.artistsText }
@@ -802,7 +809,8 @@ fun HomeSongsModern(
                                                         onArtist = { sortBy = SongSortBy.Artist },
                                                         onDuration = {
                                                             sortBy = SongSortBy.Duration
-                                                        }
+                                                        },
+                                                        onAlbum = { sortBy = SongSortBy.AlbumName },
                                                     )
                                                 }
                                             }

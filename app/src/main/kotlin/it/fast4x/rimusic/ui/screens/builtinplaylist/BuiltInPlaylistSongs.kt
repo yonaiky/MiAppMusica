@@ -307,7 +307,7 @@ fun BuiltInPlaylistSongs(
         when (sortOrder) {
             SortOrder.Ascending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> songs = songs.sortedBy { it.title }
+                    SongSortBy.Title, SongSortBy.AlbumName -> songs = songs.sortedBy { it.title }
                     SongSortBy.PlayTime -> songs = songs.sortedBy { it.totalPlayTimeMs }
                     SongSortBy.Duration -> songs = songs.sortedBy { it.durationText }
                     SongSortBy.Artist -> songs = songs.sortedBy { it.artistsText }
@@ -318,7 +318,7 @@ fun BuiltInPlaylistSongs(
             }
             SortOrder.Descending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> songs = songs.sortedByDescending { it.title }
+                    SongSortBy.Title, SongSortBy.AlbumName -> songs = songs.sortedByDescending { it.title }
                     SongSortBy.PlayTime -> songs = songs.sortedByDescending { it.totalPlayTimeMs }
                     SongSortBy.Duration -> songs = songs.sortedByDescending { it.durationText }
                     SongSortBy.Artist -> songs = songs.sortedByDescending { it.artistsText }
@@ -1017,7 +1017,7 @@ fun BuiltInPlaylistSongs(
 
                         BasicText(
                             text = when (sortBy) {
-                                SongSortBy.Title -> stringResource(R.string.sort_title)
+                                SongSortBy.Title, SongSortBy.AlbumName -> stringResource(R.string.sort_title)
                                 SongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
                                 SongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                                 SongSortBy.DateAdded -> stringResource(R.string.sort_date_added)

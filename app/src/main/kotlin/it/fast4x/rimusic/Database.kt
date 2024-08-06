@@ -57,6 +57,7 @@ import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
 import it.fast4x.rimusic.models.EventWithSong
+import it.fast4x.rimusic.models.SongWithAlbum
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
@@ -284,7 +285,7 @@ interface Database {
                 SortOrder.Ascending -> songsFavoritesByPlayTimeAsc()
                 SortOrder.Descending -> songsFavoritesByPlayTimeDesc()
             }
-            SongSortBy.Title -> when (sortOrder) {
+            SongSortBy.Title, SongSortBy.AlbumName -> when (sortOrder) {
                 SortOrder.Ascending -> songsFavoritesByTitleAsc()
                 SortOrder.Descending -> songsFavoritesByTitleDesc()
             }
@@ -373,7 +374,7 @@ interface Database {
                 SortOrder.Ascending -> songsOfflineByPlayTimeAsc()
                 SortOrder.Descending -> songsOfflineByPlayTimeDesc()
             }
-            SongSortBy.Title -> when (sortOrder) {
+            SongSortBy.Title, SongSortBy.AlbumName -> when (sortOrder) {
                 SortOrder.Ascending -> songsOfflineByTitleAsc()
                 SortOrder.Descending -> songsOfflineByTitleDesc()
             }
@@ -401,42 +402,46 @@ interface Database {
 
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) ORDER BY ROWID ASC")
-    //@Query("SELECT * FROM Song ORDER BY ROWID ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.ROWID ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByRowIdAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByRowIdAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) ORDER BY ROWID DESC")
-    //@Query("SELECT * FROM Song ORDER BY ROWID DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.ROWID DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByRowIdDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByRowIdDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) ORDER BY title COLLATE NOCASE ASC")
-    //@Query("SELECT * FROM Song ORDER BY title ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.title COLLATE NOCASE ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByTitleAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByTitleAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) ORDER BY title COLLATE NOCASE DESC")
-    //@Query("SELECT * FROM Song ORDER BY title DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.title COLLATE NOCASE DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByTitleDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByTitleDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-//    @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs ASC")
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs ASC")
-    //@Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.totalPlayTimeMs ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByPlayTimeAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByPlayTimeAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-//    @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC")
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs DESC")
-    //@Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.totalPlayTimeMs DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByPlayTimeDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByPlayTimeDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
     @Query(
@@ -451,51 +456,84 @@ interface Database {
     fun songsByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT DISTINCT S.* FROM Song S " +
-            "LEFT JOIN Event E ON E.songId=S.id " +
-            "WHERE (S.totalPlayTimeMs > :showHiddenSongs OR S.likedAt NOT NULL) AND S.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
+    @Query("SELECT  Song.*, Album.title as albumTitle FROM Song " +
+            "LEFT JOIN Event E ON E.songId=Song.id LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId " +
+            "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
             "ORDER BY E.timestamp DESC")
-    fun songsByDatePlayedDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByDatePlayedDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
+
+
 
     @Transaction
-    @Query("SELECT DISTINCT S.* FROM Song S " +
-            "LEFT JOIN Event E ON E.songId=S.id " +
-            "WHERE (S.totalPlayTimeMs > :showHiddenSongs OR S.likedAt NOT NULL)AND S.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
+    @Query("SELECT  Song.*, Album.title as albumTitle FROM Song " +
+            "LEFT JOIN Event E ON E.songId=Song.id LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId " +
+            "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
             "ORDER BY E.timestamp")
-    fun songsByDatePlayedAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByDatePlayedAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY likedAt ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.likedAt ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByLikedAtAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByLikedAtAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY likedAt DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.likedAt DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByLikedAtDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByLikedAtDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY artistsText ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.artistsText ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByArtistAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByArtistAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY artistsText DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.artistsText DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByArtistDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByArtistDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
+
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.durationText ASC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByDurationAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
+
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.durationText DESC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByDurationDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY durationText ASC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Album.title COLLATE NOCASE ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByDurationAsc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByAlbumNameAsc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE (totalPlayTimeMs > :showHiddenSongs OR likedAt NOT NULL) AND id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY durationText DESC")
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Album.title COLLATE NOCASE DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByDurationDesc(showHiddenSongs: Int = 0): Flow<List<Song>>
+    fun songsByAlbumNameDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
 
-    fun songs(sortBy: SongSortBy, sortOrder: SortOrder, showHiddenSongs: Int): Flow<List<Song>> {
+    fun songs(sortBy: SongSortBy, sortOrder: SortOrder, showHiddenSongs: Int): Flow<List<SongWithAlbum>> {
         return when (sortBy) {
+            SongSortBy.AlbumName -> when (sortOrder) {
+                SortOrder.Ascending -> songsByAlbumNameAsc(showHiddenSongs)
+                SortOrder.Descending -> songsByAlbumNameDesc(showHiddenSongs)
+            }
             SongSortBy.PlayTime -> when (sortOrder) {
                 SortOrder.Ascending -> songsByPlayTimeAsc(showHiddenSongs)
                 SortOrder.Descending -> songsByPlayTimeDesc(showHiddenSongs)
@@ -526,6 +564,16 @@ interface Database {
             }
         }
     }
+
+
+    @Transaction
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.artistsText DESC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsWithAlbumByPlayTimeDesc(showHiddenSongs: Int = 0): Flow<List<SongWithAlbum>>
+
+
 
     @Transaction
     @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY likedAt DESC")

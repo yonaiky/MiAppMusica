@@ -180,7 +180,7 @@ fun HomeSongs(
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
 
     LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
-            Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+            Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it.map { it.song }}
     }
 
     if (!includeLocalSongs)
@@ -390,7 +390,7 @@ fun HomeSongs(
 
                     BasicText(
                         text = when (sortBy) {
-                            SongSortBy.Title -> stringResource(R.string.sort_title)
+                            SongSortBy.Title, SongSortBy.AlbumName -> stringResource(R.string.sort_title)
                             SongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
                             SongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                             SongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
