@@ -701,5 +701,5 @@
     <string name="info_pauses_player_when_volume_zero">Pausa o ‘player’ quando o volume atingir 0 e retoma quando o volume é maior que 0</string>
     <string name="quality">Qualidade</string>
     <string name="value_must_be_ip_address">Valor deve ser um endereço IP</string>
-    <string name="queuetype">Queue Type</string>
+    <string name="queuetype">Tipo de Fila</string>
 </resources>
