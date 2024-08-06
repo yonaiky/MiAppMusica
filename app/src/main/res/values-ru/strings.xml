@@ -698,8 +698,8 @@
     <string name="songs_number_to_show">Songs number to show</string>
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Пауза при нулевой громкости</string>
-    <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
+    <string name="info_pauses_player_when_volume_zero">Приостановит проигрывание, когда громкость достигнет 0 и возобновит, когда громкость будет больше 0</string>
     <string name="quality">Качество</string>
     <string name="value_must_be_ip_address">Значение должно быть ip адресом</string>
-    <string name="queuetype">Queue Type</string>
+    <string name="queuetype">Тип очереди</string>
 </resources>
