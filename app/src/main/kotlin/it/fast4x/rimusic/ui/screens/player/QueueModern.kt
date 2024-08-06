@@ -11,9 +11,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,9 +37,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults.colors
 import androidx.compose.material3.ripple
@@ -55,14 +61,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.media3.common.MediaItem
@@ -81,6 +95,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueType
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
@@ -99,6 +114,7 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
@@ -114,11 +130,14 @@ import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -173,6 +192,9 @@ fun QueueModern(
 
         var windows by remember {
             mutableStateOf(player.currentTimeline.windows)
+        }
+        var windowsFiltered by remember {
+            mutableStateOf(windows)
         }
 
         var shouldBePlaying by remember {
@@ -346,10 +368,134 @@ fun QueueModern(
         val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
         var discoverIsEnabled by rememberPreference(discoverKey, false)
         //if (discoverIsEnabled) ApplyDiscoverToQueue()
+        var searching by rememberSaveable { mutableStateOf(false) }
+        var filter: String? by rememberSaveable { mutableStateOf(null) }
+        val thumbnailRoundness by rememberPreference(
+            thumbnailRoundnessKey,
+            ThumbnailRoundness.Heavy
+        )
 
-
+        var filterCharSequence: CharSequence
+        filterCharSequence = filter.toString()
+        if (!filter.isNullOrBlank())
+            windowsFiltered = windowsFiltered
+                .filter {
+                    it.mediaItem.mediaMetadata.title?.contains(filterCharSequence, true) ?: false ||
+                            it.mediaItem.mediaMetadata.artist?.contains(filterCharSequence, true) ?: false ||
+                            it.mediaItem.mediaMetadata.albumTitle?.contains(filterCharSequence, true) ?: false ||
+                            it.mediaItem.mediaMetadata.albumArtist?.contains(filterCharSequence, true) ?: false
+                }
 
         Column {
+            Box(
+                modifier = Modifier
+                    .background(colorPalette.background1)
+                    .fillMaxWidth()
+            ) {
+                if (searching)
+                        /*        */
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier
+                                //.requiredHeight(30.dp)
+                                .padding(all = 10.dp)
+                                .padding(top = 30.dp)
+                                .fillMaxWidth()
+                        ) {
+                            AnimatedVisibility(visible = searching) {
+                                val focusRequester = remember { FocusRequester() }
+                                val focusManager = LocalFocusManager.current
+                                val keyboardController = LocalSoftwareKeyboardController.current
+
+                                LaunchedEffect(searching) {
+                                    focusRequester.requestFocus()
+                                }
+
+                                BasicTextField(
+                                    value = filter ?: "",
+                                    onValueChange = { filter = it },
+                                    textStyle = typography.xs.semiBold,
+                                    singleLine = true,
+                                    maxLines = 1,
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                    keyboardActions = KeyboardActions(onDone = {
+                                        if (filter.isNullOrBlank()) filter = ""
+                                        focusManager.clearFocus()
+                                    }),
+                                    cursorBrush = SolidColor(colorPalette.text),
+                                    decorationBox = { innerTextField ->
+                                        Box(
+                                            contentAlignment = Alignment.CenterStart,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .padding(horizontal = 10.dp)
+                                        ) {
+                                            IconButton(
+                                                onClick = {},
+                                                icon = R.drawable.search,
+                                                color = colorPalette.favoritesIcon,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterStart)
+                                                    .size(16.dp)
+                                            )
+                                        }
+                                        Box(
+                                            contentAlignment = Alignment.CenterStart,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .padding(horizontal = 30.dp)
+                                        ) {
+                                            androidx.compose.animation.AnimatedVisibility(
+                                                visible = filter?.isEmpty() ?: true,
+                                                enter = fadeIn(tween(100)),
+                                                exit = fadeOut(tween(100)),
+                                            ) {
+                                                BasicText(
+                                                    text = stringResource(R.string.search),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                )
+                                            }
+
+                                            innerTextField()
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .fillMaxWidth()
+                                        .background(
+                                            colorPalette.background4,
+                                            shape = thumbnailRoundness.shape()
+                                        )
+                                        .focusRequester(focusRequester)
+                                        .onFocusChanged {
+                                            if (!it.hasFocus) {
+                                                keyboardController?.hide()
+                                                if (filter?.isBlank() == true) {
+                                                    filter = null
+                                                    searching = false
+                                                }
+                                            }
+                                        }
+                                )
+                            }
+                            /*
+                            else {
+                                HeaderIconButton(
+                                    onClick = { searching = true },
+                                    icon = R.drawable.search_circle,
+                                    color = colorPalette.text,
+                                    iconSize = 24.dp
+                                )
+                            }
+
+                             */
+                        }
+                        /*        */
+
+            }
             Box(
                 modifier = Modifier
                     .background(if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background1)
@@ -366,8 +512,9 @@ fun QueueModern(
                     //.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
 
                 ) {
+
                     items(
-                        items = windows,
+                        items = if (searching) windowsFiltered else windows,
                         key = { it.uid.hashCode() }
                     ) { window ->
 
@@ -683,8 +830,15 @@ fun QueueModern(
                 ) {
 
                     BasicText(
-                        text = "${binder.player.mediaItemCount} " + stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
+                        text = "${binder.player.mediaItemCount} ", //+ stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
                         style = typography.xxs.medium,
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.musical_notes),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                        modifier = Modifier
+                            .size(12.dp)
                     )
 
                 }
@@ -699,6 +853,18 @@ fun QueueModern(
                     // .fillMaxHeight()
 
                 ) {
+                    IconButton(
+                        icon = R.drawable.search_circle,
+                        color = colorPalette.text,
+                        onClick = {
+                            searching = !searching
+                            if (searching)
+                                windowsFiltered = windows
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(24.dp)
+                    )
 
                     if (showButtonPlayerDiscover) {
                         IconButton(
