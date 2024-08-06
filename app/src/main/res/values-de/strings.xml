@@ -318,7 +318,7 @@
     <string name="end_of_song">(Ende des Liedes)</string>
     <string name="restore_completed">Wiederherstellen abgeschlossen!</string>
     <string name="click_to_close">Zum Schließen klicken</string>
-    <string name="lang_dutch">Niederländisch</string>
+    <string name="lang_dutch">Niederländisch (Nederlands)</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Möchtest du wirklich die Positionen in dieser Wiedergabeliste neu nummerieren?</string>
     <string name="renumber_songs_positions">Positionen neu nummerieren</string>
     <string name="do_you_really_want_to_delete_all_playback_events">Möchtest du wirklich alle Wiedergabe-Ereignisse löschen?</string>
@@ -568,7 +568,7 @@
     <string name="player_swap_controls_with_timeline">Steuerelemente mit Zeitleiste tauschen</string>
     <string name="player_enable_lyrics_popup_message">Songtext-Popup-Nachricht aktivieren</string>
     <string name="exclude_songs_with_duration_limit">Schließe Songs mit Zeitlimit aus</string>
-    <string name="exclude_songs_with_duration_limit_description">Wenn aktiviert, werden Songs über dem Limit ausgeschlossen, angewendet auf Meine Top und die Warteschlange</string>
+    <string name="exclude_songs_with_duration_limit_description">Songs, deren Länge das Limit überschreitet, werden aus der Liste der Top-Songs und der Wiedergabeliste entfernt</string>
     <string name="no_log_available">Protokoll nicht vorhanden</string>
     <string name="enable_quick_picks_page">Schnellauswahl-Seite aktiveren</string>
     <string name="lang_vietnamese">Vietnamesisch (tiếng Việt)</string>
