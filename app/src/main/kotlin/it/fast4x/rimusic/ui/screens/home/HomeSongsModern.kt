@@ -325,8 +325,6 @@ fun HomeSongsModern(
     val excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     val hapticFeedback = LocalHapticFeedback.current
 
-    val scope = rememberCoroutineScope()
-
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
             LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
@@ -334,6 +332,8 @@ fun HomeSongsModern(
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
+            items = emptyList()
+            println("mediaItem songs filter ${filter} builtInPlaylist ${builtInPlaylist}")
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
@@ -360,33 +360,41 @@ fun HomeSongsModern(
                     }
 
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
-                    runCatching {
-                        scope.launch {
-                            Database
-                                .songsOffline(sortBy, sortOrder)
-                                .map {
-                                    it.filter { song ->
-                                        song.contentLength?.let {
-                                            withContext(Dispatchers.Main) {
-                                            binder?.cache?.isCached(
-                                                song.song.id,
-                                                0,
-                                                song.contentLength
-                                            )
-                                                }
-                                        } ?: false
-                                    }.map(SongWithContentLength::song)
-                                }
-                                //.flowOn(Dispatchers.IO)
-                                .collect {
-                                    items = it
-                                }
-                        }
-                    }.onFailure {
-                        println("mediaItem offline items ${it.message}")
-                        Timber.e("HomeSongsModern cached items ${it.stackTraceToString()}")
-                    }
 
+                    Database
+                        .songsOffline(sortBy, sortOrder)
+                        .map { songs ->
+                            songs.filter { binder?.isCached(it) ?: false }.map { it.song }
+                        }
+                        .collect {
+                            items = it
+                        }
+
+                    //println("mediaItem offline items: ${items.size} filter ${filter}")
+                    /*
+
+                                Database
+                                    .songsOffline(sortBy, sortOrder)
+                                    .map {
+                                        it.filter { song ->
+                                            song.contentLength?.let {
+                                                withContext(Dispatchers.Main) {
+                                                    binder?.cache?.isCached(
+                                                        song.song.id,
+                                                        0,
+                                                        song.contentLength
+                                                    )
+                                                }
+                                            } ?: false
+                                        }.map(SongWithContentLength::song)
+                                    }
+                                    //.flowOn(Dispatchers.IO)
+                                    .collect {
+                                        items = it
+                                    }
+                            }
+
+                    */
                 }
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
