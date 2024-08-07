@@ -6,6 +6,6 @@ import androidx.room.Embedded
 @Immutable
 data class SongEntity(
     @Embedded val song: Song,
-    val contentLength: Long?,
-    val albumTitle: String?,
+    val contentLength: Long? = null,
+    val albumTitle: String? = null,
 )

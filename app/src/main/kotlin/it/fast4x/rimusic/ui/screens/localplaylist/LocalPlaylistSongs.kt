@@ -104,6 +104,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
@@ -201,7 +202,7 @@ fun LocalPlaylistSongs(
     val menuState = LocalMenuState.current
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
-    var playlistSongs by persistList<Song>("localPlaylist/$playlistId/songs")
+    var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
 
 
@@ -226,7 +227,7 @@ fun LocalPlaylistSongs(
     )
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
     var relatedSongsRecommendationResult by persist<Result<Innertube.RelatedSongs?>?>(tag = "home/relatedSongsResult")
-    var songBaseRecommendation by persist<Song?>("home/songBaseRecommendation")
+    var songBaseRecommendation by persist<SongEntity?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
     var autosync by rememberPreference(autosyncKey, false)
 
@@ -235,9 +236,9 @@ fun LocalPlaylistSongs(
             Database.songsPlaylist(playlistId, sortBy, sortOrder).distinctUntilChanged()
                 .collect { songs ->
                     val song = songs.firstOrNull()
-                    if (relatedSongsRecommendationResult == null || songBaseRecommendation?.id != song?.id) {
+                    if (relatedSongsRecommendationResult == null || songBaseRecommendation?.song?.id != song?.song?.id) {
                         relatedSongsRecommendationResult =
-                            Innertube.relatedSongs(NextBody(videoId = (song?.id ?: "HZnNt9nnEhw")))
+                            Innertube.relatedSongs(NextBody(videoId = (song?.song?.id ?: "HZnNt9nnEhw")))
                     }
                     songBaseRecommendation = song
                 }
@@ -261,11 +262,15 @@ fun LocalPlaylistSongs(
     if (!filter.isNullOrBlank())
         playlistSongs =
             playlistSongs.filter { songItem ->
-                songItem.asMediaItem.mediaMetadata.title?.contains(
+                songItem.song.title.contains(
                     filterCharSequence,
                     true
                 ) ?: false
-                        || songItem.asMediaItem.mediaMetadata.artist?.contains(
+                        || songItem.song.artistsText?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
+                        || songItem.albumTitle?.contains(
                     filterCharSequence,
                     true
                 ) ?: false
@@ -275,7 +280,7 @@ fun LocalPlaylistSongs(
 
     var totalPlayTimes = 0L
     playlistSongs.forEach {
-        totalPlayTimes += it.durationText?.let { it1 ->
+        totalPlayTimes += it.song.durationText?.let { it1 ->
             durationTextToMillis(it1)
         }?.toLong() ?: 0
     }
@@ -350,7 +355,7 @@ fun LocalPlaylistSongs(
                 query {
                     playlistSongs.forEachIndexed { index, song ->
                         playlistPreview?.playlist?.let {
-                            Database.updateSongPosition(it.id, song.id, index)
+                            Database.updateSongPosition(it.id, song.song.id, index)
                         }
                     }
                 }
@@ -502,11 +507,11 @@ fun LocalPlaylistSongs(
                                 writeRow(
                                     playlistPreview?.playlist?.browseId,
                                     plistName,
-                                    it.id,
-                                    it.title,
-                                    it.artistsText,
-                                    it.durationText,
-                                    it.thumbnailUrl
+                                    it.song.id,
+                                    it.song.title,
+                                    it.song.artistsText,
+                                    it.song.durationText,
+                                    it.song.thumbnailUrl
                                 )
                             }
                         } else {
@@ -798,7 +803,7 @@ fun LocalPlaylistSongs(
                                                         .take(maxSongsInQueue.number.toInt()) else songs
                                                 binder?.stopRadio()
                                                 binder?.player?.forcePlayFromBeginning(
-                                                    itemsLimited.shuffled().map(Song::asMediaItem)
+                                                    itemsLimited.shuffled().map(SongEntity::asMediaItem)
                                                 )
                                             }
                                         }
@@ -922,7 +927,7 @@ fun LocalPlaylistSongs(
                                                         id = it.asMediaItem.mediaId,
                                                         title = it.asMediaItem.mediaMetadata.title.toString(),
                                                         artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                                        thumbnailUrl = it.thumbnailUrl,
+                                                        thumbnailUrl = it.song.thumbnailUrl,
                                                         durationText = null
                                                     )
                                                 )
@@ -1070,7 +1075,7 @@ fun LocalPlaylistSongs(
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.enqueue(
-                                                    playlistSongs.map(Song::asMediaItem),
+                                                    playlistSongs.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
@@ -1082,7 +1087,7 @@ fun LocalPlaylistSongs(
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.addNext(
-                                                    playlistSongs.map(Song::asMediaItem),
+                                                    playlistSongs.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
@@ -1491,7 +1496,7 @@ fun LocalPlaylistSongs(
 
             itemsIndexed(
                 items = playlistSongs ?: emptyList(),
-                key = { _, song -> song.id },
+                key = { _, song -> song.song.id },
                 contentType = { _, song -> song },
             ) { index, song ->
 
@@ -1565,7 +1570,7 @@ fun LocalPlaylistSongs(
                         onSwipeToLeft = {
                             transaction {
                                 Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
+                                Database.delete(SongPlaylistMap(song.song.id, playlistId, Int.MAX_VALUE))
                             }
 
                             if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
@@ -1590,7 +1595,7 @@ fun LocalPlaylistSongs(
                         }
                     ) {
                         SongItem(
-                            song = song,
+                            song = song.song,
                             isDownloaded = isDownloaded,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
@@ -1600,7 +1605,7 @@ fun LocalPlaylistSongs(
                                             id = song.asMediaItem.mediaId,
                                             title = song.asMediaItem.mediaMetadata.title.toString(),
                                             artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = song.thumbnailUrl,
+                                            thumbnailUrl = song.song.thumbnailUrl,
                                             durationText = null
                                         )
                                     )
@@ -1658,7 +1663,7 @@ fun LocalPlaylistSongs(
                             onThumbnailContent = {
                                 if (sortBy == PlaylistSongSortBy.PlayTime) {
                                     BasicText(
-                                        text = song.formattedTotalPlayTime,
+                                        text = song.song.formattedTotalPlayTime,
                                         style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
@@ -1713,7 +1718,7 @@ fun LocalPlaylistSongs(
                                                 playlist = playlistPreview,
                                                 playlistId = playlistId,
                                                 positionInPlaylist = index,
-                                                song = song,
+                                                song = song.song,
                                                 onDismiss = menuState::hide
                                             )
                                         }
@@ -1724,7 +1729,7 @@ fun LocalPlaylistSongs(
                                             searching = false
                                             filter = null
                                             playlistSongs
-                                                .map(Song::asMediaItem)
+                                                .map(SongEntity::asMediaItem)
                                                 .let { mediaItems ->
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
@@ -1764,7 +1769,7 @@ fun LocalPlaylistSongs(
                         if (songs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Song::asMediaItem)
+                                songs.shuffled().map(SongEntity::asMediaItem)
                             )
                         }
                     }

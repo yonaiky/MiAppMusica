@@ -97,9 +97,6 @@ import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
-import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
@@ -211,6 +208,7 @@ fun PlaylistSongListModern(
         playlistPage?.songsPage?.items?.filter {songItem ->
                 songItem.asMediaItem.mediaMetadata.title?.contains(filterCharSequence,true) ?: false
                         || songItem.asMediaItem.mediaMetadata.artist?.contains(filterCharSequence,true) ?: false
+                        || songItem.asMediaItem.mediaMetadata.albumTitle?.contains(filterCharSequence,true) ?: false
             }
 
     var searching by rememberSaveable { mutableStateOf(false) }
