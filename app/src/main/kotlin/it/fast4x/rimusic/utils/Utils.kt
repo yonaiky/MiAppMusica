@@ -32,6 +32,7 @@ import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
@@ -261,6 +262,31 @@ val Song.asMediaItem: MediaItem
             ) else id.toUri()
         )
         .setCustomCacheKey(id)
+        .build()
+
+val SongEntity.asMediaItem: MediaItem
+    @UnstableApi
+    get() = MediaItem.Builder()
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(song.title)
+                .setArtist(song.artistsText)
+                .setArtworkUri(song.thumbnailUrl?.toUri())
+                .setExtras(
+                    bundleOf(
+                        "durationText" to song.durationText
+                    )
+                )
+                .build()
+        )
+        .setMediaId(song.id)
+        .setUri(
+            if (song.isLocal) ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                song.id.substringAfter(LOCAL_KEY_PREFIX).toLong()
+            ) else song.id.toUri()
+        )
+        .setCustomCacheKey(song.id)
         .build()
 
 val MediaItem.asSong: Song

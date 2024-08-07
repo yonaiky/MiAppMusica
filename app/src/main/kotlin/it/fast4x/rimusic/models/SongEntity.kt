@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 
 @Immutable
-data class SongWithAlbum(
+data class SongEntity(
     @Embedded val song: Song,
+    val contentLength: Long?,
     val albumTitle: String?,
 )

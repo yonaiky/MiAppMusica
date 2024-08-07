@@ -45,4 +45,20 @@ data class OnDeviceSong (
             totalPlayTimeMs = totalPlayTimeMs
         )
     }
+
+    fun toSongEntity(): SongEntity {
+        return SongEntity(
+            Song(
+                id = id,
+                title = title,
+                artistsText = artistsText,
+                durationText = durationText,
+                thumbnailUrl = thumbnailUrl,
+                likedAt = likedAt,
+                totalPlayTimeMs = totalPlayTimeMs
+            ),
+            albumTitle = "",
+            contentLength = 0L
+        )
+    }
 }
