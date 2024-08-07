@@ -534,7 +534,6 @@ inline fun SelectorArtistsDialog(
         ) {
             if (values != null) {
                 val pagerState = rememberPagerState(pageCount = { values.size })
-                val textoutline by rememberPreference(textoutlineKey, false)
                 val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
 
                     Box {
@@ -576,7 +575,7 @@ inline fun SelectorArtistsDialog(
                                         text = it1,
                                         style = typography.xs.medium.merge(TextStyle(
                                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                            color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
+                                            color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                                             else Color.Black
                                         )),
                                         maxLines = 3,
