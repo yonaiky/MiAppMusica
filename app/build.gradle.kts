@@ -145,7 +145,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.math3)
     implementation(libs.toasty)
-    implementation("dev.chrisbanes.haze:haze:0.7.3")
+    implementation(libs.haze)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
