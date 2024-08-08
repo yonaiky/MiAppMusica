@@ -32,7 +32,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    yearCentered: Boolean? = true
+    yearCentered: Boolean? = true,
+    showAuthors: Boolean? = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
@@ -43,6 +44,7 @@ fun AlbumItem(
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
+        showAuthors = showAuthors,
         modifier = modifier
     )
 }
@@ -54,7 +56,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    yearCentered: Boolean? = true
+    yearCentered: Boolean? = true,
+    showAuthors: Boolean? = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
@@ -79,7 +82,8 @@ fun AlbumItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false
+    alternative: Boolean = false,
+    showAuthors: Boolean? = false
 ) {
     val (_, typography, thumbnailShape) = LocalAppearance.current
 
@@ -108,7 +112,7 @@ fun AlbumItem(
                     .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
-            if (!alternative) {
+            if (!alternative || showAuthors == true) {
                 authors?.let {
                     BasicText(
                         text = cleanPrefix(authors),
@@ -117,6 +121,8 @@ fun AlbumItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .basicMarquee(iterations = Int.MAX_VALUE)
+                            .align(
+                                if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
                     )
                 }
             }

@@ -556,6 +556,7 @@ fun HomeAlbumsModern(
 
                 AlbumItem(
                     alternative = true,
+                    showAuthors = true,
                     album = album,
                     thumbnailSizePx = thumbnailSizePx,
                     thumbnailSizeDp = thumbnailSizeDp,
