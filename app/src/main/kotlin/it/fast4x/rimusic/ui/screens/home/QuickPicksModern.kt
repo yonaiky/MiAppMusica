@@ -80,6 +80,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.Countries
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -134,6 +135,7 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.selectedCountryCodeKey
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showActionsBarKey
 import it.fast4x.rimusic.utils.showChartsKey
@@ -227,6 +229,8 @@ fun QuickPicksModern(
     val last50Year: Duration = 18250.days
     val from = last50Year.inWholeMilliseconds
 
+    var selectedCountryCode by rememberPreference(selectedCountryCodeKey, Countries.ZZ)
+
     suspend fun loadData() {
         runCatching {
             refreshScope.launch(Dispatchers.IO) {
@@ -267,15 +271,16 @@ fun QuickPicksModern(
             if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres)
                 discoverPage = Innertube.discoverPage()
 
+
             if (showCharts)
-                chartsPage = Innertube.chartsPage()
+                chartsPage = Innertube.chartsPage(countryCode = selectedCountryCode.name)
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
         }
     }
 
-    LaunchedEffect(Unit, playEventType) {
+    LaunchedEffect(Unit, playEventType, selectedCountryCode) {
         loadData()
     }
 
@@ -653,6 +658,27 @@ fun QuickPicksModern(
 
                 if (showCharts)
                     chartsPage?.getOrNull()?.playlists.let { playlists ->
+                        Title(
+                            title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
+                            onClick = {
+                                menuState.display {
+                                    Menu {
+                                        Countries.entries.forEach { country ->
+                                            MenuEntry(
+                                                icon = R.drawable.arrow_right,
+                                                text = country.countryName,
+                                                onClick = {
+                                                    selectedCountryCode = country
+                                                    chartsPage = null
+                                                    menuState.hide()
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                        )
+                        /*
                         BasicText(
                             text = stringResource(R.string.charts),
                             style = typography.l.semiBold,
@@ -660,6 +686,7 @@ fun QuickPicksModern(
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 24.dp, bottom = 8.dp)
                         )
+                         */
 
                         LazyRow(contentPadding = endPaddingValues) {
                             items(

@@ -100,6 +100,7 @@ enum class Languages {
 }
 
 enum class Countries {
+    ZZ,
     AR,
     DZ,
     AU,
@@ -210,8 +211,9 @@ enum class Countries {
     YE,
     ZW;
 
-    val country: String
+    val countryName: String
         get() = when (this) {
+            ZZ -> "Global"
             AR -> "Argentina"
             DZ -> "Algeria"
             AU -> "Australia"

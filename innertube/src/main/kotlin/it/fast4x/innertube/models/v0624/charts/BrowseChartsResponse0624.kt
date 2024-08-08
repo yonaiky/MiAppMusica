@@ -224,7 +224,7 @@ data class WatchEndpoint (
 
     val loggingContext: LoggingContext? = null,
     //val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs? = null,
-    val params: Params? = null
+    //val params: Params? = null
 )
 
 @Serializable
@@ -237,11 +237,13 @@ data class VssLoggingContext (
     val serializedContextData: String? = null
 )
 
+/*
 @Serializable
 enum class Params(val value: String) {
     @SerialName("wAEB") WAEB("wAEB"),
     @SerialName("wAEB8gECGAE%3D") WAEB8GECGAE3D("wAEB8gECGAE%3D");
 }
+ */
 
 /*
 @Serializable
@@ -371,7 +373,7 @@ data class WatchPlaylistEndpoint (
     @SerialName("playlistId")
     val playlistID: String? = null,
 
-    val params: Params? = null
+    //val params: Params? = null
 )
 
 @Serializable
