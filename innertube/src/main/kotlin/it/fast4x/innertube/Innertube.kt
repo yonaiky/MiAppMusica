@@ -261,7 +261,11 @@ object Innertube {
     )
 
     data class ChartsPage(
-        val playlists: List<PlaylistItem>? = null
+        val playlists: List<PlaylistItem>? = null,
+        val artists: List<ArtistItem>? = null,
+        val videos: List<VideoItem>? = null,
+        val songs: List<SongItem>? = null,
+        val trending: List<SongItem>? = null
     )
 
     data class Podcast(

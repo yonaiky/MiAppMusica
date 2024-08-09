@@ -19,6 +19,7 @@ data class SectionListRenderer(
         val gridRenderer: GridRenderer?,
         val musicDescriptionShelfRenderer: MusicDescriptionShelfRenderer?,
         val musicResponsiveHeaderRenderer: MusicResponsiveHeaderRenderer?
+
     ) {
 
         @Serializable

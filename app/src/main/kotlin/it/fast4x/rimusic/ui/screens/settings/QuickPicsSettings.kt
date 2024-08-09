@@ -85,7 +85,7 @@ fun  QuickPicsSettings() {
         )
     }
 
-    var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
+    //var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
 
     //var showActionsBar by rememberPreference(showActionsBarKey, true)
 
@@ -252,6 +252,7 @@ fun  QuickPicsSettings() {
             }
         )
 
+        /*
         SwitchSettingEntry(
             title = stringResource(R.string.enable_language_in_discovery),
             text = stringResource(R.string.if_possible_allows_discovery_content_language),
@@ -261,6 +262,7 @@ fun  QuickPicsSettings() {
             }
         )
         ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+         */
 
         SettingsEntry(
             title = stringResource(R.string.reset_quick_picks),

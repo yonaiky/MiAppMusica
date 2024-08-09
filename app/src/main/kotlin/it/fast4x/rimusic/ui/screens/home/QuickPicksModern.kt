@@ -31,8 +31,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
@@ -62,6 +64,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.media3.common.util.UnstableApi
@@ -73,6 +76,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.chartsPage
+import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.lrclib.utils.runCatchingCancellable
@@ -122,8 +126,10 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.forcePlay
@@ -273,7 +279,7 @@ fun QuickPicksModern(
 
 
             if (showCharts)
-                chartsPage = Innertube.chartsPage(countryCode = selectedCountryCode.name)
+                chartsPage = Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -313,6 +319,8 @@ fun QuickPicksModern(
     val scrollState = rememberScrollState()
     val quickPicksLazyGridState = rememberLazyGridState()
     val moodAngGenresLazyGridState = rememberLazyGridState()
+    val chartsPageSongLazyGridState = rememberLazyGridState()
+    val chartsPageArtistLazyGridState = rememberLazyGridState()
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
@@ -656,56 +664,6 @@ fun QuickPicksModern(
                     }
                 }
 
-                if (showCharts)
-                    chartsPage?.getOrNull()?.playlists.let { playlists ->
-                        Title(
-                            title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
-                            onClick = {
-                                menuState.display {
-                                    Menu {
-                                        Countries.entries.forEach { country ->
-                                            MenuEntry(
-                                                icon = R.drawable.arrow_right,
-                                                text = country.countryName,
-                                                onClick = {
-                                                    selectedCountryCode = country
-                                                    chartsPage = null
-                                                    menuState.hide()
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-                            },
-                        )
-                        /*
-                        BasicText(
-                            text = stringResource(R.string.charts),
-                            style = typography.l.semiBold,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 24.dp, bottom = 8.dp)
-                        )
-                         */
-
-                        LazyRow(contentPadding = endPaddingValues) {
-                            items(
-                                items = playlists.orEmpty(),
-                                key = Innertube.PlaylistItem::key,
-                            ) { playlist ->
-                                PlaylistItem(
-                                    playlist = playlist,
-                                    thumbnailSizePx = playlistThumbnailSizePx,
-                                    thumbnailSizeDp = playlistThumbnailSizeDp,
-                                    alternative = true,
-                                    showSongsCount = false,
-                                    modifier = Modifier
-                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
-                                )
-                            }
-                        }
-                    }
-
                     discoverPage?.getOrNull()?.let { page ->
                         var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
                         page.newReleaseAlbums.forEach { album ->
@@ -886,29 +844,188 @@ fun QuickPicksModern(
 
                 if (showMonthlyPlaylistInQuickPicks)
                     localMonthlyPlaylists.let { playlists ->
-                        BasicText(
-                            text = stringResource(R.string.monthly_playlists),
-                            style = typography.l.semiBold,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 24.dp, bottom = 8.dp)
+                        if (playlists.isNotEmpty()) {
+                            BasicText(
+                                text = stringResource(R.string.monthly_playlists),
+                                style = typography.l.semiBold,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .padding(top = 24.dp, bottom = 8.dp)
+                            )
+
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(
+                                    items = playlists,
+                                    key = { it.playlist.id }
+                                ) { playlist ->
+                                    Modifier
+                                        .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        thumbnailSizeDp = playlistThumbnailSizeDp,
+                                        thumbnailSizePx = playlistThumbnailSizePx,
+                                        alternative = true,
+                                        modifier = Modifier.animateItem(
+                                            fadeInSpec = null,
+                                            fadeOutSpec = null
+                                        )
+                                            .fillMaxSize()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                if (showCharts)
+                    chartsPage?.getOrNull()?.let { page ->
+                        Title(
+                            title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
+                            onClick = {
+                                menuState.display {
+                                    Menu {
+                                        Countries.entries.forEach { country ->
+                                            MenuEntry(
+                                                icon = R.drawable.arrow_right,
+                                                text = country.countryName,
+                                                onClick = {
+                                                    selectedCountryCode = country
+                                                    chartsPage = null
+                                                    menuState.hide()
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            },
                         )
 
-                        LazyRow(contentPadding = endPaddingValues) {
-                            items(
-                                items = playlists,
-                                key = {it.playlist.id }
-                            ) { playlist ->
-                                PlaylistItem(
-                                    playlist = playlist,
-                                    thumbnailSizeDp = playlistThumbnailSizeDp,
-                                    thumbnailSizePx = playlistThumbnailSizePx,
-                                    alternative = true,
+                        page.playlists?.let { playlists ->
+                            /*
+                           BasicText(
+                               text = stringResource(R.string.playlists),
+                               style = typography.l.semiBold,
+                               modifier = Modifier
+                                   .padding(horizontal = 16.dp)
+                                   .padding(top = 24.dp, bottom = 8.dp)
+                           )
+                             */
+
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(
+                                    items = playlists.orEmpty(),
+                                    key = Innertube.PlaylistItem::key,
+                                ) { playlist ->
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        thumbnailSizePx = playlistThumbnailSizePx,
+                                        thumbnailSizeDp = playlistThumbnailSizeDp,
+                                        alternative = true,
+                                        showSongsCount = false,
+                                        modifier = Modifier
+                                            .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                    )
+                                }
+                            }
+                        }
+
+                        page.songs?.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                BasicText(
+                                    text = stringResource(R.string.chart_top_songs),
+                                    style = typography.l.semiBold,
                                     modifier = Modifier
-                                        .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
-                                        .animateItemPlacement()
-                                        .fillMaxSize()
+                                        .padding(horizontal = 16.dp)
+                                        .padding(top = 24.dp, bottom = 8.dp)
                                 )
+
+
+                                LazyHorizontalGrid(
+                                    rows = GridCells.Fixed(2),
+                                    modifier = Modifier.height(130.dp).fillMaxWidth(),
+                                    state = chartsPageSongLazyGridState,
+                                    flingBehavior = ScrollableDefaults.flingBehavior(),
+                                ) {
+                                    itemsIndexed(
+                                        items = songs,
+                                        key = { _, song -> song.key }
+                                    ) { index, song ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(start = 16.dp)
+                                        ) {
+                                            BasicText(
+                                                text = "${index + 1}",
+                                                style = typography.l.bold.center.color(colorPalette.text),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                            SongItem(
+                                                song = song,
+                                                isDownloaded = false,
+                                                onDownloadClick = {},
+                                                downloadState = Download.STATE_STOPPED,
+                                                thumbnailSizePx = songThumbnailSizePx,
+                                                thumbnailSizeDp = songThumbnailSizeDp,
+                                                modifier = Modifier
+                                                    .clickable(onClick = {
+                                                        val mediaItem = song.asMediaItem
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlay(mediaItem)
+                                                        binder?.player?.addMediaItems(songs.map { it.asMediaItem })
+                                                    })
+                                                    .width(itemWidth)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        page.artists?.let { artists ->
+                            if (artists.isNotEmpty()) {
+                                BasicText(
+                                    text = stringResource(R.string.chart_top_artists),
+                                    style = typography.l.semiBold,
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(top = 24.dp, bottom = 8.dp)
+                                )
+
+
+                                LazyHorizontalGrid(
+                                    rows = GridCells.Fixed(2),
+                                    modifier = Modifier.height(130.dp).fillMaxWidth(),
+                                    state = chartsPageArtistLazyGridState,
+                                    flingBehavior = ScrollableDefaults.flingBehavior(),
+                                ) {
+                                    itemsIndexed(
+                                        items = artists,
+                                        key = { _, artist -> artist.key }
+                                    ) { index, artist ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(start = 16.dp)
+                                        ) {
+                                            BasicText(
+                                                text = "${index + 1}",
+                                                style = typography.l.bold.center.color(colorPalette.text),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                            ArtistItem(
+                                                artist = artist,
+                                                thumbnailSizePx = songThumbnailSizePx,
+                                                thumbnailSizeDp = songThumbnailSizeDp,
+                                                alternative = false,
+                                                modifier = Modifier
+                                                    .width(200.dp)
+                                                    .clickable(onClick = { onArtistClick(artist.key) })
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

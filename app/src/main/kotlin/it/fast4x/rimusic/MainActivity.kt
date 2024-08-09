@@ -427,7 +427,7 @@ class MainActivity :
                     SmartMessage("Your Proxy Hostname is invalid, please check it", PopupType.Warning, context = this@MainActivity)
                 }
             }
-            if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
+            //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
                     LocalePreferenceItem(
                         hl = Locale.getDefault().toLanguageTag(),

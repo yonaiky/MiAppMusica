@@ -71,7 +71,8 @@ fun SongItem(
     modifier: Modifier = Modifier,
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
-    downloadState: Int
+    downloadState: Int,
+    thumbnailContent: (@Composable BoxScope.() -> Unit)? = null
 ) {
     SongItem(
         thumbnailUrl = song.thumbnail?.size(thumbnailSizePx),
@@ -84,7 +85,8 @@ fun SongItem(
         onDownloadClick = onDownloadClick,
         downloadState = downloadState,
         isExplicit = song.explicit,
-        mediaId = song.key
+        mediaId = song.key,
+        onThumbnailContent = thumbnailContent
     )
 }
 
