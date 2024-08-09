@@ -41,6 +41,7 @@ fun languageDestination (
         Languages.Hindi -> Language.HINDI
         Languages.Hungarian -> Language.HUNGARIAN
         Languages.Indonesian -> Language.INDONESIAN
+        Languages.Interlingua -> Language.LATIN
         Languages.Irish -> Language.IRISH
         Languages.Japanese -> Language.JAPANESE
         Languages.Korean -> Language.KOREAN
@@ -97,6 +98,7 @@ fun languageDestinationName (
         Languages.Hindi -> stringResource(R.string.lang_hindi)
         Languages.Hungarian -> stringResource(R.string.hungarian)
         Languages.Indonesian -> stringResource(R.string.indonesian)
+        Languages.Interlingua -> stringResource(R.string.lang_interlingua)
         Languages.Irish -> stringResource(R.string.lang_irish)
         Languages.Japanese -> stringResource(R.string.lang_japanese)
         Languages.Korean -> stringResource(R.string.korean)

@@ -179,6 +179,7 @@ fun About() {
                     "SharkChan0622 \n"+
                     "Sharunkumar \n" +
                     "Shilave malay \n"+
+                    "softinterlingua \n"+
                     "SureshTimma \n"+
                     "Siggi1984 \n"+
                     "Teaminh \n"+

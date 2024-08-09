@@ -702,4 +702,5 @@
     <string name="quality">Quality</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
     <string name="queuetype">Queue Type</string>
+    <string name="lang_interlingua">Interlingua</string>
 </resources>

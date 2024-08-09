@@ -25,6 +25,7 @@ enum class Languages {
     Hungarian,
     Italian,
     Indonesian,
+    Interlingua,
     Irish,
     Japanese,
     Korean,
@@ -75,6 +76,7 @@ enum class Languages {
             Hebrew -> "iw" //Hebrew -> "he"
             Hindi -> "hi"
             Hungarian -> "hu"
+            Interlingua -> "ia"
             Spanish -> "es"
             French -> "fr"
             Malayalam -> "ml"
