@@ -46,13 +46,13 @@
     <string name="fetch_lyrics_again">Fetch lyrics again</string>
     <string name="id">Id</string>
     <string name="itag">Itag</string>
-    <string name="bitrate">Bitrate</string>
+    <string name="bitrate">Taxa de bits</string>
     <string name="size">Dimension</string>
     <string name="cached">Cached</string>
     <string name="loudness">Loudness</string>
     <string name="clear">Clear</string>
-    <string name="error">An error has occurred.</string>
-    <string name="online">Online</string>
+    <string name="error">Ocurreva un error.</string>
+    <string name="online">In linea</string>
     <string name="no_results_found">No results found. Please try a different query or category</string>
     <string name="videos">Videos</string>
     <string name="featured">Featured</string>
