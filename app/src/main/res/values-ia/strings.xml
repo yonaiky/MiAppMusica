@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cancel">Cancel</string>
-    <string name="done">Done</string>
+    <string name="cancel">Cancellar</string>
+    <string name="done">Preste</string>
     <string name="hidesong">Do you really want to hide this song? Its playback time and cache will be wiped.\nThis action is irreversible.</string>
     <string name="new_playlist">New playlist</string>
-    <string name="start_radio">Start radio</string>
+    <string name="start_radio">Initiar le radio</string>
     <string name="equalizer">Equalizer</string>
     <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
     <string name="set_sleep_timer">Set sleep timer</string>
-    <string name="add_to_playlist">Add to playlist</string>
-    <string name="go_to_album">Go to album</string>
+    <string name="add_to_playlist">Adder al lista de reproduction</string>
+    <string name="go_to_album">Vader al album</string>
     <string name="remove_from_queue">Remove from queue</string>
     <string name="remove_from_playlist">Remove from playlist</string>
-    <string name="hide">Hide</string>
+    <string name="hide">Celar</string>
     <string name="hide_from_quick_picks">Hide from \"Quick picks\"</string>
     <string name="related_albums">Related albums</string>
     <string name="similar_artists">Similar artists</string>
