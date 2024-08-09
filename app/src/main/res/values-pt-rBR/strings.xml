@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Mostrar o botão de Repetição</string>
     <string name="action_bar_show_shuffle_button">Exibir o botão Aleatório</string>
     <string name="action_bar_show_lyrics_button">Mostrar botão de Letras</string>
-    <string name="action_bar_show_arrow_button">Exibir botão de Seta</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Exibir botão de Seta</string>
     <string name="lang_finnish">Finlandês</string>
     <string name="listening_time">Tempo de reprodução</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostra o número de músicas ouvidas e o seu tempo de reprodução</string>
@@ -701,5 +701,16 @@
     <string name="info_pauses_player_when_volume_zero">Pausa o ‘player’ quando o volume atingir 0 e retoma quando o volume é maior que 0</string>
     <string name="quality">Qualidade</string>
     <string name="value_must_be_ip_address">Valor deve ser um endereço IP</string>
+    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
+    <string name="pinfo_show_icons">Show info with icons</string>
+    <string name="format_ms">%1$s ms</string>
+    <string name="minimum_silence_length">Minimum silence length</string>
+    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
+    <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
+    <string name="restart_service">Restart service</string>
+    <string name="player_pause_listen_history">Pause listen history</string>
     <string name="queuetype">Tipo de Fila</string>
+    <string name="chart_top_songs">Top songs</string>
+    <string name="chart_top_artists">Top artists</string>
+    <string name="lang_interlingua">Interlingua</string>
 </resources>
