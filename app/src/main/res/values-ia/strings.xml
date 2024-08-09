@@ -28,8 +28,8 @@
     <string name="other_versions">Altere versiones</string>
     <string name="album_no_alternative_version">Iste album non ha necun versiones alternative</string>
     <string name="enqueue">Enqueue</string>
-    <string name="shuffle">Shuffle</string>
-    <string name="view_all">View all</string>
+    <string name="shuffle">Aleatori</string>
+    <string name="view_all">Vider toto</string>
     <string name="from_wikipedia_cca">From Wikipedia under Creative Commons Attribution CC-BY-SA 3.0</string>
     <string name="overview">Overview</string>
     <string name="singles">Singles</string>
@@ -72,7 +72,7 @@
     <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>
-    <string name="image_cache">IMAGE CACHE</string>
+    <string name="image_cache">CACHE DE IMAGINE</string>
     <string name="max_size">Max size</string>
     <string name="database">Base de datos</string>
     <string name="reset_quick_picks">Reset quick picks</string>
@@ -112,7 +112,7 @@
     <string name="autoadjust_the_volume">Adjust the volume to a fixed level</string>
     <string name="interact_with_the_system_equalizer">Interact with the system equalizer</string>
     <string name="about">A proposito de</string>
-    <string name="more_of">More of</string>
+    <string name="more_of">Plus de</string>
     <string name="sleep_timer">Temporisator de somno</string>
     <string name="left">%1$s left</string>
     <string name="confirm">Confirm</string>
@@ -122,7 +122,7 @@
     <string name="provided_by">Fornite per</string>
     <string name="delete_playback_events">Delete %1$s playback events</string>
     <string name="existing_data_will_be_overwritten">Existing data will be overwritten.\n%1$s will automatically close itself after restoring the database.</string>
-    <string name="folder_cache">FOLDER CACHE</string>
+    <string name="folder_cache">CACHE DE DOSSIER</string>
     <string name="cache_reset_by_clicking_button">Attention by clicking on the button below, the cache location folder will be reset to the default</string>
     <string name="cache_location_folder">Location folder</string>
     <string name="custom_cache_from_android_10_may_not_be_available">From Android 10, this feature may not be available</string>
@@ -132,8 +132,8 @@
     <string name="when_app_swipe_out_from_task_manager">When app swipe out from task manager</string>
     <string name="opening_url">is loading...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">An error has occurred while fetching the lyrics</string>
-    <string name="are_not_available_for_this_song">are not available for this song</string>
-    <string name="error_a_network_error_has_occurred">A network error has occurred</string>
+    <string name="are_not_available_for_this_song">non es disponibile pro iste canto</string>
+    <string name="error_a_network_error_has_occurred">Ocurreva un error de rete</string>
     <string name="error_couldn_t_find_a_playable_audio_format">Couldn\'t find a playable audio format</string>
     <string name="error_the_original_video_source_of_this_song_has_been_deleted">The original video source of this song has been deleted</string>
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">This song cannot be played due to server restrictions</string>
@@ -198,9 +198,9 @@
     <string name="search">Search</string>
     <string name="no">No</string>
     <string name="stop">Stoppar</string>
-    <string name="listen_on_youtube">Listen on YouTube</string>
-    <string name="listen_on_youtube_music">Listen on YouTube Music</string>
-    <string name="on_device">On device</string>
+    <string name="listen_on_youtube">Ascoltar sur YouTube</string>
+    <string name="listen_on_youtube_music">Ascoltar sur Youtube Music</string>
+    <string name="on_device">Sur le apparato</string>
     <string name="wavy_timeline">Wavy timeline</string>
     <string name="play_next">Reproducer le sequente</string>
     <string name="toggle_lyrics">Toggle lyrics</string>
