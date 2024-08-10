@@ -685,7 +685,7 @@ fun QuickPicksModern(
 
                                 LazyRow(contentPadding = endPaddingValues) {
                                     items(
-                                        items = newReleaseAlbumsFiltered.distinct(),
+                                        items = newReleaseAlbumsFiltered.distinctBy { it.key },
                                         key = { it.key }) {
                                         AlbumItem(
                                             album = it,
@@ -709,7 +709,7 @@ fun QuickPicksModern(
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {
-                                items(items = page.newReleaseAlbums.distinct(), key = { it.key }) {
+                                items(items = page.newReleaseAlbums.distinctBy { it.key }, key = { it.key }) {
                                     AlbumItem(
                                         album = it,
                                         thumbnailSizePx = albumThumbnailSizePx,
@@ -734,7 +734,7 @@ fun QuickPicksModern(
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
-                                    items = albums,
+                                    items = albums.distinctBy { it.key },
                                     key = Innertube.AlbumItem::key
                                 ) { album ->
                                     AlbumItem(
@@ -759,7 +759,7 @@ fun QuickPicksModern(
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
-                                    items = artists,
+                                    items = artists.distinctBy { it.key },
                                     key = Innertube.ArtistItem::key,
                                 ) { artist ->
                                     ArtistItem(
@@ -786,7 +786,7 @@ fun QuickPicksModern(
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
-                                    items = playlists,
+                                    items = playlists.distinctBy { it.key },
                                     key = Innertube.PlaylistItem::key,
                                 ) { playlist ->
                                     PlaylistItem(
@@ -855,7 +855,7 @@ fun QuickPicksModern(
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
-                                    items = playlists,
+                                    items = playlists.distinctBy { it.playlist.id },
                                     key = { it.playlist.id }
                                 ) { playlist ->
                                     Modifier
@@ -912,7 +912,7 @@ fun QuickPicksModern(
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
-                                    items = playlists.orEmpty(),
+                                    items = playlists.distinctBy { it.key },
                                     key = Innertube.PlaylistItem::key,
                                 ) { playlist ->
                                     PlaylistItem(
@@ -946,7 +946,7 @@ fun QuickPicksModern(
                                     flingBehavior = ScrollableDefaults.flingBehavior(),
                                 ) {
                                     itemsIndexed(
-                                        items = songs,
+                                        items = songs.distinctBy { it.key },
                                         key = { _, song -> song.key }
                                     ) { index, song ->
                                         Row(
@@ -1000,7 +1000,7 @@ fun QuickPicksModern(
                                     flingBehavior = ScrollableDefaults.flingBehavior(),
                                 ) {
                                     itemsIndexed(
-                                        items = artists,
+                                        items = artists.distinctBy { it.key },
                                         key = { _, artist -> artist.key }
                                     ) { index, artist ->
                                         Row(

@@ -25,8 +25,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 48
-        versionName = "0.6.47"
+        versionCode = 49
+        versionName = "0.6.47.1"
     }
 
     splits {
@@ -45,6 +45,7 @@ android {
         }
 
         release {
+            vcsInfo.include = false
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["appName"] = "RiMusic"
