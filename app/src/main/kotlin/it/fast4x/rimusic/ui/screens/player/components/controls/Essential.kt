@@ -232,7 +232,7 @@ fun InfoAlbumAndArtistEssential(
                  )
                  if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                      Icon(
-                         imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                         painter = painterResource(id = getUnlikedIcon()),
                          tint = colorPalette.text,
                          contentDescription = null,
                          modifier = Modifier
@@ -383,7 +383,7 @@ fun ControlsEssential(
         )
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
             Icon(
-                imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                painter = painterResource(id = getUnlikedIcon()),
                 tint = colorPalette.text,
                 contentDescription = null,
                 modifier = Modifier
