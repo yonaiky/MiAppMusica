@@ -433,7 +433,7 @@
     <string name="style_list">List</string>
     <string name="click_to_switch_to">Click this to switch to</string>
     <string name="direction_bottom">Bottom</string>
-    <string name="event_shake">Shake</string>
+    <string name="event_shake">Shake gesture</string>
     <string name="shake_to_change_song">Shake to change song</string>
     <string name="history">History</string>
     <string name="yesterday">Yesterday</string>
@@ -659,10 +659,10 @@
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
     <string name="playlistindicator">Playlist Indicator</string>
-    <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
+    <string name="playlistindicatorinfo">Mark songs that had been added to your Playlist</string>
     <string name="deleted">Deleted</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
+    <string name="statsfornerdsplayer">Stats for Nerds</string>
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
@@ -675,7 +675,7 @@
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Saved searches</string>
-    <string name="event_volumekeys">Change song with the volume keys</string>
+    <string name="event_volumekeys">Volume keys to change song</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
@@ -704,10 +704,10 @@
     <string name="swipe_up_to_open_the_queue">Swipe up to open Queue</string>
     <string name="pinfo_show_icons">Show info with icons</string>
     <string name="format_ms">%1$s ms</string>
-    <string name="minimum_silence_length">Minimum silence length</string>
-    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
-    <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
-    <string name="restart_service">Restart service</string>
+    <string name="minimum_silence_length">Min silence duration</string>
+    <string name="minimum_silence_length_description">Minimum duration of silent audio that can be skipped</string>
+    <string name="minimum_silence_length_warning">Player has to be restarted for effective changes!</string>
+    <string name="restart_service">Restart player</string>
     <string name="player_pause_listen_history">Pause listen history</string>
     <string name="queuetype">Queue Type</string>
     <string name="chart_top_songs">Top songs</string>
