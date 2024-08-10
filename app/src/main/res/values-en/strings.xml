@@ -351,7 +351,7 @@
     <string name="sorting_order">Sorting order</string>
     <string name="sort_year">Year</string>
     <string name="sort_name">Name</string>
-    <string name="sort_songs_number">Songs Number</string>
+    <string name="sort_songs_number">Number of songs</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
     <string name="artist_subscribers">%s Subscribers</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Glow</string>
-    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="bottomgradient">Enable action bar gradient</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
@@ -695,7 +695,7 @@
     <string name="message_type_essential">Essential</string>
     <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
     <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
-    <string name="songs_number_to_show">Songs number to show</string>
+    <string name="songs_number_to_show">Songs displayed</string>
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pause the song when the volume reaches 0 and resume it when the volume is greater than 0</string>
