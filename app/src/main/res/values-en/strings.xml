@@ -149,7 +149,7 @@
     <string name="big">Big</string>
     <string name="none">None</string>
     <string name="light">Light</string>
-    <string name="heavy">Heavy</string>
+    <string name="heavy">Large</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
     <string name="player_enable_rotation_buttons">Enable button rotation upon click</string>
     <string name="statistics">Statistics</string>
@@ -183,7 +183,7 @@
     <string name="dark">Dark</string>
     <string name="system">System</string>
     <string name="unlimited">Unlimited</string>
-    <string name="_light">Light</string>
+    <string name="_light">Small</string>
     <string name="downloaded">Downloaded</string>
     <string name="turn_off">Turn off</string>
     <string name="download">Download</string>
@@ -466,7 +466,7 @@
     <string name="info_not_find_app_create_doc">Couldn\'t find an application to create documents</string>
     <string name="info_not_find_app_browse_internet">Couldn\'t find an application to browse the Internet</string>
     <string name="show_floating_icon">Show floating search icon</string>
-    <string name="show_equalizer">Equalizer</string>
+    <string name="show_equalizer">Equalizer button</string>
     <string name="theme_pure_black">Pure Black</string>
     <string name="theme_modern_black">Modern Black</string>
     <string name="theme_mode_pitch_black">Pitch Black</string>
@@ -595,7 +595,7 @@
     <string name="message_excluded_s_songs">Excluded %s songs</string>
     <string name="show_thumbnail">Show thumbnail</string>
     <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
-    <string name="large">Large</string>
+    <string name="large">Extra Large</string>
     <string name="miniplayertype">Mini Player Type</string>
     <string name="expanded">Expanded</string>
     <string name="lyricscolor">Lyrics Color</string>
@@ -679,7 +679,7 @@
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Paste</string>
     <string name="searches_no_suggestions">No suggestions</string>
-    <string name="action_bar_show_discover_button">Show discover button</string>
+    <string name="action_bar_show_discover_button">Discover button</string>
     <string name="playertype">Player Type</string>
     <string name="noblur">No Blur when Lyrics is Disabled</string>
     <string name="fadingedge">Fading Edge</string>
