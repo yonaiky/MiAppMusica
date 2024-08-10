@@ -709,7 +709,7 @@
     <string name="minimum_silence_length_warning">O reprodutor precisa ser reiniciado para as mudanças serem efetivas!</string>
     <string name="restart_service">Reiniciar serviço</string>
     <string name="player_pause_listen_history">Pausar histórico de escuta</string>
-    <string name="queuetype">Tipo de fila</string>
+    <string name="queuetype">Tipo da Fila</string>
     <string name="chart_top_songs">Músicas populares</string>
     <string name="chart_top_artists">Artistas populares</string>
     <string name="lang_interlingua">Interlíngua</string>
