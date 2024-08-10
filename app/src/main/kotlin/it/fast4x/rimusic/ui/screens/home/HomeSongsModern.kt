@@ -1307,7 +1307,7 @@ fun HomeSongsModern(
                         }
                         if (currentFolder != null) {
                             itemsIndexed(
-                                items = filteredFolders,
+                                items = filteredFolders.distinctBy { it.fullPath },
                                 key = { _, folder -> folder.fullPath },
                                 contentType = { _, folder -> folder }
                             ) { index, folder ->
@@ -1348,9 +1348,11 @@ fun HomeSongsModern(
                     }
 
                     itemsIndexed(
-                        items = filteredSongs,
-                        key = { index, _ -> Random.nextLong().toString() },
-                        contentType = { _, song -> song },
+                        items = filteredSongs.distinctBy { it.song.id },
+                        //key = { index, _ -> Random.nextLong().toString() },
+                        //contentType = { _, song -> song },
+                    //) { index, song ->
+                        key = { _, song -> song.song.id }
                     ) { index, song ->
                         SwipeablePlaylistItem(
                             mediaItem = song.asMediaItem,
@@ -1426,9 +1428,9 @@ fun HomeSongsModern(
 
             if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
                 itemsIndexed(
-                    items = items,
+                    items = items.distinctBy { it.song.id },
                     key = { _, song -> song.song.id },
-                    contentType = { _, song -> song },
+                    //contentType = { _, song -> song },
                 ) { index, song ->
 
                     var isHiding by remember {
