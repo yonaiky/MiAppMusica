@@ -467,17 +467,15 @@ interface Database {
     fun songsEntityByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<SongEntity>>
 
     @Transaction
-    @Query("SELECT  Song.*, Album.title as albumTitle FROM Song " +
+    @Query("SELECT DISTINCT Song.*, Album.title as albumTitle FROM Song " +
             "LEFT JOIN Event E ON E.songId=Song.id LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId " +
             "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
             "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
             "ORDER BY E.timestamp DESC")
     fun songsByDatePlayedDesc(showHiddenSongs: Int = 0): Flow<List<SongEntity>>
 
-
-
     @Transaction
-    @Query("SELECT  Song.*, Album.title as albumTitle FROM Song " +
+    @Query("SELECT DISTINCT Song.*, Album.title as albumTitle FROM Song " +
             "LEFT JOIN Event E ON E.songId=Song.id LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId " +
             "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
             "WHERE (Song.totalPlayTimeMs > :showHiddenSongs OR Song.likedAt NOT NULL) AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' " +
