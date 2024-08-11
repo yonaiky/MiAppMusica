@@ -479,7 +479,7 @@ fun HomeSongsModern(
         }
     }
 
-    println("mediaItem SongEntity: ${items.size} filter ${filter} $items")
+    //println("mediaItem SongEntity: ${items.size} filter ${filter} $items")
 
     /********** OnDeviceDev */
     if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
@@ -1360,30 +1360,6 @@ fun HomeSongsModern(
                                 binder?.player?.addNext(song.asMediaItem)
                             }
                         ) {
-                            Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            InHistoryMediaItemMenu(
-                                                navController = navController,
-                                                song = song.song,
-                                                onDismiss = menuState::hide
-                                            )
-                                        }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        if (!selectItems) {
-                                            searching = false
-                                            filter = null
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                filteredSongs.map(SongEntity::asMediaItem),
-                                                index
-                                            )
-                                        }
-                                    }
-                                )
                             SongItem(
                                 song = song.song,
                                 isDownloaded = true,
@@ -1416,7 +1392,31 @@ fun HomeSongsModern(
                                         )
                                     else checkedState.value = false
                                 },
-                                modifier = Modifier.animateItem(
+                                modifier = Modifier
+                                        .combinedClickable(
+                                        onLongClick = {
+                                            menuState.display {
+                                                InHistoryMediaItemMenu(
+                                                    navController = navController,
+                                                    song = song.song,
+                                                    onDismiss = menuState::hide
+                                                )
+                                            }
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        },
+                                onClick = {
+                                    if (!selectItems) {
+                                        searching = false
+                                        filter = null
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayAtIndex(
+                                            filteredSongs.map(SongEntity::asMediaItem),
+                                            index
+                                        )
+                                    }
+                                }
+                            )
+                                    .animateItem(
                                     fadeInSpec = null,
                                     fadeOutSpec = null
                                 )

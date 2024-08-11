@@ -80,6 +80,10 @@ import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.ExtractorsFactory
+import androidx.media3.extractor.mkv.MatroskaExtractor
+import androidx.media3.extractor.mp4.FragmentedMp4Extractor
+import androidx.media3.extractor.text.DefaultSubtitleParserFactory
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.PlayerBody
@@ -562,7 +566,6 @@ class PlayerService : InvincibleService(),
         mediaSession.setSessionActivity(sessionActivityPendingIntent)
         mediaSession.setCallback(SessionCallback(player))
 
-        //TODO: to fix with another register type
         if (preferences.getBoolean(useVolumeKeysToChangeSongKey, false))
             mediaSession.setPlaybackToRemote(getVolumeProvider())
 
@@ -1691,13 +1694,11 @@ class PlayerService : InvincibleService(),
     /** NEW METHOD **/
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
         createDataSourceResolverFactory(
-            findMediaItem = { videoId ->
+            mediaItemToPlay = { videoId ->
                 runBlocking(Dispatchers.Main) {
                     player.findNextMediaItemById(videoId)
                 }
-            },
-            context = applicationContext,
-            cache = cache
+            }
         ),
         DefaultExtractorsFactory()
     )
@@ -1750,12 +1751,10 @@ class PlayerService : InvincibleService(),
 
 
     private fun createDataSourceResolverFactory(
-        findMediaItem: (videoId: String) -> MediaItem?,
-        context: Context,
-        cache: Cache,
-        chunkLength: Long? = 512 * 1024L
+        mediaItemToPlay: (videoId: String) -> MediaItem?
     ): ResolvingDataSource.Factory {
         val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+        val chunkLength = 512 * 1024L
 
         return ResolvingDataSource.Factory(
             ConditionalCacheDataSourceFactory(
@@ -1775,20 +1774,31 @@ class PlayerService : InvincibleService(),
         ) { dataSpec ->
             Timber.i( "PlayerService createDataSourceResolverFactory dataSpec " + dataSpec.toString())
             val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
-                ?: error("A key must be set")
+                ?: error("No media videoId in dataSpec")
 
             Timber.i(
-                "PlayerService createDataSourceResolverFactory dataSpec isLocal ${dataSpec.isLocal} key ${videoId} all ${dataSpec.toString()}"
+                "PlayerService createDataSourceResolverFactory dataSpec isLocal ${dataSpec.isLocal} videoId $videoId all $dataSpec"
+            )
+            Timber.i(
+                "PlayerService createDataSourceResolverFactory dataSpec isInCache ${cache.isCached(videoId, dataSpec.position, chunkLength)}"
+            )
+            Timber.i(
+                "PlayerService createDataSourceResolverFactory dataSpec isInDownloadCache ${downloadCache.isCached(videoId, dataSpec.position, chunkLength)}"
+            )
+            Timber.i(
+                "PlayerService createDataSourceResolverFactory dataSpec videoId == ringBuffer0 ${videoId == ringBuffer.getOrNull(0)?.first}"
+            )
+            Timber.i(
+                "PlayerService createDataSourceResolverFactory dataSpec videoId == ringBuffer1 ${videoId == ringBuffer.getOrNull(1)?.first}"
             )
 
             when {
                 dataSpec.isLocal ||
-                        cache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L)) ||
-                        downloadCache.isCached(
-                            videoId,
-                            dataSpec.position,
-                            chunkLength ?: (512 * 1024L)
-                        ) -> dataSpec
+                        //cache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L)) ||
+                        //downloadCache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L))
+                        cache.isCached(videoId, dataSpec.position, chunkLength) ||
+                        downloadCache.isCached(videoId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1)
+                -> dataSpec
 
                 videoId == ringBuffer.getOrNull(0)?.first ->
                     dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
@@ -1808,6 +1818,7 @@ class PlayerService : InvincibleService(),
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
+
                     val format = when (audioQualityFormat) {
                         AudioQualityFormat.Auto -> body?.streamingData?.autoMaxQualityFormat
                         AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
@@ -1816,11 +1827,13 @@ class PlayerService : InvincibleService(),
                     }
 
                     Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat $format")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body?.streamingData?.adaptiveFormats}")
+
                     if (format == null) throw PlayableFormatNotFoundException()
 
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format?.let { formatIn ->
-                            val mediaItem = findMediaItem(videoId)
+                            val mediaItem = mediaItemToPlay(videoId)
                             if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
                                 formatIn.approxDurationMs?.div(1000)
                                     ?.let(DateUtils::formatElapsedTime)?.removePrefix("0")
