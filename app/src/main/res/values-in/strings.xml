@@ -607,7 +607,7 @@
     <string name="actionspacedevenly">Ratakan jarak</string>
     <string name="expandedplayer">Tombol Pemutar yang diperluas</string>
     <string name="expandedlyrics">Lirik yang diperluas</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedlyricsinfo">Tersedia saat thumbnail untuk lirik dinonaktifkan</string>
     <string name="info_connect_your_piped_account_first">Hubungkan akun piped Anda terlebih dahulu atau nonaktifkan sinkronisasi piped</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali (বাংলা)</string>
@@ -666,12 +666,12 @@
     <string name="discover">Discover</string>
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
-    <string name="controls_title_blur_effect">Efek blur</string>
+    <string name="controls_title_blur_effect">Efek mengabur</string>
     <string name="controls_title_medley_duration">Medley duration</string>
-    <string name="controls_title_playback_speed">Playback speed</string>
-    <string name="controls_title_playback_pitch">Playback pitch</string>
-    <string name="controls_title_playback_volume">Playback Volume</string>
-    <string name="controls_title_device_volume">Device volume</string>
+    <string name="controls_title_playback_speed">Kecepatan pemutaran</string>
+    <string name="controls_title_playback_pitch">Tinggi nada pemutaran</string>
+    <string name="controls_title_playback_volume">Volume pemutaran</string>
+    <string name="controls_title_device_volume">Volume perangkat</string>
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Saran</string>
     <string name="searches_saved_searches">Riwayat penelusuran</string>
@@ -681,7 +681,7 @@
     <string name="searches_no_suggestions">Tidak ada saran</string>
     <string name="action_bar_show_discover_button">Tombol Discover</string>
     <string name="playertype">Gaya Pemutar</string>
-    <string name="noblur">No Blur when Lyrics is Disabled</string>
+    <string name="noblur">Jangan kaburkan latar belakang saat lirik nonaktif</string>
     <string name="fadingedge">Tepi Memudar</string>
     <string name="carousel">Tampilan Carousel</string>
     <string name="carouselsize">Ukuran Carousel</string>
@@ -689,7 +689,7 @@
     <string name="info_paused_with_volume_zero">Dijeda karena volume nol</string>
     <string name="effect_fade_audio">Fade audio</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
-    <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="autosync">Sinkronisasi otomatis daftar putar impor</string>
     <string name="message_type">Gaya pesan sembulan</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
