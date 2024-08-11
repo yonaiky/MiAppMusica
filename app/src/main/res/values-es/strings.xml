@@ -702,15 +702,15 @@
     <string name="quality">Calidad</string>
     <string name="value_must_be_ip_address">El valor debe ser una dirección Ip</string>
     <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
-    <string name="pinfo_show_icons">Show info with icons</string>
+    <string name="pinfo_show_icons">Mostrar información con iconos</string>
     <string name="format_ms">%1$s ms</string>
-    <string name="minimum_silence_length">Minimum silence length</string>
-    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
-    <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
-    <string name="restart_service">Restart service</string>
-    <string name="player_pause_listen_history">Pause listen history</string>
+    <string name="minimum_silence_length">Duración mínima del silencio</string>
+    <string name="minimum_silence_length_description">El tiempo mínimo que el audio debe estar en silencio para ser omitido</string>
+    <string name="minimum_silence_length_warning">¡El jugador debe reiniciarse para que los cambios surtan efecto!</string>
+    <string name="restart_service">Reiniciar servicio</string>
+    <string name="player_pause_listen_history">Pausa el historial de escucha</string>
     <string name="queuetype">Tipo de cola</string>
-    <string name="chart_top_songs">Top songs</string>
-    <string name="chart_top_artists">Top artists</string>
+    <string name="chart_top_songs">Las mejores canciones</string>
+    <string name="chart_top_artists">Los mejores artistas</string>
     <string name="lang_interlingua">Interlingua</string>
 </resources>

@@ -439,10 +439,9 @@
     <string name="yesterday">Hier</string>
     <string name="this_week">Cette semaine</string>
     <string name="last_week">Semaine dernière</string>
-    <string name="by_casual_played_song">Par les titres joués récemment</string>
+    <string name="by_casual_played_song">En mode aléatoire</string>
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Afficher les statistiques dans la barre de navigation.
- 
 (Uniquement avec l\'interface de ViMusic, avec la barre de navigation gauche ou droite !)</string>
     <string name="settings">Paramètres</string>
     <string name="page_not_been_loaded">La page n\'a pas été chargée correctement, essayez de rafraîchir la page.</string>
@@ -696,23 +695,23 @@
     <string name="message_type_modern">Moderne</string>
     <string name="message_type_essential">Minimale</string>
     <string name="discoverinforadio">Supprime les titres likés et les playlists de la file d\'attente</string>
-    <string name="discover_has_been_applied_to_radio">La découverte a été appliquée à la radio, chansons retirées : %s</string>
+    <string name="discover_has_been_applied_to_radio">La découverte a été appliquée à la radio, titres retirés : %s</string>
     <string name="songs_number_to_show">Nombre de titres à afficher</string>
-    <string name="discover_has_been_applied_to_queue">La découverte a été appliquée à la radio, chansons retirées : %s</string>
+    <string name="discover_has_been_applied_to_queue">La découverte a été appliquée à la radio, titres retirés : %s</string>
     <string name="player_pause_on_volume_zero">Mettre en pause quand le volume est à 0</string>
     <string name="info_pauses_player_when_volume_zero">Met en pause le lecteur lorsque le volume atteint 0 et reprend lorsque le volume est supérieur à 0</string>
     <string name="quality">Qualité</string>
     <string name="value_must_be_ip_address">La valeur doit être une adresse ip</string>
-    <string name="queuetype">Queue Type</string>
-    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
-    <string name="pinfo_show_icons">Show info with icons</string>
-    <string name="format_ms">%1$s ms</string>
-    <string name="minimum_silence_length">Minimum silence length</string>
-    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
-    <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
-    <string name="restart_service">Restart service</string>
-    <string name="player_pause_listen_history">Pause listen history</string>
-    <string name="chart_top_songs">Top songs</string>
-    <string name="chart_top_artists">Top artists</string>
+    <string name="swipe_up_to_open_the_queue">Glisser vers le haut pour ouvrir la file d\'attente</string>
+    <string name="pinfo_show_icons">Afficher les informations avec les icônes</string>
+    <string name="format_ms">%1$d ms</string>
+    <string name="minimum_silence_length">Longueur minimale du silence</string>
+    <string name="minimum_silence_length_description">Le temps minimum pendant lequel l\'audio doit être silencieux pour être ignoré</string>
+    <string name="minimum_silence_length_warning">Le lecteur doit être redémarré pour que les modifications soient effectives !</string>
+    <string name="restart_service">Redémarrer le service</string>
+    <string name="player_pause_listen_history">Suspendre l\'historique d\'écoute</string>
+    <string name="queuetype">Type de file d’attente</string>
+    <string name="chart_top_songs">Meilleurs titres</string>
+    <string name="chart_top_artists">Meilleurs artistes</string>
     <string name="lang_interlingua">Interlingua</string>
 </resources>
