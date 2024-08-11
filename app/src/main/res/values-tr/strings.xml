@@ -709,7 +709,7 @@
     <string name="minimum_silence_length_warning">Değişikliklerin etkili olması için uygulamanın yeniden başlatılması gerekir!</string>
     <string name="restart_service">Hizmeti yeniden başlat</string>
     <string name="player_pause_listen_history">Dinleme geçmişini duraklat</string>
-    <string name="queuetype">Sıra tipi</string>
+    <string name="queuetype">Oynatma Sırası Tipi</string>
     <string name="chart_top_songs">En İyi Şarkılar</string>
     <string name="chart_top_artists">En iyi sanatçılar</string>
     <string name="lang_interlingua">Interlingua</string>
