@@ -606,7 +606,7 @@
     <string name="timelinesize">Ukuran bilah waktu</string>
     <string name="actionspacedevenly">Ratakan jarak</string>
     <string name="expandedplayer">Tombol Pemutar yang diperluas</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyrics">Lirik yang diperluas</string>
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Hubungkan akun piped Anda terlebih dahulu atau nonaktifkan sinkronisasi piped</string>
     <string name="piped_playlists">Piped</string>
