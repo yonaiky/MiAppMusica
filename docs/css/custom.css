@@ -42,12 +42,17 @@ select {
   }
 }
 #languageSelect {
-  padding: 0 8px 0 25px;
+  padding: 0 8px 0 8px;
   color: #abbad0;
+  border-left: 17px solid transparent;
   background-image:url(../images/lang.svg) !important;
-  background-position: left -1px;
+  background-position: -17px -1px;
   background-repeat: no-repeat;
   background-size: auto 21px;
+  text-wrap: nowrap;
+  option {
+    text-align: left !important;
+  }
 }
 
 .footer-links > li > a {
