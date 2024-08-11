@@ -48,6 +48,10 @@ select {
   background-position: left -1px;
   background-repeat: no-repeat;
   background-size: auto 21px;
+  text-wrap: nowrap;
+  option {
+    text-align: left !important;
+  }
 }
 
 .footer-links > li > a {
