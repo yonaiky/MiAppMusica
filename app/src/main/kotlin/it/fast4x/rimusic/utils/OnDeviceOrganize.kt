@@ -6,28 +6,29 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 
 class OnDeviceOrganize {
     companion object {
-        fun sortSongs(sortOrder: SortOrder, sortBy: OnDeviceFolderSortBy, songs: List<Song>): List<Song> {
+        fun sortSongs(sortOrder: SortOrder, sortBy: OnDeviceFolderSortBy, songs: List<SongEntity>): List<SongEntity> {
             return when (sortBy) {
                 OnDeviceFolderSortBy.Title -> {
                     if (sortOrder == SortOrder.Ascending)
-                        songs.sortedBy { it.title }
+                        songs.sortedBy { it.song.title }
                     else
-                        songs.sortedByDescending { it.title }
+                        songs.sortedByDescending { it.song.title }
                 }
                 OnDeviceFolderSortBy.Artist -> {
                     if (sortOrder == SortOrder.Ascending)
-                        songs.sortedBy { it.artistsText }
+                        songs.sortedBy { it.song.artistsText }
                     else
-                        songs.sortedByDescending { it.artistsText }
+                        songs.sortedByDescending { it.song.artistsText }
                 }
                 OnDeviceFolderSortBy.Duration -> {
                     if (sortOrder == SortOrder.Ascending)
-                        songs.sortedBy { durationToMillis(it.durationText ?: "0:00") }
+                        songs.sortedBy { durationToMillis(it.song.durationText ?: "0:00") }
                     else
-                        songs.sortedByDescending { durationToMillis(it.durationText ?: "0:00") }
+                        songs.sortedByDescending { durationToMillis(it.song.durationText ?: "0:00") }
                 }
             }
         }

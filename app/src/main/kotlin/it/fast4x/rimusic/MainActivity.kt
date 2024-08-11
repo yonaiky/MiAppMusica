@@ -262,6 +262,7 @@ import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.toID
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 
 
@@ -426,12 +427,13 @@ class MainActivity :
                     SmartMessage("Your Proxy Hostname is invalid, please check it", PopupType.Warning, context = this@MainActivity)
                 }
             }
-            if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
+            //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
                 LocalePreferences.preference =
                     LocalePreferenceItem(
                         hl = Locale.getDefault().toLanguageTag(),
                         //Locale.getDefault().country
                         gl = ""
+                        //gl = "US" // US IMPORTANT
                     )
         }
 

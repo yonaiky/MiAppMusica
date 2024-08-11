@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Mostra el botó de Bucle</string>
     <string name="action_bar_show_shuffle_button">Mostra el botó Shuffle</string>
     <string name="action_bar_show_lyrics_button">Mostra el botó de Lletres</string>
-    <string name="action_bar_show_arrow_button_to_open_queue">Mostra el botó de Fletxa per obrir la cua</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Mostra el botó de Fletxa</string>
     <string name="lang_finnish">Finlandès</string>
     <string name="listening_time">Temps d\'escolta</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostra el nombre de cançons escoltades i el seu temps d\'escolta</string>

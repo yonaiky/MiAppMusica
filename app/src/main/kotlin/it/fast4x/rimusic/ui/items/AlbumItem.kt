@@ -20,6 +20,7 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
@@ -31,7 +32,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    yearCentered: Boolean? = true
+    yearCentered: Boolean? = true,
+    showAuthors: Boolean? = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
@@ -42,6 +44,7 @@ fun AlbumItem(
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
+        showAuthors = showAuthors,
         modifier = modifier
     )
 }
@@ -53,7 +56,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    yearCentered: Boolean? = true
+    yearCentered: Boolean? = true,
+    showAuthors: Boolean? = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
@@ -78,7 +82,8 @@ fun AlbumItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false
+    alternative: Boolean = false,
+    showAuthors: Boolean? = false
 ) {
     val (_, typography, thumbnailShape) = LocalAppearance.current
 
@@ -89,7 +94,7 @@ fun AlbumItem(
         modifier = modifier
     ) {
         AsyncImage(
-            model = thumbnailUrl?.thumbnail(thumbnailSizePx),
+            model = thumbnailUrl?.thumbnail(thumbnailSizePx)?.let { it1 -> cleanPrefix(it1) },
             contentDescription = null,
             //contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -99,7 +104,7 @@ fun AlbumItem(
 
         ItemInfoContainer {
             BasicText(
-                text = title ?: "",
+                text = cleanPrefix(title ?: ""),
                 style = typography.xs.semiBold,
                 maxLines = 1, //if (alternative) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
@@ -107,15 +112,17 @@ fun AlbumItem(
                     .basicMarquee(iterations = Int.MAX_VALUE)
             )
 
-            if (!alternative) {
+            if (!alternative || showAuthors == true) {
                 authors?.let {
                     BasicText(
-                        text = authors,
+                        text = cleanPrefix(authors),
                         style = typography.xs.semiBold.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .basicMarquee(iterations = Int.MAX_VALUE)
+                            .align(
+                                if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
                     )
                 }
             }

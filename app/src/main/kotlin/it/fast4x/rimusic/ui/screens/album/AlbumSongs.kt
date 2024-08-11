@@ -92,6 +92,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -258,24 +259,7 @@ fun AlbumSongs(
 
         }
 
-    if (showSelectCustomizeAlbumDialog)
-        SelectorDialog(
-            title = stringResource(R.string.customize_album),
-            onDismiss = { showSelectCustomizeAlbumDialog = false },
-            values = listOf(
-                Info("t", stringResource(R.string.update_title)),
-                Info("a", stringResource(R.string.update_authors)),
-                Info("c", stringResource(R.string.update_cover))
-            ),
-            onValueSelected = {
-                when (it) {
-                    "t" -> showDialogChangeAlbumTitle = true
-                    "a" -> showDialogChangeAlbumAuthors = true
-                    "c" -> showDialogChangeAlbumCover = true
-                }
-                showSelectCustomizeAlbumDialog = false
-            }
-        )
+
 
     if (showDialogChangeAlbumTitle)
         InputTextDialog(
@@ -290,7 +274,8 @@ fun AlbumSongs(
                     }
                     //context.toast("Album Saved $it")
                 }
-            }
+            },
+            prefix = MODIFIED_PREFIX
         )
     if (showDialogChangeAlbumAuthors)
         InputTextDialog(

@@ -25,6 +25,7 @@ enum class Languages {
     Hungarian,
     Italian,
     Indonesian,
+    Interlingua,
     Irish,
     Japanese,
     Korean,
@@ -75,6 +76,7 @@ enum class Languages {
             Hebrew -> "iw" //Hebrew -> "he"
             Hindi -> "hi"
             Hungarian -> "hu"
+            Interlingua -> "ia"
             Spanish -> "es"
             French -> "fr"
             Malayalam -> "ml"
@@ -100,6 +102,7 @@ enum class Languages {
 }
 
 enum class Countries {
+    ZZ,
     AR,
     DZ,
     AU,
@@ -210,8 +213,9 @@ enum class Countries {
     YE,
     ZW;
 
-    val country: String
+    val countryName: String
         get() = when (this) {
+            ZZ -> "Global"
             AR -> "Argentina"
             DZ -> "Algeria"
             AU -> "Australia"

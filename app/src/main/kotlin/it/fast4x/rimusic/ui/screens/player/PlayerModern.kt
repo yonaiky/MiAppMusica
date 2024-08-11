@@ -288,6 +288,7 @@ import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
+import it.fast4x.rimusic.utils.swipeUpQueueKey
 import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -661,7 +662,8 @@ fun PlayerModern(
     }
     var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
-    var tapqueue by rememberPreference(tapqueueKey, true)
+    val tapqueue by rememberPreference(tapqueueKey, true)
+    val swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
     var noblur by rememberPreference(noblurKey, true)
@@ -1240,11 +1242,12 @@ fun PlayerModern(
                         )
                     )
                     .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onVerticalDrag = { _, dragAmount ->
-                                if (dragAmount < 0) showQueue = true
-                            }
-                        )
+                        if (swipeUpQueue)
+                            detectVerticalDragGestures(
+                                onVerticalDrag = { _, dragAmount ->
+                                    if (dragAmount < 0) showQueue = true
+                                }
+                            )
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {

@@ -33,7 +33,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -93,6 +95,7 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -154,9 +157,11 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.messageTypeKey
+import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
+import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
@@ -193,9 +198,6 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
-
-
-@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
@@ -285,7 +287,7 @@ fun  UiSettings() {
     )
 
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
-    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    //var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
     var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
@@ -334,6 +336,11 @@ fun  UiSettings() {
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
 
     val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
+
+    var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
+
+    var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
+    var restartService by rememberSaveable { mutableStateOf(false) }
 
 
     Column(
@@ -539,6 +546,36 @@ fun  UiSettings() {
                     }
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_pause_listen_history),
+                text = "Does not save playback events used for statistics, history and suggestions in quick pics",
+                isChecked = pauseListenHistory,
+                onCheckedChange = {
+                    pauseListenHistory = it
+                    restartService = true
+                }
+            )
+            AnimatedVisibility(visible = restartService) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SettingsDescription(
+                        text = stringResource(R.string.minimum_silence_length_warning),
+                        important = true,
+                        modifier = Modifier.weight(2f)
+                    )
+                    SecondaryTextButton(
+                        text = stringResource(R.string.restart_service),
+                        onClick = {
+                            binder?.restartForegroundOrStop()?.let { restartService = false }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 24.dp)
+                    )
+                }
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.min_listening_time).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
@@ -765,7 +802,7 @@ fun  UiSettings() {
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silent_parts_during_playback),
@@ -774,6 +811,50 @@ fun  UiSettings() {
                     skipSilence = it
                 }
             )
+
+            AnimatedVisibility(visible = skipSilence) {
+                val initialValue by remember { derivedStateOf { minimumSilenceDuration.toFloat() / 1000L } }
+                var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
+
+
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SliderSettingsEntry(
+                        title = stringResource(R.string.minimum_silence_length),
+                        text = stringResource(R.string.minimum_silence_length_description),
+                        state = newValue,
+                        onSlide = { newValue = it },
+                        onSlideComplete = {
+                            minimumSilenceDuration = newValue.toLong() * 1000L
+                            restartService = true
+                        },
+                        toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
+                        range = 1.00f..2000.000f
+                    )
+
+                    AnimatedVisibility(visible = restartService) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            SettingsDescription(
+                                text = stringResource(R.string.minimum_silence_length_warning),
+                                important = true,
+                                modifier = Modifier.weight(2f)
+                            )
+                            SecondaryTextButton(
+                                text = stringResource(R.string.restart_service),
+                                onClick = {
+                                    binder?.restartForegroundOrStop()?.let { restartService = false }
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 24.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true))
             SwitchSettingEntry(
@@ -1283,6 +1364,7 @@ fun  UiSettings() {
                 isChecked = showFavoritesPlaylist,
                 onCheckedChange = { showFavoritesPlaylist = it }
             )
+        /*
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
@@ -1290,6 +1372,7 @@ fun  UiSettings() {
                 isChecked = showCachedPlaylist,
                 onCheckedChange = { showCachedPlaylist = it }
             )
+         */
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",

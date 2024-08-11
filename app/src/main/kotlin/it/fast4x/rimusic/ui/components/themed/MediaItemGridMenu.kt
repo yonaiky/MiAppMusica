@@ -75,6 +75,7 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.artistRoute
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -661,7 +662,8 @@ fun MediaItemGridMenu (
                     }
                     //context.toast("Song Saved $it")
                 }
-            }
+            },
+            prefix = MODIFIED_PREFIX
         )
 
     AnimatedContent(

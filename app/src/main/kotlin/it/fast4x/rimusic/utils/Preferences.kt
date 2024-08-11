@@ -228,6 +228,7 @@ const val lyricsBackgroundKey = "lyricsBackground"
 const val hideprevnextKey = "hideprevnext"
 const val prevNextSongsKey = "prevNextSongs"
 const val tapqueueKey = "tapqueue"
+const val swipeUpQueueKey = "swipeUpQueue"
 const val playlistindicatorKey = "playlistindicator"
 const val statsfornerdsKey = "statsfornerds"
 const val statsfornerdsfullKey = "statsfornerdsfull"
@@ -251,6 +252,10 @@ const val isPipedEnabledKey = "isPipedEnabled"
 
 const val messageTypeKey = "messageType"
 const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"
+const val playerInfoShowIconsKey = "playerInfoShowIcons"
+const val minimumSilenceDurationKey = "minimumSilenceDuration"
+const val pauseListenHistoryKey = "pauseListenHistory"
+const val selectedCountryCodeKey = "selectedCountryCode"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
@@ -301,6 +306,16 @@ fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {
     return remember {
         mutableStatePreferenceOf(context.preferences.getFloat(key, defaultValue)) {
             context.preferences.edit { putFloat(key, it) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
+    val context = LocalContext.current
+    return remember {
+        mutableStatePreferenceOf(context.preferences.getLong(key, defaultValue)) {
+            context.preferences.edit { putLong(key, it) }
         }
     }
 }

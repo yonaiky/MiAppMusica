@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Afficher le bouton boucle</string>
     <string name="action_bar_show_shuffle_button">Afficher le bouton lecture aléatoire</string>
     <string name="action_bar_show_lyrics_button">Afficher le bouton des paroles</string>
-    <string name="action_bar_show_arrow_button_to_open_queue">Afficher le bouton de la flèche pour ouvrir la file d\'attente</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Afficher le bouton flèche</string>
     <string name="lang_finnish">Finnois (Suomalainen)</string>
     <string name="listening_time">Durée d’écoute</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Affiche le nombre de titres écoutées et leur temps d\'écoute</string>
@@ -442,7 +442,6 @@
     <string name="by_casual_played_song">En mode aléatoire</string>
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Afficher les statistiques dans la barre de navigation.
- 
 (Uniquement avec l\'interface de ViMusic, avec la barre de navigation gauche ou droite !)</string>
     <string name="settings">Paramètres</string>
     <string name="page_not_been_loaded">La page n\'a pas été chargée correctement, essayez de rafraîchir la page.</string>

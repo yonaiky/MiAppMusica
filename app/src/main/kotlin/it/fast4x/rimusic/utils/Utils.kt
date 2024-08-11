@@ -30,12 +30,15 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.playlistPageLong
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import kotlinx.coroutines.CoroutineScope
@@ -46,7 +49,9 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import org.json.JSONException
+import timber.log.Timber
 import java.io.File
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.text.SimpleDateFormat
@@ -64,6 +69,7 @@ fun cleanPrefix(text: String): String {
     cleanText = cleanText.substringAfter(MONTHLY_PREFIX)
     cleanText = cleanText.substringAfter(PIPED_PREFIX)
     cleanText = cleanText.substringAfter(EXPLICIT_PREFIX)
+    cleanText = cleanText.substringAfter(MODIFIED_PREFIX)
     return cleanText
 }
 
@@ -118,6 +124,34 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
         //}
     }
 }
+
+fun albumItemToggleBookmarked( albumItem: Innertube.AlbumItem ) {
+    query {
+        //if (Database.albumExist(albumItem.key) == 0)
+        //    Database.insert(albumItem.asAlbum, Album::toggleLike)
+        //else {
+        if (Database.albumBookmarked(albumItem.key) == 0)
+            Database.bookmarkAlbum(
+                albumItem.key,
+                System.currentTimeMillis()
+            )
+        else Database.bookmarkAlbum(
+            albumItem.key,
+            null
+        )
+        //}
+    }
+}
+
+val Innertube.AlbumItem.asAlbum: Album
+    get() = Album (
+        id = key,
+        title = info?.name,
+        thumbnailUrl = thumbnail?.url,
+        year = year,
+        authorsText = authors?.joinToString("") { it.name ?: "" },
+        //shareUrl =
+    )
 
 val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
     @UnstableApi
@@ -230,6 +264,31 @@ val Song.asMediaItem: MediaItem
             ) else id.toUri()
         )
         .setCustomCacheKey(id)
+        .build()
+
+val SongEntity.asMediaItem: MediaItem
+    @UnstableApi
+    get() = MediaItem.Builder()
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(song.title)
+                .setArtist(song.artistsText)
+                .setArtworkUri(song.thumbnailUrl?.toUri())
+                .setExtras(
+                    bundleOf(
+                        "durationText" to song.durationText
+                    )
+                )
+                .build()
+        )
+        .setMediaId(song.id)
+        .setUri(
+            if (song.isLocal) ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                song.id.substringAfter(LOCAL_KEY_PREFIX).toLong()
+            ) else song.id.toUri()
+        )
+        .setCustomCacheKey(song.id)
         .build()
 
 val MediaItem.asSong: Song

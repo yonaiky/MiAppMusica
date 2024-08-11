@@ -344,7 +344,8 @@ fun HomeAlbums(
                                 }
                                 //context.toast("Album Saved $it")
                             }
-                        }
+                        },
+                        prefix = MODIFIED_PREFIX
                     )
                 if (showDialogChangeAlbumAuthors)
                     InputTextDialog(

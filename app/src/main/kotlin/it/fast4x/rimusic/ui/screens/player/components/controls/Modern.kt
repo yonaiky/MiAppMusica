@@ -89,6 +89,7 @@ import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -114,6 +115,7 @@ fun InfoAlbumAndArtistModern(
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
+    val playerInfoShowIcon by rememberPreference(playerInfoShowIconsKey, true)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -129,27 +131,28 @@ fun InfoAlbumAndArtistModern(
             modifier = Modifier.fillMaxWidth(0.90f)
         ) {
 
-            IconButton(
-                icon = if (albumId == null && !media.isLocal) R.drawable.logo_youtube else R.drawable.album,
-                color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
-                enabled = albumId != null,
-                onClick = {
-                    if (albumId != null) {
-                        //onGoToAlbum(albumId)
-                        navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
-                        //layoutState.collapseSoft()
-                        onCollapse()
-                    }
-                },
-                modifier = Modifier
-                    .size(26.dp)
-            )
+            if (playerInfoShowIcon) {
+                IconButton(
+                    icon = if (albumId == null && !media.isLocal) R.drawable.logo_youtube else R.drawable.album,
+                    color = if (albumId == null) colorPalette.textDisabled else colorPalette.text,
+                    enabled = albumId != null,
+                    onClick = {
+                        if (albumId != null) {
+                            //onGoToAlbum(albumId)
+                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                            //layoutState.collapseSoft()
+                            onCollapse()
+                        }
+                    },
+                    modifier = Modifier
+                        .size(26.dp)
+                )
 
-            Spacer(
-                modifier = Modifier
-                    .width(8.dp)
-            )
-
+                Spacer(
+                    modifier = Modifier
+                        .width(8.dp)
+                )
+            }
 
             var modifierTitle = Modifier
                 .clickable {
@@ -159,7 +162,7 @@ fun InfoAlbumAndArtistModern(
                         onCollapse()
                     }
                 }
-            var textoutline by rememberPreference(textoutlineKey, false)
+            val textoutline by rememberPreference(textoutlineKey, false)
 
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
             Row(
@@ -239,7 +242,7 @@ fun InfoAlbumAndArtistModern(
              )
              if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                  Icon(
-                     imageVector = ImageVector.vectorResource(getUnlikedIcon()),
+                     painter = painterResource(id = getUnlikedIcon()),
                      tint = colorPalette.text,
                      contentDescription = null,
                      modifier = Modifier
@@ -281,29 +284,30 @@ fun InfoAlbumAndArtistModern(
             )
 
 
+        if (playerInfoShowIcon) {
+            IconButton(
+                icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else R.drawable.artists,
+                color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
+                onClick = {
+                    if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
+                        showSelectDialog = true
+                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                        //onGoToArtist( artistIds[0].id )
+                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                        //layoutState.collapseSoft()
+                        onCollapse()
+                    }
+                },
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(start = 2.dp)
+            )
 
-        IconButton(
-            icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else R.drawable.artists,
-            color = if (artistIds?.isEmpty() == true) colorPalette.textDisabled else colorPalette.text,
-            onClick = {
-                if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
-                    showSelectDialog = true
-                if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
-                    //onGoToArtist( artistIds[0].id )
-                    navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
-                    //layoutState.collapseSoft()
-                    onCollapse()
-                }
-            },
-            modifier = Modifier
-                .size(24.dp)
-                .padding(start = 2.dp)
-        )
-
-        Spacer(
-            modifier = Modifier
-                .width(12.dp)
-        )
+            Spacer(
+                modifier = Modifier
+                    .width(12.dp)
+            )
+        }
 
         var modifierArtist = Modifier
             .clickable {
@@ -659,11 +663,13 @@ fun ControlsModern(
                           onClick = {
                               if (shouldBePlaying) {
                                   //binder.player.pause()
-                                  binder.callPause({ binder.player.pause() } )
+                                  binder.callPause({} )
                               } else {
+                                  /*
                                   if (binder.player.playbackState == Player.STATE_IDLE) {
                                       binder.player.prepare()
                                   }
+                                   */
                                   binder.player.play()
                               }
                               if (effectRotationEnabled) isRotated = !isRotated

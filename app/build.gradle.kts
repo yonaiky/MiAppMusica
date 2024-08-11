@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.ksp)
-    //alias(libs.plugins.bundletool)
-    //alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -27,8 +25,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 34
-        versionCode = 47
-        versionName = "0.6.46"
+        versionCode = 49
+        versionName = "0.6.47.1"
     }
 
     splits {
@@ -47,6 +45,7 @@ android {
         }
 
         release {
+            vcsInfo.include = false
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["appName"] = "RiMusic"
@@ -145,7 +144,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.math3)
     implementation(libs.toasty)
-    implementation("dev.chrisbanes.haze:haze:0.7.3")
+    implementation(libs.haze)
 
     implementation(libs.room)
     ksp(libs.room.compiler)

@@ -227,7 +227,6 @@ fun HistoryList(
                             is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
                         },
                         modifier = Modifier
-                            .fillMaxWidth(0.9f)
                             .background(
                                 colorPalette.favoritesOverlay,
                                 shape = thumbnailRoundness.shape()

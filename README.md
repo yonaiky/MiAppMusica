@@ -71,6 +71,7 @@
 - **Hungarìan:** thanks to [Zan1456](https://crowdin.com/profile/Zan1456) and [Ndvok](https://crowdin.com/profile/ndvok)
 - **Italian:** thanks to [agefcgo](https://crowdin.com/profile/agefcgo) and [CiccioDerole](https://crowdin.com/profile/CiccioDerole) and [fast4x](https://github.com/fast4x)
 - **Indonesian:** thanks to [luthfialfarabi](https://crowdin.com/profile/luthfialfarabi) and [teddysulaimanGL](https://github.com/teddysulaimanGL) and [Fausta Ahmad](https://crowdin.com/profile/faustaahmad)  
+- **Interlingua** thanks to [softinterlingua](https://github.com/softinterlingua)
 - **Japanese:** thanks to [Mid_Vur_Shaan](https://crowdin.com/profile/Mid_Vur_Shaan)
 - **Korean:** thanks to [ZeroZero00](https://crowdin.com/profile/ZeroZero00) and [TsyQax](https://crowdin.com/profile/TsyQax)
 - **Odia:** thanks to [Get100percent](https://github.com/Get100percent)
@@ -204,12 +205,13 @@ WARNING, the custom version is not an official release, download only if invited
 - [roklc](https://github.com/roklc)
 - [sharunkumar](https://github.com/sharunkumar/sharunkumar)
 - [SuhasDissa](https://github.com/SuhasDissa)
+- [twistios](https://github.com/twistios)
 
 
 ## 🫂 Acknowledgments
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
 - **RiMusic Logo and icons** [@ikanakova](https://github.com/ikanakova)
-- **RiMusic Website and other features** [JZITNIK-github](https://github.com/JZITNIK-github)
+- **RiMusic Website and other features** [JZITNIK-github](https://github.com/JZITNIK-github) and [martkol](https://github.com/martkol)
 - **RiMusic New player and lyrics layouts** [aneesh1122](https://github.com/aneesh1122)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
@@ -218,7 +220,6 @@ WARNING, the custom version is not an official release, download only if invited
 - [**Translator**](https://github.com/therealbush/translator): A simple and free Google Translate library for Kotlin/JVM and Java.
 - [**KuGou**](https://www.kugou.com): Lyrics provider
 - [**LrcLib**](https://lrclib.net): Lyrics provider
-- [**Smart Show**](https://github.com/vincent-series/smart-show): Toast # Snackbar # Dialog
 
 
 ## ❗ Disclaimer

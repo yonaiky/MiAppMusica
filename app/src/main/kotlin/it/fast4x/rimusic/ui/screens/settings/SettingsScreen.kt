@@ -52,6 +52,7 @@ import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
+import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
@@ -321,12 +322,14 @@ fun SettingsTopDescription(
 fun SettingsDescription(
     text: String,
     modifier: Modifier = Modifier,
+    important: Boolean = false,
 ) {
-    val (_, typography) = LocalAppearance.current
+    val (colorPalette, typography) = LocalAppearance.current
 
     BasicText(
         text = text,
-        style = typography.xxs.secondary,
+        style = if (important) typography.xxs.semiBold.color(colorPalette.red)
+        else typography.xxs.secondary,
         modifier = modifier
             .padding(start = 16.dp)
             .padding(horizontal = 16.dp)
@@ -489,4 +492,41 @@ fun ButtonBarSettingEntry(
         modifier = modifier
     )
 
+}
+
+@Composable
+fun SliderSettingsEntry(
+    title: String,
+    text: String,
+    state: Float,
+    range: ClosedFloatingPointRange<Float>,
+    modifier: Modifier = Modifier,
+    onSlide: (Float) -> Unit = { },
+    onSlideComplete: () -> Unit = { },
+    toDisplay: @Composable (Float) -> String = { it.toString() },
+    steps: Int = 0,
+    isEnabled: Boolean = true,
+    usePadding: Boolean = true
+) = Column(modifier = modifier) {
+    SettingsEntry(
+        title = title,
+        text = "$text (${toDisplay(state)})",
+        onClick = {},
+        isEnabled = isEnabled,
+        //usePadding = usePadding
+    )
+
+    Slider(
+        state = state,
+        setState = onSlide,
+        onSlideComplete = onSlideComplete,
+        range = range,
+        steps = steps,
+        modifier = Modifier
+            .height(36.dp)
+            .alpha(if (isEnabled) 1f else 0.5f)
+            .let { if (usePadding) it.padding(start = 32.dp, end = 16.dp) else it }
+            .padding(vertical = 16.dp)
+            .fillMaxWidth()
+    )
 }

@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
@@ -69,6 +70,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+
+
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -123,15 +126,13 @@ fun AlbumScreen(
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-
-
                                 Database.upsert(
                                     Album(
                                         id = browseId,
-                                        title = currentAlbumPage?.title,
-                                        thumbnailUrl = currentAlbumPage?.thumbnail?.url,
+                                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else currentAlbumPage?.title,
+                                        thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else currentAlbumPage?.thumbnail?.url,
                                         year = currentAlbumPage?.year,
-                                        authorsText = currentAlbumPage?.authors
+                                        authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else currentAlbumPage?.authors
                                             ?.joinToString("") { it.name ?: "" },
                                         shareUrl = currentAlbumPage?.url,
                                         timestamp = System.currentTimeMillis(),

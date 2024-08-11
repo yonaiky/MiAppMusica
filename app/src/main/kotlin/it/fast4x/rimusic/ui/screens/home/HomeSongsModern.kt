@@ -2,12 +2,12 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -51,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -103,8 +104,8 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -183,9 +184,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -217,7 +216,9 @@ fun HomeSongsModern(
     var sortBy by rememberPreference(songSortByKey, SongSortBy.DateAdded)
     var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
 
-    var items by persistList<Song>("home/songs")
+    var items by persistList<SongEntity>("home/songs")
+
+    //var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
 
     /*
     var filterDownloaded by remember {
@@ -291,7 +292,7 @@ fun HomeSongsModern(
     var songsDevice by remember(sortBy, sortOrder) {
         mutableStateOf<List<OnDeviceSong>>(emptyList())
     }
-    var songs: List<Song> = emptyList()
+    var songs: List<SongEntity> = emptyList()
     var folders: List<Folder> = emptyList()
     var filteredSongs = songs
     var filteredFolders = folders
@@ -311,8 +312,8 @@ fun HomeSongsModern(
     var buttonsList = listOf(BuiltInPlaylist.All to stringResource(R.string.all))
     if (showFavoritesPlaylist) buttonsList +=
         BuiltInPlaylist.Favorites to stringResource(R.string.favorites)
-    if (showCachedPlaylist) buttonsList +=
-        BuiltInPlaylist.Offline to stringResource(R.string.cached)
+    //if (showCachedPlaylist) buttonsList +=
+    //    BuiltInPlaylist.Offline to stringResource(R.string.cached)
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
@@ -326,13 +327,33 @@ fun HomeSongsModern(
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
             LaunchedEffect(sortBy, sortOrder, filter, showHiddenSongs, includeLocalSongs) {
+                //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
                 Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
+
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
+                        val downloads = DownloadUtil.downloads.value
+                        Database.listAllSongsAsFlow()
+                            .combine(
+                                Database
+                                    .songsOffline(sortBy, sortOrder)
+                            ){ a, b ->
+                                a.filter { song ->
+                                    downloads[song.song.id]?.state == Download.STATE_COMPLETED
+                                }.union(
+                                    b.filter { binder?.isCached(it) ?: false } //.map { it.song }
+                                )
+                            }
+                            .collect {
+                                items = it.toList()
+                            }
+
+                        /*
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
                             .map {
@@ -343,6 +364,7 @@ fun HomeSongsModern(
                             .collect {
                                 items = it
                             }
+                         */
                     }
 
                     if (builtInPlaylist == BuiltInPlaylist.Favorites) {
@@ -355,41 +377,62 @@ fun HomeSongsModern(
                             }
                     }
 
+                /*
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
-                        /*
-                        .flowOn(Dispatchers.IO)
                         .map { songs ->
-                            songs.filter { song ->
-                                song.contentLength?.let {
-                                    binder?.cache?.isCached(song.song.id, 0, song.contentLength)
-                                } ?: false
-                            }.map(SongWithContentLength::song)
+                            songs.filter { binder?.isCached(it) ?: false }.map { it.song }
                         }
-                         */
                         .collect {
                             items = it
                         }
+
+                    //println("mediaItem offline items: ${items.size} filter ${filter}")
+                    /*
+
+                                Database
+                                    .songsOffline(sortBy, sortOrder)
+                                    .map {
+                                        it.filter { song ->
+                                            song.contentLength?.let {
+                                                withContext(Dispatchers.Main) {
+                                                    binder?.cache?.isCached(
+                                                        song.song.id,
+                                                        0,
+                                                        song.contentLength
+                                                    )
+                                                }
+                                            } ?: false
+                                        }.map(SongWithContentLength::song)
+                                    }
+                                    //.flowOn(Dispatchers.IO)
+                                    .collect {
+                                        items = it
+                                    }
+                            }
+
+                    */
                 }
+                */
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
                         if (topPlaylistPeriod.duration == Duration.INFINITE) {
                             Database
-                                .songsByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
+                                .songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
                                 .collect {
                                     items = it.filter { item ->
                                         if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
                                             true
                                         else
-                                            item.durationText?.let { it1 ->
+                                            item.song.durationText?.let { it1 ->
                                                 durationTextToMillis(it1)
                                             }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
                                     }
                                 }
                         } else {
                             Database
-                                .trending(
+                                .trendingSongEntity(
                                     limit = maxTopPlaylistItems.number.toInt(),
                                     period = topPlaylistPeriod.duration.inWholeMilliseconds
                                 )
@@ -398,7 +441,7 @@ fun HomeSongsModern(
                                         if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
                                             true
                                         else
-                                            item.durationText?.let { it1 ->
+                                            item.song.durationText?.let { it1 ->
                                                 durationTextToMillis(it1)
                                             }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
                                     }
@@ -436,6 +479,8 @@ fun HomeSongsModern(
         }
     }
 
+    println("mediaItem SongEntity: ${items.size} filter ${filter} $items")
+
     /********** OnDeviceDev */
     if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
         if (showFolders) {
@@ -444,45 +489,47 @@ fun HomeSongsModern(
             songs = OnDeviceOrganize.sortSongs(
                 sortOrder,
                 sortByFolderOnDevice,
-                currentFolder?.songs?.map { it.toSong() } ?: emptyList())
+                currentFolder?.songs?.map { it.toSongEntity() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
             filteredFolders = folders
         } else {
-            songs = songsDevice.map { it.toSong() }
+            songs = songsDevice.map { it.toSongEntity() }
             filteredSongs = songs
         }
     }
     /********** */
 
-    if (!includeLocalSongs)
+    if (!includeLocalSongs && builtInPlaylist == BuiltInPlaylist.All)
         items = items
             .filter {
-                !it.id.startsWith(LOCAL_KEY_PREFIX)
+                !it.song.id.startsWith(LOCAL_KEY_PREFIX)
             }
 
     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
         when (sortOrder) {
             SortOrder.Ascending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> items = items.sortedBy { it.title }
-                    SongSortBy.PlayTime -> items = items.sortedBy { it.totalPlayTimeMs }
-                    SongSortBy.Duration -> items = items.sortedBy { it.durationText }
-                    SongSortBy.Artist -> items = items.sortedBy { it.artistsText }
+                    SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedBy { it.song.title }
+                    SongSortBy.PlayTime -> items = items.sortedBy { it.song.totalPlayTimeMs }
+                    SongSortBy.Duration -> items = items.sortedBy { it.song.durationText }
+                    SongSortBy.Artist -> items = items.sortedBy { it.song.artistsText }
                     SongSortBy.DatePlayed -> {}
-                    SongSortBy.DateLiked -> items = items.sortedBy { it.likedAt }
+                    SongSortBy.DateLiked -> items = items.sortedBy { it.song.likedAt }
                     SongSortBy.DateAdded -> {}
+                    SongSortBy.AlbumName -> items = items.sortedBy { it.albumTitle }
                 }
             }
             SortOrder.Descending -> {
                 when (sortBy) {
-                    SongSortBy.Title -> items = items.sortedByDescending { it.title }
-                    SongSortBy.PlayTime -> items = items.sortedByDescending { it.totalPlayTimeMs }
-                    SongSortBy.Duration -> items = items.sortedByDescending { it.durationText }
-                    SongSortBy.Artist -> items = items.sortedByDescending { it.artistsText }
+                    SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedByDescending { it.song.title }
+                    SongSortBy.PlayTime -> items = items.sortedByDescending { it.song.totalPlayTimeMs }
+                    SongSortBy.Duration -> items = items.sortedByDescending { it.song.durationText }
+                    SongSortBy.Artist -> items = items.sortedByDescending { it.song.artistsText }
                     SongSortBy.DatePlayed -> {}
-                    SongSortBy.DateLiked -> items = items.sortedByDescending { it.likedAt }
+                    SongSortBy.DateLiked -> items = items.sortedByDescending { it.song.likedAt }
                     SongSortBy.DateAdded -> {}
+                    SongSortBy.AlbumName -> items = items.sortedByDescending { it.albumTitle }
                 }
             }
         }
@@ -491,14 +538,14 @@ fun HomeSongsModern(
 
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
-    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
     /******** OnDeviceDev */
     if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
         if (!filter.isNullOrBlank())
             filteredSongs = songs
                 .filter {
-                    it.title.contains(filterCharSequence,true) ?: false
-                            || it.artistsText?.contains(filterCharSequence,true) ?: false
+                    it.song.title.contains(filterCharSequence,true) ?: false
+                            || it.song.artistsText?.contains(filterCharSequence,true) ?: false
+                            || it.albumTitle?.contains(filterCharSequence,true) ?: false
                 }
         if (!filter.isNullOrBlank())
             filteredFolders = folders
@@ -509,8 +556,9 @@ fun HomeSongsModern(
         if (!filter.isNullOrBlank())
             items = items
                 .filter {
-                    it.title.contains(filterCharSequence,true) ?: false
-                            || it.artistsText?.contains(filterCharSequence,true) ?: false
+                    it.song.title.contains(filterCharSequence,true) ?: false
+                            || it.song.artistsText?.contains(filterCharSequence,true) ?: false
+                            || it.albumTitle?.contains(filterCharSequence,true) ?: false
                 }
     }
     /******** */
@@ -559,11 +607,11 @@ fun HomeSongsModern(
                                 writeRow(
                                     "",
                                     plistName,
-                                    it.id,
-                                    it.title,
-                                    it.artistsText,
-                                    it.durationText,
-                                    it.thumbnailUrl
+                                    it.song.id,
+                                    it.song.title,
+                                    it.song.artistsText,
+                                    it.song.durationText,
+                                    it.song.thumbnailUrl
                                 )
                             }
                         } else {
@@ -759,7 +807,8 @@ fun HomeSongsModern(
                                                         onArtist = { sortBy = SongSortBy.Artist },
                                                         onDuration = {
                                                             sortBy = SongSortBy.Duration
-                                                        }
+                                                        },
+                                                        onAlbum = { sortBy = SongSortBy.AlbumName },
                                                     )
                                                 }
                                             }
@@ -809,7 +858,7 @@ fun HomeSongsModern(
                                     scrollToNowPlaying = false
                                     items
                                         .forEachIndexed { index, song ->
-                                            if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                            if (song.song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
                                                 nowPlayingItem = index
                                         }
 
@@ -860,11 +909,11 @@ fun HomeSongsModern(
                                 if (listMediaItems.isEmpty()) {
                                     if (items.isNotEmpty() == true)
                                         items.forEach {
-                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
                                             manageDownload(
                                                 context = context,
-                                                songId = it.asMediaItem.mediaId,
-                                                songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                songId = it.song.asMediaItem.mediaId,
+                                                songTitle = it.song.asMediaItem.mediaMetadata.title.toString(),
                                                 downloadState = false
                                             )
                                         }
@@ -912,11 +961,11 @@ fun HomeSongsModern(
                                     if (listMediaItems.isEmpty()) {
                                         if (items.isNotEmpty() == true)
                                             items.forEach {
-                                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                                binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
                                                 manageDownload(
                                                     context = context,
-                                                    songId = it.asMediaItem.mediaId,
-                                                    songTitle = it.asMediaItem.mediaMetadata.title.toString(),
+                                                    songId = it.song.asMediaItem.mediaId,
+                                                    songTitle = it.song.asMediaItem.mediaMetadata.title.toString(),
                                                     downloadState = true
                                                 )
                                             }
@@ -974,7 +1023,7 @@ fun HomeSongsModern(
                                         binder?.player?.forcePlayFromBeginning(
                                             itemsLimited
                                                 .shuffled()
-                                                .map(Song::asMediaItem)
+                                                .map(SongEntity::asMediaItem)
                                         )
                                     }
                                 },
@@ -1019,7 +1068,7 @@ fun HomeSongsModern(
                                     onPlayNext = {
                                         if (builtInPlaylist == BuiltInPlaylist.OnDevice) items = filteredSongs
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.addNext(items.map(Song::asMediaItem), context)
+                                            binder?.player?.addNext(items.map(SongEntity::asMediaItem), context)
                                         } else {
                                             binder?.player?.addNext(listMediaItems, context)
                                             listMediaItems.clear()
@@ -1029,7 +1078,7 @@ fun HomeSongsModern(
                                     onEnqueue = {
                                         if (builtInPlaylist == BuiltInPlaylist.OnDevice) items = filteredSongs
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.enqueue(items.map(Song::asMediaItem), context)
+                                            binder?.player?.enqueue(items.map(SongEntity::asMediaItem), context)
                                         } else {
                                             binder?.player?.enqueue(listMediaItems, context)
                                             listMediaItems.clear()
@@ -1044,10 +1093,10 @@ fun HomeSongsModern(
 
                                         items.forEachIndexed { index, song ->
                                             runCatching {
-                                                Database.insert(song.asMediaItem)
+                                                Database.insert(song.song.asMediaItem)
                                                 Database.insert(
                                                     SongPlaylistMap(
-                                                        songId = song.asMediaItem.mediaId,
+                                                        songId = song.song.asMediaItem.mediaId,
                                                         playlistId = playlistPreview.playlist.id,
                                                         position = position + index
                                                     )
@@ -1235,6 +1284,13 @@ fun HomeSongsModern(
                 } else {
                     if (showFolders) {
                         if (currentFolderPath != "/") {
+
+                            item {
+                                BackHandler(onBack = {
+                                    currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
+                                })
+                            }
+
                             itemsIndexed(items = listOf(backButtonFolder)) { index, folderItem ->
                                 FolderItem(
                                     folder = folderItem,
@@ -1308,7 +1364,7 @@ fun HomeSongsModern(
                                         menuState.display {
                                             InHistoryMediaItemMenu(
                                                 navController = navController,
-                                                song = song,
+                                                song = song.song,
                                                 onDismiss = menuState::hide
                                             )
                                         }
@@ -1320,14 +1376,14 @@ fun HomeSongsModern(
                                             filter = null
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayAtIndex(
-                                                filteredSongs.map(Song::asMediaItem),
+                                                filteredSongs.map(SongEntity::asMediaItem),
                                                 index
                                             )
                                         }
                                     }
                                 )
                             SongItem(
-                                song = song,
+                                song = song.song,
                                 isDownloaded = true,
                                 onDownloadClick = {
                                     // not necessary
@@ -1371,7 +1427,7 @@ fun HomeSongsModern(
             if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
                 itemsIndexed(
                     items = items,
-                    key = { _, song -> song.id },
+                    key = { _, song -> song.song.id },
                     contentType = { _, song -> song },
                 ) { index, song ->
 
@@ -1386,41 +1442,42 @@ fun HomeSongsModern(
                             onConfirm = {
                                 query {
                                     menuState.hide()
-                                    binder?.cache?.removeResource(song.id)
-                                    binder?.downloadCache?.removeResource(song.id)
+                                    binder?.cache?.removeResource(song.song.id)
+                                    binder?.downloadCache?.removeResource(song.song.id)
                                     Database.incrementTotalPlayTimeMs(
-                                        song.id,
-                                        -song.totalPlayTimeMs
+                                        song.song.id,
+                                        -song.song.totalPlayTimeMs
                                     )
                                 }
                             }
                         )
                     }
 
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                    val isDownloaded =
-                        if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
-                    val checkedState = rememberSaveable { mutableStateOf(false) }
+
 
                     SwipeablePlaylistItem(
-                        mediaItem = song.asMediaItem,
+                        mediaItem = song.song.asMediaItem,
                         onSwipeToRight = {
-                            binder?.player?.addNext(song.asMediaItem)
+                            binder?.player?.addNext(song.song.asMediaItem)
                         }
                     ) {
+                        val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
+                        downloadState = getDownloadState(song.song.asMediaItem.mediaId)
+                        val isDownloaded =
+                            if (!isLocal) downloadedStateMedia(song.song.asMediaItem.mediaId) else true
+                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         SongItem(
-                            song = song,
+                            song = song.song,
                             isDownloaded = isDownloaded,
                             onDownloadClick = {
-                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                 query {
                                     Database.insert(
                                         Song(
-                                            id = song.asMediaItem.mediaId,
-                                            title = song.asMediaItem.mediaMetadata.title.toString(),
-                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = song.thumbnailUrl,
+                                            id = song.song.asMediaItem.mediaId,
+                                            title = song.song.asMediaItem.mediaMetadata.title.toString(),
+                                            artistsText = song.song.asMediaItem.mediaMetadata.artist.toString(),
+                                            thumbnailUrl = song.song.thumbnailUrl,
                                             durationText = null
                                         )
                                     )
@@ -1428,8 +1485,8 @@ fun HomeSongsModern(
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,
-                                        songId = song.id,
-                                        songTitle = song.title,
+                                        songId = song.song.id,
+                                        songTitle = song.song.title,
                                         downloadState = isDownloaded
                                     )
                             },
@@ -1439,7 +1496,7 @@ fun HomeSongsModern(
                             onThumbnailContent = {
                                 if (sortBy == SongSortBy.PlayTime) {
                                     BasicText(
-                                        text = song.formattedTotalPlayTime,
+                                        text = song.song.formattedTotalPlayTime,
                                         style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
@@ -1460,7 +1517,7 @@ fun HomeSongsModern(
                                 }
 
                                 if (nowPlayingItem > -1)
-                                    NowPlayingShow(song.asMediaItem.mediaId)
+                                    NowPlayingShow(song.song.asMediaItem.mediaId)
 
                                 if (builtInPlaylist == BuiltInPlaylist.Top)
                                     BasicText(
@@ -1489,8 +1546,8 @@ fun HomeSongsModern(
                                         checked = checkedState.value,
                                         onCheckedChange = {
                                             checkedState.value = it
-                                            if (it) listMediaItems.add(song.asMediaItem) else
-                                                listMediaItems.remove(song.asMediaItem)
+                                            if (it) listMediaItems.add(song.song.asMediaItem) else
+                                                listMediaItems.remove(song.song.asMediaItem)
                                         },
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = colorPalette.accent,
@@ -1507,7 +1564,7 @@ fun HomeSongsModern(
                                         menuState.display {
                                             InHistoryMediaItemMenu(
                                                 navController = navController,
-                                                song = song,
+                                                song = song.song,
                                                 onDismiss = menuState::hide,
                                                 onHideFromDatabase = { isHiding = true }
                                             )
@@ -1523,7 +1580,7 @@ fun HomeSongsModern(
                                             ) else items
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(
-                                            itemsLimited.map(Song::asMediaItem),
+                                            itemsLimited.map(SongEntity::asMediaItem),
                                             index
                                         )
                                     }

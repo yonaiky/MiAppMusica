@@ -512,7 +512,8 @@ fun HomeAlbumsModern(
                                 }
                                 //context.toast("Album Saved $it")
                             }
-                        }
+                        },
+                        prefix = MODIFIED_PREFIX
                     )
                 if (showDialogChangeAlbumAuthors)
                     InputTextDialog(
@@ -527,7 +528,8 @@ fun HomeAlbumsModern(
                                 }
                                 //context.toast("Album Saved $it")
                             }
-                        }
+                        },
+                        prefix = MODIFIED_PREFIX
                     )
 
                 if (showDialogChangeAlbumCover)
@@ -543,7 +545,8 @@ fun HomeAlbumsModern(
                                 }
                                 //context.toast("Album Saved $it")
                             }
-                        }
+                        },
+                        prefix = MODIFIED_PREFIX
                     )
 
                 var position by remember {
@@ -553,6 +556,7 @@ fun HomeAlbumsModern(
 
                 AlbumItem(
                     alternative = true,
+                    showAuthors = true,
                     album = album,
                     thumbnailSizePx = thumbnailSizePx,
                     thumbnailSizeDp = thumbnailSizeDp,

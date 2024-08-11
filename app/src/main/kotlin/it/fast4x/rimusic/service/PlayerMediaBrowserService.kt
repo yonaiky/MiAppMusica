@@ -159,8 +159,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .songsByPlayTimeDesc()
                         .first()
                         .take(500)
-                        .also { lastSongs = it }
-                        .map { it.asBrowserMediaItem }
+                        .also { lastSongs = it.map { it.song } }
+                        .map { it.song.asBrowserMediaItem }
                         .toMutableList()
                         .apply {
                             if (isNotEmpty()) add(0, shuffleBrowserMediaItem)

@@ -7,14 +7,16 @@ import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
+import it.fast4x.innertube.models.bodies.FormData
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
 import it.fast4x.innertube.models.v0624.charts.MusicResponsiveListItemRenderer
+import java.util.Locale.IsoCountryCode
 
-suspend fun Innertube.chartsPage() = runCatching {
+suspend fun Innertube.chartsPage(countryCode: String = "") = runCatching {
     val response = client.post(browse) {
-        setBody(BrowseBodyWithLocale(browseId = "FEmusic_charts"))
+        setBody(BrowseBodyWithLocale(browseId = "FEmusic_charts", formData = FormData(listOf(countryCode))))
     }.body<BrowseChartsResponse0624>()
 
     val musicDetailRenderer =
@@ -80,9 +82,11 @@ fun Innertube.PlaylistItem.Companion.from(renderer: MusicCarouselShelfRenderer):
             endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
                 browseId = renderer
                     .header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.navigationEndpoint?.browseEndpoint?.browseID,
+               /*
                 params = renderer
                     .contents?.firstOrNull()?.musicTwoRowItemRenderer
                     ?.navigationEndpoint?.watchEndpoint?.params.toString(),
+                */
                 browseEndpointContextSupportedConfigs = null
             )
         ),

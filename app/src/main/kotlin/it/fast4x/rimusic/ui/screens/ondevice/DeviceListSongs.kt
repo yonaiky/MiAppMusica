@@ -93,6 +93,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.transaction
@@ -250,7 +251,7 @@ fun DeviceListSongs(
                 context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songsDevice = it }
         }
 
-        var songs: List<Song> = emptyList()
+        var songs: List<SongEntity> = emptyList()
         var folders: List<Folder> = emptyList()
         var filteredSongs = songs
         var filteredFolders = folders
@@ -265,13 +266,13 @@ fun DeviceListSongs(
         if (showFolders) {
             val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
             currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
-            songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSong() } ?: emptyList())
+            songs = OnDeviceOrganize.sortSongs(sortOrder, sortByFolder, currentFolder?.songs?.map { it.toSongEntity() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
             filteredFolders = folders
         }
         else {
-            songs = songsDevice.map { it.toSong() }
+            songs = songsDevice.map { it.toSongEntity() }
             filteredSongs = songs
         }
 
@@ -283,8 +284,8 @@ fun DeviceListSongs(
         if (!filter.isNullOrBlank())
             filteredSongs = songs
                 .filter {
-                    it.title.contains(filterCharSequence,true) ?: false
-                            || it.artistsText?.contains(filterCharSequence,true) ?: false
+                    it.song.title.contains(filterCharSequence,true) ?: false
+                            || it.song.artistsText?.contains(filterCharSequence,true) ?: false
                 }
         if (!filter.isNullOrBlank())
             filteredFolders = folders
@@ -311,7 +312,7 @@ fun DeviceListSongs(
 
         var totalPlayTimes = 0L
         filteredSongs.forEach {
-            totalPlayTimes += it.durationText?.let { it1 ->
+            totalPlayTimes += it.song.durationText?.let { it1 ->
                 durationTextToMillis(it1)
             }?.toLong() ?: 0
         }
@@ -320,9 +321,9 @@ fun DeviceListSongs(
         val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
 
         val thumbnails = songs
-            .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
+            .takeWhile { it.song.thumbnailUrl?.isNotEmpty() ?: false }
             .take(4)
-            .map { it.thumbnailUrl.thumbnail(playlistThumbnailSizePx / 2) }
+            .map { it.song.thumbnailUrl.thumbnail(playlistThumbnailSizePx / 2) }
 
         var listMediaItems = remember {
             mutableListOf<MediaItem>()
@@ -485,7 +486,7 @@ fun DeviceListSongs(
                                         if (filteredSongs.isNotEmpty()) {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayFromBeginning(
-                                                songs.shuffled().map(Song::asMediaItem)
+                                                songs.shuffled().map(SongEntity::asMediaItem)
                                             )
                                         }
                                     },
@@ -682,7 +683,7 @@ fun DeviceListSongs(
                                      */
                                     onPlayNext = {
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.addNext(filteredSongs.map(Song::asMediaItem), context)
+                                            binder?.player?.addNext(filteredSongs.map(SongEntity::asMediaItem), context)
                                         } else {
                                             binder?.player?.addNext(listMediaItems, context)
                                             listMediaItems.clear()
@@ -691,7 +692,7 @@ fun DeviceListSongs(
                                     },
                                     onEnqueue = {
                                         if (listMediaItems.isEmpty()) {
-                                            binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem), context)
+                                            binder?.player?.enqueue(filteredSongs.map(SongEntity::asMediaItem), context)
                                         } else {
                                             binder?.player?.enqueue(listMediaItems, context)
                                             listMediaItems.clear()
@@ -901,7 +902,7 @@ fun DeviceListSongs(
                 contentType = { _, song -> song },
             ) { index, song ->
                 SongItem(
-                    song = song,
+                    song = song.song,
                     isDownloaded = true,
                     onDownloadClick = {
                         // not necessary
@@ -940,7 +941,7 @@ fun DeviceListSongs(
                                     when (deviceLists) {
                                         DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
                                             navController = navController,
-                                            song = song,
+                                            song = song.song,
                                             onDismiss = menuState::hide
                                         )
                                     }
@@ -952,7 +953,7 @@ fun DeviceListSongs(
                                     filter = null
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayAtIndex(
-                                        filteredSongs.map(Song::asMediaItem),
+                                        filteredSongs.map(SongEntity::asMediaItem),
                                         index
                                     )
                                 }
@@ -971,7 +972,7 @@ fun DeviceListSongs(
                     if (filteredSongs.isNotEmpty()) {
                         binder?.stopRadio()
                         binder?.player?.forcePlayFromBeginning(
-                            filteredSongs.shuffled().map(Song::asMediaItem)
+                            filteredSongs.shuffled().map(SongEntity::asMediaItem)
                         )
                     }
                 }
