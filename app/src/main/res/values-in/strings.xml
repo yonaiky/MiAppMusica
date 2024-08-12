@@ -368,7 +368,7 @@
     <string name="add_folder">Tambah folder</string>
     <string name="this_folder_already_exists">Folder sudah pernah ditambahkan.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Apakah anda yakin ingin berhenti mengabaikan folder ini?</string>
-    <string name="player_appearance">Penampilan Pemutar</string>
+    <string name="player_appearance">Tampilan Pemutar</string>
     <string name="player_action_bar">BILAH AKSI PEMUTAR</string>
     <string name="tab_data">Data</string>
     <string name="image_cache_max_size">Ukuran maksimal cache gambar</string>
