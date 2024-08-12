@@ -75,7 +75,7 @@
     <string name="image_cache">IMAGE CACHE</string>
     <string name="max_size">Max size</string>
     <string name="database">Database</string>
-    <string name="reset_quick_picks">Reset quick picks</string>
+    <string name="reset_quick_picks">Reset Quick Picks</string>
     <string name="quick_picks_are_cleared">Quick picks are cleared</string>
     <string name="backup">BACKUP</string>
     <string name="personal_preference">Personal preferences (i.e. the theme mode) and the cache are excluded.</string>
