@@ -1781,26 +1781,27 @@ fun PlayerModern(
                      state = pagerState,
                      snapPositionalThreshold = 0.20f
                  )
+                 
+                 LaunchedEffect(binder.player.currentMediaItemIndex){
+                     pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                 }
+
+                 LaunchedEffect(pagerState) {
+                     var previousPage = pagerState.settledPage
+                     snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                         if (previousPage != it) {
+                             if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
+                         }
+                         previousPage = it
+                     }
+                 }
+
                  HorizontalPager(
                      state = pagerState,
                      beyondViewportPageCount = 1,
                      flingBehavior = fling,
                      modifier = Modifier
                  ) { it ->
-
-                     LaunchedEffect(binder.player.currentMediaItemIndex){
-                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                     }
-
-                     LaunchedEffect(pagerState) {
-                         var previousPage = pagerState.settledPage
-                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                             if (previousPage != it) {
-                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
-                             }
-                             previousPage = it
-                         }
-                     }
 
                      AsyncImage(
                          model = ImageRequest.Builder(LocalContext.current)
@@ -1840,6 +1841,10 @@ fun PlayerModern(
                                  onDoubleClick = {
                                      if (!showlyricsthumbnail && !showvisthumbnail)
                                          showthumbnail = !showthumbnail
+                                 },
+                                 onLongClick = {
+                                     if (showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur)
+                                         showBlurPlayerDialog = true
                                  }
                              )
                      )
@@ -2007,6 +2012,19 @@ fun PlayerModern(
                                  if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                                      val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                      val pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp)
+                                     LaunchedEffect(binder.player.currentMediaItemIndex){
+                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                     }
+
+                                     LaunchedEffect(pagerState) {
+                                         var previousPage = pagerState.settledPage
+                                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                                             if (previousPage != it) {
+                                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
+                                             }
+                                             previousPage = it
+                                         }
+                                     }
                                      HorizontalPager(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
@@ -2018,20 +2036,6 @@ fun PlayerModern(
                                              .padding(all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
                                              .conditional(fadingedge){horizontalFadingEdge()}
                                          ) { it ->
-
-                                         LaunchedEffect(binder.player.currentMediaItemIndex){
-                                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                         }
-
-                                         LaunchedEffect(pagerState) {
-                                             var previousPage = pagerState.settledPage
-                                             snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                                                 if (previousPage != it) {
-                                                     if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
-                                                 }
-                                                 previousPage = it
-                                             }
-                                         }
 
                                          AsyncImage(
                                              model = ImageRequest.Builder(LocalContext.current)
@@ -2191,26 +2195,25 @@ fun PlayerModern(
                         state = pagerState,
                         snapPositionalThreshold = 0.20f
                     )
+                    LaunchedEffect(binder.player.currentMediaItemIndex){
+                        pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                    }
+
+                    LaunchedEffect(pagerState) {
+                        var previousPage = pagerState.settledPage
+                        snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                            if (previousPage != it) {
+                                if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
+                            }
+                            previousPage = it
+                        }
+                    }
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 1,
                         flingBehavior = fling,
                         modifier = Modifier
                     ) { it ->
-
-                        LaunchedEffect(binder.player.currentMediaItemIndex){
-                            pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                        }
-
-                        LaunchedEffect(pagerState) {
-                            var previousPage = pagerState.settledPage
-                            snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                                if (previousPage != it) {
-                                    if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
-                                }
-                                previousPage = it
-                            }
-                        }
 
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -2250,6 +2253,10 @@ fun PlayerModern(
                                     onDoubleClick = {
                                         if (!showlyricsthumbnail && !showvisthumbnail)
                                             showthumbnail = !showthumbnail
+                                    },
+                                    onLongClick = {
+                                        if (showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur)
+                                            showBlurPlayerDialog = true
                                     }
                                 )
                         )
@@ -2379,6 +2386,21 @@ fun PlayerModern(
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                              if (playerType == PlayerType.Modern) {
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
+
+                                 LaunchedEffect(binder.player.currentMediaItemIndex) {
+                                     pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                 }
+
+                                 LaunchedEffect(pagerState) {
+                                     var previousPage = pagerState.settledPage
+                                     snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                                         if (previousPage != it) {
+                                             if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
+                                         }
+                                         previousPage = it
+                                     }
+                                 }
+                                 
                                  val screenHeight = configuration.screenHeightDp.dp
                                  val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
                                  VerticalPager(
@@ -2395,20 +2417,6 @@ fun PlayerModern(
                                          .conditional(fadingedge){verticalFadingEdge()}
                                  ){ it ->
 
-                                     LaunchedEffect(binder.player.currentMediaItemIndex) {
-                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                     }
-
-                                     LaunchedEffect(pagerState) {
-                                         var previousPage = pagerState.settledPage
-                                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                                             if (previousPage != it) {
-                                                 if (it != binder.player.currentMediaItemIndex) binder.player.forcePlayAtIndex(mediaItems,it)
-                                             }
-                                             previousPage = it
-                                         }
-                                     }
-
                                      AsyncImage(
                                          model = ImageRequest.Builder(LocalContext.current)
                                              .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
@@ -2416,6 +2424,7 @@ fun PlayerModern(
                                          contentDescription = "",
                                          contentScale = ContentScale.Fit,
                                          modifier = Modifier
+                                             .fillMaxWidth()
                                              .padding(all = if (carousel && expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
                                              .zIndex(if (it == pagerState.currentPage) 1f
                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
