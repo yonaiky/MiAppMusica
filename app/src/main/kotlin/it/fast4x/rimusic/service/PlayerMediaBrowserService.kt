@@ -17,7 +17,11 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.offline.Download
+import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
@@ -30,6 +34,7 @@ import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -50,6 +55,7 @@ import kotlinx.coroutines.withContext
 class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var lastSongs = emptyList<Song>()
+    private var searchedSongs = emptyList<Song>()
 
     private var bound = false
 
@@ -82,7 +88,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaId.root,
             //bundleOf("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT" to 1)
             Bundle().apply {
-                //putBoolean(MEDIA_SEARCH_SUPPORTED, true)
+                putBoolean(MEDIA_SEARCH_SUPPORTED, true)
                 putBoolean(CONTENT_STYLE_SUPPORTED, true)
                 putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID)
                 putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST)
@@ -110,37 +116,32 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         extras: Bundle?,
         result: Result<List<MediaItem>>
     ) {
+        result.detach()
         runBlocking(Dispatchers.IO) {
-            val resultsList =
-                Database
-                    .favorites()
-                    .first()
-                    .map {
-                        MediaItem(
-                            MediaDescriptionCompat.Builder()
-                                .setMediaId(it.id)
-                                .setTitle(it.title)
-                                .setIconUri(uriFor(R.drawable.musical_notes))
-                                .build(),
-                            MediaItem.FLAG_BROWSABLE
-                        )
-                    }
-                    .shuffled()
+            searchedSongs = Innertube.searchPage(
+                body = SearchBody(
+                    query = query,
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+            )?.map {
+                it?.items?.map { it.asSong }
+            }?.getOrNull() ?: emptyList()
 
-            /*
-        val resultsSent = mediaSource.whenReady { successfullyInitialized ->
-            if (successfullyInitialized) {
-                val resultsList = mediaSource.search(query, extras ?: Bundle.EMPTY)
-                    .map { mediaMetadata ->
-                        MediaItem(mediaMetadata.description, mediaMetadata.flag)
-                    }
-                result.sendResult(resultsList)
+            val resultList = searchedSongs.map {
+                //it.asBrowserMediaItem
+                MediaItem(
+                    MediaDescriptionCompat.Builder()
+                        .setMediaId(MediaId.forSearched(it.id))
+                        .setTitle(it.title)
+                        .setSubtitle(it.artistsText)
+                        .setIconUri(it.thumbnailUrl?.toUri())
+                        .build(),
+                    MediaItem.FLAG_PLAYABLE
+                )
             }
-        }
- */
-            if (resultsList.isEmpty()) {
-                result.detach()
-            } else result.sendResult(resultsList)
+
+            result.sendResult(resultList)
         }
     }
 
@@ -490,6 +491,13 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.first()
                     }
 
+                    MediaId.searched -> data
+                        .getOrNull(1)
+                        ?.let { songId ->
+                            searchedSongs.filter { it.id == songId }
+                            /*index = searchedSongs.indexOfFirst { it.id == songId }
+                            searchedSongs*/
+                        }
 
                     else -> emptyList()
                 }?.map(Song::asMediaItem) ?: return@launch
@@ -507,6 +515,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         const val playlists = "playlists"
         const val albums = "albums"
         const val artists = "artists"
+        const val searched = "searched"
 
         const val favorites = "favorites"
         const val offline = "offline"
@@ -519,6 +528,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         fun forPlaylist(id: Long) = "playlists/$id"
         fun forAlbum(id: String) = "albums/$id"
         fun forArtistByName(name: String) = "artists/$name"
+        fun forSearched(id: String) = "searched/$id"
     }
 }
 
