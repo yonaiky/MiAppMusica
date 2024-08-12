@@ -538,7 +538,7 @@
     <string name="info_color_s_applied">Warna %s diterapkan</string>
     <string name="time_seconds">detik</string>
     <string name="info_bookmark_album">Sematkan album</string>
-    <string name="effect_fade_songs">Pemudaran lagu</string>
+    <string name="effect_fade_songs">Efek pemudaran lagu</string>
     <string name="bg_colors_fluid_gradient_background_from_theme">Animasi gradien sesuai tema</string>
     <string name="bg_colors_fluid_gradient_background_from_cover">Animasi gradien sesuai sampul lagu</string>
     <string name="show_background_in_lyrics">Selaraskan warna latar belakang Lirik dengan Pemutar</string>
@@ -625,8 +625,8 @@
     <string name="charts">Charts</string>
     <string name="thumbnailtype">Tipe thumbnail</string>
     <string name="showvisthumbnail">Tampilkan thumbnail untuk visualizer</string>
-    <string name="androidheadunit">Android Head unit</string>
-    <string name="extra_space">Extra space at top</string>
+    <string name="androidheadunit">Android head unit</string>
+    <string name="extra_space">Ruang ekstra di bagian atas</string>
     <string name="game_restart">Mulai ulang</string>
     <string name="game_over">Game Over!</string>
     <string name="white">Putih</string>
@@ -687,8 +687,8 @@
     <string name="carouselsize">Ukuran Carousel</string>
     <string name="addednext">Added to play next</string>
     <string name="info_paused_with_volume_zero">Dijeda karena volume nol</string>
-    <string name="effect_fade_audio">Fade audio</string>
-    <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
+    <string name="effect_fade_audio">Efek pemudaran audio</string>
+    <string name="effect_fade_audio_description">Pudarkan audio saat lagu dijeda atau diputar</string>
     <string name="autosync">Sinkronisasi otomatis daftar putar impor</string>
     <string name="message_type">Gaya pesan sembulan</string>
     <string name="message_type_modern">Modern</string>
@@ -702,7 +702,7 @@
     <string name="quality">Kualitas</string>
     <string name="value_must_be_ip_address">Harus berupa alamat IP</string>
     <string name="swipe_up_to_open_the_queue">Usap keatas membuka Antrean</string>
-    <string name="pinfo_show_icons">Show info with icons</string>
+    <string name="pinfo_show_icons">Ikon album dan artis</string>
     <string name="format_ms">%1$s ms</string>
     <string name="minimum_silence_length">Durasi minimum keheningan</string>
     <string name="minimum_silence_length_description">Durasi minimum audio senyap yang dapat dilewati</string>
