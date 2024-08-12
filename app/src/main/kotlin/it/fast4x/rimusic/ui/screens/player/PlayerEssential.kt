@@ -182,8 +182,8 @@ fun PlayerEssential(
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) if (miniPlayerType == MiniPlayerType.Essential) {updateLike = true;hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)} else {binder.player.forceSeekToPrevious();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
-            else if (value == SwipeToDismissBoxValue.EndToStart) {binder.player.forceSeekToNext();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
+            if (value == SwipeToDismissBoxValue.StartToEnd) if (miniPlayerType == MiniPlayerType.Essential) {updateLike = true;hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)} else {binder.player.seekToPrevious();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
+            else if (value == SwipeToDismissBoxValue.EndToStart) {binder.player.seekToNext();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
             return@rememberSwipeToDismissBoxState false
         }
     )

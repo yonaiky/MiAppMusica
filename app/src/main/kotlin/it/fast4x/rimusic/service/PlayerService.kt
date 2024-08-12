@@ -2236,8 +2236,8 @@ class PlayerService : InvincibleService(),
         override fun onPlay() = player.play()
         //override fun onPause() = player.pause()
         override fun onPause() = binder.callPause({})
-        override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
-        override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
+        override fun onSkipToPrevious() = runCatching(player::seekToPrevious).let { }
+        override fun onSkipToNext() = runCatching(player::seekToNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
         //override fun onStop() = player.pause()
         override fun onStop() = binder.callPause({} )

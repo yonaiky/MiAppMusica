@@ -528,7 +528,8 @@ fun ControlsEssential(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
-                    binder.player.forceSeekToNext()
+                    //binder.player.forceSeekToNext()
+                    binder.player.seekToNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {

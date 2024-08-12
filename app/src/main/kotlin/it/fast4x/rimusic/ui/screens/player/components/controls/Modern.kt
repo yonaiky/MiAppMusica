@@ -570,7 +570,8 @@ fun ControlsModern(
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
-                    binder.player.forceSeekToNext()
+                    //binder.player.forceSeekToNext()
+                    binder.player.seekToNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {
@@ -705,7 +706,8 @@ fun ControlsModern(
                           interactionSource = null,
                           indication = null,
                           onClick = {
-                              binder.player.forceSeekToNext()
+                              //binder.player.forceSeekToNext()
+                              binder.player.seekToNext()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
                           onLongClick = {
