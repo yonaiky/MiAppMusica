@@ -42,8 +42,19 @@ select {
   }
 }
 #languageSelect {
-  padding: 0 5px 0 5px;
+  padding: 0 8px 0 8px;
+  color: #abbad0;
+  border-left: 17px solid transparent;
+  background-image:url(../images/lang.svg) !important;
+  background-position: -17px -1px;
+  background-repeat: no-repeat;
+  background-size: auto 21px;
+  text-wrap: nowrap;
+  option {
+    text-align: left !important;
+  }
 }
+
 .footer-links > li > a {
   white-space: nowrap;
 }
@@ -81,6 +92,9 @@ select {
     margin-right: 12% !important;
     margin-left: 12% !important;
   }
+  #languageSelect {
+    padding-right: 0
+  }
 }
 .feature-extended-body p {
   color: #36517c;
@@ -107,6 +121,9 @@ body,
 .body-wrap {
   transition: background-color 250ms;
 }
+#languageSelect > option {
+  color: #15182b;
+}
 body.dark {
   background-color: #0d1117;
   #toggledark {
@@ -114,9 +131,7 @@ body.dark {
     --moon: 0.95 !important
   ;
   }
-  #languageSelect > option {
-    color: #15182b;
-  }
+
   .hero-paragraph,
   .site-footer a,
   .site-footer p {

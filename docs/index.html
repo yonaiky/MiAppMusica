@@ -308,6 +308,7 @@
                     <option value="bn">বাংলা</option>
                     <option value="zh-rCN">简体中文</option>
                     <option value="zh-rTW">繁體中文</option>
+                    <option value="ca">Català</option>
                     <option value="cs">Čeština</option>
                     <option value="da">Dansk</option>
                     <option value="de">Deutsch</option>
@@ -353,7 +354,7 @@
     <script src="js/main.min.js"></script>
     <script>
       // Load the locales
-      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn","pl"]);
+      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn","pl","ca"]);
       (async () => {
         await multilingual.loadStrings();
         multilingual.updateDom();
