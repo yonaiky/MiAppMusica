@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
+import android.net.ConnectivityManager
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -28,12 +29,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
-import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -53,11 +52,8 @@ import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 @SuppressLint("LongLogTag")
@@ -74,6 +70,8 @@ fun StatsForNerds(
     val binder = LocalPlayerServiceBinder.current ?: return
 
     val audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.High)
+
+    val connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
 
     AnimatedVisibility(
         visible = isDisplayed,
@@ -102,21 +100,47 @@ fun StatsForNerds(
             PlayerBackgroundColors.BlurredCoverColor
         )
         var statsfornerdsfull by remember {mutableStateOf(false)}
-
         LaunchedEffect(mediaId) {
             Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
                 if (currentFormat?.itag == null) {
+                    /*
                     binder.player.currentMediaItem?.takeIf { it.mediaId == mediaId }?.let { mediaItem ->
                         withContext(Dispatchers.IO) {
                             delay(2000)
                             Innertube.player(PlayerBody(videoId = mediaId))?.onSuccess { response ->
-                                //response.streamingData?.highestQualityFormat?.let { format ->
+                                response.streamingData?.adaptiveFormats
+                                ?.filter {
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
+                                            it.itag == 250 || it.itag == 140 ||
+                                            it.itag == 249 || it.itag == 139 ||
+                                            it.itag == 171
+                                    AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
+                                    AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
+                                    AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
+                                }
+
+                            }
+                                ?.maxByOrNull {
+                                    (it.bitrate?.times(
+                                        when (audioQualityFormat) {
+                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                            AudioQualityFormat.High -> 1
+                                            AudioQualityFormat.Medium -> -1
+                                            AudioQualityFormat.Low -> -1
+                                        }
+                                    ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                                }
+                                ?.let { format ->
+                                /*
                                 when(audioQualityFormat) {
                                     AudioQualityFormat.Auto -> response.streamingData?.autoMaxQualityFormat
                                     AudioQualityFormat.High -> response.streamingData?.highestQualityFormat
                                     AudioQualityFormat.Medium -> response.streamingData?.mediumQualityFormat
                                     AudioQualityFormat.Low -> response.streamingData?.lowestQualityFormat
                                 }?.let { format ->
+
+                                 */
                                     Database.insert(mediaItem)
                                     Database.insert(
                                         Format(
@@ -133,6 +157,7 @@ fun StatsForNerds(
                             }
                         }
                     }
+                    */
                 } else {
                     format = currentFormat
                 }
@@ -229,6 +254,7 @@ fun StatsForNerds(
                         maxLines = 1,
                         style = typography.xs.medium.color(colorPalette.onOverlay)
                     )
+
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
                             text = format?.itag?.toString()
@@ -237,15 +263,7 @@ fun StatsForNerds(
                             style = typography.xs.medium.color(colorPalette.onOverlay)
                         )
                         BasicText(
-                            text = when (format?.itag?.toString()) {
-                                "251" -> stringResource(R.string.audio_quality_format_high)
-                                "141" -> stringResource(R.string.audio_quality_format_high)
-                                "250" -> stringResource(R.string.audio_quality_format_medium)
-                                "140" -> stringResource(R.string.audio_quality_format_medium)
-                                "249" -> stringResource(R.string.audio_quality_format_low)
-                                "139" -> stringResource(R.string.audio_quality_format_low)
-                                else -> stringResource(R.string.audio_quality_format_unknown)
-                            },
+                            text = getQuality(format!!),
                             maxLines = 1,
                             style = typography.xs.medium.color(colorPalette.onOverlay)
                         )
@@ -304,6 +322,7 @@ fun StatsForNerds(
                 modifier = modifier
                     .pointerInput(Unit) {detectTapGestures(onLongPress = {statsfornerdsfull = !statsfornerdsfull})}
             ) {
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
@@ -318,15 +337,7 @@ fun StatsForNerds(
                     ) {
                         if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                             BasicText(
-                                text = stringResource(R.string.quality) + " : " + when (format?.itag?.toString()) {
-                                    "251" -> stringResource(R.string.audio_quality_format_high)
-                                    "141" -> stringResource(R.string.audio_quality_format_high)
-                                    "250" -> stringResource(R.string.audio_quality_format_medium)
-                                    "140" -> stringResource(R.string.audio_quality_format_medium)
-                                    "249" -> stringResource(R.string.audio_quality_format_low)
-                                    "139" -> stringResource(R.string.audio_quality_format_low)
-                                    else -> stringResource(R.string.audio_quality_format_unknown)
-                                },
+                                text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
                                 style = typography.xs.medium.color(colorPalette.text)
                             )
@@ -382,10 +393,10 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text = stringResource(R.string.itag) + " : " + format?.itag?.toString()
-                                          ?: stringResource(R.string.itag) + " : " + stringResource(
+                                      text = (stringResource(R.string.itag) + " : " + format?.itag?.toString())
+                                          ?: (stringResource(R.string.itag) + " : " + stringResource(
                                               R.string.audio_quality_format_unknown
-                                          ),
+                                          )),
                                       maxLines = 1,
                                       style = typography.xs.medium.color(colorPalette.onOverlay)
                                   )
@@ -466,5 +477,16 @@ fun StatsForNerds(
             }
 
         }
+    }
+}
+
+
+@Composable
+fun getQuality(format: Format): String {
+    when (format.itag?.toString()) {
+        "251", "141" -> return stringResource(R.string.audio_quality_format_high)
+        "250", "140", "171" -> return stringResource(R.string.audio_quality_format_medium)
+        "249", "139" -> return stringResource(R.string.audio_quality_format_low)
+        else -> return format.itag.toString()
     }
 }

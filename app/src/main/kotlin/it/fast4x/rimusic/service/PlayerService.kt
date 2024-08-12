@@ -22,6 +22,7 @@ import android.media.MediaMetadata
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -86,6 +87,7 @@ import androidx.media3.extractor.mp4.FragmentedMp4Extractor
 import androidx.media3.extractor.text.DefaultSubtitleParserFactory
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.player
@@ -104,6 +106,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.models.Event
+import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
 import it.fast4x.rimusic.models.QueuedMediaItem
@@ -195,8 +198,11 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.net.ConnectException
 import java.net.InetSocketAddress
 import java.net.Proxy
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.time.Duration
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
@@ -225,7 +231,7 @@ class PlayerService : InvincibleService(),
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
-
+    private lateinit var connectivityManager: ConnectivityManager
 
     private val actions = PlaybackStateCompat.ACTION_PLAY or
             PlaybackStateCompat.ACTION_PAUSE or
@@ -572,6 +578,7 @@ class PlayerService : InvincibleService(),
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
 
+        connectivityManager = getSystemService()!!
 
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())
@@ -1701,7 +1708,22 @@ class PlayerService : InvincibleService(),
             }
         ),
         DefaultExtractorsFactory()
+        //getExtractorsFactory()
     )
+
+    private fun getExtractorsFactory(): ExtractorsFactory = ExtractorsFactory {
+        arrayOf(
+            MatroskaExtractor(
+                DefaultSubtitleParserFactory()
+            ),
+            FragmentedMp4Extractor(
+                DefaultSubtitleParserFactory()
+            ),
+            androidx.media3.extractor.mp4.Mp4Extractor(
+                DefaultSubtitleParserFactory()
+            ),
+        )
+    }
 
     private fun createRendersFactory(): RenderersFactory {
         val minimumSilenceDuration = preferences.getLong(
@@ -1767,7 +1789,8 @@ class PlayerService : InvincibleService(),
                         DefaultDataSource.Factory(
                             this,
                             OkHttpDataSource.Factory(okHttpClient())
-                                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
+                                .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
+                            //.setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
                         )
                     )
             ) { !it.isLocal }
@@ -1812,24 +1835,72 @@ class PlayerService : InvincibleService(),
                         Innertube.player(PlayerBody(videoId = videoId))
                     }?.getOrThrow()
 
-                    //if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
+                    if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
                     Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
+
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body?.streamingData?.adaptiveFormats}")
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
 
+/*
                     val format = when (audioQualityFormat) {
                         AudioQualityFormat.Auto -> body?.streamingData?.autoMaxQualityFormat
                         AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
                         AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
                     }
+*/
 
-                    Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat $format")
-                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body?.streamingData?.adaptiveFormats}")
+                    val format = body.streamingData?.adaptiveFormats
+                        ?.filter {
+                            when (audioQualityFormat) {
+                                AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
+                                            it.itag == 250 || it.itag == 140 ||
+                                            it.itag == 249 || it.itag == 139 ||
+                                            it.itag == 171
+                                AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
+                                AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
+                                AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
+                            }
+
+                        }
+                        ?.maxByOrNull {
+                            (it.bitrate?.times(
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                    AudioQualityFormat.High -> 1
+                                    AudioQualityFormat.Medium -> -1
+                                    AudioQualityFormat.Low -> -1
+                                }
+                            ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                        }
+                    /*
+                    val format =
+                        body?.streamingData?.adaptiveFormats
+                            //?.filter { it.isAudio }
+                            ?.maxByOrNull {
+                            (it.bitrate?.times(
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                    AudioQualityFormat.High -> 1
+                                    AudioQualityFormat.Medium  -> -1
+                                    AudioQualityFormat.Low  -> -1
+                                }
+                            ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+                        }
+
+                     */
+
+
+
+                    Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat selected $format")
+                    println("mediaItem PlayerService createDataSourceResolverFactory audioQualityFormat selected $format")
+
 
                     if (format == null) throw PlayableFormatNotFoundException()
+
 
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format?.let { formatIn ->

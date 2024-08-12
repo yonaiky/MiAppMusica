@@ -3,7 +3,10 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
@@ -59,7 +62,7 @@ object DownloadUtil {
     private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
     private lateinit var audioQualityFormat: AudioQualityFormat
-
+    private lateinit var connectivityManager: ConnectivityManager
 
 
 
@@ -90,6 +93,9 @@ object DownloadUtil {
     fun getResolvingDataSourceFactory (context: Context): ResolvingDataSource.Factory {
         val cache = getDownloadCache(context)
         audioQualityFormat =  context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
+
+        connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
+
         val dataSourceFactory = ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
             val videoId = dataSpec.key ?: error("A key must be set")
             //val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
@@ -117,13 +123,39 @@ object DownloadUtil {
                             }
 
                             when (val status = body.playabilityStatus?.status) {
-                                //"OK" -> body.streamingData?.highestQualityFormat?.let { format ->
+                                "OK" -> body.streamingData?.adaptiveFormats
+                                    ?.filter {
+                                        when (audioQualityFormat) {
+                                            AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
+                                                    it.itag == 250 || it.itag == 140 ||
+                                                    it.itag == 249 || it.itag == 139 ||
+                                                    it.itag == 171
+                                            AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
+                                            AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
+                                            AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
+                                        }
+
+                                    }
+                                    ?.maxByOrNull {
+                                        (it.bitrate?.times(
+                                            when (audioQualityFormat) {
+                                                AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                                AudioQualityFormat.High -> 1
+                                                AudioQualityFormat.Medium -> -1
+                                                AudioQualityFormat.Low -> -1
+                                            }
+                                        ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                                    }
+                                    ?.let { format ->
+                                /*
                                 "OK" -> when(audioQualityFormat) {
                                     AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
                                     AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
                                     AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
                                     AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
-                                }?.let { format ->                                  /*
+                                }?.let { format ->
+                                                      /*
+                                 */
                                     val mediaItem = runBlocking(Dispatchers.Main) {
                                         Innertube.player(PlayerBody(videoId = videoId))
                                     }

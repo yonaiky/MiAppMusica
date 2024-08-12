@@ -32,11 +32,12 @@ data class PlayerResponse(
     data class StreamingData(
         val adaptiveFormats: List<AdaptiveFormat>?
     ) {
+        /*
         val autoMaxQualityFormat: AdaptiveFormat?
             get() = adaptiveFormats?.sortedBy { it.itag }?.findLast {
                 it.itag == 251 || it.itag == 141 ||
                         it.itag == 250 || it.itag == 140 ||
-                        it.itag == 249 || it.itag == 139
+                        it.itag == 249 || it.itag == 139 || it.itag == 171
             }
 
         val highestQualityFormat: AdaptiveFormat?
@@ -47,6 +48,8 @@ data class PlayerResponse(
 
         val lowestQualityFormat: AdaptiveFormat?
             get() = adaptiveFormats?.findLast { it.itag == 249 || it.itag == 139 }
+
+         */
 
         @Serializable
         data class AdaptiveFormat(
