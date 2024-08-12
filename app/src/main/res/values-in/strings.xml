@@ -708,7 +708,7 @@
     <string name="minimum_silence_length_description">Durasi minimum audio senyap yang dapat dilewati</string>
     <string name="minimum_silence_length_warning">Pemutar harus dimulai ulang untuk perubahan yang efektif!</string>
     <string name="restart_service">Mulai ulang pemutar</string>
-    <string name="player_pause_listen_history">Pause listen history</string>
+    <string name="player_pause_listen_history">Jeda riwayat pemutaran</string>
     <string name="queuetype">Gaya Antrean</string>
     <string name="chart_top_songs">Lagu Teratas</string>
     <string name="chart_top_artists">Artis Teratas</string>
