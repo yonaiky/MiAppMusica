@@ -483,10 +483,10 @@ fun StatsForNerds(
 
 @Composable
 fun getQuality(format: Format): String {
-    when (format.itag?.toString()) {
-        "251", "141" -> return stringResource(R.string.audio_quality_format_high)
-        "250", "140", "171" -> return stringResource(R.string.audio_quality_format_medium)
-        "249", "139" -> return stringResource(R.string.audio_quality_format_low)
-        else -> return format.itag.toString()
+    return when (format.itag?.toString()) {
+        "251", "141" -> stringResource(R.string.audio_quality_format_high)
+        "250", "140", "171" -> stringResource(R.string.audio_quality_format_medium)
+        "249", "139" -> stringResource(R.string.audio_quality_format_low)
+        else -> format.itag.toString()
     }
 }
