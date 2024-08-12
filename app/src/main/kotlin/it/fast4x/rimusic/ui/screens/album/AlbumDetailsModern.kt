@@ -59,6 +59,7 @@ import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -709,6 +710,27 @@ fun AlbumDetailsModern(
                                     },
                                     onLongClick = {
                                         SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                    }
+                                )
+                        )
+
+                        HeaderIconButton(
+                            icon = R.drawable.radio,
+                            enabled = true,
+                            color = colorPalette.text,
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayFromBeginning(
+                                            songs.map(Song::asMediaItem)
+                                        )
+                                        binder?.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = songs.first().id))
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
                                     }
                                 )
                         )
