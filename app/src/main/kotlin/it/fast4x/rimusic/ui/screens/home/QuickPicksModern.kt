@@ -108,8 +108,10 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
+import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -389,6 +391,9 @@ fun QuickPicksModern(
                      */
             ) {
 
+                //relatedPageResult?.getOrNull()?.let { related ->
+                related = relatedPageResult?.getOrNull()
+
                 if (uiType == UiType.ViMusic)
                     HeaderWithIcon(
                         title = stringResource(R.string.quick_picks),
@@ -400,9 +405,9 @@ fun QuickPicksModern(
                     )
 
                 if (showTips) {
-                    Title(
+                    Title2Actions(
                         title = stringResource(R.string.tips),
-                        onClick = {
+                        onClick1 = {
                             menuState.display {
                                 Menu {
                                     MenuEntry(
@@ -432,6 +437,13 @@ fun QuickPicksModern(
                                 }
                             }
                         },
+                        icon2 = R.drawable.play,
+                        onClick2 = {
+                            binder?.stopRadio()
+                            trending?.let { binder?.player?.forcePlay(it.asMediaItem) }
+                            binder?.player?.addMediaItems(related?.songs?.map { it.asMediaItem } ?: emptyList())
+                        }
+
                         //modifier = Modifier.fillMaxWidth(0.7f)
                     )
 
@@ -448,8 +460,7 @@ fun QuickPicksModern(
                     )
 
 
-                    //relatedPageResult?.getOrNull()?.let { related ->
-                    related = relatedPageResult?.getOrNull()
+
 
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
