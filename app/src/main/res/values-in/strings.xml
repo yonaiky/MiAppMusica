@@ -142,7 +142,7 @@
     <string name="tips">Disarankan untuk anda</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">Durasi pemutaran minimum sebuah lagu agar disarankan ke dalam Pilihan cepat</string>
     <string name="min_listening_time">Durasi pemutaran minimum</string>
-    <string name="player_thumbnail_size">Ukuran Thumbnail</string>
+    <string name="player_thumbnail_size">Ukuran thumbnail</string>
     <string name="restarting_rimusic_is_required">Dibutuhkan pemulaian ulang</string>
     <string name="small">Kecil</string>
     <string name="medium">Sedang</string>
@@ -214,7 +214,7 @@
     <string name="vt_double_side">Dua sisi</string>
     <string name="vt_double_side_circular">Dua sisi melingkar</string>
     <string name="vt_full">Penuh</string>
-    <string name="new_albums_of_your_artists">Album baru dari artis Anda</string>
+    <string name="new_albums_of_your_artists">Album baru dari artis anda</string>
     <string name="timeline">Bilah waktu</string>
     <string name="song_cache_by_player">CACHE LAGU (Pemutar)</string>
     <string name="song_cache_by_download">CACHE LAGU (Unduhan)</string>
@@ -310,7 +310,7 @@
     <string name="action_bar_show_arrow_button_to_open_queue">Tombol Panah</string>
     <string name="lang_finnish">Finnish</string>
     <string name="listening_time">Durasi pemutaran</string>
-    <string name="shows_the_number_of_songs_heard_and_their_listening_time">Tampilkan jumlah total lagu yang telah didengar dan durasi pemutaran</string>
+    <string name="shows_the_number_of_songs_heard_and_their_listening_time">Tampilkan jumlah lagu yang telah didengar dan durasi pemutaran</string>
     <string name="app_update_dialog_new">Versi terbaru (%s) dapat diunduh!</string>
     <string name="enable_language_in_discovery">Aktifkan bahasa untuk Jelajah</string>
     <string name="if_possible_allows_discovery_content_language">Sesuaikan konten Jelajah sesuai dengan bahasa anda.</string>
@@ -494,8 +494,8 @@
     <string name="month_november_s">%s November</string>
     <string name="month_december_s">%s Desember</string>
     <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumbering a monthly playlist</string>
-    <string name="info_cannot_rename_a_monthly_playlist">Tidak dapat mengubah nama Daftar putar bulanan</string>
-    <string name="info_cannot_delete_a_monthly_playlist">Tidak dapat menghapus Daftar putar bulanan</string>
+    <string name="info_cannot_rename_a_monthly_playlist">Tidak dapat mengubah nama daftar putar bulanan</string>
+    <string name="info_cannot_delete_a_monthly_playlist">Tidak dapat menghapus daftar putar bulanan</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sort</string>
     <string name="information">Informasi</string>
     <string name="info_lyrics_found_on_s">Lirik ditemukan di %s</string>
@@ -558,7 +558,7 @@
     <string name="pinfo_type">Gaya tajuk</string>
     <string name="pinfo_album_and_artist_name">Album dan Artis</string>
     <string name="show_player_top_actions_bar">Tampilkan bilah aksi atas</string>
-    <string name="icon_like_button">Tombol favorit</string>
+    <string name="icon_like_button">Tombol Favorit</string>
     <string name="icon_like_apple">Apel</string>
     <string name="icon_like_breaked">Patah hati</string>
     <string name="icon_like_gift">Kado</string>
@@ -618,8 +618,8 @@
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Bersinar</string>
     <string name="bottomgradient">Aktifkan gradien bilah aksi</string>
-    <string name="textoutline">Aktifkan Border teks</string>
-    <string name="set_cache_location">Lokasi Cache</string>
+    <string name="textoutline">Aktifkan border teks</string>
+    <string name="set_cache_location">Lokasi cache</string>
     <string name="info_private_cache_location_can_t_cleaned">Cache pribadi tidak dapat dihapus oleh sistem</string>
     <string name="error_file_unsupported_format">Format file tidak didukung</string>
     <string name="charts">Charts</string>
@@ -637,7 +637,7 @@
     <string name="thumbnailpause">Kecilkan thumbnail saat jeda lagu</string>
     <string name="upnext">Selanjutnya</string>
     <string name="showtwosongs">Show Next two Songs in Queue</string>
-    <string name="showalbumcover">Tampilkan Cover Album</string>
+    <string name="showalbumcover">Tampilkan sampul album</string>
     <string name="do_not_translate">Jangan terjemahkan</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
     <string name="lyricsbackground">Latar belakang lirik</string>
@@ -658,8 +658,8 @@
     <string name="header_view_top_of">%s Teratas …</string>
     <string name="podcast_episodes">Episode</string>
     <string name="podcasts">Podcast</string>
-    <string name="playlistindicator">Indikator Daftar Putar</string>
-    <string name="playlistindicatorinfo">Menandai lagu yang telah ditambahkan ke Daftar Putar Anda</string>
+    <string name="playlistindicator">Indikator daftar putar</string>
+    <string name="playlistindicatorinfo">Menandai lagu yang telah ditambahkan ke daftar putar Anda</string>
     <string name="deleted">Terhapus</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Informasi statistik</string>
@@ -680,7 +680,7 @@
     <string name="paste">Tempel</string>
     <string name="searches_no_suggestions">Tidak ada saran</string>
     <string name="action_bar_show_discover_button">Tombol Discover</string>
-    <string name="playertype">Gaya Pemutar</string>
+    <string name="playertype">Gaya pemutar</string>
     <string name="noblur">Jangan kaburkan latar belakang saat lirik nonaktif</string>
     <string name="fadingedge">Tepi Memudar</string>
     <string name="carousel">Tampilan Carousel</string>
@@ -709,7 +709,7 @@
     <string name="minimum_silence_length_warning">Pemutar harus dimulai ulang untuk perubahan yang efektif!</string>
     <string name="restart_service">Mulai ulang pemutar</string>
     <string name="player_pause_listen_history">Jeda riwayat pemutaran</string>
-    <string name="queuetype">Gaya Antrean</string>
+    <string name="queuetype">Gaya antrean</string>
     <string name="chart_top_songs">Lagu Teratas</string>
     <string name="chart_top_artists">Artis Teratas</string>
     <string name="lang_interlingua">Interlingua</string>
