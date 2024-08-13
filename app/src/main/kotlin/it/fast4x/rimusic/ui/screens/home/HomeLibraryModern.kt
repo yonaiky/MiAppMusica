@@ -193,7 +193,7 @@ fun HomeLibraryModern(
                         context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
-                        name = text
+                        name = "$PIPED_PREFIX$text"
                     )
                 } else {
                     query {

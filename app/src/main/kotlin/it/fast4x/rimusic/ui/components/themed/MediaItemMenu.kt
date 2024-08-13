@@ -116,6 +116,7 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -192,15 +193,16 @@ fun InPlaylistMediaItemMenu(
                 Database.delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
             }
 
-            if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
+            if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.playlist.browseId}")
                 removeFromPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession() ,
-                    id = UUID.fromString(playlist.playlist.browseId),
+                    pipedSession = pipedSession.toApiSession(),
+                    id = UUID.fromString(playlist?.playlist?.browseId),
                     positionInPlaylist
                 )
-
+            }
         },
         modifier = modifier
     )
@@ -495,7 +497,8 @@ fun BaseMediaItemMenu(
                 )
             }
 
-            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty())
+            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
                 addToPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
@@ -503,7 +506,7 @@ fun BaseMediaItemMenu(
                     id = UUID.fromString(playlist.browseId),
                     videos = listOf(mediaItem.mediaId)
                 )
-
+            }
 
 
 

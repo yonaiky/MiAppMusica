@@ -178,6 +178,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
@@ -615,18 +616,21 @@ fun LocalPlaylistSongs(
             value = playlistPreview?.playlist?.name?.let { cleanPrefix(it) } ?: "",
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
+                val pipedPlaylist = if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
+                    true else false
+
                 if (isRenaming) {
                     query {
-                        playlistPreview?.playlist?.copy(name = text)?.let(Database::update)
+                        playlistPreview?.playlist?.copy(name = if (!pipedPlaylist) text else "$PIPED_PREFIX$text")?.let(Database::update)
                     }
 
-                    if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty())
+                    if (pipedPlaylist)
                         renamePipedPlaylist(
                             context = context,
                             coroutineScope = coroutineScope,
                             pipedSession = pipedSession.toApiSession(),
                             id = UUID.fromString(playlistPreview?.playlist?.browseId),
-                            name = text
+                            name = "$PIPED_PREFIX$text"
                         )
 
                 }
@@ -1185,7 +1189,7 @@ fun LocalPlaylistSongs(
                                                 if (playlistPreview.playlist.name.startsWith(
                                                         PIPED_PREFIX
                                                     ) && isPipedEnabled && pipedSession.token.isNotEmpty()
-                                                )
+                                                ) {
                                                     addToPipedPlaylist(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
@@ -1194,6 +1198,7 @@ fun LocalPlaylistSongs(
                                                         videos = listMediaItems.map { it.mediaId }
                                                             .toList()
                                                     )
+                                                }
                                             } else {
                                                 listMediaItems.forEachIndexed { index, song ->
                                                     //Log.d("mediaItemMaxPos", position.toString())
@@ -1574,6 +1579,7 @@ fun LocalPlaylistSongs(
                             }
 
                             if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                                Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlistPreview!!.playlist.browseId}")
                                 removeFromPipedPlaylist(
                                     context = context,
                                     coroutineScope = coroutineScope,
