@@ -42,6 +42,7 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
         }.await()?.map {playlist ->
 
             println("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
+            Timber.d("SyncPipedUtils syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
 
             playlistId.let {
                 transaction {
@@ -105,6 +106,7 @@ fun ImportPipedPlaylists(){
             async {
                 Piped.playlist.list(session = pipedSession.toApiSession())
             }.await()?.map {
+                Timber.d("SyncPipedUtils ImportPipedPlaylists playlists ${it.size}")
                 //itemsPiped = it
                 transaction {
                     it.forEach {
@@ -164,7 +166,7 @@ fun addToPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSe
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
             Piped.playlist.add(session = pipedSession, id = id, videos = videos.map { it.toID() })
-
+            Timber.d("SyncPipedUtils addToPipedPlaylist pipedSession $pipedSession, id $id, videos ${videos.size}")
     }
 
 }
@@ -173,7 +175,7 @@ fun removeFromPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pi
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.remove(session = pipedSession, id = id, idx = idx)
-
+        Timber.d("SyncPipedUtils removeFromPipedPlaylist pipedSession $pipedSession, id $id, idx $idx")
     }
 
 }
@@ -182,7 +184,7 @@ fun deletePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.delete(session = pipedSession, id = id)
-
+        Timber.d("SyncPipedUtils deletePipedPlaylist pipedSession $pipedSession, id $id")
     }
 
 }
@@ -191,7 +193,7 @@ fun renamePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.rename(session = pipedSession, id = id, name = name)
-
+        Timber.d("SyncPipedUtils renamePipedPlaylist pipedSession $pipedSession, id $id, name $name")
     }
 
 }
@@ -206,9 +208,8 @@ fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
         }.await()?.map {
            playlistId = Database.insert(Playlist(name = "$PIPED_PREFIX$name", browseId = it.id.toString()))
         }
+        Timber.d("SyncPipedUtils createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId")
     }
-
-    Timber.d("pipedInfo new playlistId $playlistId")
 
     return playlistId
 }
@@ -224,7 +225,9 @@ fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
     if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
         SmartMessage(context.resources.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
+        Timber.d("SyncPipedUtils checkPipedAccount Piped account not connected")
         return false
     }
+    Timber.d("SyncPipedUtils checkPipedAccount Piped account connected")
     return true
 }
