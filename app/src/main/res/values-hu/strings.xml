@@ -307,7 +307,7 @@
     <string name="action_bar_show_loop_button">Ismétlés gomb megjelenítése</string>
     <string name="action_bar_show_shuffle_button">Véletlenszerű lejátszás gomb megjelenítése</string>
     <string name="action_bar_show_lyrics_button">Dalszöveg gomb megjelenítése</string>
-    <string name="action_bar_show_arrow_button_to_open_queue">Nyíl gomb megjelenítése</string>
+    <string name="action_bar_show_arrow_button_to_open_queue">Nyíl gomb megjelenítése a Várólista megjelenítéséhez</string>
     <string name="lang_finnish">Finn</string>
     <string name="listening_time">Hallgatási idő</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Megmutatja a hallott dalok számát és hallgatási idejét</string>
@@ -419,7 +419,7 @@
     <string name="lang_danish">Dán</string>
     <string name="lang_serbian_latin">Szerb (Latin)</string>
     <string name="item_deselect">Törölje a kijelölést</string>
-    <string name="show_next_songs_in_player">Következő dalok megjelenítése a lejátszóban</string>
+    <string name="show_next_songs_in_player">Mini Várólista megjelenítése a lejátszóban</string>
     <string name="show_remaining_song_time">A zeneszám hátralévő időtartamának megjelenítése</string>
     <string name="full_screen">Teljes képernyő</string>
     <string name="click_lyrics_text">Kattints a dalszöveg szövegére</string>
@@ -477,7 +477,7 @@
     <string name="te_scale">Mérték</string>
     <string name="te_slide_vertical">Elcsúsztatás vertikálisan</string>
     <string name="te_slide_horizontal">Elcsúsztatás horizontálisan</string>
-    <string name="info_wait_it_may_take_a_few_minutes">Várjon, ez igénybe vehet egy-két percet...</string>
+    <string name="info_wait_it_may_take_a_few_minutes">Várj, ez igénybe vehet egy-két percet...</string>
     <string name="album_and_alternative_versions">Album és alternatív verzió</string>
     <string name="album_alternative_versions">Alternatív verzió</string>
     <string name="monthly_playlists">Havi lejátszási lista</string>
@@ -606,8 +606,8 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedlyrics">Kibővített szöveg</string>
+    <string name="expandedlyricsinfo">A Kiterjesztett Lejátszó csak akkor működik, ha a dalszöveg aktiválva van</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali</string>
@@ -617,7 +617,7 @@
     <string name="fluidtheme">Fluid Theme</string>
     <string name="blackgradient">Black Gradient at Bottom</string>
     <string name="glow">Glow</string>
-    <string name="bottomgradient">Show Bottom Gradient</string>
+    <string name="bottomgradient">Színátmenet megjelenítése</string>
     <string name="textoutline">Enable Text Outline</string>
     <string name="set_cache_location">Cache location</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
@@ -636,7 +636,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showtwosongs">A mini Várólistában lévő dalok száma (1-9)</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
@@ -644,7 +644,7 @@
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
-    <string name="hideprevnext">Hide Previous and Next Songs</string>
+    <string name="hideprevnext">Dalok sorba állítása a Lejátszóban</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
@@ -701,7 +701,7 @@
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Quality</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
-    <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
+    <string name="swipe_up_to_open_the_queue">Csúsztasd felfelé az ujjad a Várólista megnyitásához</string>
     <string name="pinfo_show_icons">Show info with icons</string>
     <string name="format_ms">%1$s ms</string>
     <string name="minimum_silence_length">Minimum silence length</string>
