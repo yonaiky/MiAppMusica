@@ -1018,6 +1018,8 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
             if (isAtLeastAndroid11)
                 projection += MediaStore.Audio.Media.BITRATE
 
+            projection += MediaStore.Audio.Media.SIZE
+
             val sortOrderSQL = when (order) {
                 SortOrder.Ascending -> "ASC"
                 SortOrder.Descending -> "DESC"
@@ -1059,6 +1061,8 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                     Timber.i(" DeviceListSongs colums mimeTypeIdx $mimeTypeIdx")
                     val bitrateIdx = if (isAtLeastAndroid11) cursor.getColumnIndex(MediaStore.Audio.Media.BITRATE) else -1
                     Timber.i(" DeviceListSongs colums bitrateIdx $bitrateIdx")
+                    val fileSizeIdx = cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)
+                    Timber.i(" DeviceListSongs colums fileSizeIdx $fileSizeIdx")
                     val dateModifiedIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
                     Timber.i(" DeviceListSongs colums dateModifiedIdx $dateModifiedIdx")
 
@@ -1081,6 +1085,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
 
                             val mimeType = cursor.getString(mimeTypeIdx)
                             val bitrate = if (isAtLeastAndroid11) cursor.getInt(bitrateIdx) else 0
+                            val fileSize = cursor.getInt(fileSizeIdx)
                             val dateModified = cursor.getLong(dateModifiedIdx)
 
                             val relativePath = if (isAtLeastAndroid10) {
@@ -1115,7 +1120,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                             itag = 0,
                                             mimeType = mimeType,
                                             bitrate = bitrate.toLong(),
-                                            contentLength = duration.toLong(),
+                                            contentLength = fileSize.toLong(),
                                             lastModified = dateModified
                                         )
                                     )
