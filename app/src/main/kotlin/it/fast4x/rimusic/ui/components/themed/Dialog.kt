@@ -544,78 +544,78 @@ inline fun SelectorArtistsDialog(
                 val pagerState = rememberPagerState(pageCount = { values.size })
                 val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
 
-                    Box {
-                        HorizontalPager(state = pagerState) { idArtist ->
-                            val browseId = values[idArtist].id
-                            var artist by persist<Artist?>("artist/$browseId/artist")
-                            LaunchedEffect(browseId) {
-                                Database.artist(values[idArtist].id).collect{artist = it}
-                            }
-
-                            Box {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(artist?.thumbnailUrl?.resize(1200, 1200))
-                                        .build(),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier
-                                        .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
-                                        .clickable(
-                                            onClick = {
-                                                onDismiss()
-                                                onValueSelected(browseId)
-                                            }
-                                        )
-                                        .align(Alignment.Center)
-                                )
-                                values[idArtist].name?.let { it1 ->
-                                    BasicText(
-                                        text = it1,
-                                        maxLines = 3,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = typography.xs.medium,
-                                        modifier = Modifier
-                                            .padding(bottom = 20.dp)
-                                            .align(Alignment.BottomCenter)
-                                    )
-                                    BasicText(
-                                        text = it1,
-                                        style = typography.xs.medium.merge(TextStyle(
-                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                            color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
-                                            else Color.Black
-                                        )),
-                                        maxLines = 3,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier
-                                            .padding(bottom = 20.dp)
-                                            .align(Alignment.BottomCenter)
-                                    )
-                                }
-                            }
-
+                Box {
+                    HorizontalPager(state = pagerState) { idArtist ->
+                        val browseId = values[idArtist].id
+                        var artist by persist<Artist?>("artist/$browseId/artist")
+                        LaunchedEffect(browseId) {
+                            Database.artist(values[idArtist].id).collect{artist = it}
                         }
-                        Row(
-                            Modifier
-                                .height(20.dp)
-                                .fillMaxWidth()
-                                .align(Alignment.BottomCenter),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            repeat(values.size) { iteration ->
-                                val color = if (pagerState.currentPage == iteration) colorPalette.text else colorPalette.text.copy(alpha = 0.5f)
-                                Box(
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                        .size(10.dp)
 
+                        Box {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(artist?.thumbnailUrl?.resize(1200, 1200))
+                                    .build(),
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
+                                    .clickable(
+                                        onClick = {
+                                            onDismiss()
+                                            onValueSelected(browseId)
+                                        }
+                                    )
+                                    .align(Alignment.Center)
+                            )
+                            values[idArtist].name?.let { it1 ->
+                                BasicText(
+                                    text = it1,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = typography.xs.medium,
+                                    modifier = Modifier
+                                        .padding(bottom = 20.dp)
+                                        .align(Alignment.BottomCenter)
+                                )
+                                BasicText(
+                                    text = it1,
+                                    style = typography.xs.medium.merge(TextStyle(
+                                        drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                        color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
+                                        else Color.Black
+                                    )),
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .padding(bottom = 20.dp)
+                                        .align(Alignment.BottomCenter)
                                 )
                             }
+                        }
+
+                    }
+                    Row(
+                        Modifier
+                            .height(20.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        repeat(values.size) { iteration ->
+                            val color = if (pagerState.currentPage == iteration) colorPalette.text else colorPalette.text.copy(alpha = 0.5f)
+                            Box(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .clip(CircleShape)
+                                    .background(color)
+                                    .size(10.dp)
+
+                            )
                         }
                     }
+                }
             }
         }
     }
