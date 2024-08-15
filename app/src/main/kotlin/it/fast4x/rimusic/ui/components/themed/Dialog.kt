@@ -57,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -106,6 +107,7 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
+import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -534,7 +536,7 @@ inline fun SelectorArtistsDialog(
     Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = modifier
-                .requiredSize(if (isLandscape) (0.85*screenHeight) else (0.85*screenWidth))
+                .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
                 .clip(thumbnailRoundness.shape())
                 .background(color = colorPalette.background1)
         ) {
@@ -558,7 +560,7 @@ inline fun SelectorArtistsDialog(
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
                                     modifier = Modifier
-                                        .requiredSize(if (isLandscape) (0.85*screenHeight) else (0.85*screenWidth))
+                                        .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
                                         .clickable(
                                             onClick = {
                                                 onDismiss()
@@ -1678,7 +1680,14 @@ fun PlaybackParamsDialog(
                 modifier = Modifier
                     .size(20.dp)
             )
-
+            SliderControl(
+                state = blurStrength,
+                onSlide = { blurStrength = it },
+                onSlideComplete = {},
+                toDisplay = { "%.0f".format(it) },
+                range = 0f..50f
+            )
+            /*
             CustomSlider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1729,6 +1738,7 @@ fun PlaybackParamsDialog(
                     }
                 }
             )
+            */
         }
 
         Row(
@@ -1755,6 +1765,15 @@ fun PlaybackParamsDialog(
                     .size(20.dp)
             )
 
+            SliderControl(
+                state = playbackDuration,
+                onSlide = { playbackDuration = it },
+                onSlideComplete = {},
+                toDisplay = { "%.0f".format(playbackDuration) },
+                range = 1f..60f
+            )
+
+            /*
             CustomSlider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1811,6 +1830,7 @@ fun PlaybackParamsDialog(
                     }
                 }
             )
+            */
         }
 
         Row(
@@ -1839,6 +1859,19 @@ fun PlaybackParamsDialog(
                         .size(20.dp)
                 )
 
+                SliderControl(
+                    state = playbackSpeed,
+                    onSlide = {
+                        playbackSpeed = it
+                        binder?.player?.playbackParameters =
+                            PlaybackParameters(playbackSpeed, playbackPitch)
+                    },
+                    onSlideComplete = {},
+                    toDisplay = { "%.1fx".format(playbackSpeed) },
+                    range = 0.1f..5f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1897,6 +1930,7 @@ fun PlaybackParamsDialog(
                         }
                     }
                 )
+                 */
             }
 
         Row(
@@ -1925,6 +1959,19 @@ fun PlaybackParamsDialog(
                         .size(20.dp)
                 )
 
+                SliderControl(
+                    state = playbackPitch,
+                    onSlide = {
+                        playbackPitch = it
+                        binder?.player?.playbackParameters =
+                            PlaybackParameters(playbackSpeed, playbackPitch)
+                    },
+                    onSlideComplete = {},
+                    toDisplay = { "%.1fx".format(playbackPitch) },
+                    range = 0.1f..5f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1983,6 +2030,7 @@ fun PlaybackParamsDialog(
                         }
                     }
                 )
+                 */
             }
 
         Row(
@@ -2010,6 +2058,18 @@ fun PlaybackParamsDialog(
                         .size(20.dp)
                 )
 
+                SliderControl(
+                    state = playbackVolume,
+                    onSlide = {
+                        playbackVolume = it
+                        binder?.player?.volume = playbackVolume
+                    },
+                    onSlideComplete = {},
+                    toDisplay = { "%.1f".format(playbackVolume) },
+                    range = 0.0f..1.0f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -2067,6 +2127,7 @@ fun PlaybackParamsDialog(
                         }
                     }
                 )
+                 */
             }
 
         Row(
@@ -2094,6 +2155,18 @@ fun PlaybackParamsDialog(
                         .size(20.dp)
                 )
 
+                SliderControl(
+                    state = playbackDeviceVolume,
+                    onSlide = {
+                        playbackDeviceVolume = it
+                        setDeviceVolume(context, playbackDeviceVolume)
+                    },
+                    onSlideComplete = {},
+                    toDisplay = { "%.1f".format(playbackDeviceVolume) },
+                    range = 0.0f..1.0f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -2151,6 +2224,7 @@ fun PlaybackParamsDialog(
                         }
                     }
                 )
+                 */
             }
 
     }

@@ -532,11 +532,14 @@ fun  UiSettings() {
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.audio_quality_format).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.audio_quality_format).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
                 selectedValue = audioQualityFormat,
-                onValueSelected = { audioQualityFormat = it },
+                onValueSelected = {
+                    audioQualityFormat = it
+                    restartService = true
+                },
                 valueText = {
                     when (it) {
                         AudioQualityFormat.Auto -> stringResource(R.string.audio_quality_automatic)
@@ -546,6 +549,25 @@ fun  UiSettings() {
                     }
                 }
             )
+            AnimatedVisibility(visible = restartService) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SettingsDescription(
+                        text = stringResource(R.string.minimum_silence_length_warning),
+                        important = true,
+                        modifier = Modifier.weight(2f)
+                    )
+                    SecondaryTextButton(
+                        text = stringResource(R.string.restart_service),
+                        onClick = {
+                            binder?.restartForegroundOrStop()?.let { restartService = false }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 24.dp)
+                    )
+                }
+            }
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
             SwitchSettingEntry(

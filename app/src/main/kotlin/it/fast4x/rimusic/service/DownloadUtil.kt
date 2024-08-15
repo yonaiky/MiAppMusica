@@ -136,6 +136,9 @@ object DownloadUtil {
                                         }
 
                                     }
+                                    ?.sortedByDescending { it.bitrate }
+                                    ?.firstOrNull()
+                                    /*
                                     ?.maxByOrNull {
                                         (it.bitrate?.times(
                                             when (audioQualityFormat) {
@@ -146,6 +149,7 @@ object DownloadUtil {
                                             }
                                         ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                                     }
+                                     */
                                     ?.let { format ->
                                 /*
                                 "OK" -> when(audioQualityFormat) {

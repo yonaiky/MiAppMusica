@@ -1866,6 +1866,9 @@ class PlayerService : InvincibleService(),
                             }
 
                         }
+                        ?.sortedByDescending { it.bitrate }
+                        ?.firstOrNull()
+                        /*
                         ?.maxByOrNull {
                             (it.bitrate?.times(
                                 when (audioQualityFormat) {
@@ -1876,6 +1879,7 @@ class PlayerService : InvincibleService(),
                                 }
                             ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                         }
+                         */
                     /*
                     val format =
                         body?.streamingData?.adaptiveFormats

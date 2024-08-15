@@ -605,7 +605,7 @@ class MainActivity :
                             playerVisualizerTypeKey,
                             UiTypeKey,
                             disablePlayerHorizontalSwipeKey,
-                            audioQualityFormatKey,
+                            //audioQualityFormatKey,
                                 /*
                             showButtonPlayerArrowKey,
                             showButtonPlayerAddToPlaylistKey,
