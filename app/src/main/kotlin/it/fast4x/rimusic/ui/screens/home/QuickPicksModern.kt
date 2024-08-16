@@ -183,9 +183,7 @@ fun QuickPicksModern(
     onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
-    onSettingsClick: () -> Unit,
-    onHistoryClick: () -> Unit,
-    onStatisticsClick: () -> Unit
+    onSettingsClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current

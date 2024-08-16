@@ -309,14 +309,6 @@ fun HomeScreen(
                                 //settingsRoute()
                                 navController.navigate(NavRoutes.settings.name)
                             },
-                            onHistoryClick = {
-                                //historyRoute()
-                                navController.navigate(NavRoutes.history.name)
-                            },
-                            onStatisticsClick = {
-                                //statisticsTypeRoute(StatisticsType.Today)
-                                navController.navigate(NavRoutes.statistics.name)
-                            },
                             navController = navController
 
                         )
