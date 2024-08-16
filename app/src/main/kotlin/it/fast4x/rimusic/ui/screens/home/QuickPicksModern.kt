@@ -479,54 +479,6 @@ fun QuickPicksModern(
                                 val isDownloaded =
                                     if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
 
-                                Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
-                                                    onRemoveFromQuickPicks = {
-                                                        query {
-                                                            Database.clearEventsFor(song.id)
-                                                        }
-                                                    },
-
-                                                    onDownload = {
-                                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                        query {
-                                                            Database.insert(
-                                                                Song(
-                                                                    id = song.asMediaItem.mediaId,
-                                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                                    thumbnailUrl = song.thumbnailUrl,
-                                                                    durationText = null
-                                                                )
-                                                            )
-                                                        }
-                                                        manageDownload(
-                                                            context = context,
-                                                            songId = song.id,
-                                                            songTitle = song.title,
-                                                            downloadState = isDownloaded
-                                                        )
-                                                    }
-
-                                                )
-                                            };
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        },
-                                        onClick = {
-                                            val mediaItem = song.asMediaItem
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlay(mediaItem)
-                                            binder?.setupRadio(
-                                                NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                            )
-                                        }
-                                    )
                                 SongItem(
                                     song = song,
                                     isDownloaded = isDownloaded,
@@ -565,10 +517,58 @@ fun QuickPicksModern(
                                                 .size(16.dp)
                                         )
                                     },
-                                    modifier = Modifier.animateItem(
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                menuState.display {
+                                                    NonQueuedMediaItemMenu(
+                                                        navController = navController,
+                                                        onDismiss = menuState::hide,
+                                                        mediaItem = song.asMediaItem,
+                                                        onRemoveFromQuickPicks = {
+                                                            query {
+                                                                Database.clearEventsFor(song.id)
+                                                            }
+                                                        },
+
+                                                        onDownload = {
+                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                            query {
+                                                                Database.insert(
+                                                                    Song(
+                                                                        id = song.asMediaItem.mediaId,
+                                                                        title = song.asMediaItem.mediaMetadata.title.toString(),
+                                                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                                                        thumbnailUrl = song.thumbnailUrl,
+                                                                        durationText = null
+                                                                    )
+                                                                )
+                                                            }
+                                                            manageDownload(
+                                                                context = context,
+                                                                songId = song.id,
+                                                                songTitle = song.title,
+                                                                downloadState = isDownloaded
+                                                            )
+                                                        }
+
+                                                    )
+                                                };
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            },
+                                            onClick = {
+                                                val mediaItem = song.asMediaItem
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(mediaItem)
+                                                binder?.setupRadio(
+                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                                )
+                                            }
+                                        )
+                                        .animateItem(
                                         fadeInSpec = null,
                                         fadeOutSpec = null
-                                    )
+                                        )
                                         .width(itemInHorizontalGridWidth)
                                 )
                             }
