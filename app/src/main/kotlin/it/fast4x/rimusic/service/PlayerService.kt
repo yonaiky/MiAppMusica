@@ -954,8 +954,13 @@ class PlayerService : InvincibleService(),
                     builder
                         .setMediaId(mediaItem.mediaId)
                         .setTitle(cleanPrefix(mediaItem.mediaMetadata.title.toString()))
-                        .setSubtitle(mediaItem.mediaMetadata.artist)
+                        .setSubtitle(
+                            if (mediaItem.mediaMetadata.albumTitle != null)
+                                "${mediaItem.mediaMetadata.artist} | ${mediaItem.mediaMetadata.albumTitle}"
+                            else mediaItem.mediaMetadata.artist
+                        )
                         .setIconUri(mediaItem.mediaMetadata.artworkUri)
+                        .setExtras(mediaItem.mediaMetadata.extras)
                         .build(),
                     (index + startIndex).toLong()
                 )
@@ -1438,6 +1443,7 @@ class PlayerService : InvincibleService(),
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
@@ -1445,6 +1451,7 @@ class PlayerService : InvincibleService(),
 
     override fun onPlayerErrorChanged(error: PlaybackException?) {
         super.onPlayerErrorChanged(error)
+        Timber.e("PlayerService onPlayerErrorChanged ${error?.stackTraceToString()}")
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
@@ -1452,6 +1459,7 @@ class PlayerService : InvincibleService(),
 
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
         super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
+        //Timber.e("PlayerService onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
         //Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
     }
 
@@ -1536,7 +1544,11 @@ class PlayerService : InvincibleService(),
             NotificationCompat.Builder(applicationContext)
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
-            .setContentText(mediaMetadata.artist)
+            .setContentText(
+                if (mediaMetadata.albumTitle != null)
+                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
+                else mediaMetadata.artist
+            )
             .setSubText(player.playerError?.message)
             .setLargeIcon(bitmapProvider.bitmap)
             .setAutoCancel(false)
@@ -2386,8 +2398,16 @@ class PlayerService : InvincibleService(),
 
     class NotificationDismissReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            context.stopService(context.intent<MyDownloadService>())
-            context.stopService(context.intent<PlayerService>())
+            kotlin.runCatching {
+                context.stopService(context.intent<MyDownloadService>())
+            }.onFailure {
+                Timber.e("Failed NotificationDismissReceiver stopService in PlayerService (MyDownloadService) ${it.stackTraceToString()}")
+            }
+            kotlin.runCatching {
+                context.stopService(context.intent<PlayerService>())
+            }.onFailure {
+                Timber.e("Failed NotificationDismissReceiver stopService in PlayerService (PlayerService) ${it.stackTraceToString()}")
+            }
         }
     }
 

@@ -273,6 +273,7 @@ val SongEntity.asMediaItem: MediaItem
             MediaMetadata.Builder()
                 .setTitle(song.title)
                 .setArtist(song.artistsText)
+                .setAlbumTitle(albumTitle)
                 .setArtworkUri(song.thumbnailUrl?.toUri())
                 .setExtras(
                     bundleOf(
