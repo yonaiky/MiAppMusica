@@ -474,7 +474,7 @@ fun HomeSongsModern(
             LaunchedEffect(sortByOnDevice, sortOrderOnDevice) {
                 if (hasPermission)
                     context.musicFilesAsFlow(sortByOnDevice, sortOrderOnDevice, context)
-                        .collect { songsDevice = it }
+                        .collect { songsDevice = it.distinctBy { song -> song.id } }
             }
         }
     }

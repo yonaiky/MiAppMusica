@@ -248,7 +248,7 @@ fun DeviceListSongs(
         }
         LaunchedEffect(sortBy, sortOrder) {
             if (hasPermission)
-                context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songsDevice = it }
+                context.musicFilesAsFlow(sortBy, sortOrder, context).collect { songsDevice = it.distinctBy { song -> song.id } }
         }
 
         var songs: List<SongEntity> = emptyList()
