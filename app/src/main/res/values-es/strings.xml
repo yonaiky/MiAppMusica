@@ -117,7 +117,7 @@
     <string name="left">%1$s restantes</string>
     <string name="confirm">Confirmar</string>
     <string name="show">Mostrar</string>
-    <string name="unsynchronized_lyrics">la letra no sincronizada</string>
+    <string name="unsynchronized_lyrics">letra desincronizada</string>
     <string name="synchronized_lyrics">la letra sincronizada</string>
     <string name="provided_by">Proporcionado por</string>
     <string name="delete_playback_events">Eliminar %1$s eventos de reproducción</string>
