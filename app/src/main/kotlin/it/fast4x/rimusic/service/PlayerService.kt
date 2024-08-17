@@ -2133,16 +2133,18 @@ class PlayerService : InvincibleService(),
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
 
-                    it.process().forEach {
+                    val songs = it.process()
+
+                    songs.forEach {
                         transaction {
                             Database.insert(it)
                         }
                     }
 
                     if (justAdd) {
-                        player.addMediaItems(it.process().drop(1))
+                        player.addMediaItems(songs.drop(1))
                     } else {
-                        player.forcePlayFromBeginning(it.process())
+                        player.forcePlayFromBeginning(songs)
                     }
                     radio = it
                     isLoadingRadio = false
