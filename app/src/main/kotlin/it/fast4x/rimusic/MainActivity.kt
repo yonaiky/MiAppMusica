@@ -437,19 +437,6 @@ class MainActivity :
                     )
         }
 
-        if (preferences.getBoolean(isPipedEnabledKey, false)) {
-            runCatching {
-                with(encryptedPreferences) {
-                    MainApplication.pipedUsername = getString(pipedUsernameKey, "").toString()
-                    MainApplication.pipedInstanceName =
-                        getString(pipedInstanceNameKey, "").toString()
-                    MainApplication.pipedApiBaseUrl = getString(pipedApiBaseUrlKey, "").toString()
-                    MainApplication.pipedApiToken = getString(pipedApiTokenKey, "").toString()
-                }
-            }.onFailure {
-                Timber.e("MainActivity.onCreate get encryptedPreferences ${it.stackTraceToString()}")
-            }
-        }
 
         setContent {
 

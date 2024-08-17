@@ -76,10 +76,4 @@ class MainApplication : Application(), ImageLoaderFactory {
             .build()
     }
 
-    companion object {
-        var pipedUsername: String? = ""
-        var pipedInstanceName: String? = ""
-        var pipedApiBaseUrl: String? = ""
-        var pipedApiToken: String? = ""
-    }
 }

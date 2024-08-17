@@ -109,7 +109,6 @@ import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
-import it.fast4x.rimusic.utils.TestPipedPlaylists
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
@@ -177,8 +176,9 @@ fun HomeLibraryModern(
 
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
-    val pipedSession = getPipedSession()
     val context = LocalContext.current
+    val pipedSession = getPipedSession()
+
 
     if (isCreatingANewPlaylist) {
         InputTextDialog(
@@ -193,7 +193,7 @@ fun HomeLibraryModern(
                         context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
-                        name = "$PIPED_PREFIX$text"
+                        name = text
                     )
                 } else {
                     query {

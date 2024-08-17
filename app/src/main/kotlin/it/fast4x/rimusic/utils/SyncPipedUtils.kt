@@ -77,19 +77,8 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
         }
     }
 }
-@Composable
-fun TestPipedPlaylists() {
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedApiToken = MainApplication.pipedApiToken ?: ""
-    if (isPipedEnabled && pipedApiToken.isNotEmpty()) {
-        val pipedSession = getPipedSession()
-        LaunchedEffect(Unit) {
-            async {
-                Piped.playlist.listTest(session = pipedSession.toApiSession())
-            }.await()
-        }
-    }
-}
+
+
 @Composable
 fun ImportPipedPlaylists(){
 
@@ -200,6 +189,7 @@ fun renamePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
 
 fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSession: Session, name: String): Long {
     var playlistId: Long = -1
+    var browseId: String = ""
     if (!checkPipedAccount(context, pipedSession)) return playlistId
 
     coroutineScope.launch(Dispatchers.IO) {
@@ -207,8 +197,9 @@ fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
             Piped.playlist.create(session = pipedSession, name = name)
         }.await()?.map {
            playlistId = Database.insert(Playlist(name = "$PIPED_PREFIX$name", browseId = it.id.toString()))
+           browseId = it.id.toString()
         }
-        Timber.d("SyncPipedUtils createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId")
+        Timber.d("SyncPipedUtils createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId browseId $browseId")
     }
 
     return playlistId
@@ -223,7 +214,8 @@ fun String.toID(): String {
 
 fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
-    if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
+    //println("mediaItem SyncPipedUtils checkPipedAccount isPipedEnabled $isPipedEnabled token ${pipedSession.token}")
+    if (isPipedEnabled && pipedSession.token.isEmpty()) {
         SmartMessage(context.resources.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
         Timber.d("SyncPipedUtils checkPipedAccount Piped account not connected")
         return false
