@@ -95,11 +95,11 @@
     <string name="history_is_empty">Ingen historik</string>
     <string name="service_lifetime">SERVICE LIFETIME</string>
     <string name="battery_optimizations_applied">Om batterioptimering är aktiverad kan uppspelningsaviseringen försvinna när musiken pausas.</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invincible service\" option to take effect.</string>
+    <string name="is_android12">Sedan Android 12 så måste man inaktivera batterioptimeringar för att alternativet \"oövervinnerlig service\" ska träda i kraft.</string>
     <string name="ignore_battery_optimizations">Ignorera batterioptimeringar</string>
     <string name="already_unrestricted">Redan obegränsad</string>
     <string name="disable_background_restrictions">Inaktivera bakgrundsbegränsningar</string>
-    <string name="invincible_service">Invincible service</string>
+    <string name="invincible_service">Oövervinnerlig service</string>
     <string name="turning_off_battery_optimizations_is_not_enough">När det inte räcker att stänga av batterioptimering</string>
     <string name="player">Spelare</string>
     <string name="persistent_queue">Beständig kö</string>
@@ -119,7 +119,7 @@
     <string name="show">Visa</string>
     <string name="unsynchronized_lyrics">osynkroniserade låttexter</string>
     <string name="synchronized_lyrics">synkroniserade låttexter</string>
-    <string name="provided_by">Provided by</string>
+    <string name="provided_by">Tillhandahålls av</string>
     <string name="delete_playback_events">Ta bort %1$s uppspelningshändelser</string>
     <string name="existing_data_will_be_overwritten">Befintlig data kommer att skrivas över.\n%1$s kommer automatiskt att stängas efter att databasen har återställts.</string>
     <string name="folder_cache">MAPPCACHE</string>
@@ -185,7 +185,7 @@
     <string name="unlimited">Obegränsad</string>
     <string name="_light">Ljust</string>
     <string name="downloaded">Hämtade</string>
-    <string name="turn_off">Turn off</string>
+    <string name="turn_off">Stäng av</string>
     <string name="download">Ladda ner</string>
     <string name="_default">Standard</string>
     <string name="dynamic">Dynamisk</string>
