@@ -1061,7 +1061,8 @@ fun PlayerModern(
                                     //binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
-                                    binder.player.forceSeekToNext()
+                                    binder.player.seekToNextMediaItem()
+                                    //binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -1163,7 +1164,8 @@ fun PlayerModern(
                                     //binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX <-5){
-                                    binder.player.forceSeekToNext()
+                                    binder.player.seekToNextMediaItem()
+                                    //binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -1954,7 +1956,8 @@ fun PlayerModern(
                                                 if (deltaX > 5) {
                                                     binder.player.seekToPreviousMediaItem()
                                                 } else if (deltaX < -5) {
-                                                    binder.player.forceSeekToNext()
+                                                    binder.player.seekToNextMediaItem()
+                                                    //binder.player.forceSeekToNext()
                                                 }
 
                                             }
@@ -2165,7 +2168,8 @@ fun PlayerModern(
                                                         if (deltaX > 5) {
                                                             binder.player.seekToPreviousMediaItem()
                                                         } else if (deltaX < -5) {
-                                                            binder.player.forceSeekToNext()
+                                                            binder.player.seekToNextMediaItem()
+                                                            //binder.player.forceSeekToNext()
                                                         }
 
                                                     }

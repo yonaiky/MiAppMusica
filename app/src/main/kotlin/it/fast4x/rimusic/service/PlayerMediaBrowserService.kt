@@ -378,8 +378,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         MediaSessionCompat.Callback() {
         override fun onPlay() = binder.player.play()
         override fun onPause() = binder.player.pause()
-        override fun onSkipToPrevious() = binder.player.seekToPrevious()
-        override fun onSkipToNext() = binder.player.seekToNext()
+        override fun onSkipToPrevious() = binder.player.seekToPreviousMediaItem()
+        override fun onSkipToNext() = binder.player.seekToNextMediaItem()
         override fun onSeekTo(pos: Long) = binder.player.seekTo(pos)
         override fun onSkipToQueueItem(id: Long) = binder.player.seekToDefaultPosition(id.toInt())
         @OptIn(UnstableApi::class)

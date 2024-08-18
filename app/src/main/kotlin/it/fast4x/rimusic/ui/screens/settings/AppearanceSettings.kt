@@ -424,7 +424,13 @@ fun AppearanceSettings() {
             showthumbnail = true
         if (!visualizerEnabled) showvisthumbnail = false
         if (!showthumbnail) {showlyricsthumbnail = false; showvisthumbnail = false}
-        if (playerType == PlayerType.Modern) {showlyricsthumbnail = false; showvisthumbnail = false; thumbnailpause = false; keepPlayerMinimized = false}
+        if (playerType == PlayerType.Modern) {
+            showlyricsthumbnail = false
+            showvisthumbnail = false
+            thumbnailpause = false
+            //keepPlayerMinimized = false
+        }
+
         if (showlyricsthumbnail) expandedlyrics = false
 
         if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
