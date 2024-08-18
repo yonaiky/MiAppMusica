@@ -1741,7 +1741,6 @@ class PlayerService : InvincibleService(),
         val minimumSilenceDuration = preferences.getLong(
             minimumSilenceDurationKey, 2_000_000L) //PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
         val audioSink = DefaultAudioSink.Builder(applicationContext)
-
             .setEnableFloatOutput(false)
             .setEnableAudioTrackPlaybackParams(false)
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
