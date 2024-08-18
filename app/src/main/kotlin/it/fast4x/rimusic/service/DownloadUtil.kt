@@ -62,7 +62,6 @@ object DownloadUtil {
     private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
     private lateinit var audioQualityFormat: AudioQualityFormat
-    private lateinit var connectivityManager: ConnectivityManager
 
 
 
@@ -94,7 +93,7 @@ object DownloadUtil {
         val cache = getDownloadCache(context)
         audioQualityFormat =  context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
 
-        connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
+        //connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
 
         val dataSourceFactory = ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
             val videoId = dataSpec.key ?: error("A key must be set")
@@ -248,7 +247,7 @@ object DownloadUtil {
         return CacheDataSource.Factory().setCache(getDownloadCache(context)).apply {
             setUpstreamDataSourceFactory(
                 OkHttpDataSource.Factory(okHttpClient())
-                    .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
+                    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
                 /*
                 DefaultHttpDataSource.Factory()
                     .setConnectTimeoutMs(16000)

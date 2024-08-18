@@ -713,8 +713,6 @@ fun  UiSettings() {
 
 
 
-
-        if (playerType == PlayerType.Essential) {
             if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))
                 SwitchSettingEntry(
                     title = stringResource(R.string.player_keep_minimized),
@@ -724,7 +722,7 @@ fun  UiSettings() {
                         keepPlayerMinimized = it
                     }
                 )
-        }
+
 
         if (filter.isNullOrBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(filterCharSequence,true))
             SwitchSettingEntry(
