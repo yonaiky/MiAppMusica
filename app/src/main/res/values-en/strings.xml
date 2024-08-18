@@ -377,7 +377,7 @@
     <string name="save_to_backup">Save to backup</string>
     <string name="restore_from_backup">Restore from backup</string>
     <string name="tab_miscellaneous">Misc</string>
-    <string name="swipe_to_action">Swipe for action</string>
+    <string name="swipe_to_action">Swipe queue for action</string>
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activate the action menu by swiping the song left or right</string>
     <string name="smart_recommendations">SMART RECOMMENDATIONS</string>
     <string name="player_collapsed_disable_swiping_down">Disable swiping down</string>
