@@ -403,7 +403,8 @@ fun PlayerEssential(
                         .clip(RoundedCornerShape(playPauseRoundness))
                         .clickable {
                             if (shouldBePlaying) {
-                                binder.player.pause()
+                                binder.callPause({})
+                                //binder.player.pause()
                             } else {
                                 if (binder.player.playbackState == Player.STATE_IDLE) {
                                     binder.player.prepare()
