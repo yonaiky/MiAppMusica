@@ -74,6 +74,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -135,6 +136,10 @@ fun PlayerEssential(
     var shouldBePlaying by remember { mutableStateOf(binder.player.shouldBePlaying) }
     val hapticFeedback = LocalHapticFeedback.current
 
+    var playerError by remember {
+        mutableStateOf<PlaybackException?>(binder.player.playerError)
+    }
+
     binder.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -142,16 +147,24 @@ fun PlayerEssential(
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                playerError = binder.player.playerError
+                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
+            }
+
+            override fun onPlayerError(playbackException: PlaybackException) {
+                playerError = playbackException
+                binder.stopRadio()
             }
         }
     }
 
     val mediaItem = nullableMediaItem ?: return
+
+    playerError?.let { PlayerError(error = it) }
 
     var likedAt by rememberSaveable {
         mutableStateOf<Long?>(null)

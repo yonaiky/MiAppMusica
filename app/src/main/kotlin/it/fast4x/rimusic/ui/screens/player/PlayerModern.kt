@@ -230,6 +230,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Timeline
 import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
@@ -419,6 +420,10 @@ fun PlayerModern(
         mutableIntStateOf(if (binder.player.mediaItemCount == 0) -1 else binder.player.currentMediaItemIndex)
     }
 
+    var playerError by remember {
+        mutableStateOf<PlaybackException?>(binder.player.playerError)
+    }
+
 
     binder.player.DisposableListener {
         object : Player.Listener {
@@ -427,20 +432,27 @@ fun PlayerModern(
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                playerError = binder.player.playerError
+                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
             }
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 mediaItems = timeline.mediaItems
                 mediaItemIndex = binder.player.currentMediaItemIndex
             }
+            override fun onPlayerError(playbackException: PlaybackException) {
+                playerError = playbackException
+                binder.stopRadio()
+            }
         }
     }
 
     val mediaItem = nullableMediaItem ?: return
+
+    playerError?.let { PlayerError(error = it) }
 
     var isShowingSleepTimerDialog by remember {
         mutableStateOf(false)
@@ -1031,7 +1043,7 @@ fun PlayerModern(
                     },
                     onLongClick = {
                         if (showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur)
-                        showBlurPlayerDialog = true
+                            showBlurPlayerDialog = true
                     }
                 )
                 .pointerInput(Unit) {
@@ -1235,7 +1247,7 @@ fun PlayerModern(
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                     .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .conditional(tapqueue) {clickable { showQueue = true }}
+                    .conditional(tapqueue) { clickable { showQueue = true } }
                     .background(
                         colorPalette.background2.copy(
                             alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
@@ -1478,7 +1490,10 @@ fun PlayerModern(
                                     .combinedClickable(
                                         onClick = { discoverIsEnabled = !discoverIsEnabled },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.discoverinfo), context = context)
+                                            SmartMessage(
+                                                context.resources.getString(R.string.discoverinfo),
+                                                context = context
+                                            )
                                         }
 
                                     )
@@ -1530,8 +1545,17 @@ fun PlayerModern(
                                 modifier = Modifier
                                     //.padding(horizontal = 4.dp)
                                     .size(24.dp)
-                                    .conditional(songPlaylist > 0 && playlistindicator) {background(colorPalette.accent,CircleShape)}
-                                    .conditional(songPlaylist > 0 && playlistindicator) {padding(all = 5.dp)}
+                                    .conditional(songPlaylist > 0 && playlistindicator) {
+                                        background(
+                                            colorPalette.accent,
+                                            CircleShape
+                                        )
+                                    }
+                                    .conditional(songPlaylist > 0 && playlistindicator) {
+                                        padding(
+                                            all = 5.dp
+                                        )
+                                    }
                             )
 
 
@@ -1926,7 +1950,7 @@ fun PlayerModern(
                                         onDragStart = {
                                         },
                                         onDragEnd = {
-                                            if (!disablePlayerHorizontalSwipe  && playerType == PlayerType.Essential) {
+                                            if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                 if (deltaX > 5) {
                                                     binder.player.seekToPreviousMediaItem()
                                                 } else if (deltaX < -5) {
@@ -2033,8 +2057,12 @@ fun PlayerModern(
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
                                          modifier = Modifier
-                                             .padding(all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
-                                             .conditional(fadingedge){horizontalFadingEdge()}
+                                             .padding(
+                                                 all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
+                                                     0.dp
+                                                 )
+                                             )
+                                             .conditional(fadingedge) { horizontalFadingEdge() }
                                          ) { it ->
 
                                          AsyncImage(
@@ -2045,15 +2073,18 @@ fun PlayerModern(
                                              contentScale = ContentScale.Fit,
                                              modifier = Modifier
                                                  .padding(all = playerThumbnailSize.size.dp)
-                                                 .zIndex(if (it == pagerState.currentPage) 1f
+                                                 .zIndex(
+                                                     if (it == pagerState.currentPage) 1f
                                                      else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
                                                      else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
                                                      else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
                                                      else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
                                                      else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f)
+                                                     else 0.57f
+                                                 )
                                                  .graphicsLayer {
-                                                     val pageOffSet = ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                                     val pageOffSet =
+                                                         ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
                                                      alpha = lerp(
                                                          start = 0.9f,
                                                          stop = 1f,
@@ -2061,26 +2092,30 @@ fun PlayerModern(
                                                      )
                                                      scaleY = lerp(
                                                          start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                                 else 0.57f,
+                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                         else 0.57f,
                                                          stop = 1f,
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
                                                      scaleX = lerp(
                                                          start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                                 else 0.57f,
+                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                         else 0.57f,
                                                          stop = 1f,
                                                          fraction = 1f - pageOffSet.coerceIn(0f, 1f)
                                                      )
                                                  }
-                                                 .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
+                                                 .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                     padding(
+                                                         all = 10.dp
+                                                     )
+                                                 }
                                                  .conditional(thumbnailType == ThumbnailType.Modern) {
                                                      doubleShadowDrop(
                                                          thumbnailRoundness.shape(),
@@ -2094,11 +2129,15 @@ fun PlayerModern(
                                                      indication = null,
                                                      onClick = {
                                                          if (it == pagerState.settledPage && thumbnailTapEnabled) {
-                                                             if (isShowingVisualizer) isShowingVisualizer = false
+                                                             if (isShowingVisualizer) isShowingVisualizer =
+                                                                 false
                                                              isShowingLyrics = !isShowingLyrics
                                                          }
-                                                         if (it != pagerState.settledPage){
-                                                             binder.player.forcePlayAtIndex(mediaItems,it)
+                                                         if (it != pagerState.settledPage) {
+                                                             binder.player.forcePlayAtIndex(
+                                                                 mediaItems,
+                                                                 it
+                                                             )
                                                          }
                                                      },
                                                      onLongClick = {
@@ -2147,8 +2186,8 @@ fun PlayerModern(
                         controlsContent(
                             modifier = Modifier
                                 .padding(vertical = 8.dp)
-                                .conditional(playerType == PlayerType.Essential) {fillMaxHeight()}
-                                .conditional(playerType == PlayerType.Essential) {weight(1f)}
+                                .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
+                                .conditional(playerType == PlayerType.Essential) { weight(1f) }
                         )
                     } else {
                         key(pagerState.currentPage) {
@@ -2412,9 +2451,17 @@ fun PlayerModern(
                                      flingBehavior = fling,
                                      modifier = modifier
                                          .padding(top = if (expandedplayer) 0.dp else 8.dp)
-                                         .padding(all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(0.dp))
-                                         .conditional(fadingedge && !expandedplayer){padding(vertical = 2.5.dp)}
-                                         .conditional(fadingedge){verticalFadingEdge()}
+                                         .padding(
+                                             all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
+                                                 0.dp
+                                             )
+                                         )
+                                         .conditional(fadingedge && !expandedplayer) {
+                                             padding(
+                                                 vertical = 2.5.dp
+                                             )
+                                         }
+                                         .conditional(fadingedge) { verticalFadingEdge() }
                                  ){ it ->
 
                                      AsyncImage(
@@ -2426,45 +2473,52 @@ fun PlayerModern(
                                          modifier = Modifier
                                              .fillMaxWidth()
                                              .padding(all = if (carousel && expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
-                                             .zIndex(if (it == pagerState.currentPage) 1f
-                                                    else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                    else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                    else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                    else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                    else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                    else 0.57f)
+                                             .zIndex(
+                                                 if (it == pagerState.currentPage) 1f
+                                                 else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                 else 0.57f
+                                             )
                                              .conditional(carousel)
                                              {
                                                  graphicsLayer {
-                                                 val pageOffSet = ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
-                                                 alpha = lerp(
-                                                     start = 0.9f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                 )
-                                                 scaleY = lerp(
-                                                     start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                 )
-                                                 scaleX = lerp(
-                                                     start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                                                 )
-                                               }
+                                                     val pageOffSet =
+                                                         ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                                     alpha = lerp(
+                                                         start = 0.9f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleY = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                         else 0.57f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                     scaleX = lerp(
+                                                         start = if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                         else 0.57f,
+                                                         stop = 1f,
+                                                         fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                                                     )
+                                                 }
                                              }
-                                             .conditional(thumbnailType == ThumbnailType.Modern) {padding(all = 10.dp)}
+                                             .conditional(thumbnailType == ThumbnailType.Modern) {
+                                                 padding(
+                                                     all = 10.dp
+                                                 )
+                                             }
                                              .conditional(thumbnailType == ThumbnailType.Modern) {
                                                  doubleShadowDrop(
                                                      thumbnailRoundness.shape(),
@@ -2478,11 +2532,15 @@ fun PlayerModern(
                                                  indication = null,
                                                  onClick = {
                                                      if (it == pagerState.settledPage && thumbnailTapEnabled) {
-                                                         if (isShowingVisualizer) isShowingVisualizer = false
+                                                         if (isShowingVisualizer) isShowingVisualizer =
+                                                             false
                                                          isShowingLyrics = !isShowingLyrics
                                                      }
-                                                     if (it != pagerState.settledPage){
-                                                         binder.player.forcePlayAtIndex(mediaItems,it)
+                                                     if (it != pagerState.settledPage) {
+                                                         binder.player.forcePlayAtIndex(
+                                                             mediaItems,
+                                                             it
+                                                         )
                                                      }
                                                  },
                                                  onLongClick = {

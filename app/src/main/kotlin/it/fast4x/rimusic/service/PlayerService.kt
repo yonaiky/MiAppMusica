@@ -18,6 +18,7 @@ import android.graphics.Color
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.MediaCodec.CodecException
 import android.media.MediaMetadata
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
@@ -60,6 +61,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -1790,6 +1792,22 @@ class PlayerService : InvincibleService(),
         val chunkLength = 512 * 1024L
 
         return ResolvingDataSource.Factory(
+            CacheDataSource.Factory()
+                .setCache(downloadCache)
+                .setUpstreamDataSourceFactory(
+                    CacheDataSource.Factory()
+                        .setCache(cache)
+                        .setUpstreamDataSourceFactory(
+                            DefaultDataSource.Factory(
+                                this,
+                                OkHttpDataSource.Factory(okHttpClient())
+                                    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
+                            )
+                        )
+                )
+                .setCacheWriteDataSinkFactory(null)
+                .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+            /*
             ConditionalCacheDataSourceFactory(
                 cacheDataSourceFactory = CacheDataSource.Factory().setCache(downloadCache)
                     .setCacheWriteDataSinkFactory(null),
@@ -1805,6 +1823,7 @@ class PlayerService : InvincibleService(),
                         )
                     )
             ) { !it.isLocal }
+            */
         ) { dataSpec ->
             Timber.i( "PlayerService createDataSourceResolverFactory dataSpec " + dataSpec.toString())
             val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
@@ -1842,15 +1861,29 @@ class PlayerService : InvincibleService(),
 
                 else -> {
                     Timber.i("PlayerService createDataSourceResolverFactory videoId $videoId")
+                    /*
                     val body = runBlocking(Dispatchers.IO) {
                         Innertube.player(PlayerBody(videoId = videoId))
                     }?.getOrThrow()
+                     */
+
+
+                    val body = runBlocking(Dispatchers.IO) {
+                        Innertube.player(PlayerBody(videoId = videoId))
+                    }?.getOrElse { throwable ->
+                        when (throwable) {
+                            is ConnectException, is UnknownHostException -> throw NoInternetException()
+                            is SocketTimeoutException -> throw TimeoutException()
+                            else -> throw UnknownException()
+                        }
+
+                    }
 
                     if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                    Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
+                    Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
 
-                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body?.streamingData?.adaptiveFormats}")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body.streamingData?.adaptiveFormats}")
 
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
@@ -1917,8 +1950,8 @@ class PlayerService : InvincibleService(),
                     if (format == null) throw PlayableFormatNotFoundException()
 
 
-                    val url = when (val status = body?.playabilityStatus?.status) {
-                        "OK" -> format?.let { formatIn ->
+                    val url = when (val status = body.playabilityStatus?.status) {
+                        "OK" -> format.let { formatIn ->
                             val mediaItem = mediaItemToPlay(videoId)
                             if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
                                 formatIn.approxDurationMs?.div(1000)
@@ -1953,11 +1986,11 @@ class PlayerService : InvincibleService(),
                         "UNPLAYABLE" -> throw UnplayableException()
                         "LOGIN_REQUIRED" -> throw LoginRequiredException()
 
-                        else -> throw PlaybackException(
-                            status,
-                            null,
-                            PlaybackException.ERROR_CODE_REMOTE_ERROR
-                        )
+                        else -> {
+                            Timber.i("PlayerService createDataSourceResolverFactory status $status")
+                            throw UnknownException()
+                            //throw PlaybackException(status, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
+                        }
                     }
                     ringBuffer.append(videoId to url.toUri())
                     //ringBuffer += videoId to url.toUri()

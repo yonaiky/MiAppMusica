@@ -49,9 +49,12 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
 import it.fast4x.rimusic.service.PlayableFormatNotFoundException
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.TimeoutException
+import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
@@ -120,6 +123,10 @@ fun Thumbnail(
         stringResource(R.string.error_the_returned_video_id_doesn_t_match_the_requested_one)
     val unknownplaybackerror =
         stringResource(R.string.error_an_unknown_playback_error_has_occurred)
+
+    val unknownerror = stringResource(R.string.error_unknown)
+    val nointerneterror = stringResource(R.string.error_no_internet)
+    val timeouterror = stringResource(R.string.error_timeout)
 
     val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
@@ -335,6 +342,9 @@ fun Thumbnail(
                                 is LoginRequiredException -> songnotplayabledueserverrestrictionerror
                                 is VideoIdMismatchException -> videoidmismatcherror
                                 is PlayableFormatNonSupported -> formatUnsupported
+                                is NoInternetException -> nointerneterror
+                                is TimeoutException -> timeouterror
+                                is UnknownException -> unknownerror
                                 else -> unknownplaybackerror
                             }, PopupType.Error, context = context
                         )

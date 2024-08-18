@@ -714,4 +714,7 @@ CC-BY-SA 3.0</string>
     <string name="chart_top_songs">Top songs</string>
     <string name="chart_top_artists">Top artists</string>
     <string name="lang_interlingua">Interlingua</string>
+    <string name="error_no_internet">No network connection</string>
+    <string name="error_timeout">Connection timeout</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>
