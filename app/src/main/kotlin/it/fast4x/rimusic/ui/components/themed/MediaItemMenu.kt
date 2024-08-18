@@ -762,6 +762,10 @@ fun MediaItemMenu(
         mutableStateOf(false)
     }
 
+    var showDialogChangeSongArtist by remember {
+        mutableStateOf(false)
+    }
+
     var songSaved by remember {
         mutableStateOf(0)
     }
@@ -786,6 +790,22 @@ fun MediaItemMenu(
                 }
             },
             prefix = MODIFIED_PREFIX
+        )
+
+    if (showDialogChangeSongArtist)
+        InputTextDialog(
+            onDismiss = { showDialogChangeSongArtist = false },
+            title = stringResource(R.string.update_authors),
+            value = mediaItem.mediaMetadata.artist.toString(),
+            placeholder = stringResource(R.string.authors),
+            setValue = {
+                if (it.isNotEmpty()) {
+                    query {
+                        Database.updateSongArtist(mediaItem.mediaId, it)
+                    }
+                    //context.toast("Artist Changed $it")
+                }
+            }
         )
 
     AnimatedContent(
@@ -1126,6 +1146,13 @@ fun MediaItemMenu(
                         text = stringResource(R.string.update_title),
                         onClick = {
                             showDialogChangeSongTitle = true
+                        }
+                    )
+                    MenuEntry(
+                        icon = R.drawable.title_edit,
+                        text = stringResource(R.string.update_authors),
+                        onClick = {
+                            showDialogChangeSongArtist = true
                         }
                     )
                 }

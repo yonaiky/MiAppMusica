@@ -302,6 +302,7 @@ fun AlbumDetails(
             },
             prefix = MODIFIED_PREFIX
         )
+
     if (showDialogChangeAlbumAuthors)
         InputTextDialog(
             onDismiss = { showDialogChangeAlbumAuthors = false },
