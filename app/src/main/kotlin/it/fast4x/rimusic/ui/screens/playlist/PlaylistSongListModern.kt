@@ -172,7 +172,7 @@ fun PlaylistSongListModern(
         if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
 
         playlistPage = withContext(Dispatchers.IO) {
-            Innertube.playlistPage(BrowseBody(browseId = browseId)).completed()?.getOrNull()
+            Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
         }
 
         /*

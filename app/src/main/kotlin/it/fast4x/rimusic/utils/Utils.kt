@@ -387,10 +387,9 @@ fun getCalculatedMonths( month: Int): String? {
     return sdfr.format(c.time).toString()
 }
 
+/*
 // NEW RESULT PLAYLIST OR ALBUM PAGE WITH TEMPORARILY WORKING WORKAROUND
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
-    maxDepth: Int = Int.MAX_VALUE
-): Result<Innertube.PlaylistOrAlbumPage>? {
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
 
     var playlistPage = getOrNull() ?: return null
     var songs = playlistPage.songsPage?.items.orEmpty().toMutableList()
@@ -448,6 +447,38 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     //return Result.success(playlistPage)
 
 }
+*/
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
+    maxDepth: Int =  Int.MAX_VALUE
+) = runCatching {
+    val page = getOrThrow()
+    val songs = page.songsPage?.items.orEmpty().toMutableList()
+    var continuation = page.songsPage?.continuation
+
+    var depth = 0
+    var continuationsList = arrayOf<String>()
+    //continuationsList += continuation.orEmpty()
+
+    while (continuation != null && depth++ < maxDepth) {
+        val newSongs = Innertube
+            .playlistPage(
+                body = ContinuationBody(continuation = continuation)
+            )
+            ?.getOrNull()
+            ?.takeUnless { it.items.isNullOrEmpty() } ?: break
+
+        newSongs.items?.let { songs += it.filter { it !in songs } }
+        continuation = newSongs.continuation
+
+        //println("mediaItem loop $depth continuation founded ${continuationsList.contains(continuation)} $continuation")
+        if (continuationsList.contains(continuation)) break
+
+        continuationsList += continuation.orEmpty()
+        //println("mediaItem loop continuationList size ${continuationsList.size}")
+    }
+
+    page.copy(songsPage = Innertube.ItemsPage(items = songs, continuation = null))
+}.also { it.exceptionOrNull()?.printStackTrace() }
 
 @Composable
 fun CheckAvailableNewVersion(

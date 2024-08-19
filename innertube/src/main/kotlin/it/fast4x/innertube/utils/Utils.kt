@@ -43,6 +43,9 @@ internal inline fun <R> runCatchingNonCancellable(block: () -> R): Result<R>? {
     }
 }
 
+internal inline fun <T> runCatchingCancellable(block: () -> T) =
+    runCatching(block).takeIf { it.exceptionOrNull() !is CancellationException }
+
 infix operator fun <T : Innertube.Item> Innertube.ItemsPage<T>?.plus(other: Innertube.ItemsPage<T>) =
     other.copy(
         items = (this?.items?.plus(other.items ?: emptyList())

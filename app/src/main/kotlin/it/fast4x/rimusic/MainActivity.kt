@@ -1019,7 +1019,7 @@ class MainActivity :
                             val browseId = "VL$playlistId"
 
                             if (playlistId.startsWith("OLAK5uy_")) {
-                                Innertube.playlistPage(BrowseBody(browseId = browseId)).getOrNull()?.let {
+                                Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let {
                                     it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
                                         navController.navigate(route = "${NavRoutes.album.name}/$browseId")
 

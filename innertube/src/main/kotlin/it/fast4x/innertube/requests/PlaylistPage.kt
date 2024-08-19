@@ -14,9 +14,11 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.utils.from
+import it.fast4x.innertube.utils.runCatchingCancellable
+import it.fast4x.innertube.utils.runCatchingNonCancellable
 
 /**** api modified by youtube music 0624 ****/
-suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
+suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable {
     val response = client.post(browse) {
         setBody(body)
         body.context.apply()
@@ -161,7 +163,7 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
         )
     }
 
-}.onFailure {
+}?.onFailure {
     println("mediaItem ERROR IN Innertube playlistpage " + it.message)
 }
 
@@ -237,12 +239,9 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
 }
  */
 
-suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatching {
+suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatchingNonCancellable {
     val response = client.post(browse) {
-        //---
-        //setBody(body) // required for long playlist
-        //mask("continuationContents.musicPlaylistShelfContinuation(continuations,contents.$musicResponsiveListItemRendererMask)")
-        //---
+        setBody(body)
         parameter("continuation", body.continuation)
         parameter("ctoken", body.continuation)
         parameter("type", "next")
@@ -258,14 +257,16 @@ suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatching {
 suspend fun Innertube.playlistPageLong(body: ContinuationBody) = runCatching {
     val response = client.post(browse) {
         //---
-        setBody(body) // required for long playlist
         //mask("continuationContents.musicPlaylistShelfContinuation(continuations,contents.$musicResponsiveListItemRendererMask)")
         //---
         parameter("continuation", body.continuation)
         parameter("ctoken", body.continuation)
-        parameter("type", "next")
+        //parameter("type", "next")
+        setBody(body) // required for long playlist
         body.context.apply()
     }.body<ContinuationResponse>()
+
+    println("mediaItem ContinuationBody playlistPageLong continuation ${response.continuationContents?.musicShelfContinuation?.continuations?.firstOrNull()?.nextContinuationData?.continuation}")
 
     response
         .continuationContents

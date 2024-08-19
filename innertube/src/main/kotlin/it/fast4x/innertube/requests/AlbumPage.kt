@@ -9,9 +9,9 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.v0624.BrowseResponse0624
 
-suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body).map { album ->
+suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
-        playlistPage(BrowseBody(browseId = "VL$playlistId")).getOrNull()?.let { playlist ->
+        playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
             album.copy(songsPage = playlist.songsPage)
         }
     } ?: album
