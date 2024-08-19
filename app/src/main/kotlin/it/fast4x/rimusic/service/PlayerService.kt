@@ -2312,13 +2312,8 @@ class PlayerService : InvincibleService(),
                 refreshPlayer()
             }
             if (action == "PLAYRADIO") {
-                coroutineScope.launch {
                     binder.stopRadio()
                     binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
-                    //refreshPlayer()
-                    println("mediaItem $action")
-                }
-
             }
             updatePlaybackState()
         }
@@ -2411,9 +2406,8 @@ class PlayerService : InvincibleService(),
                 }
 
                 Action.playradio.value -> {
-                    println("mediaItem playradio")
-                    binder.stopRadio()
-                    binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
+                        binder.stopRadio()
+                        binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
                 }
 
                 Action.shuffle.value -> {
