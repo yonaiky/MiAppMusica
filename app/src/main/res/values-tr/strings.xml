@@ -683,8 +683,8 @@
     <string name="playertype">Oynatıcı Tipi</string>
     <string name="noblur">Şarkı Sözleri Devre Dışı Bırakıldığında Bulanıklık Yok</string>
     <string name="fadingedge">Solan Kenar</string>
-    <string name="carousel">Atlıkarınca Görünümü</string>
-    <string name="carouselsize">Atlıkarınca Boyutu</string>
+    <string name="carousel">Dönme Dolap Görünümü</string>
+    <string name="carouselsize">Dönme Dolap Boyutu</string>
     <string name="addednext">Sıradaki şarkı olarak eklendi</string>
     <string name="info_paused_with_volume_zero">Ses seviyesi sıfıra düşürüldüğünden duraklatıldı</string>
     <string name="effect_fade_audio">Kademeli ses</string>

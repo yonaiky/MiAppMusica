@@ -2,7 +2,7 @@
 <resources>
     <string name="opensource_multilingual_application">Una aplicación para Android de código abierto y multilingüe para reproducir música de YouTube Music</string>
     <string name="your_library">Tu biblioteca.</string>
-    <string name="organized_in_one_place">Todo organizado en un solo lugar: canciones favoritas, canciones descargadas, canciones escuchadas y todas tus listas de reproducción.</string>
+    <string name="organized_in_one_place">Todo organizado en un solo lugar: tus canciones favoritas, canciones descargadas, canciones escuchadas y todas tus listas de reproducción.</string>
     <string name="beautiful_player">Un reproductor precioso.</string>
     <string name="listen_songs_sing_lyrics">Escucha las canciones, canta con las letras y traduce las palabras con el traductor integrado.</string>
     <string name="many_effects">Muchos efectos.</string>

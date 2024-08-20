@@ -378,7 +378,7 @@
     <string name="restore_from_backup">Pulihkan dari cadangan</string>
     <string name="tab_miscellaneous">Lain-lain</string>
     <string name="swipe_to_action">Usap untuk aksi</string>
-    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Aktifkan menu aksi dengan mengusap lagu ke kiri atau ke kanan</string>
+    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Lakukan aksi dengan mengusap ke kiri atau kanan pada lagu di dalam daftar lagu vertikal</string>
     <string name="smart_recommendations">REKOMENDASI CERDAS</string>
     <string name="player_collapsed_disable_swiping_down">Matikan usap ke bawah</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Hindari menutup pemutar dan membersihkan antrean dengan mengusap ke bawah saat di minimalkan</string>

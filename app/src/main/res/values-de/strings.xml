@@ -378,7 +378,7 @@
     <string name="restore_from_backup">Aus Backup wiederherstellen</string>
     <string name="tab_miscellaneous">Sonstiges</string>
     <string name="swipe_to_action">Wischgesten</string>
-    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Aktivieren Sie das Aktionsmenü durch Wischen des Liedes links oder rechts</string>
+    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Wischen nach links oder rechts eines Titels in einer vertikalen Liste führt Aktionen aus</string>
     <string name="smart_recommendations">INTELLIGENTE EMPFEHLUNGEN</string>
     <string name="player_collapsed_disable_swiping_down">Wischen nach unten deaktivieren</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Das Schließen des Players und das Löschen der Warteschlange durch Wischen nach unten auf dem minimierten Player verhindern</string>
