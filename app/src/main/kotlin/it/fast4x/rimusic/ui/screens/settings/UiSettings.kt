@@ -227,9 +227,12 @@ import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInLibraryKey
+import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
+import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
+import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -348,6 +351,9 @@ fun  UiSettings() {
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
     //var showMonthlyPlaylistInLibrary by rememberPreference(showMonthlyPlaylistInLibraryKey, true)
+    var showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+    var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
+    var showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
 
     var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
     var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
@@ -1605,6 +1611,33 @@ fun  UiSettings() {
                 onCheckedChange = { showMonthlyPlaylistInLibrary = it }
             )
          */
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.playlists).uppercase())
+
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}",
+                text = "",
+                isChecked = showPipedPlaylists,
+                onCheckedChange = { showPipedPlaylists = it }
+            )
+
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}",
+                text = "",
+                isChecked = showPinnedPlaylists,
+                onCheckedChange = { showPinnedPlaylists = it }
+            )
+
+        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}".contains(filterCharSequence,true))
+            SwitchSettingEntry(
+                title = "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}",
+                text = "",
+                isChecked = showMonthlyPlaylists,
+                onCheckedChange = { showMonthlyPlaylists = it }
+            )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.monthly_playlists).uppercase())
