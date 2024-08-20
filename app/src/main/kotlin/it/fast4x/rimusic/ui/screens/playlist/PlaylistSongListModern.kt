@@ -70,6 +70,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
+import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -86,6 +87,7 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
@@ -164,6 +166,7 @@ fun PlaylistSongListModern(
     val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistPage by persist<Innertube.PlaylistOrAlbumPage?>("playlist/$browseId/playlistPage")
+    var playlistSongs by persistList<Innertube.SongItem>("playlist/$browseId/songs")
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
     val hapticFeedback = LocalHapticFeedback.current
@@ -175,6 +178,7 @@ fun PlaylistSongListModern(
             Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
         }
 
+        playlistSongs = playlistPage?.songsPage?.items!!
         /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube
@@ -203,13 +207,24 @@ fun PlaylistSongListModern(
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
     //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
-    if (!filter.isNullOrBlank())
+    if (!filter.isNullOrBlank()) {
         playlistPage?.songsPage?.items =
-        playlistPage?.songsPage?.items?.filter {songItem ->
-                songItem.asMediaItem.mediaMetadata.title?.contains(filterCharSequence,true) ?: false
-                        || songItem.asMediaItem.mediaMetadata.artist?.contains(filterCharSequence,true) ?: false
-                        || songItem.asMediaItem.mediaMetadata.albumTitle?.contains(filterCharSequence,true) ?: false
+            playlistPage?.songsPage?.items?.filter { songItem ->
+                songItem.asMediaItem.mediaMetadata.title?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
+                        || songItem.asMediaItem.mediaMetadata.artist?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
+                        || songItem.asMediaItem.mediaMetadata.albumTitle?.contains(
+                    filterCharSequence,
+                    true
+                ) ?: false
             }
+    } else playlistPage?.songsPage?.items = playlistSongs
+
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
