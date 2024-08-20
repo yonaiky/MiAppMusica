@@ -61,6 +61,9 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.CarouselSize
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.DurationInMilliseconds
@@ -71,22 +74,30 @@ import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.MaxStatisticsItems
 import it.fast4x.rimusic.enums.HomeScreenTabs
+import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.MessageType
+import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
+import it.fast4x.rimusic.enums.PlayerControlsType
+import it.fast4x.rimusic.enums.PlayerInfoType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
@@ -105,9 +116,16 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.buttonzoomoutKey
+import it.fast4x.rimusic.utils.carouselKey
+import it.fast4x.rimusic.utils.carouselSizeKey
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -135,11 +153,17 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.expandedplayertoggleKey
+import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.fontTypeKey
+import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
@@ -157,6 +181,7 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.messageTypeKey
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
@@ -165,13 +190,21 @@ import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.playbackFadeDurationKey
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerControlsTypeKey
+import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
+import it.fast4x.rimusic.utils.playerInfoShowIconsKey
+import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerPositionKey
+import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
@@ -179,23 +212,43 @@ import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
+import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
+import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
+import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
+import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
+import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
+import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
+import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
+import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
+import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInLibraryKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
+import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showPlaylistsKey
+import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey
+import it.fast4x.rimusic.utils.showTopActionsBarKey
+import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.skipSilenceKey
+import it.fast4x.rimusic.utils.swipeUpQueueKey
+import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.transitionEffectKey
+import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
+import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
 @ExperimentalAnimationApi
@@ -238,11 +291,7 @@ fun  UiSettings() {
     var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
     var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    //var playerVisualizerType by rememberPreference(playerVisualizerTypeKey, PlayerVisualizerType.Disabled)
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    var playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Biggest)
-    var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
-    var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
+
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
 
     var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
@@ -333,7 +382,7 @@ fun  UiSettings() {
     var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
-    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+
 
     val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
 
@@ -342,6 +391,85 @@ fun  UiSettings() {
     var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
     var restartService by rememberSaveable { mutableStateOf(false) }
 
+    /*  ViMusic Mode Settings  */
+    var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
+    var fadingedge by rememberPreference(fadingedgeKey, false)
+    var carousel by rememberPreference(carouselKey, true)
+    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var playerThumbnailSize by rememberPreference(
+        playerThumbnailSizeKey,
+        PlayerThumbnailSize.Biggest
+    )
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Biggest
+    )
+    var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
+    var miniPlayerType by rememberPreference(
+        miniPlayerTypeKey,
+        MiniPlayerType.Modern
+    )
+    var playerSwapControlsWithTimeline by rememberPreference(
+        playerSwapControlsWithTimelineKey,
+        false
+    )
+    var playerPlayButtonType by rememberPreference(
+        playerPlayButtonTypeKey,
+        PlayerPlayButtonType.Rectangular
+    )
+    var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
+    var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
+    var playerBackgroundColors by rememberPreference(
+        playerBackgroundColorsKey,
+        PlayerBackgroundColors.BlurredCoverColor
+    )
+    var blackgradient by rememberPreference(blackgradientKey, false)
+    var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
+    var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
+    var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    var backgroundProgress by rememberPreference(
+        backgroundProgressKey,
+        BackgroundProgress.Both
+    )
+    var transparentBackgroundActionBarPlayer by rememberPreference(
+        transparentBackgroundPlayerActionBarKey,
+        false
+    )
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    var tapqueue by rememberPreference(tapqueueKey, true)
+    var swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
+    var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
+    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
+    var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
+    var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
+    var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
+    var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    var showButtonPlayerSystemEqualizer by rememberPreference(
+        showButtonPlayerSystemEqualizerKey,
+        false
+    )
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+    var playerEnableLyricsPopupMessage by rememberPreference(
+        playerEnableLyricsPopupMessageKey,
+        true
+    )
+    var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    /*  ViMusic Mode Settings  */
 
     Column(
         modifier = Modifier
@@ -944,27 +1072,70 @@ fun  UiSettings() {
                     if (uiType == UiType.ViMusic) {
                         disablePlayerHorizontalSwipe = true
                         disableIconButtonOnTop = true
-                        playerTimelineType = PlayerTimelineType.Default
-                        //playerVisualizerType = PlayerVisualizerType.Disabled
+                        playerTimelineType = PlayerTimelineType.FakeAudioBar
+                        visualizerEnabled = false
                         playerThumbnailSize = PlayerThumbnailSize.Medium
                         thumbnailTapEnabled = true
                         showSearchTab = true
                         showStatsInNavbar = true
                         navigationBarPosition = NavigationBarPosition.Left
+                        showTopActionsBar = false
+                        playerType = PlayerType.Modern
+                        queueType = QueueType.Modern
+                        fadingedge = false
+                        carousel = true
+                        carouselSize = CarouselSize.Medium
+                        thumbnailType = ThumbnailType.Essential
+                        expandedlyrics = false
+                        playerTimelineSize = PlayerTimelineSize.Medium
+                        playerInfoShowIcons = true
+                        miniPlayerType = MiniPlayerType.Modern
+                        playerSwapControlsWithTimeline = false
+                        transparentBackgroundActionBarPlayer = false
+                        playerControlsType = PlayerControlsType.Essential
+                        playerPlayButtonType = PlayerPlayButtonType.Disabled
+                        buttonzoomout = true
+                        iconLikeType = IconLikeType.Essential
+                        playerBackgroundColors = PlayerBackgroundColors.CoverColorGradient
+                        blackgradient = true
+                        showTotalTimeQueue = false
+                        showRemainingSongTime = false
+                        showNextSongsInPlayer = false
+                        disableScrollingText = false
+                        effectRotationEnabled = true
+                        clickLyricsText = ClickLyricsText.FullScreen
+                        playerEnableLyricsPopupMessage = true
+                        backgroundProgress = BackgroundProgress.MiniPlayer
+                        transparentBackgroundActionBarPlayer = true
+                        actionspacedevenly = false
+                        tapqueue = false
+                        swipeUpQueue = true
+                        showButtonPlayerDiscover = false
+                        showButtonPlayerDownload = false
+                        showButtonPlayerAddToPlaylist = false
+                        showButtonPlayerLoop = false
+                        showButtonPlayerShuffle = false
+                        showButtonPlayerLyrics = false
+                        expandedplayertoggle = false
+                        showButtonPlayerSleepTimer = false
+                        showButtonPlayerSystemEqualizer = false
+                        showButtonPlayerArrow = false
+                        showButtonPlayerShuffle = false
+                        showButtonPlayerMenu = true
+                        showthumbnail = true
+                        keepPlayerMinimized = false
                     } else {
                         disablePlayerHorizontalSwipe = false
                         disableIconButtonOnTop = false
                         playerTimelineType = lastPlayerTimelineType
                         playerThumbnailSize = lastPlayerThumbnailSize
                         playerPlayButtonType = lastPlayerPlayButtonType
+
                     }
 
                 },
                 valueText = {
-                    when(it) {
-                        UiType.RiMusic -> UiType.RiMusic.name
-                        UiType.ViMusic -> UiType.ViMusic.name
-                    }
+                    it.name
                 }
             )
 
