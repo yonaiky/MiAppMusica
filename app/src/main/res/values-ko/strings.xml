@@ -650,11 +650,11 @@
     <string name="info_debug_mode_enabled">디버그 모드 활성화됨</string>
     <string name="info_debug_mode_is_enabled">디버그 모드가 작동합니다, 끄기 위해선 설정으로 가는 걸 잊지 마세요</string>
     <string name="tapqueue">눌러서 대기열 열기</string>
-    <string name="past_day">Past day</string>
-    <string name="past_week">Past week</string>
-    <string name="past_month">Past month</string>
-    <string name="past_year">Past year</string>
-    <string name="all_time">All time</string>
+    <string name="past_day">어제</string>
+    <string name="past_week">지난 주</string>
+    <string name="past_month">지난 달</string>
+    <string name="past_year">지난 해</string>
+    <string name="all_time">모든 기간</string>
     <string name="header_view_top_of">View top %s of …</string>
     <string name="podcast_episodes">Episodes</string>
     <string name="podcasts">Podcasts</string>
