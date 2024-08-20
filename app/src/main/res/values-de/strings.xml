@@ -607,7 +607,7 @@
     <string name="actionspacedevenly">Gleichmäßiger Abstand</string>
     <string name="expandedplayer">Erweiterter Player</string>
     <string name="expandedlyrics">Erweiterte Songtext-Ansicht</string>
-    <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
+    <string name="expandedlyricsinfo">Funktioniert nur, wenn die Miniaturansicht der Liedtexte deaktiviert ist</string>
     <string name="info_connect_your_piped_account_first">Verbinde zuerst dein Piped-Konto oder deaktiviere die Piped-Synchronisierung</string>
     <string name="piped_playlists">Piped</string>
     <string name="lang_bengali">Bengali (বাংলা)</string>
