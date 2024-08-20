@@ -131,6 +131,7 @@ fun InHistoryMediaItemMenu(
     onDismiss: () -> Unit,
     song: Song,
     onHideFromDatabase: (() -> Unit)? = {},
+    onDeleteFromDatabase: (() -> Unit)? = {},
     modifier: Modifier = Modifier
 ) {
     //val binder = LocalPlayerServiceBinder.current
@@ -161,6 +162,7 @@ fun InHistoryMediaItemMenu(
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onHideFromDatabase = onHideFromDatabase,
+        onDeleteFromDatabase = onDeleteFromDatabase,
         modifier = modifier
     )
 }
@@ -311,6 +313,7 @@ fun NonQueuedMediaItemMenu(
     modifier: Modifier = Modifier,
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
+    onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
 ) {
@@ -342,6 +345,7 @@ fun NonQueuedMediaItemMenu(
             onDownload = onDownload,
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = onHideFromDatabase,
+            onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             modifier = modifier
         )
@@ -366,6 +370,7 @@ fun NonQueuedMediaItemMenu(
             onDownload = onDownload,
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = onHideFromDatabase,
+            onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             modifier = modifier
         )
@@ -463,6 +468,7 @@ fun BaseMediaItemMenu(
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
+    onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null
@@ -512,6 +518,7 @@ fun BaseMediaItemMenu(
 
         },
         onHideFromDatabase = onHideFromDatabase,
+        onDeleteFromDatabase = onDeleteFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
         onGoToAlbum = {
@@ -673,6 +680,7 @@ fun MediaItemMenu(
     onEnqueue: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
+    onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
@@ -1569,9 +1577,17 @@ fun MediaItemMenu(
 
                 if (!isLocal) onHideFromDatabase?.let { onHideFromDatabase ->
                     MenuEntry(
-                        icon = R.drawable.trash,
+                        icon = R.drawable.eye_off,
                         text = stringResource(R.string.hide),
                         onClick = onHideFromDatabase
+                    )
+                }
+
+                onDeleteFromDatabase?.let { onDeleteFromDatabase ->
+                    MenuEntry(
+                        icon = R.drawable.trash,
+                        text = stringResource(R.string.delete),
+                        onClick = onDeleteFromDatabase
                     )
                 }
 

@@ -1472,6 +1472,10 @@ fun HomeSongsModern(
                         mutableStateOf(false)
                     }
 
+                    var isDeleting by remember {
+                        mutableStateOf(false)
+                    }
+
                     if (isHiding) {
                         ConfirmationDialog(
                             text = stringResource(R.string.hidesong),
@@ -1490,7 +1494,22 @@ fun HomeSongsModern(
                         )
                     }
 
-
+                    if (isDeleting) {
+                        ConfirmationDialog(
+                            text = stringResource(R.string.delete_song),
+                            onDismiss = { isDeleting = false },
+                            onConfirm = {
+                                query {
+                                    menuState.hide()
+                                    binder?.cache?.removeResource(song.song.id)
+                                    binder?.downloadCache?.removeResource(song.song.id)
+                                    Database.delete(song.song)
+                                    Database.deleteSongFromPlaylists(song.song.id)
+                                }
+                                SmartMessage(context.resources.getString(R.string.deleted), context = context)
+                            }
+                        )
+                    }
 
                     SwipeablePlaylistItem(
                         mediaItem = song.song.asMediaItem,
@@ -1603,7 +1622,8 @@ fun HomeSongsModern(
                                                 navController = navController,
                                                 song = song.song,
                                                 onDismiss = menuState::hide,
-                                                onHideFromDatabase = { isHiding = true }
+                                                onHideFromDatabase = { isHiding = true },
+                                                onDeleteFromDatabase = { isDeleting = true }
                                             )
                                         }
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)

@@ -158,6 +158,7 @@ fun BaseMediaItemGridMenu(
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
+    onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null
@@ -187,6 +188,7 @@ fun BaseMediaItemGridMenu(
             }
         },
         onHideFromDatabase = onHideFromDatabase,
+        onDeleteFromDatabase = onDeleteFromDatabase,
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
         onGoToAlbum =   {
@@ -274,6 +276,7 @@ fun MediaItemGridMenu (
     onEnqueue: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
+    onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
@@ -1029,13 +1032,26 @@ fun MediaItemGridMenu (
 
                 if (!isLocal) onHideFromDatabase?.let { onHideFromDatabase ->
                     GridMenuItem(
-                        icon = R.drawable.trash,
+                        icon = R.drawable.eye_off,
                         title = R.string.hide,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {
                             //onDismiss()
                             onHideFromDatabase()
+                        }
+                    )
+                }
+
+                onDeleteFromDatabase?.let { onDeleteFromDatabase ->
+                    GridMenuItem(
+                        icon = R.drawable.trash,
+                        title = R.string.delete,
+                        colorIcon = colorPalette.text,
+                        colorText = colorPalette.text,
+                        onClick = {
+                            //onDismiss()
+                            onDeleteFromDatabase()
                         }
                     )
                 }
