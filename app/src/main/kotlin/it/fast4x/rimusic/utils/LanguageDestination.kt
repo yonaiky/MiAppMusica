@@ -35,6 +35,7 @@ fun languageDestination (
         Languages.Filipino -> Language.FILIPINO
         Languages.Finnish -> Language.FINNISH
         Languages.French -> Language.FRENCH
+        Languages.Galician -> Language.GALICIAN
         Languages.German -> Language.GERMAN
         Languages.Greek -> Language.GREEK
         Languages.Hebrew -> Language.HEBREW_HE
@@ -47,6 +48,7 @@ fun languageDestination (
         Languages.Korean -> Language.KOREAN
         Languages.Italian -> Language.ITALIAN
         Languages.Malayalam -> Language.MALAYALAM
+        Languages.Norwegian -> Language.NORWEGIAN
         Languages.Odia -> Language.ODIA
         Languages.Persian -> Language.PERSIAN
         Languages.Polish -> Language.POLISH
@@ -92,6 +94,7 @@ fun languageDestinationName (
         Languages.Filipino -> stringResource(R.string.lang_filipino)
         Languages.Finnish -> stringResource(R.string.lang_finnish)
         Languages.French -> stringResource(R.string.french)
+        Languages.Galician -> stringResource(R.string.lang_galician)
         Languages.German -> stringResource(R.string.german)
         Languages.Greek -> stringResource(R.string.greek)
         Languages.Hebrew -> stringResource(R.string.lang_hebrew)
@@ -104,6 +107,7 @@ fun languageDestinationName (
         Languages.Korean -> stringResource(R.string.korean)
         Languages.Italian -> stringResource(R.string.italian)
         Languages.Malayalam -> stringResource(R.string.lang_malayalam)
+        Languages.Norwegian -> stringResource(R.string.lang_norwegian)
         Languages.Odia -> stringResource(R.string.odia)
         Languages.Persian -> stringResource(R.string.persian)
         Languages.Polish -> stringResource(R.string.polish)

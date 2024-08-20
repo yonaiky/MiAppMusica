@@ -18,6 +18,7 @@ enum class Languages {
     Filipino,
     Finnish,
     French,
+    Galician,
     German,
     Greek,
     Hebrew,
@@ -30,6 +31,7 @@ enum class Languages {
     Japanese,
     Korean,
     Malayalam,
+    Norwegian,
     Odia,
     Persian,
     Polish,
@@ -65,6 +67,7 @@ enum class Languages {
             Estonian -> "et"
             Filipino -> "fil"
             Finnish -> "fi"
+            Galician -> "gl"
             Italian -> "it"
             Indonesian -> "in"
             Irish -> "ga"
@@ -80,6 +83,7 @@ enum class Languages {
             Spanish -> "es"
             French -> "fr"
             Malayalam -> "ml"
+            Norwegian -> "no"
             Odia -> "or"
             Persian -> "fa"
             Polish -> "pl"
