@@ -1770,7 +1770,7 @@ fun PlaybackParamsDialog(
                 onSlide = { playbackDuration = it },
                 onSlideComplete = {},
                 toDisplay = { "%.0f".format(playbackDuration) },
-                range = 1f..60f
+                range = 0f..60f
             )
 
             /*
