@@ -320,7 +320,7 @@ fun AppearanceSettings() {
         )
 
         HeaderIconButton(
-            modifier = Modifier.padding(horizontal = 5.dp),
+            modifier = Modifier.padding(start = 25.dp),
             onClick = { searching = !searching },
             icon = R.drawable.search_circle,
             color = colorPalette.text,
