@@ -584,8 +584,8 @@
     <string name="piped_account">PIPED</string>
     <string name="enable_piped_syncronization">Enable piped syncronization</string>
     <string name="piped_change_instance">Change instance</string>
-    <string name="piped_username">Username</string>
-    <string name="piped_password">Password</string>
+    <string name="piped_username">Användarnamn</string>
+    <string name="piped_password">Lösenord</string>
     <string name="piped_disconnect">Disconnect</string>
     <string name="piped_connect">Connect</string>
     <string name="piped_connected_to_s">Connected to %s</string>
@@ -601,7 +601,7 @@
     <string name="lyricscolor">Lyrics Color</string>
     <string name="accent">Accent</string>
     <string name="lyrics_size">Lyrics Size</string>
-    <string name="translate">Translate</string>
+    <string name="translate">Översätt</string>
     <string name="transparentbar">Transparent tidslinje</string>
     <string name="timelinesize">Storlek på spelarens tidslinje</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
@@ -674,7 +674,7 @@
     <string name="controls_title_device_volume">Device volume</string>
     <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Suggestions</string>
-    <string name="searches_saved_searches">Saved searches</string>
+    <string name="searches_saved_searches">Sparade sökningar</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Klistra in</string>
