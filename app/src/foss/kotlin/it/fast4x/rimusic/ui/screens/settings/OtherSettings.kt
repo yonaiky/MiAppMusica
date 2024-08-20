@@ -12,11 +12,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.models.Instance
@@ -51,9 +55,11 @@ import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.CheckAvailableNewVersion
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
@@ -184,6 +190,19 @@ fun OtherSettings() {
         )
 
         SettingsEntryGroupText(title = stringResource(R.string.check_update))
+
+        var checkUpdateNow by remember { mutableStateOf(false) }
+        if (checkUpdateNow)
+            CheckAvailableNewVersion(
+                onDismiss = {  },
+                updateAvailable = {
+                    if (!it)
+                        SmartMessage(context.resources.getString(R.string.info_no_update_available), type = PopupType.Info, context = context)
+
+                    checkUpdateNow = false
+                }
+            )
+
         EnumValueSelectorSettingsEntry(
             title = stringResource(R.string.enable_check_for_update),
             selectedValue = checkUpdateState,
@@ -198,7 +217,23 @@ fun OtherSettings() {
             }
         )
         SettingsDescription(text = stringResource(R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup))
+        AnimatedVisibility(visible = checkUpdateState != CheckUpdateState.Disabled) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                SettingsDescription(
+                    text = stringResource(R.string.check_update),
+                    important = true,
+                    modifier = Modifier.weight(1f)
+                )
 
+                SecondaryTextButton(
+                    text = stringResource(R.string.info_check_update_now),
+                    onClick = { checkUpdateNow = true },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 24.dp)
+                )
+            }
+        }
 
         /****** PIPED ******/
         var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)

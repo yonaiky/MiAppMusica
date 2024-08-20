@@ -482,7 +482,8 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
 
 @Composable
 fun CheckAvailableNewVersion(
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    updateAvailable: (Boolean) -> Unit
 ) {
     var updatedProductName = ""
     var updatedVersionName = ""
@@ -500,14 +501,19 @@ fun CheckAvailableNewVersion(
         updatedProductName =  if(dataText.size == 3) dataText[2] else ""
     }
 
-    if (updatedVersionCode > getVersionCode())
-    //if (updatedVersionCode > BuildConfig.VERSION_CODE)
+    if (updatedVersionCode > getVersionCode()) {
+        //if (updatedVersionCode > BuildConfig.VERSION_CODE)
         NewVersionDialog(
             updatedVersionName = updatedVersionName,
             updatedVersionCode = updatedVersionCode,
             updatedProductName = updatedProductName,
             onDismiss = onDismiss
         )
+        updateAvailable(true)
+    } else {
+        updateAvailable(false)
+        onDismiss()
+    }
 }
 
 @Composable

@@ -413,7 +413,8 @@ fun HomeScreen(
 
     if (showNewversionDialog && checkUpdateState == CheckUpdateState.Enabled)
         CheckAvailableNewVersion(
-            onDismiss = { showNewversionDialog = false }
+            onDismiss = { showNewversionDialog = false },
+            updateAvailable = {}
         )
 
     if (checkUpdateState == CheckUpdateState.Ask)
