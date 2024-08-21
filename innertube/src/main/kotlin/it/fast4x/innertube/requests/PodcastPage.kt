@@ -73,7 +73,9 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
         response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
             ?.musicResponsiveHeaderRenderer?.let {
-                it.straplineThumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url
+                it.straplineThumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails
+                ?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) }
+                ?.url
             }
     val description =
         response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer
@@ -104,7 +106,6 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
 }.onFailure {
     println("mediaItem ERROR IN Innertube podcastsPage " + it.message)
 }
-
 
 fun parsePodcastData(
     listContent: List<MusicShelfRendererContent>?,

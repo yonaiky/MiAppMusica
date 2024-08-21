@@ -9,12 +9,9 @@ import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.ContinuationResponse
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.ContinuationBody
-import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.utils.from
-import it.fast4x.innertube.utils.runCatchingCancellable
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 
 /**** api modified by youtube music 0624 ****/
@@ -60,7 +57,8 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable
                 ?.musicThumbnailRenderer
                 ?.thumbnail
                 ?.thumbnails
-                ?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) },
+                ?.getBestQuality(),
+                //?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) },
             authors = header
                 ?.subtitle
                 ?.splitBySeparator()
@@ -136,7 +134,8 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable
                 ?.musicThumbnailRenderer
                 ?.thumbnail
                 ?.thumbnails
-                ?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) },
+                ?.getBestQuality(),
+                //?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) },
             authors = header
                 ?.straplineTextOne
                 ?.splitBySeparator()

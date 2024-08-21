@@ -4,6 +4,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -54,7 +55,7 @@ fun Innertube.PlaylistItem.Companion.fromComplete(renderer: MusicCarouselShelfRe
         ?.musicThumbnailRenderer
         ?.thumbnail
         ?.thumbnails
-        ?.firstOrNull()?.toThumbnail()
+        ?.getBestQuality()?.toThumbnail()
 
     val thumbnail1 = renderer
         .contents?.firstOrNull()?.musicResponsiveListItemRenderer
@@ -62,7 +63,7 @@ fun Innertube.PlaylistItem.Companion.fromComplete(renderer: MusicCarouselShelfRe
         ?.musicThumbnailRenderer
         ?.thumbnail
         ?.thumbnails
-        ?.firstOrNull()?.toThumbnail()
+        ?.getBestQuality()?.toThumbnail()
 
     return Innertube.PlaylistItem(
         info = Innertube.Info(
@@ -92,7 +93,7 @@ fun Innertube.ArtistItem.Companion.fromC(renderer: List<MusicCarouselShelfRender
         ?.musicThumbnailRenderer
         ?.thumbnail
         ?.thumbnails
-        ?.firstOrNull()?.toThumbnail()
+        ?.getBestQuality()?.toThumbnail()
 
     return listOf(
         Innertube.ArtistItem(
@@ -148,7 +149,7 @@ fun parseChart(data: SectionListRenderer?): Innertube.ChartsPage? {
                         if (musicResponsiveListItemRenderer != null) {
                             val thumb =
                                 musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails
-                            val firstThumb = thumb?.firstOrNull()
+                            val firstThumb = thumb?.getBestQuality()
                             val videoId = musicResponsiveListItemRenderer.flexColumns.firstOrNull()
                                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
                                 ?.navigationEndpoint?.watchEndpoint?.videoId
@@ -173,7 +174,7 @@ fun parseChart(data: SectionListRenderer?): Innertube.ChartsPage? {
                                             )?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
                                                 ?.map { Innertube.Info(it) },
                                             durationText = "",
-                                            thumbnail = thumb.firstOrNull()!!.toThumbnail(),
+                                            thumbnail = thumb.getBestQuality()!!.toThumbnail(),
                                             explicit = false
 
                                         )
@@ -200,7 +201,7 @@ fun parseChart(data: SectionListRenderer?): Innertube.ChartsPage? {
                                             )?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
                                                 ?.map { Innertube.Info(it) },
                                             durationText = "",
-                                            thumbnail = thumb?.firstOrNull()!!.toThumbnail(),
+                                            thumbnail = thumb?.getBestQuality()!!.toThumbnail(),
                                             explicit = false
 
                                         )
@@ -307,7 +308,7 @@ fun parseSongChart(contents: List<MusicCarouselShelfRenderer.Content>): ArrayLis
                 },
                 viewsText = null,
                 durationText = null,
-                thumbnail = thumbnails?.toListThumbnail()?.firstOrNull()
+                thumbnail = thumbnails?.toListThumbnail()?.getBestQuality()
             )
         )
     }
@@ -339,7 +340,7 @@ fun parseArtistChart(contents: List<MusicCarouselShelfRenderer.Content>?): Array
                             endpoint = NavigationEndpoint.Endpoint.Browse(browseId = artistId ?: "")
                         ),
                         subscribersCountText = subscriber ?: "",
-                        thumbnail = thumbnails?.toListThumbnail()?.firstOrNull(),
+                        thumbnail = thumbnails?.toListThumbnail()?.getBestQuality(),
                     )
                 )
             }

@@ -126,7 +126,8 @@ object Innertube {
         override val thumbnail: Thumbnail?,
         val explicit: Boolean = false
     ) : Item() {
-        override val key get() = info!!.endpoint!!.videoId!!
+        //override val key get() = info!!.endpoint!!.videoId!!
+        override val key get() = info?.endpoint?.videoId ?: ""
 
         companion object
     }
@@ -305,5 +306,8 @@ object Innertube {
             endpoint = clickCommand.browseEndpoint ?: return null
         )
     }
+
+    fun List<Thumbnail>.getBestQuality() =
+        maxByOrNull { (it.width ?: 0) * (it.height ?: 0) }
 
 }

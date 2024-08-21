@@ -68,7 +68,8 @@ suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>
                 ?.musicThumbnailRenderer
                 ?.thumbnail
                 ?.thumbnails
-                ?.getOrNull(0),
+                ?.getBestQuality(),
+                //?.getOrNull(0),
             shuffleEndpoint = response
                 .header
                 ?.musicImmersiveHeaderRenderer

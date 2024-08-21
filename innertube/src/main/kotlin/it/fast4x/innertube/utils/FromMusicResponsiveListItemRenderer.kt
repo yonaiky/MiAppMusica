@@ -1,6 +1,7 @@
 package it.fast4x.innertube.utils
 
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 
@@ -90,7 +91,8 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.musicThumbnailRenderer
             ?.thumbnail
             ?.thumbnails
-            ?.firstOrNull(),
+            ?.getBestQuality(),
+            //?.lastOrNull(),
         explicit = renderer
             .badges
             ?.find {

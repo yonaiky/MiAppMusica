@@ -4,6 +4,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.GetSearchSuggestionsResponse
 import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -119,7 +120,7 @@ object SearchSuggestionPage {
                             )
                         },
                     durationText = null,
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality()
                         ?: return null,
                     explicit = renderer.badges?.find {
                         it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
@@ -132,7 +133,7 @@ object SearchSuggestionPage {
                         name = renderer.flexColumns.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text ?: return null,
                         endpoint = renderer.navigationEndpoint?.endpoint as NavigationEndpoint.Endpoint.Browse
                     ),
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality()
                         ?: return null,
                     subscribersCountText = renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text
                 )
@@ -153,7 +154,7 @@ object SearchSuggestionPage {
                             )
                         } ?: return null,
                     year = secondaryLine.lastOrNull()?.firstOrNull()?.text,
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality()
                         ?: return null
                 )
             }
