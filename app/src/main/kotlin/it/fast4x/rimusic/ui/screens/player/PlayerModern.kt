@@ -334,6 +334,7 @@ fun PlayerModern(
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
+    if (binder.player.currentTimeline.windowCount == 0) return
 
     var nullableMediaItem by remember {
         mutableStateOf(binder.player.currentMediaItem, neverEqualPolicy())
@@ -2691,27 +2692,28 @@ fun PlayerModern(
                             val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
                                 pagerState.currentPage
 
-                            Controls(
-                                navController = navController,
-                                onCollapse = onDismiss,
-                                expandedplayer = expandedplayer,
-                                layoutState = layoutState,
-                                media = mediaItem.toUiMedia(positionAndDuration.second),
-                                mediaId = mediaItem.mediaId,
-                                title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
-                                    ?: "",
-                                artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
-                                artistIds = artistsInfo,
-                                albumId = albumId,
-                                shouldBePlaying = shouldBePlaying,
-                                position = positionAndDuration.first,
-                                duration = positionAndDuration.second,
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
-                                    .fillMaxWidth(),
-                                        //.weight(1f),
-                                    onBlurScaleChange = { blurStrength = it }
-                            )
+                            if (index >= 0 && binder.player.currentTimeline.windowCount > 0)
+                                Controls(
+                                    navController = navController,
+                                    onCollapse = onDismiss,
+                                    expandedplayer = expandedplayer,
+                                    layoutState = layoutState,
+                                    media = mediaItem.toUiMedia(positionAndDuration.second),
+                                    mediaId = mediaItem.mediaId,
+                                    title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
+                                        ?: "",
+                                    artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
+                                    artistIds = artistsInfo,
+                                    albumId = albumId,
+                                    shouldBePlaying = shouldBePlaying,
+                                    position = positionAndDuration.first,
+                                    duration = positionAndDuration.second,
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .fillMaxWidth(),
+                                            //.weight(1f),
+                                        onBlurScaleChange = { blurStrength = it }
+                                )
                         }
                     }
                 }

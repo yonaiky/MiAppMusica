@@ -34,6 +34,7 @@ import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.format.DateUtils
+import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -2325,7 +2326,7 @@ class PlayerService : InvincibleService(),
             binder.playFromSearch(query)
         }
 
-        /*
+
         override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
             mediaButtonEvent?.let {
                 if (it.action == Intent.ACTION_MEDIA_BUTTON) {
@@ -2365,7 +2366,7 @@ class PlayerService : InvincibleService(),
             }
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
-        */
+
 
     }
 

@@ -1,5 +1,6 @@
 package it.fast4x.rimusic
 
+import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -301,6 +302,7 @@ class MainActivity :
     private var currentAcceleration = 0f
     private var lastAcceleration = 0f
     private var shakeCounter = 0
+    private var appRunningInBackground: Boolean = false
 
     private var _monet: MonetCompat? by mutableStateOf(null)
     private val monet get() = _monet ?: throw MonetActivityAccessException()
@@ -374,6 +376,22 @@ class MainActivity :
                 )
         }
 
+        checkIfAppIsRunningInBackground()
+
+    }
+
+    private fun checkIfAppIsRunningInBackground(){
+        val runningAppProcessInfo = ActivityManager.RunningAppProcessInfo()
+        ActivityManager.getMyMemoryState(runningAppProcessInfo)
+        appRunningInBackground = runningAppProcessInfo.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+        /*
+        if (appRunningInBackground) {
+            Toast.makeText(applicationContext, "Application is Running in Background", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText(applicationContext, "Application is not Running in Background", Toast.LENGTH_SHORT).show()
+        }
+         */
     }
 
     /*
@@ -904,31 +922,34 @@ class MainActivity :
                     }
                      */
 
-                    val playerState =
-                        rememberModalBottomSheetState(skipPartiallyExpanded = true)
-                    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-                    CustomModalBottomSheet(
-                        showSheet = showPlayer,
-                        onDismissRequest = { showPlayer = false },
-                        containerColor = colorPalette.background2,
-                        contentColor = colorPalette.background2,
-                        modifier = Modifier.fillMaxWidth(),
-                        sheetState = playerState,
-                        dragHandle = {
-                            Surface(
-                                modifier = Modifier.padding(vertical = 0.dp),
-                                color = colorPalette.background0,
-                                shape = thumbnailShape
-                            ) {}
+                    checkIfAppIsRunningInBackground()
+                    if (appRunningInBackground) showPlayer = false
+
+                        val playerState =
+                            rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                        val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+                        CustomModalBottomSheet(
+                            showSheet = showPlayer,
+                            onDismissRequest = { showPlayer = false },
+                            containerColor = colorPalette.background2,
+                            contentColor = colorPalette.background2,
+                            modifier = Modifier.fillMaxWidth(),
+                            sheetState = playerState,
+                            dragHandle = {
+                                Surface(
+                                    modifier = Modifier.padding(vertical = 0.dp),
+                                    color = colorPalette.background0,
+                                    shape = thumbnailShape
+                                ) {}
+                            }
+                        ) {
+                            PlayerModern(
+                                navController = navController,
+                                layoutState = playerSheetState,
+                                playerState = playerState,
+                                onDismiss = { showPlayer = false }
+                            )
                         }
-                    ) {
-                        PlayerModern(
-                            navController = navController,
-                            layoutState = playerSheetState,
-                            playerState = playerState,
-                            onDismiss = { showPlayer = false }
-                        )
-                    }
 
 
                     /*
@@ -1113,7 +1134,7 @@ class MainActivity :
         }.onFailure {
             Timber.e("MainActivity.onResume registerListener sensorManager ${it.stackTraceToString()}")
         }
-
+        appRunningInBackground = false
     }
 
     override fun onPause() {
@@ -1124,6 +1145,7 @@ class MainActivity :
         }.onFailure {
             Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
         }
+        appRunningInBackground = true
     }
 
     @UnstableApi
