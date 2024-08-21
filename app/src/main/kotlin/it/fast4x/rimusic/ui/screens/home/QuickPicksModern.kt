@@ -870,8 +870,6 @@ fun QuickPicksModern(
                                     items = playlists.distinctBy { it.playlist.id },
                                     key = { it.playlist.id }
                                 ) { playlist ->
-                                    Modifier
-                                        .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
                                     PlaylistItem(
                                         playlist = playlist,
                                         thumbnailSizeDp = playlistThumbnailSizeDp,
@@ -882,6 +880,7 @@ fun QuickPicksModern(
                                             fadeOutSpec = null
                                         )
                                             .fillMaxSize()
+                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
                                     )
                                 }
                             }
