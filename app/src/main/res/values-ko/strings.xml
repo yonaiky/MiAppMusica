@@ -662,10 +662,10 @@
     <string name="playlistindicatorinfo">곡이 이미 플레이리스트에 추가되었는지 표시합니다</string>
     <string name="deleted">삭제됨</string>
     <string name="playlistindicatorinfo2">곡이 플레이리스트 중 하나에 존재합니다</string>
-    <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
-    <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
-    <string name="controls_header_customize">Customize</string>
+    <string name="statsfornerdsplayer">플레이어에서 전문 통계 표시</string>
+    <string name="discover">탐색</string>
+    <string name="discoverinfo">대기열에서 플레이리스트에 있더나 좋아요된 곡 지우기</string>
+    <string name="controls_header_customize">사용자 지정</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
     <string name="controls_title_playback_speed">Playback speed</string>
