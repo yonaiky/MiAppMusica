@@ -666,8 +666,8 @@
     <string name="discover">탐색</string>
     <string name="discoverinfo">대기열에서 플레이리스트에 있더나 좋아요된 곡 지우기</string>
     <string name="controls_header_customize">사용자 지정</string>
-    <string name="controls_title_blur_effect">Blur effect</string>
-    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_blur_effect">흐림 효과</string>
+    <string name="controls_title_medley_duration">메들리 간격</string>
     <string name="controls_title_playback_speed">Playback speed</string>
     <string name="controls_title_playback_pitch">Playback pitch</string>
     <string name="controls_title_playback_volume">Playback Volume</string>
