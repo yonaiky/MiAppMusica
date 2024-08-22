@@ -687,7 +687,7 @@
     <string name="carouselsize">Rozmiar karuzeli</string>
     <string name="addednext">Dodano jako kolejny do odtwarzania</string>
     <string name="info_paused_with_volume_zero">Paused with volume zero</string>
-    <string name="effect_fade_audio">Fade audio</string>
+    <string name="effect_fade_audio">Wycisz dźwięk</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
     <string name="message_type">Message type</string>
@@ -699,7 +699,7 @@
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
-    <string name="quality">Quality</string>
+    <string name="quality">Jakość</string>
     <string name="value_must_be_ip_address">Value must be an ip address</string>
     <string name="swipe_up_to_open_the_queue">Swipe up to open the queue</string>
     <string name="pinfo_show_icons">Show info with icons</string>
@@ -707,7 +707,7 @@
     <string name="minimum_silence_length">Minimum silence length</string>
     <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
     <string name="minimum_silence_length_warning">Player has to be restarted for the changes to be effective!</string>
-    <string name="restart_service">Restart service</string>
+    <string name="restart_service">Uruchom ponownie usługę</string>
     <string name="player_pause_listen_history">Pause listen history</string>
     <string name="queuetype">Queue Type</string>
     <string name="chart_top_songs">Top songs</string>
