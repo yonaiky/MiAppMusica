@@ -54,6 +54,7 @@ compose-coil = {group = "io.coil-kt", name = "coil-compose", version.ref = "coil
 room = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
 media3-exoplayer = {group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3"}
+media3-exoplayer-ui = {group = "androidx.media3", name = "media3-ui", version.ref = "media3"}
 media3-datasource-okhttp = {group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3"}
 ktor-client-core = {group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
 ktor-client-cio = {group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor"}

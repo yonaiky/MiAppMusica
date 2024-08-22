@@ -248,6 +248,7 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.screens.player.components.VideoPlayerView
 import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
@@ -2426,6 +2427,11 @@ fun PlayerModern(
                     modifier = Modifier
                         .weight(1f)
                 ) {
+
+                    /*  test video  */
+                    //VideoPlayerView(binder.player)
+                    /*  test video  */
+
                       if (showthumbnail) {
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                              if (playerType == PlayerType.Modern) {
@@ -2571,6 +2577,7 @@ fun PlayerModern(
                              }
                          }
                       }
+
                    Box(
                         modifier = Modifier
                             .pointerInput(Unit) {
