@@ -378,7 +378,7 @@ fun ControlsEssential(
                 if (effectRotationEnabled) isRotated = !isRotated
             },
             modifier = Modifier
-                .padding(10.dp)
+                //.padding(10.dp)
                 .size(26.dp)
         )
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
@@ -387,7 +387,7 @@ fun ControlsEssential(
                 tint = colorPalette.text,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(10.dp)
+                    //.padding(10.dp)
                     .size(26.dp)
             )
         }
@@ -551,7 +551,7 @@ fun ControlsEssential(
             trackLoopEnabled = !trackLoopEnabled
         },
         modifier = Modifier
-            .padding(10.dp)
+            //.padding(10.dp)
             .size(26.dp)
     )
 
