@@ -1548,11 +1548,16 @@ class PlayerService : InvincibleService(),
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(
-                if (mediaMetadata.albumTitle != null)
+                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
                     "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
                 else mediaMetadata.artist
             )
-            .setSubText(player.playerError?.message)
+            .setSubText(
+                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
+                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
+                else mediaMetadata.artist
+            )
+            //.setSubText(player.playerError?.message)
             .setLargeIcon(bitmapProvider.bitmap)
             .setAutoCancel(false)
             .setOnlyAlertOnce(true)
