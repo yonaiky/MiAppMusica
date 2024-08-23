@@ -713,8 +713,8 @@
     <string name="chart_top_songs">Las mejores canciones</string>
     <string name="chart_top_artists">Los mejores artistas</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
+    <string name="error_no_internet">Sin conexión de red</string>
+    <string name="error_timeout">Tiempo de espera de la conexión expirado</string>
     <string name="error_unknown">Unknown error</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
