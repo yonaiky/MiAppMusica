@@ -2,6 +2,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    alias(libs.plugins.kotlin.compose)
 }
 
 /*

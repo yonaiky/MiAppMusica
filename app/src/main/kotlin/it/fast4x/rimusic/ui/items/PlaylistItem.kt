@@ -116,11 +116,11 @@ fun PlaylistItem(
                     },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = it
+                    //modifier = it KOTLIN 2
                 )
             } else {
                 Box(
-                    modifier = it
+                    modifier = Modifier // KOTLIN 2
                         .fillMaxSize()
                 ) {
                     listOf(
@@ -199,7 +199,7 @@ fun PlaylistItem(
                 model = thumbnailUrl?.thumbnail(thumbnailSizePx),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = it
+                //modifier = it KOTLIN 2
             )
         },
         songCount = songCount,
@@ -214,7 +214,9 @@ fun PlaylistItem(
 
 @Composable
 fun PlaylistItem(
-    thumbnailContent: @Composable BoxScope.(modifier: Modifier) -> Unit,
+    thumbnailContent: @Composable BoxScope.(
+        //modifier: Modifier
+            ) -> Unit,
     songCount: Int?,
     name: String?,
     channelName: String?,
@@ -230,16 +232,19 @@ fun PlaylistItem(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier
-    ) { centeredModifier ->
+    ) { //centeredModifier ->
         Box(
-            modifier = centeredModifier
+            modifier = Modifier // KOTLIN 2
                 .clip(thumbnailShape)
                 .background(color = colorPalette.background4)
                 .requiredSize(thumbnailSizeDp)
         ) {
             thumbnailContent(
+                /*
                 modifier = Modifier
                     .fillMaxSize()
+
+                 */
             )
 
             name?.let {

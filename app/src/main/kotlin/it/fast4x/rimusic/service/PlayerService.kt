@@ -1974,7 +1974,7 @@ class PlayerService : InvincibleService(),
                                 mediaItem?.let(Database::insert)
 
                                 Database.insert(
-                                    it.fast4x.rimusic.models.Format(
+                                    Format(
                                         songId = videoId,
                                         itag = formatIn.itag,
                                         mimeType = formatIn.mimeType,

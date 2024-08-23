@@ -248,7 +248,7 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.screens.player.components.VideoPlayerView
+//import it.fast4x.rimusic.ui.screens.player.components.VideoPlayerView
 import it.fast4x.rimusic.utils.ApplyDiscoverToQueue
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
@@ -453,6 +453,8 @@ fun PlayerModern(
     }
 
     val mediaItem = nullableMediaItem ?: return
+
+    val pagerState = rememberPagerState(pageCount = { mediaItems.size })
 
     playerError?.let { PlayerError(error = it) }
 
@@ -1003,7 +1005,7 @@ fun PlayerModern(
 
     var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
-    val pagerState =rememberPagerState(pageCount = { binder.player.mediaItemCount })
+
 
 
     if (!isGradientBackgroundEnabled) {
@@ -1117,7 +1119,9 @@ fun PlayerModern(
 
     }
 
-    val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+    val thumbnailContent: @Composable (
+        //modifier: Modifier
+    ) -> Unit = { //modifier ->
         var deltaX by remember { mutableStateOf(0f) }
         //var direction by remember { mutableIntStateOf(-1)}
         Thumbnail(
@@ -1182,7 +1186,9 @@ fun PlayerModern(
     }
 
 
-    val controlsContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+    val controlsContent: @Composable (
+        //modifier: Modifier
+    ) -> Unit = { //modifier ->
         Controls(
             navController = navController,
             onCollapse = onDismiss,
@@ -1201,7 +1207,7 @@ fun PlayerModern(
             onBlurScaleChange = { blurStrength = it }
         )
     }
-    var textoutline by rememberPreference(textoutlineKey, false)
+    val textoutline by rememberPreference(textoutlineKey, false)
 
     fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
         return if (condition) {
@@ -1230,7 +1236,7 @@ fun PlayerModern(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val actionsBarContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+        val actionsBarContent: @Composable () -> Unit = {
             if (
                 !showButtonPlayerDownload &&
                 !showButtonPlayerAddToPlaylist &&
@@ -1287,7 +1293,7 @@ fun PlayerModern(
                                 .fillMaxWidth()
                         ) {
                             val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                            val pagerStateQueue = rememberPagerState(pageCount = { binder.player.mediaItemCount - 1})
+                            val pagerStateQueue = rememberPagerState(pageCount = { mediaItems.size })
                             val scope = rememberCoroutineScope()
                             val fling = PagerDefaults.flingBehavior(state = pagerStateQueue,snapPositionalThreshold = 0.15f, pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number))
                             LaunchedEffect(binder.player.currentMediaItemIndex) {
@@ -1337,14 +1343,14 @@ fun PlayerModern(
                                     modifier = Modifier
                                         .combinedClickable(
                                             onClick = {
-                                                binder.player.forcePlayAtIndex(mediaItems,it + 1)
+                                                binder.player.forcePlayAtIndex(mediaItems,
+                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                )
                                             },
                                             onLongClick = {
                                                 if (it < mediaItems.size) {
                                                     binder.player.addNext(
-                                                        binder.player.getMediaItemAt(
-                                                            it + 1
-                                                        )
+                                                        binder.player.getMediaItemAt(it + 1)
                                                     )
                                                     SmartMessage(
                                                         context.resources.getString(R.string.addednext),
@@ -1365,7 +1371,9 @@ fun PlayerModern(
                                                 .align(Alignment.CenterVertically)
                                         ) {
                                             AsyncImage(
-                                                model = binder.player.getMediaItemAt(it + 1).mediaMetadata.artworkUri.thumbnail(
+                                                model = binder.player.getMediaItemAt(
+                                                   if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                ).mediaMetadata.artworkUri.thumbnail(
                                                     Dimensions.thumbnails.song.px / 2
                                                 ),
                                                 contentDescription = null,
@@ -1388,7 +1396,9 @@ fun PlayerModern(
                                         ) {
                                             BasicText(
                                                 text = cleanPrefix(
-                                                    binder.player.getMediaItemAt(it + 1).mediaMetadata.title?.toString()
+                                                    binder.player.getMediaItemAt(
+                                                        if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                    ).mediaMetadata.title?.toString()
                                                         ?: ""
                                                 ),
                                                 style = TextStyle(
@@ -1401,7 +1411,9 @@ fun PlayerModern(
                                             )
                                             BasicText(
                                                 text = cleanPrefix(
-                                                    binder.player.getMediaItemAt(it + 1).mediaMetadata.title?.toString()
+                                                    binder.player.getMediaItemAt(
+                                                        if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                    ).mediaMetadata.title?.toString()
                                                         ?: ""
                                                 ),
                                                 style = TextStyle(
@@ -1426,7 +1438,9 @@ fun PlayerModern(
 
                                         ) {
                                             BasicText(
-                                                text = binder.player.getMediaItemAt(it + 1).mediaMetadata.artist?.toString()
+                                                text = binder.player.getMediaItemAt(
+                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                ).mediaMetadata.artist?.toString()
                                                     ?: "",
                                                 style = TextStyle(
                                                     color = colorPalette.text,
@@ -1437,7 +1451,9 @@ fun PlayerModern(
                                                 modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
                                             )
                                             BasicText(
-                                                text = binder.player.getMediaItemAt(it + 1).mediaMetadata.artist?.toString()
+                                                text = binder.player.getMediaItemAt(
+                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
+                                                ).mediaMetadata.artist?.toString()
                                                     ?: "",
                                                 style = TextStyle(
                                                     drawStyle = Stroke(
@@ -1752,6 +1768,7 @@ fun PlayerModern(
         var extraspace by rememberPreference(extraspaceKey, false)
         val nextMediaItemIndex = binder.player.nextMediaItemIndex
         val prevMediaItemIndex = binder.player.previousMediaItemIndex
+        /*
         val nextMediaItem = if (binder.player.hasNextMediaItem())
             binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
         else MediaItem.EMPTY
@@ -1768,7 +1785,7 @@ fun PlayerModern(
         } catch (e: Exception) {
             MediaItem.EMPTY
         }
-
+        */
         val nextmedia = if(binder.player.mediaItemCount > 1
             && binder.player.currentMediaItemIndex + 1 < binder.player.mediaItemCount )
             binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
@@ -1930,6 +1947,8 @@ fun PlayerModern(
                         ) {
                             if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                                 thumbnailContent(
+                                    /*
+                                    KOTLIN 2
                                     modifier = Modifier
                                         .padding(
                                             vertical = playerThumbnailSize.size.dp,
@@ -1939,6 +1958,8 @@ fun PlayerModern(
                                             shouldBePlaying = shouldBePlaying
                                         )
                                     //.padding(horizontal = 10.dp)
+
+                                     */
                                 )
                         }
                     }
@@ -2190,33 +2211,49 @@ fun PlayerModern(
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
+                            /*
                             modifier = Modifier
                                 .padding(vertical = 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
+                             */
                         )
                     } else {
+                         //KOTLIN 2
+                        /*
                         key(pagerState.currentPage) {
-                            Controls(
-                                navController = navController,
-                                onCollapse = onDismiss,
-                                expandedplayer = expandedplayer,
-                                layoutState = layoutState,
-                                media = mediaItem.toUiMedia(positionAndDuration.second),
-                                mediaId = mediaItem.mediaId,
-                                title = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString()
-                                    ?: "",
-                                artist = binder.player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
-                                artistIds = artistsInfo,
-                                albumId = albumId,
-                                shouldBePlaying = shouldBePlaying,
-                                position = positionAndDuration.first,
-                                duration = positionAndDuration.second,
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp),
-                                onBlurScaleChange = { blurStrength = it }
-                            )
-                        }
+                            val index = if (pagerState.currentPage > mediaItems.size - 1) 0 else
+                                pagerState.currentPage
+
+                            if (index >= 0 && mediaItems.size > 0)
+
+                         */
+                                Controls(
+                                    navController = navController,
+                                    onCollapse = onDismiss,
+                                    expandedplayer = expandedplayer,
+                                    layoutState = layoutState,
+                                    media = mediaItem.toUiMedia(positionAndDuration.second),
+                                    mediaId = mediaItem.mediaId,
+                                    title = mediaItem.mediaMetadata.title?.toString(),
+                                    /*
+                                    title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
+                                        ?: "",
+
+                                     */
+                                    //artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
+                                    artist = mediaItem.mediaMetadata.artist?.toString(),
+                                    artistIds = artistsInfo,
+                                    albumId = albumId,
+                                    shouldBePlaying = shouldBePlaying,
+                                    position = positionAndDuration.first,
+                                    duration = positionAndDuration.second,
+                                    modifier = Modifier
+                                        .padding(vertical = 8.dp),
+                                    onBlurScaleChange = { blurStrength = it }
+                                )
+                        //}
+
                     }
                     if (!showthumbnail) {
                         StatsForNerds(
@@ -2226,7 +2263,7 @@ fun PlayerModern(
                         )
                     }
                     actionsBarContent(
-                        modifier = Modifier
+                        //modifier = Modifier
                     )
                 }
             }
@@ -2564,6 +2601,8 @@ fun PlayerModern(
                                  }
                              } else {
                                  thumbnailContent(
+                                     /*
+                                     KOTLIN 2
                                      modifier = Modifier
                                          .clip(thumbnailShape)
                                          .padding(
@@ -2573,6 +2612,8 @@ fun PlayerModern(
                                          .thumbnailpause(
                                              shouldBePlaying = shouldBePlaying
                                          )
+
+                                      */
                                  )
                              }
                          }
@@ -2689,17 +2730,24 @@ fun PlayerModern(
                     .conditional(!expandedplayer){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
                         controlsContent(
+                            /*
                             modifier = Modifier
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
                             //.weight(1f)
+                             */
                         )
                     } else {
+                         //KOTLIN 2
+                        /*
                         key(pagerState.currentPage) {
-                            val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
+
+                            val index = if (pagerState.currentPage > mediaItems.size - 1) 0 else
                                 pagerState.currentPage
 
-                            if (index >= 0 && binder.player.currentTimeline.windowCount > 0)
+                            if (index >= 0 && mediaItems.size > 0)
+
+                         */
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,
@@ -2707,9 +2755,14 @@ fun PlayerModern(
                                     layoutState = layoutState,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
+                                    title = mediaItem.mediaMetadata.title?.toString(),
+                                    /*
                                     title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
                                         ?: "",
-                                    artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
+
+                                     */
+                                    artist = mediaItem.mediaMetadata.artist?.toString(),
+                                    //artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,
                                     shouldBePlaying = shouldBePlaying,
@@ -2721,7 +2774,8 @@ fun PlayerModern(
                                             //.weight(1f),
                                         onBlurScaleChange = { blurStrength = it }
                                 )
-                        }
+                        //}
+
                     }
                 }
 
@@ -2732,10 +2786,7 @@ fun PlayerModern(
                         onDismiss = {}
                     )
                 }
-                actionsBarContent(
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                )
+                actionsBarContent()
               }
             }
            }

@@ -1071,7 +1071,9 @@ fun Player(
 
         }
         var showthumbnail by rememberPreference(showthumbnailKey, false)
-        val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+        val thumbnailContent: @Composable (
+            //modifier: Modifier
+        ) -> Unit = { //modifier -> KOTLIN 2
             var deltaX by remember { mutableStateOf(0f) }
             //var direction by remember { mutableIntStateOf(-1)}
             Thumbnail(
@@ -1198,7 +1200,9 @@ fun Player(
         }
 
 
-        val controlsContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+        val controlsContent: @Composable (
+            //modifier: Modifier KOTLIN 2
+        ) -> Unit = { //modifier ->
             Controls(
                 navController = navController,
                 onCollapse = onDismiss,
@@ -1232,16 +1236,22 @@ fun Player(
                 ) {
 
                     thumbnailContent(
+                        /*
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
+
+                         */
                     )
                 }
 
                 controlsContent(
+                    /*
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .fillMaxHeight()
                         .weight(1f)
+
+                     */
                 )
             }
         } else {
@@ -1402,12 +1412,15 @@ fun Player(
                         .fillMaxHeight(0.55f)
                 ) {
                     thumbnailContent(
+                        /*
                         modifier = Modifier
                             .clip(thumbnailShape)
                             .padding(
                                 horizontal = playerThumbnailSize.size.dp,
                                 vertical = 4.dp,
                             )
+
+                         */
                     )
                 }
 
@@ -1444,9 +1457,12 @@ fun Player(
 
 
                 controlsContent(
+                    /*
                     modifier = Modifier
                         .padding(vertical = 4.dp)
                         .fillMaxWidth()
+
+                     */
                 )
             }
         }

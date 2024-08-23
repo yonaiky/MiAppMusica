@@ -2,18 +2,18 @@
 [versions]
 compose-compiler = "1.5.15"
 junit = "4.13.2"
-agp = "8.4.2"
-kotlin = "1.9.25"
-kotlin-ksp = "1.9.25-1.0.20"
+agp = "8.5.2"
+kotlin = "2.0.20"
+kotlin-ksp = "2.0.20-1.0.24"
 kotlin-coroutine = "1.8.1"
 kotlin-datetime = "0.6.0"
 compose = "1.6.8"
 compose-activity = "1.9.1"
 shimmer = "1.0.3"
-coil = "2.6.0"
+coil = "2.7.0"
 room = "2.6.1"
 media3 = "1.4.0"
-ktor = "2.3.11"
+ktor = "2.3.12"
 brotli = "0.1.2"
 palette = "1.0.0"
 desugaring = "2.0.4"
@@ -22,14 +22,14 @@ core = "1.0.1"
 core-ktx = "1.13.1"
 media = "1.7.0"
 material = "1.6.8"
-material3 = "1.3.0-beta05"
+material3 = "1.3.0-rc01"
 androidmaterial = "1.12.0"
 constraintlayout = "1.0.1"
 composeruntimelivedata = "1.6.8"
 translator = "1.0.2"
 kotlin-csv = "1.9.3"
 monetcompat = "0.4.1"
-navigation = "2.7.7"
+navigation = "2.8.0-rc01"
 timber = "5.0.1"
 crypto = "1.1.0-alpha06"
 loggingInterceptor = "4.12.0"
@@ -38,8 +38,8 @@ toasty = "1.5.2"
 haze = "0.7.3"
 
 [libraries]
-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-junit = { group = "junit", name = "junit", version = "junit" }
+#gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+#junit = { group = "junit", name = "junit", version = "junit" }
 kotlin-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutine"}
 kotlin-datetime = {group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime"}
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
@@ -54,10 +54,10 @@ compose-coil = {group = "io.coil-kt", name = "coil-compose", version.ref = "coil
 room = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
 media3-exoplayer = {group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3"}
-media3-exoplayer-ui = {group = "androidx.media3", name = "media3-ui", version.ref = "media3"}
+#media3-exoplayer-ui = {group = "androidx.media3", name = "media3-ui", version.ref = "media3"}
 media3-datasource-okhttp = {group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3"}
 ktor-client-core = {group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"}
-ktor-client-cio = {group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor"}
+#ktor-client-cio = {group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor"}
 ktor-client-okhttp = {group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor"}
 ktor-client-content-negotiation = {group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor"}
 ktor-client-encoding = {group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor"}

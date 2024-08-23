@@ -411,11 +411,11 @@ fun DeviceListSongs(
                                         model = thumbnails.first().thumbnail(playlistThumbnailSizePx),
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop,
-                                        modifier = it
+                                        //modifier = it KOTLIN 2
                                     )
                                 } else {
                                     Box(
-                                        modifier = it
+                                        modifier = Modifier // KOTLIN 2
                                             .fillMaxSize()
                                     ) {
                                         listOf(
