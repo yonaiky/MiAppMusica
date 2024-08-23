@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -200,21 +201,21 @@ fun HomeScreen(
 */
         host {
 
-            /*
+
             var (tabIndex, onTabChanged) =
                 when (openTabFromShortcut) {
                     -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
                             HomeScreenTabs.Default -> rememberPreference(homeScreenTabIndexKey,
                             HomeScreenTabs.QuickPics.index)
                           else -> remember {
-                                mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
+                                mutableIntStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                           }
                         }
-                    else -> remember { mutableStateOf(openTabFromShortcut) }
+                    else -> remember { mutableIntStateOf(openTabFromShortcut) }
                 }
-             */
 
 
+            /*
             var (tabIndex, onTabChanged) =
                 if (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default) == HomeScreenTabs.Default)
                     rememberPreference(
@@ -224,6 +225,10 @@ fun HomeScreen(
                     remember {
                         mutableStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                     }
+            */
+
+            if (tabIndex == -2) navController.navigate(NavRoutes.search.name)
+
 
             if (!enableQuickPicksPage && tabIndex==0) tabIndex = 1
 

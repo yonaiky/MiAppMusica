@@ -6,8 +6,8 @@ enum class HomeScreenTabs {
     Songs,
     Artists,
     Albums,
-    Library;
-   // Discovery;
+    Playlists,
+    Search;
 
 
 
@@ -18,9 +18,8 @@ enum class HomeScreenTabs {
             Songs -> 1
             Artists -> 2
             Albums -> 3
-            Library -> 4
-            //Discovery -> 5
-
+            Playlists -> 4
+            Search -> 5
         }
 
 }

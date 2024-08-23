@@ -23,7 +23,7 @@
     <shortcut
         android:shortcutId="albums"
         android:enabled="true"
-        android:icon="@drawable/album"
+        android:icon="@drawable/alternative_version"
         android:shortcutShortLabel="@string/albums">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
@@ -33,8 +33,8 @@
     <shortcut
         android:shortcutId="library"
         android:enabled="true"
-        android:icon="@drawable/library"
-        android:shortcutShortLabel="@string/library">
+        android:icon="@drawable/playlist"
+        android:shortcutShortLabel="@string/playlists">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
             android:targetPackage="it.fast4x.rimusic.debug"

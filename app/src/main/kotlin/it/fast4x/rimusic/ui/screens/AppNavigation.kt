@@ -48,6 +48,7 @@ import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
+import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.TransitionEffect
@@ -97,7 +98,8 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    playerEssential: @Composable () -> Unit = {}
+    playerEssential: @Composable () -> Unit = {},
+    openTabFromShortcut: Int = 0
 ) {
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
 
@@ -188,12 +190,14 @@ fun AppNavigation(
             if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) navController.popBackStack()
         }
 
+
+
         composable(route = NavRoutes.home.name) {
             HomeScreen(
                 navController = navController,
                 onPlaylistUrl = navigateToPlaylist,
                 playerEssential = playerEssential,
-                openTabFromShortcut = 0
+                openTabFromShortcut = openTabFromShortcut
             )
         }
 

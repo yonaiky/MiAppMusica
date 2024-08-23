@@ -68,6 +68,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -849,22 +850,25 @@ class MainActivity :
                     }
                 }
 
-                val openTabFromShortcut = remember {
-                    when (intent?.action) {
-                        action_songs -> HomeScreenTabs.Songs.index
-                        action_albums -> HomeScreenTabs.Albums.index
-                        action_library -> HomeScreenTabs.Library.index
-                        action_search -> -2
-                        else -> -1
-                    }
+                var openTabFromShortcut = remember { 0 }
+                if (intent.action in arrayOf(action_songs, action_albums, action_library, action_search)) {
+                    openTabFromShortcut =
+                        when (intent?.action) {
+                            action_songs -> HomeScreenTabs.Songs.index
+                            action_albums -> HomeScreenTabs.Albums.index
+                            action_library -> HomeScreenTabs.Playlists.index
+                            action_search -> -2
+                            else -> -1
+                        }
+                    intent.action = null
                 }
+
 
 
 
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
                     LocalIndication provides ripple(bounded = true),
-                    //LocalRippleTheme provides rippleTheme,
                     LocalRippleConfiguration provides rippleConfiguration,
                     LocalShimmerTheme provides shimmerTheme,
                     LocalPlayerServiceBinder provides binder,
@@ -900,27 +904,9 @@ class MainActivity :
                                 hidePlayer = { showPlayer = false },
                                 navController = navController
                             )
-                        }
+                        },
+                        openTabFromShortcut = openTabFromShortcut
                     )
-
-                    /*
-                    if (showPlayer) {
-                        Player(
-                            navController = navController,
-                            layoutState = playerSheetState,
-                            onDismiss = {
-                                showPlayer = false
-                                println("mediaItem hidePlayer")
-                            },
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                        )
-
-                        if (showPlayer && (playerSheetState.isCollapsed || playerSheetState.isDismissed))
-                            playerSheetState.expandSoft()
-                        println("mediaItem showPlayer")
-                    }
-                     */
 
                     checkIfAppIsRunningInBackground()
                     if (appRunningInBackground) showPlayer = false
