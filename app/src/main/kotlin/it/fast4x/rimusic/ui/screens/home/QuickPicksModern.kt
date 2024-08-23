@@ -668,7 +668,7 @@ fun QuickPicksModern(
                     if (related == null) {
                         BasicText(
                             text = stringResource(R.string.sorry_tips_are_not_available),
-                            style = typography.s.semiBold.center,
+                            style = typography.xs.semiBold.center,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(all = 16.dp)
