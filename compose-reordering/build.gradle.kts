@@ -15,7 +15,7 @@ plugins {
 
 android {
     namespace = "it.fast4x.compose.reordering"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21

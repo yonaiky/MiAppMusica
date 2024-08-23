@@ -20,12 +20,12 @@ android {
     }
     //android.buildFeatures.buildConfig=true
 
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 51
         versionName = "0.6.49"
     }
