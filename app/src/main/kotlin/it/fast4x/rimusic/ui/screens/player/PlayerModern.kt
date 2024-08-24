@@ -1181,6 +1181,13 @@ fun PlayerModern(
 
                     )
                 }
+                .padding(
+                    vertical = playerThumbnailSize.size.dp,
+                    horizontal = playerThumbnailSize.size.dp
+                )
+                .thumbnailpause(
+                    shouldBePlaying = shouldBePlaying
+                )
 
         )
     }
@@ -1946,21 +1953,7 @@ fun PlayerModern(
                             //.padding(vertical = 10.dp)
                         ) {
                             if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
-                                thumbnailContent(
-                                    /*
-                                    KOTLIN 2
-                                    modifier = Modifier
-                                        .padding(
-                                            vertical = playerThumbnailSize.size.dp,
-                                            horizontal = playerThumbnailSize.size.dp
-                                        )
-                                        .thumbnailpause(
-                                            shouldBePlaying = shouldBePlaying
-                                        )
-                                    //.padding(horizontal = 10.dp)
-
-                                     */
-                                )
+                                thumbnailContent()
                         }
                     }
                     if (isShowingVisualizer && !showvisthumbnail && playerType == PlayerType.Essential) {
@@ -2219,15 +2212,7 @@ fun PlayerModern(
                              */
                         )
                     } else {
-                         //KOTLIN 2
-                        /*
-                        key(pagerState.currentPage) {
-                            val index = if (pagerState.currentPage > mediaItems.size - 1) 0 else
-                                pagerState.currentPage
 
-                            if (index >= 0 && mediaItems.size > 0)
-
-                         */
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,
@@ -2252,7 +2237,6 @@ fun PlayerModern(
                                         .padding(vertical = 8.dp),
                                     onBlurScaleChange = { blurStrength = it }
                                 )
-                        //}
 
                     }
                     if (!showthumbnail) {
@@ -2262,9 +2246,7 @@ fun PlayerModern(
                             onDismiss = {}
                         )
                     }
-                    actionsBarContent(
-                        //modifier = Modifier
-                    )
+                    actionsBarContent()
                 }
             }
          }
@@ -2738,16 +2720,6 @@ fun PlayerModern(
                              */
                         )
                     } else {
-                         //KOTLIN 2
-                        /*
-                        key(pagerState.currentPage) {
-
-                            val index = if (pagerState.currentPage > mediaItems.size - 1) 0 else
-                                pagerState.currentPage
-
-                            if (index >= 0 && mediaItems.size > 0)
-
-                         */
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,
@@ -2774,7 +2746,6 @@ fun PlayerModern(
                                             //.weight(1f),
                                         onBlurScaleChange = { blurStrength = it }
                                 )
-                        //}
 
                     }
                 }

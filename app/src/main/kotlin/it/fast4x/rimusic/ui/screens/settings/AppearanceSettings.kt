@@ -679,18 +679,20 @@ fun AppearanceSettings() {
                     onCheckedChange = { noblur = it }
                 )
 
-            if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
-                    filterCharSequence,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.statsfornerdsplayer),
-                    text = "",
-                    isChecked = statsfornerds,
-                    onCheckedChange = { statsfornerds = it }
-                )
+
         }
+        if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.statsfornerdsplayer),
+                text = "",
+                isChecked = statsfornerds,
+                onCheckedChange = { statsfornerds = it }
+            )
+
         if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
                     filterCharSequence,
