@@ -713,14 +713,14 @@
     <string name="chart_top_songs">En İyi Şarkılar</string>
     <string name="chart_top_artists">En iyi sanatçılar</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="error_no_internet">Ağ bağlantısı yok</string>
+    <string name="error_timeout">Bağlantı zaman aşımı</string>
+    <string name="error_unknown">Bilinmeyen hata</string>
+    <string name="delete_song">Bu şarkıyı gerçekten silmek istiyor musun? Veritabanından silinecek.\\nBu işlem geri alınamaz.</string>
+    <string name="info_check_update_now">Şimdi Kontrol Et</string>
+    <string name="info_no_update_available">Güncelleştirme yok</string>
+    <string name="lang_galician">Galiçyaca</string>
+    <string name="lang_norwegian">Norveçce</string>
+    <string name="translate_to">%s diline çevir</string>
+    <string name="translate_to_other_language">Başka dile çevir</string>
 </resources>
