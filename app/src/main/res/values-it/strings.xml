@@ -713,14 +713,14 @@
     <string name="chart_top_songs">Brani in evidenza</string>
     <string name="chart_top_artists">Artisti in evidenza</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
+    <string name="error_no_internet">Nessuna connessione internet</string>
+    <string name="error_timeout">Sospensione connessione</string>
+    <string name="error_unknown">Errore sconosciuto</string>
+    <string name="delete_song">Vuoi davvero eliminare questo brano? Sarà cancellato dal database.\\nQuesta azione è irreversibile.</string>
+    <string name="info_check_update_now">Controlla ora</string>
+    <string name="info_no_update_available">Nessun aggiornamento disponibile</string>
+    <string name="lang_galician">Galiziano</string>
+    <string name="lang_norwegian">Norvegese</string>
     <string name="translate_to">Translate to %s</string>
     <string name="translate_to_other_language">Traslate to other language</string>
 </resources>

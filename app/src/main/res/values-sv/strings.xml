@@ -503,7 +503,7 @@
     <string name="info_lyrics_not_found_on_s">Lyrics not found on %s</string>
     <string name="info_lyrics_tracks_found_on_s">Lyrics tracks found on %s</string>
     <string name="info_lyrics_tracks_not_found_on_s">Lyrics tracks not found on %s</string>
-    <string name="background_colors">Background colors</string>
+    <string name="background_colors">Bakgrundsfärger</string>
     <string name="bg_colors_background_from_cover">Background from cover</string>
     <string name="bg_colors_background_from_theme">Background from theme</string>
     <string name="bg_colors_gradient_background_from_cover">Gradient background from cover</string>
@@ -571,8 +571,8 @@
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
     <string name="no_log_available">No log available</string>
     <string name="enable_quick_picks_page">Enable Quick Picks page</string>
-    <string name="lang_vietnamese">Vietnamese</string>
-    <string name="parental_control">Parental control</string>
+    <string name="lang_vietnamese">Vietnamesiska</string>
+    <string name="parental_control">Föräldrakontroll</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">System</string>
@@ -673,12 +673,12 @@
     <string name="controls_title_playback_volume">Playback Volume</string>
     <string name="controls_title_device_volume">Device volume</string>
     <string name="lang_malayalam">Malayalam</string>
-    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_suggestions">Förslag</string>
     <string name="searches_saved_searches">Sparade sökningar</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
     <string name="paste">Klistra in</string>
-    <string name="searches_no_suggestions">No suggestions</string>
+    <string name="searches_no_suggestions">Inga förslag</string>
     <string name="action_bar_show_discover_button">Show discover button</string>
     <string name="playertype">Player Type</string>
     <string name="noblur">No Blur when Lyrics is Disabled</string>
@@ -713,14 +713,14 @@
     <string name="chart_top_songs">Topplåtar</string>
     <string name="chart_top_artists">Toppartister</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
+    <string name="error_no_internet">Ingen nätverksanslutning</string>
     <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
+    <string name="error_unknown">Okänt fel</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
+    <string name="lang_galician">Galiciska</string>
+    <string name="lang_norwegian">Norska</string>
     <string name="translate_to">Translate to %s</string>
     <string name="translate_to_other_language">Traslate to other language</string>
 </resources>
