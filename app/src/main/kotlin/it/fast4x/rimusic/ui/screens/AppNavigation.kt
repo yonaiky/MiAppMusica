@@ -99,7 +99,7 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 fun AppNavigation(
     navController: NavHostController,
     playerEssential: @Composable () -> Unit = {},
-    openTabFromShortcut: Int = 0
+    openTabFromShortcut: Int
 ) {
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
 
@@ -116,7 +116,7 @@ fun AppNavigation(
     }
 
     @Composable
-    fun modalBottomSheedPage(content: @Composable () -> Unit) {
+    fun modalBottomSheetPage(content: @Composable () -> Unit) {
         var showSheet by rememberSaveable { mutableStateOf(true) }
         CustomModalBottomSheet(
             showSheet = showSheet,
@@ -202,21 +202,21 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.gamePacman.name) {
-            modalBottomSheedPage {
+            modalBottomSheetPage {
                 Pacman()
             }
 
         }
 
         composable(route = NavRoutes.gameSnake.name) {
-            modalBottomSheedPage {
+            modalBottomSheetPage {
                 SnakeGame()
             }
 
         }
 
         composable(route = NavRoutes.queue.name) {
-            modalBottomSheedPage {
+            modalBottomSheetPage {
                 QueueModern(
                     navController = navController,
                     onDismiss = {},
@@ -236,7 +236,7 @@ fun AppNavigation(
             )
             val playerState =
                 rememberModalBottomSheetState(skipPartiallyExpanded = true)
-            modalBottomSheedPage {
+            modalBottomSheetPage {
                 PlayerModern(
                     navController = navController,
                     layoutState = playerSheetState,

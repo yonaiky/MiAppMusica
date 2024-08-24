@@ -201,9 +201,10 @@ fun HomeScreen(
 */
         host {
 
+            val openTabFromShortcut1 by remember{ mutableIntStateOf(openTabFromShortcut) }
 
             var (tabIndex, onTabChanged) =
-                when (openTabFromShortcut) {
+                when (openTabFromShortcut1) {
                     -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
                             HomeScreenTabs.Default -> rememberPreference(homeScreenTabIndexKey,
                             HomeScreenTabs.QuickPics.index)
@@ -211,7 +212,7 @@ fun HomeScreen(
                                 mutableIntStateOf(preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index)
                           }
                         }
-                    else -> remember { mutableIntStateOf(openTabFromShortcut) }
+                    else -> remember { mutableIntStateOf(openTabFromShortcut1) }
                 }
 
 
@@ -279,11 +280,6 @@ fun HomeScreen(
                     Item(2, stringResource(R.string.artists), R.drawable.artists)
                     Item(3, stringResource(R.string.albums), R.drawable.album)
                     Item(4, stringResource(R.string.playlists), R.drawable.library)
-                    //Item(5, stringResource(R.string.discovery), R.drawable.megaphone)
-                    //if (showSearchTab)
-                    //Item(6, stringResource(R.string.search), R.drawable.search)
-                    //Item(6, "Equalizer", R.drawable.musical_notes)
-                    //Item(6, "Settings", R.drawable.equalizer)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

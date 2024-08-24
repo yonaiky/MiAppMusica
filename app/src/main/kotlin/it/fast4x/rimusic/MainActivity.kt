@@ -850,7 +850,7 @@ class MainActivity :
                     }
                 }
 
-                var openTabFromShortcut = remember { 0 }
+                var openTabFromShortcut = remember { -1 }
                 if (intent.action in arrayOf(action_songs, action_albums, action_library, action_search)) {
                     openTabFromShortcut =
                         when (intent?.action) {
