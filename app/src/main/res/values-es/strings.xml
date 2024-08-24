@@ -312,7 +312,7 @@
     <string name="listening_time">Tiempo de reproducción</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Muestra el número de canciones escuchadas y su tiempo de reproducción</string>
     <string name="app_update_dialog_new">¡La nueva versión %s puede ser descargada!</string>
-    <string name="enable_language_in_discovery">Activar idioma en Descubrimiento</string>
+    <string name="enable_language_in_discovery">Activar idioma en Descubrir</string>
     <string name="if_possible_allows_discovery_content_language">Si es posible, permite recibir contenido de Descubrir en su propio idioma.</string>
     <string name="set_to">Establecer en</string>
     <string name="end_of_song">fin de la canción</string>
@@ -721,6 +721,6 @@
     <string name="info_no_update_available">No hay actualizaciones disponibles</string>
     <string name="lang_galician">Gallego</string>
     <string name="lang_norwegian">Noruego</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="translate_to">Traducir a %s</string>
+    <string name="translate_to_other_language">Traducir a otro idioma</string>
 </resources>
