@@ -289,6 +289,7 @@ data class BrowseEndpointContextMusicConfig (
 
 @Serializable
 enum class PageType(val value: String) {
+    @SerialName("MUSIC_PAGE_TYPE_TRACK_CREDITS") MusicPageTypeTrackCredits("MUSIC_PAGE_TYPE_TRACK_CREDITS"),
     @SerialName("MUSIC_PAGE_TYPE_ARTIST") MusicPageTypeArtist("MUSIC_PAGE_TYPE_ARTIST");
 }
 
