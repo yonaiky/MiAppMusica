@@ -1736,7 +1736,6 @@ fun Lyrics(
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled
-                            //showPlaceholder = if (!translateEnabled) false else true
                             if (translateEnabled) showLanguagesList = true
                         },
                         modifier = Modifier
@@ -1955,18 +1954,22 @@ fun Lyrics(
                                         //if (!showlyricsthumbnail)
                                             MenuEntry(
                                                 icon = R.drawable.translate,
-                                                text = stringResource(R.string.translate),
+                                                text = stringResource(R.string.translate_to, otherLanguageApp),
                                                 enabled = true,
                                                 onClick = {
                                                     menuState.hide()
-                                                    showLanguagesList = true
-                                                    /*
-                                                    translateEnabled = !translateEnabled
-                                                    showPlaceholder =
-                                                        if (!translateEnabled) false else true
-                                                     */
+                                                    translateEnabled = true
                                                 }
                                             )
+                                        MenuEntry(
+                                            icon = R.drawable.translate,
+                                            text = stringResource(R.string.translate_to_other_language),
+                                            enabled = true,
+                                            onClick = {
+                                                menuState.hide()
+                                                showLanguagesList = true
+                                            }
+                                        )
 
                                         if (!showlyricsthumbnail)
                                             MenuEntry(

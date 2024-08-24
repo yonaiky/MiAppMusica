@@ -723,4 +723,6 @@
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>
     <string name="lang_norwegian">Norwegian</string>
+    <string name="translate_to">Translate to %s</string>
+    <string name="translate_to_other_language">Traslate to other language</string>
 </resources>
