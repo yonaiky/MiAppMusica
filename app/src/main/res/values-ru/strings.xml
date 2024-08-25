@@ -713,14 +713,14 @@
     <string name="chart_top_songs">Топ песен</string>
     <string name="chart_top_artists">Топ исполнителей</string>
     <string name="lang_interlingua">Интерлингва (Interlingua)</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="error_no_internet">Отсутствует сетевое соединение</string>
+    <string name="error_timeout">Время ожидания подключения истекло</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных.\\nЭто действие необратимо.</string>
+    <string name="info_check_update_now">Проверить</string>
+    <string name="info_no_update_available">Нет доступных обновлений</string>
+    <string name="lang_galician">Галисиийский (Galego)</string>
+    <string name="lang_norwegian">Норвежский (Norsk)</string>
+    <string name="translate_to">Перевести на %s</string>
+    <string name="translate_to_other_language">Перевести на другой язык</string>
 </resources>
