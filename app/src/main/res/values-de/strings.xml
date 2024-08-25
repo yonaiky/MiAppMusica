@@ -720,7 +720,7 @@
     <string name="info_check_update_now">Jetzt überprüfen</string>
     <string name="info_no_update_available">Keine Aktualisierung verfügbar</string>
     <string name="lang_galician">Galicisch (galego)</string>
-    <string name="lang_norwegian">Norwegian</string>
+    <string name="lang_norwegian">Norwegisch (norsk)</string>
     <string name="translate_to">Übersetze nach %s</string>
     <string name="translate_to_other_language">In eine andere Sprache übersetzen</string>
 </resources>
