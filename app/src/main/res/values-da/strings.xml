@@ -664,7 +664,7 @@
     <string name="playlistindicatorinfo2">Sang er til stede i en af playlisterne</string>
     <string name="statsfornerdsplayer">Vis Statistikker for Nørder i Afspiller</string>
     <string name="discover">Opdag</string>
-    <string name="discoverinfo">Fjerner Syntes Om- og Playliste-sange fra kø</string>
+    <string name="discoverinfo">Fjerner Synes Godt Om- og Playliste-sange fra kø</string>
     <string name="controls_header_customize">Tilpas</string>
     <string name="controls_title_blur_effect">Sløringseffekt</string>
     <string name="controls_title_medley_duration">Medley-varighed</string>
