@@ -713,14 +713,14 @@
     <string name="chart_top_songs">Angesagte Songs</string>
     <string name="chart_top_artists">Angesagte Künstler</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="error_no_internet">Keine Internetverbindung</string>
+    <string name="error_timeout">Zeitüberschreitung der Verbindung</string>
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="delete_song">Soll der Titel wirklich aus der Datenbank gelöscht werden?\\nDiese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="info_check_update_now">Jetzt überprüfen</string>
+    <string name="info_no_update_available">Keine Aktualisierung verfügbar</string>
+    <string name="lang_galician">Galicisch (galego)</string>
+    <string name="lang_norwegian">Norwegisch (norsk)</string>
+    <string name="translate_to">Übersetze nach %s</string>
+    <string name="translate_to_other_language">In eine andere Sprache übersetzen</string>
 </resources>
