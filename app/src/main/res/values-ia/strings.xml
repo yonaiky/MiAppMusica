@@ -11,9 +11,9 @@
     <string name="add_to_playlist">Adder al lista de reproduction</string>
     <string name="go_to_album">Vader al album</string>
     <string name="remove_from_queue">Remove from queue</string>
-    <string name="remove_from_playlist">Remove from playlist</string>
+    <string name="remove_from_playlist">Remover ab le lista de reproduction</string>
     <string name="hide">Celar</string>
-    <string name="hide_from_quick_picks">Hide from \"Quick picks\"</string>
+    <string name="hide_from_quick_picks">Celar ab le \"Selectiones rapide\"</string>
     <string name="related_albums">Related albums</string>
     <string name="similar_artists">Similar artists</string>
     <string name="playlists_you_might_like">Playlists you might like</string>
@@ -55,7 +55,7 @@
     <string name="online">In linea</string>
     <string name="no_results_found">No results found. Please try a different query or category</string>
     <string name="videos">Videos</string>
-    <string name="featured">Featured</string>
+    <string name="featured">Eminente</string>
     <string name="view_the_source_code">Vider le codice fonte</string>
     <string name="report_an_issue">Signalar un defecto</string>
     <string name="you_will_be_redirected_to_github">You will be redirected to GitHub</string>
@@ -68,7 +68,7 @@
     <string name="apply_font_padding">Apply font padding</string>
     <string name="add_spacing_around_texts">Add spacing around texts</string>
     <string name="lockscreen">LOCKSCREEN</string>
-    <string name="show_song_cover">Show song cover</string>
+    <string name="show_song_cover">Monstrar copertura del canto</string>
     <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>
@@ -89,10 +89,10 @@
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Activar le supporto de Android Auto</string>
     <string name="search_history">SEARCH HISTORY</string>
-    <string name="pause_search_history">Pause search history</string>
+    <string name="pause_search_history">Pausar le chronologia de recerca</string>
     <string name="neither_save_new_searched_query">Neither save new searched queries nor show history</string>
-    <string name="clear_search_history">Clear search history</string>
-    <string name="history_is_empty">History is empty</string>
+    <string name="clear_search_history">Rader le chronologia de recerca</string>
+    <string name="history_is_empty">Le chronologia es vacue</string>
     <string name="service_lifetime">SERVICE LIFETIME</string>
     <string name="battery_optimizations_applied">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
     <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invincible service\" option to take effect.</string>
