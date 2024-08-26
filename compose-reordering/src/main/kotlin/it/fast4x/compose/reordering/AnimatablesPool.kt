@@ -7,28 +7,24 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class AnimatablesPool<T, V : AnimationVector>(
-    private val size: Int,
     private val initialValue: T,
-    typeConverter: TwoWayConverter<T, V>
+    private val typeConverter: TwoWayConverter<T, V>,
+    private val visibilityThreshold: T? = null
 ) {
-    private val values = MutableList(size) {
-        Animatable(initialValue = initialValue, typeConverter = typeConverter)
-    }
-
+    private val animatables = mutableListOf<Animatable<T, V>>()
     private val mutex = Mutex()
 
-    init {
-        require(size > 0)
-    }
-
     suspend fun acquire() = mutex.withLock {
-        if (values.isNotEmpty()) values.removeFirst() else null
+        animatables.removeFirstOrNull() ?: Animatable(
+            initialValue = initialValue,
+            typeConverter = typeConverter,
+            visibilityThreshold = visibilityThreshold,
+            label = "AnimatablesPool: Animatable"
+        )
     }
 
     suspend fun release(animatable: Animatable<T, V>) = mutex.withLock {
-        if (values.size < size) {
-            animatable.snapTo(initialValue)
-            values.add(animatable)
-        }
+        animatable.snapTo(initialValue)
+        animatables += animatable
     }
 }

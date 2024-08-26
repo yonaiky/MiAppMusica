@@ -86,6 +86,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.valentinilk.shimmer.shimmer
+import it.fast4x.compose.reordering.animateItemPlacement
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
@@ -712,6 +713,7 @@ fun QueueModern(
                                         )
 
                                          */
+                                        .animateItemPlacement(reorderingState)
                                         .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background0)
 
                                 )

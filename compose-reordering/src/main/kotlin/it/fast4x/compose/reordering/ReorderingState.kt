@@ -67,10 +67,11 @@ class ReorderingState(
             lowerBound = -index * draggingItemSize,
             upperBound = (lastIndex - index) * draggingItemSize
         )
-        val size =
-            lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
 
-        animatablesPool = AnimatablesPool(size / draggingItemSize + 2, 0, Int.VectorConverter)
+        animatablesPool = AnimatablesPool(
+            initialValue = 0,
+            typeConverter = Int.VectorConverter
+        )
     }
 
     @Suppress("CyclomaticComplexMethod")

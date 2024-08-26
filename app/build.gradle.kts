@@ -147,6 +147,7 @@ dependencies {
     implementation(libs.math3)
     implementation(libs.toasty)
     implementation(libs.haze)
+    implementation(libs.reorderable)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
