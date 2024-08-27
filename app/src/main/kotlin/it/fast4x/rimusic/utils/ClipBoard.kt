@@ -24,7 +24,7 @@ fun TextCopyToClipboard(textCopied:String) {
         clipboardManager.setPrimaryClip(ClipData.newPlainText("", textCopied))
     }.onFailure {
         Timber.e(it.stackTraceToString())
-        SmartMessage("Failed to copy text to clipbaoard, try again", type = PopupType.Error, context = context)
+        SmartMessage("Failed to copy text to clipboard, try again", type = PopupType.Error, context = context)
     }
     // Only show a toast for Android 12 and lower.
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
@@ -40,7 +40,7 @@ fun textCopyFromClipboard(): String {
         textCopied = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context).toString()
     }.onFailure {
         Timber.e(it.stackTraceToString())
-        SmartMessage("Failed to copy text from clipbaoard, try again", type = PopupType.Error, context = context)
+        SmartMessage("Failed to copy text from clipboard, try again", type = PopupType.Error, context = context)
     }
     // Only show a toast for Android 12 and lower.
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
