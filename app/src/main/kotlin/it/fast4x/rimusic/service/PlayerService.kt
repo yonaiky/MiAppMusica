@@ -1916,8 +1916,13 @@ class PlayerService : InvincibleService(),
                             }
 
                         }
+                        /*
                         ?.sortedByDescending { it.bitrate }
                         ?.firstOrNull()
+                         */
+                        ?.maxByOrNull { it.bitrate?.times(
+                            (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                        ) ?: -1 }
                         /*
                         ?.maxByOrNull {
                             (it.bitrate?.times(
