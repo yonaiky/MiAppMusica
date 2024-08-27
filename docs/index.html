@@ -323,12 +323,14 @@
                     <option value="it">Italiano</option>
                     <option value="ko">한국어</option>
                     <option value="nl">Nederlands</option>    
+                    <option value="no">Norsk</option>    
                     <option value="pl">język polski</option>
                     <option value="pt-rBR">Português Brasileiro</option>
                     <option value="ru">Русский</option>
                     <option value="ro">Română</option>
                     <option value="sr">српски</option>
                     <option value="sr-rCS">Srpski</option>
+                    <option value="sv">Svenska</option>
                     <option value="tr">Türkçe</option>
                     <option value="uk">Українська</option>
                   </select>
@@ -347,16 +349,7 @@
                 <li>
                   <a href="https://t.me/rimusic_app">
                     <img
-                            src="./images/telegram-black-icon.png"
-                            width="30"
-                            height="30"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://t.me/rimusic_app">
-                    <img
-                            src="./images/telegram-white-icon.png"
+                            src="./images/telegram-white.svg"
                             width="30"
                             height="30"
                     />
@@ -372,7 +365,7 @@
     <script src="js/main.min.js"></script>
     <script>
       // Load the locales
-      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn","pl","ca"]);
+      const multilingual = new Multilingual(["en", "cs", "it", "es", "fi", "fr", "pt-rBR", "ru", "ro", "tr", "zh-rCN", "zh-rTW", "da", "de", "et", "fil", "nl","sr","sr-rCS","uk","he","hu","ko","bn","pl","ca","no","sv"]);
       (async () => {
         await multilingual.loadStrings();
         multilingual.updateDom();
