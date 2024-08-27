@@ -37,11 +37,11 @@
     <string name="artist_no_release_album">This artist didn\'t release any album</string>
     <string name="artist_no_release_single">This artist didn\'t release any single</string>
     <string name="delete_playlist">Do you really want to delete this playlist?</string>
-    <string name="sync">Sync</string>
+    <string name="sync">Synchronisar</string>
     <string name="rename">Renominar</string>
     <string name="delete">Deler</string>
-    <string name="enter_the_lyrics">Enter the lyrics</string>
-    <string name="edit_lyrics">Edit lyrics</string>
+    <string name="enter_the_lyrics">Insere le parolas del canto</string>
+    <string name="edit_lyrics">Modificar le parolas del canto</string>
     <string name="search_lyrics_online">Search lyrics online</string>
     <string name="fetch_lyrics_again">Fetch lyrics again</string>
     <string name="id">Id</string>
