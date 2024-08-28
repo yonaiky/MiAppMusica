@@ -189,6 +189,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.min
 import kotlin.random.Random
 import kotlin.time.Duration
 
@@ -1632,13 +1633,16 @@ fun HomeSongsModern(
                                         searching = false
                                         filter = null
                                         val itemsLimited =
-                                            if (items.size > maxSongsInQueue.number) items.take(
-                                                maxSongsInQueue.number.toInt()
-                                            ) else items
+                                            if (items.size > maxSongsInQueue.number)
+                                                // items.take(maxSongsInQueue.number.toInt()
+                                                items.slice(
+                                                    index..min(index+maxSongsInQueue.number.toInt()-1, items.size-1)
+                                                )
+                                            else items
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(
                                             itemsLimited.map(SongEntity::asMediaItem),
-                                            index
+                                            0
                                         )
                                     }
                                 )
