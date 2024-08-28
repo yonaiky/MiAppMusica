@@ -98,14 +98,6 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable
             ?.firstOrNull()
             ?.musicResponsiveHeaderRenderer
 
-        /*
-        println("mediaItem header album year ${
-            header
-                ?.subtitle?.runs?.getOrNull(2)?.text
-        }")
-
-         */
-
         val contents = response
             .contents
             .twoColumnBrowseResultsRenderer
@@ -125,17 +117,14 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable
             title = header
                 ?.title
                 ?.text,
-            description = header
-                ?.description
-                ?.description
-                ?.text,
+            description = response.contents.twoColumnBrowseResultsRenderer.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer
+                ?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.description?.musicDescriptionShelfRenderer?.description?.runs?.joinToString("") { it.text.toString() },
             thumbnail = header
                 ?.thumbnail
                 ?.musicThumbnailRenderer
                 ?.thumbnail
                 ?.thumbnails
                 ?.getBestQuality(),
-                //?.maxByOrNull { (it.width ?: 0) * (it.height ?: 0) },
             authors = header
                 ?.straplineTextOne
                 ?.splitBySeparator()
@@ -156,87 +145,15 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingNonCancellable
                 ?.contents
                 ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
                 ?.mapNotNull(Innertube.AlbumItem::from),
-            otherInfo = header
-                ?.secondSubtitle
-                ?.text
+            otherInfo = response.contents.twoColumnBrowseResultsRenderer.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                ?.musicResponsiveHeaderRenderer?.secondSubtitle?.runs?.joinToString("") { it.text.toString() }
         )
     }
 
 }?.onFailure {
     println("mediaItem ERROR IN Innertube playlistpage " + it.message)
 }
-
-
-/*
-suspend fun Innertube.playlistPage(body: BrowseBody) = runCatching {
-    val response = client.post(browse) {
-        setBody(body)
-        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicPlaylistShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),musicCarouselShelfRenderer.contents.$musicTwoRowItemRendererMask),header.musicDetailHeaderRenderer(title,subtitle,thumbnail),microformat")
-        body.context.apply()
-    }.body<BrowseResponse>()
-
-    val musicDetailHeaderRenderer = response
-        .header
-        ?.musicDetailHeaderRenderer
-
-    val sectionListRendererContents = response
-        .contents
-        ?.singleColumnBrowseResultsRenderer
-        ?.tabs
-        ?.firstOrNull()
-        ?.tabRenderer
-        ?.content
-        ?.sectionListRenderer
-        ?.contents
-
-    val musicShelfRenderer = sectionListRendererContents
-        ?.firstOrNull()
-        ?.musicShelfRenderer
-
-    val musicCarouselShelfRenderer = sectionListRendererContents
-        ?.getOrNull(1)
-        ?.musicCarouselShelfRenderer
-
-    Innertube.PlaylistOrAlbumPage(
-        title = musicDetailHeaderRenderer
-            ?.title
-            ?.text,
-        description = musicDetailHeaderRenderer
-            ?.description
-            ?.text,
-        thumbnail = musicDetailHeaderRenderer
-            ?.thumbnail
-            ?.musicThumbnailRenderer
-            ?.thumbnail
-            ?.thumbnails
-            ?.firstOrNull(),
-        authors = musicDetailHeaderRenderer
-            ?.subtitle
-            ?.splitBySeparator()
-            ?.getOrNull(1)
-            ?.map(Innertube::Info),
-        year = musicDetailHeaderRenderer
-            ?.subtitle
-            ?.splitBySeparator()
-            ?.getOrNull(2)
-            ?.firstOrNull()
-            ?.text,
-        url = response
-            .microformat
-            ?.microformatDataRenderer
-            ?.urlCanonical,
-        songsPage = musicShelfRenderer
-            ?.toSongsPage(),
-        otherVersions = musicCarouselShelfRenderer
-            ?.contents
-            ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
-            ?.mapNotNull(Innertube.AlbumItem::from),
-        otherInfo = musicDetailHeaderRenderer
-            ?.secondSubtitle
-            ?.text
-    )
-}
- */
 
 suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatchingNonCancellable {
     val response = client.post(browse) {
@@ -277,7 +194,13 @@ private fun MusicShelfRenderer?.toSongsPage() = Innertube.ItemsPage(
     items = this
         ?.contents
         ?.mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
-        ?.mapNotNull(Innertube.SongItem::from),
+        ?.mapNotNull(Innertube.SongItem::from)
+        ?.also {
+            println("mediaItem MusicShelfRenderer toSongsPage ${it.size}")
+            it.forEach {
+                println("mediaItem MusicShelfRenderer toSongsPage song name ${it.info?.name} videoId ${it.info?.endpoint?.videoId} ")
+            }
+        },
     continuation = this
         ?.continuations
         ?.firstOrNull()

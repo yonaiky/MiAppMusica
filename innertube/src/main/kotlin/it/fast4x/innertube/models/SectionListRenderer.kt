@@ -30,12 +30,18 @@ data class SectionListRenderer(
         @Serializable
         data class MusicResponsiveHeaderRenderer(
             val title: Runs?,
-            val description: MusicDescriptionShelfRenderer?,
+            //val description: MusicDescriptionShelfRenderer?,
+            val description: Description?,
             val subtitle: Runs?,
             val secondSubtitle: Runs?,
             val thumbnail: ThumbnailRenderer?,
             val straplineTextOne: Runs?,
-        )
+        ) {
+            @Serializable
+            data class Description(
+                val musicDescriptionShelfRenderer: MusicDescriptionShelfRenderer?,
+            )
+        }
     }
 
 }

@@ -3,6 +3,26 @@ package it.fast4x.innertube.utils
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 
+fun Innertube.VideoItem.Companion.from(renderer: MusicTwoRowItemRenderer): Innertube.VideoItem? {
+    return Innertube.VideoItem(
+        info = renderer
+            .title
+            ?.runs
+            ?.firstOrNull()
+            ?.let(Innertube::Info),
+        authors = null,
+        thumbnail = renderer
+            .thumbnailRenderer
+            ?.musicThumbnailRenderer
+            ?.thumbnail
+            ?.thumbnails
+            ?.firstOrNull(),
+        durationText = null,
+        viewsText = null
+
+    ).takeIf { it.info?.endpoint?.videoId != null }
+}
+
 fun Innertube.AlbumItem.Companion.from(renderer: MusicTwoRowItemRenderer): Innertube.AlbumItem? {
     return Innertube.AlbumItem(
         info = renderer

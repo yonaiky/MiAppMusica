@@ -4,6 +4,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.Runs
 
 fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem? {
     val albumId = renderer
@@ -14,6 +15,10 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
         ?.runs
         ?.firstOrNull()
         ?.navigationEndpoint?.browseEndpoint?.browseId
+
+//    println("mediaItem FromMusicResponsiveListItemrenderer navigations videoId ${renderer.playlistItemData?.videoId}")
+
+    //println("mediaItem FromMusicResponsiveListItemrenderer albumId playlistSetVideoId ${renderer.playlistItemData?.playlistSetVideoId} videoId ${renderer.playlistItemData?.videoId}")
     /*
     // Album row is variable from 2 to 3
     val albumId1 = renderer
@@ -51,13 +56,26 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.musicResponsiveListItemFlexColumnRenderer
             ?.text
             ?.runs
-            ?.getOrNull(0)
+            ?.firstOrNull()
+            //?.map<Runs.Run, Innertube.Info<NavigationEndpoint.Endpoint.Watch>>(Innertube::Info)?.getOrNull(0),
             ?.let {
-                if (it.navigationEndpoint?.endpoint is NavigationEndpoint.Endpoint.Watch) Innertube.Info(
-                    name = "${explicitBadge}${it.text}",
-                    endpoint = it.navigationEndpoint.endpoint as NavigationEndpoint.Endpoint.Watch
-                ) else null
+                //if (it.navigationEndpoint?.endpoint is NavigationEndpoint.Endpoint.Watch)
+                    Innertube.Info( name = "${explicitBadge}${it.text}",
+                    //endpoint = it.navigationEndpoint.endpoint as NavigationEndpoint.Endpoint.Watch
+                        endpoint = NavigationEndpoint.Endpoint.Watch(
+                            params = renderer.navigationEndpoint?.watchEndpoint?.params,
+                            videoId = renderer.playlistItemData?.videoId,
+                        ),
+                ) //else null
+
             },
+            /*.also {
+                println("mediaItem FromMusicResponsiveListItemrenderer navigations videoId ${it?.endpoint?.videoId}")
+            },
+
+             */
+
+
             //?.let(Innertube::Info),
 
         authors = renderer
@@ -98,5 +116,5 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.find {
                 it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
            } != null,
-    ).takeIf { it.info?.endpoint?.videoId != null }
+    )      .takeIf { it.info?.endpoint?.videoId != null }
 }

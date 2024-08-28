@@ -134,12 +134,12 @@ fun AlbumScreen(
                                         year = currentAlbumPage?.year,
                                         authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else currentAlbumPage?.authors
                                             ?.joinToString("") { it.name ?: "" },
-                                        shareUrl = currentAlbumPage?.url,
+                                        shareUrl = currentAlbumPage.url,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = album?.bookmarkedAt
                                     ),
                                     currentAlbumPage
-                                        ?.songsPage
+                                        .songsPage
                                         ?.items
                                         ?.map(Innertube.SongItem::asMediaItem)
                                         ?.onEach(Database::insert)
