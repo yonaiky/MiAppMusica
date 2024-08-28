@@ -229,11 +229,8 @@ fun appBar(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.background(
-                    colorPalette.background0.copy(
-                        0.85f
-                    )
-                )
+                containerColor = Color.Transparent,
+                modifier = Modifier.background( colorPalette.background0.copy(0.90f))
             ) {
                 DropdownMenuItem(
                     enabled = navController.currentDestination?.route != NavRoutes.history.name,
