@@ -1894,16 +1894,9 @@ class PlayerService : InvincibleService(),
                     //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
                     //val format = body.streamingData?.highestQualityFormat
 
-/*
-                    val format = when (audioQualityFormat) {
-                        AudioQualityFormat.Auto -> body?.streamingData?.autoMaxQualityFormat
-                        AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
-                        AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
-                        AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
-                    }
-*/
 
                     val format = body.streamingData?.adaptiveFormats
+                        //?.filter { it.isAudio }
                         ?.filter {
                             when (audioQualityFormat) {
                                 AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
@@ -1914,44 +1907,19 @@ class PlayerService : InvincibleService(),
                                 AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
                                 AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
                             }
-
                         }
-                        /*
-                        ?.sortedByDescending { it.bitrate }
-                        ?.firstOrNull()
-                         */
                         ?.maxByOrNull { it.bitrate?.times(
                             (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
                         ) ?: -1 }
-                        /*
-                        ?.maxByOrNull {
-                            (it.bitrate?.times(
-                                when (audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                    AudioQualityFormat.High -> 1
-                                    AudioQualityFormat.Medium -> -1
-                                    AudioQualityFormat.Low -> -1
-                                }
-                            ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-                        }
-                         */
+
+                    //video
                     /*
-                    val format =
-                        body?.streamingData?.adaptiveFormats
-                            //?.filter { it.isAudio }
-                            ?.maxByOrNull {
-                            (it.bitrate?.times(
-                                when (audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                    AudioQualityFormat.High -> 1
-                                    AudioQualityFormat.Medium  -> -1
-                                    AudioQualityFormat.Low  -> -1
-                                }
-                            ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                        }
-
+                    val format = body.streamingData?.adaptiveFormats
+                        ?.filter { it.isVideo }
+                        ?.maxByOrNull { it.bitrate?.times(
+                            (if (it.mimeType.startsWith("video/webm")) 100 else 1)
+                        ) ?: -1 }
                      */
-
 
 
                     Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat selected $format")

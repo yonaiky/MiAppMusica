@@ -387,67 +387,6 @@ fun getCalculatedMonths( month: Int): String? {
     return sdfr.format(c.time).toString()
 }
 
-/*
-// NEW RESULT PLAYLIST OR ALBUM PAGE WITH TEMPORARILY WORKING WORKAROUND
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(): Result<Innertube.PlaylistOrAlbumPage>? {
-
-    var playlistPage = getOrNull() ?: return null
-    var songs = playlistPage.songsPage?.items.orEmpty().toMutableList()
-
-    var continuationS = playlistPage.songsPage?.continuation
-
-    //println("mediaItem 1 continuation $continuationS songs ${songs.size}")
-
-    while (continuationS != null) {
-        val newSongs = Innertube.playlistPage(
-            body = ContinuationBody(continuation = continuationS)
-        ).getOrNull()
-
-        continuationS = newSongs?.continuation
-        //println("mediaItem 1 loop continuation $continuationS songs ${songs.size}")
-    }
-
-    if (songs.size <= 100) {
-        //println("mediaItem 2 continuation ${playlistPage.songsPage?.continuation} songs ${songs.size}")
-
-        var continuation = playlistPage.songsPage?.continuation
-        while (continuation != null) {
-            val otherPlaylistPageResult =
-                Innertube.playlistPageLong(ContinuationBody(continuation = continuation))
-
-            //if (otherPlaylistPageResult.isFailure) break
-
-            otherPlaylistPageResult.getOrNull()?.let { otherSongsPage ->
-                /*
-                playlistPage =
-                    playlistPage.copy(songsPage = playlistPage.songsPage + otherSongsPage)
-                 */
-                otherSongsPage.items?.forEach {
-                    songs.add(it)
-                }
-                continuation = otherSongsPage.continuation
-            }
-
-            if (songs.size > 5000) break
-            //println("mediaItem 2 loop continuation ${continuation} songs ${songs.size}")
-        }
-    }
-    /* **** */
-
-
-    return Result.success(
-        playlistPage.copy(
-            songsPage = Innertube.ItemsPage(
-                items = songs.distinct().toList(),
-                continuation = null
-            )
-        )
-    )
-
-    //return Result.success(playlistPage)
-
-}
-*/
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     maxDepth: Int =  Int.MAX_VALUE
 ) = runCatching {

@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
         versionCode = 53
         versionName = "0.6.49.2"
@@ -101,15 +101,6 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
-/*
-android {
-    lint {
-        baseline = file("lint-baseline.xml")
-        //checkReleaseBuilds = false
-    }
-}
-*/
-
 dependencies {
     implementation(projects.composePersist)
     implementation(projects.composeRouting)
@@ -123,7 +114,6 @@ dependencies {
     implementation(libs.compose.coil)
     implementation(libs.palette)
     implementation(libs.media3.exoplayer)
-    //implementation(libs.media3.exoplayer.ui)
     implementation(libs.media3.datasource.okhttp)
     implementation(libs.appcompat)
     implementation(libs.appcompat.resources)
@@ -147,6 +137,9 @@ dependencies {
     implementation(libs.math3)
     implementation(libs.toasty)
     implementation(libs.haze)
+    //implementation(libs.androidyoutubeplayer)
+    implementation(libs.mpmediaplayer)
+
 
     implementation(libs.room)
     ksp(libs.room.compiler)
