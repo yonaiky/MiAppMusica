@@ -1,5 +1,5 @@
 package it.fast4x.rimusic.ui.screens.player.components
-/*
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +52,7 @@ fun YoutubePlayer(
     )
 }
 
+/*
 @Composable
 fun YoutubeFullScreenPlayer(
     ytVideoId: String,
@@ -142,5 +143,4 @@ fun YoutubeFullScreenPlayer(
 
     )
 }
-
  */

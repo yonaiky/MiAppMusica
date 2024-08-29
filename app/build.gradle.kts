@@ -137,9 +137,7 @@ dependencies {
     implementation(libs.math3)
     implementation(libs.toasty)
     implementation(libs.haze)
-    //implementation(libs.androidyoutubeplayer)
-    implementation(libs.mpmediaplayer)
-
+    implementation(libs.androidyoutubeplayer)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
