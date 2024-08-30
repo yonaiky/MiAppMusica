@@ -723,4 +723,5 @@
     <string name="lang_norwegian">Norsk</string>
     <string name="translate_to">Oversæt til %s</string>
     <string name="translate_to_other_language">Oversæt til andet sprog</string>
+    <string name="action_bar_show_video_button">Show video button</string>
 </resources>
