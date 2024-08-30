@@ -710,8 +710,8 @@
     <string name="restart_service">サービスを再起動</string>
     <string name="player_pause_listen_history">再生履歴を一時停止</string>
     <string name="queuetype">Queue Type</string>
-    <string name="chart_top_songs">トップ曲</string>
-    <string name="chart_top_artists">トップアーティスト</string>
+    <string name="chart_top_songs">上位の曲</string>
+    <string name="chart_top_artists">上位のアーティスト</string>
     <string name="lang_interlingua">インターリングア語</string>
     <string name="error_no_internet">ネットワーク接続なし</string>
     <string name="error_timeout">接続タイムアウト</string>
