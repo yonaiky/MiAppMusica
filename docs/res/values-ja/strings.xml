@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
+    <string name="opensource_multilingual_application">YouTube Music を音楽ストリーミングする、多言語対応のオープンソース Android アプリ</string>
+    <string name="your_library">あなただけのライブラリ。</string>
+    <string name="organized_in_one_place">一箇所にすべてがあります。お気に入りの曲、ダウンロードした曲、聴いた曲、すべての再生リスト。</string>
     <string name="beautiful_player">美しいプレーヤーだ。</string>
-    <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
-    <string name="many_effects">Many effects.</string>
-    <string name="visualizer_preview_timeline">Visualizer, preview, timeline, play button, apply the effects you prefer..</string>
-    <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic is multilingual, modern, powerful, attractive, beautiful and is translated into various languages by project collaborators.</string>
-    <string name="listen_to_your_favourite_music">Listen to your favorite music</string>
+    <string name="listen_songs_sing_lyrics">曲を聴き、歌詞を歌い、内蔵の翻訳機で単語を翻訳します。</string>
+    <string name="many_effects">豊富なエフェクト。</string>
+    <string name="visualizer_preview_timeline">ビジュアライザー、プレビュー、タイムライン、再生ボタン、気に入ったエフェクトを使ってください。</string>
+    <string name="modern">モダン。</string>
+    <string name="rimusic_is_multilingual_modern_powerful">RiMusicは、最新、強力、魅力的、美しく、そしてプロジェクトへの貢献者が様々な言語に翻訳しています。</string>
+    <string name="listen_to_your_favourite_music">大好きな音楽を聞こう</string>
     <string name="download_rimusic_now">今すぐRiMusicをダウンロード。</string>
     <string name="repository">リポジトリ</string>
     <string name="releases">リリース</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="issue_tracker">既知の問題一覧</string>
+    <string name="custom_version">カスタム版</string>
 </resources>
