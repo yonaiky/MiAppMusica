@@ -724,4 +724,7 @@
     <string name="translate_to">Übersetze nach %s</string>
     <string name="translate_to_other_language">In eine andere Sprache übersetzen</string>
     <string name="action_bar_show_video_button">Show video button</string>
+    <string name="social_telegram">Telegram</string>
+    <string name="social_telegram_info">Join the group on Telegram</string>
+    <string name="social_github">GitHub</string>
 </resources>

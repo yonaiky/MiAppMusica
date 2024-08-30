@@ -725,4 +725,7 @@ CC-BY-SA 3.0</string>
     <string name="translate_to">Translate to %s</string>
     <string name="translate_to_other_language">Traslate to other language</string>
     <string name="action_bar_show_video_button">Show video button</string>
+    <string name="social_telegram">Telegram</string>
+    <string name="social_telegram_info">Join the group on Telegram</string>
+    <string name="social_github">GitHub</string>
 </resources>

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat.startActivity
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -42,16 +45,20 @@ fun About() {
     val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .background(colorPalette.background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             /*
             .padding(
@@ -88,7 +95,15 @@ fun About() {
         SettingsEntryGroupText(title = stringResource(R.string.social))
 
         SettingsEntry(
-            title = "GitHub",
+            title = stringResource(R.string.social_telegram),
+            text = stringResource(R.string.social_telegram_info),
+            onClick = {
+                uriHandler.openUri("https://t.me/rimusic_app")
+            }
+        )
+
+        SettingsEntry(
+            title = stringResource(R.string.social_github),
             text = stringResource(R.string.view_the_source_code),
             onClick = {
                 uriHandler.openUri("https://github.com/fast4x/RiMusic")
