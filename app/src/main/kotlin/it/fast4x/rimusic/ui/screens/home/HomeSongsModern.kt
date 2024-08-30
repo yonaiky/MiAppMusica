@@ -26,13 +26,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,7 +48,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -83,19 +79,17 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
-import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -112,7 +106,6 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.Popup
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -130,7 +123,6 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
-import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
@@ -166,7 +158,6 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
 import it.fast4x.rimusic.utils.onDeviceSongSortByKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -189,8 +180,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.max
 import kotlin.math.min
-import kotlin.random.Random
 import kotlin.time.Duration
 
 
@@ -1632,17 +1623,62 @@ fun HomeSongsModern(
                                     onClick = {
                                         searching = false
                                         filter = null
-                                        val itemsLimited =
-                                            if (items.size > maxSongsInQueue.number)
-                                                // items.take(maxSongsInQueue.number.toInt()
-                                                items.slice(
-                                                    index..min(index+maxSongsInQueue.number.toInt()-1, items.size-1)
-                                                )
-                                            else items
+                                        val queueLimit = QueueSelection.END_OF_QUEUE_WINDOWED
+                                        val maxSongs = maxSongsInQueue.number.toInt()
+                                        val itemsRange: IntRange
+                                        val playIndex: Int
+                                        if (items.size < maxSongsInQueue.number) {
+                                            itemsRange = items.indices
+                                            playIndex = index
+                                        }
+                                        else{
+                                            when (queueLimit){
+                                                QueueSelection.START_OF_QUEUE -> {
+                                                    // tries to guarantee maxSongs many songs
+                                                    // window starting from index with maxSongs songs (if possible)
+                                                    itemsRange = index..<min(index+maxSongs, items.size)
+
+                                                    // index is located at the first position
+                                                    playIndex = 0
+                                                }
+                                                QueueSelection.CENTERED -> {
+                                                    // tries to guarantee >= maxSongs/2 many songs
+                                                    // window with +- maxSongs/2 songs (if possible) around index
+                                                    val minIndex = max(0, index - maxSongs/2)
+                                                    val maxIndex = min(index + maxSongs/2, items.size)
+                                                    itemsRange = minIndex..<maxIndex
+
+                                                    // index is located at "center"
+                                                    playIndex = index - minIndex
+                                                }
+                                                QueueSelection.END_OF_QUEUE -> {
+                                                    // tries to guarantee maxSongs many songs
+                                                    // window with maxSongs songs (if possible) ending at index
+                                                    val minIndex = max(0, index - maxSongs + 1)
+                                                    val maxIndex = min(index, items.size)
+                                                    itemsRange = minIndex..maxIndex
+
+                                                    // index is located at end
+                                                    playIndex = index - minIndex
+                                                }
+                                                QueueSelection.END_OF_QUEUE_WINDOWED -> {
+                                                    // tries to guarantee maxSongs many songs,
+                                                    // similar to original implementation in it's valid range
+                                                    // window with maxSongs songs (if possible) before index
+                                                    val minIndex = max(0, index - maxSongs + 1)
+                                                    val maxIndex = min(minIndex+maxSongs, items.size)
+                                                    itemsRange = minIndex..<maxIndex
+
+                                                    // index is located at "end"
+                                                    playIndex = index - minIndex
+                                                }
+                                            }
+                                        }
+                                        val itemsLimited = items.slice(itemsRange)
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(
                                             itemsLimited.map(SongEntity::asMediaItem),
-                                            0
+                                            playIndex
                                         )
                                     }
                                 )
