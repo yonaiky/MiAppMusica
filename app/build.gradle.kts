@@ -24,10 +24,10 @@ android {
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 35
-        versionCode = 53
-        versionName = "0.6.49.2"
+        versionCode = 54
+        versionName = "0.6.50"
     }
 
     splits {
