@@ -194,13 +194,15 @@ private fun MusicShelfRenderer?.toSongsPage() = Innertube.ItemsPage(
     items = this
         ?.contents
         ?.mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
-        ?.mapNotNull(Innertube.SongItem::from)
+        ?.mapNotNull(Innertube.SongItem::from),
+        /*
         ?.also {
             println("mediaItem MusicShelfRenderer toSongsPage ${it.size}")
             it.forEach {
                 println("mediaItem MusicShelfRenderer toSongsPage song name ${it.info?.name} videoId ${it.info?.endpoint?.videoId} ")
             }
         },
+         */
     continuation = this
         ?.continuations
         ?.firstOrNull()

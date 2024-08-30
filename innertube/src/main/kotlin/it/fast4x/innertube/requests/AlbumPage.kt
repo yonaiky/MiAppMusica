@@ -15,10 +15,12 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
 
     ?.map { album ->
         //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
+        /*
         println("mediaItem albumPage post songsPage songs id ${album?.songsPage?.items?.size}")
         album?.songsPage?.items?.forEach {
             println("mediaItem albumPage post songsPage song id ${it.info?.endpoint?.videoId} playlistId ")
         }
+         */
 
         val albumInfo = Innertube.Info(
             name = album?.title,

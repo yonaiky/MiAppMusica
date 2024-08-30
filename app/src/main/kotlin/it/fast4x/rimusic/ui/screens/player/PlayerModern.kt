@@ -218,6 +218,9 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.screens.player.components.VideoPlayer
+import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
+import it.fast4x.rimusic.utils.SearchYoutubeEntity
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.expandedplayerKey
@@ -242,12 +245,14 @@ import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
+import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
@@ -614,6 +619,8 @@ fun PlayerModern(
         showButtonPlayerSystemEqualizerKey,
         false
     )
+    val showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, false)
+
     val disableClosingPlayerSwipingDown by rememberPreference(
         disableClosingPlayerSwipingDownKey,
         true
@@ -948,6 +955,7 @@ fun PlayerModern(
 
     var showQueue by rememberSaveable { mutableStateOf(false) }
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
+    var showSearchEntity by rememberSaveable { mutableStateOf(false) }
 
     val transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
     val showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
@@ -1469,6 +1477,17 @@ fun PlayerModern(
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth()
                     ) {
+                        if (showButtonPlayerVideo)
+                            IconButton(
+                                icon = R.drawable.video,
+                                color = colorPalette.accent,
+                                enabled = true,
+                                onClick = {
+                                    showSearchEntity = true
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
                         if (showButtonPlayerDiscover)
                             IconButton(
@@ -2410,16 +2429,6 @@ fun PlayerModern(
                         .weight(1f)
                 ) {
 
-                    /*  test video  */
-                    //MultiMediaPlayer(ytVideoId = mediaItem.mediaId)
-                    /*
-                    YoutubePlayer(
-                        ytVideoId = mediaItem.mediaId, //"Cn9OyUDg22M",
-                        lifecycleOwner = LocalLifecycleOwner.current,
-                    )                    
-                     */
-                    /*  test video  */
-
                       if (showthumbnail) {
                          if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                              if (playerType == PlayerType.Modern) {
@@ -2800,6 +2809,30 @@ fun PlayerModern(
             FullLyricsSheetModern(
                 onMaximize = { showFullLyrics = false },
                 onRefresh = {}
+            )
+        }
+
+        CustomModalBottomSheet(
+            showSheet = showSearchEntity,
+            onDismissRequest = { showSearchEntity = false },
+            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
+            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .hazeChild(state = hazeState),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = {
+                Surface(
+                    modifier = Modifier.padding(vertical = 0.dp),
+                    color = colorPalette.background0,
+                    shape = thumbnailShape
+                ) {}
+            }
+        ) {
+            SearchYoutubeEntity(
+                navController = navController,
+                onDismiss = { showSearchEntity = false },
+                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}"
             )
         }
 

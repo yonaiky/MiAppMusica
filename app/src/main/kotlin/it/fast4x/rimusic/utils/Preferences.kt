@@ -107,6 +107,7 @@ const val isSwipeToActionEnabledKey = "isSwipeToActionEnabled"
 const val showButtonPlayerMenuKey = "showButtonPlayerMenu"
 const val showButtonPlayerSystemEqualizerKey = "showButtonPlayerSystemEqualizer"
 const val showButtonPlayerDiscoverKey = "showButtonPlayerDiscover"
+const val showButtonPlayerVideoKey = "showButtonPlayerVideo"
 const val disableClosingPlayerSwipingDownKey = "disableClosingPlayerSwipingDown"
 const val showSearchTabKey = "showSearchTab"
 const val MaxTopPlaylistItemsKey = "MaxTopPlaylistItems"
@@ -256,6 +257,9 @@ const val playerInfoShowIconsKey = "playerInfoShowIcons"
 const val minimumSilenceDurationKey = "minimumSilenceDuration"
 const val pauseListenHistoryKey = "pauseListenHistory"
 const val selectedCountryCodeKey = "selectedCountryCode"
+
+const val lastVideoIdKey = "lastVideoId"
+const val lastVideoSecondsKey = "lastVideoSeconds"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

@@ -73,6 +73,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.playVideo
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
 import kotlinx.coroutines.CoroutineScope
@@ -514,8 +515,8 @@ fun SearchResultScreen(
                                                     },
                                                     onClick = {
                                                         binder?.stopRadio()
-                                                        binder?.player?.forcePlay(video.asMediaItem)
-                                                        binder?.setupRadio(video.info?.endpoint)
+                                                        binder?.player?.playVideo(video.asMediaItem)
+                                                        //binder?.setupRadio(video.info?.endpoint)
                                                     }
                                                 )
                                         )

@@ -93,6 +93,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
@@ -144,6 +145,7 @@ import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerModern
 import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
+import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Appearance
@@ -209,6 +211,7 @@ import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.isValidIP
+import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
@@ -917,8 +920,8 @@ class MainActivity :
                     CustomModalBottomSheet(
                         showSheet = showPlayer,
                         onDismissRequest = { showPlayer = false },
-                        containerColor = colorPalette.background2,
-                        contentColor = colorPalette.background2,
+                        containerColor = colorPalette.background0,
+                        contentColor = colorPalette.background0,
                         modifier = Modifier.fillMaxWidth(),
                         sheetState = playerState,
                         dragHandle = {
@@ -929,12 +932,24 @@ class MainActivity :
                             ) {}
                         }
                     ) {
-                        PlayerModern(
-                            navController = navController,
-                            layoutState = playerSheetState,
-                            playerState = playerState,
-                            onDismiss = { showPlayer = false }
-                        )
+                        val isVideo = binder?.player?.currentMediaItem?.isVideo
+                        if (isVideo == false) {
+                            PlayerModern(
+                                navController = navController,
+                                layoutState = playerSheetState,
+                                playerState = playerState,
+                                onDismiss = { showPlayer = false }
+                            )
+                        } else {
+                            binder?.player?.currentMediaItem?.mediaId?.let {
+                                YoutubePlayer(
+                                    ytVideoId = it,
+                                    lifecycleOwner = LocalLifecycleOwner.current,
+                                    onCurrentSecond = {},
+                                    showPlayer = showPlayer,
+                                )
+                            }
+                        }
                     }
 
 

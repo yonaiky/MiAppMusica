@@ -141,6 +141,7 @@ import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import it.fast4x.rimusic.utils.swipeUpQueueKey
 import it.fast4x.rimusic.utils.queueTypeKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -214,6 +215,7 @@ fun AppearanceSettings() {
         false
     )
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+    var showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, false)
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
@@ -1248,6 +1250,18 @@ fun AppearanceSettings() {
                 text = "",
                 isChecked = swipeUpQueue,
                 onCheckedChange = { swipeUpQueue = it }
+            )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_video_button).contains(
+                filterCharSequence,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.action_bar_show_video_button),
+                text = "",
+                isChecked = showButtonPlayerVideo,
+                onCheckedChange = { showButtonPlayerVideo = it }
             )
 
         if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_discover_button).contains(

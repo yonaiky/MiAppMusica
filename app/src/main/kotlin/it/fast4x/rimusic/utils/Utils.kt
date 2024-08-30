@@ -231,7 +231,8 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                             ?.mapNotNull { it.name },
                         "artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
                         "isOfficialMusicVideo" to isOfficialMusicVideo,
-                        "isUserGeneratedContent" to isUserGeneratedContent
+                        "isUserGeneratedContent" to isUserGeneratedContent,
+                        "isVideo" to true,
                         // "artistNames" to if (isOfficialMusicVideo) authors?.filter { it.endpoint != null }?.mapNotNull { it.name } else null,
                         // "artistIds" to if (isOfficialMusicVideo) authors?.mapNotNull { it.endpoint?.browseId } else null,
                     )
@@ -301,6 +302,9 @@ val MediaItem.asSong: Song
         durationText = mediaMetadata.extras?.getString("durationText"),
         thumbnailUrl = mediaMetadata.artworkUri.toString()
     )
+
+val MediaItem.isVideo: Boolean
+    get() = mediaMetadata.extras?.getBoolean("isVideo") == true
 
 fun String.resize(
     width: Int? = null,
