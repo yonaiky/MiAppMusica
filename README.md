@@ -35,6 +35,7 @@
 - Audio auto-skip silence
 - Android Auto support
 - Android TV support
+- Youtube Video support
 - Check for Updates, which can be enabled or disabled in settings
 
 ## 📷 Screenshots
@@ -105,6 +106,7 @@ WARNING, the custom version is not an official release, download only if invited
 
 ## ❓ FAQs
 - See [Wiki page FAQs](https://github.com/fast4x/RiMusic/wiki/FAQs)
+- [Group on Telegram ](https://t.me/rimusic_app)
 
 ## 🤝 Contributing
 **Pull requests are welcome**
