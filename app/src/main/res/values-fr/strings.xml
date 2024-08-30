@@ -715,14 +715,14 @@
     <string name="chart_top_songs">Meilleurs titres</string>
     <string name="chart_top_artists">Meilleurs artistes</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="error_no_internet">Pas de réseau</string>
+    <string name="error_timeout">Délai de connexion expiré</string>
+    <string name="error_unknown">Erreur Inconnue</string>
+    <string name="delete_song">Voulez-vous vraiment supprimer cette chanson ? Elle sera supprimée de la base de données.\\nCette action est irréversible.</string>
+    <string name="info_check_update_now">Vérifiez maintenant</string>
+    <string name="info_no_update_available">Aucune mise à jour disponible</string>
+    <string name="lang_galician">Galicien</string>
+    <string name="lang_norwegian">Norvégien</string>
+    <string name="translate_to">Traduire en %s</string>
+    <string name="translate_to_other_language">Traduire en une autre langue</string>
 </resources>
