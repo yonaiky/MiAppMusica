@@ -666,7 +666,7 @@ fun HomeSongsModern(
         mutableStateOf(false)
     }
 
-
+    val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
 
     Box(
         modifier = Modifier
@@ -1623,16 +1623,15 @@ fun HomeSongsModern(
                                     onClick = {
                                         searching = false
                                         filter = null
-                                        val queueLimit = QueueSelection.END_OF_QUEUE_WINDOWED
+
                                         val maxSongs = maxSongsInQueue.number.toInt()
                                         val itemsRange: IntRange
                                         val playIndex: Int
                                         if (items.size < maxSongsInQueue.number) {
                                             itemsRange = items.indices
                                             playIndex = index
-                                        }
-                                        else{
-                                            when (queueLimit){
+                                        } else {
+                                            when (queueLimit) {
                                                 QueueSelection.START_OF_QUEUE -> {
                                                     // tries to guarantee maxSongs many songs
                                                     // window starting from index with maxSongs songs (if possible)
