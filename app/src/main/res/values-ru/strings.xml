@@ -167,9 +167,9 @@
     <string name="languages">Языки</string>
     <string name="app_language">Язык приложения</string>
     <string name="in_alphabetical_order">В алфавитном порядке:</string>
-    <string name="contributors">СОТРУДНИКИ</string>
+    <string name="contributors">УЧАСТНИКИ</string>
     <string name="troubleshooting">ПОИСК И УСТРАНЕНИЕ НЕИСПРАВНОСТЕЙ</string>
-    <string name="social">СОЦИАЛЬНОЕ</string>
+    <string name="social">РЕСУРСЫ</string>
     <string name="english">Английский (English)</string>
     <string name="italian">Итальянский (Italiano)</string>
     <string name="czech">Чешский (Čeština)</string>
@@ -667,7 +667,7 @@
     <string name="discoverinfo">Убирает понравившиеся песни и плейлисты из очереди</string>
     <string name="controls_header_customize">Настроить</string>
     <string name="controls_title_blur_effect">Эффект размытия</string>
-    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_medley_duration">Длительность проигрывания песни</string>
     <string name="controls_title_playback_speed">Скорость воспроизведения</string>
     <string name="controls_title_playback_pitch">Тон воспроизведения</string>
     <string name="controls_title_playback_volume">Громкость воспроизведения</string>
@@ -705,7 +705,7 @@
     <string name="pinfo_show_icons">Показать информацию с иконками</string>
     <string name="format_ms"> %1$s мс</string>
     <string name="minimum_silence_length">Минимальная продолжительность тишины</string>
-    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
+    <string name="minimum_silence_length_description">Минимальное время тишины в треке, после которого он будет переключён</string>
     <string name="minimum_silence_length_warning">Чтобы изменения вступили в силу, необходимо перезапустить плеер!</string>
     <string name="restart_service">Перезапустить плеер</string>
     <string name="player_pause_listen_history">Приостановить историю прослушивания</string>
@@ -723,5 +723,5 @@
     <string name="lang_norwegian">Норвежский (Norsk)</string>
     <string name="translate_to">Перевести на %s</string>
     <string name="translate_to_other_language">Перевести на другой язык</string>
-    <string name="action_bar_show_video_button">Show video button</string>
+    <string name="action_bar_show_video_button">Показать кнопку \"Видео\"</string>
 </resources>
