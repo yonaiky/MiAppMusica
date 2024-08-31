@@ -74,8 +74,10 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.playVideo
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -106,9 +108,7 @@ fun SearchResultScreen(
     }
     val hapticFeedback = LocalHapticFeedback.current
 
-    var loadAlbum by remember {
-        mutableStateOf(false)
-    }
+    val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
 
     PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
@@ -515,7 +515,10 @@ fun SearchResultScreen(
                                                     },
                                                     onClick = {
                                                         binder?.stopRadio()
-                                                        binder?.player?.playVideo(video.asMediaItem)
+                                                        if (isVideoEnabled)
+                                                            binder?.player?.playVideo(video.asMediaItem)
+                                                        else
+                                                            binder?.player?.forcePlay(video.asMediaItem)
                                                         //binder?.setupRadio(video.info?.endpoint)
                                                     }
                                                 )

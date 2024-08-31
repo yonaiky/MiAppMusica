@@ -242,6 +242,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -933,7 +934,8 @@ class MainActivity :
                         }
                     ) {
                         val isVideo = binder?.player?.currentMediaItem?.isVideo
-                        if (isVideo == false) {
+                        val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
+                        if (isVideo == false && isVideoEnabled == false) {
                             PlayerModern(
                                 navController = navController,
                                 layoutState = playerSheetState,

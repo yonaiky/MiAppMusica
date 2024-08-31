@@ -64,6 +64,7 @@ fun SearchYoutubeEntity (
             modifier = Modifier.padding(bottom = 12.dp)
         )
     }
+    val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
 
     Box(
         modifier = Modifier
@@ -122,7 +123,10 @@ fun SearchYoutubeEntity (
                                     },
                                     onClick = {
                                         binder?.stopRadio()
-                                        binder?.player?.playVideo(video.asMediaItem)
+                                        if (isVideoEnabled)
+                                            binder?.player?.playVideo(video.asMediaItem)
+                                        else
+                                            binder?.player?.forcePlay(video.asMediaItem)
                                         //binder?.setupRadio(video.info?.endpoint)
                                         onDismiss()
                                     }
