@@ -683,17 +683,20 @@ fun AppearanceSettings() {
 
 
         }
-        if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
-                filterCharSequence,
-                true
+
+        if (!(showthumbnail && playerType == PlayerType.Essential)){
+            if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
+                    filterCharSequence,
+                    true
+                )
             )
-        )
-            SwitchSettingEntry(
-                title = stringResource(R.string.statsfornerdsplayer),
-                text = "",
-                isChecked = statsfornerds,
-                onCheckedChange = { statsfornerds = it }
-            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.statsfornerdsplayer),
+                    text = "",
+                    isChecked = statsfornerds,
+                    onCheckedChange = { statsfornerds = it }
+                )
+        }
 
         if (!showlyricsthumbnail && !isLandscape)
             if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
