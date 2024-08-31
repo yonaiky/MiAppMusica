@@ -323,7 +323,7 @@ fun StatsForNerds(
             }
         }
     }
-        if ((statsForNerds && !showThumbnail) || (statsForNerds && playerType == PlayerType.Modern)){
+        if ((statsForNerds) && (!showThumbnail || playerType == PlayerType.Modern)) {
             Column(
                 modifier = modifier
                     .pointerInput(Unit) {detectTapGestures(onLongPress = {statsfornerdsfull = !statsfornerdsfull})}
