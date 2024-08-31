@@ -706,7 +706,7 @@ fun  UiSettings() {
         if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_listen_history),
-                text = "Does not save playback events used for statistics, history and suggestions in quick pics",
+                text = stringResource(R.string.player_pause_listen_history_info),
                 isChecked = pauseListenHistory,
                 onCheckedChange = {
                     pauseListenHistory = it

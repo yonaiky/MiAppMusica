@@ -731,4 +731,5 @@
     <string name="social_github">GitHub</string>
     <string name="update">Update</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+    <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
 </resources>
