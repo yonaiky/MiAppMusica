@@ -546,7 +546,7 @@ fun HomeSongs(
 
                 if (isHiding) {
                     ConfirmationDialog(
-                        text = stringResource(R.string.hidesong),
+                        text = stringResource(R.string.update_song),
                         onDismiss = { isHiding = false },
                         onConfirm = {
                             query {

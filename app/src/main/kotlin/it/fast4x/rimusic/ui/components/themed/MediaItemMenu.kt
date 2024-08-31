@@ -143,7 +143,7 @@ fun InHistoryMediaItemMenu(
 
     if (isHiding) {
         ConfirmationDialog(
-            text = stringResource(R.string.hidesong),
+            text = stringResource(R.string.update_song),
             onDismiss = { isHiding = false },
             onConfirm = {
                 onDismiss()
@@ -232,13 +232,14 @@ fun NonQueuedMediaItemMenuLibrary(
 
     if (isHiding) {
         ConfirmationDialog(
-            text = stringResource(R.string.hidesong),
+            text = stringResource(R.string.update_song),
             onDismiss = { isHiding = false },
             onConfirm = {
                 onDismiss()
                 query {
                     if (binder != null) {
                             binder.cache.removeResource(mediaItem.mediaId)
+                            binder.downloadCache.removeResource(mediaItem.mediaId)
                             Database.resetTotalPlayTimeMs(mediaItem.mediaId)
                     }
                 }
@@ -1577,8 +1578,8 @@ fun MediaItemMenu(
 
                 if (!isLocal) onHideFromDatabase?.let { onHideFromDatabase ->
                     MenuEntry(
-                        icon = R.drawable.eye_off,
-                        text = stringResource(R.string.hide),
+                        icon = R.drawable.update,
+                        text = stringResource(R.string.update),
                         onClick = onHideFromDatabase
                     )
                 }

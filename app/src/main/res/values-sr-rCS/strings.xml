@@ -727,4 +727,6 @@
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Join the group on Telegram</string>
     <string name="social_github">GitHub</string>
+    <string name="update">Update</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
 </resources>

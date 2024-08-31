@@ -1032,8 +1032,8 @@ fun MediaItemGridMenu (
 
                 if (!isLocal) onHideFromDatabase?.let { onHideFromDatabase ->
                     GridMenuItem(
-                        icon = R.drawable.eye_off,
-                        title = R.string.hide,
+                        icon = R.drawable.update,
+                        title = R.string.update,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {
