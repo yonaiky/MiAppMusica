@@ -723,5 +723,5 @@
     <string name="lang_norwegian">Norveçce</string>
     <string name="translate_to">%s diline çevir</string>
     <string name="translate_to_other_language">Başka dile çevir</string>
-    <string name="action_bar_show_video_button">Show video button</string>
+    <string name="action_bar_show_video_button">Video düğmesini göster</string>
 </resources>
