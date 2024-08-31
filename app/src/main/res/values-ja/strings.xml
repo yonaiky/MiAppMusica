@@ -24,7 +24,7 @@
     <string name="playlists">プレイリスト</string>
     <string name="favorites">お気に入り</string>
     <string name="quick_picks">Quick picks</string>
-    <string name="songs">楽曲</string>
+    <string name="songs">曲</string>
     <string name="other_versions">その他のバージョン</string>
     <string name="album_no_alternative_version">このアルバムには別のバージョンがありません</string>
     <string name="enqueue">キューへ追加</string>
