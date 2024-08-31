@@ -1889,13 +1889,17 @@ class PlayerService : InvincibleService(),
 
                     Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
 
-                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.bitrate }}")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
-                    //println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.bitrate }}")
+                    println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
+                    val format = body.streamingData?.adaptiveFormats
+                        ?.filter { it.isAudio }
+                        ?.maxByOrNull {
+                            it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                        ) ?: -1 }
 
-
-
+                    /*
                     val format = body.streamingData?.adaptiveFormats
                         ?.filter { it.isAudio }
                         /*
@@ -1915,6 +1919,8 @@ class PlayerService : InvincibleService(),
                         ?.maxByOrNull { it.bitrate?.times(
                             (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
                         ) ?: -1 }
+
+                     */
 
                     //video
                     /*
