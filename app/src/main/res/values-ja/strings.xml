@@ -140,7 +140,7 @@
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">返ってきた動画のIDが要求したものと一致しません</string>
     <string name="error_an_unknown_playback_error_has_occurred">不明な再生エラーが発生しました</string>
     <string name="tips">ヒント</string>
-    <string name="is_min_list_time_for_tips_or_quick_pics">その曲を候補やおすすめに出現させるための最小の視聴時間</string>
+    <string name="is_min_list_time_for_tips_or_quick_pics">その曲をヒントやおすすめの候補に出現させるための最小の視聴時間</string>
     <string name="min_listening_time">最小の視聴時間</string>
     <string name="player_thumbnail_size">サムネイルサイズ</string>
     <string name="restarting_rimusic_is_required">要再起動</string>
@@ -444,7 +444,7 @@
     <string name="show_statistics_in_navigation_bar">ナビゲーションバーに統計情報を表示</string>
     <string name="settings">設定</string>
     <string name="page_not_been_loaded">ページが正しく読み込まれませんでした。ページを更新してください。</string>
-    <string name="sorry_tips_are_not_available">すみません、ただいま候補は利用できません。</string>
+    <string name="sorry_tips_are_not_available">すみません、現在ヒントは利用できません。</string>
     <string name="library_collections">コレクション</string>
     <string name="info_show_hide_hidden_songs">非表示の曲の表示/非表示</string>
     <string name="info_shuffle">シャッフル</string>
