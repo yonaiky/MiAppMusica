@@ -1483,9 +1483,8 @@ fun PlayerModern(
                                 color = colorPalette.accent,
                                 enabled = true,
                                 onClick = {
-                                    binder.callPause {
-                                        showSearchEntity = true
-                                    }
+                                    binder.callPause {}
+                                    showSearchEntity = true
                                 },
                                 modifier = Modifier
                                     .size(24.dp),

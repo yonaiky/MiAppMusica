@@ -935,14 +935,16 @@ class MainActivity :
                     ) {
                         val isVideo = binder?.player?.currentMediaItem?.isVideo
                         val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
-                        if (isVideo == false && isVideoEnabled == false) {
+                        val playerModern: @Composable () -> Unit = {
                             PlayerModern(
                                 navController = navController,
                                 layoutState = playerSheetState,
                                 playerState = playerState,
                                 onDismiss = { showPlayer = false }
                             )
-                        } else {
+                        }
+
+                        val youtubePlayer: @Composable () -> Unit = {
                             binder?.player?.currentMediaItem?.mediaId?.let {
                                 YoutubePlayer(
                                     ytVideoId = it,
@@ -951,6 +953,13 @@ class MainActivity :
                                     showPlayer = showPlayer,
                                 )
                             }
+                        }
+
+                        if (isVideo == false) {
+                            playerModern()
+                        } else {
+                            if (isVideoEnabled) youtubePlayer()
+                            else playerModern()
                         }
                     }
 
