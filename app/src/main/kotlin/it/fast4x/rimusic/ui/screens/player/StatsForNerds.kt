@@ -38,6 +38,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -49,8 +50,10 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -89,7 +92,9 @@ fun StatsForNerds(
         var format by remember {
             mutableStateOf<Format?>(null)
         }
-        var showthumbnail by rememberPreference(showthumbnailKey, false)
+        val showThumbnail by rememberPreference(showthumbnailKey, false)
+        val statsForNerds by rememberPreference(statsfornerdsKey, false)
+        val playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
         val transparentBackgroundActionBarPlayer by rememberPreference(
             transparentBackgroundPlayerActionBarKey,
             false
@@ -185,7 +190,7 @@ fun StatsForNerds(
             }
         }
 
-    if (showthumbnail) {
+    if (showThumbnail && (!statsForNerds || playerType == PlayerType.Essential)) {
         Box(
             modifier = modifier
                 .pointerInput(Unit) {
@@ -317,7 +322,8 @@ fun StatsForNerds(
                 }
             }
         }
-    } else {
+    }
+        if ((statsForNerds && !showThumbnail) || (statsForNerds && playerType == PlayerType.Modern)){
             Column(
                 modifier = modifier
                     .pointerInput(Unit) {detectTapGestures(onLongPress = {statsfornerdsfull = !statsfornerdsfull})}
