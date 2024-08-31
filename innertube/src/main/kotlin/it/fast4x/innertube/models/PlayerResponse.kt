@@ -64,7 +64,7 @@ data class PlayerResponse(
             val loudnessDb: Double?,
             val audioSampleRate: Int?,
             val url: String?,
-            val width: Int?,
+            val width: Int?
         ) {
             val isAudio: Boolean
                 get() = width == null

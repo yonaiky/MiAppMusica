@@ -278,7 +278,7 @@ fun  UiSettings() {
 
     var skipSilence by rememberPreference(skipSilenceKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
-    var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
+    //var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
 
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
@@ -665,7 +665,7 @@ fun  UiSettings() {
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
-
+        /*
         if (filter.isNullOrBlank() || stringResource(R.string.audio_quality_format).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
@@ -702,7 +702,7 @@ fun  UiSettings() {
                 }
             }
         }
-
+        */
         if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_listen_history),

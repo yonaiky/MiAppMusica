@@ -451,7 +451,7 @@ class PlayerService : InvincibleService(),
         isShowingThumbnailInLockscreen =
             preferences.getBoolean(isShowingThumbnailInLockscreenKey, false)
 
-        audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
+        //audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
         showLikeButton = preferences.getBoolean(showLikeButtonBackgroundPlayerKey, true)
         showDownloadButton = preferences.getBoolean(showDownloadButtonBackgroundPlayerKey, true)
 
@@ -1889,14 +1889,16 @@ class PlayerService : InvincibleService(),
 
                     Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
 
-                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available ${body.streamingData?.adaptiveFormats}")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.bitrate }}")
 
-                    //println("mediaItem adaptive ${body.streamingData?.adaptiveFormats}")
-                    //val format = body.streamingData?.highestQualityFormat
+                    //println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.bitrate }}")
+
+
 
 
                     val format = body.streamingData?.adaptiveFormats
-                        //?.filter { it.isAudio }
+                        ?.filter { it.isAudio }
+                        /*
                         ?.filter {
                             when (audioQualityFormat) {
                                 AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
@@ -1908,6 +1910,8 @@ class PlayerService : InvincibleService(),
                                 AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
                             }
                         }
+
+                         */
                         ?.maxByOrNull { it.bitrate?.times(
                             (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
                         ) ?: -1 }
@@ -1922,8 +1926,8 @@ class PlayerService : InvincibleService(),
                      */
 
 
-                    Timber.i("PlayerService createDataSourceResolverFactory audioQualityFormat selected $format")
-                    println("mediaItem PlayerService createDataSourceResolverFactory audioQualityFormat selected $format")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats selected $format")
+                    println("mediaItem PlayerService createDataSourceResolverFactory adaptiveFormats selected $format")
 
 
                     if (format == null) throw PlayableFormatNotFoundException()
