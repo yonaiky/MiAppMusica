@@ -16,20 +16,6 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
         ?.firstOrNull()
         ?.navigationEndpoint?.browseEndpoint?.browseId
 
-//    println("mediaItem FromMusicResponsiveListItemrenderer navigations videoId ${renderer.playlistItemData?.videoId}")
-
-    //println("mediaItem FromMusicResponsiveListItemrenderer albumId playlistSetVideoId ${renderer.playlistItemData?.playlistSetVideoId} videoId ${renderer.playlistItemData?.videoId}")
-    /*
-    // Album row is variable from 2 to 3
-    val albumId1 = renderer
-        .flexColumns
-        .getOrNull(3)
-        ?.musicResponsiveListItemFlexColumnRenderer
-        ?.text
-        ?.runs
-        ?.firstOrNull()
-        ?.navigationEndpoint?.browseEndpoint?.browseId
-     */
     val albumRow = if (albumId == null) 3 else 2
 
     val explicitBadge = if (renderer
@@ -38,17 +24,6 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
         } != null) "e:" else ""
 
-    /*
-    println("mediaItem badges ${
-        renderer
-            .badges
-            ?.find {
-                it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
-            } != null
-    }")
-
-     */
-
     return Innertube.SongItem(
         info = renderer
             .flexColumns
@@ -56,35 +31,19 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.musicResponsiveListItemFlexColumnRenderer
             ?.text
             ?.runs
-            ?.firstOrNull()
-            //?.map<Runs.Run, Innertube.Info<NavigationEndpoint.Endpoint.Watch>>(Innertube::Info)?.getOrNull(0),
+            ?.getOrNull(0)
             ?.let {
-                //if (it.navigationEndpoint?.endpoint is NavigationEndpoint.Endpoint.Watch)
-                    Innertube.Info( name = "${explicitBadge}${it.text}",
-                    //endpoint = it.navigationEndpoint.endpoint as NavigationEndpoint.Endpoint.Watch
-                        endpoint = NavigationEndpoint.Endpoint.Watch(
-                            params = renderer.navigationEndpoint?.watchEndpoint?.params,
-                            videoId = renderer.playlistItemData?.videoId,
-                        ),
-                ) //else null
-
+                if (it.navigationEndpoint?.endpoint is NavigationEndpoint.Endpoint.Watch) Innertube.Info(
+                    name = "$explicitBadge${it.text}",
+                    endpoint = it.navigationEndpoint.endpoint as NavigationEndpoint.Endpoint.Watch
+                ) else null
             },
-            /*.also {
-                println("mediaItem FromMusicResponsiveListItemrenderer navigations videoId ${it?.endpoint?.videoId}")
-            },
-
-             */
-
-
-            //?.let(Innertube::Info),
-
         authors = renderer
             .flexColumns
             .getOrNull(1)
             ?.musicResponsiveListItemFlexColumnRenderer
             ?.text
             ?.runs
-            //?.map<Runs.Run, Innertube.Info<NavigationEndpoint.Endpoint.Browse>>(Innertube::Info)
             ?.map { Innertube.Info(name = it.text, endpoint = it.navigationEndpoint?.endpoint) }
             ?.filterIsInstance<Innertube.Info<NavigationEndpoint.Endpoint.Browse>>()
             ?.takeIf(List<Any>::isNotEmpty),

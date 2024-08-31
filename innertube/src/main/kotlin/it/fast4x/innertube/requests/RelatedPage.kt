@@ -45,7 +45,10 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingNonCancellable {
         .contents
         ?.sectionListRenderer
 
-
+    println("mediaItem Innertube RelatedPage sectionListRenderer ${sectionListRenderer
+        ?.findSectionByTitle("You might also like")
+        ?.musicCarouselShelfRenderer
+        ?.contents}")
 
     Innertube.RelatedPage(
         songs = sectionListRenderer
