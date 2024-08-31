@@ -240,7 +240,6 @@ fun AppearanceSettings() {
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
-
     )
 
     var miniPlayerType by rememberPreference(

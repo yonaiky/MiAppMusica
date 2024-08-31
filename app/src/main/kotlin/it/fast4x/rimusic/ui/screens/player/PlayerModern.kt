@@ -2769,7 +2769,8 @@ fun PlayerModern(
                     color = colorPalette.background0,
                     shape = thumbnailShape
                 ) {}
-            }
+            },
+            shape = thumbnailRoundness.shape()
         ) {
             QueueModern(
                 navController = navController,
@@ -2805,7 +2806,8 @@ fun PlayerModern(
                     color = colorPalette.background0,
                     shape = thumbnailShape
                 ) {}
-            }
+            },
+            shape = thumbnailRoundness.shape()
         ) {
             FullLyricsSheetModern(
                 onMaximize = { showFullLyrics = false },
@@ -2828,7 +2830,8 @@ fun PlayerModern(
                     color = colorPalette.background0,
                     shape = thumbnailShape
                 ) {}
-            }
+            },
+            shape = thumbnailRoundness.shape()
         ) {
             SearchYoutubeEntity(
                 navController = navController,

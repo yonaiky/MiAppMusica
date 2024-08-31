@@ -51,6 +51,7 @@ import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.extensions.games.snake.SnakeGame
@@ -88,6 +89,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -118,6 +120,11 @@ fun AppNavigation(
     @Composable
     fun modalBottomSheetPage(content: @Composable () -> Unit) {
         var showSheet by rememberSaveable { mutableStateOf(true) }
+        val thumbnailRoundness by rememberPreference(
+            thumbnailRoundnessKey,
+            ThumbnailRoundness.Heavy
+        )
+
         CustomModalBottomSheet(
             showSheet = showSheet,
             onDismissRequest = {
@@ -132,7 +139,8 @@ fun AppNavigation(
                     color = Color.Transparent,
                     //shape = thumbnailShape
                 ) {}
-            }
+            },
+            shape = thumbnailRoundness.shape()
         ) {
             content()
         }

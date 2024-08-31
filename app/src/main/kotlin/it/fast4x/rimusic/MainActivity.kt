@@ -231,6 +231,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
@@ -615,29 +616,16 @@ class MainActivity :
                             playerVisualizerTypeKey,
                             UiTypeKey,
                             disablePlayerHorizontalSwipeKey,
-                            //audioQualityFormatKey,
-                                /*
-                            showButtonPlayerArrowKey,
-                            showButtonPlayerAddToPlaylistKey,
-                            showButtonPlayerDownloadKey,
-                            showButtonPlayerLoopKey,
-                            showButtonPlayerLyricsKey,
-                            showButtonPlayerShuffleKey,
-                            showButtonPlayerSleepTimerKey,
-                            showButtonPlayerMenuKey,
-
-                                 */
                             disableClosingPlayerSwipingDownKey,
                             showSearchTabKey,
                             navigationBarPositionKey,
                             navigationBarTypeKey,
                             showTotalTimeQueueKey,
                             backgroundProgressKey,
-                            //showButtonPlayerSystemEqualizerKey,
                             transitionEffectKey,
-                            //playbackFadeDurationKey,
                             playerBackgroundColorsKey,
-                            miniPlayerTypeKey
+                            miniPlayerTypeKey,
+                            thumbnailRoundnessKey
                             -> {
                                 this@MainActivity.recreate()
                             }
@@ -918,6 +906,10 @@ class MainActivity :
                     val playerState =
                         rememberModalBottomSheetState(skipPartiallyExpanded = true)
                     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+                    val thumbnailRoundness by rememberPreference(
+                        thumbnailRoundnessKey,
+                        ThumbnailRoundness.Heavy
+                    )
                     CustomModalBottomSheet(
                         showSheet = showPlayer,
                         onDismissRequest = { showPlayer = false },
@@ -931,7 +923,8 @@ class MainActivity :
                                 color = colorPalette.background0,
                                 shape = thumbnailShape
                             ) {}
-                        }
+                        },
+                        shape = thumbnailRoundness.shape()
                     ) {
                         val isVideo = binder?.player?.currentMediaItem?.isVideo
                         val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
@@ -984,7 +977,8 @@ class MainActivity :
                                     color = Color.Transparent,
                                     //shape = thumbnailShape
                                 ) {}
-                            }
+                            },
+                            shape = thumbnailRoundness.shape()
                         ) {
                             menuState.content()
                         }
