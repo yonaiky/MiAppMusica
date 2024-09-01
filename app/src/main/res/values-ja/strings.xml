@@ -701,11 +701,11 @@
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">品質</string>
     <string name="value_must_be_ip_address">値はIPアドレスでなければなりません</string>
-    <string name="swipe_up_to_open_the_queue">Swipe up to open Queue</string>
+    <string name="swipe_up_to_open_the_queue">上にスワイプしてキューを開く</string>
     <string name="pinfo_show_icons">アイコン付きの情報を表示</string>
-    <string name="format_ms">%1$s ms</string>
-    <string name="minimum_silence_length">Minimum silence length</string>
-    <string name="minimum_silence_length_description">The minimum time the audio has to be silent to get skipped</string>
+    <string name="format_ms">%1$s ミリ秒</string>
+    <string name="minimum_silence_length">無音時間の最小の長さ</string>
+    <string name="minimum_silence_length_description">音声をスキップするための最小限の無音時間</string>
     <string name="minimum_silence_length_warning">変更を有効にするには、プレイヤーを再起動してください！</string>
     <string name="restart_service">サービスを再起動</string>
     <string name="player_pause_listen_history">再生履歴を一時停止</string>
@@ -714,14 +714,14 @@
     <string name="chart_top_artists">上位のアーティスト</string>
     <string name="lang_interlingua">インターリングア語</string>
     <string name="error_no_internet">ネットワーク接続なし</string>
-    <string name="error_timeout">接続タイムアウト</string>
+    <string name="error_timeout">接続が時間切れです</string>
     <string name="error_unknown">不明なエラー</string>
-    <string name="delete_song">本当にこの曲を削除しますか？これはデータベースから削除します。\\nこの操作は元に戻せません。</string>
+    <string name="delete_song">本当にこの曲を削除しますか？データベースから削除します。\\nこの操作は元に戻せません。</string>
     <string name="info_check_update_now">今すぐ確認</string>
     <string name="info_no_update_available">更新なし</string>
     <string name="lang_galician">ガリシア語</string>
     <string name="lang_norwegian">ノルウェー語</string>
     <string name="translate_to">%sに翻訳</string>
     <string name="translate_to_other_language">ほかの言語に翻訳</string>
-    <string name="action_bar_show_video_button">Show video button</string>
+    <string name="action_bar_show_video_button">動画ボタンを表示</string>
 </resources>
