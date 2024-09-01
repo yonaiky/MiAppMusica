@@ -340,8 +340,8 @@
     <string name="default_page">Pagina predefinite</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="prevents_screen_timeout">Prevents screen timeout</string>
-    <string name="action_bar_show_sleep_timer_button">Show Sleep Timer button</string>
-    <string name="sort_album_year">Album Year</string>
+    <string name="action_bar_show_sleep_timer_button">Monstrar button de temporisator de somno</string>
+    <string name="sort_album_year">Anno de album</string>
     <string name="sort_position">Position</string>
     <string name="sort_title">Titulo</string>
     <string name="sort_date_played">Data de reproduction</string>
