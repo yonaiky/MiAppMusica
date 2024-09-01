@@ -338,7 +338,7 @@
     <string name="don_t_enable">Non activar</string>
     <string name="lang_hindi">Hindi</string>
     <string name="default_page">Pagina predefinite</string>
-    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on">Mantener le schermo active</string>
     <string name="prevents_screen_timeout">Prevents screen timeout</string>
     <string name="action_bar_show_sleep_timer_button">Monstrar button de temporisator de somno</string>
     <string name="sort_album_year">Anno de album</string>
@@ -370,7 +370,7 @@
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
     <string name="player_appearance">Apparentia</string>
     <string name="player_action_bar">PLAYER ACTION BAR</string>
-    <string name="tab_data">Data</string>
+    <string name="tab_data">Datos</string>
     <string name="image_cache_max_size">Image cache max size</string>
     <string name="song_cache_max_size">Song cache max size</string>
     <string name="song_download_max_size">Song download max size</string>
@@ -385,7 +385,7 @@
     <string name="sort_date_liked">Date Liked</string>
     <string name="export_playlist">Export playlist</string>
     <string name="lang_afrikaans">Afrikaans</string>
-    <string name="playlist_top">Playlist Top</string>
+    <string name="playlist_top">Lista del Top</string>
     <string name="my_playlist_top">Mi Top %s</string>
     <string name="navigation_bar_position">Navigation bar position</string>
     <string name="direction_left">Left</string>
