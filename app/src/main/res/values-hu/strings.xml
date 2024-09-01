@@ -713,15 +713,15 @@
     <string name="chart_top_songs">Legjobb dalok</string>
     <string name="chart_top_artists">Legjobb előadók</string>
     <string name="lang_interlingua">Interlingua</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
-    <string name="info_check_update_now">Check Now</string>
-    <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
-    <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
-    <string name="action_bar_show_video_button">Show video button</string>
+    <string name="error_no_internet">Nincs internetkapcsolat</string>
+    <string name="error_timeout">Kapcsolat időtúllépés</string>
+    <string name="error_unknown">Ismeretlen hiba</string>
+    <string name="delete_song">Biztosan törölni akarod ezt a dalt? Törölve lesz az adatbázisból.\\n Ez a művelet visszafordíthatatlan.</string>
+    <string name="info_check_update_now">Ellenőrizd most</string>
+    <string name="info_no_update_available">Nincs elérhető frissítés</string>
+    <string name="lang_galician">Galíciai</string>
+    <string name="lang_norwegian">Norvég</string>
+    <string name="translate_to">Fordítás erre: %s</string>
+    <string name="translate_to_other_language">Fordítás más nyelvre</string>
+    <string name="action_bar_show_video_button">Videó gomb megjelenítése</string>
 </resources>
