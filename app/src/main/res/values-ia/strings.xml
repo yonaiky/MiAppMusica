@@ -183,9 +183,9 @@
     <string name="dark">Obscur</string>
     <string name="system">Systema</string>
     <string name="unlimited">Unlimited</string>
-    <string name="_light">Light</string>
+    <string name="_light">Clar</string>
     <string name="downloaded">Discargate</string>
-    <string name="turn_off">Turn off</string>
+    <string name="turn_off">Disactivar</string>
     <string name="download">Discargar</string>
     <string name="_default">Predefinite</string>
     <string name="dynamic">Dynamic</string>
@@ -255,8 +255,8 @@
     <string name="audio_quality_format_high">High</string>
     <string name="audio_quality_format_medium">Medium</string>
     <string name="audio_quality_format_low">Low</string>
-    <string name="audio_quality_format_unknown">Unknown</string>
-    <string name="do_you_really_want_to_delete_download">Do you really want to delete download?</string>
+    <string name="audio_quality_format_unknown">Incognite</string>
+    <string name="do_you_really_want_to_delete_download">Desira tu vermente deler le discarga?</string>
     <string name="enqueue_all">Enqueue all</string>
     <string name="enqueue_selected">Enqueue selected</string>
     <string name="greek">Greek</string>
@@ -270,7 +270,7 @@
     <string name="background_player">"BACKGROUND PLAYER "</string>
     <string name="show_favorite_button">Show Favorite button</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Show Favorite button in lock screen and notification area</string>
-    <string name="show_download_button">Show Download button</string>
+    <string name="show_download_button">Monstrar le button de discarga</string>
     <string name="show_download_button_in_lock_screen_and_notification_area">Show Download button in lock screen and notification area</string>
     <string name="by_most_played_song">By Most played song</string>
     <string name="by_last_played_song">By Last played song</string>
@@ -324,9 +324,9 @@
     <string name="do_you_really_want_to_delete_all_playback_events">Do you really want to delete all playback events?</string>
     <string name="lang_sinhala">Sinhala</string>
     <string name="update_available">Actualisation disponibile</string>
-    <string name="actions_you_can_do">Actions you can do:</string>
-    <string name="open_the_github_releases_web_page_and_download_latest_version">Open the Github releases web page and download latest version</string>
-    <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Download latest version from Github, you will find the file in the notification area and you can install by clicking on it</string>
+    <string name="actions_you_can_do">Actiones que tu pote facer:</string>
+    <string name="open_the_github_releases_web_page_and_download_latest_version">Aperir le pagina web de lanceamentos de Github e discargar le ultime version</string>
+    <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Discargar le ultime version ab Github, tu trovara le file in le area de notificationes e tu pote installar lo al cliccar lo</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid users can wait for the update from F-Droid, which usually arrives within a few hours with the IzzyOnDroid repo, and a few days with F-Droid.org\'s repo.</string>
     <string name="check_update">Verificar actualisationes</string>
     <string name="enable_check_for_update">Enable check for update</string>
@@ -408,7 +408,7 @@
     <string name="show_total_time_of_queue">Show total time of queue</string>
     <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Media permission required, please grant.</string>
-    <string name="open_permission_settings">Open permission settings</string>
+    <string name="open_permission_settings">Aperir le parametros de permission</string>
     <string name="background_progress_bar">Background progress bar</string>
     <string name="minimized_player">Minimized player</string>
     <string name="both">Both</string>
@@ -442,7 +442,7 @@
     <string name="by_casual_played_song">By Casual played song</string>
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Show statistics in navigation bar</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Parametros</string>
     <string name="page_not_been_loaded">The page has not been loaded correctly, try to refresh the page.</string>
     <string name="sorry_tips_are_not_available">Sorry, tips are not available for now.</string>
     <string name="library_collections">Collections</string>
