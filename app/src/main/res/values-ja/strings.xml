@@ -105,7 +105,7 @@
     <string name="persistent_queue">再生キューを保持</string>
     <string name="save_and_restore_playing_songs">再生中の曲を保存・復元</string>
     <string name="resume_playback">再生を再開</string>
-    <string name="when_device_is_connected">有線またはBluetooth機器が接続されたら</string>
+    <string name="when_device_is_connected">有線もしくはBluetoothデバイスが接続されている場合</string>
     <string name="skip_silence">無音をスキップ</string>
     <string name="skip_silent_parts_during_playback">再生中に無音部分をスキップ</string>
     <string name="loudness_normalization">ラウドネスの正規化</string>
@@ -314,8 +314,8 @@
     <string name="app_update_dialog_new">最新のバージョン %s をダウンロードできます！</string>
     <string name="enable_language_in_discovery">ディスカバリーで言語を有効にする</string>
     <string name="if_possible_allows_discovery_content_language">可能であれば、探索コンテンツをあなたの使用言語で受け取る。</string>
-    <string name="set_to">以下に設定</string>
-    <string name="end_of_song">曲の終了時</string>
+    <string name="set_to">設定</string>
+    <string name="end_of_song">後の曲の終了時</string>
     <string name="restore_completed">復元完了！</string>
     <string name="click_to_close">クリックして閉じる</string>
     <string name="lang_dutch">オランダ語</string>
@@ -460,7 +460,7 @@
     <string name="info_pin_unpin_playlist">プレイリストのピン留め/ピン留め解除</string>
     <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
     <string name="info_add_in_playlist">プレイリストに追加</string>
-    <string name="info_not_find_application_audio">音声用のイコライザーアプリが見つかりません</string>
+    <string name="info_not_find_application_audio">音声を均等化するアプリが見つかりませんでした</string>
     <string name="info_error">エラー</string>
     <string name="info_not_find_app_open_doc">文書を開くためのアプリが見つかりませんでした</string>
     <string name="info_not_find_app_create_doc">文書を作成するためのアプリが見つかりませんでした</string>
@@ -603,7 +603,7 @@
     <string name="lyrics_size">歌詞の大きさ</string>
     <string name="translate">翻訳</string>
     <string name="transparentbar">透明なタイムラインバー</string>
-    <string name="timelinesize">プレイヤーのタイムラインバーの横幅</string>
+    <string name="timelinesize">プレイヤーのタイムラインサイズ</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
     <string name="expandedlyrics">Expanded view of lyrics</string>
@@ -634,12 +634,12 @@
     <string name="highlight">強調表示</string>
     <string name="thin_bar">Thin Bar</string>
     <string name="buttonzoomout">Button Zoom Out Animation</string>
-    <string name="thumbnailpause">Shrink thumbnail when paused</string>
-    <string name="upnext">Up Next</string>
+    <string name="thumbnailpause">停止時にサムネイルを縮小</string>
+    <string name="upnext">次に登録</string>
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">アルバムカバーを表示</string>
     <string name="do_not_translate">翻訳しない</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">スリープタイマーを曲の終了時に設定しました</string>
     <string name="lyricsbackground">歌詞の背景</string>
     <string name="landscapelayout">横向きのレイアウト</string>
     <string name="layout">配置...</string>
