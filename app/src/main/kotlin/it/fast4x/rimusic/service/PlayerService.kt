@@ -46,6 +46,7 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.core.text.isDigitsOnly
+import androidx.glance.appwidget.updateAll
 import androidx.media.VolumeProviderCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -120,7 +121,7 @@ import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.ConditionalCacheDataSourceFactory
+import it.fast4x.rimusic.ui.widgets.PlayerEssentialWidget
 import it.fast4x.rimusic.utils.InvincibleService
 import it.fast4x.rimusic.utils.RingBuffer
 import it.fast4x.rimusic.utils.TimerJob
@@ -158,7 +159,6 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -350,7 +350,8 @@ class PlayerService : InvincibleService(),
         get() = NotificationId
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
-    private lateinit var audioQualityFormat: AudioQualityFormat
+    //private lateinit var audioQualityFormat: AudioQualityFormat
+    private val playerEssentialWidget = PlayerEssentialWidget()
 
     /*
     private val media = MutableStateFlow<MediaItem?>(null)
@@ -721,6 +722,7 @@ class PlayerService : InvincibleService(),
         }
 
     }
+
 
     private fun getVolumeProvider(): VolumeProviderCompat {
         val audio = getSystemService(AUDIO_SERVICE) as AudioManager?
@@ -1342,6 +1344,7 @@ class PlayerService : InvincibleService(),
         }
 
 
+
     }
 
     private val Player.androidPlaybackState
@@ -1480,6 +1483,9 @@ class PlayerService : InvincibleService(),
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
+
+        updateWidgets()
+
 
         super.onIsPlayingChanged(isPlaying)
     }
@@ -1996,8 +2002,23 @@ class PlayerService : InvincibleService(),
             }
         }
     }
-
     /** NEW METHOD **/
+
+
+    fun updateWidgets() {
+        val songName = player.mediaMetadata.title.toString()
+        val isPlaying = player.isPlaying
+        coroutineScope.launch {
+            playerEssentialWidget.updateInfo(
+                context = applicationContext,
+                songName = songName,
+                isPlaying = isPlaying,
+                bitmap = bitmapProvider.bitmap,
+                player = player
+            )
+        }
+    }
+
 
     inner class Binder : AndroidBinder() {
         val player: ExoPlayer

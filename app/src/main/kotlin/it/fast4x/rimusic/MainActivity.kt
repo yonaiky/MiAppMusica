@@ -296,6 +296,7 @@ class MainActivity :
         override fun onServiceDisconnected(name: ComponentName?) {
             binder = null
         }
+
     }
 
     private var binder by mutableStateOf<PlayerService.Binder?>(null)
