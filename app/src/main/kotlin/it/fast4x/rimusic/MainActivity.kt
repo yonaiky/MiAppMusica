@@ -432,6 +432,9 @@ class MainActivity :
 
         val launchedFromNotification =
             intent?.extras?.getBoolean("expandPlayerBottomSheet") == true
+                    || intent?.extras?.getBoolean("fromWidget") == true
+
+        println("MainActivity.onCreate launchedFromNotification: $launchedFromNotification intent $intent.action")
 
         intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 

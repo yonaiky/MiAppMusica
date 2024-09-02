@@ -121,7 +121,7 @@ import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.widgets.PlayerEssentialWidget
+import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
 import it.fast4x.rimusic.utils.InvincibleService
 import it.fast4x.rimusic.utils.RingBuffer
 import it.fast4x.rimusic.utils.TimerJob
@@ -351,7 +351,7 @@ class PlayerService : InvincibleService(),
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
     //private lateinit var audioQualityFormat: AudioQualityFormat
-    private val playerEssentialWidget = PlayerEssentialWidget()
+    private val playerVerticalWidget = PlayerVerticalWidget()
 
     /*
     private val media = MutableStateFlow<MediaItem?>(null)
@@ -924,6 +924,8 @@ class PlayerService : InvincibleService(),
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
             updateMediaSessionQueue(player.currentTimeline)
         }
+
+        updateWidgets()
 
     }
 
@@ -2006,12 +2008,14 @@ class PlayerService : InvincibleService(),
 
 
     fun updateWidgets() {
-        val songName = player.mediaMetadata.title.toString()
+        val songTitle = player.mediaMetadata.title.toString()
+        val songArtist = player.mediaMetadata.artist.toString()
         val isPlaying = player.isPlaying
         coroutineScope.launch {
-            playerEssentialWidget.updateInfo(
+            playerVerticalWidget.updateInfo(
                 context = applicationContext,
-                songName = songName,
+                songTitle = songTitle,
+                songArtist = songArtist,
                 isPlaying = isPlaying,
                 bitmap = bitmapProvider.bitmap,
                 player = player

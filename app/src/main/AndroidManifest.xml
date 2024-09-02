@@ -142,14 +142,14 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name=".ui.widgets.PlayerEssentialReceiver"
+        <receiver android:name=".ui.widgets.PlayerVerticalWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/player_essential_widget_info" />
+                android:resource="@xml/player_vertical_widget_info" />
         </receiver>
 
         <service
