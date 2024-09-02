@@ -64,7 +64,7 @@ class PlayerVerticalWidget: GlanceAppWidget() {
 
         provideContent {
             GlanceTheme {
-                WidgetActiveContent(context)
+                WidgetActiveVerticalContent(context)
             }
         }
     }
@@ -119,10 +119,11 @@ fun WidgetContent()  {
 
 
 }
+/*
 
 @OptIn(UnstableApi::class)
 @Composable
-fun WidgetActiveContent(context: Context) {
+fun WidgetActiveVerticalContent(context: Context) {
     val preferences = currentState<Preferences>()
     Column(
         modifier = GlanceModifier.fillMaxWidth()
@@ -204,4 +205,4 @@ fun WidgetActiveContent(context: Context) {
     }
 
 }
-
+*/

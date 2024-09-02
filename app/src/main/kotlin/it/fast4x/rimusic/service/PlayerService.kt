@@ -121,6 +121,7 @@ import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
 import it.fast4x.rimusic.utils.InvincibleService
 import it.fast4x.rimusic.utils.RingBuffer
@@ -352,6 +353,7 @@ class PlayerService : InvincibleService(),
     private lateinit var notificationActionReceiver: NotificationActionReceiver
     //private lateinit var audioQualityFormat: AudioQualityFormat
     private val playerVerticalWidget = PlayerVerticalWidget()
+    private val playerHorizontalWidget = PlayerHorizontalWidget()
 
     /*
     private val media = MutableStateFlow<MediaItem?>(null)
@@ -2013,6 +2015,14 @@ class PlayerService : InvincibleService(),
         val isPlaying = player.isPlaying
         coroutineScope.launch {
             playerVerticalWidget.updateInfo(
+                context = applicationContext,
+                songTitle = songTitle,
+                songArtist = songArtist,
+                isPlaying = isPlaying,
+                bitmap = bitmapProvider.bitmap,
+                player = player
+            )
+            playerHorizontalWidget.updateInfo(
                 context = applicationContext,
                 songTitle = songTitle,
                 songArtist = songArtist,
