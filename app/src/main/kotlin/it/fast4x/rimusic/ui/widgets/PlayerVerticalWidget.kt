@@ -126,7 +126,7 @@ fun WidgetActiveContent(context: Context) {
     val preferences = currentState<Preferences>()
     Column(
         modifier = GlanceModifier.fillMaxWidth()
-            .background(GlanceTheme.colors.background)
+            .background(GlanceTheme.colors.widgetBackground)
             .padding(4.dp),
         verticalAlignment = Alignment.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -137,7 +137,7 @@ fun WidgetActiveContent(context: Context) {
 
         Row(
             modifier = GlanceModifier.fillMaxWidth()
-                .background(GlanceTheme.colors.background)
+                .background(GlanceTheme.colors.widgetBackground)
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -145,7 +145,7 @@ fun WidgetActiveContent(context: Context) {
 
             Image(
                 provider = ImageProvider(R.drawable.play_skip_back),
-                contentDescription = "My image",
+                contentDescription = "back",
                 modifier = GlanceModifier
                     .clickable {
                         widgetPlayer.seekToPrevious()
@@ -160,7 +160,7 @@ fun WidgetActiveContent(context: Context) {
                         R.drawable.play
                     }
                 ),
-                contentDescription = "My image",
+                contentDescription = "play/pause",
                 modifier = GlanceModifier.padding(horizontal = 20.dp)
                     .clickable {
                         if (preferences[isPlayingKey] == true) {
@@ -173,7 +173,7 @@ fun WidgetActiveContent(context: Context) {
 
             Image(
                 provider = ImageProvider(R.drawable.play_skip_forward),
-                contentDescription = "My image",
+                contentDescription = "next",
                 modifier = GlanceModifier
                     .clickable {
                         widgetPlayer.seekToNext()
