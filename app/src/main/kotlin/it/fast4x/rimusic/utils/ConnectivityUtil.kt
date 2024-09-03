@@ -2,6 +2,7 @@ package org.dailyislam.android.utilities
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
@@ -21,12 +22,24 @@ class ConnectivityUtilSdk29(private val applicationContext: Context) {
         return cm.activeNetworkInfo
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getNetwork(): Network? {
+        val cm = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetwork
+    }
+
     /**
      * Check if there is any connectivity
      */
     fun isConnected(): Boolean {
         val info = getNetworkInfo()
         return info != null && info.isConnected
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun isConnected1(): Boolean {
+        val info = getNetwork()
+        return info != null && info.networkHandle > 0
     }
 
     /**
