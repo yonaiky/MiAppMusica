@@ -166,7 +166,7 @@
     <string name="most_played_playlists">Most played playlists</string>
     <string name="languages">Linguas</string>
     <string name="app_language">Lingua de application</string>
-    <string name="in_alphabetical_order">In alphabetical order:</string>
+    <string name="in_alphabetical_order">In ordine alphabetic:</string>
     <string name="contributors">CONTRIBUTORES</string>
     <string name="troubleshooting">TROUBLESHOOTING</string>
     <string name="social">SOCIAL</string>
@@ -195,7 +195,7 @@
     <string name="moods_and_genres">Moods and genres</string>
     <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
-    <string name="search">Search</string>
+    <string name="search">Cercar</string>
     <string name="no">No</string>
     <string name="stop">Stoppar</string>
     <string name="listen_on_youtube">Ascoltar sur YouTube</string>
@@ -203,7 +203,7 @@
     <string name="on_device">Sur le apparato</string>
     <string name="wavy_timeline">Wavy timeline</string>
     <string name="play_next">Reproducer le sequente</string>
-    <string name="toggle_lyrics">Toggle lyrics</string>
+    <string name="toggle_lyrics">Commutar parolas de canto</string>
     <string name="by_tapping_on_the_thumbnail">By tapping on the thumbnail</string>
     <string name="require_mic_permission">Visualizer effect require mic permission, grant please.</string>
     <string name="vt_fancy">Fancy</string>
@@ -214,7 +214,7 @@
     <string name="vt_double_side">Double side</string>
     <string name="vt_double_side_circular">Double side circular</string>
     <string name="vt_full">Full</string>
-    <string name="new_albums_of_your_artists">New albums of your artists</string>
+    <string name="new_albums_of_your_artists">Nove albumes de tu artistas</string>
     <string name="timeline">Chronologia</string>
     <string name="song_cache_by_player">SONG CACHE (by Player)</string>
     <string name="song_cache_by_download">SONG CACHE (by Download)</string>
@@ -282,7 +282,7 @@
     <string name="chinese_simplified">Chinese Simplified</string>
     <string name="chinese_traditional">Chinese Traditional</string>
     <string name="do_you_really_want_to_download_all">Desira tu vermente discargar toto?</string>
-    <string name="import_playlist">Import playlist</string>
+    <string name="import_playlist">Importar un lista de reproduction</string>
     <string name="lang_ukrainian">Ukrainian</string>
     <string name="proxy">PROXY</string>
     <string name="enable_proxy">Activar le proxy</string>
@@ -293,7 +293,7 @@
     <string name="lang_hebrew">Hebrew</string>
     <string name="customize_album">Personalisar le album</string>
     <string name="update_title">Actualisar le titulo</string>
-    <string name="update_authors">Update Authors</string>
+    <string name="update_authors">Actualisar le autores</string>
     <string name="update_cover">Update Cover</string>
     <string name="title">Titulo</string>
     <string name="authors">Authors</string>
