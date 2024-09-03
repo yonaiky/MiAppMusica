@@ -733,7 +733,7 @@ fun HomeLibraryModern(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if (uiType == UiType.ViMusic || showFloatingIcon)
+        if (uiType == UiType.ViMusic && showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

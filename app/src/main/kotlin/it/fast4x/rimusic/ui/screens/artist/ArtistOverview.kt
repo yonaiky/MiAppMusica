@@ -657,7 +657,7 @@ fun ArtistOverview(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic || showFloatingIcon)
+            if(uiType == UiType.ViMusic && showFloatingIcon)
                 youtubeArtistPage?.radioEndpoint?.let { endpoint ->
 
                     MultiFloatingActionsContainer(

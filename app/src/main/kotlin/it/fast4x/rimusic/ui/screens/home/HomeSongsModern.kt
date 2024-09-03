@@ -1696,7 +1696,7 @@ fun HomeSongsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if(uiType == UiType.ViMusic || showFloatingIcon)
+        if(uiType == UiType.ViMusic && showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

@@ -21,6 +21,7 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
+import androidx.glance.color.ColorProviders
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -59,7 +60,7 @@ class PlayerHorizontalWidget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
         provideContent {
-            GlanceTheme {
+            GlanceTheme() {
                 WidgetActiveHorizontalContent(context)
             }
         }
