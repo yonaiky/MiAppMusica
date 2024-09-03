@@ -86,6 +86,7 @@ import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
+import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
@@ -128,6 +129,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import kotlin.random.Random
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -658,12 +660,19 @@ fun ArtistOverviewModern(
                                 .fillMaxSize()
                                 .padding(endPaddingValues)
                         ) {
-                            Title(
+                            Title2Actions(
                                 title = stringResource(R.string.albums),
-                                onClick = {
+                                onClick1 = {
                                     //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                         onViewAllAlbumsClick()
                                     //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
+                                },
+                                icon2 = R.drawable.dice,
+                                onClick2 = {
+                                    val albumId = albums.get(
+                                        Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                    ).key
+                                    navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                                 }
                             )
                             /*

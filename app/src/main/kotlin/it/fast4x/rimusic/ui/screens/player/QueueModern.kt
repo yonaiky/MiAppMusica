@@ -161,8 +161,11 @@ fun QueueModern(
     //val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val windowInsets = WindowInsets.systemBars
 
+    /*
     val horizontalBottomPaddingValues = windowInsets
         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues()
+
+     */
     //val bottomPaddingValues = windowInsets
     //    .only(WindowInsetsSides.Bottom).asPaddingValues()
 
@@ -253,9 +256,12 @@ fun QueueModern(
             mutableStateOf(false)
         }
 
+        /*
         var showSelectTypeClearQueue by remember {
             mutableStateOf(false)
         }
+
+         */
         var position by remember {
             mutableIntStateOf(0)
         }
