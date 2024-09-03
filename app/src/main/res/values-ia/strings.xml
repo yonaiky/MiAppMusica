@@ -27,11 +27,11 @@
     <string name="songs">Cantos</string>
     <string name="other_versions">Altere versiones</string>
     <string name="album_no_alternative_version">Iste album non ha necun versiones alternative</string>
-    <string name="enqueue">Enqueue</string>
+    <string name="enqueue">Adder al cauda</string>
     <string name="shuffle">Aleatori</string>
     <string name="view_all">Vider toto</string>
-    <string name="from_wikipedia_cca">From Wikipedia under Creative Commons Attribution CC-BY-SA 3.0</string>
-    <string name="overview">Overview</string>
+    <string name="from_wikipedia_cca">De Wikipedia sub Creative Commons Attribution CC-BY-SA 3.0</string>
+    <string name="overview">Summario</string>
     <string name="singles">Singles</string>
     <string name="library">Bibliotheca</string>
     <string name="artist_no_release_album">This artist didn\'t release any album</string>
@@ -102,7 +102,7 @@
     <string name="invincible_service">Invincible service</string>
     <string name="turning_off_battery_optimizations_is_not_enough">When turning off battery optimizations is not enough</string>
     <string name="player">Reproductor</string>
-    <string name="persistent_queue">Persistent queue</string>
+    <string name="persistent_queue">Cauda persistente</string>
     <string name="save_and_restore_playing_songs">Save and restore playing songs</string>
     <string name="resume_playback">Resumer le reproduction</string>
     <string name="when_device_is_connected">When a wired or bluetooth device is connected</string>
