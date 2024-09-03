@@ -1728,7 +1728,6 @@ class PlayerService : InvincibleService(),
     }
 
 
-    /** NEW METHOD **/
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
         createDataSourceResolverFactory(
             mediaItemToPlay = { videoId ->
@@ -1863,8 +1862,6 @@ class PlayerService : InvincibleService(),
 
             when {
                 dataSpec.isLocal ||
-                        //cache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L)) ||
-                        //downloadCache.isCached(videoId, dataSpec.position, chunkLength ?: (512 * 1024L))
                         cache.isCached(videoId, dataSpec.position, chunkLength) ||
                         downloadCache.isCached(videoId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1)
                 -> dataSpec
@@ -1895,15 +1892,16 @@ class PlayerService : InvincibleService(),
 
                     }
 
-                    if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
+                    //Removed temporally
+                    //if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                    Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body.videoDetails?.videoId} videoId $videoId")
+                    Timber.i( "PlayerService createDataSourceResolverFactory bodyVideoId ${body?.videoDetails?.videoId} videoId $videoId")
 
-                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.mimeType }}")
+                    Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
-                    println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body.streamingData?.adaptiveFormats?.map { it.mimeType }}")
+                    println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
-                    val format = body.streamingData?.adaptiveFormats
+                    val format = body?.streamingData?.adaptiveFormats
                         ?.filter { it.isAudio }
                         ?.maxByOrNull {
                             it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
@@ -2006,7 +2004,6 @@ class PlayerService : InvincibleService(),
             }
         }
     }
-    /** NEW METHOD **/
 
 
     fun updateWidgets() {
@@ -2387,7 +2384,8 @@ class PlayerService : InvincibleService(),
                     }
                 }
             }
-            return super.onMediaButtonEvent(mediaButtonEvent)
+            //return super.onMediaButtonEvent(mediaButtonEvent)
+            return false
         }
 
 
