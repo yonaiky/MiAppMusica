@@ -2222,7 +2222,7 @@ fun PlayerModern(
                                 )
 
                     }
-                    if (!showthumbnail) {
+                    if (!showthumbnail || playerType == PlayerType.Modern) {
                         StatsForNerds(
                             mediaId = mediaItem.mediaId,
                             isDisplayed = statsfornerds,
@@ -2729,7 +2729,7 @@ fun PlayerModern(
                     }
                 }
 
-                if (!showthumbnail) {
+                if (!showthumbnail || playerType == PlayerType.Modern) {
                     StatsForNerds(
                         mediaId = mediaItem.mediaId,
                         isDisplayed = statsfornerds,
