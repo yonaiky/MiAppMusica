@@ -716,7 +716,7 @@
     <string name="error_no_internet">Sin conexión de red</string>
     <string name="error_timeout">Tiempo de espera de la conexión expirado</string>
     <string name="error_unknown">Error desconocido</string>
-    <string name="delete_song">¿Realmente deseas eliminar esta canción? Será eliminada de la base de datos.\\nEsta acción es irreversible.</string>
+    <string name="delete_song">¿Realmente deseas eliminar esta canción? Será eliminada de la base de datos.\nEsta acción es irreversible.</string>
     <string name="info_check_update_now">Comprobar ahora</string>
     <string name="info_no_update_available">No hay actualizaciones disponibles</string>
     <string name="lang_galician">Gallego</string>

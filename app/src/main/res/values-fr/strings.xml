@@ -718,7 +718,7 @@
     <string name="error_no_internet">Pas de réseau</string>
     <string name="error_timeout">Délai de connexion expiré</string>
     <string name="error_unknown">Erreur Inconnue</string>
-    <string name="delete_song">Voulez-vous vraiment supprimer cette chanson ? Elle sera supprimée de la base de données.\\nCette action est irréversible.</string>
+    <string name="delete_song">Voulez-vous vraiment supprimer cette chanson ? Elle sera supprimée de la base de données.\nCette action est irréversible.</string>
     <string name="info_check_update_now">Vérifiez maintenant</string>
     <string name="info_no_update_available">Aucune mise à jour disponible</string>
     <string name="lang_galician">Galicien</string>
