@@ -716,7 +716,7 @@
     <string name="error_no_internet">Ağ bağlantısı yok</string>
     <string name="error_timeout">Bağlantı zaman aşımı</string>
     <string name="error_unknown">Bilinmeyen hata</string>
-    <string name="delete_song">Bu şarkıyı gerçekten silmek istiyor musun? Veritabanından silinecek.\\nBu işlem geri alınamaz.</string>
+    <string name="delete_song">Bu şarkıyı gerçekten silmek istiyor musun? Veritabanından silinecek. Bu işlem geri alınamaz.</string>
     <string name="info_check_update_now">Şimdi Kontrol Et</string>
     <string name="info_no_update_available">Güncelleştirme yok</string>
     <string name="lang_galician">Galiçyaca</string>
