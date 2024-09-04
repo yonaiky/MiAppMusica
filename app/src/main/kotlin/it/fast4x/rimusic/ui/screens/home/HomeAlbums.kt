@@ -228,7 +228,7 @@ fun HomeAlbums(
                             isRotated = !isRotated
                             //onAlbumClick(items.get((0..<items.size).random()))
                             onAlbumClick(items.get(
-                                Random(System.currentTimeMillis()).nextInt(0, items.size-1)
+                                Random(System.currentTimeMillis()).nextInt(0, items.size)
                             ))
                         },
                         iconSize = 16.dp
