@@ -20,11 +20,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -184,6 +187,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
 import it.fast4x.compose.reordering.animateItemPlacement
+import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 
 
 @KotlinCsvExperimental
@@ -680,11 +684,12 @@ fun LocalPlaylistSongs(
                 else Dimensions.contentWidthRightBar
             )
     ) {
-        LookaheadScope {
+        //LookaheadScope {
             LazyColumn(
                 state = reorderingState.lazyListState,
                 //contentPadding = LocalPlayerAwareWindowInsets.current
-                //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+                //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
+                //    .asPaddingValues(),
                 modifier = Modifier
                     .background(colorPalette.background0)
                     .fillMaxSize()
@@ -1828,7 +1833,7 @@ fun LocalPlaylistSongs(
                         }
                     }
                 )
-        }
+        //}
 
     }
 }
