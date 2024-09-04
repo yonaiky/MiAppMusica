@@ -716,7 +716,7 @@
     <string name="error_no_internet">Отсутствует сетевое соединение</string>
     <string name="error_timeout">Время ожидания подключения истекло</string>
     <string name="error_unknown">Неизвестная ошибка</string>
-    <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных.\nЭто действие необратимо.</string>
+    <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных. Это действие необратимо.</string>
     <string name="info_check_update_now">Проверить</string>
     <string name="info_no_update_available">Нет доступных обновлений</string>
     <string name="lang_galician">Галисиийский (Galego)</string>
