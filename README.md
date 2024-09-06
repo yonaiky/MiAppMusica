@@ -36,6 +36,7 @@
 - Android Auto support
 - Android TV support
 - Youtube Video support
+- Widgets in home screen
 - Check for Updates, which can be enabled or disabled in settings
 
 ## 📷 Screenshots

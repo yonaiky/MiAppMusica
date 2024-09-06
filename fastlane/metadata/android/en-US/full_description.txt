@@ -31,6 +31,7 @@ RiMusic is a multilingual Android application for streaming music from YouTube M
 - Android Auto support
 - Android TV support
 - Youtube video support
+- Widgets in home screen
 - Check for Updates, enable/disable it by settings
 
 Visit it on Github

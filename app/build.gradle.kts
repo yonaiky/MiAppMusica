@@ -18,7 +18,6 @@ android {
         buildConfig = true
         compose = true
     }
-    //android.buildFeatures.buildConfig=true
 
     compileSdk = 35
 
@@ -26,8 +25,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 54
-        versionName = "0.6.50"
+        versionCode = 55
+        versionName = "0.6.51"
     }
 
     splits {
