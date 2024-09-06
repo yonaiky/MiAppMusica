@@ -502,6 +502,7 @@ class MainActivity :
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
             var showPlayer by rememberSaveable { mutableStateOf(false) }
+            var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
@@ -914,8 +915,57 @@ class MainActivity :
                         thumbnailRoundnessKey,
                         ThumbnailRoundness.Heavy
                     )
+
+                    var isVideo = binder?.player?.currentMediaItem?.isVideo
+                    val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
+                    val playerModern: @Composable () -> Unit = {
+                        PlayerModern(
+                            navController = navController,
+                            layoutState = playerSheetState,
+                            playerState = playerState,
+                            onDismiss = { showPlayer = false }
+                        )
+                    }
+
+                    val youtubePlayer: @Composable () -> Unit = {
+                        binder?.player?.currentMediaItem?.mediaId?.let {
+                            YoutubePlayer(
+                                ytVideoId = it,
+                                lifecycleOwner = LocalLifecycleOwner.current,
+                                onCurrentSecond = {},
+                                showPlayer = showPlayer,
+                                onSwitchToAudioPlayer = {
+                                    showPlayer = false
+                                    switchToAudioPlayer = true
+                                }
+                            )
+                        }
+                    }
+
                     CustomModalBottomSheet(
-                        showSheet = showPlayer,
+                        showSheet = switchToAudioPlayer || showPlayer,
+                        onDismissRequest = {
+                            showPlayer = false
+                            switchToAudioPlayer = false
+                        },
+                        containerColor = colorPalette.background0,
+                        contentColor = colorPalette.background0,
+                        modifier = Modifier.fillMaxWidth(),
+                        sheetState = playerState,
+                        dragHandle = {
+                            Surface(
+                                modifier = Modifier.padding(vertical = 0.dp),
+                                color = colorPalette.background0,
+                                shape = thumbnailShape
+                            ) {}
+                        },
+                        shape = thumbnailRoundness.shape()
+                    ) {
+                         playerModern()
+                    }
+
+                    CustomModalBottomSheet(
+                        showSheet = isVideo == true && isVideoEnabled && showPlayer,
                         onDismissRequest = { showPlayer = false },
                         containerColor = colorPalette.background0,
                         contentColor = colorPalette.background0,
@@ -930,36 +980,8 @@ class MainActivity :
                         },
                         shape = thumbnailRoundness.shape()
                     ) {
-                        val isVideo = binder?.player?.currentMediaItem?.isVideo
-                        val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
-                        val playerModern: @Composable () -> Unit = {
-                            PlayerModern(
-                                navController = navController,
-                                layoutState = playerSheetState,
-                                playerState = playerState,
-                                onDismiss = { showPlayer = false }
-                            )
-                        }
-
-                        val youtubePlayer: @Composable () -> Unit = {
-                            binder?.player?.currentMediaItem?.mediaId?.let {
-                                YoutubePlayer(
-                                    ytVideoId = it,
-                                    lifecycleOwner = LocalLifecycleOwner.current,
-                                    onCurrentSecond = {},
-                                    showPlayer = showPlayer,
-                                )
-                            }
-                        }
-
-                        if (isVideo == false) {
-                            playerModern()
-                        } else {
-                            if (isVideoEnabled) youtubePlayer()
-                            else playerModern()
-                        }
+                        youtubePlayer()
                     }
-
 
                     /*
                     BottomSheetMenu(
