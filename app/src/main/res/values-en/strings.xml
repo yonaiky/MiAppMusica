@@ -148,7 +148,7 @@
     <string name="medium">Medium</string>
     <string name="big">Big</string>
     <string name="none">None</string>
-    <string name="light">Light</string>
+    <string name="light">Small</string>
     <string name="heavy">Large</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
     <string name="player_enable_rotation_buttons">Enable button rotation upon click</string>
@@ -183,7 +183,7 @@
     <string name="dark">Dark</string>
     <string name="system">System</string>
     <string name="unlimited">Unlimited</string>
-    <string name="_light">Small</string>
+    <string name="_light">Light</string>
     <string name="downloaded">Downloaded</string>
     <string name="turn_off">Turn off</string>
     <string name="download">Download</string>
@@ -722,7 +722,7 @@
     <string name="lang_galician">Galician</string>
     <string name="lang_norwegian">Norwegian</string>
     <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="translate_to_other_language">Translate to other language</string>
     <string name="action_bar_show_video_button">Show video button</string>
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Join the group on Telegram</string>
