@@ -718,7 +718,7 @@
     <string name="error_no_internet">Pas de réseau</string>
     <string name="error_timeout">Délai de connexion expiré</string>
     <string name="error_unknown">Erreur Inconnue</string>
-    <string name="delete_song">Voulez-vous vraiment supprimer cette chanson ? Elle sera supprimée de la base de données. Cette action est irréversible.</string>
+    <string name="delete_song">Voulez-vous vraiment supprimer ce titre ? Elle sera supprimée de la base de données. Cette action est irréversible.</string>
     <string name="info_check_update_now">Vérifiez maintenant</string>
     <string name="info_no_update_available">Aucune mise à jour disponible</string>
     <string name="lang_galician">Galicien</string>
@@ -727,13 +727,13 @@
     <string name="translate_to_other_language">Traduire en une autre langue</string>
     <string name="action_bar_show_video_button">Afficher le bouton vidéo</string>
     <string name="social_telegram">Telegram</string>
-    <string name="social_telegram_info">Join the group on Telegram</string>
+    <string name="social_telegram_info">Rejoignez le groupe sur Telegram</string>
     <string name="social_github">GitHub</string>
-    <string name="update">Update</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
-    <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
-    <string name="vertical_widget">Vertical widget</string>
-    <string name="horizontal_widget">Horizontal widget</string>
+    <string name="update">Mettre à jour</string>
+    <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés.\nCette action est irréversible.</string>
+    <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans les sélections rapides</string>
+    <string name="vertical_widget">Widget vertical</string>
+    <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
-    <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="social_reddit_info">Rejoignez la communauté sur Reddit</string>
 </resources>
