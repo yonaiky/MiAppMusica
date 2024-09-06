@@ -733,4 +733,6 @@ CC-BY-SA 3.0</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
+    <string name="social_reddit">Reddit</string>
+    <string name="social_reddit_info">Join the community on Reddit</string>
 </resources>

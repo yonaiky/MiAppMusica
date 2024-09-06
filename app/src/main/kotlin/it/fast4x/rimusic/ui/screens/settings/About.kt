@@ -103,6 +103,14 @@ fun About() {
         )
 
         SettingsEntry(
+            title = stringResource(R.string.social_reddit),
+            text = stringResource(R.string.social_reddit_info),
+            onClick = {
+                uriHandler.openUri("https://www.reddit.com/r/RiMusicApp/")
+            }
+        )
+
+        SettingsEntry(
             title = stringResource(R.string.social_github),
             text = stringResource(R.string.view_the_source_code),
             onClick = {
