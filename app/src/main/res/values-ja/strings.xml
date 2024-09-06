@@ -716,7 +716,7 @@
     <string name="error_no_internet">ネットワーク接続なし</string>
     <string name="error_timeout">接続が時間切れです</string>
     <string name="error_unknown">不明なエラー</string>
-    <string name="delete_song">本当にこの曲を削除しますか？これはデータベースから削除します。\\nこの操作は元に戻せません。</string>
+    <string name="delete_song">本当にこの曲を削除しますか？これはデータベースから削除します。この操作は元に戻せません。</string>
     <string name="info_check_update_now">今すぐ確認</string>
     <string name="info_no_update_available">更新なし</string>
     <string name="lang_galician">ガリシア語</string>
