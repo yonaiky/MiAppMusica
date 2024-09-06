@@ -283,14 +283,14 @@
     <string name="chinese_traditional">繁體中文</string>
     <string name="do_you_really_want_to_download_all">Apakah anda yakin ingin mengunduh semua?</string>
     <string name="import_playlist">Impor daftar putar</string>
-    <string name="lang_ukrainian">українська мова</string>
+    <string name="lang_ukrainian">Ukraina (українська)</string>
     <string name="proxy">PROXY</string>
     <string name="enable_proxy">Aktifkan Proxy</string>
     <string name="proxy_mode">Mode Proxy</string>
     <string name="proxy_host">Host Proxy</string>
     <string name="proxy_port">Port proxy</string>
     <string name="disable_if_you_do_not_want_to_see">Aktifkan jika anda ingin melihat</string>
-    <string name="lang_hebrew">עִבְֿרִית</string>
+    <string name="lang_hebrew">Hebrew (עִבְֿרִית)</string>
     <string name="customize_album">Kustomisasi album</string>
     <string name="update_title">Ubah judul</string>
     <string name="update_authors">Ubah nama artis</string>
@@ -298,7 +298,7 @@
     <string name="title">Judul</string>
     <string name="authors">Artis</string>
     <string name="cover">Sampul</string>
-    <string name="lang_japanese">日本語</string>
+    <string name="lang_japanese">Jepang (日本語)</string>
     <string name="paste_or_type_a_valid_url">Tempel atau ketik URL yang valid</string>
     <string name="you_can_put_a_complete_link">Anda dapat mengisi dengan tautan lengkap YouTube atau YouTube Music dari daftar putar, album, channel, atau single lagu</string>
     <string name="go_to_link">Buka tautan</string>
@@ -318,11 +318,11 @@
     <string name="end_of_song">(akhir dari lagu)</string>
     <string name="restore_completed">Pemulihan selesai!</string>
     <string name="click_to_close">Tekan untuk menutup</string>
-    <string name="lang_dutch">Dutch</string>
+    <string name="lang_dutch">Belanda (Dutch)</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Apakah anda ingin mengacak posisi lagu dalam daftar putar ini?</string>
     <string name="renumber_songs_positions">Acak posisi lagu</string>
     <string name="do_you_really_want_to_delete_all_playback_events">Apakah anda ingin menghapus semua saran lagu?</string>
-    <string name="lang_sinhala">සිංහල</string>
+    <string name="lang_sinhala">Sinhala (සිංහල)</string>
     <string name="update_available">Pembaruan tersedia</string>
     <string name="actions_you_can_do">Aksi yang bisa kamu lakukan:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Buka laman Github releases kemudian unduh versi terbaru</string>
@@ -336,7 +336,7 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Anda dapat mengaktifkan atau menonaktifkan dari setelan.</string>
     <string name="enable">Aktifkan</string>
     <string name="don_t_enable">Nonaktifkan</string>
-    <string name="lang_hindi">हिन्दी</string>
+    <string name="lang_hindi">Hindi (हिन्दी)</string>
     <string name="default_page">Halaman awal</string>
     <string name="keep_screen_on">Menjaga layar tetap aktif</string>
     <string name="prevents_screen_timeout">Mencegah layar tertidur</string>
@@ -397,7 +397,7 @@
     <string name="pinned_playlists">Disematkan</string>
     <string name="locked">Terkunci</string>
     <string name="sort_duration">Durasi</string>
-    <string name="lang_serbian_cyrillic">Српска</string>
+    <string name="lang_serbian_cyrillic">Serbia (Српска)</string>
     <string name="pause_between_songs">Jeda diantara lagu</string>
     <string name="navigation_bar_type">Gaya bilah navigasi</string>
     <string name="icon_and_text">Ikon dan teks</string>
@@ -406,7 +406,7 @@
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Latar belakang gradien</string>
     <string name="show_total_time_of_queue">Tampilkan total durasi antrean lagu</string>
-    <string name="lang_telugu">తెలుగు</string>
+    <string name="lang_telugu">Telugu (తెలుగు)</string>
     <string name="media_permission_required_please_grant">Izin media diperlukan, mohon izinkan.</string>
     <string name="open_permission_settings">Buka setelan perizinan</string>
     <string name="background_progress_bar">Bilah waktu latar belakang</string>
@@ -417,7 +417,7 @@
     <string name="folders">Folder</string>
     <string name="show_folders_in_on_device_page">Tampilkan folder pada pustaka Dalam perangkat</string>
     <string name="lang_danish">Dansk</string>
-    <string name="lang_serbian_latin">Srpski</string>
+    <string name="lang_serbian_latin">Serbia (Srpski)</string>
     <string name="item_deselect">Batalkan</string>
     <string name="show_next_songs_in_player">Tampilkan antrean lagu selanjutnya</string>
     <string name="show_remaining_song_time">Tampilkan sisa durasi lagu</string>
@@ -458,7 +458,7 @@
     <string name="info_smart_recommendation">Rekomendasi pintar</string>
     <string name="info_clean_cached_congs">Hapus lagu yang disimpan (cache)</string>
     <string name="info_pin_unpin_playlist">Sematkan daftar putar</string>
-    <string name="info_lock_unlock_reorder_songs">Kunci/buka kunci penyusunan ulang lagu</string>
+    <string name="info_lock_unlock_reorder_songs">Kunci/Buka susunan lagu</string>
     <string name="info_add_in_playlist">Tambahkan ke daftar putar</string>
     <string name="info_not_find_application_audio">Tidak dapat menemukan aplikasi Ekualiser audio</string>
     <string name="info_error">Kesalahan</string>
@@ -467,9 +467,9 @@
     <string name="info_not_find_app_browse_internet">Tidak dapat menemukan aplikasi untuk menelusuri internet</string>
     <string name="show_floating_icon">Tampilkan tombol mengambang</string>
     <string name="show_equalizer">Tombol Ekualiser</string>
-    <string name="theme_pure_black">Hitam Asli</string>
-    <string name="theme_modern_black">Hitam Modern</string>
-    <string name="theme_mode_pitch_black">Gelap Pekat</string>
+    <string name="theme_pure_black">Pure Black</string>
+    <string name="theme_modern_black">Modern Black</string>
+    <string name="theme_mode_pitch_black">Pitch Black</string>
     <string name="show_actions_bar">Tampilkan bilah aksi</string>
     <string name="transition_effect">Efek transisi</string>
     <string name="te_expand">Meluas</string>
@@ -493,10 +493,10 @@
     <string name="month_october_s">%s Oktober</string>
     <string name="month_november_s">%s November</string>
     <string name="month_december_s">%s Desember</string>
-    <string name="info_cannot_renumbering_a_monthly_playlist">Tidak dapat menomor ulang daftar putar bulanan</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Tidak dapat mengacak posisi lagu daftar putar bulanan</string>
     <string name="info_cannot_rename_a_monthly_playlist">Tidak dapat mengubah nama daftar putar bulanan</string>
     <string name="info_cannot_delete_a_monthly_playlist">Tidak dapat menghapus daftar putar bulanan</string>
-    <string name="info_reorder_is_possible_only_in_ascending_sort">Penataan ulang hanya dapat dilakukan dalam urutan menaik</string>
+    <string name="info_reorder_is_possible_only_in_ascending_sort">Penyusunan hanya dapat dilakukan dalam urutan menaik</string>
     <string name="information">Informasi</string>
     <string name="info_lyrics_found_on_s">Lirik ditemukan di %s</string>
     <string name="info_lyrics_not_found_on_s_try_on_s">Lirik tidak ditemukan di %s\nMencoba mencari di %s</string>
@@ -543,9 +543,9 @@
     <string name="bg_colors_fluid_gradient_background_from_cover">Animasi gradien sesuai sampul lagu</string>
     <string name="show_background_in_lyrics">Selaraskan warna latar belakang Lirik dengan Pemutar</string>
     <string name="bg_colors_blurred_cover_background">Sampul lagu yang mengabur</string>
-    <string name="lang_estonian">Estonian (eesti keel)</string>
+    <string name="lang_estonian">Estonia (eesti keel)</string>
     <string name="pcontrols_modern">Modern</string>
-    <string name="pcontrols_essential">Setelan awal</string>
+    <string name="pcontrols_essential">Essential</string>
     <string name="pcontrols_type">Gaya kontrol</string>
     <string name="player_swiping_down_is_disabled">Usap kebawah dimatikan</string>
     <string name="player_position">Posisi pemutar</string>
@@ -553,7 +553,7 @@
     <string name="position_bottom">Bawah</string>
     <string name="added_to_favorites">Ditambahkan ke favorit</string>
     <string name="removed_from_favorites">Dihapus dari favorit</string>
-    <string name="lang_filipino">Filipino (Tagalog)</string>
+    <string name="lang_filipino">Filipina (Tagalog)</string>
     <string name="action_bar_transparent_background">Transparan</string>
     <string name="pinfo_type">Gaya tajuk</string>
     <string name="pinfo_album_and_artist_name">Album dan Artis</string>
@@ -571,7 +571,7 @@
     <string name="exclude_songs_with_duration_limit_description">Lagu dengan durasi melebihi batas akan dikecualikan dari Lagu teratas dan antrean</string>
     <string name="no_log_available">Log tidak tersedia</string>
     <string name="enable_quick_picks_page">Aktifkan Pilihan cepat</string>
-    <string name="lang_vietnamese">tiếng Việt</string>
+    <string name="lang_vietnamese">Vietnam (tiếng Việt)</string>
     <string name="parental_control">Kontrol orang tua</string>
     <string name="info_prevent_play_songs_with_age_limitation">Cegah pemutaran lagu dengan batasan usia</string>
     <string name="cache_location_private">Rahasia</string>
@@ -622,7 +622,7 @@
     <string name="set_cache_location">Lokasi cache</string>
     <string name="info_private_cache_location_can_t_cleaned">Cache pribadi tidak dapat dihapus oleh sistem</string>
     <string name="error_file_unsupported_format">Format file tidak didukung</string>
-    <string name="charts">Charts</string>
+    <string name="charts">Peringkat</string>
     <string name="thumbnailtype">Tipe thumbnail</string>
     <string name="showvisthumbnail">Tampilkan thumbnail untuk visualizer</string>
     <string name="androidheadunit">Android head unit</string>
@@ -667,7 +667,7 @@
     <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Efek mengabur</string>
-    <string name="controls_title_medley_duration">Medley duration</string>
+    <string name="controls_title_medley_duration">Durasi medley</string>
     <string name="controls_title_playback_speed">Kecepatan pemutaran</string>
     <string name="controls_title_playback_pitch">Tinggi nada pemutaran</string>
     <string name="controls_title_playback_volume">Volume pemutaran</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Tidak ada koneksi jaringan</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Kesalahan tidak diketahui</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Apakah anda ingin menghapus lagu ini? lagu akan dihapus dari basis data.\nTindakan ini tidak dapat dibatalkan.</string>
     <string name="info_check_update_now">Periksa sekarang</string>
     <string name="info_no_update_available">Pembaruan tidak tersedia</string>
     <string name="lang_galician">Galician</string>
@@ -727,11 +727,11 @@
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Bergabung dalam grup Telegram</string>
     <string name="social_github">GitHub</string>
-    <string name="update">Update</string>
+    <string name="update">Perbarui</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
-    <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="social_reddit_info">Bergabung dalam komunitas Reddit</string>
 </resources>
