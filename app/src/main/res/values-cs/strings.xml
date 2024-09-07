@@ -716,7 +716,7 @@
     <string name="error_no_internet">Bez připojení k síti</string>
     <string name="error_timeout">Spojení vypršelo</string>
     <string name="error_unknown">Neznámá chyba</string>
-    <string name="delete_song">Opravdu chcete tuto skladbu smazat? Bude vymazána z databáze. Tato akce je nevratná.</string>
+    <string name="delete_song">Opravdu chcete tuto skladbu smazat? Bude vymazána z databáze.\\nTato akce je nevratná.</string>
     <string name="info_check_update_now">Zkontrolovat nyní</string>
     <string name="info_no_update_available">Nejsou dostupné žádné aktualizace</string>
     <string name="lang_galician">Galicijština (Galego)</string>
@@ -728,7 +728,7 @@
     <string name="social_telegram_info">Join the group on Telegram</string>
     <string name="social_github">GitHub</string>
     <string name="update">Update</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped. This action is irreversible.</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
