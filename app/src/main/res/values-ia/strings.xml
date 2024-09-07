@@ -103,9 +103,9 @@
     <string name="turning_off_battery_optimizations_is_not_enough">When turning off battery optimizations is not enough</string>
     <string name="player">Reproductor</string>
     <string name="persistent_queue">Cauda persistente</string>
-    <string name="save_and_restore_playing_songs">Save and restore playing songs</string>
+    <string name="save_and_restore_playing_songs">Salveguardar e restaurar cantos in reproduction</string>
     <string name="resume_playback">Resumer le reproduction</string>
-    <string name="when_device_is_connected">When a wired or bluetooth device is connected</string>
+    <string name="when_device_is_connected">Quando es connectite un apparato con cablo o bluetooth</string>
     <string name="skip_silence">Saltar le silentio</string>
     <string name="skip_silent_parts_during_playback">Saltar partes in silentio durante le reproduction</string>
     <string name="loudness_normalization">Loudness normalization</string>
