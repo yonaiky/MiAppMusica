@@ -730,7 +730,7 @@
     <string name="social_telegram_info">Rejoignez le groupe sur Telegram</string>
     <string name="social_github">GitHub</string>
     <string name="update">Mettre à jour</string>
-    <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés.\nCette action est irréversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped. This action is irreversible.</string>
     <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans les sélections rapides</string>
     <string name="vertical_widget">Widget vertical</string>
     <string name="horizontal_widget">Widget horizontal</string>
