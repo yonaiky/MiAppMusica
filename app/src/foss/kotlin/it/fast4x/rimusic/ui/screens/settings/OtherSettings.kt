@@ -194,12 +194,10 @@ fun OtherSettings() {
         var checkUpdateNow by remember { mutableStateOf(false) }
         if (checkUpdateNow)
             CheckAvailableNewVersion(
-                onDismiss = {  },
+                onDismiss = { checkUpdateNow = false },
                 updateAvailable = {
                     if (!it)
                         SmartMessage(context.resources.getString(R.string.info_no_update_available), type = PopupType.Info, context = context)
-
-                    checkUpdateNow = false
                 }
             )
 
