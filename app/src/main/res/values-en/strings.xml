@@ -148,7 +148,7 @@
     <string name="medium">Medium</string>
     <string name="big">Big</string>
     <string name="none">None</string>
-    <string name="light">Light</string>
+    <string name="light">Small</string>
     <string name="heavy">Large</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
     <string name="player_enable_rotation_buttons">Enable button rotation upon click</string>
@@ -183,7 +183,7 @@
     <string name="dark">Dark</string>
     <string name="system">System</string>
     <string name="unlimited">Unlimited</string>
-    <string name="_light">Small</string>
+    <string name="_light">Light</string>
     <string name="downloaded">Downloaded</string>
     <string name="turn_off">Turn off</string>
     <string name="download">Download</string>
@@ -283,7 +283,7 @@
     <string name="chinese_traditional">Chinese Traditional (漢語)</string>
     <string name="do_you_really_want_to_download_all">Do you really want to download all?</string>
     <string name="import_playlist">Import playlist</string>
-    <string name="lang_ukrainian">Ukrainian</string>
+    <string name="lang_ukrainian">Ukrainian (Українська)</string>
     <string name="proxy">PROXY</string>
     <string name="enable_proxy">Enable Proxy</string>
     <string name="proxy_mode">Proxy Mode</string>
@@ -397,7 +397,7 @@
     <string name="pinned_playlists">Pinned</string>
     <string name="locked">Locked</string>
     <string name="sort_duration">Duration</string>
-    <string name="lang_serbian_cyrillic">Serbian Cyrillic</string>
+    <string name="lang_serbian_cyrillic">Serbian Cyrillic (Српска)</string>
     <string name="pause_between_songs">Pause between songs</string>
     <string name="navigation_bar_type">Navigation bar style</string>
     <string name="icon_and_text">Icon and text</string>
@@ -493,7 +493,7 @@
     <string name="month_october_s">October %s</string>
     <string name="month_november_s">November %s</string>
     <string name="month_december_s">December %s</string>
-    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot renumber a monthly playlist</string>
+    <string name="info_cannot_renumbering_a_monthly_playlist">Cannot shuffle song positions in a monthly playlist</string>
     <string name="info_cannot_rename_a_monthly_playlist">Can\'t rename a monthly playlist</string>
     <string name="info_cannot_delete_a_monthly_playlist">Can\'t delete a monthly playlist</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Reorder is possible only in ascending sorting</string>
@@ -610,8 +610,8 @@
     <string name="expandedlyricsinfo">Available when thumbnail for lyrics is disabled</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irish</string>
+    <string name="lang_bengali">Bengali (বাংলা)</string>
+    <string name="lang_irish">Irish (Gaeilge)</string>
     <string name="lyricsoutline">Lyrics Outline</string>
     <string name="fluidrainbow">Fluid Rainbow</string>
     <string name="fluidtheme">Fluid Theme</string>
@@ -639,7 +639,7 @@
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer set to the end of this song</string>
     <string name="lyricsbackground">Lyrics Background</string>
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
@@ -672,7 +672,7 @@
     <string name="controls_title_playback_pitch">Playback pitch</string>
     <string name="controls_title_playback_volume">Playback Volume</string>
     <string name="controls_title_device_volume">Device volume</string>
-    <string name="lang_malayalam">Malayalam</string>
+    <string name="lang_malayalam">Malayam (മലയാളം)</string>
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Search history</string>
     <string name="event_volumekeys">Volume keys to change song</string>
@@ -716,13 +716,13 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
+    <string name="lang_galician">Galician (galego)</string>
+    <string name="lang_norwegian">Norwegian (norsk)</string>
     <string name="translate_to">Translate to %s</string>
-    <string name="translate_to_other_language">Traslate to other language</string>
+    <string name="translate_to_other_language">Translate to other language</string>
     <string name="action_bar_show_video_button">Show video button</string>
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Join the group on Telegram</string>
