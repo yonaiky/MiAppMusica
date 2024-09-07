@@ -639,7 +639,7 @@
     <string name="showtwosongs">Show Next two Songs in Queue</string>
     <string name="showalbumcover">Tampilkan sampul album</string>
     <string name="do_not_translate">Jangan terjemahkan</string>
-    <string name="info_sleep_timer_delayed_at_end_of_song">Waktu tidur diatur ke akhir durasi lagu</string>
+    <string name="info_sleep_timer_delayed_at_end_of_song">Waktu tidur diatur ke akhir durasi lagu ini</string>
     <string name="lyricsbackground">Latar belakang lirik</string>
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
@@ -729,7 +729,7 @@
     <string name="social_github">GitHub</string>
     <string name="update">Perbarui</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
-    <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
+    <string name="player_pause_listen_history_info">Jangan simpan riwayat pemutaran</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
