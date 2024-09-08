@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Annullér</string>
     <string name="done">Færdig</string>
-    <string name="hidesong">Vil du virkelig skjule denne sang? Dens afspilningstid og cache slettes.\nDenne handling kan ikke fortrydes.</string>
+    <string name="hidesong">Vil du virkelig skjule denne sang? Dens afspilningstid og cache slettes. Denne handling kan ikke fortrydes.</string>
     <string name="new_playlist">Ny playliste</string>
     <string name="start_radio">Start radio</string>
     <string name="equalizer">Equalizer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">synkroniserede sangtekster</string>
     <string name="provided_by">Leveret af</string>
     <string name="delete_playback_events">Slet %1$s afspilningsbegivenheder</string>
-    <string name="existing_data_will_be_overwritten">Eksisterende data overskrives.\n%1$s lukker sig selv automatisk efter gendannelse af databasen.</string>
+    <string name="existing_data_will_be_overwritten">Eksisterende data overskrives. %1$s lukker sig selv automatisk efter gendannelse af databasen.</string>
     <string name="folder_cache">MAPPE CACHE</string>
     <string name="cache_reset_by_clicking_button">Bemærk: Ved at klikke på knappen nedenfor nulstilles mappen til cacheplacering til standard</string>
     <string name="cache_location_folder">Placeringsmappe</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Vandret widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Deltag i fællesskabet på Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
