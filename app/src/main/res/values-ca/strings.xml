@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Cancel·lar</string>
     <string name="done">Fet</string>
-    <string name="hidesong">Vols amagar aquesta cançó? El seu temps de reproducció i la memòria cache s\'esborrarà. \nAquesta acció no es pot desfer.</string>
+    <string name="hidesong">Vols amagar aquesta cançó? El seu temps de reproducció i la memòria cache s\'esborrarà. Aquesta acció no es pot desfer.</string>
     <string name="new_playlist">Nova llista de reproducció</string>
     <string name="start_radio">Iniciar una ràdio</string>
     <string name="equalizer">Equalitzador</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">lletres sincronitzades</string>
     <string name="provided_by">Proporcionat per</string>
     <string name="delete_playback_events">Suprimeix %1$s esdeveniments de reproducció</string>
-    <string name="existing_data_will_be_overwritten">Les dades existents se sobreescriuran.\n%1$s es tancarà automàticament després de restaurar la base de dades.</string>
+    <string name="existing_data_will_be_overwritten">Les dades existents se sobreescriuran.%1$s es tancarà automàticament després de restaurar la base de dades.</string>
     <string name="folder_cache">CACHE DE CARPETES</string>
     <string name="cache_reset_by_clicking_button">Atenció fent clic al botó següent, la carpeta d\'ubicació de la memòria cau es restablirà al valor predeterminat</string>
     <string name="cache_location_folder">Carpeta d\'ubicació</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
