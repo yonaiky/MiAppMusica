@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Abbrechen</string>
     <string name="done">Fertig</string>
-    <string name="hidesong">Soll der Titel wirklich ausblendet werden? Die Wiedergabezeit und der Cache werden zurückgesetzt.\nDiese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="hidesong">Soll der Titel wirklich ausblendet werden? Die Wiedergabezeit und der Cache werden zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="new_playlist">Neue Wiedergabeliste</string>
     <string name="start_radio">Radio starten</string>
     <string name="equalizer">Equalizer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">Synchronisierte Songtexte</string>
     <string name="provided_by">Bereitgestellt von</string>
     <string name="delete_playback_events">%1$s Wiedergabeereignisse löschen</string>
-    <string name="existing_data_will_be_overwritten">Vorhandene Daten werden überschrieben.\n%1$s schließt sich automatisch nach dem Wiederherstellen der Datenbank.</string>
+    <string name="existing_data_will_be_overwritten">Vorhandene Daten werden überschrieben. %1$s schließt sich automatisch nach dem Wiederherstellen der Datenbank.</string>
     <string name="folder_cache">Zwischenspeicher-Ordner</string>
     <string name="cache_reset_by_clicking_button">Achtung, wenn Sie auf die Schaltfläche unten klicken, wird der Zwischenspeicher-Ordner auf die Standardeinstellung zurückgesetzt</string>
     <string name="cache_location_folder">Ordnerpfad</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontales Widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Tritt der Community auf Reddit bei</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
