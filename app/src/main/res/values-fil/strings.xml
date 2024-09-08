@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Kanselahin</string>
     <string name="done">I-tapos</string>
-    <string name="hidesong">Gusto mo ba talagang itago ang kantang ito? Ang playback time at cache nito ay mabubura.\nHindi maaaring ibalik ito.</string>
+    <string name="hidesong">Gusto mo ba talagang itago ang kantang ito? Ang playback time at cache nito ay mabubura. Hindi maaaring ibalik ito.</string>
     <string name="new_playlist">Bagong playlist</string>
     <string name="start_radio">Umpisahin and radyo</string>
     <string name="equalizer">Ang Equalizer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">naka-synchronize na lyrics</string>
     <string name="provided_by">Pangkalooban ni</string>
     <string name="delete_playback_events">Burahin ang %1$s playback events</string>
-    <string name="existing_data_will_be_overwritten">Ang existing data ay magiging overwritten.\n%1$s ito ay awtomatikong mamatay after ma-restore ang database.</string>
+    <string name="existing_data_will_be_overwritten">Ang existing data ay magiging overwritten. %1$s ito ay awtomatikong mamatay after ma-restore ang database.</string>
     <string name="folder_cache">FOLDER CACHE</string>
     <string name="cache_reset_by_clicking_button">Attention! sa pamamagitan ng pag-click sa pindutan sa ibaba, ang folder ng lokasyon ng cache ay ire-reset sa default</string>
     <string name="cache_location_folder">Location folder</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
