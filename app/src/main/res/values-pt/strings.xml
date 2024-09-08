@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Cancelar</string>
     <string name="done">Terminar</string>
-    <string name="hidesong">Tem a certeza que quer esconder esta música? O tempo de reprodução e o cache serão apagados.\n Esta ação é irreversível.</string>
+    <string name="hidesong">Tem a certeza que quer esconder esta música? O tempo de reprodução e o cache serão apagados. Esta ação é irreversível.</string>
     <string name="new_playlist">Nova playlist</string>
     <string name="start_radio">Iniciar rádio</string>
     <string name="equalizer">Equalizador</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">letras sincronizadas</string>
     <string name="provided_by">Fornecida por</string>
     <string name="delete_playback_events">Excluir %1$s eventos de reprodução</string>
-    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos. \n%1$s será automaticamente fechado após a restauração do banco de dados.</string>
+    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos. %1$s será automaticamente fechado após a restauração do banco de dados.</string>
     <string name="folder_cache">PASTA DA CACHE</string>
     <string name="cache_reset_by_clicking_button">Atenção, clicando no botão abaixo, a pasta de localização do cache será redefinida para o padrão</string>
     <string name="cache_location_folder">Pasta de localização</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">O senhor realmente deseja excluir esta música? Ela será excluída do banco de dados. Esta ação é irreversível.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
