@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Avbryt</string>
     <string name="done">Ferdig</string>
-    <string name="hidesong">Vil du virkelig skjule denne sangen? Avspillingstiden og hurtigbufferen vil bli slettet.\nDenne handlingen er irreversibel.</string>
+    <string name="hidesong">Vil du virkelig skjule denne sangen? Avspillingstiden og hurtigbufferen vil bli slettet. Denne handlingen er irreversibel.</string>
     <string name="new_playlist">Ny spilleliste</string>
     <string name="start_radio">Start radio</string>
     <string name="equalizer">Lydmikser</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">synkroniserte sangtekster</string>
     <string name="provided_by">Levert av</string>
     <string name="delete_playback_events">Slett %1$s avspillingshendelser</string>
-    <string name="existing_data_will_be_overwritten">Eksisterende data vil bli overskrevet.\n%1$s vil automatisk lukke seg etter gjenoppretting av databasen.</string>
+    <string name="existing_data_will_be_overwritten">Eksisterende data vil bli overskrevet. %1$s vil automatisk lukke seg etter gjenoppretting av databasen.</string>
     <string name="folder_cache">MAPPE BUFFER</string>
     <string name="cache_reset_by_clicking_button">Advarsel, ved å klikke på knappen under, vil buffermappen tilbakestilles til standard</string>
     <string name="cache_location_folder">Mappeplassering</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

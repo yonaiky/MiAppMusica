@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">İptal</string>
     <string name="done">Tamam</string>
-    <string name="hidesong">Bu şarkıyı gerçekten gizlemek istiyor musun? Oynatma süresi ve önbelleği silinecek.\nBu işlem geri alınamaz.</string>
+    <string name="hidesong">Bu şarkıyı gerçekten gizlemek istiyor musun? Oynatma süresi ve önbelleği silinecek. Bu işlem geri alınamaz.</string>
     <string name="new_playlist">Yeni oynatma listesi</string>
     <string name="start_radio">Radyoyu başlat</string>
     <string name="equalizer">Ekolayzer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">senkron sözler</string>
     <string name="provided_by">Sağlayıcı</string>
     <string name="delete_playback_events">%1$s oynatma olayını sil</string>
-    <string name="existing_data_will_be_overwritten">Mevcut verilerin üzerine yazılacak.\n%1$s veritabanını geri yükledikten sonra otomatik olarak kendini kapatacaktır.</string>
+    <string name="existing_data_will_be_overwritten">Mevcut verilerin üzerine yazılacak. %1$s veritabanını geri yükledikten sonra otomatik olarak kendini kapatacaktır.</string>
     <string name="folder_cache">ÖNBELLEK KLASÖRÜ</string>
     <string name="cache_reset_by_clicking_button">Dikkat, aşağıdaki butona tıklandığında önbellek klasör konumu varsayılana sıfırlanacaktır</string>
     <string name="cache_location_folder">Klasör konumu</string>

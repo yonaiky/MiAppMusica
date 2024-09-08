@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Nuligi</string>
     <string name="done">Fina</string>
-    <string name="hidesong">Ĉu vi vere volas kaŝi ĉi tiun kanton? Ĝia ludada tempo kaj kaŝmemoro estos forviŝitaj.\nĈi tiu ago estas nemaligebla.</string>
+    <string name="hidesong">Ĉu vi vere volas kaŝi ĉi tiun kanton? Ĝia ludada tempo kaj kaŝmemoro estos forviŝitaj. Ĉi tiu ago estas nemaligebla.</string>
     <string name="new_playlist">Nova Ludlisto</string>
     <string name="start_radio">Komenci radion</string>
     <string name="equalizer">Ekvalizilo</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">sinkronigitaj kantotekstoj</string>
     <string name="provided_by">Provizita far</string>
     <string name="delete_playback_events">Forigi %1$s ludadajn eventojn</string>
-    <string name="existing_data_will_be_overwritten">Ekzistantaj datumoj estos anstataŭitaj.\n%1$s aŭtomate fermos sin post restarigo de la datumbazo.</string>
+    <string name="existing_data_will_be_overwritten">Ekzistantaj datumoj estos anstataŭitaj. %1$s aŭtomate fermos sin post restarigo de la datumbazo.</string>
     <string name="folder_cache">DOSIERA KAŜMEMORO</string>
     <string name="cache_reset_by_clicking_button">Atentu alklakante la suban butonon, la kaŝmemoro-loka dosierujo estos reagordita al la defaŭlta</string>
     <string name="cache_location_folder">Loka dosierujo</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

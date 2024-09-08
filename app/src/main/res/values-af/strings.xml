@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Kanselleer</string>
     <string name="done">Klaar</string>
-    <string name="hidesong">Wil jy hierdie liedjie regtig versteek? Sy speeltyd en cache sal uitgevee word.\nHierdie aksie is onomkeerbaar.</string>
+    <string name="hidesong">Wil jy hierdie liedjie regtig versteek? Sy speeltyd en cache sal uitgevee word. Hierdie aksie is onomkeerbaar.</string>
     <string name="new_playlist">Nuwe speellys</string>
     <string name="start_radio">Begin radio</string>
     <string name="equalizer">Equalizer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">gesinchroniseerde lirieke</string>
     <string name="provided_by">Verskaf deur</string>
     <string name="delete_playback_events">Verwyder %1$s afspeel gebeurtenisse</string>
-    <string name="existing_data_will_be_overwritten">Bestaande data sal oorskryf word.\n%1$s sal outomaties toe maak na die herstel van die databasis.</string>
+    <string name="existing_data_will_be_overwritten">Bestaande data sal oorskryf word. %1$s sal outomaties toe maak na die herstel van die databasis.</string>
     <string name="folder_cache">LÊER CACHE</string>
     <string name="cache_reset_by_clicking_button">Let wel: Deur op die onderstaande knoppie te klik, sal die CACHE-ligginglêer na die verstekwaardes teruggestel word</string>
     <string name="cache_location_folder">Lêer Ligging</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

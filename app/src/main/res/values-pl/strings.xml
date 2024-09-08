@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Anuluj</string>
     <string name="done">Zatwierdź</string>
-    <string name="hidesong">Na pewno chcesz ukryć ten utwór? Jego czas odtwarzania zostanie usunięty oraz zostanie on wymazany z pamięci podręcznej.\nTego działania nie da się cofnąć.</string>
+    <string name="hidesong">Na pewno chcesz ukryć ten utwór? Jego czas odtwarzania zostanie usunięty oraz zostanie on wymazany z pamięci podręcznej. Tego działania nie da się cofnąć.</string>
     <string name="new_playlist">Nowa playlista</string>
     <string name="start_radio">Uruchom radio</string>
     <string name="equalizer">Korektor</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">zsynchronizowany tekst</string>
     <string name="provided_by">Dostarczono przez</string>
     <string name="delete_playback_events">Usuń %1$s akcje odtarzania</string>
-    <string name="existing_data_will_be_overwritten">Istniejące dane zostaną nadpisane.\n%1$s zostanie automatycznie zamknięte po przywróceniu bazy danych.</string>
+    <string name="existing_data_will_be_overwritten">Istniejące dane zostaną nadpisane. %1$s zostanie automatycznie zamknięte po przywróceniu bazy danych.</string>
     <string name="folder_cache">FOLDER</string>
     <string name="cache_reset_by_clicking_button">Po wciśnięciu tego przycisku, lokalizacja folderu pamięci podręcznej zostanie zresetowana.</string>
     <string name="cache_location_folder">Lokalizacja folderu</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

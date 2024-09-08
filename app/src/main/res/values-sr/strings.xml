@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Откажи</string>
     <string name="done">Готово</string>
-    <string name="hidesong">Да ли заиста желите да сакријете ову песму? Његово време репродукције и кеш меморија ће бити обрисани.\n Ова радња је неповратна.</string>
+    <string name="hidesong">Да ли заиста желите да сакријете ову песму? Његово време репродукције и кеш меморија ће бити обрисани. Ова радња је неповратна.</string>
     <string name="new_playlist">Нова плејлиста</string>
     <string name="start_radio">Покрени радио</string>
     <string name="equalizer">Еквилајзер</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">синхронизоване стихове</string>
     <string name="provided_by">Обезбедио</string>
     <string name="delete_playback_events">Избришите %1$s догађаје репродукције</string>
-    <string name="existing_data_will_be_overwritten">Постојећи подаци ће бити преписани.\n%1$s ће се аутоматски затворити након враћања базе података.</string>
+    <string name="existing_data_will_be_overwritten">Постојећи подаци ће бити преписани. %1$s ће се аутоматски затворити након враћања базе података.</string>
     <string name="folder_cache">Кеш фасцикле</string>
     <string name="cache_reset_by_clicking_button">Пажња кликом на дугме испод, фасцикла локације кеша ће бити ресетована на подразумеване вредности</string>
     <string name="cache_location_folder">Локација фасцикле</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

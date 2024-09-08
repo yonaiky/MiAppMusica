@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Cancelar</string>
     <string name="done">Feito</string>
-    <string name="hidesong">Realmente queres agochar esta canción? O tempo de reprodución e a caché serán borrados.\nEsta acción é irreversible.</string>
+    <string name="hidesong">Realmente queres agochar esta canción? O tempo de reprodución e a caché serán borrados. Esta acción é irreversible.</string>
     <string name="new_playlist">Nova lista de reprodución</string>
     <string name="start_radio">Comezar radio</string>
     <string name="equalizer">Ecualizador</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">letras sincronizada</string>
     <string name="provided_by">Proporcionado por</string>
     <string name="delete_playback_events">Eliminar %1$s eventos de reprodución</string>
-    <string name="existing_data_will_be_overwritten">Os datos existentes sobrescribiranse.\n%1$s pecharase automaticamente despois de restaurar a base de datos.</string>
+    <string name="existing_data_will_be_overwritten">Os datos existentes sobrescribiranse. %1$s pecharase automaticamente despois de restaurar a base de datos.</string>
     <string name="folder_cache">CARTAFOL DA CACHÉ</string>
     <string name="cache_reset_by_clicking_button">Atención ao facer clic no botón de abaixo, o cartafol de localización da caché restablecerase ao valor predeterminado</string>
     <string name="cache_location_folder">Cartafol de localización</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Anulează</string>
     <string name="done">Termină</string>
-    <string name="hidesong">Vrei să ascunzi această melodie? Timpul său de redare și memoria cache vor fi șterse.\nAceastă acțiune este ireversibilă!</string>
+    <string name="hidesong">Vrei să ascunzi această melodie? Timpul său de redare și memoria cache vor fi șterse. Această acțiune este ireversibilă!</string>
     <string name="new_playlist">Playlist nou</string>
     <string name="start_radio">Pornește radioul</string>
     <string name="equalizer">Egalizator</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">versurile sincronizate</string>
     <string name="provided_by">Furnizat de</string>
     <string name="delete_playback_events">Ștergeți %1$s evenimente de redare</string>
-    <string name="existing_data_will_be_overwritten">Datele existente vor fi suprascrise.\n%1$s se va închide automat după restabilirea bazei de date.</string>
+    <string name="existing_data_will_be_overwritten">Datele existente vor fi suprascrise. %1$s se va închide automat după restabilirea bazei de date.</string>
     <string name="folder_cache">FOLDER CACHE</string>
     <string name="cache_reset_by_clicking_button">Atenție! Făcând clic pe butonul de mai jos, folderul cache va fi resetat!</string>
     <string name="cache_location_folder">Locația folderului</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Nici o conexiune la rețea</string>
     <string name="error_timeout">Expirarea conexiunii</string>
     <string name="error_unknown">Eroare necunoscută</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Verifică acum</string>
     <string name="info_no_update_available">Nicio actualizare disponibilă</string>
     <string name="lang_galician">Galiciană</string>

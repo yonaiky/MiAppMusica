@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Tühista</string>
     <string name="done">Tehtud</string>
-    <string name="hidesong">Kas te soovite loo peita? Loo esitusaeg ja vahemälu kustutatakse.\n Antud tegevus on pöördumatu.</string>
+    <string name="hidesong">Kas te soovite loo peita? Loo esitusaeg ja vahemälu kustutatakse. Antud tegevus on pöördumatu.</string>
     <string name="new_playlist">Uus esitusloend</string>
     <string name="start_radio">Käivita raadio</string>
     <string name="equalizer">Ekvalaiser</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">sünkroniseeritud laulusõnad</string>
     <string name="provided_by">Vahendab</string>
     <string name="delete_playback_events">Kustuta %1$s taasesituse sündmused</string>
-    <string name="existing_data_will_be_overwritten">Olemasolevad andmed kirjutatakse üle. \n%1$s sulgeb ennast ise peale andmebaasi taastamist.</string>
+    <string name="existing_data_will_be_overwritten">Olemasolevad andmed kirjutatakse üle. %1$s sulgeb ennast ise peale andmebaasi taastamist.</string>
     <string name="folder_cache">KAUSTA VAHEMÄLU</string>
     <string name="cache_reset_by_clicking_button">Pöörake tähelepanu alloleval nupul toksates, vahemälu kausta asukoht lähtestatakse vaikesätteks</string>
     <string name="cache_location_folder">Asukoha kaust</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Скасовувати</string>
     <string name="done">Зроблено</string>
-    <string name="hidesong">Ви дійсно хочете приховати цю пісню? Час її відтворення та кеш буде витерто.\nЦя дія є незворотною.</string>
+    <string name="hidesong">Ви дійсно хочете приховати цю пісню? Час її відтворення та кеш буде витерто. Ця дія є незворотною.</string>
     <string name="new_playlist">Новий плейлист</string>
     <string name="start_radio">Увімкнути радіо</string>
     <string name="equalizer">Еквалайзер</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">синхронізовані тексти пісень</string>
     <string name="provided_by">Надано</string>
     <string name="delete_playback_events">Видалити події відтворення %1$s</string>
-    <string name="existing_data_will_be_overwritten">Наявні дані буде перезаписано.\n%1$s автоматично закриється після відновлення бази даних.</string>
+    <string name="existing_data_will_be_overwritten">Наявні дані буде перезаписано. %1$s автоматично закриється після відновлення бази даних.</string>
     <string name="folder_cache">КЕШ-ПАПКА</string>
     <string name="cache_reset_by_clicking_button">Увага, натиснувши на кнопку нижче, папку розташування кешу буде скинуто до значень за замовчуванням</string>
     <string name="cache_location_folder">Папка розташування</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database. This action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>

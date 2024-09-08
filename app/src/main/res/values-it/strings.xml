@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">lyrics sincronizzate</string>
     <string name="provided_by">Fornito da</string>
     <string name="delete_playback_events">Elimina %1$s eventi di riproduzione</string>
-    <string name="existing_data_will_be_overwritten">I dati esistenti verranno sovrascritti.\n%1$s si chiuderà automaticamente dopo aver ripristinato il database.</string>
+    <string name="existing_data_will_be_overwritten">I dati esistenti verranno sovrascritti. %1$s si chiuderà automaticamente dopo aver ripristinato il database.</string>
     <string name="folder_cache">CARTELLA CACHE</string>
     <string name="cache_reset_by_clicking_button">Attenzione cliccando sul pulsante in basso, la cartella di posizione della cache verrà ripristinata</string>
     <string name="cache_location_folder">Posizione della cache</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Nessuna connessione internet</string>
     <string name="error_timeout">Sospensione connessione</string>
     <string name="error_unknown">Errore sconosciuto</string>
-    <string name="delete_song">Vuoi davvero eliminare questo brano? Sarà cancellato dal database.\\nQuesta azione è irreversibile.</string>
+    <string name="delete_song">Vuoi davvero eliminare questo brano? Sarà cancellato dal database. Questa azione è irreversibile.</string>
     <string name="info_check_update_now">Controlla ora</string>
     <string name="info_no_update_available">Nessun aggiornamento disponibile</string>
     <string name="lang_galician">Galiziano</string>

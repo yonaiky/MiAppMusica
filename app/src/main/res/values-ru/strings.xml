@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Отмена</string>
     <string name="done">Готово</string>
-    <string name="hidesong">Вы действительно хотите удалить эту песню? Время воспроизведения и \nКэш будут удалены.</string>
+    <string name="hidesong">Вы действительно хотите удалить эту песню? Время воспроизведения и Кэш будут удалены.</string>
     <string name="new_playlist">Новый плейлист</string>
     <string name="start_radio">Включить радио</string>
     <string name="equalizer">Эквалайзер</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">синхронизированные тексты</string>
     <string name="provided_by">Визуальные материалы из</string>
     <string name="delete_playback_events">Удалить %1$s События воспроизведения</string>
-    <string name="existing_data_will_be_overwritten">Существующие данные перезаписываются.\n%1$s автоматически закрывается после восстановления базы данных.</string>
+    <string name="existing_data_will_be_overwritten">Существующие данные перезаписываются.%1$s автоматически закрывается после восстановления базы данных.</string>
     <string name="folder_cache">ПАПКА КЭША</string>
     <string name="cache_reset_by_clicking_button">Внимание, при нажатии на кнопку ниже папка расположения кэша будет сброшена на значение по умолчанию</string>
     <string name="cache_location_folder">Папка с местоположением</string>
