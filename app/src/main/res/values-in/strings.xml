@@ -71,7 +71,7 @@
     <string name="show_song_cover">Tampilkan gambar sampul lagu</string>
     <string name="use_song_cover_on_lockscreen">Gunakan gambar sampul lagu yang sedang diputar sebagai wallpaper layar kunci</string>
     <string name="cache">Cache</string>
-    <string name="cache_cleared">Cache adalah penyimpanan sementara. Saat cache kehabisan ruang kosong, lagu dan gambar yang sudah lama tidak diakses akan dihapus</string>
+    <string name="cache_cleared">Cache adalah penyimpanan sementara.\nSaat cache kehabisan ruang kosong, lagu dan gambar yang sudah lama tidak diakses akan dihapus</string>
     <string name="image_cache">CACHE GAMBAR</string>
     <string name="max_size">Ukuran maksimal</string>
     <string name="database">Basis data</string>
@@ -443,7 +443,7 @@
     <string name="theme_material_you">Material You</string>
     <string name="show_statistics_in_navigation_bar">Tampilkan statistik di bilah navigasi</string>
     <string name="settings">Pengaturan</string>
-    <string name="page_not_been_loaded">Laman tidak dapat dimuat Usap ke bawah untuk memuat ulang</string>
+    <string name="page_not_been_loaded">Laman tidak dapat dimuat\nUsap ke bawah untuk memuat ulang</string>
     <string name="sorry_tips_are_not_available">Maaf, saran tidak tersedia untuk saat ini.</string>
     <string name="library_collections">Koleksi</string>
     <string name="info_show_hide_hidden_songs">Tampilkan lagu yang disembunyikan</string>
@@ -499,7 +499,7 @@
     <string name="info_reorder_is_possible_only_in_ascending_sort">Penyusunan hanya dapat dilakukan dalam urutan menaik</string>
     <string name="information">Informasi</string>
     <string name="info_lyrics_found_on_s">Lirik ditemukan di %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Lirik tidak ditemukan di %s Mencoba mencari di %s</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Lirik tidak ditemukan di %s\nMencoba mencari di %s</string>
     <string name="info_lyrics_not_found_on_s">Lirik tidak ditemukan di %s</string>
     <string name="info_lyrics_tracks_found_on_s">Lirik ditemukan di %s</string>
     <string name="info_lyrics_tracks_not_found_on_s">Lirik tidak ditemukan di %s</string>
@@ -676,7 +676,7 @@
     <string name="searches_suggestions">Saran</string>
     <string name="searches_saved_searches">Riwayat penelusuran</string>
     <string name="event_volumekeys">Tombol volume untuk berganti lagu</string>
-    <string name="event_volumekeysinfo">Volume naik untuk lagu berikutnya volume turun untuk lagu sebelumnya</string>
+    <string name="event_volumekeysinfo">Volume naik untuk lagu berikutnya\nvolume turun untuk lagu sebelumnya</string>
     <string name="paste">Tempel</string>
     <string name="searches_no_suggestions">Tidak ada saran</string>
     <string name="action_bar_show_discover_button">Tombol Discover</string>
