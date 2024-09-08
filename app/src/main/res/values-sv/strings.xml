@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Avbryt</string>
     <string name="done">Klar</string>
-    <string name="hidesong">Vill du verkligen dölja denna låt? Dess uppspelningstid och cache kommer att raderas.\nDenna åtgärd går inte att ångra.</string>
+    <string name="hidesong">Vill du verkligen dölja denna låt? Dess uppspelningstid och cache kommer att raderas. Denna åtgärd går inte att ångra.</string>
     <string name="new_playlist">Ny spellista</string>
     <string name="start_radio">Starta radio</string>
     <string name="equalizer">Equalizer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">synkroniserade låttexter</string>
     <string name="provided_by">Tillhandahålls av</string>
     <string name="delete_playback_events">Ta bort %1$s uppspelningshändelser</string>
-    <string name="existing_data_will_be_overwritten">Befintlig data kommer att skrivas över.\n%1$s kommer automatiskt att stängas efter att databasen har återställts.</string>
+    <string name="existing_data_will_be_overwritten">Befintlig data kommer att skrivas över. %1$s kommer automatiskt att stängas efter att databasen har återställts.</string>
     <string name="folder_cache">MAPPCACHE</string>
     <string name="cache_reset_by_clicking_button">Obs genom att klicka på knappen nedan så kommer platsen för cache-mappen att återställas till standard</string>
     <string name="cache_location_folder">Mappens plats</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
