@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">letras sincronizadas</string>
     <string name="provided_by">Fornecida por</string>
     <string name="delete_playback_events">Excluir eventos %1$s de reprodução</string>
-    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos.\n%1$s será automaticamente fechado após a restauração do banco de dados.</string>
+    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos. %1$s será automaticamente fechado após a restauração do banco de dados.</string>
     <string name="folder_cache">CACHE ASSINADA</string>
     <string name="cache_reset_by_clicking_button">Atenção, clicando no botão abaixo, a pasta de localização do cache será redefinida para o padrão</string>
     <string name="cache_location_folder">Pasta de localização</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Sem conexão com a internet</string>
     <string name="error_timeout">Conexão expirada</string>
     <string name="error_unknown">Erro desconhecido</string>
-    <string name="delete_song">Você realmente deseja excluir esta música? Ela será excluída do banco de dados.\nEsta ação é irreversível.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Verificar agora</string>
     <string name="info_no_update_available">Nenhuma atualização disponível</string>
     <string name="lang_galician">Galego</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Junte-se à comunidade do Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
