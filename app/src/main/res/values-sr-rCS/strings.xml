@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Otkaži</string>
     <string name="done">Gotovo</string>
-    <string name="hidesong">Da li zaista želite da sakrijete ovu pesmu? Njegovo vreme reprodukcije i keš memorija će biti obrisani.\nOva radnja je nepovratna.</string>
+    <string name="hidesong">Da li zaista želite da sakrijete ovu pesmu? Njegovo vreme reprodukcije i keš memorija će biti obrisani. Ova radnja je nepovratna.</string>
     <string name="new_playlist">Nova plejlista</string>
     <string name="start_radio">Pokreni radio</string>
     <string name="equalizer">Ekvilajzer</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">sinhronizovane stihove</string>
     <string name="provided_by">Obezbeđuje</string>
     <string name="delete_playback_events">Izbriši %1$s događaje reprodukcije</string>
-    <string name="existing_data_will_be_overwritten">Postojeći podaci će biti prepisani.\n%1$s će se automatski zatvoriti nakon vraćanja baze podataka.</string>
+    <string name="existing_data_will_be_overwritten">Postojeći podaci će biti prepisani. %1$s će se automatski zatvoriti nakon vraćanja baze podataka.</string>
     <string name="folder_cache">FASCIKLA KEŠA</string>
     <string name="cache_reset_by_clicking_button">Pažnja klikom na dugme ispod, fascikla lokacije keša će biti resetovana na podrazumevane vrednosti</string>
     <string name="cache_location_folder">Lokacija fascikle</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
