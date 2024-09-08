@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Batal</string>
     <string name="done">Selesai</string>
-    <string name="hidesong">Apakah anda yakin ingin menyembunyikan lagu ini? Waktu pemutaran dan cache dari lagu ini akan dihapus.\nTindakan ini tidak dapat diubah.</string>
+    <string name="hidesong">Apakah anda yakin ingin menyembunyikan lagu ini? Waktu pemutaran dan cache dari lagu ini akan dihapus. Tindakan ini tidak dapat diubah.</string>
     <string name="new_playlist">Daftar putar baru</string>
     <string name="start_radio">Putar radio</string>
     <string name="equalizer">Ekualiser</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">lirik (karaoke)</string>
     <string name="provided_by">Diambil dari situs</string>
     <string name="delete_playback_events">Hapus %1$s saran lagu dari Pilihan cepat</string>
-    <string name="existing_data_will_be_overwritten">Data saat ini akan ditimpa.\n%1$s akan ditutup secara otomatis setelah memulihkan basis data.</string>
+    <string name="existing_data_will_be_overwritten">Data saat ini akan ditimpa. %1$s akan ditutup secara otomatis setelah memulihkan basis data.</string>
     <string name="folder_cache">FOLDER CACHE</string>
     <string name="cache_reset_by_clicking_button">Perhatian! Dengan menekan tombol dibawah ini, lokasi folder cache akan diatur ulang ke setelan awal</string>
     <string name="cache_location_folder">Lokasi folder</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Tidak ada koneksi jaringan</string>
     <string name="error_timeout">Koneksi kehabisan waktu</string>
     <string name="error_unknown">Kesalahan tidak diketahui</string>
-    <string name="delete_song">Apakah anda ingin menghapus lagu ini? lagu akan dihapus dari basis data.\nTindakan ini tidak dapat dibatalkan.</string>
+    <string name="delete_song">Apakah anda ingin menghapus lagu ini? lagu akan dihapus dari basis data. Tindakan ini tidak dapat dibatalkan.</string>
     <string name="info_check_update_now">Periksa sekarang</string>
     <string name="info_no_update_available">Pembaruan tidak tersedia</string>
     <string name="lang_galician">Galisia (galego)</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Bergabung dalam komunitas Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
