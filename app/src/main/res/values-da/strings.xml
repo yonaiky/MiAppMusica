@@ -99,7 +99,7 @@
     <string name="ignore_battery_optimizations">Ignorér batterioptimeringer</string>
     <string name="already_unrestricted">Allerede ubegrænset</string>
     <string name="disable_background_restrictions">Deaktivér baggrundsrestriktioner</string>
-    <string name="invincible_service">Uovervindelig tjeneste</string>
+    <string name="invincible_service">Uovervindelig service</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Når det ikke er nok at slå batterioptimering fra</string>
     <string name="player">Afspiller</string>
     <string name="persistent_queue">Vedvarende kø</string>
@@ -122,7 +122,7 @@
     <string name="provided_by">Leveret af</string>
     <string name="delete_playback_events">Slet %1$s afspilningsbegivenheder</string>
     <string name="existing_data_will_be_overwritten">Eksisterende data overskrives.\n%1$s lukker sig selv automatisk efter gendannelse af databasen.</string>
-    <string name="folder_cache">MAPPECACHE</string>
+    <string name="folder_cache">MAPPE CACHE</string>
     <string name="cache_reset_by_clicking_button">Bemærk: Ved at klikke på knappen nedenfor nulstilles mappen til cacheplacering til standard</string>
     <string name="cache_location_folder">Placeringsmappe</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Fra Android 10 vil denne funktion muligvis ikke være tilgængelig</string>
@@ -168,7 +168,7 @@
     <string name="app_language">Appsprog</string>
     <string name="in_alphabetical_order">I alfabetisk orden:</string>
     <string name="contributors">BIDRAGSYDERE</string>
-    <string name="troubleshooting">FEJLSØGNING</string>
+    <string name="troubleshooting">FEJLFINDING</string>
     <string name="social">SOCIAL</string>
     <string name="english">Engelsk</string>
     <string name="italian">Italiensk (Italiano)</string>
