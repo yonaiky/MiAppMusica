@@ -23,6 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SnapshotMutationPolicy
@@ -39,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.models.Instance
@@ -48,8 +52,11 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
+import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -63,10 +70,13 @@ import it.fast4x.rimusic.utils.CheckAvailableNewVersion
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isAtLeastAndroid81
+import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
@@ -86,17 +96,23 @@ import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.net.Proxy
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("BatteryLife")
 @ExperimentalAnimationApi
 @Composable
 fun OtherSettings() {
     val context = LocalContext.current
-    val (colorPalette) = LocalAppearance.current
+    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+    val thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
 
     var isAndroidAutoEnabled by remember {
         val component = ComponentName(context, PlayerMediaBrowserService::class.java)
@@ -194,12 +210,10 @@ fun OtherSettings() {
         var checkUpdateNow by remember { mutableStateOf(false) }
         if (checkUpdateNow)
             CheckAvailableNewVersion(
-                onDismiss = {  },
+                onDismiss = { checkUpdateNow = false },
                 updateAvailable = {
                     if (!it)
                         SmartMessage(context.resources.getString(R.string.info_no_update_available), type = PopupType.Info, context = context)
-
-                    checkUpdateNow = false
                 }
             )
 
@@ -419,6 +433,70 @@ fun OtherSettings() {
         }
 
         /****** PIPED ******/
+
+        /****** DISCORD ******/
+        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+        var loginDiscord by remember { mutableStateOf(false) }
+        var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
+        SwitchSettingEntry(
+            isEnabled = isAtLeastAndroid81,
+            title = stringResource(R.string.discord_enable_rich_presence),
+            text = "",
+            isChecked = isDiscordPresenceEnabled,
+            onCheckedChange = { isDiscordPresenceEnabled = it }
+        )
+
+        AnimatedVisibility(visible = isDiscordPresenceEnabled) {
+            Column {
+                ButtonBarSettingEntry(
+                    isEnabled = true,
+                    title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                        R.string.discord_connect
+                    ),
+                    text = stringResource(R.string.discord_connected_to_discord_account),
+                    icon = R.drawable.logo_discord,
+                    iconColor = colorPalette.text,
+                    onClick = {
+                        if (discordPersonalAccessToken.isNotEmpty())
+                            discordPersonalAccessToken = ""
+                        else
+                            loginDiscord = true
+                    }
+                )
+
+                CustomModalBottomSheet(
+                    showSheet = loginDiscord,
+                    onDismissRequest = {
+                        loginDiscord = false
+                    },
+                    containerColor = colorPalette.background0,
+                    contentColor = colorPalette.background0,
+                    modifier = Modifier.fillMaxWidth(),
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                    dragHandle = {
+                        Surface(
+                            modifier = Modifier.padding(vertical = 0.dp),
+                            color = colorPalette.background0,
+                            shape = thumbnailShape
+                        ) {}
+                    },
+                    shape = thumbnailRoundness.shape()
+                ) {
+                    DiscordLoginAndGetToken(
+                        rememberNavController(),
+                        onGetToken = { token ->
+                            loginDiscord = false
+                            discordPersonalAccessToken = token
+                            SmartMessage(token, type = PopupType.Info, context = context)
+                        }
+                    )
+                }
+            }
+        }
+
+        /****** DISCORD ******/
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.on_device))

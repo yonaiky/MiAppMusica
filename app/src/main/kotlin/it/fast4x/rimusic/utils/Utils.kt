@@ -608,6 +608,9 @@ inline val isAtLeastAndroid6
 inline val isAtLeastAndroid8
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
+inline val isAtLeastAndroid81
+    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+
 inline val isAtLeastAndroid10
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
