@@ -387,6 +387,70 @@ fun OtherSettings() {
 
         /****** PIPED ******/
 
+        /****** DISCORD ******/
+        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+        var loginDiscord by remember { mutableStateOf(false) }
+        var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
+        SwitchSettingEntry(
+            isEnabled = isAtLeastAndroid81,
+            title = stringResource(R.string.discord_enable_rich_presence),
+            text = "",
+            isChecked = isDiscordPresenceEnabled,
+            onCheckedChange = { isDiscordPresenceEnabled = it }
+        )
+
+        AnimatedVisibility(visible = isDiscordPresenceEnabled) {
+            Column {
+                ButtonBarSettingEntry(
+                    isEnabled = true,
+                    title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                        R.string.discord_connect
+                    ),
+                    text = stringResource(R.string.discord_connected_to_discord_account),
+                    icon = R.drawable.logo_discord,
+                    iconColor = colorPalette.text,
+                    onClick = {
+                        if (discordPersonalAccessToken.isNotEmpty())
+                            discordPersonalAccessToken = ""
+                        else
+                            loginDiscord = true
+                    }
+                )
+
+                CustomModalBottomSheet(
+                    showSheet = loginDiscord,
+                    onDismissRequest = {
+                        loginDiscord = false
+                    },
+                    containerColor = colorPalette.background0,
+                    contentColor = colorPalette.background0,
+                    modifier = Modifier.fillMaxWidth(),
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                    dragHandle = {
+                        Surface(
+                            modifier = Modifier.padding(vertical = 0.dp),
+                            color = colorPalette.background0,
+                            shape = thumbnailShape
+                        ) {}
+                    },
+                    shape = thumbnailRoundness.shape()
+                ) {
+                    DiscordLoginAndGetToken(
+                        rememberNavController(),
+                        onGetToken = { token ->
+                            loginDiscord = false
+                            discordPersonalAccessToken = token
+                            SmartMessage(token, type = PopupType.Info, context = context)
+                        }
+                    )
+                }
+            }
+        }
+
+        /****** DISCORD ******/
+
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.on_device))
         StringListValueSelectorSettingsEntry(

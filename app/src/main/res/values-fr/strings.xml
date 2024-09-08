@@ -737,4 +737,9 @@
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Rejoignez la communauté sur Reddit</string>
     <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>

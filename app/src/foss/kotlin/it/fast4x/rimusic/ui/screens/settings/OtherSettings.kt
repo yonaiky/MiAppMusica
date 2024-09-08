@@ -439,10 +439,10 @@ fun OtherSettings() {
         var loginDiscord by remember { mutableStateOf(false) }
         var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = "Discord")
+        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
         SwitchSettingEntry(
             isEnabled = isAtLeastAndroid81,
-            title = "Enable Rich Presence",
+            title = stringResource(R.string.discord_enable_rich_presence),
             text = "",
             isChecked = isDiscordPresenceEnabled,
             onCheckedChange = { isDiscordPresenceEnabled = it }
@@ -452,8 +452,10 @@ fun OtherSettings() {
             Column {
                 ButtonBarSettingEntry(
                     isEnabled = true,
-                    title = if (discordPersonalAccessToken.isNotEmpty()) "Disconnect" else "Connect",
-                    text = "Connected to Discord Account",
+                    title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                        R.string.discord_connect
+                    ),
+                    text = stringResource(R.string.discord_connected_to_discord_account),
                     icon = R.drawable.logo_discord,
                     iconColor = colorPalette.text,
                     onClick = {
