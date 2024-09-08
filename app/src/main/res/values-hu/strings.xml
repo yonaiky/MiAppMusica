@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Vissza</string>
     <string name="done">Kész</string>
-    <string name="hidesong">Biztosan el szeretnéd rejteni ezt a zenét? Törölve lesz a lejátszási ideje, valamint a gyorsítótárból is eltűnik. \nEz a művelet visszavonhatatlan.</string>
+    <string name="hidesong">Biztosan el szeretnéd rejteni ezt a zenét? Törölve lesz a lejátszási ideje, valamint a gyorsítótárból is eltűnik. Ez a művelet visszavonhatatlan.</string>
     <string name="new_playlist">Új lejátszási lista</string>
     <string name="start_radio">Rádió indítás</string>
     <string name="equalizer">Hangszínszabályzó</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">szinkronizált dalszöveg</string>
     <string name="provided_by">Biztosítja</string>
     <string name="delete_playback_events">%1$s lejátszási esemény törlése</string>
-    <string name="existing_data_will_be_overwritten">A rendszer felülírja a meglévő adatokat.\n%1$s automatikusan bezárja magát az adatbázis visszaállítása után.</string>
+    <string name="existing_data_will_be_overwritten">A rendszer felülírja a meglévő adatokat. %1$s automatikusan bezárja magát az adatbázis visszaállítása után.</string>
     <string name="folder_cache">MAPPA GYORSÍTÓTÁR</string>
     <string name="cache_reset_by_clicking_button">Figyelem, az alábbi gombra kattintva a gyorsítótár mappa helye visszaáll az alapértelmezettre</string>
     <string name="cache_location_folder">Hely mappa</string>
@@ -716,7 +716,7 @@
     <string name="error_no_internet">Nincs internetkapcsolat</string>
     <string name="error_timeout">Kapcsolat időtúllépés</string>
     <string name="error_unknown">Ismeretlen hiba</string>
-    <string name="delete_song">Biztosan törölni akarod ezt a dalt? Törölve lesz az adatbázisból.\\n Ez a művelet visszafordíthatatlan.</string>
+    <string name="delete_song">Biztosan törölni akarod ezt a dalt? Törölve lesz az adatbázisból. Ez a művelet visszafordíthatatlan.</string>
     <string name="info_check_update_now">Ellenőrizd most</string>
     <string name="info_no_update_available">Nincs elérhető frissítés</string>
     <string name="lang_galician">Galíciai</string>
@@ -734,4 +734,10 @@
     <string name="horizontal_widget">Horizontal widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Join the community on Reddit</string>
+    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
+    <string name="discord_disconnect">Disconnect</string>
+    <string name="discord_connect">Connect</string>
+    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
 </resources>
