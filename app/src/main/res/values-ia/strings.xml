@@ -103,9 +103,9 @@
     <string name="turning_off_battery_optimizations_is_not_enough">When turning off battery optimizations is not enough</string>
     <string name="player">Reproductor</string>
     <string name="persistent_queue">Cauda persistente</string>
-    <string name="save_and_restore_playing_songs">Save and restore playing songs</string>
+    <string name="save_and_restore_playing_songs">Salveguardar e restaurar cantos in reproduction</string>
     <string name="resume_playback">Resumer le reproduction</string>
-    <string name="when_device_is_connected">When a wired or bluetooth device is connected</string>
+    <string name="when_device_is_connected">Quando es connectite un apparato con cablo o bluetooth</string>
     <string name="skip_silence">Saltar le silentio</string>
     <string name="skip_silent_parts_during_playback">Saltar partes in silentio durante le reproduction</string>
     <string name="loudness_normalization">Loudness normalization</string>
@@ -728,7 +728,7 @@
     <string name="social_telegram_info">Join the group on Telegram</string>
     <string name="social_github">GitHub</string>
     <string name="update">Update</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped. This action is irreversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
