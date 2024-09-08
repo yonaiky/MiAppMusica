@@ -109,6 +109,7 @@ import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
+import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.PersistentQueue
@@ -133,7 +134,9 @@ import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
@@ -149,6 +152,8 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
+import it.fast4x.rimusic.utils.isAtLeastAndroid81
+import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
@@ -160,6 +165,7 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -723,8 +729,28 @@ class PlayerService : InvincibleService(),
             Timber.e("PlayerService oncreate startForeground ${it.stackTraceToString()}")
         }
 
+
+        updateDiscordPresence()
+
     }
 
+    private fun updateDiscordPresence() {
+        if (!isAtLeastAndroid81) return
+        val discordPersonalAccessToken = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
+        val isDiscordPresenceEnabled = preferences.getBoolean(isDiscordPresenceEnabledKey, false)
+        runCatching {
+            if (!discordPersonalAccessToken.isNullOrEmpty() && isDiscordPresenceEnabled) {
+                player.currentMediaItem?.let {
+                    sendDiscordPresence(
+                        discordPersonalAccessToken,
+                        it
+                    )
+                }
+            }
+        }.onFailure {
+            Timber.e("PlayerService Failed sendDiscordPresence in PlayerService ${it.stackTraceToString()}")
+        }
+    }
 
     private fun getVolumeProvider(): VolumeProviderCompat {
         val audio = getSystemService(AUDIO_SERVICE) as AudioManager?
@@ -928,6 +954,7 @@ class PlayerService : InvincibleService(),
         }
 
         updateWidgets()
+        updateDiscordPresence()
 
     }
 

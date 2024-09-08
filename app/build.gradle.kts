@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
-        minSdk = 21
+        minSdk = 27
         targetSdk = 35
         versionCode = 55
         versionName = "0.6.51"
@@ -138,6 +138,7 @@ dependencies {
     implementation(libs.haze)
     implementation(libs.androidyoutubeplayer)
     implementation(libs.glance.widgets)
+    implementation(libs.kizzy.rpc)
 
     implementation(libs.room)
     ksp(libs.room.compiler)

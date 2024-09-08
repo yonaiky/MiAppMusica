@@ -19,6 +19,7 @@ const val pipedPasswordKey = "pipedPassword"
 const val pipedInstanceNameKey = "pipedInstanceName"
 const val pipedApiBaseUrlKey = "pipedApiBaseUrl"
 const val pipedApiTokenKey = "pipedApiToken"
+const val discordPersonalAccessTokenKey = "DiscordPersonalAccessToken"
 
 inline fun <reified T : Enum<T>> EncryptedSharedPreferences.getEnum(
     key: String,
