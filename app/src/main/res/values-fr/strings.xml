@@ -736,10 +736,10 @@
     <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Rejoignez la communauté sur Reddit</string>
-    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="sleep_timer_ended">Minuterie de veille terminée</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
+    <string name="discord_enable_rich_presence">Activer Rich Presence (Discord)</string>
+    <string name="discord_disconnect">Déconnecté</string>
+    <string name="discord_connect">Connecter</string>
+    <string name="discord_connected_to_discord_account">Connecté à un compte Discord</string>
 </resources>
