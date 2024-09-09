@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "it.fast4x.rimusic"
-        minSdk = 27
+        minSdk = 21
         targetSdk = 35
         versionCode = 55
         versionName = "0.6.51"
