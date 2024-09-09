@@ -139,6 +139,7 @@ dependencies {
     implementation(libs.androidyoutubeplayer)
     implementation(libs.glance.widgets)
     implementation(libs.kizzy.rpc)
+    implementation(libs.gson)
 
     implementation(libs.room)
     ksp(libs.room.compiler)

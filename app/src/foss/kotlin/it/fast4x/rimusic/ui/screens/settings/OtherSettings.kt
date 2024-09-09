@@ -455,7 +455,7 @@ fun OtherSettings() {
                     title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
                         R.string.discord_connect
                     ),
-                    text = stringResource(R.string.discord_connected_to_discord_account),
+                    text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
                     icon = R.drawable.logo_discord,
                     iconColor = colorPalette.text,
                     onClick = {

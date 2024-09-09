@@ -32,6 +32,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
+import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -131,7 +132,7 @@ fun sendDiscordPresence(
             ),
             assets = Assets(
                 largeImage = mediaItem.mediaMetadata.artworkUri.toString(),
-                smallImage = mediaItem.mediaMetadata.artworkUri.toString(),
+                smallImage = mediaItem.mediaMetadata.extras?.getString("thumbnail").toString(),
                 largeText = mediaItem.mediaMetadata.title.toString(),
                 smallText = mediaItem.mediaMetadata.artist.toString(),
             ),
