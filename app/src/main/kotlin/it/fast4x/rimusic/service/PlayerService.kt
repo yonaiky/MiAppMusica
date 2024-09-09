@@ -769,7 +769,7 @@ class PlayerService : InvincibleService(),
                         // Up = 1, Down = -1, Release = 0
                         if (direction == VOLUME_UP) {
                             if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
-                                binder.player.seekToNextMediaItem()
+                                binder.player.forceSeekToNext()
                             } else {
                                 audio?.adjustStreamVolume(
                                     STREAM_TYPE,
@@ -781,7 +781,7 @@ class PlayerService : InvincibleService(),
                             }
                         } else if (direction == VOLUME_DOWN) {
                             if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
-                                binder.player.seekToPreviousMediaItem()
+                                binder.player.forceSeekToPrevious()
                             } else {
                                 audio?.adjustStreamVolume(
                                     STREAM_TYPE,
@@ -2334,8 +2334,8 @@ class PlayerService : InvincibleService(),
         override fun onPlay() = player.play()
         //override fun onPause() = player.pause()
         override fun onPause() = binder.callPause({})
-        override fun onSkipToPrevious() = runCatching(player::seekToPreviousMediaItem).let { }
-        override fun onSkipToNext() = runCatching(player::seekToNextMediaItem).let { }
+        override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
+        override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
         //override fun onStop() = player.pause()
         override fun onStop() = binder.callPause({} )
@@ -2444,8 +2444,8 @@ class PlayerService : InvincibleService(),
                 //Action.pause.value -> player.pause()
                 Action.pause.value -> binder.callPause({ player.pause() } )
                 Action.play.value -> player.play()
-                Action.next.value -> player.seekToNextMediaItem() //player.forceSeekToNext()
-                Action.previous.value -> player.seekToPreviousMediaItem() //player.forceSeekToPrevious()
+                Action.next.value -> player.forceSeekToNext()
+                Action.previous.value -> player.forceSeekToPrevious()
                 Action.like.value -> {
                     binder.toggleLike()
                     refreshPlayer()

@@ -154,6 +154,7 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getBitmapFromUrl
@@ -1116,8 +1117,7 @@ fun Player(
                             onDragEnd = {
                                 if (!disablePlayerHorizontalSwipe) {
                                     if (deltaX > 0) {
-                                        binder.player.seekToPreviousMediaItem()
-                                        //binder.player.forceSeekToPrevious()
+                                        binder.player.forceSeekToPrevious()
                                         //Log.d("mediaItem","Swipe to LEFT")
                                     } else {
                                         binder.player.forceSeekToNext()

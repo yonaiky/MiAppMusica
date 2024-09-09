@@ -1146,7 +1146,7 @@ class MainActivity :
                 if (shakeCounter >= 1) {
                     //Toast.makeText(applicationContext, "Shaked $shakeCounter times", Toast.LENGTH_SHORT).show()
                     shakeCounter = 0
-                    binder?.player?.seekToNextMediaItem()
+                    binder?.player?.forceSeekToNext()
                 }
 
             }

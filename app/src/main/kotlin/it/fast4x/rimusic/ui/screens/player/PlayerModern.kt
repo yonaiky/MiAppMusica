@@ -243,6 +243,7 @@ import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isVideo
@@ -1032,12 +1033,10 @@ fun PlayerModern(
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
-                                    binder.player.seekToPreviousMediaItem()
-                                    //binder.player.forceSeekToPrevious()
+                                    binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
-                                    binder.player.seekToNextMediaItem()
-                                    //binder.player.forceSeekToNext()
+                                    binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -1137,12 +1136,10 @@ fun PlayerModern(
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
-                                    binder.player.seekToPreviousMediaItem()
-                                    //binder.player.forceSeekToPrevious()
+                                    binder.player.forceSeekToPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
-                                    binder.player.seekToNextMediaItem()
-                                    //binder.player.forceSeekToNext()
+                                    binder.player.forceSeekToNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -1953,10 +1950,9 @@ fun PlayerModern(
                                         onDragEnd = {
                                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                 if (deltaX > 5) {
-                                                    binder.player.seekToPreviousMediaItem()
+                                                    binder.player.forceSeekToPrevious()
                                                 } else if (deltaX < -5) {
-                                                    binder.player.seekToNextMediaItem()
-                                                    //binder.player.forceSeekToNext()
+                                                    binder.player.forceSeekToNext()
                                                 }
 
                                             }
@@ -1987,7 +1983,7 @@ fun PlayerModern(
                                     onDragEnd = {
                                         if (!disablePlayerHorizontalSwipe) {
                                             if (deltaX > 5) {
-                                                binder.player.seekToPreviousMediaItem()
+                                                binder.player.forceSeekToPrevious()
                                             } else if (deltaX < -5) {
                                                 binder.player.forceSeekToNext()
                                             }
@@ -2165,10 +2161,9 @@ fun PlayerModern(
                                                 onDragEnd = {
                                                     if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                         if (deltaX > 5) {
-                                                            binder.player.seekToPreviousMediaItem()
+                                                            binder.player.forceSeekToPrevious()
                                                         } else if (deltaX < -5) {
-                                                            binder.player.seekToNextMediaItem()
-                                                            //binder.player.forceSeekToNext()
+                                                            binder.player.forceSeekToNext()
                                                         }
 
                                                     }
@@ -2592,7 +2587,7 @@ fun PlayerModern(
                                     onDragEnd = {
                                         if (!disablePlayerHorizontalSwipe) {
                                             if (deltaX > 5) {
-                                                binder.player.seekToPreviousMediaItem()
+                                                binder.player.forceSeekToPrevious()
                                             } else if (deltaX <-5){
                                                 binder.player.forceSeekToNext()
                                             }
