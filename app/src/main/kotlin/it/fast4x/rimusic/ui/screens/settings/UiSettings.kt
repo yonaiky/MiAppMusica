@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -254,12 +255,314 @@ import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 
+@Composable
+fun DefaultUiSettings() {
+    var exoPlayerMinTimeForEvent by rememberPreference(
+        exoPlayerMinTimeForEventKey,
+        ExoPlayerMinTimeForEvent.`20s`
+    )
+    exoPlayerMinTimeForEvent = ExoPlayerMinTimeForEvent.`20s`
+    var persistentQueue by rememberPreference(persistentQueueKey, false)
+    persistentQueue = false
+    var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
+    closebackgroundPlayer = false
+    var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
+    closeWithBackButton = true
+    var resumePlaybackWhenDeviceConnected by rememberPreference(
+        resumePlaybackWhenDeviceConnectedKey,
+        false
+    )
+    resumePlaybackWhenDeviceConnected = false
+
+    var skipSilence by rememberPreference(skipSilenceKey, false)
+    skipSilence = false
+    var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
+    volumeNormalization = false
+    var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
+    recommendationsNumber = RecommendationsNumber.`5`
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
+    keepPlayerMinimized = false
+    var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
+    disableIconButtonOnTop = false
+    var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
+    lastPlayerTimelineType = PlayerTimelineType.Default
+    var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    lastPlayerThumbnailSize = PlayerThumbnailSize.Medium
+    var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+    uiType = UiType.RiMusic
+    var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
+    disablePlayerHorizontalSwipe = false
+    var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
+    lastPlayerPlayButtonType = PlayerPlayButtonType.Rectangular
+    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
+    colorPaletteName = ColorPaletteName.Dynamic
+    var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+    colorPaletteMode = ColorPaletteMode.Dark
+    var indexNavigationTab by rememberPreference(
+        indexNavigationTabKey,
+        HomeScreenTabs.Default
+    )
+    indexNavigationTab = HomeScreenTabs.Default
+    var fontType by rememberPreference(fontTypeKey, FontType.Rubik)
+    fontType = FontType.Rubik
+    var useSystemFont by rememberPreference(useSystemFontKey, false)
+    useSystemFont = false
+    var applyFontPadding by rememberPreference(applyFontPaddingKey, false)
+    applyFontPadding = false
+    var isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
+    isSwipeToActionEnabled = true
+    var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
+    disableClosingPlayerSwipingDown = true
+    var showSearchTab by rememberPreference(showSearchTabKey, false)
+    showSearchTab = false
+    var showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
+    showStatsInNavbar = false
+    var maxStatisticsItems by rememberPreference(
+        maxStatisticsItemsKey,
+        MaxStatisticsItems.`10`
+    )
+    maxStatisticsItems = MaxStatisticsItems.`10`
+    var showStatsListeningTime by rememberPreference(showStatsListeningTimeKey,   true)
+    showStatsListeningTime = true
+    var maxTopPlaylistItems by rememberPreference(
+        MaxTopPlaylistItemsKey,
+        MaxTopPlaylistItems.`10`
+    )
+    maxTopPlaylistItems = MaxTopPlaylistItems.`10`
+    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
+    navigationBarPosition = NavigationBarPosition.Bottom
+    var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
+    navigationBarType = NavigationBarType.IconAndText
+    var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+    pauseBetweenSongs = PauseBetweenSongs.`0`
+    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+    maxSongsInQueue = MaxSongs.`500`
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+    thumbnailRoundness = ThumbnailRoundness.Heavy
+    var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
+    showFavoritesPlaylist = true
+    var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
+    showMyTopPlaylist = true
+    var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
+    showDownloadedPlaylist = true
+    var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
+    showOnDevicePlaylist = true
+    var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
+    shakeEventEnabled = false
+    var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
+    useVolumeKeysToChangeSong = false
+    var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+    showFloatingIcon = false
+    var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
+    menuStyle = MenuStyle.List
+    var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
+    transitionEffect = TransitionEffect.Scale
+    var enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
+    enableCreateMonthlyPlaylists = true
+    var showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+    showPipedPlaylists = true
+    var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
+    showPinnedPlaylists = true
+    var showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+    showMonthlyPlaylists = true
+    var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
+    customThemeLight_Background0 = DefaultLightColorPalette.background0.hashCode()
+    var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
+    customThemeLight_Background1 = DefaultLightColorPalette.background1.hashCode()
+    var customThemeLight_Background2 by rememberPreference(customThemeLight_Background2Key, DefaultLightColorPalette.background2.hashCode())
+    customThemeLight_Background2 = DefaultLightColorPalette.background2.hashCode()
+    var customThemeLight_Background3 by rememberPreference(customThemeLight_Background3Key, DefaultLightColorPalette.background3.hashCode())
+    customThemeLight_Background3 = DefaultLightColorPalette.background3.hashCode()
+    var customThemeLight_Background4 by rememberPreference(customThemeLight_Background4Key, DefaultLightColorPalette.background4.hashCode())
+    customThemeLight_Background4 = DefaultLightColorPalette.background4.hashCode()
+    var customThemeLight_Text by rememberPreference(customThemeLight_TextKey, DefaultLightColorPalette.text.hashCode())
+    customThemeLight_Text = DefaultLightColorPalette.text.hashCode()
+    var customThemeLight_TextSecondary by rememberPreference(customThemeLight_textSecondaryKey, DefaultLightColorPalette.textSecondary.hashCode())
+    customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary.hashCode()
+    var customThemeLight_TextDisabled by rememberPreference(customThemeLight_textDisabledKey, DefaultLightColorPalette.textDisabled.hashCode())
+    customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled.hashCode()
+    var customThemeLight_IconButtonPlayer by rememberPreference(customThemeLight_iconButtonPlayerKey, DefaultLightColorPalette.iconButtonPlayer.hashCode())
+    customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer.hashCode()
+    var customThemeLight_Accent by rememberPreference(customThemeLight_accentKey, DefaultLightColorPalette.accent.hashCode())
+    customThemeLight_Accent = DefaultLightColorPalette.accent.hashCode()
+    var customThemeDark_Background0 by rememberPreference(customThemeDark_Background0Key, DefaultDarkColorPalette.background0.hashCode())
+    customThemeDark_Background0 = DefaultDarkColorPalette.background0.hashCode()
+    var customThemeDark_Background1 by rememberPreference(customThemeDark_Background1Key, DefaultDarkColorPalette.background1.hashCode())
+    customThemeDark_Background1 = DefaultDarkColorPalette.background1.hashCode()
+    var customThemeDark_Background2 by rememberPreference(customThemeDark_Background2Key, DefaultDarkColorPalette.background2.hashCode())
+    customThemeDark_Background2 = DefaultDarkColorPalette.background2.hashCode()
+    var customThemeDark_Background3 by rememberPreference(customThemeDark_Background3Key, DefaultDarkColorPalette.background3.hashCode())
+    customThemeDark_Background3 = DefaultDarkColorPalette.background3.hashCode()
+    var customThemeDark_Background4 by rememberPreference(customThemeDark_Background4Key, DefaultDarkColorPalette.background4.hashCode())
+    customThemeDark_Background4 = DefaultDarkColorPalette.background4.hashCode()
+    var customThemeDark_Text by rememberPreference(customThemeDark_TextKey, DefaultDarkColorPalette.text.hashCode())
+    customThemeDark_Text = DefaultDarkColorPalette.text.hashCode()
+    var customThemeDark_TextSecondary by rememberPreference(customThemeDark_textSecondaryKey, DefaultDarkColorPalette.textSecondary.hashCode())
+    customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary.hashCode()
+    var customThemeDark_TextDisabled by rememberPreference(customThemeDark_textDisabledKey, DefaultDarkColorPalette.textDisabled.hashCode())
+    customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled.hashCode()
+    var customThemeDark_IconButtonPlayer by rememberPreference(customThemeDark_iconButtonPlayerKey, DefaultDarkColorPalette.iconButtonPlayer.hashCode())
+    customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer.hashCode()
+    var customThemeDark_Accent by rememberPreference(customThemeDark_accentKey, DefaultDarkColorPalette.accent.hashCode())
+    customThemeDark_Accent = DefaultDarkColorPalette.accent.hashCode()
+    var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
+    resetCustomLightThemeDialog = false
+    var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
+    resetCustomDarkThemeDialog = false
+    var playbackFadeAudioDuration by rememberPreference(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled)
+    playbackFadeAudioDuration = DurationInMilliseconds.Disabled
+    var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
+    playerPosition = PlayerPosition.Bottom
+    var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+    excludeSongWithDurationLimit = DurationInMinutes.Disabled
+    var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    playlistindicator = false
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
+    discoverIsEnabled = false
+    var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
+    isPauseOnVolumeZeroEnabled = false
+    var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
+    messageType = MessageType.Modern
+    var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
+    minimumSilenceDuration = 2_000_000L
+    var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
+    pauseListenHistory = false
+    var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
+    showTopActionsBar = true
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    playerControlsType = PlayerControlsType.Modern
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    playerInfoType = PlayerInfoType.Modern
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    playerType = PlayerType.Essential
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
+    queueType = QueueType.Essential
+    var fadingedge by rememberPreference(fadingedgeKey, false)
+    fadingedge = false
+    var carousel by rememberPreference(carouselKey, true)
+    carousel = true
+    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    carouselSize = CarouselSize.Biggest
+    var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+    thumbnailType = ThumbnailType.Modern
+    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
+    expandedlyrics = true
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    playerTimelineType = PlayerTimelineType.Default
+    var playerThumbnailSize by rememberPreference(
+        playerThumbnailSizeKey,
+        PlayerThumbnailSize.Biggest
+    )
+    playerThumbnailSize = PlayerThumbnailSize.Biggest
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Biggest
+    )
+    playerTimelineSize = PlayerTimelineSize.Biggest
+    var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
+    playerInfoShowIcons = true
+    var miniPlayerType by rememberPreference(
+        miniPlayerTypeKey,
+        MiniPlayerType.Modern
+    )
+    miniPlayerType = MiniPlayerType.Modern
+    var playerSwapControlsWithTimeline by rememberPreference(
+        playerSwapControlsWithTimelineKey,
+        false
+    )
+    playerSwapControlsWithTimeline = false
+    var playerPlayButtonType by rememberPreference(
+        playerPlayButtonTypeKey,
+        PlayerPlayButtonType.Rectangular
+    )
+    playerPlayButtonType = PlayerPlayButtonType.Rectangular
+    var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
+    buttonzoomout = false
+    var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
+    iconLikeType = IconLikeType.Essential
+    var playerBackgroundColors by rememberPreference(
+        playerBackgroundColorsKey,
+        PlayerBackgroundColors.BlurredCoverColor
+    )
+    playerBackgroundColors = PlayerBackgroundColors.BlurredCoverColor
+    var blackgradient by rememberPreference(blackgradientKey, false)
+    blackgradient = false
+    var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
+    showTotalTimeQueue = true
+    var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
+    showNextSongsInPlayer = false
+    var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    showRemainingSongTime = true
+    var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    disableScrollingText = false
+    var effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    effectRotationEnabled = true
+    var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
+    thumbnailTapEnabled = false
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    clickLyricsText = ClickLyricsText.FullScreen
+    var backgroundProgress by rememberPreference(
+        backgroundProgressKey,
+        BackgroundProgress.Both
+    )
+    backgroundProgress = BackgroundProgress.Both
+    var transparentBackgroundActionBarPlayer by rememberPreference(
+        transparentBackgroundPlayerActionBarKey,
+        false
+    )
+    transparentBackgroundActionBarPlayer = false
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    actionspacedevenly = false
+    var tapqueue by rememberPreference(tapqueueKey, true)
+    tapqueue = true
+    var swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
+    swipeUpQueue = true
+    var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
+    showButtonPlayerAddToPlaylist = true
+    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    showButtonPlayerArrow = false
+    var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
+    showButtonPlayerDownload = true
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
+    showButtonPlayerLoop = true
+    var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    showButtonPlayerLyrics = true
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
+    expandedplayertoggle = true
+    var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
+    showButtonPlayerShuffle = true
+    var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
+    showButtonPlayerSleepTimer = false
+    var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    showButtonPlayerMenu = false
+    var showButtonPlayerSystemEqualizer by rememberPreference(
+        showButtonPlayerSystemEqualizerKey,
+        false
+    )
+    showButtonPlayerSystemEqualizer = false
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+    showButtonPlayerDiscover = false
+    var playerEnableLyricsPopupMessage by rememberPreference(
+        playerEnableLyricsPopupMessageKey,
+        true
+    )
+    playerEnableLyricsPopupMessage = true
+    var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
+    visualizerEnabled = false
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    showthumbnail = false
+}
+
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
-fun  UiSettings() {
+fun UiSettings(
+    navController: NavController
+) {
     val binder = LocalPlayerServiceBinder.current
-    val context = LocalContext.current
 
     var languageApp  by rememberPreference(languageAppKey, Languages.English)
     val systemLocale = LocaleListCompat.getDefault().get(0).toString()
@@ -279,10 +582,6 @@ fun  UiSettings() {
     var skipSilence by rememberPreference(skipSilenceKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     //var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
-
-    val activityResultLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
 
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
@@ -1700,6 +1999,22 @@ fun  UiSettings() {
                     it.number.toString()
                 }
             )
+
+        var resetToDefault by remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        ButtonBarSettingEntry(
+            title = stringResource(R.string.settings_reset),
+            text = stringResource(R.string.settings_restore_default_settings),
+            icon = R.drawable.refresh,
+            iconColor = colorPalette.text,
+            onClick = { resetToDefault = true },
+        )
+        if (resetToDefault) {
+            DefaultUiSettings()
+            resetToDefault = false
+            navController.popBackStack()
+            SmartMessage(stringResource(R.string.done), context = context)
+        }
 
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)

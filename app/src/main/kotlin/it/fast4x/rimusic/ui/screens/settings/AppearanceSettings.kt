@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -43,12 +44,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
@@ -66,6 +70,7 @@ import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -143,10 +148,200 @@ import it.fast4x.rimusic.utils.swipeUpQueueKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 
+@Composable
+fun DefaultAppearanceSettings() {
+    var isShowingThumbnailInLockscreen by rememberPreference(
+        isShowingThumbnailInLockscreenKey,
+        true
+    )
+    isShowingThumbnailInLockscreen = true
+    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    showthumbnail = false
+    var transparentbar by rememberPreference(transparentbarKey, true)
+    transparentbar = true
+    var blackgradient by rememberPreference(blackgradientKey, false)
+    blackgradient = false
+    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
+    showlyricsthumbnail = false
+    var playerPlayButtonType by rememberPreference(
+        playerPlayButtonTypeKey,
+        PlayerPlayButtonType.Rectangular
+    )
+    playerPlayButtonType = PlayerPlayButtonType.Rectangular
+    var bottomgradient by rememberPreference(bottomgradientKey, false)
+    bottomgradient = false
+    var textoutline by rememberPreference(textoutlineKey, false)
+    textoutline = false
+    var lastPlayerPlayButtonType by rememberPreference(
+        lastPlayerPlayButtonTypeKey,
+        PlayerPlayButtonType.Rectangular
+    )
+    lastPlayerPlayButtonType = PlayerPlayButtonType.Rectangular
+    var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
+    disablePlayerHorizontalSwipe = false
+    var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    disableScrollingText = false
+    var showLikeButtonBackgroundPlayer by rememberPreference(
+        showLikeButtonBackgroundPlayerKey,
+        true
+    )
+    showLikeButtonBackgroundPlayer = true
+    var showDownloadButtonBackgroundPlayer by rememberPreference(
+        showDownloadButtonBackgroundPlayerKey,
+        true
+    )
+    showDownloadButtonBackgroundPlayer = true
+    var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
+    visualizerEnabled = false
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    playerTimelineType = PlayerTimelineType.Default
+    var playerThumbnailSize by rememberPreference(
+        playerThumbnailSizeKey,
+        PlayerThumbnailSize.Biggest
+    )
+    playerThumbnailSize = PlayerThumbnailSize.Biggest
+    var playerTimelineSize by rememberPreference(
+        playerTimelineSizeKey,
+        PlayerTimelineSize.Biggest
+    )
+    playerTimelineSize = PlayerTimelineSize.Biggest
+    var effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    effectRotationEnabled = true
+    var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
+    thumbnailTapEnabled = false
+    var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
+    showButtonPlayerAddToPlaylist = true
+    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    showButtonPlayerArrow = false
+    var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
+    showButtonPlayerDownload = true
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
+    showButtonPlayerLoop = true
+    var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
+    showButtonPlayerLyrics = true
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
+    expandedplayertoggle = true
+    var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
+    showButtonPlayerShuffle = true
+    var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
+    showButtonPlayerSleepTimer = false
+    var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    showButtonPlayerMenu = false
+    var showButtonPlayerSystemEqualizer by rememberPreference(
+        showButtonPlayerSystemEqualizerKey,
+        false
+    )
+    showButtonPlayerSystemEqualizer = false
+    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
+    showButtonPlayerDiscover = false
+    var showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, false)
+    showButtonPlayerVideo = false
+    var navigationBarPosition by rememberPreference(
+        navigationBarPositionKey,
+        NavigationBarPosition.Bottom
+    )
+    navigationBarPosition = NavigationBarPosition.Bottom
+    var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
+    showTotalTimeQueue = true
+    var backgroundProgress by rememberPreference(
+        backgroundProgressKey,
+        BackgroundProgress.Both
+    )
+    backgroundProgress = BackgroundProgress.Both
+    var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
+    showNextSongsInPlayer = false
+    var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    showRemainingSongTime = true
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    clickLyricsText = ClickLyricsText.FullScreen
+    var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
+    showBackgroundLyrics = false
+    var thumbnailRoundness by rememberPreference(
+        thumbnailRoundnessKey,
+        ThumbnailRoundness.Heavy
+    )
+    thumbnailRoundness = ThumbnailRoundness.Heavy
+    var miniPlayerType by rememberPreference(
+        miniPlayerTypeKey,
+        MiniPlayerType.Modern
+    )
+    miniPlayerType = MiniPlayerType.Modern
+    var playerBackgroundColors by rememberPreference(
+        playerBackgroundColorsKey,
+        PlayerBackgroundColors.BlurredCoverColor
+    )
+    playerBackgroundColors = PlayerBackgroundColors.BlurredCoverColor
+    var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
+    showTopActionsBar = true
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    playerControlsType = PlayerControlsType.Modern
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    playerInfoType = PlayerInfoType.Modern
+    var transparentBackgroundActionBarPlayer by rememberPreference(
+        transparentBackgroundPlayerActionBarKey,
+        false
+    )
+    transparentBackgroundActionBarPlayer = false
+    var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
+    iconLikeType = IconLikeType.Essential
+    var playerSwapControlsWithTimeline by rememberPreference(
+        playerSwapControlsWithTimelineKey,
+        false
+    )
+    playerSwapControlsWithTimeline = false
+    var playerEnableLyricsPopupMessage by rememberPreference(
+        playerEnableLyricsPopupMessageKey,
+        true
+    )
+    playerEnableLyricsPopupMessage = true
+    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    actionspacedevenly = false
+    var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+    thumbnailType = ThumbnailType.Modern
+    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
+    showvisthumbnail = false
+    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
+    expandedlyrics = true
+    var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
+    buttonzoomout = false
+    var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
+    thumbnailpause = false
+    var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
+    showsongs = SongsNumber.`2`
+    var showalbumcover by rememberPreference(showalbumcoverKey, true)
+    showalbumcover = true
+    var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
+    prevNextSongs = PrevNextSongs.twosongs
+    var tapqueue by rememberPreference(tapqueueKey, true)
+    tapqueue = true
+    var swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
+    swipeUpQueue = true
+    var statsfornerds by rememberPreference(statsfornerdsKey, false)
+    statsfornerds = false
+    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    playerType = PlayerType.Essential
+    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
+    queueType = QueueType.Essential
+    var noblur by rememberPreference(noblurKey, true)
+    noblur = true
+    var fadingedge by rememberPreference(fadingedgeKey, false)
+    fadingedge = false
+    var carousel by rememberPreference(carouselKey, true)
+    carousel = true
+    var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
+    carouselSize = CarouselSize.Biggest
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
+    keepPlayerMinimized = false
+    var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
+    playerInfoShowIcons = true
+}
+
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
-fun AppearanceSettings() {
+fun AppearanceSettings(
+    navController: NavController,
+) {
 
     var isShowingThumbnailInLockscreen by rememberPreference(
         isShowingThumbnailInLockscreenKey,
@@ -195,6 +390,7 @@ fun AppearanceSettings() {
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
     )
+    //
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
 
@@ -1453,6 +1649,23 @@ fun AppearanceSettings() {
                     onCheckedChange = { isShowingThumbnailInLockscreen = it }
                 )
             }
+
+        var resetToDefault by remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        ButtonBarSettingEntry(
+            title = stringResource(R.string.settings_reset),
+            text = stringResource(R.string.settings_restore_default_settings),
+            icon = R.drawable.refresh,
+            iconColor = colorPalette.text,
+            onClick = { resetToDefault = true },
+        )
+        if (resetToDefault) {
+            DefaultAppearanceSettings()
+            resetToDefault = false
+            navController.popBackStack()
+            SmartMessage(stringResource(R.string.done), context = context)
+        }
+
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )

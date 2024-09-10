@@ -111,8 +111,8 @@ fun SettingsScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> UiSettings()
-                        1 -> AppearanceSettings()
+                        0 -> UiSettings(navController = navController)
+                        1 -> AppearanceSettings(navController = navController)
                         2 -> QuickPicsSettings()
                         3 -> DataSettings()
                         4 -> OtherSettings()
