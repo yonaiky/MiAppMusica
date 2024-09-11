@@ -1117,23 +1117,19 @@ fun HomeSongsModern(
 
                                             items.forEachIndexed { index, song ->
                                                 runCatching {
-                                                    Database.insert(song.song.asMediaItem)
-                                                    Database.insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.song.asMediaItem.mediaId,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        )
-                                                    )
-                                                }.onFailure {
-                                                    Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
-                                                    it.message?.let { it1 ->
-                                                        SmartMessage(
-                                                            it1,
-                                                            PopupType.Error,
-                                                            context = context
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        Database.insert(song.song.asMediaItem)
+                                                        Database.insert(
+                                                            SongPlaylistMap(
+                                                                songId = song.song.asMediaItem.mediaId,
+                                                                playlistId = playlistPreview.playlist.id,
+                                                                position = position + index
+                                                            )
                                                         )
                                                     }
+                                                }.onFailure {
+                                                    Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
+                                                    println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                 }
                                             }
                                             CoroutineScope(Dispatchers.Main).launch {
