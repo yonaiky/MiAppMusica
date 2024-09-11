@@ -6,7 +6,7 @@
     <string name="new_playlist">Nove lista de reproduction</string>
     <string name="start_radio">Initiar le radio</string>
     <string name="equalizer">Equalisator</string>
-    <string name="stop_sleep_timer">Do you want to stop the sleep timer?</string>
+    <string name="stop_sleep_timer">Desira tu stoppar le temporisator de somno?</string>
     <string name="set_sleep_timer">Definir le temporisator de somno</string>
     <string name="add_to_playlist">Adder al lista de reproduction</string>
     <string name="go_to_album">Vader al album</string>
@@ -42,8 +42,8 @@
     <string name="delete">Deler</string>
     <string name="enter_the_lyrics">Insere le parolas del canto</string>
     <string name="edit_lyrics">Modificar le parolas del canto</string>
-    <string name="search_lyrics_online">Search lyrics online</string>
-    <string name="fetch_lyrics_again">Fetch lyrics again</string>
+    <string name="search_lyrics_online">Cercar parolas de canto in linea</string>
+    <string name="fetch_lyrics_again">Obtener de novo le parolas de canto</string>
     <string name="id">Id</string>
     <string name="itag">Itag</string>
     <string name="bitrate">Taxa de bits</string>
@@ -141,7 +141,7 @@
     <string name="error_an_unknown_playback_error_has_occurred">An unknown playback error has occurred</string>
     <string name="tips">Suggestiones</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">It\'s the minimum listening time, to include the song as a possible Tips or Quick Pics</string>
-    <string name="min_listening_time">Min listening time</string>
+    <string name="min_listening_time">Tempore minime de ascoltamento</string>
     <string name="player_thumbnail_size">Dimension del miniatura</string>
     <string name="restarting_rimusic_is_required">Restarting is required</string>
     <string name="small">Small</string>
