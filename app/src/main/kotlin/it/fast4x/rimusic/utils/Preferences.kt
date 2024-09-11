@@ -250,6 +250,7 @@ const val playerPositionKey = "playerPosition"
 const val excludeSongsWithDurationLimitKey = "excludeSongsWithDurationLimit"
 const val logDebugEnabledKey = "logDebugEnabled"
 const val isPipedEnabledKey = "isPipedEnabled"
+const val isPipedCustomEnabledKey = "isPipedCustomEnabled"
 
 const val messageTypeKey = "messageType"
 const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"

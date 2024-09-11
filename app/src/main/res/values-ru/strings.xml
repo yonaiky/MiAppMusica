@@ -744,4 +744,5 @@
     <string name="discord_connected_to_discord_account">Подключено к учётной записи Discord</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
+    <string name="piped_custom_instance">Piped custom instance</string>
 </resources>

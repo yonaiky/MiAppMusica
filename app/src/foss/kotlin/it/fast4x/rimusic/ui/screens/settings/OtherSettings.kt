@@ -80,6 +80,7 @@ import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isPipedCustomEnabledKey
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
@@ -251,6 +252,7 @@ fun OtherSettings() {
 
         /****** PIPED ******/
         var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+        var isPipedCustomEnabled by rememberPreference(isPipedCustomEnabledKey, false)
         var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
         var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
         var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
@@ -373,6 +375,8 @@ fun OtherSettings() {
         }
 
 
+
+
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.piped_account))
         SwitchSettingEntry(
@@ -383,16 +387,40 @@ fun OtherSettings() {
         )
 
         AnimatedVisibility(visible = isPipedEnabled) {
-            Column {
-                ButtonBarSettingEntry(
-                    //isEnabled = pipedApiToken.isEmpty(),
-                    title = stringResource(R.string.piped_change_instance),
-                    text = pipedInstanceName,
-                    icon = R.drawable.open,
-                    onClick = {
-                        loadInstances = true
-                    }
+            Column(
+                modifier = Modifier.padding(start = 25.dp)
+            ) {
+                SwitchSettingEntry(
+                    title = stringResource(R.string.piped_custom_instance),
+                    text = "",
+                    isChecked = isPipedCustomEnabled,
+                    onCheckedChange = { isPipedCustomEnabled = it }
                 )
+                AnimatedVisibility(visible = isPipedCustomEnabled) {
+                    Column {
+                        TextDialogSettingEntry(
+                            title = stringResource(R.string.piped_custom_instance),
+                            text = pipedApiBaseUrl,
+                            currentText = pipedApiBaseUrl,
+                            onTextSave = {
+                                pipedApiBaseUrl = it
+                            }
+                        )
+                    }
+                }
+                AnimatedVisibility(visible = !isPipedCustomEnabled) {
+                    Column {
+                        ButtonBarSettingEntry(
+                            //isEnabled = pipedApiToken.isEmpty(),
+                            title = stringResource(R.string.piped_change_instance),
+                            text = pipedInstanceName,
+                            icon = R.drawable.open,
+                            onClick = {
+                                loadInstances = true
+                            }
+                        )
+                    }
+                }
 
                 TextDialogSettingEntry(
                     //isEnabled = pipedApiToken.isEmpty(),
@@ -449,7 +477,9 @@ fun OtherSettings() {
         )
 
         AnimatedVisibility(visible = isDiscordPresenceEnabled) {
-            Column {
+            Column(
+                modifier = Modifier.padding(start = 25.dp)
+            ) {
                 ButtonBarSettingEntry(
                     isEnabled = true,
                     title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
