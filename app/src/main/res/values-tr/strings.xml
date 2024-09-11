@@ -734,12 +734,12 @@
     <string name="horizontal_widget">Yatay widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Reddit\'te topluluğa katılın</string>
-    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="sleep_timer_ended">Uyku zamanlayıcısı sona erdi</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
+    <string name="discord_enable_rich_presence">\"Rich presence\"ı etkinleştir</string>
+    <string name="discord_disconnect">Bağlantıyı Kes</string>
+    <string name="discord_connect">Bağlan</string>
+    <string name="discord_connected_to_discord_account">Discord Hesabına Bağlandı</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
 </resources>

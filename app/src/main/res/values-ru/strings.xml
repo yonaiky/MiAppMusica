@@ -2,7 +2,8 @@
 <resources>
     <string name="cancel">Отмена</string>
     <string name="done">Готово</string>
-    <string name="hidesong">Вы действительно хотите удалить эту песню? Время воспроизведения и Кэш будут удалены.</string>
+    <string name="hidesong">Вы действительно хотите скрыть эту песню? История воспроизведения и кэш будут удалены.
+Это действие необратимо.</string>
     <string name="new_playlist">Новый плейлист</string>
     <string name="start_radio">Включить радио</string>
     <string name="equalizer">Эквалайзер</string>
@@ -121,7 +122,7 @@
     <string name="synchronized_lyrics">синхронизированные тексты</string>
     <string name="provided_by">Визуальные материалы из</string>
     <string name="delete_playback_events">Удалить %1$s События воспроизведения</string>
-    <string name="existing_data_will_be_overwritten">Существующие данные перезаписываются.%1$s автоматически закрывается после восстановления базы данных.</string>
+    <string name="existing_data_will_be_overwritten">Существующие данные будут перезаписаны. %1$s автоматически закроется после восстановления из базы данных.</string>
     <string name="folder_cache">ПАПКА КЭША</string>
     <string name="cache_reset_by_clicking_button">Внимание, при нажатии на кнопку ниже папка расположения кэша будет сброшена на значение по умолчанию</string>
     <string name="cache_location_folder">Папка с местоположением</string>
@@ -727,19 +728,20 @@
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Присоединиться к группе в Telegram</string>
     <string name="social_github">GitHub</string>
-    <string name="update">Update</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped. This action is irreversible.</string>
-    <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
+    <string name="update">Обновить</string>
+    <string name="update_song">Вы действительно хотите повторно загрузить песню? История воспроизведения и кэш будут удалены.
+Это действие необратимо.</string>
+    <string name="player_pause_listen_history_info">Не показывать и не сохранять новую историю воспроизведения</string>
     <string name="vertical_widget">Вертикальный виджет</string>
     <string name="horizontal_widget">Горизонтальный виджет</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Присоединиться к сообществу на Reddit</string>
-    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="sleep_timer_ended">Таймер сна завершен</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
+    <string name="discord_enable_rich_presence">Включить Rich Presence</string>
+    <string name="discord_disconnect">Отключиться</string>
+    <string name="discord_connect">Подключиться</string>
+    <string name="discord_connected_to_discord_account">Подключено к учётной записи Discord</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
 </resources>

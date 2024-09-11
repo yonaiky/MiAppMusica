@@ -734,12 +734,12 @@
     <string name="horizontal_widget">Horizontales Widget</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Tritt der Community auf Reddit bei</string>
-    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="sleep_timer_ended">Schlaf-Timer beendet</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
+    <string name="discord_enable_rich_presence">Aktivitätsstatus aktivieren</string>
+    <string name="discord_disconnect">Verbindung trennen</string>
+    <string name="discord_connect">Verbindung herstellen</string>
+    <string name="discord_connected_to_discord_account">Mit Discord-Account verbunden</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
 </resources>
