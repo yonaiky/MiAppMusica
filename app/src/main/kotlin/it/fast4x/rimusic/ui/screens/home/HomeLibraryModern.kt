@@ -329,10 +329,6 @@ fun HomeLibraryModern(
                 }
         }
 
-    val maxTopPlaylistItems by rememberPreference(
-        MaxTopPlaylistItemsKey,
-        MaxTopPlaylistItems.`10`
-    )
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
@@ -479,63 +475,90 @@ fun HomeLibraryModern(
                         icon = R.drawable.shuffle,
                         color = colorPalette.text,
                         iconSize = 22.dp,
-                        onClick = {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    when (playlistType) {
-                                        PlaylistsType.Playlist -> {
-                                            Database.songsInAllPlaylists()
-                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                        }
-                                        PlaylistsType.PipedPlaylist -> {
-                                            Database.songsInAllPipedPlaylists()
-                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                        }
-                                        PlaylistsType.PinnedPlaylist -> {
-                                            Database.songsInAllPinnedPlaylists()
-                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                        }
-                                        PlaylistsType.MonthlyPlaylist -> {
-                                            Database.songsInAllMonthlyPlaylists()
-                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .combinedClickable (
+                                onClick = {
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            when (playlistType) {
+                                                PlaylistsType.Playlist -> {
+                                                    Database.songsInAllPlaylists()
+                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                }
+                                                PlaylistsType.PipedPlaylist -> {
+                                                    Database.songsInAllPipedPlaylists()
+                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                }
+                                                PlaylistsType.PinnedPlaylist -> {
+                                                    Database.songsInAllPinnedPlaylists()
+                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                }
+                                                PlaylistsType.MonthlyPlaylist -> {
+                                                    Database.songsInAllMonthlyPlaylists()
+                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                }
+                                            }
+
                                         }
                                     }
 
+                                },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.shuffle),
+                                        context = context
+                                    )
                                 }
-                            }
-
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
+                            )
                     )
                     HeaderIconButton(
                         icon = R.drawable.add_in_playlist,
                         color = colorPalette.text,
                         iconSize = 22.dp,
-                        onClick = { isCreatingANewPlaylist = true },
+                        onClick = { },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
+                            .combinedClickable (
+                                onClick = { isCreatingANewPlaylist = true },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.create_new_playlist),
+                                        context = context
+                                    )
+                                }
+                            )
                     )
                     HeaderIconButton(
                         icon = R.drawable.resource_import,
                         color = colorPalette.text,
                         iconSize = 20.dp,
-                        onClick = {
-                            try {
-                                importLauncher.launch(
-                                    arrayOf(
-                                        "text/*"
-                                    )
-                                )
-                            } catch (e: ActivityNotFoundException) {
-                                SmartMessage(
-                                    context.resources.getString(R.string.info_not_find_app_open_doc),
-                                    type = PopupType.Warning, context = context
-                                )
-                            }
-                        },
+                        onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    try {
+                                        importLauncher.launch(
+                                            arrayOf(
+                                                "text/*"
+                                            )
+                                        )
+                                    } catch (e: ActivityNotFoundException) {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_not_find_app_open_doc),
+                                            type = PopupType.Warning, context = context
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.import_playlist),
+                                        context = context
+                                    )
+                                }
+                            )
                     )
 
                     HeaderIconButton(
