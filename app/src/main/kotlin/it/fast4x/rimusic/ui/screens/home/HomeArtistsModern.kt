@@ -43,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,11 +67,13 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
@@ -85,6 +88,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -92,6 +96,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.artistSortByKey
@@ -105,6 +110,9 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 @ExperimentalMaterial3Api
@@ -169,6 +177,9 @@ fun HomeArtistsModern(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
 
     Box (
         modifier = Modifier
@@ -280,6 +291,32 @@ fun HomeArtistsModern(
                             ))
                         },
                         iconSize = 16.dp
+                    )
+
+                    HeaderIconButton(
+                        icon = R.drawable.shuffle,
+                        color = colorPalette.text,
+                        iconSize = 24.dp,
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .combinedClickable (
+                                onClick = {
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            Database.songsInAllFollowedArtists()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                    }
+
+                                },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.shuffle),
+                                        context = context
+                                    )
+                                }
+                            )
                     )
 
                     HeaderIconButton(

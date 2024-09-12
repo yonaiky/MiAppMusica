@@ -117,6 +117,7 @@ import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autosyncKey
@@ -821,29 +822,5 @@ fun HomeLibraryModern(
          */
 
 
-    }
-}
-
-@OptIn(UnstableApi::class)
-fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerService.Binder?) {
-
-    if (songsList == null || binder == null) return
-
-    val maxSongsInQueue = context.preferences.getEnum(maxSongsInQueueKey, MaxSongs.`500`)
-
-    songsList.let { songs ->
-        if (songs.isNotEmpty() == true) {
-            val itemsLimited =
-                if (songs.size > maxSongsInQueue.number) songs.shuffled()
-                    .take(maxSongsInQueue.number.toInt()) else songs
-
-            CoroutineScope(Dispatchers.Main).launch {
-                binder.stopRadio()
-                binder.player.forcePlayFromBeginning(
-                    itemsLimited.shuffled()
-                        .map(Song::asMediaItem)
-                )
-            }
-        }
     }
 }
