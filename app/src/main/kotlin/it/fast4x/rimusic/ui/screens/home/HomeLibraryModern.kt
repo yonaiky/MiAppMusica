@@ -229,8 +229,6 @@ fun HomeLibraryModern(
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
-    var playlistsSongs by persistList<Song>("localPlaylists/songs")
-
     LaunchedEffect(sortBy, sortOrder, filter) {
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
