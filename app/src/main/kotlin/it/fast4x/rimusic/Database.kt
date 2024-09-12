@@ -60,6 +60,7 @@ import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
+import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import kotlin.jvm.Throws
 import kotlinx.coroutines.flow.Flow
@@ -865,6 +866,25 @@ interface Database {
         """
     )
     fun playlistSongs(id: Long): Flow<List<Song>?>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId")
+    fun songsInAllPlaylists(): Flow<List<Song>?>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
+            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.name LIKE '${PIPED_PREFIX}' || '%'")
+    fun songsInAllPipedPlaylists(): Flow<List<Song>?>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
+            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.name LIKE '${PINNED_PREFIX}' || '%'")
+    fun songsInAllPinnedPlaylists(): Flow<List<Song>?>
+
+    @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
+            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.name LIKE '${MONTHLY_PREFIX}' || '%'")
+    fun songsInAllMonthlyPlaylists(): Flow<List<Song>?>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction

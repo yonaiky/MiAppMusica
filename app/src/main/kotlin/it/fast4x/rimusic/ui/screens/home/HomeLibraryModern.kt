@@ -2,8 +2,10 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -62,15 +64,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.piped.Piped
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.LibraryItemSize
+import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -82,8 +87,10 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -110,17 +117,22 @@ import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
+import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.libraryItemSizeKey
+import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.playlistTypeKey
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -141,6 +153,7 @@ import it.fast4x.rimusic.utils.showPlaylistsKey
 import it.fast4x.rimusic.utils.showPlaylistsListKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -152,6 +165,7 @@ import java.util.UUID
 
 const val PIPED_PREFIX = "piped:"
 
+@OptIn(UnstableApi::class)
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
@@ -169,6 +183,7 @@ fun HomeLibraryModern(
     val windowInsets = LocalPlayerAwareWindowInsets.current
     val menuState = LocalMenuState.current
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
+    val binder = LocalPlayerServiceBinder.current
 
     var isCreatingANewPlaylist by rememberSaveable {
         mutableStateOf(false)
@@ -213,6 +228,8 @@ fun HomeLibraryModern(
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
     var items by persistList<PlaylistPreview>("home/playlists")
+
+    var playlistsSongs by persistList<Song>("localPlaylists/songs")
 
     LaunchedEffect(sortBy, sortOrder, filter) {
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
@@ -406,7 +423,7 @@ fun HomeLibraryModern(
                     )
                     Spacer(
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(0.3f)
                     )
 
                     HeaderIconButton(
@@ -439,13 +456,16 @@ fun HomeLibraryModern(
                         onClick = {},
                         icon = R.drawable.sync,
                         color = if (autosync) colorPalette.text else colorPalette.textDisabled,
-                        iconSize = 24.dp,
+                        iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
-                            .combinedClickable(onClick = {autosync = !autosync},
-                                               onLongClick = {
-                                                   SmartMessage(context.resources.getString(R.string.autosync), context = context)
-                                               }
+                            .combinedClickable(onClick = { autosync = !autosync },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.autosync),
+                                        context = context
+                                    )
+                                }
                             )
                     )
 
@@ -453,23 +473,55 @@ fun HomeLibraryModern(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
                         color = colorPalette.text,
-                        iconSize = 24.dp,
+                        iconSize = 22.dp,
                         modifier = Modifier
-                            .padding(horizontal = 2.dp)
+                            .padding(horizontal = 4.dp)
                     )
+                    HeaderIconButton(
+                        icon = R.drawable.shuffle,
+                        color = colorPalette.text,
+                        iconSize = 22.dp,
+                        onClick = {
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    when (playlistType) {
+                                        PlaylistsType.Playlist -> {
+                                            Database.songsInAllPlaylists()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                        PlaylistsType.PipedPlaylist -> {
+                                            Database.songsInAllPipedPlaylists()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                        PlaylistsType.PinnedPlaylist -> {
+                                            Database.songsInAllPinnedPlaylists()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                        PlaylistsType.MonthlyPlaylist -> {
+                                            Database.songsInAllMonthlyPlaylists()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                    }
 
+                                }
+                            }
 
-                    IconButton(
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                    )
+                    HeaderIconButton(
                         icon = R.drawable.add_in_playlist,
                         color = colorPalette.text,
+                        iconSize = 22.dp,
                         onClick = { isCreatingANewPlaylist = true },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .size(20.dp)
                     )
-                    IconButton(
+                    HeaderIconButton(
                         icon = R.drawable.resource_import,
                         color = colorPalette.text,
+                        iconSize = 20.dp,
                         onClick = {
                             try {
                                 importLauncher.launch(
@@ -486,7 +538,6 @@ fun HomeLibraryModern(
                         },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .size(20.dp)
                     )
 
                     HeaderIconButton(
@@ -521,7 +572,10 @@ fun HomeLibraryModern(
                             }
                         },
                         icon = R.drawable.resize,
-                        color = colorPalette.text
+                        color = colorPalette.text,
+                        iconSize = 22.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
                     )
 
                 }
@@ -750,5 +804,29 @@ fun HomeLibraryModern(
          */
 
 
+    }
+}
+
+@OptIn(UnstableApi::class)
+fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerService.Binder?) {
+
+    if (songsList == null || binder == null) return
+
+    val maxSongsInQueue = context.preferences.getEnum(maxSongsInQueueKey, MaxSongs.`500`)
+
+    songsList.let { songs ->
+        if (songs.isNotEmpty() == true) {
+            val itemsLimited =
+                if (songs.size > maxSongsInQueue.number) songs.shuffled()
+                    .take(maxSongsInQueue.number.toInt()) else songs
+
+            CoroutineScope(Dispatchers.Main).launch {
+                binder.stopRadio()
+                binder.player.forcePlayFromBeginning(
+                    itemsLimited.shuffled()
+                        .map(Song::asMediaItem)
+                )
+            }
+        }
     }
 }
