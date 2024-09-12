@@ -17,9 +17,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.view.KeyEvent
 import android.view.WindowManager
-import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -33,32 +31,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RippleConfiguration
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ripple
@@ -68,7 +54,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,7 +61,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -87,29 +71,23 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
-import com.kieronquinn.monetcompat.app.MonetCompatActivity
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
 import com.kieronquinn.monetcompat.interfaces.MonetColorsChangedListener
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 import dev.kdrag0n.monet.theme.ColorScheme
-import it.fast4x.compose.persist.PersistMap
-import it.fast4x.compose.persist.PersistMapOwner
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
@@ -126,40 +104,26 @@ import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.PlayerService
-import it.fast4x.rimusic.ui.components.BottomSheetMenu
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-
 import it.fast4x.rimusic.ui.screens.AppNavigation
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
-import it.fast4x.rimusic.ui.screens.home.HomeScreen
-import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerModern
 import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
-import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Appearance
-import it.fast4x.rimusic.ui.styling.ColorPalette
-import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
-import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
 import it.fast4x.rimusic.ui.styling.customColorPalette
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
-import it.fast4x.rimusic.ui.styling.hsl
 import it.fast4x.rimusic.ui.styling.typographyOf
-import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
@@ -180,8 +144,8 @@ import it.fast4x.rimusic.utils.customThemeDark_Background4Key
 import it.fast4x.rimusic.utils.customThemeDark_TextKey
 import it.fast4x.rimusic.utils.customThemeDark_accentKey
 import it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
-import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
 import it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
 import it.fast4x.rimusic.utils.customThemeLight_Background0Key
 import it.fast4x.rimusic.utils.customThemeLight_Background1Key
 import it.fast4x.rimusic.utils.customThemeLight_Background2Key
@@ -195,35 +159,24 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.encryptedPreferences
-import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forceSeekToNext
-import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.invokeOnReady
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
-import it.fast4x.rimusic.utils.isEnabledDiscoveryLangCodeKey
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
-import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
-import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
-import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
-import it.fast4x.rimusic.utils.pipedInstanceNameKey
-import it.fast4x.rimusic.utils.pipedUsernameKey
-import it.fast4x.rimusic.utils.playbackFadeDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerVisualizerTypeKey
@@ -234,18 +187,7 @@ import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
-import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
-import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
-import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
-import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
-import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
-import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
-import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
-import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
-import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
-import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
-import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -253,7 +195,6 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -268,9 +209,6 @@ import java.net.Proxy
 import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.toID
-import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 
 
 @UnstableApi
@@ -316,13 +254,7 @@ class MainActivity :
 
     override fun onStart() {
         super.onStart()
-        /*
-        runCatching {
-            startService(Intent(this, PlayerService::class.java))
-        }.onFailure {
-            Timber.e("MainActivity.onStart startService ${it.stackTraceToString()}")
-        }
-         */
+
         runCatching {
             bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
         }.onFailure {
@@ -362,15 +294,6 @@ class MainActivity :
         monet.invokeOnReady {
             startApp()
         }
-        /*
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                monet.awaitMonetReady()
-                setContent()
-            }
-        }
-         */
-        //onNewIntent(intent)
 
         if (preferences.getBoolean(shakeEventEnabledKey, false)) {
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -391,29 +314,8 @@ class MainActivity :
         val runningAppProcessInfo = ActivityManager.RunningAppProcessInfo()
         ActivityManager.getMyMemoryState(runningAppProcessInfo)
         appRunningInBackground = runningAppProcessInfo.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
-        /*
-        if (appRunningInBackground) {
-            Toast.makeText(applicationContext, "Application is Running in Background", Toast.LENGTH_SHORT).show()
-        }
-        else {
-            Toast.makeText(applicationContext, "Application is not Running in Background", Toast.LENGTH_SHORT).show()
-        }
-         */
-    }
 
-    /*
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            binder?.player?.forceSeekToPrevious()
-            return true
-        }
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            binder?.player?.forceSeekToNext()
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
     }
-     */
 
     @OptIn(ExperimentalTextApi::class,
         ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -751,22 +653,6 @@ class MainActivity :
             val rippleConfiguration =
                 remember(appearance.colorPalette.text, appearance.colorPalette.isDark) {
                         RippleConfiguration(color = appearance.colorPalette.text)
-                    /*
-                    object : RippleTheme {
-                        @Composable
-                        override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
-                            contentColor = appearance.colorPalette.text,
-                            lightTheme = !appearance.colorPalette.isDark
-                        )
-
-                        @Composable
-                        override fun rippleAlpha(): RippleAlpha =
-                            RippleTheme.defaultRippleAlpha(
-                                contentColor = appearance.colorPalette.text,
-                                lightTheme = !appearance.colorPalette.isDark
-                            )
-                    }
-                     */
                 }
 
             val shimmerTheme = remember {
@@ -802,34 +688,20 @@ class MainActivity :
                     .fillMaxSize()
                     .background(appearance.colorPalette.background0)
             ) {
+
+
                 val density = LocalDensity.current
                 val windowsInsets = WindowInsets.systemBars
                 val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-                /*
-            val playerBottomSheetState = rememberBottomSheetState(
-                dismissedBound = 0.dp,
-                collapsedBound = Dimensions.collapsedPlayer + bottomDp,
-                expandedBound = maxHeight,
-            )
-
-            val playerAwareWindowInsets by remember(bottomDp, playerBottomSheetState.value) {
-                derivedStateOf {
-                    val bottom = playerBottomSheetState.value.coerceIn(bottomDp, playerBottomSheetState.collapsedBound)
-
-                    windowsInsets
-                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                        .add(WindowInsets(bottom = bottom))
-                }
-            }
-             */
-                //change bottom navigation
                 val playerSheetState = rememberPlayerSheetState(
                     dismissedBound = 0.dp,
                     collapsedBound = Dimensions.collapsedPlayer + bottomDp,
-                    //collapsedBound = Dimensions.collapsedPlayer, // bottom navigation
                     expandedBound = maxHeight,
                 )
+
+                val playerState =
+                    rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
                 val playerAwareWindowInsets by remember(
                     bottomDp,
@@ -860,9 +732,6 @@ class MainActivity :
                     intent.action = null
                 }
 
-
-
-
                 CompositionLocalProvider(
                     LocalAppearance provides appearance,
                     LocalIndication provides ripple(bounded = true),
@@ -872,26 +741,9 @@ class MainActivity :
                     LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                     LocalLayoutDirection provides LayoutDirection.Ltr,
                     LocalDownloader provides downloadUtil,
-                    LocalPlayerSheetState provides playerSheetState,
+                    LocalPlayerSheetState provides playerState,
                     LocalMonetCompat provides monet
                 ) {
-
-                    /*
-                    HomeScreen(
-                        onPlaylistUrl = { url ->
-                            onNewIntent(Intent.parseUri(url, 0))
-                        },
-                        openTabFromShortcut = openTabFromShortcut
-                    )
-                     */
-
-                    /*
-                Player(
-                    layoutState = playerBottomSheetState,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                )
-                 */
 
                     AppNavigation(
                         navController = navController,
@@ -908,8 +760,7 @@ class MainActivity :
                     checkIfAppIsRunningInBackground()
                     if (appRunningInBackground) showPlayer = false
 
-                    val playerState =
-                        rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
                     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
                     val thumbnailRoundness by rememberPreference(
                         thumbnailRoundnessKey,
@@ -921,8 +772,6 @@ class MainActivity :
                     val playerModern: @Composable () -> Unit = {
                         PlayerModern(
                             navController = navController,
-                            layoutState = playerSheetState,
-                            playerState = playerState,
                             onDismiss = { showPlayer = false }
                         )
                     }
@@ -1015,23 +864,18 @@ class MainActivity :
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
                     if (player.currentMediaItem == null) {
-                        if (!playerSheetState.isDismissed) {
-                            //playerSheetState.dismiss()
+                        if (playerState.isVisible) {
                             showPlayer = false
                         }
                     } else {
-                        //if (playerSheetState.isDismissed) {
                         if (launchedFromNotification) {
                             intent.replaceExtras(Bundle())
                             if (preferences.getBoolean(keepPlayerMinimizedKey, false))
-                                //playerSheetState.collapse(tween(700))
                                 showPlayer = false
-                            else showPlayer = true //playerSheetState.expand(tween(500))
+                            else showPlayer = true
                         } else {
-                            //playerSheetState.collapse(tween(700))
                             showPlayer = false
                         }
-                        //}
                     }
 
                     val listener = object : Player.Listener {
@@ -1039,11 +883,9 @@ class MainActivity :
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
                                     if (preferences.getBoolean(keepPlayerMinimizedKey, false))
-                                        //playerSheetState.collapse(tween(700))
                                         showPlayer = false
-                                    else showPlayer = true //playerSheetState.expand(tween(500))
+                                    else showPlayer = true
                                 } else {
-                                    //playerSheetState.collapse(tween(700))
                                     showPlayer = false
                                 }
                             }
@@ -1055,8 +897,6 @@ class MainActivity :
                     onDispose { player.removeListener(listener) }
                 }
 
-                //VisualizerComputer.setupPermissions(this@MainActivity)
-                //if (isConnected)
                 InitDownloader()
 
             }
@@ -1203,9 +1043,6 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
 
-        //if (!isChangingConfigurations) {
-        //    persistMap.clear()
-        //}
         runCatching {
             monet.removeMonetColorsChangedListener(this)
             _monet = null
@@ -1267,7 +1104,8 @@ val LocalPlayerAwareWindowInsets = staticCompositionLocalOf<WindowInsets> { TODO
 
 val LocalDownloader = staticCompositionLocalOf<DownloadUtil> { error("No Downloader provided") }
 
-val LocalPlayerSheetState = staticCompositionLocalOf<PlayerSheetState> { error("No player sheet state provided") }
+@OptIn(ExperimentalMaterial3Api::class)
+val LocalPlayerSheetState = staticCompositionLocalOf<SheetState> { error("No player sheet state provided") }
 
 
 

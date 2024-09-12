@@ -40,6 +40,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -164,8 +165,8 @@ import java.util.UUID
 
 
 const val PIPED_PREFIX = "piped:"
-
-@OptIn(UnstableApi::class)
+@ExperimentalMaterial3Api
+@UnstableApi
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
@@ -253,11 +254,6 @@ fun HomeLibraryModern(
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
-
-    val sectionTextModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .padding(top = 24.dp, bottom = 8.dp)
-        .padding(endPaddingValues)
 
     var plistId by remember {
         mutableStateOf(0L)
@@ -467,14 +463,14 @@ fun HomeLibraryModern(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
                         color = colorPalette.text,
-                        iconSize = 22.dp,
+                        iconSize = 24.dp,
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
                     )
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         color = colorPalette.text,
-                        iconSize = 22.dp,
+                        iconSize = 24.dp,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -516,7 +512,7 @@ fun HomeLibraryModern(
                     HeaderIconButton(
                         icon = R.drawable.add_in_playlist,
                         color = colorPalette.text,
-                        iconSize = 22.dp,
+                        iconSize = 24.dp,
                         onClick = { },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -533,7 +529,7 @@ fun HomeLibraryModern(
                     HeaderIconButton(
                         icon = R.drawable.resource_import,
                         color = colorPalette.text,
-                        iconSize = 20.dp,
+                        iconSize = 22.dp,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 4.dp)

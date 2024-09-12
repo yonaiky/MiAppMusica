@@ -26,6 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -87,7 +88,7 @@ inline fun NavigationRailTB(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val localSheetState = LocalPlayerSheetState.current
+    //val localSheetState = LocalPlayerSheetState.current
     /*
     val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
         if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp

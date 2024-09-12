@@ -42,6 +42,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -168,6 +169,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")

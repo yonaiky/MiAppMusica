@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
@@ -84,6 +85,7 @@ fun SnackbarDemo() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Popup(
     message: String,
@@ -104,7 +106,7 @@ fun Popup(
     val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
         Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
     val playerSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
+    val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
 
     Box(
         modifier = Modifier

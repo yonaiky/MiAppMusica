@@ -277,18 +277,10 @@ import it.fast4x.rimusic.utils.verticalFadingEdge
 @Composable
 fun PlayerModern(
     navController: NavController,
-    layoutState: PlayerSheetState,
-    playerState: SheetState,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(
-        topStart = 12.dp,
-        topEnd = 12.dp
-    ),
     onDismiss: () -> Unit,
 ) {
     val menuState = LocalMenuState.current
-
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     val effectRotationEnabled by rememberPreference(effectRotationKey, true)
 
@@ -316,12 +308,6 @@ fun PlayerModern(
 
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
 
-    val playPauseRoundness by shouldBePlayingTransition.animateDp(
-        transitionSpec = { tween(durationMillis = 100, easing = LinearEasing) },
-        label = "playPauseRoundness",
-        targetValueByState = { if (it) 24.dp else 12.dp }
-    )
-
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
@@ -337,7 +323,6 @@ fun PlayerModern(
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
-    //var blurStrength2 by rememberPreference(blurStrength2Key, defaultStrength)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
         mutableStateOf(false)
@@ -356,18 +341,12 @@ fun PlayerModern(
 
     if (showBlurPlayerDialog) {
 
-        //if(!isShowingLyrics)
          BlurParamsDialog(
              onDismiss = { showBlurPlayerDialog = false},
              scaleValue = { blurStrength = it },
              darkenFactorValue = { blurDarkenFactor = it}
         )
-        /*else
-         BlurParamsDialog(
-            onDismiss = { showBlurPlayerDialog = false},
-            scaleValue = { blurStrength2 = it },
-            darkenFactorValue = { blurDarkenFactor = it}
-         )*/
+
     }
 
     if (showThumbnailOffsetDialog) {
@@ -382,7 +361,6 @@ fun PlayerModern(
 
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     var mediaItems by remember {
         mutableStateOf(binder.player.currentTimeline.mediaItems)
@@ -451,42 +429,7 @@ fun PlayerModern(
             SmartMessage(stringResource(R.string.info_sleep_timer_delayed_at_end_of_song), context = context)
         }
 
-    /*
-    if (playbackFadeDuration != DurationInSeconds.Disabled) {
-        val songProgressFloat =
-            ((positionAndDuration.first.toFloat() * 100) / positionAndDuration.second.absoluteValue)
-                .toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
-        //val songProgressInt = songProgressFloat.toInt()
-        if (songProgressFloat in playbackFadeDuration.fadeOutRange && binder.player.shouldBePlaying) {
-            //if (timeRemaining in playbackFadeDuration.fadeOutRange) {
-            //println("mediaItem volume startFadeOut $fadeInOut")
-            audioFadeOut(binder.player, playbackFadeDuration.seconds, context)
-            //fadeInOut = true
-            //startFadeOut(binder, playbackFadeDuration.seconds)
-            //fade = !fade
-        }
-
-
-        /*
-        if (songProgressFloat in playbackFadeDuration.fadeInRange && binder.player.shouldBePlaying) {
-            //binder.player.volume = 0f
-            println("mediaItem volume startFadeIn")
-            audioFadeIn(binder.player, playbackFadeDuration.seconds, context)
-            //fadeInOut = false
-            //startFadeIn(binder, playbackFadeDuration.seconds)
-            //fade = !fade
-        }
-         */
-
-        //println("mediaItem positionAndDuration $positionAndDuration % ${(positionAndDuration.first.toInt()*100) / positionAndDuration.second.toInt()}")
-        //println("mediaItem progress float $songProgressFloat playbackFadeDuration ${playbackFadeDuration} $fadeInOut")
-    }
-    */
-
     val windowInsets = WindowInsets.systemBars
-
-    val horizontalBottomPaddingValues = windowInsets
-        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues()
 
     var albumInfo by remember {
         mutableStateOf(mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
@@ -516,9 +459,7 @@ fun PlayerModern(
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
-            //if (albumInfo == null)
             albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-            //if (artistsInfo == null)
             artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
         }
     }
@@ -530,7 +471,6 @@ fun PlayerModern(
 
     var albumId = albumInfo?.id
     if (albumId == null) albumId = ExistAlbumIdExtras
-    //var albumTitle = albumInfo?.name
 
     var artistIds = arrayListOf<String>()
     var artistNames = arrayListOf<String>()
@@ -558,33 +498,6 @@ fun PlayerModern(
         }
     }
 
-
-    /*
-    //Log.d("mediaItem_pl_mediaId",mediaItem.mediaId)
-    Log.d("mediaItem_player","--- START LOG ARTIST ---")
-    Log.d("mediaItem_player","ExistIdsExtras: $ExistIdsExtras")
-    Log.d("mediaItem_player","metadata artisIds "+mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds").toString())
-    Log.d("mediaItem_player","variable artisIds "+artistIds.toString())
-    Log.d("mediaItem_player","variable artisNames pre"+artistNames.toString())
-    Log.d("mediaItem_player","variable artistsInfo pre "+artistsInfo.toString())
-
-    //Log.d("mediaItem_pl_artinfo",artistsInfo.toString())
-    //Log.d("mediaItem_pl_artId",artistIds.toString())
-    Log.d("mediaItem_player","--- START LOG ALBUM ---")
-    Log.d("mediaItem_player",ExistAlbumIdExtras.toString())
-    Log.d("mediaItem_player","metadata albumId "+mediaItem.mediaMetadata.extras?.getString("albumId").toString())
-    Log.d("mediaItem_player","metadata extra "+mediaItem.mediaMetadata.extras?.toString())
-    Log.d("mediaItem_player","metadata full "+mediaItem.mediaMetadata.toString())
-    //Log.d("mediaItem_pl_extrasArt",mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").toString())
-    //Log.d("mediaItem_pl_extras",mediaItem.mediaMetadata.extras.toString())
-    Log.d("mediaItem_player","albumInfo "+albumInfo.toString())
-    Log.d("mediaItem_player","albumId "+albumId.toString())
-
-    Log.d("mediaItem_pl","--- END LOG ---")
-
-    */
-
-
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
 
 
@@ -600,8 +513,6 @@ fun PlayerModern(
         mutableStateOf(Download.STATE_STOPPED)
     }
     downloadState = getDownloadState(mediaItem.mediaId)
-
-//    val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = downloadedStateMedia(mediaItem.mediaId)
@@ -622,27 +533,11 @@ fun PlayerModern(
     )
     val showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, false)
 
-    val disableClosingPlayerSwipingDown by rememberPreference(
-        disableClosingPlayerSwipingDownKey,
-        true
-    )
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     val backgroundProgress by rememberPreference(
         backgroundProgressKey,
         BackgroundProgress.Both
     )
-    /*
-    val playlistPreviews by remember {
-        Database.playlistPreviews(PlaylistSortBy.Name, SortOrder.Ascending)
-    }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
-
-
-    var showPlaylistSelectDialog by remember {
-        mutableStateOf(false)
-    }
-     */
-
-
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -801,10 +696,6 @@ fun PlayerModern(
         }
     }
 
-    var position by remember {
-        mutableIntStateOf(0)
-    }
-
     var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
@@ -931,41 +822,12 @@ fun PlayerModern(
     val thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
     val showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
 
-    val playerBottomHeight = if (showNextSongsInPlayer) 80.dp else 50.dp
-    //val playerBottomHeight = 0.dp
-    /*
-    val playerBottomSheetState = rememberBottomSheetState(
-        playerBottomHeight + horizontalBottomPaddingValues.calculateBottomPadding(),
-        layoutState.expandedBound
-    )
-     */
-
-    //val queueSheetBottomHeight = 0.dp
-    /*
-    val queueSheetState = rememberBottomSheetState(
-        horizontalBottomPaddingValues.calculateBottomPadding(),
-        layoutState.expandedBound
-    )
-
-
-    val lyricsBottomSheetState =rememberBottomSheetState(
-        horizontalBottomPaddingValues.calculateBottomPadding(),
-        layoutState.expandedBound
-    )
-    */
-
     var showQueue by rememberSaveable { mutableStateOf(false) }
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
     var showSearchEntity by rememberSaveable { mutableStateOf(false) }
 
     val transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
     val showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
-
-    /*
-    val density = LocalDensity.current
-    val windowsInsets = WindowInsets.systemBars
-    val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
-     */
 
     var containerModifier = Modifier
         //.padding(bottom = bottomDp)
@@ -1168,7 +1030,6 @@ fun PlayerModern(
             navController = navController,
             onCollapse = onDismiss,
             expandedplayer = expandedplayer,
-            layoutState = layoutState,
             media = mediaItem.toUiMedia(positionAndDuration.second),
             mediaId = mediaItem.mediaId,
             title = mediaItem.mediaMetadata.title?.toString() ?: "",
@@ -1544,7 +1405,6 @@ fun PlayerModern(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                                layoutState.collapseSoft()
                                             }
                                         )
                                     }
@@ -1709,7 +1569,6 @@ fun PlayerModern(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                                layoutState.collapseSoft()
                                             }
 
                                         )
@@ -1734,7 +1593,6 @@ fun PlayerModern(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                                layoutState.collapseSoft()
                                             }
                                         )
                                     }
@@ -2195,7 +2053,6 @@ fun PlayerModern(
                                     navController = navController,
                                     onCollapse = onDismiss,
                                     expandedplayer = expandedplayer,
-                                    layoutState = layoutState,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
@@ -2698,7 +2555,6 @@ fun PlayerModern(
                                     navController = navController,
                                     onCollapse = onDismiss,
                                     expandedplayer = expandedplayer,
-                                    layoutState = layoutState,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
@@ -2737,18 +2593,6 @@ fun PlayerModern(
            }
         }
 
-
-        /*
-        Queue(
-            navController = navController,
-            layoutState = queueSheetState,
-            content = {},
-            backgroundColorProvider = { colorPalette.background2 },
-            modifier = Modifier
-                .align(Alignment.BottomCenter),
-            shape = shape
-        )
-         */
         CustomModalBottomSheet(
             showSheet = showQueue,
             onDismissRequest = { showQueue = false },
@@ -2772,21 +2616,6 @@ fun PlayerModern(
                 onDismiss = { showQueue = false },
             )
         }
-
-
-
-        /*
-        FullLyricsSheet(
-            layoutState = lyricsBottomSheetState,
-            content = {},
-            backgroundColorProvider = { colorPalette.background2 },
-            onMaximize = { lyricsBottomSheetState.collapseSoft() },
-            onRefresh = {
-                lyricsBottomSheetState.collapse(tween(50))
-                lyricsBottomSheetState.expand(tween(50))
-            }
-        )
-         */
 
         CustomModalBottomSheet(
             showSheet = showFullLyrics,

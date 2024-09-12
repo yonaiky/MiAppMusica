@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +60,8 @@ import it.fast4x.rimusic.utils.scrollingInfo
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
 
-@androidx.annotation.OptIn(UnstableApi::class)
+@ExperimentalMaterial3Api
+@UnstableApi
 @ExperimentalAnimationApi
 @Composable
 fun BoxScope.MultiFloatingActionsContainer(
@@ -78,7 +81,7 @@ fun BoxScope.MultiFloatingActionsContainer(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val playerSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
+    val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -192,6 +195,7 @@ fun BoxScope.FloatingActionsContainerWithScrollToTop(
     )
 }
 
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
 @Composable
 fun BoxScope.FloatingActions(
@@ -212,7 +216,7 @@ fun BoxScope.FloatingActions(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val playerSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (playerSheetState.isCollapsed) bottomDp + Dimensions.collapsedPlayer else bottomDp
+    val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer else bottomDp
 
     var offsetX = rememberPreference(floatActionIconOffsetXkey, 0F )
     var offsetY = rememberPreference(floatActionIconOffsetYkey, 0F )

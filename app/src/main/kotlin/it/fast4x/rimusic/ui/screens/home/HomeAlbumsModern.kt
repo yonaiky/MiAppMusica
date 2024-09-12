@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -107,6 +108,7 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlin.random.Random
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
 @UnstableApi
 @SuppressLint("SuspiciousIndentation")

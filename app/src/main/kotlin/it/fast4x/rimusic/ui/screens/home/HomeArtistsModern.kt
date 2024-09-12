@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens.home
 
 
 import android.annotation.SuppressLint
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -36,6 +37,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,6 +62,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -104,6 +107,8 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlin.random.Random
 
+@ExperimentalMaterial3Api
+@UnstableApi
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -169,10 +174,13 @@ fun HomeArtistsModern(
         modifier = Modifier
             .background(colorPalette.background0)
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if (navigationBarPosition == NavigationBarPosition.Left ||
+                    navigationBarPosition == NavigationBarPosition.Top ||
+                    navigationBarPosition == NavigationBarPosition.Bottom
+                ) 1f
+                else Dimensions.contentWidthRightBar
+            )
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
@@ -236,11 +244,11 @@ fun HomeArtistsModern(
                             .combinedClickable(
                                 onClick = { sortOrder = !sortOrder },
                                 onLongClick = {
-                                    menuState.display{
+                                    menuState.display {
                                         SortMenu(
                                             title = stringResource(R.string.sorting_order),
                                             onDismiss = menuState::hide,
-                                            onName= { sortBy = ArtistSortBy.Name },
+                                            onName = { sortBy = ArtistSortBy.Name },
                                             onDateAdded = { sortBy = ArtistSortBy.DateAdded },
                                         )
                                     }

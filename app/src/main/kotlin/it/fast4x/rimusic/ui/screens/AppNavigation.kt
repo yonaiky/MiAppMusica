@@ -13,7 +13,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.slideIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -35,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
@@ -44,11 +42,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
-import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -58,24 +54,16 @@ import it.fast4x.rimusic.extensions.games.snake.SnakeGame
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
-import it.fast4x.rimusic.ui.components.SimpleScaffold
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
-import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutScaffold
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreen
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
-import it.fast4x.rimusic.ui.screens.home.QuickPicks
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
-import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
-import it.fast4x.rimusic.ui.screens.mood.MoodList
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
-import it.fast4x.rimusic.ui.screens.mood.MoodsPage
 import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
-import it.fast4x.rimusic.ui.screens.newreleases.NewAlbums
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
-import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerModern
 import it.fast4x.rimusic.ui.screens.player.QueueModern
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
@@ -247,8 +235,8 @@ fun AppNavigation(
             modalBottomSheetPage {
                 PlayerModern(
                     navController = navController,
-                    layoutState = playerSheetState,
-                    playerState = playerState,
+                    //layoutState = playerSheetState,
+                    //playerState = playerState,
                     onDismiss = {}
                 )
             }

@@ -145,7 +145,6 @@ fun Controls(
     onCollapse: () -> Unit,
     onBlurScaleChange: (Float) -> Unit,
     expandedplayer: Boolean,
-    layoutState: PlayerSheetState,
     media: UiMedia,
     mediaId: String,
     title: String?,

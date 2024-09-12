@@ -7,6 +7,7 @@ import android.media.audiofx.AudioEffect
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -203,6 +204,7 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @UnstableApi
+/*
 @Composable
 fun Player(
     navController: NavController,
@@ -1207,7 +1209,7 @@ fun Player(
                 navController = navController,
                 onCollapse = onDismiss,
                 expandedplayer = expandedplayer,
-                layoutState = layoutState,
+                //layoutState = layoutState,
                 media = mediaItem.toUiMedia(positionAndDuration.second),
                 mediaId = mediaItem.mediaId,
                 title = mediaItem.mediaMetadata.title?.toString(),
@@ -1900,7 +1902,7 @@ fun Player(
             shape = shape
         )
 
-
+/*
         FullLyricsSheet(
             layoutState = lyricsBottomSheetState,
             content = {},
@@ -1911,6 +1913,8 @@ fun Player(
                 lyricsBottomSheetState.expand(tween(50))
             }
         )
+
+ */
 
     }
 
@@ -1995,7 +1999,7 @@ fun PlayerSheet(
         }
     }
 }
-
+*/
 @Stable
 class PlayerSheetState(
     draggableState: DraggableState,
@@ -2160,6 +2164,10 @@ const val expandedAnchor = 2
 const val collapsedAnchor = 1
 const val dismissedAnchor = 0
 
+@ExperimentalFoundationApi
+@ExperimentalAnimationApi
+@ExperimentalTextApi
+@UnstableApi
 @Composable
 fun rememberPlayerSheetState(
     dismissedBound: Dp,
