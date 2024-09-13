@@ -736,14 +736,14 @@
     <string name="social_reddit_info">Únete a la comunidad de Reddit</string>
     <string name="sleep_timer_ended">El temporizador de apagado ha finalizado</string>
     <string name="social_discord">Discord</string>
+    <string name="discord_enable_rich_presence">Habilitar \"Rich Presence\"</string>
+    <string name="discord_disconnect">Desconectar</string>
+    <string name="discord_connect">Conectar</string>
+    <string name="discord_connected_to_discord_account">Conectado a la cuenta de Discord</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
     <string name="piped_custom_instance">Piped custom instance</string>
     <string name="create_new_playlist">Create new playlist</string>
     <string name="settings_loudness_base_gain">Loudness base gain</string>
     <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
-    <string name="discord_enable_rich_presence">Habilitar \"Rich Presence\"</string>
-    <string name="discord_disconnect">Desconectar</string>
-    <string name="discord_connect">Conectar</string>
-    <string name="discord_connected_to_discord_account">Conectado a la cuenta de Discord</string>
 </resources>
