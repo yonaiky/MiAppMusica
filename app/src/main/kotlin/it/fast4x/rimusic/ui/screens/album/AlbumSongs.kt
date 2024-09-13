@@ -91,6 +91,7 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
@@ -112,6 +113,7 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
@@ -143,8 +145,13 @@ fun AlbumSongs(
     var songs by persistList<Song>("album/$browseId/songs")
     var album by persist<Album?>("album/$browseId")
 
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+
     LaunchedEffect(Unit) {
-        Database.albumSongs(browseId).collect { songs = it }
+        Database.albumSongs(browseId).collect {
+            songs = if (parentalControlEnabled)
+                it.filter { !it.title.startsWith(EXPLICIT_PREFIX) } else it
+        }
     }
     LaunchedEffect(Unit) {
         Database.album(browseId).collect { album = it }

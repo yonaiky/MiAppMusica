@@ -80,7 +80,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
-import it.fast4x.rimusic.ui.components.themed.appBar
+import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.getCurrentRoute
@@ -156,7 +156,7 @@ fun ScaffoldTB(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                appBar(navController)
+                AppBar(navController)
 
                 if (navigationBarPosition == NavigationBarPosition.Top)
                     navigationRailTB()

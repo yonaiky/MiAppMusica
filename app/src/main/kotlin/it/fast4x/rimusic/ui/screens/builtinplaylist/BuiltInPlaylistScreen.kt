@@ -78,16 +78,6 @@ fun BuiltInPlaylistScreen(
         })
     }
 
-    var exoPlayerDiskCacheMaxSize by rememberPreference(
-        exoPlayerDiskCacheMaxSizeKey,
-        ExoPlayerDiskCacheMaxSize.`32MB`
-    )
-
-    var exoPlayerDiskDownloadCacheMaxSize by rememberPreference(
-        exoPlayerDiskDownloadCacheMaxSizeKey,
-        ExoPlayerDiskDownloadCacheMaxSize.`2GB`
-    )
-
     val maxTopPlaylistItems by rememberPreference(
         MaxTopPlaylistItemsKey,
         MaxTopPlaylistItems.`10`

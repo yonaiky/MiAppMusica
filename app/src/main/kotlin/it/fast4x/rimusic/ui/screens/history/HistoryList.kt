@@ -70,6 +70,7 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenuLibrary
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.Title
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -88,6 +89,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.songToggleLike
@@ -130,8 +132,13 @@ fun HistoryList(
     val today = LocalDate.now()
     val thisMonday = today.with(DayOfWeek.MONDAY)
     val lastMonday = thisMonday.minusDays(7)
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     val events = Database.events()
+        .map { events ->
+            if (parentalControlEnabled)
+                events.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else events
+        }
         .map { events ->
             events.groupBy {
                 val date = //it.event.timestamp.toLocalDate()
@@ -157,6 +164,9 @@ fun HistoryList(
             })
         }
         .collectAsState(initial = emptyMap(), context = Dispatchers.IO)
+
+
+
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)

@@ -125,6 +125,7 @@ import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
@@ -159,6 +160,7 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
 import it.fast4x.rimusic.utils.onDeviceSongSortByKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -209,6 +211,7 @@ fun HomeSongsModern(
 
     var sortBy by rememberPreference(songSortByKey, SongSortBy.DateAdded)
     var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var items by persistList<SongEntity>("home/songs")
 
@@ -288,7 +291,9 @@ fun HomeSongsModern(
     }
     var songs: List<SongEntity> = emptyList()
     var folders: List<Folder> = emptyList()
+
     var filteredSongs = songs
+
     var filteredFolders = folders
     var currentFolder: Folder? = null;
     var currentFolderPath by remember {
@@ -1453,7 +1458,9 @@ fun HomeSongsModern(
 
             if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
                 itemsIndexed(
-                    items = items.distinctBy { it.song.id },
+                    items = if (parentalControlEnabled)
+                        items.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) }.distinctBy { it.song.id }
+                    else items.distinctBy { it.song.id },
                     key = { _, song -> song.song.id },
                     //contentType = { _, song -> song },
                 ) { index, song ->

@@ -52,13 +52,14 @@ import it.fast4x.rimusic.utils.getCurrentRoute
 import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuItemColors
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun appBar(
+fun AppBar(
     navController: NavController
 ) {
     val (colorPalette, typography) = LocalAppearance.current
@@ -74,6 +75,7 @@ fun appBar(
     else Modifier
 
     val context = LocalContext.current
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     if (showGames) {
         Pacman()
@@ -163,16 +165,28 @@ fun appBar(
                                 navController.navigate(NavRoutes.home.name)
                         }
                 )
+                if (parentalControlEnabled)
+                    Image(
+                        painter = painterResource(R.drawable.shield_checkmark),
+                        colorFilter = ColorFilter.tint(
+                            when(colorPaletteMode) {
+                                ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
+                                else -> Color.White
+                            }
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
 
                 val logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
-                val context = LocalContext.current
+
                 if (logDebugEnabled)
                     BasicText(
                         text = stringResource(R.string.info_debug_mode_enabled),
                         style = TextStyle(
-                            fontSize = typography.xs.bold.fontSize,
-                            fontWeight = typography.xs.bold.fontWeight,
-                            fontFamily = typography.xs.bold.fontFamily,
+                            fontSize = typography.xxs.semiBold.fontSize,
+                            fontWeight = typography.xxs.semiBold.fontWeight,
+                            fontFamily = typography.xxs.semiBold.fontFamily,
                             color = colorPalette.red
                         ),
                         modifier = Modifier

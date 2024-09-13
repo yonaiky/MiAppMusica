@@ -70,6 +70,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.albumRoute
@@ -96,6 +97,7 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -147,6 +149,7 @@ fun ArtistScreen(
         mutableStateOf(false)
     }
     val hapticFeedback = LocalHapticFeedback.current
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     LaunchedEffect(Unit) {
         Database
@@ -502,6 +505,7 @@ fun ArtistScreen(
                                     })
                                 },
                                 itemContent = { song ->
+                                    if (parentalControlEnabled && song.explicit) return@ItemsPage
 
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,

@@ -107,6 +107,7 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -130,6 +131,7 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
@@ -170,6 +172,7 @@ fun PlaylistSongListModern(
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
     val hapticFeedback = LocalHapticFeedback.current
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     LaunchedEffect(Unit, filter) {
         if (playlistPage != null && playlistPage?.songsPage?.continuation == null) return@LaunchedEffect
@@ -178,7 +181,8 @@ fun PlaylistSongListModern(
             Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
         }
 
-        playlistSongs = playlistPage?.songsPage?.items!!
+        playlistSongs = if (parentalControlEnabled)
+            playlistPage?.songsPage?.items?.filter { !it.asSong.title.startsWith(EXPLICIT_PREFIX) }!! else playlistPage?.songsPage?.items!!
         /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube

@@ -91,6 +91,7 @@ import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -115,6 +116,7 @@ import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
@@ -199,6 +201,7 @@ fun ArtistOverviewModern(
 
     var artist by persist<Artist?>("artist/$browseId/artist")
     val hapticFeedback = LocalHapticFeedback.current
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     LaunchedEffect(Unit) {
         if (browseId != null) {
@@ -521,7 +524,10 @@ fun ArtistOverviewModern(
 
                 if (youtubeArtistPage != null) {
 
-                    youtubeArtistPage.songs?.let { songs ->
+                    youtubeArtistPage.songs?.let { allSongs ->
+
+                        val songs = if (parentalControlEnabled)
+                            allSongs.filter { !it.explicit } else allSongs
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,

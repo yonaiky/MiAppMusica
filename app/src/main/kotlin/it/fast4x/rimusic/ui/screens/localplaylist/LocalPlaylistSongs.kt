@@ -188,6 +188,8 @@ import java.util.Date
 import java.util.UUID
 import it.fast4x.compose.reordering.animateItemPlacement
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 
 
 @KotlinCsvExperimental
@@ -218,9 +220,12 @@ fun LocalPlaylistSongs(
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
-            .collect { playlistSongs = it }
+            .collect { playlistSongs = if (parentalControlEnabled)
+                it.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else it }
     }
 
     LaunchedEffect(Unit) {

@@ -117,6 +117,7 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -141,6 +142,7 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.monthlyPLaylists
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -238,6 +240,8 @@ fun QuickPicksModern(
     val from = last50Year.inWholeMilliseconds
 
     var selectedCountryCode by rememberPreference(selectedCountryCodeKey, Countries.ZZ)
+
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     suspend fun loadData() {
         runCatching {
@@ -959,7 +963,9 @@ fun QuickPicksModern(
                                     flingBehavior = ScrollableDefaults.flingBehavior(),
                                 ) {
                                     itemsIndexed(
-                                        items = songs.distinctBy { it.key },
+                                        items = if (parentalControlEnabled)
+                                            songs.filter { !it.asSong.title.startsWith(EXPLICIT_PREFIX) }.distinctBy { it.key }
+                                        else songs.distinctBy { it.key },
                                         key = { _, song -> song.key }
                                     ) { index, song ->
                                         Row(

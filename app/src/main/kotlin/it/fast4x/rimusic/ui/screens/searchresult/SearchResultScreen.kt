@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -68,11 +69,13 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playVideo
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -109,6 +112,7 @@ fun SearchResultScreen(
     val hapticFeedback = LocalHapticFeedback.current
 
     val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
@@ -187,6 +191,8 @@ fun SearchResultScreen(
                                 headerContent = headerContent,
                                 itemContent = { song ->
                                     //Log.d("mediaItem",song.toString())
+                                    if (parentalControlEnabled && song.asSong.title.startsWith(EXPLICIT_PREFIX))
+                                        return@ItemsPage
 
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,

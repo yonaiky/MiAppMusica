@@ -85,7 +85,7 @@ import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.NavigationRail
 import it.fast4x.rimusic.ui.components.ScaffoldTB
-import it.fast4x.rimusic.ui.components.themed.appBar
+import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -170,7 +170,7 @@ fun Scaffold(
             containerColor = colorPalette.background0,
             topBar = {
                 if(uiType == UiType.RiMusic) {
-                    appBar(navController)
+                    AppBar(navController)
                 }
             },
 
