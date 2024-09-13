@@ -262,6 +262,7 @@ const val selectedCountryCodeKey = "selectedCountryCode"
 const val lastVideoIdKey = "lastVideoId"
 const val lastVideoSecondsKey = "lastVideoSeconds"
 const val isDiscordPresenceEnabledKey = "isDiscordPresenceEnabled"
+const val loudnessBaseGainKey = "loudnessBaseGain"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

@@ -177,6 +177,7 @@ import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.lastPlayerThumbnailSizeKey
 import it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
 import it.fast4x.rimusic.utils.lastPlayerVisualizerTypeKey
+import it.fast4x.rimusic.utils.loudnessBaseGainKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
@@ -776,6 +777,8 @@ fun UiSettings(
     var showthumbnail by rememberPreference(showthumbnailKey, false)
     /*  ViMusic Mode Settings  */
 
+    var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
+
     Column(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -1309,7 +1312,7 @@ fun UiSettings(
 
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true))
+        if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.loudness_normalization),
                 text = stringResource(R.string.autoadjust_the_volume),
@@ -1318,6 +1321,29 @@ fun UiSettings(
                     volumeNormalization = it
                 }
             )
+            AnimatedVisibility(visible = volumeNormalization) {
+                val initialValue by remember { derivedStateOf { loudnessBaseGain } }
+                var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
+
+
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SliderSettingsEntry(
+                        title = stringResource(R.string.settings_loudness_base_gain),
+                        text = stringResource(R.string.settings_target_gain_loudness_info),
+                        state = newValue,
+                        onSlide = { newValue = it },
+                        onSlideComplete = {
+                            loudnessBaseGain = newValue
+                            restartService = true
+                        },
+                        toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
+                        range = -20f..20f
+                    )
+                }
+            }
+        }
 
 
         if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
