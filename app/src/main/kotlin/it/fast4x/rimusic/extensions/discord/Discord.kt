@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.my.kizzyrpc.KizzyRPC
 import com.my.kizzyrpc.model.Activity
@@ -31,6 +32,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
+import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
@@ -112,9 +114,11 @@ fun DiscordLoginAndGetToken(
     }
 }
 
+@UnstableApi
 fun sendDiscordPresence(
     token: String,
-    mediaItem: MediaItem
+    mediaItem: MediaItem,
+    duration: Long
 ) {
     if (token.isEmpty()) return
 
@@ -126,15 +130,23 @@ fun sendDiscordPresence(
             details = mediaItem.mediaMetadata.title.toString(),
             state = mediaItem.mediaMetadata.artist.toString(),
             type = TypeDiscordActivity.LISTENING.value,
+            /*
             timestamps = Timestamps(
                 start = System.currentTimeMillis(),
-                end = System.currentTimeMillis() + 500000
+                end = System.currentTimeMillis() + duration
             ),
+             */
             assets = Assets(
-                largeImage = mediaItem.mediaMetadata.artworkUri.toString(),
-                smallImage = mediaItem.mediaMetadata.extras?.getString("thumbnail").toString(),
-                largeText = mediaItem.mediaMetadata.title.toString(),
-                smallText = mediaItem.mediaMetadata.artist.toString(),
+                //largeImage = mediaItem.mediaMetadata.artworkUri.toString(),
+                //smallImage = mediaItem.mediaMetadata.extras?.getString("thumbnail").toString(),
+                //largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
+                //smallImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
+                largeImage = "mp:icona_rimusic",
+                smallImage = "mp:musical-note",
+                //largeText = mediaItem.mediaMetadata.title.toString(),
+                //smallText = mediaItem.mediaMetadata.artist.toString(),
+                //largeText = "Largelabel",
+                //smallText = "Smalllabel",
             ),
             buttons = listOf("Get RiMusic", "Listen to YTMusic"),
             metadata = com.my.kizzyrpc.model.Metadata(

@@ -154,19 +154,6 @@ fun StatisticsPage(
 
 
     val now: Long = System.currentTimeMillis()
-    //val now: Long = System.currentTimeMillis() / 1000
-    //val dateTime = LocalDateTime.now()
-    //val today = dateTime.minusDays(1).toEpochSecond(ZoneOffset.UTC)
-
-    /*
-    val today = dateTime.minusHours(23).toEpochSecond(ZoneOffset.UTC) * 1000
-    val lastWeek = dateTime.minusDays(7).toEpochSecond(ZoneOffset.UTC) * 1000
-    val lastMonth = dateTime.minusDays(30).toEpochSecond(ZoneOffset.UTC) * 1000
-    val last3Month = dateTime.minusDays(90).toEpochSecond(ZoneOffset.UTC) * 1000
-    val last6Month = dateTime.minusDays(180).toEpochSecond(ZoneOffset.UTC) * 1000
-    val lastYear = dateTime.minusDays(365).toEpochSecond(ZoneOffset.UTC) * 1000
-    val last20Year = dateTime.minusYears(20).toEpochSecond(ZoneOffset.UTC) * 1000
-     */
 
     val today: Duration = 1.days
     val lastWeek: Duration = 7.days

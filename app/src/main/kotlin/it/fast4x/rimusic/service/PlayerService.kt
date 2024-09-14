@@ -733,7 +733,8 @@ class PlayerService : InvincibleService(),
                 player.currentMediaItem?.let {
                     sendDiscordPresence(
                         discordPersonalAccessToken,
-                        it
+                        it,
+                        player.duration
                     )
                 }
             }
