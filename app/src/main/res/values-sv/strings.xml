@@ -727,7 +727,7 @@
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Join the group on Telegram</string>
     <string name="social_github">GitHub</string>
-    <string name="update">Update</string>
+    <string name="update">Uppdatera</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
@@ -740,10 +740,10 @@
     <string name="discord_disconnect">Disconnect</string>
     <string name="discord_connect">Connect</string>
     <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
-    <string name="settings_reset">Reset</string>
+    <string name="settings_reset">Återställ</string>
     <string name="settings_restore_default_settings">Restore default settings</string>
     <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
+    <string name="create_new_playlist">Skapa ny spellista</string>
     <string name="settings_loudness_base_gain">Loudness base gain</string>
     <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
 </resources>
