@@ -90,12 +90,12 @@
     <string name="enable_android_auto_support">Activar soporte para Android Auto</string>
     <string name="search_history">HISTORIAL DE BÚSQUEDA</string>
     <string name="pause_search_history">Pausar el historial de búsqueda</string>
-    <string name="neither_save_new_searched_query">No guardar las nuevas búsquedas ni mostrar el historial</string>
+    <string name="neither_save_new_searched_query">No guardar las nuevas búsquedas ni mostrarlas en el historial</string>
     <string name="clear_search_history">Limpiar el historial de búsqueda</string>
     <string name="history_is_empty">El historial está vacío</string>
     <string name="service_lifetime">SERVICIO INVENCIBLE</string>
     <string name="battery_optimizations_applied">Si se aplican las optimizaciones de la batería, la notificación de reproducción puede desaparecer repentinamente cuando se detiene la aplicación.</string>
-    <string name="is_android12">A partir de Android 12, debes deshabilitar las optimizaciones de la batería para que la opción \"Servicio invencible\" surta efecto.</string>
+    <string name="is_android12">A partir de Android 12, se requiere deshabilitar las optimizaciones de la batería para que la opción \"Servicio invencible\" surta efecto.</string>
     <string name="ignore_battery_optimizations">Ignorar la optimización de la batería</string>
     <string name="already_unrestricted">Ya sin restricciones</string>
     <string name="disable_background_restrictions">Desactivar las restricciones en segundo plano</string>
@@ -603,7 +603,7 @@
     <string name="lyrics_size">Tamaño de las letras</string>
     <string name="translate">Traducir</string>
     <string name="transparentbar">Barra de línea de tiempo transparente</string>
-    <string name="timelinesize">Tamaño de la línea de tiempo del jugador</string>
+    <string name="timelinesize">Tamaño de la línea de tiempo del reproductor</string>
     <string name="actionspacedevenly">Espaciados uniformemente</string>
     <string name="expandedplayer">Reproductor expandido</string>
     <string name="expandedlyrics">Letras ampliadas</string>
@@ -740,10 +740,10 @@
     <string name="discord_disconnect">Desconectar</string>
     <string name="discord_connect">Conectar</string>
     <string name="discord_connected_to_discord_account">Conectado a la cuenta de Discord</string>
-    <string name="settings_reset">Reset</string>
-    <string name="settings_restore_default_settings">Restore default settings</string>
-    <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
-    <string name="settings_loudness_base_gain">Loudness base gain</string>
-    <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
+    <string name="settings_reset">Restablecer</string>
+    <string name="settings_restore_default_settings">Restablecer los ajustes predeterminados</string>
+    <string name="piped_custom_instance">Instancia personalizada de Piped</string>
+    <string name="create_new_playlist">Crear nueva playlist</string>
+    <string name="settings_loudness_base_gain">Ganancia base de volumen</string>
+    <string name="settings_target_gain_loudness_info">Ganancia objetivo para la normalización de volumen</string>
 </resources>
