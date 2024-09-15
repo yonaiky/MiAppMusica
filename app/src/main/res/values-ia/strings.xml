@@ -34,8 +34,8 @@
     <string name="overview">Summario</string>
     <string name="singles">Singles</string>
     <string name="library">Bibliotheca</string>
-    <string name="artist_no_release_album">This artist didn\'t release any album</string>
-    <string name="artist_no_release_single">This artist didn\'t release any single</string>
+    <string name="artist_no_release_album">Iste artista non ha lanceate necun album</string>
+    <string name="artist_no_release_single">Iste artista non ha lanceate necun single</string>
     <string name="delete_playlist">Desira tu vermente deler iste lista de reproduction?</string>
     <string name="sync">Synchronisar</string>
     <string name="rename">Renominar</string>
@@ -48,7 +48,7 @@
     <string name="itag">Itag</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="size">Dimension</string>
-    <string name="cached">Cached</string>
+    <string name="cached">In le cache</string>
     <string name="loudness">Loudness</string>
     <string name="clear">Rader</string>
     <string name="error">Ocurreva un error.</string>
@@ -250,8 +250,8 @@
     <string name="odia">Odia</string>
     <string name="bashkir">Bashkir</string>
     <string name="esperanto">Esperanto</string>
-    <string name="close_app_with_back_button">Close app with Back Button</string>
-    <string name="when_you_use_the_back_button_from_the_home_page">When you use the back button from the home page</string>
+    <string name="close_app_with_back_button">Clauder le application con le button Retro</string>
+    <string name="when_you_use_the_back_button_from_the_home_page">Quando tu usa le button Retro ab le pagina de initio</string>
     <string name="audio_quality_format_high">High</string>
     <string name="audio_quality_format_medium">Medium</string>
     <string name="audio_quality_format_low">Low</string>
@@ -259,8 +259,8 @@
     <string name="do_you_really_want_to_delete_download">Desira tu vermente deler le discarga?</string>
     <string name="enqueue_all">Adder toto al cauda</string>
     <string name="enqueue_selected">Adder le seligite al cauda</string>
-    <string name="greek">Greek</string>
-    <string name="catalan">Catalan</string>
+    <string name="greek">Greco</string>
+    <string name="catalan">Catalano</string>
     <string name="disable_scrolling_text">Disable scrolling text</string>
     <string name="scrolling_text_is_used_for_long_texts">Scrolling text is used for long texts</string>
     <string name="audio_quality_format">Audio quality Format</string>
@@ -272,8 +272,8 @@
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Show Favorite button in lock screen and notification area</string>
     <string name="show_download_button">Monstrar le button de discarga</string>
     <string name="show_download_button_in_lock_screen_and_notification_area">Show Download button in lock screen and notification area</string>
-    <string name="by_most_played_song">By Most played song</string>
-    <string name="by_last_played_song">By Last played song</string>
+    <string name="by_most_played_song">Per Le canto plus reproducite</string>
+    <string name="by_last_played_song">Per Le ultime canto reproducite</string>
     <string name="audio_quality_automatic">Automatic</string>
     <string name="statistics_songs_heard">cantos ascoltate</string>
     <string name="statistics_of_time_taken">of time taken</string>
@@ -294,11 +294,11 @@
     <string name="customize_album">Personalisar le album</string>
     <string name="update_title">Actualisar le titulo</string>
     <string name="update_authors">Actualisar le autores</string>
-    <string name="update_cover">Update Cover</string>
+    <string name="update_cover">Actualisar le copertura</string>
     <string name="title">Titulo</string>
     <string name="authors">Authors</string>
-    <string name="cover">Cover</string>
-    <string name="lang_japanese">Japanese</string>
+    <string name="cover">Copertura</string>
+    <string name="lang_japanese">Japonese</string>
     <string name="paste_or_type_a_valid_url">Paste or type a valid url</string>
     <string name="you_can_put_a_complete_link">You can put a complete link of a playlist, an album, a channel or a single song on YouTube or YouTube Music</string>
     <string name="go_to_link">Vader al ligamine</string>
