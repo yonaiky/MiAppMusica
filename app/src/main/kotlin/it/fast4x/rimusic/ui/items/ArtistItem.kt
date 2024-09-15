@@ -78,7 +78,7 @@ fun ArtistItem(
     alternative: Boolean = false,
     showName: Boolean = true
 ) {
-    val (_, typography) = LocalAppearance.current
+    val (_, typography, thumbnailShape) = LocalAppearance.current
 
     ItemContainer(
         alternative = alternative,
@@ -90,7 +90,8 @@ fun ArtistItem(
             model = thumbnailUrl?.thumbnail(thumbnailSizePx),
             contentDescription = null,
             modifier = Modifier
-                .clip(CircleShape)
+                //.clip(CircleShape)
+                .clip(thumbnailShape)
                 .requiredSize(thumbnailSizeDp)
         )
 

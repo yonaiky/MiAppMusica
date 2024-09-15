@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -99,7 +100,7 @@ fun AlbumItem(
             //contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(thumbnailShape)
-                .size(thumbnailSizeDp)
+                .requiredSize(thumbnailSizeDp)
         )
 
         ItemInfoContainer {

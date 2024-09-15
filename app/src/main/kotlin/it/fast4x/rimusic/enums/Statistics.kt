@@ -9,3 +9,10 @@ enum class StatisticsType {
     OneYear,
     All
 }
+
+enum class StatisticsCategory {
+    Songs,
+    Artists,
+    Albums,
+    Playlists
+}

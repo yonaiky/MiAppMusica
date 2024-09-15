@@ -104,11 +104,6 @@ fun StatisticsPage(
     navController: NavController,
     statisticsType: StatisticsType
 ) {
-    //val onGoToArtist = artistRoute::global
-    //val onGoToAlbum = albumRoute::global
-    //val onGoToPlaylist = playlistRoute::global
-    //val onGoToPlaylist = localPlaylistRoute::global
-
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current

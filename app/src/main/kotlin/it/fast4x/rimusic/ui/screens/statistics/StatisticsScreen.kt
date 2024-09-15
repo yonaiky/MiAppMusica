@@ -58,7 +58,6 @@ fun StatisticsScreen(
     }
 
     PersistMapCleanup(tagPrefix = "${statisticsType.name}/")
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
@@ -103,31 +102,31 @@ fun StatisticsScreen(
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
-                        0 -> StatisticsPage(
+                        0 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.Today
                         )
-                        1 -> StatisticsPage(
+                        1 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.OneWeek
                         )
-                        2 -> StatisticsPage(
+                        2 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.OneMonth
                         )
-                        3 -> StatisticsPage(
+                        3 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.ThreeMonths
                         )
-                        4 -> StatisticsPage(
+                        4 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.SixMonths
                         )
-                        5 -> StatisticsPage(
+                        5 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.OneYear
                         )
-                        6 -> StatisticsPage(
+                        6 -> StatisticsPageModern(
                             navController = navController,
                             statisticsType = StatisticsType.All
                         )
