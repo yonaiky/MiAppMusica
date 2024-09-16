@@ -734,16 +734,16 @@
     <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Junte-se à comunidade no Reddit</string>
-    <string name="sleep_timer_ended">Sleep timer ended</string>
+    <string name="sleep_timer_ended">O temporizador de suspensão terminou</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
-    <string name="settings_reset">Reset</string>
-    <string name="settings_restore_default_settings">Restore default settings</string>
-    <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
-    <string name="settings_loudness_base_gain">Loudness base gain</string>
-    <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
+    <string name="discord_enable_rich_presence">Habilitar presença rica</string>
+    <string name="discord_disconnect">Desconectar</string>
+    <string name="discord_connect">Conectar</string>
+    <string name="discord_connected_to_discord_account">Conectado à conta Discord</string>
+    <string name="settings_reset">Reiniciar</string>
+    <string name="settings_restore_default_settings">Restaurar configurações padrão</string>
+    <string name="piped_custom_instance">Instância personalizada de Piped</string>
+    <string name="create_new_playlist">Criar nova lista de reprodução</string>
+    <string name="settings_loudness_base_gain">Ganho de base de intensidade</string>
+    <string name="settings_target_gain_loudness_info">Ganho alvo para a normalização do volume</string>
 </resources>
