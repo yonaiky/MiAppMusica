@@ -38,10 +38,63 @@ kotlin {
         }
 
         val desktopMain by getting
+        desktopMain.dependencies {
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(compose.desktop.currentOs)
+        }
 
         androidMain.dependencies {
             //implementation(compose.preview)
+            implementation(projects.composePersist)
+            implementation(projects.composeRouting)
+            implementation(projects.composeReordering)
             implementation(libs.compose.activity)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.ui.util)
+            implementation(libs.compose.ripple)
+            implementation(libs.compose.shimmer)
+            implementation(libs.compose.coil)
+            implementation(libs.palette)
+            implementation(libs.media3.exoplayer)
+            implementation(libs.media3.datasource.okhttp)
+            implementation(libs.appcompat)
+            implementation(libs.appcompat.resources)
+            implementation(libs.core.splashscreen)
+            implementation(libs.media)
+            implementation(libs.material)
+            implementation(libs.material3)
+            implementation(libs.compose.ui.graphics.android)
+            implementation(libs.constraintlayout)
+            implementation(libs.runtime.livedata)
+            implementation(libs.core.ktx)
+            implementation(libs.compose.animation)
+            implementation(libs.translator)
+            implementation(libs.kotlin.csv)
+            implementation(libs.monetcompat)
+            implementation(libs.androidmaterial)
+            implementation(libs.navigation)
+            implementation(libs.timber)
+            implementation(libs.crypto)
+            implementation(libs.logging.interceptor)
+            implementation(libs.math3)
+            implementation(libs.toasty)
+            implementation(libs.haze)
+            implementation(libs.androidyoutubeplayer)
+            implementation(libs.glance.widgets)
+            implementation(libs.kizzy.rpc)
+            implementation(libs.gson)
+
+            implementation(libs.room)
+
+            implementation(projects.innertube)
+            implementation(projects.innertubes)
+            implementation(projects.kugou)
+            implementation(projects.lrclib)
+            implementation(projects.piped)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -50,13 +103,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-        }
-        desktopMain.dependencies {
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.desktop.currentOs)
         }
     }
 }
@@ -156,10 +202,47 @@ android {
     ksp {
         arg("room.schemaLocation", "${rootProject.projectDir}/DBschemas")
     }
+
+    //ksp(libs.room.compiler)
+
+    dependencies{
+        coreLibraryDesugaring(libs.desugaring)
+    }
+
 }
 
+compose.desktop {
+    application {
+        mainClass = "MainKt"
 
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "RiMusic.DesktopApp"
+            packageVersion = "1.0.0"
 
+            /*
+            val iconsRoot = project.file("desktop-icons")
+            windows {
+                iconFile.set(iconsRoot.resolve("icon-windows.ico"))
+            }
+            macOS {
+                iconFile.set(iconsRoot.resolve("icon-mac.icns"))
+            }
+            linux {
+                iconFile.set(iconsRoot.resolve("icon-linux.png"))
+            }
+
+             */
+        }
+    }
+}
+
+compose.resources {
+    publicResClass = true
+    generateResClass = always
+}
+
+/*
 dependencies {
     implementation(projects.composePersist)
     implementation(projects.composeRouting)
@@ -213,31 +296,5 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
 }
+*/
 
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "RiMusic.DesktopApp"
-            packageVersion = "1.0.0"
-
-            val iconsRoot = project.file("desktop-icons")
-            windows {
-                iconFile.set(iconsRoot.resolve("icon-windows.ico"))
-            }
-            macOS {
-                iconFile.set(iconsRoot.resolve("icon-mac.icns"))
-            }
-            linux {
-                iconFile.set(iconsRoot.resolve("icon-linux.png"))
-            }
-        }
-    }
-}
-
-compose.resources {
-    publicResClass = true
-    generateResClass = always
-}
