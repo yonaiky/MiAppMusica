@@ -2,7 +2,7 @@
 <resources>
     <string name="cancel">Cancelar</string>
     <string name="done">Terminar</string>
-    <string name="hidesong">Você realmente quer esconder essa música? O tempo de reprodução e o cache serão apagados.\nEsta ação é irreversível.</string>
+    <string name="hidesong">Você realmente quer esconder essa música? O tempo de reprodução e a memória transitória serão apagados. Esta ação é irreversível.</string>
     <string name="new_playlist">Nova playlist</string>
     <string name="start_radio">Começar rádio</string>
     <string name="equalizer">Equalizador</string>
@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">letras sincronizadas</string>
     <string name="provided_by">Fornecida por</string>
     <string name="delete_playback_events">Excluir eventos %1$s de reprodução</string>
-    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos. %1$s será automaticamente fechado após a restauração do banco de dados.</string>
+    <string name="existing_data_will_be_overwritten">Os dados existentes serão substituídos. %1$s Será automaticamente fechado após a restauração do banco de dados.</string>
     <string name="folder_cache">CACHE ASSINADA</string>
     <string name="cache_reset_by_clicking_button">Atenção, clicando no botão abaixo, a pasta de localização do cache será redefinida para o padrão</string>
     <string name="cache_location_folder">Pasta de localização</string>
@@ -736,14 +736,14 @@
     <string name="social_reddit_info">Junte-se à comunidade do Reddit</string>
     <string name="sleep_timer_ended">Sleep timer ended</string>
     <string name="social_discord">Discord</string>
-    <string name="discord_enable_rich_presence">Enable Rich Presence</string>
-    <string name="discord_disconnect">Disconnect</string>
-    <string name="discord_connect">Connect</string>
-    <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
-    <string name="settings_reset">Reset</string>
-    <string name="settings_restore_default_settings">Restore default settings</string>
-    <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
-    <string name="settings_loudness_base_gain">Loudness base gain</string>
-    <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
+    <string name="discord_enable_rich_presence">Ativar Presença Rica</string>
+    <string name="discord_disconnect">Desconectado</string>
+    <string name="discord_connect">Conectado</string>
+    <string name="discord_connected_to_discord_account">Conectado à conta do Discord</string>
+    <string name="settings_reset">Reiniciar</string>
+    <string name="settings_restore_default_settings">Restaurar configuração padrão</string>
+    <string name="piped_custom_instance">Instância personalizada Pipe</string>
+    <string name="create_new_playlist">Criar uma seleção musical</string>
+    <string name="settings_loudness_base_gain">Estrutura de ganho</string>
+    <string name="settings_target_gain_loudness_info">Alvo ganho para a normalização do ruído</string>
 </resources>
