@@ -36,7 +36,7 @@
     <string name="library">Biblioteca</string>
     <string name="artist_no_release_album">El artista no ha publicado ningún álbum</string>
     <string name="artist_no_release_single">El artista no ha publicado ningún sencillo</string>
-    <string name="delete_playlist">¿Seguro que quieres eliminar la lista de reproducción?</string>
+    <string name="delete_playlist">¿Seguro que quieres eliminar esta lista de reproducción?</string>
     <string name="sync">Sincronizar</string>
     <string name="rename">Cambiar el nombre</string>
     <string name="delete">Eliminar</string>
