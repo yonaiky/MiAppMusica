@@ -31,6 +31,12 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
+        all {
+            languageSettings {
+                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+            }
+        }
+
         val desktopMain by getting
 
         androidMain.dependencies {
@@ -142,11 +148,13 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+
+    ksp {
+        arg("room.schemaLocation", "${rootProject.projectDir}/DBschemas")
+    }
 }
 
-ksp {
-    arg("room.schemaLocation", "${rootProject.projectDir}/DBschemas")
-}
+
 
 dependencies {
     implementation(projects.composePersist)
