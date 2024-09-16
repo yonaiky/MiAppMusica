@@ -52,6 +52,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
         }
         desktopMain.dependencies {
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
         }
     }
@@ -212,7 +216,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "it.fast4x.rimusic.MainKt"
+        mainClass = "MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
