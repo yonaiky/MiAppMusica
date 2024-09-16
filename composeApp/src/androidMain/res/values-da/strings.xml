@@ -95,7 +95,7 @@
     <string name="history_is_empty">Historik er tom</string>
     <string name="service_lifetime">SERVICE LEVETID</string>
     <string name="battery_optimizations_applied">Hvis batterioptimeringer er anvendt, kan afspilningsnotifikationen pludselig forsvinde, når den er sat på pause.</string>
-    <string name="is_android12">Siden Android 12 er det nødvendigt at deaktivere batterioptimeringer, for at indstillingen \"Uovervindelig tjeneste\" kan træde i kraft.</string>
+    <string name="is_android12">Siden Android 12 er det nødvendigt at deaktivere batterioptimeringer for, at indstillingen \"Uovervindelig tjeneste\" kan træde i kraft.</string>
     <string name="ignore_battery_optimizations">Ignorér batterioptimeringer</string>
     <string name="already_unrestricted">Allerede ubegrænset</string>
     <string name="disable_background_restrictions">Deaktivér baggrundsrestriktioner</string>
