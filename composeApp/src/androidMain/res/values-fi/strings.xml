@@ -85,7 +85,7 @@
     <string name="restore_1">Palauta</string>
     <string name="import_the_database">Tuo tietokanta ulkoisesta tallennustilasta</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Muista ottaa käyttöön \"Tuntemattomat lähteet\" Android Auto: n kehittäjäasetuksista.</string>
+    <string name="enable_unknown_sources">Muista ottaa käyttöön \"Tuntemattomat lähteet\" Android Auto:n kehittäjäasetuksista.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Ota Android Auto -tuki käyttöön</string>
     <string name="search_history">HAKUHISTORIA</string>
@@ -105,7 +105,7 @@
     <string name="persistent_queue">Pysyvä jono</string>
     <string name="save_and_restore_playing_songs">Tallenna ja palauta toistettavat kappaleet</string>
     <string name="resume_playback">Jatka toistoa</string>
-    <string name="when_device_is_connected">Kun langallinen- tai bluetooth-laite on yhdistetty</string>
+    <string name="when_device_is_connected">Kun langallinen- tai bluetoothlaite on yhdistetty</string>
     <string name="skip_silence">Ohita hiljaiset kohdat</string>
     <string name="skip_silent_parts_during_playback">Ohita hiljaiset osat toiston aikana</string>
     <string name="loudness_normalization">Normalisoi äänenvoimakkuus</string>
