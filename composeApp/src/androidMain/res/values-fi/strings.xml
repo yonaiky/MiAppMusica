@@ -622,7 +622,7 @@
     <string name="set_cache_location">Välimuistin sijainti</string>
     <string name="info_private_cache_location_can_t_cleaned">Yksityinen välimuistin sijainti, jota järjestelmä ei voi poistaa</string>
     <string name="error_file_unsupported_format">Näyttää siltä, että tiedostomuotoa ei tueta</string>
-    <string name="charts">Charts</string>
+    <string name="charts">Musiikkilista</string>
     <string name="thumbnailtype">Thumbnail Type</string>
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
