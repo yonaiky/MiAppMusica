@@ -335,13 +335,13 @@ inline fun DefaultDialog(
 
 @Composable
 inline fun <T> ValueSelectorDialog(
+    modifier: Modifier = Modifier,
     noinline onDismiss: () -> Unit,
     title: String,
     titleSecondary: String? = null,
     selectedValue: T,
     values: List<T>,
     crossinline onValueSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
     crossinline valueText: @Composable (T) -> String = { it.toString() }
 ) {
     val (colorPalette, typography) = LocalAppearance.current
@@ -525,7 +525,7 @@ inline fun SelectorArtistsDialog(
     values: List<Info>?,
     crossinline onValueSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    showItemsIcon: Boolean = false
+    //showItemsIcon: Boolean = false
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val configuration = LocalConfiguration.current
@@ -632,7 +632,7 @@ inline fun InputNumericDialog(
     crossinline setValue: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
+    val (colorPalette, typography, _) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
@@ -759,6 +759,7 @@ inline fun InputNumericDialog(
 
 @Composable
 inline fun InputTextDialog(
+    modifier: Modifier = Modifier,
     noinline onDismiss: () -> Unit,
     title: String,
     value: String,
@@ -766,14 +767,13 @@ inline fun InputTextDialog(
     placeholder: String,
     crossinline setValue: (String) -> Unit,
     validationType: ValidationType = ValidationType.None,
-    modifier: Modifier = Modifier,
     prefix: String = "",
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(cleanPrefix(value)) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
-    val value_must_be_greater = stringResource(R.string.value_must_be_greater_than)
+    //val value_must_be_greater = stringResource(R.string.value_must_be_greater_than)
     val value_must_be_ip_address = stringResource(R.string.value_must_be_ip_address)
     var checkedState = remember{
         mutableStateOf(value.startsWith(prefix))
@@ -1061,11 +1061,11 @@ inline fun StringListDialog(
 
 @Composable
 inline fun GenericDialog(
+    modifier: Modifier = Modifier,
     noinline onDismiss: () -> Unit,
     title: String,
     textButton: String = stringResource(R.string.cancel),
     crossinline content: @Composable () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography) = LocalAppearance.current
 
@@ -1209,16 +1209,19 @@ fun BlurParamsDialog(
 ) {
     val (colorPalette) = LocalAppearance.current
     val defaultStrength = 5f
-    val defaultStrength2 = 30f
+    //val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
     var blurStrength  by rememberPreference(blurStrengthKey, defaultStrength)
     //var blurStrength2  by rememberPreference(blurStrength2Key, defaultStrength2)
     var blurDarkenFactor  by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
 
+    /*
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
+
+     */
 
   //if (!isShowingLyrics || (isShowingLyrics && showlyricsthumbnail))
     DefaultDialog(
@@ -1245,6 +1248,15 @@ fun BlurParamsDialog(
                     .size(24.dp)
             )
 
+            SliderControl(
+                state = blurStrength,
+                onSlide = { blurStrength = it },
+                onSlideComplete = {},
+                toDisplay = { "%.0f".format(it) },
+                range = 0f..50f
+            )
+
+            /*
             CustomSlider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1295,13 +1307,13 @@ fun BlurParamsDialog(
                     }
                 }
             )
+            */
         }
     }
 }
     @androidx.annotation.OptIn(UnstableApi::class)
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun thumbnailOffsetDialog(
+    fun ThumbnailOffsetDialog(
         onDismiss: () -> Unit,
         scaleValue: (Float) -> Unit,
         spacingValue: (Float) -> Unit,
@@ -1337,6 +1349,15 @@ fun BlurParamsDialog(
                         .rotate(if (isLandscape) 45f else 135f)
                 )
 
+                SliderControl(
+                    state = thumbnailOffset,
+                    onSlide = { thumbnailOffset = it },
+                    onSlideComplete = {},
+                    toDisplay = { "%.0f".format(it) },
+                    range = 0f..50f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1392,6 +1413,7 @@ fun BlurParamsDialog(
                         }
                     }
                 )
+                */
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1409,6 +1431,15 @@ fun BlurParamsDialog(
                         .size(24.dp)
                 )
 
+                SliderControl(
+                    state = thumbnailSpacing,
+                    onSlide = { thumbnailSpacing = it },
+                    onSlideComplete = {},
+                    toDisplay = { "%.0f".format(it) },
+                    range = -50f..50f
+                )
+
+                /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1464,6 +1495,7 @@ fun BlurParamsDialog(
                         }
                     }
                 )
+                 */
             }
         }
     }

@@ -123,7 +123,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.BlurParamsDialog
-import it.fast4x.rimusic.ui.components.themed.thumbnailOffsetDialog
+import it.fast4x.rimusic.ui.components.themed.ThumbnailOffsetDialog
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -351,7 +351,7 @@ fun PlayerModern(
 
     if (showThumbnailOffsetDialog) {
 
-        thumbnailOffsetDialog(
+        ThumbnailOffsetDialog(
             onDismiss = { showThumbnailOffsetDialog = false},
             scaleValue = { thumbnailOffset = it },
             spacingValue = { thumbnailSpacing = it }
