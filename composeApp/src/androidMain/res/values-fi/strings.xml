@@ -698,7 +698,7 @@
     <string name="songs_number_to_show">Songs number to show</string>
     <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
     <string name="player_pause_on_volume_zero">Äänenvoimakkuuden ollessa nolla, laita soitto tauolle</string>
-    <string name="info_pauses_player_when_volume_zero">Pysäyttää soiton, kun äänenvoimakkuus on 0 ja jatkaa soittoa kun äänenvoimakkuus >0</string>
+    <string name="info_pauses_player_when_volume_zero">Pysäyttää soiton, kun äänenvoimakkuus on 0 ja jatkaa soittoa kun äänenvoimakkuus &gt;0</string>
     <string name="quality">Laatu</string>
     <string name="value_must_be_ip_address">Arvon on oltava IP-osoite</string>
     <string name="swipe_up_to_open_the_queue">Pyyhkäise ylös avataksesi jonon</string>
