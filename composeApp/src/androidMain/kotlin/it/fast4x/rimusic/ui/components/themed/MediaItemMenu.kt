@@ -79,8 +79,6 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
@@ -88,7 +86,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
@@ -104,11 +101,9 @@ import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuStyleKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.semiBold
@@ -120,7 +115,6 @@ import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import kotlin.system.exitProcess
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi

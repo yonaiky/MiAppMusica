@@ -4,23 +4,17 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -55,12 +49,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material3.rememberModalBottomSheetState
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -115,7 +107,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.toUiMedia
@@ -141,13 +132,11 @@ import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.currentWindow
-import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -201,8 +190,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Timeline
 import dev.chrisbanes.haze.HazeDefaults
@@ -218,8 +205,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.screens.player.components.VideoPlayer
-import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.utils.SearchYoutubeEntity
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
@@ -245,8 +230,6 @@ import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.horizontalFadingEdge
-import it.fast4x.rimusic.utils.isAtLeastAndroid12
-import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey

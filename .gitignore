@@ -17,3 +17,4 @@ local.properties
 /lrclib/build/
 /piped/build/
 /composeApp/build
+/.kotlin/

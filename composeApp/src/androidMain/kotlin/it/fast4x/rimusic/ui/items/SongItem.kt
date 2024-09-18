@@ -23,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,11 +42,8 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.screens.player.conditional
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.primaryButton
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.medium

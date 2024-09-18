@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Build
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -13,13 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
@@ -41,7 +36,6 @@ import androidx.media3.common.util.UnstableApi
 import coil.Coil
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
@@ -49,7 +43,6 @@ import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.internal
 import it.fast4x.rimusic.path
@@ -67,7 +60,6 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
-import it.fast4x.rimusic.utils.exoPlayerAlternateCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
@@ -75,10 +67,8 @@ import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.io.FileInputStream
 import java.io.FileOutputStream

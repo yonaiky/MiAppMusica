@@ -7,11 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import it.fast4x.compose.persist.persistList
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.MainApplication
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Playlist
@@ -24,10 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
-import kotlinx.serialization.Serializable
 
 fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pipedSession: Session, idPipedPlaylist: UUID, playlistId: Long) {
 

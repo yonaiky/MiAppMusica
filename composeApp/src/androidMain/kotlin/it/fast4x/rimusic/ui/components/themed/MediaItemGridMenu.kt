@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
@@ -19,14 +18,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,12 +65,9 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
 import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
@@ -91,7 +84,6 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItemToggleLike
-import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
@@ -101,8 +93,6 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @OptIn(UnstableApi::class)
 @Composable

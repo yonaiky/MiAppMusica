@@ -11,10 +11,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,13 +20,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -83,7 +78,6 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
@@ -98,9 +92,7 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -141,9 +133,6 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -155,13 +144,7 @@ import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.songToggleLike
-import it.fast4x.rimusic.utils.toast
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.shareIn
 import java.text.SimpleDateFormat
 import java.util.Date
 

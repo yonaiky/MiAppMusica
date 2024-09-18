@@ -3,10 +3,7 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.ConnectivityManager
 import android.net.Uri
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi

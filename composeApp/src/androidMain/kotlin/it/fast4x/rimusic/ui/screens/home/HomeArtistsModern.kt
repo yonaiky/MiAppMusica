@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.home
 
 
 import android.annotation.SuppressLint
-import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -18,13 +17,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -66,21 +62,17 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -98,12 +90,10 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.artistsItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold

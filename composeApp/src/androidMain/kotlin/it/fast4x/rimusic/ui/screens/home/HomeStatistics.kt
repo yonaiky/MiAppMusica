@@ -54,7 +54,6 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 

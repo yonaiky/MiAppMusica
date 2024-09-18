@@ -27,7 +27,6 @@ import io.ktor.client.plugins.UserAgent
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
-import it.fast4x.innertube.requests.playlistPageLong
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.models.Album
@@ -49,9 +48,7 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import org.json.JSONException
-import timber.log.Timber
 import java.io.File
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.text.SimpleDateFormat

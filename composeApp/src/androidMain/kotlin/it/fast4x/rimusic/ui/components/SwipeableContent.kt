@@ -1,12 +1,10 @@
 package it.fast4x.rimusic.ui.components
 
 import androidx.annotation.OptIn
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -18,10 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -31,28 +27,16 @@ import androidx.compose.ui.platform.ViewConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.albumItemToggleBookmarked
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun SwipeableContent(

@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.ui.screens.search
 
-import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -8,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,15 +52,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.core.text.htmlEncode
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
-import it.fast4x.innertube.requests.searchSuggestions
 import it.fast4x.innertube.requests.searchSuggestionsWithItems
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
@@ -76,7 +71,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -84,15 +78,10 @@ import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey

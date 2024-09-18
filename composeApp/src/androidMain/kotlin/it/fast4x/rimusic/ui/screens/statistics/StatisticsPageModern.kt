@@ -7,10 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -22,17 +19,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,7 +53,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.MaxStatisticsItems
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -76,7 +67,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -88,7 +78,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
-import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -97,7 +86,6 @@ import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey

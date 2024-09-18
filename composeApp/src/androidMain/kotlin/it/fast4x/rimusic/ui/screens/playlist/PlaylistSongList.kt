@@ -15,13 +15,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,7 +47,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
@@ -65,7 +61,6 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
@@ -83,9 +78,7 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
-import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
@@ -113,13 +106,11 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

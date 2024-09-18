@@ -16,11 +16,8 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistWithSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 

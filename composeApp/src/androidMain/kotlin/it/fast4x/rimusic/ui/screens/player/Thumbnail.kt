@@ -48,11 +48,9 @@ import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.service.LoginRequiredException
-import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
 import it.fast4x.rimusic.service.PlayableFormatNotFoundException
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.TimeoutException
 import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
@@ -66,7 +64,6 @@ import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
-import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize

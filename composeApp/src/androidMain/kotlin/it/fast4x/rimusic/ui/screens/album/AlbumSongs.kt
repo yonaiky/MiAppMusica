@@ -12,13 +12,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,9 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -52,7 +47,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -60,10 +54,8 @@ import coil.size.Size
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
@@ -79,8 +71,6 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
@@ -112,13 +102,10 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import it.fast4x.rimusic.utils.toast
 import java.text.SimpleDateFormat
 import java.util.Date
 

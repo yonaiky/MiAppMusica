@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.room)
 }
 
 repositories {
@@ -30,6 +32,8 @@ kotlin {
 
     jvm("desktop")
 
+
+
     sourceSets {
         all {
             languageSettings {
@@ -44,16 +48,25 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
+
         }
 
         androidMain.dependencies { }
         commonMain.dependencies {
-            //implementation(compose.runtime)
-            //implementation(compose.foundation)
-            //implementation(compose.material3)
-            //implementation(compose.ui)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
             implementation(compose.components.resources)
-            //implementation(compose.components.uiToolingPreview)
+            implementation(compose.components.uiToolingPreview)
+
+            implementation(projects.innertube)
+
+            implementation(libs.room)
+            implementation(libs.room.runtime)
+            implementation(libs.room.sqlite.bundled)
+
+
         }
     }
 }
@@ -150,9 +163,12 @@ android {
         generateLocaleConfig = true
     }
 
+    /*
     ksp {
-        arg("room.schemaLocation", "${rootProject.projectDir}/DBschemas")
+        //arg("room.schemaLocation", "${rootProject.projectDir}/DBschemas")
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
+     */
 
 }
 
@@ -187,8 +203,26 @@ compose.resources {
     generateResClass = always
 }
 
+/*
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+ */
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
 dependencies {
+    // KSP support for Room Compiler.
+    kspCommonMainMetadata(libs.room.compiler)
+}
+
+// Solves implicit dependency issue and IDEs source code detection.
+kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
+
+dependencies {
+
     implementation(projects.composePersist)
     implementation(projects.composeRouting)
     implementation(projects.composeReordering)
@@ -241,5 +275,3 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
 }
-
-

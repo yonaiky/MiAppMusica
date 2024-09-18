@@ -46,7 +46,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -147,7 +146,6 @@ import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.lyricsBackgroundKey
-import it.fast4x.rimusic.utils.isShowingLyricsKey
 
 
 @UnstableApi

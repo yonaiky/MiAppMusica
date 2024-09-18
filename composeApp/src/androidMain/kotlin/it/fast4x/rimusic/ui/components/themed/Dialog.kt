@@ -1,10 +1,8 @@
 package it.fast4x.rimusic.ui.components.themed
 
-import CustomSlider
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,17 +15,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -44,20 +38,17 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -65,7 +56,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
@@ -93,10 +83,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.common.collect.ImmutableList
 import it.fast4x.compose.persist.persist
-import it.fast4x.innertube.Innertube
-import it.fast4x.lrclib.models.Track
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -105,13 +92,9 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
-import it.fast4x.rimusic.query
-import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
-import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
@@ -120,7 +103,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.drawCircle
-import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getDeviceVolume
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
@@ -133,22 +115,12 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
 import kotlinx.coroutines.delay
-import progress
-import track
-import it.fast4x.rimusic.utils.isShowingLyricsKey
 import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.playbackDurationKey
 import it.fast4x.rimusic.utils.resize
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun TextFieldDialog(

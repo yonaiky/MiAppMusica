@@ -107,7 +107,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue

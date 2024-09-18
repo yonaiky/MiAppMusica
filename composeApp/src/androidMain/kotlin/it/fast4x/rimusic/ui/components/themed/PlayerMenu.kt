@@ -1,8 +1,5 @@
 package it.fast4x.rimusic.ui.components.themed
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -21,16 +18,12 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
-import it.fast4x.rimusic.enums.PlayerThumbnailSize
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.utils.menuStyleKey
-import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.seamlessPlay
-import it.fast4x.rimusic.utils.toast
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi

@@ -27,13 +27,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +42,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -79,7 +75,6 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.DeviceLists
@@ -92,7 +87,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -135,7 +129,6 @@ import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
 import it.fast4x.rimusic.utils.onDeviceSongSortByKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold

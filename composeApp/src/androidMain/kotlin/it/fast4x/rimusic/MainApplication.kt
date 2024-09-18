@@ -1,11 +1,9 @@
 package it.fast4x.rimusic
 
 import android.app.Application
-import androidx.compose.runtime.getValue
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
-import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.utils.CaptureCrash
@@ -13,10 +11,7 @@ import it.fast4x.rimusic.utils.FileLoggingTree
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.logDebugEnabledKey
-import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
-import it.fast4x.rimusic.utils.pipedInstanceNameKey
 import it.fast4x.rimusic.utils.preferences
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import timber.log.Timber
 import java.io.File
 

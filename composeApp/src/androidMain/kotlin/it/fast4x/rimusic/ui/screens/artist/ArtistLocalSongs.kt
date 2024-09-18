@@ -7,12 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -33,7 +30,6 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -43,7 +39,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -63,7 +58,6 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 

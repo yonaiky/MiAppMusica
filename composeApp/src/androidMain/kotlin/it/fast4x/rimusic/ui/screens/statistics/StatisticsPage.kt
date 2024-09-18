@@ -65,9 +65,6 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
-import it.fast4x.rimusic.ui.screens.localPlaylistRoute
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -85,7 +82,6 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey

@@ -30,22 +30,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
-import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.SearchType
-import it.fast4x.rimusic.models.SearchQuery
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
-import it.fast4x.rimusic.ui.screens.searchResultRoute
-import it.fast4x.rimusic.ui.screens.searchRoute
-import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.secondary
 @ExperimentalMaterialApi
