@@ -101,7 +101,7 @@
     <string name="disable_background_restrictions">Desativar restrições de fundo</string>
     <string name="invincible_service">Serviço invencível</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Quando desativar as otimizações de bateria não é suficiente</string>
-    <string name="player">Player</string>
+    <string name="player">Leitor</string>
     <string name="persistent_queue">Fila persistente</string>
     <string name="save_and_restore_playing_songs">Salvar e restaurar músicas reproduzindo</string>
     <string name="resume_playback">Continuar de onde deixou</string>
@@ -615,11 +615,11 @@
     <string name="lyricsoutline">Esboço da letra</string>
     <string name="fluidrainbow">Arco-íris Fluido</string>
     <string name="fluidtheme">Tema fluido</string>
-    <string name="blackgradient">Black Gradient at Bottom</string>
+    <string name="blackgradient">Gradiente preto na parte inferior</string>
     <string name="glow">Glow</string>
     <string name="bottomgradient">Show Bottom Gradient</string>
-    <string name="textoutline">Enable Text Outline</string>
-    <string name="set_cache_location">Cache location</string>
+    <string name="textoutline">Ativar contorno de texto</string>
+    <string name="set_cache_location">Localização da cache</string>
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
     <string name="error_file_unsupported_format">This file seems to have an unsupported format</string>
     <string name="charts">Charts</string>
