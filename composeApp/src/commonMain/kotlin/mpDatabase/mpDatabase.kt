@@ -20,7 +20,7 @@ import mpDatabase.entities.Event
 import mpDatabase.entities.Format
 import mpDatabase.entities.Lyrics
 import mpDatabase.entities.Playlist
-import mpDatabase.entities.QueuedMediaItem
+//import mpDatabase.entities.QueuedMediaItem
 import mpDatabase.entities.SearchQuery
 import mpDatabase.entities.Song
 import mpDatabase.entities.SongAlbumMap

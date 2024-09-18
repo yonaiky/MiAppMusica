@@ -1,5 +1,5 @@
 package mpDatabase.entities
-
+/*
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.MediaItem
 import androidx.room.ColumnInfo
@@ -13,3 +13,4 @@ class QueuedMediaItem(
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val mediaItem: MediaItem,
     var position: Long?
 )
+*/

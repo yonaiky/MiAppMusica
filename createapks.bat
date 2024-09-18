@@ -1,2 +1,0 @@
-del androidApp\accrescent\release\app-accrescent-release.apks
-java -jar ./bundletool.jar build-apks --ks="./APK keystore/RiMusicKeystore.jks" --ks-key-alias=key0 --bundle=./androidApp/accrescent/release/app-accrescent-release.aab --output=./androidApp/accrescent/release/app-accrescent-release.apks
