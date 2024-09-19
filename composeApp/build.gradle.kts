@@ -17,7 +17,7 @@ plugins {
 repositories {
     google()
     mavenCentral()
-    mavenLocal()
+    //mavenLocal()
     maven { url = uri("https://jitpack.io") }
 }
 
@@ -48,7 +48,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
-
         }
 
         androidMain.dependencies { }
@@ -66,6 +65,7 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.room.sqlite.bundled)
 
+            implementation(libs.mediaplayer.kmp)
 
         }
     }

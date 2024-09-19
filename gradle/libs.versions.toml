@@ -42,6 +42,7 @@ androidyoutubeplayer = "12.1.0"
 glance = "1.1.0"
 kizzyrpc = "1.0.71"
 gson = "2.11.0"
+mediaPlayerKMP = "1.0.9"
 
 [libraries]
 #gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -97,7 +98,7 @@ androidyoutubeplayer = {group = "com.pierfrancescosoffritti.androidyoutubeplayer
 glance-widgets = {group = "androidx.glance", name = "glance-appwidget", version.ref = "glance"}
 kizzy-rpc = {group = "com.github.dead8309", name = "KizzyRPC", version.ref = "kizzyrpc"}
 gson = {group = "com.google.code.gson", name = "gson", version.ref = "gson"}
-
+mediaplayer-kmp = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "mediaPlayerKMP" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
