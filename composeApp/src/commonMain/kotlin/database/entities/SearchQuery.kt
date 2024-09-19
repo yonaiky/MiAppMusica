@@ -1,4 +1,4 @@
-package mpDatabase.entities
+package database.entities
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity

@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import database.MusicDatabaseDao
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedPage
@@ -28,9 +29,8 @@ import rimusic.composeapp.generated.resources.restart_app_please
 import rimusic.composeapp.generated.resources.tips
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App() {
+fun App(db: MusicDatabaseDao) {
     MaterialTheme {
 
         var relatedPage = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
@@ -58,7 +58,7 @@ fun App() {
                     Text(stringResource(Res.string.tips))
                     BasicText(text = stringResource(Res.string.restart_app_please))
                     BasicText(text = "Songs: ${relatedPage.value?.songs?.size.toString()}")
-
+                    BasicText(text = "commonDao db song ${db.getAll()}")
                 }
             }
 

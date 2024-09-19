@@ -1,4 +1,4 @@
-package mpDatabase.entities
+package database.entities
 
 import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
@@ -7,7 +7,7 @@ import androidx.room.ForeignKey
 
 @Immutable
 @Entity(
-    primaryKeys = ["songId", "albumId"],
+    primaryKeys = ["songId", "playlistId"],
     foreignKeys = [
         ForeignKey(
             entity = Song::class,
@@ -16,15 +16,15 @@ import androidx.room.ForeignKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Album::class,
+            entity = Playlist::class,
             parentColumns = ["id"],
-            childColumns = ["albumId"],
+            childColumns = ["playlistId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SongAlbumMap(
+data class SongPlaylistMap(
     @ColumnInfo(index = true) val songId: String,
-    @ColumnInfo(index = true) val albumId: String,
-    val position: Int?
+    @ColumnInfo(index = true) val playlistId: Long,
+    val position: Int
 )

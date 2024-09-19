@@ -1,4 +1,4 @@
-package mpDatabase.entities
+package database.entities
 /*
 import androidx.compose.runtime.Immutable
 import androidx.media3.common.MediaItem

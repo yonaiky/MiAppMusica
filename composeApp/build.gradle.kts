@@ -174,6 +174,7 @@ android {
 
 compose.desktop {
     application {
+
         mainClass = "MainKt"
 
         nativeDistributions {
@@ -215,11 +216,24 @@ room {
 
 dependencies {
     // KSP support for Room Compiler.
-    kspCommonMainMetadata(libs.room.compiler)
+    // commented and replaced
+    //kspCommonMainMetadata(libs.room.compiler)
+
+    listOf(
+        "kspAndroid",
+         "ksp",
+        //"kspIosSimulatorArm64",
+        //"kspIosX64",
+        //"kspIosArm64"
+    ).forEach {
+        add(it, libs.room.compiler)
+    }
+
 }
 
 // Solves implicit dependency issue and IDEs source code detection.
-kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
+// commented and replaced
+//kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
 
 dependencies {
 
