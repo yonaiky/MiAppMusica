@@ -686,10 +686,10 @@
     <string name="carousel">Widok karuzeli</string>
     <string name="carouselsize">Rozmiar karuzeli</string>
     <string name="addednext">Dodano jako kolejny do odtwarzania</string>
-    <string name="info_paused_with_volume_zero">Paused with volume zero</string>
+    <string name="info_paused_with_volume_zero">Wstrzymaj przy zerowej głośności</string>
     <string name="effect_fade_audio">Wycisz dźwięk</string>
-    <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
-    <string name="autosync">Auto Sync Imported Playlists</string>
+    <string name="effect_fade_audio_description">Płynna zmiana głośności przy rozpoczynaniu lub wstrzymywaniu odtwarzania</string>
+    <string name="autosync">Automatyczna synchronizacja zaimportowanych playlist</string>
     <string name="message_type">Message type</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
