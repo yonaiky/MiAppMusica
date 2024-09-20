@@ -21,6 +21,8 @@ import database.MusicDatabaseDao
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedPage
+import it.fast4x.rimusic.ui.DesktopApp
+import it.fast4x.rimusic.ui.theme.DesktopTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rimusic.composeapp.generated.resources.Res
@@ -28,11 +30,16 @@ import rimusic.composeapp.generated.resources.compose_multiplatform
 import rimusic.composeapp.generated.resources.restart_app_please
 import rimusic.composeapp.generated.resources.tips
 
-
 @Composable
 fun App(db: MusicDatabaseDao) {
-    MaterialTheme {
 
+    DesktopTheme {
+        DesktopApp()
+    }
+
+
+    /*
+    MaterialTheme {
         var relatedPage = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
         LaunchedEffect(Unit) {
             Innertube.relatedPage(
@@ -64,4 +71,5 @@ fun App(db: MusicDatabaseDao) {
 
         }
     }
+     */
 }

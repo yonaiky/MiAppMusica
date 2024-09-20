@@ -50,7 +50,9 @@ kotlin {
             implementation(compose.desktop.currentOs)
         }
 
-        androidMain.dependencies { }
+        androidMain.dependencies {
+            implementation(libs.navigation)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -66,6 +68,8 @@ kotlin {
             implementation(libs.room.sqlite.bundled)
 
             implementation(libs.mediaplayer.kmp)
+
+            implementation(libs.navigation.kmp)
 
         }
     }
@@ -265,7 +269,6 @@ dependencies {
     implementation(libs.kotlin.csv)
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)
-    implementation(libs.navigation)
     implementation(libs.timber)
     implementation(libs.crypto)
     implementation(libs.logging.interceptor)

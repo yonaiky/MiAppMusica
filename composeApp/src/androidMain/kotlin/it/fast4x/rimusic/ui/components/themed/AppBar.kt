@@ -56,6 +56,10 @@ import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import rimusic.composeapp.generated.resources.Res
+import rimusic.composeapp.generated.resources.app_icon
+import org.jetbrains.compose.resources.painterResource
+import rimusic.composeapp.generated.resources.app_logo_text
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -107,7 +111,7 @@ fun AppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(R.drawable.app_icon),
+                    painter = painterResource(Res.drawable.app_icon),
                     colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
                     contentDescription = null,
                     modifier = Modifier
@@ -150,7 +154,7 @@ fun AppBar(
                         )
                 )
                 Image(
-                    painter = painterResource(R.drawable.app_logo_text),
+                    painter = painterResource(Res.drawable.app_logo_text),
                     colorFilter = ColorFilter.tint(
                         when(colorPaletteMode) {
                             ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
