@@ -10,6 +10,7 @@ class Multilingual {
       this.language = localStorage.getItem("language") || "en";
     }
   }
+
   _decode(string) {
     return string
       .replace(/\\n/g, "\n")
@@ -18,103 +19,107 @@ class Multilingual {
       .replaceAll("\\\\", "\\")
       .replaceAll("\\t", "\t");
   }
-  async loadStrings() {
-    const defaultValuesResponse = await fetch("res/values/strings.xml");
-    const defaultValues = await defaultValuesResponse.text();
-    if (this.language == "en") {
-      var selectedValues = defaultValues;
-    } else {
-      const selectedValuesResponse = await fetch(
-        `res/values-${this.language}/strings.xml`,
-      );
-      var selectedValues = await selectedValuesResponse.text();
-    }
-
-    // Default language
-    const parserDefault = new DOMParser();
-    const xmlDocDefault = parserDefault.parseFromString(
-      defaultValues,
-      "text/xml",
+  async loadStrings(lang) {
+    var language = this.language
+    if (lang) language = lang;
+    const selectedValuesResponse = await fetch(
+      `res/values-${language}/strings.xml`,
     );
-    const stringsDefault = xmlDocDefault.getElementsByTagName("string");
-    for (const string of stringsDefault) {
-      const name = string.getAttribute("name");
-      const value = this._decode(string.textContent);
-      this.defaultValues[name] = value;
-    }
+    var selectedValues = await selectedValuesResponse.text();
 
-    // Selected language
     const parserSelected = new DOMParser();
     const xmlDocSelected = parserSelected.parseFromString(
       selectedValues,
       "text/xml",
     );
     const stringsSelected = xmlDocSelected.getElementsByTagName("string");
-
     for (const string of stringsSelected) {
       const name = string.getAttribute("name");
       const value = this._decode(string.textContent);
       this.selectedValues[name] = value;
     }
+    if (lang)
+      this.updateDom();
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
   getString(name) {
     return this.selectedValues[name] || this.defaultValues[name];
   }
   updateDom() {
-    function replaceLast(x, y, z) {
-      var a = x.split("");
-      a[x.lastIndexOf(y)] = z;
-      return a.join("");
-    }
     const allElements = Array.prototype.slice.call(
       document.body.getElementsByTagName("*"),
     );
     allElements.forEach((el) => {
-      const text = el.innerHTML.trim();
-      if (text.startsWith("[") && text.endsWith("]")) {
-        const name = replaceLast(text.replace("[", ""), "]", "");
+      const name = el.getAttribute("name");
+      if (name) {
         const value = this.getString(name) || "";
-        el.innerHTML = el.innerHTML.replace(
-          `[${name}]`,
-          value.replaceAll("\n", "<br>"),
-        );
+        el.innerHTML = value.replaceAll("\n", "<br>")
       }
     });
   }
   updateLanguage(el) {
-    const lang = el.value;
-
-    // Calculate width for the new language that is selected
-    this._calculateWidth(el);
-
+    const lang = el.attributes.lang.value;
     localStorage.setItem("language", lang);
-    window.location.reload();
   }
   loadLanguageSelectInput(el) {
-    for (const option of el.children) {
-      if (option.value == this.language) {
-        option.selected = true;
+    const element = el.children[0].children[0].children[0];
+    for (const option of element.children) {
+      if (option.attributes.lang.value == this.language) {
+        langSelect.childNodes[0].textContent = option.innerText;
         break;
       }
     }
-    this._calculateWidth(el);
-  }
-  _calculateWidth(el) {
-    const option = el.options[el.selectedIndex].textContent;
-
-    // Calculate width of the text
-    const tempSpan = document.createElement("span");
-    tempSpan.textContent = option;
-    tempSpan.style.visibility = "hidden";
-    tempSpan.style.fontSize = "14px";
-    const spanEl = document.body.appendChild(tempSpan);
-
-    const textWidth = tempSpan.getBoundingClientRect().width;
-    el.style.width = `${Math.round(textWidth)}px`;
-
-    spanEl.remove();
   }
   setAttribute(el) {
     el.setAttribute("lang", this.language);
+  }
+  changeLang(a) {
+    const lang = a.target.attributes.lang.value
+    console.log("Language change to: " + lang)
+    LoadingScreen.unload();
+    langSelect.childNodes[0].textContent = a.target.innerText;
+    langSel.setAttribute("value", lang);
+    this.updateLanguage(a.target);
+    this.loadStrings(lang);
+    setTimeout(() => {
+      LoadingScreen.loaded();
+    }, 400);
+  }
+  langEvent(e) {
+    console.log(e.target.id)
+    if (e.target.id == langSelect.id) {
+      document.body.classList.toggle("visible");
+      if (window.innerWidth < 640){
+        open("#languageSelect", "_self")
+      }
+      return;
+    }
+    if (e.target.id == "globe"){
+      console.log("jepp")
+      document.body.classList.add("visible");
+      open("#languageSelect", "_self")
+      return;
+    }
+    if (e.target.id == langOption.id) {
+      return;
+    }
+    if (e.target.parentElement) {
+      if (e.target.parentElement.id == langOption.id) {
+        this.changeLang(e);
+      }
+    }
+    if (document.body.classList.contains("visible") && window.innerWidth < 640)
+    open("#footer", "_self");
+    document.body.classList.remove("visible");
+  };
+  onwheel = window.onwheel = function (e) {
+    if (e.target.id == langSelect.id || e.target.attributes.lang) {
+      return;
+    }
+    if (document.body.classList.contains("visible") && window.innerWidth < 640){
+    open("#footer", "_self");
+    }
+    document.body.classList.remove("visible");
   }
 }
