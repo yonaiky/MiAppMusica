@@ -1,7 +1,3 @@
-select {
-  all: unset;
-  cursor: pointer;
-}
 .loadingScreen {
   position: fixed;
   width: 100vw;
@@ -41,22 +37,92 @@ select {
     transform: rotate(1turn);
   }
 }
-#languageSelect {
-  padding: 0 8px 0 8px;
-  color: #abbad0;
-  border-left: 17px solid transparent;
-  background-image:url(../images/lang.svg) !important;
-  background-position: -17px -1px;
-  background-repeat: no-repeat;
-  background-size: auto 21px;
-  text-wrap: nowrap;
-  option {
-    text-align: left !important;
-  }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  bottom:0
 }
 
 .footer-links > li > a {
   white-space: nowrap;
+}
+#globe{
+  margin-left: 8px;
+  cursor: pointer;
+  --color: #abbad0;
+  opacity: 0.6;
+  &:hover{
+    --color: #4fc17c !important;
+    opacity: 0.95 !important;
+  }
+}
+#langSelect { 
+  cursor: pointer;
+  position: relative;
+  left: 0px;
+  margin: 0;
+  padding-left: 25px; 
+  width: fit-content;
+  z-index:5000;
+  margin-right: 8px;
+  background-image:url(../images/lang.svg) !important;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  background-size: auto 21px;
+  text-wrap: nowrap;
+}
+
+#langOption {
+  display: none;
+  position: absolute;
+  max-height: calc(72vh - 24px);
+  width: fit-content;
+  right: 0px;
+  bottom: calc(100% + 5px);
+  border-radius: 5px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color:#fff;
+  color: #161e29;
+  border: 1px solid rgba(80,80,80,1);
+  padding: 0 8px 0 8px;
+
+  div {
+    border-bottom: 1px dotted rgba(80,80,80,1);
+    padding:7px;
+    text-align: left;
+    text-wrap: nowrap;
+    cursor: pointer;
+  }
+
+  /* Styling for Chromebased Browser */
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(250, 250, 250, 0.1);
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+
+  div:hover {
+    background-color: rgba(0,0,0,0.2)
+  }
+
+  div:last-child {
+    border-bottom: none
+  }
+}
+
+body.visible #langOption {
+  display: block !important;
+  cursor:default;
+}
+
+body.visible #langBorder {
+  background-color: rgba(36, 41, 66, 0.8);
+  display: flex;
+  cursor:crosshair;
+  
 }
 @media (max-width: 740px) {
   .footer-links {
@@ -70,6 +136,38 @@ select {
 @media (max-width: 640px) {
   .footer-links {
     text-align: center;
+  }
+  #langSelect {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #langBorder {
+    position: fixed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;  
+  }
+
+  #langOption {
+    margin-left: auto;
+    margin-right: auto;
+    position: unset;
+    max-height: 90vh;
+    height: fit-content;
+    width: 65vw;
+    div{
+      padding-top: 10px;
+      padding-bottom: 10px
+    }
+  }
+
+  body.visible {
+    overflow: hidden;
   }
 }
 @media (max-width: 840px) {
@@ -121,15 +219,24 @@ body,
 .body-wrap {
   transition: background-color 250ms;
 }
-#languageSelect > option {
-  color: #15182b;
-}
+
+
 body.dark {
   background-color: #0d1117;
   #toggledark {
     --sun: 0.4 !important;
     --moon: 0.95 !important
-  ;
+  }
+  #langBorder{  
+    background-color: rgba(23, 25, 37, 0.8);
+  }
+  #langOption{ 
+    background-color: #0d1117;
+    color:#fff;
+    
+    div:hover {
+      background-color: rgba(0,0,0,0.9)
+    }
   }
 
   .hero-paragraph,
@@ -180,4 +287,35 @@ a > img:hover {
     text-align: center;
     flex: 50%;
   }
+}
+@media (max-width: 740px) {
+  @media (min-width: 641px) {
+    #langSelect {
+      margin-left: auto;
+      margin-right:0;
+    }
+  }
+}
+/* REVEAL STYLE */
+.is-revealing{
+  &.invisible{
+    opacity: 0; 
+  }
+  &.up{
+    transition: all 0.4s ease-in-out, opacity 0.2s;
+    transform: translateY(25%);
+  }
+  &.down{
+    transition: all 0.4s ease-in-out, opacity 0.2s;
+    transform: translateY(-25%);
+  }
+  &.visible{
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+.flex{
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
