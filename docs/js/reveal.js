@@ -8,7 +8,7 @@ async function reveal(){
         reveal.classList.remove("visible")
         reveal.classList.add("invisible")
 
-       if ((boundings.top - window.innerHeight) < (0-(boundings.height) * 0.5)){
+       if ((boundings.top - window.innerHeight) < (0-(boundings.height) * 0.35)){
             reveal.classList.add("visible")
             reveal.classList.remove("invisible")
        }
