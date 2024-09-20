@@ -154,9 +154,11 @@ fun About() {
                     "agefcgo \n"+
                     "Ahmad Al Juwaisri \n"+
                     "Alnoer \n"+
+                    "Aniol \n" +
                     "Ann Naser Nabil \n"+
                     "AntoniNowak \n" +
                     "beez276 \n"+
+                    "benhaotang \n" +
                     "CiccioDerole \n"+
                     "Clyde6790p_PH \n"+
                     "Conk \n"+
