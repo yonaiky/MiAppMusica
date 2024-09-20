@@ -59,7 +59,7 @@
     <string name="view_the_source_code">Vider le codice fonte</string>
     <string name="report_an_issue">Signalar un defecto</string>
     <string name="you_will_be_redirected_to_github">You will be redirected to GitHub</string>
-    <string name="request_a_feature_or_suggest_an_idea">Request a feature or suggest an idea</string>
+    <string name="request_a_feature_or_suggest_an_idea">Demanda un functionalitate o suggere un idea</string>
     <string name="theme">Thema</string>
     <string name="theme_mode">Modo de thema</string>
     <string name="thumbnail_roundness">Thumbnail roundness</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Restore</string>
     <string name="import_the_database">Import the database from the external storage</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
+    <string name="enable_unknown_sources">Rememora activar le \"Fontes incognite\" in le Parametros de disveloppator de Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Activar le supporto de Android Auto</string>
     <string name="search_history">SEARCH HISTORY</string>
@@ -388,8 +388,8 @@
     <string name="playlist_top">Lista del Top</string>
     <string name="my_playlist_top">Mi Top %s</string>
     <string name="navigation_bar_position">Navigation bar position</string>
-    <string name="direction_left">Left</string>
-    <string name="direction_right">Right</string>
+    <string name="direction_left">Sinistre</string>
+    <string name="direction_right">Dextre</string>
     <string name="copy_lyrics">Copiar le parolas de canto</string>
     <string name="value_copied">Copiate</string>
     <string name="do_you_really_want_to_delete_cache">Desira tu vermente deler le cache?</string>
@@ -424,15 +424,15 @@
     <string name="full_screen">Schermo plen</string>
     <string name="click_lyrics_text">Clicca le texto del parolas de canto</string>
     <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open On device page.</string>
-    <string name="folder_was_not_found">Folder was not found</string>
-    <string name="direction_top">Top</string>
+    <string name="folder_was_not_found">Dossier non trovate</string>
+    <string name="direction_top">In alto</string>
     <string name="pick_from">Pick from</string>
     <string name="download_cover">Discargar le copertura</string>
     <string name="menu_style">Stilo del menu</string>
     <string name="style_grid">Grillia</string>
     <string name="style_list">Lista</string>
     <string name="click_to_switch_to">Click to switch to</string>
-    <string name="direction_bottom">Bottom</string>
+    <string name="direction_bottom">In basso</string>
     <string name="event_shake">Shake</string>
     <string name="shake_to_change_song">Shake to change song</string>
     <string name="history">Chronologia</string>
@@ -477,7 +477,7 @@
     <string name="te_scale">Scale</string>
     <string name="te_slide_vertical">Slide Vertical</string>
     <string name="te_slide_horizontal">Slide Horizontal</string>
-    <string name="info_wait_it_may_take_a_few_minutes">Wait, it may take a few minutes...</string>
+    <string name="info_wait_it_may_take_a_few_minutes">Attende, il pote prender alcun minutas...</string>
     <string name="album_and_alternative_versions">Album e versiones alternative</string>
     <string name="album_alternative_versions">Versiones alternative</string>
     <string name="monthly_playlists">Listas de reproduction mensual</string>
@@ -551,8 +551,8 @@
     <string name="player_position">Player position</string>
     <string name="position_top">Top</string>
     <string name="position_bottom">Bottom</string>
-    <string name="added_to_favorites">Added to favorites</string>
-    <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="added_to_favorites">Addite al favorites</string>
+    <string name="removed_from_favorites">Removite del favorites</string>
     <string name="lang_filipino">Filipino</string>
     <string name="action_bar_transparent_background">Transparent background</string>
     <string name="pinfo_type">Typo de information</string>
@@ -589,7 +589,7 @@
     <string name="piped_disconnect">Disconnecter</string>
     <string name="piped_connect">Connecter</string>
     <string name="piped_connected_to_s">Connectite a %s</string>
-    <string name="fake_audio_bar">Fake Audio Bar</string>
+    <string name="fake_audio_bar">Barra de audio false</string>
     <string name="copy_crash_log_to_clipboard">Copiar le registro de fallimento al area de transferentia</string>
     <string name="title_backup_and_restore">COPIA DE SECURITATE E RESTAURATION</string>
     <string name="message_excluded_s_songs">Excluded %s songs</string>
@@ -623,7 +623,7 @@
     <string name="info_private_cache_location_can_t_cleaned">Private cache location, can\'t be cleaned by the system</string>
     <string name="error_file_unsupported_format">Il pare que iste file ha un formato non supportate</string>
     <string name="charts">Charts</string>
-    <string name="thumbnailtype">Thumbnail Type</string>
+    <string name="thumbnailtype">Typo de miniatura</string>
     <string name="showvisthumbnail">Show Thumbnail for visualizer</string>
     <string name="androidheadunit">Android Head unit</string>
     <string name="extra_space">Extra space at top</string>
