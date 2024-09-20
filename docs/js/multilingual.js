@@ -91,12 +91,10 @@ class Multilingual {
     if (e.target.id == langSelect.id) {
       document.body.classList.toggle("visible");
       if (window.innerWidth < 640){
-        open("#languageSelect", "_self")
-      }
+       }
       return;
     }
     if (e.target.id == "globe"){
-      console.log("jepp")
       document.body.classList.add("visible");
       open("#languageSelect", "_self")
       return;
@@ -110,7 +108,6 @@ class Multilingual {
       }
     }
     if (document.body.classList.contains("visible") && window.innerWidth < 640)
-    open("#footer", "_self");
     document.body.classList.remove("visible");
   };
   onwheel = window.onwheel = function (e) {
