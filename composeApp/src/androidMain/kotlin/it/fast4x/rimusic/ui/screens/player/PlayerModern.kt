@@ -1007,8 +1007,8 @@ fun PlayerModern(
 
 
     val controlsContent: @Composable (
-        //modifier: Modifier
-    ) -> Unit = { //modifier ->
+        modifier: Modifier
+    ) -> Unit = { modifierValue ->
         Controls(
             navController = navController,
             onCollapse = onDismiss,
@@ -1022,7 +1022,7 @@ fun PlayerModern(
             shouldBePlaying = shouldBePlaying,
             position = positionAndDuration.first,
             duration = positionAndDuration.second,
-            modifier = modifier,
+            modifier = modifierValue,
             onBlurScaleChange = { blurStrength = it }
         )
     }
@@ -2023,12 +2023,10 @@ fun PlayerModern(
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
-                            /*
-                            modifier = Modifier
-                                .padding(vertical = 8.dp)
+                            Modifier
+                                .padding(vertical = 8.dp, horizontal= 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
-                             */
                         )
                     } else {
 
@@ -2283,7 +2281,7 @@ fun PlayerModern(
                                          previousPage = it
                                      }
                                  }
-                                 
+
                                  val screenHeight = configuration.screenHeightDp.dp
                                  val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
                                  VerticalPager(
@@ -2526,12 +2524,10 @@ fun PlayerModern(
                     .conditional(!expandedplayer){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
                         controlsContent(
-                            /*
-                            modifier = Modifier
+                            Modifier
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
                             //.weight(1f)
-                             */
                         )
                     } else {
                                 Controls(
