@@ -2024,7 +2024,7 @@ fun PlayerModern(
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
                             Modifier
-                                .padding(vertical = 8.dp, horizontal= 8.dp)
+                                .padding(vertical = 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
                         )
