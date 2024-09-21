@@ -71,6 +71,7 @@ import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
@@ -219,275 +220,283 @@ fun OtherSettings() {
         SettingsDescription(text = stringResource(R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup))
          */
 
-
-        /****** PIPED ******/
-        var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-        var isPipedCustomEnabled by rememberPreference(isPipedCustomEnabledKey, false)
-        var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
-        var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
-        var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
-        var pipedApiBaseUrl by rememberEncryptedPreference(pipedApiBaseUrlKey, "")
-        var pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
-
-        var loadInstances by rememberSaveable { mutableStateOf(false) }
-        var isLoading by rememberSaveable { mutableStateOf(false) }
-        var instances by persistList<Instance>(tag = "otherSettings/pipedInstances")
-        var noInstances by rememberSaveable { mutableStateOf(false) }
-        var executeLogin by rememberSaveable { mutableStateOf(false) }
-        var showInstances by rememberSaveable { mutableStateOf(false) }
-        var session by rememberSaveable { mutableStateOf<Result<it.fast4x.piped.models.Session>?>(null) }
-
-        val menuState = LocalMenuState.current
-        val coroutineScope = rememberCoroutineScope()
         var extraspace by rememberPreference(extraspaceKey, false)
 
-        if (isLoading)
-            DefaultDialog(
-                onDismiss = {
-                    isLoading = false
-                }
-            ) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
+        /****** PIPED ******/
 
-        if (loadInstances) {
-            LaunchedEffect(Unit) {
-                isLoading = true
-                Piped.getInstances()?.getOrNull()?.let {
-                    instances = it
-                    //println("mediaItem Instances $it")
-                } ?: run { noInstances = true }
-                isLoading = false
-                showInstances = true
-            }
-        }
-        if (noInstances) {
-            SmartMessage("No instances found", type = PopupType.Info, context = context)
-        }
+        // rememberEncryptedPreference only works correct with API 24 and up
+        if(isAtLeastAndroid7){
+            var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+            var isPipedCustomEnabled by rememberPreference(isPipedCustomEnabledKey, false)
+            var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
+            var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
+            var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
+            var pipedApiBaseUrl by rememberEncryptedPreference(pipedApiBaseUrlKey, "")
+            var pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
 
-        if (executeLogin) {
-            LaunchedEffect(Unit) {
-                coroutineScope.launch {
-                    isLoading = true
-                    session = Piped.login(
-                        apiBaseUrl = Url(pipedApiBaseUrl), //instances[instanceSelected!!].apiBaseUrl,
-                        username = pipedUsername,
-                        password = pipedPassword
-                    )?.onFailure {
-                        Timber.e("Failed piped login ${it.stackTraceToString()}")
+            var loadInstances by rememberSaveable { mutableStateOf(false) }
+            var isLoading by rememberSaveable { mutableStateOf(false) }
+            var instances by persistList<Instance>(tag = "otherSettings/pipedInstances")
+            var noInstances by rememberSaveable { mutableStateOf(false) }
+            var executeLogin by rememberSaveable { mutableStateOf(false) }
+            var showInstances by rememberSaveable { mutableStateOf(false) }
+            var session by rememberSaveable { mutableStateOf<Result<it.fast4x.piped.models.Session>?>(null) }
+
+            val menuState = LocalMenuState.current
+            val coroutineScope = rememberCoroutineScope()
+
+            if (isLoading)
+                DefaultDialog(
+                    onDismiss = {
                         isLoading = false
-                        SmartMessage("Piped login failed", type = PopupType.Error, context = context)
+                    }
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+
+            if (loadInstances) {
+                LaunchedEffect(Unit) {
+                    isLoading = true
+                    Piped.getInstances()?.getOrNull()?.let {
+                        instances = it
+                        //println("mediaItem Instances $it")
+                    } ?: run { noInstances = true }
+                    isLoading = false
+                    showInstances = true
+                }
+            }
+            if (noInstances) {
+                SmartMessage("No instances found", type = PopupType.Info, context = context)
+            }
+
+            if (executeLogin) {
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch {
+                        isLoading = true
+                        session = Piped.login(
+                            apiBaseUrl = Url(pipedApiBaseUrl), //instances[instanceSelected!!].apiBaseUrl,
+                            username = pipedUsername,
+                            password = pipedPassword
+                        )?.onFailure {
+                            Timber.e("Failed piped login ${it.stackTraceToString()}")
+                            isLoading = false
+                            SmartMessage("Piped login failed", type = PopupType.Error, context = context)
+                            loadInstances = false
+                            session = null
+                            executeLogin = false
+                        }
+                        if (session?.isSuccess == false)
+                            return@launch
+
+                        SmartMessage("Piped login successful", type = PopupType.Success, context = context)
+                        Timber.i("Piped login successful")
+
+                        session.let {
+                            it?.getOrNull()?.token?.let { it1 ->
+                                pipedApiToken = it1
+                                pipedApiBaseUrl = it.getOrNull()!!.apiBaseUrl.toString()
+                            }
+                        }
+
+                        isLoading = false
                         loadInstances = false
-                        session = null
                         executeLogin = false
                     }
-                    if (session?.isSuccess == false)
-                        return@launch
-
-                    SmartMessage("Piped login successful", type = PopupType.Success, context = context)
-                    Timber.i("Piped login successful")
-
-                    session.let {
-                        it?.getOrNull()?.token?.let { it1 ->
-                            pipedApiToken = it1
-                            pipedApiBaseUrl = it.getOrNull()!!.apiBaseUrl.toString()
-                        }
-                    }
-
-                    isLoading = false
-                    loadInstances = false
-                    executeLogin = false
                 }
             }
-        }
 
-        if (showInstances && instances.isNotEmpty()) {
-            menuState.display {
-                Menu {
-                    MenuEntry(
-                        icon = R.drawable.chevron_back,
-                        text = stringResource(R.string.cancel),
-                        onClick = {
-                            showInstances = false
-                            menuState.hide()
-                        }
-                    )
-                    instances.forEach {
+            if (showInstances && instances.isNotEmpty()) {
+                menuState.display {
+                    Menu {
                         MenuEntry(
-                            icon = R.drawable.server,
-                            text = it.name,
-                            secondaryText = "${it.locationsFormatted} Users: ${it.userCount}",
+                            icon = R.drawable.chevron_back,
+                            text = stringResource(R.string.cancel),
                             onClick = {
-                                menuState.hide()
-                                pipedApiBaseUrl = it.apiBaseUrl.toString()
-                                pipedInstanceName = it.name
-                                /*
-                                instances.indexOf(it).let { index ->
-                                    //instances[index].apiBaseUrl
-                                    instanceSelected = index
-                                    //println("mediaItem Instance ${instances[index].apiBaseUrl}")
-                                }
-                                 */
                                 showInstances = false
+                                menuState.hide()
+                            }
+                        )
+                        instances.forEach {
+                            MenuEntry(
+                                icon = R.drawable.server,
+                                text = it.name,
+                                secondaryText = "${it.locationsFormatted} Users: ${it.userCount}",
+                                onClick = {
+                                    menuState.hide()
+                                    pipedApiBaseUrl = it.apiBaseUrl.toString()
+                                    pipedInstanceName = it.name
+                                    /*
+                                    instances.indexOf(it).let { index ->
+                                        //instances[index].apiBaseUrl
+                                        instanceSelected = index
+                                        //println("mediaItem Instance ${instances[index].apiBaseUrl}")
+                                    }
+                                     */
+                                    showInstances = false
+                                }
+                            )
+                        }
+                        MenuEntry(
+                            icon = R.drawable.chevron_back,
+                            text = stringResource(R.string.cancel),
+                            onClick = {
+                                showInstances = false
+                                menuState.hide()
                             }
                         )
                     }
-                    MenuEntry(
-                        icon = R.drawable.chevron_back,
-                        text = stringResource(R.string.cancel),
-                        onClick = {
-                            showInstances = false
-                            menuState.hide()
-                        }
-                    )
                 }
             }
-        }
 
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.piped_account))
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_piped_syncronization),
-            text = "",
-            isChecked = isPipedEnabled,
-            onCheckedChange = { isPipedEnabled = it }
-        )
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = stringResource(R.string.piped_account))
+            SwitchSettingEntry(
+                title = stringResource(R.string.enable_piped_syncronization),
+                text = "",
+                isChecked = isPipedEnabled,
+                onCheckedChange = { isPipedEnabled = it }
+            )
 
-        AnimatedVisibility(visible = isPipedEnabled) {
-            Column(
-                modifier = Modifier.padding(start = 25.dp)
-            ) {
-                SwitchSettingEntry(
-                    title = stringResource(R.string.piped_custom_instance),
-                    text = "",
-                    isChecked = isPipedCustomEnabled,
-                    onCheckedChange = { isPipedCustomEnabled = it }
-                )
-                AnimatedVisibility(visible = isPipedCustomEnabled) {
-                    Column {
-                        TextDialogSettingEntry(
-                            title = stringResource(R.string.piped_custom_instance),
-                            text = pipedApiBaseUrl,
-                            currentText = pipedApiBaseUrl,
-                            onTextSave = {
-                                pipedApiBaseUrl = it
-                            }
-                        )
-                    }
-                }
-                AnimatedVisibility(visible = !isPipedCustomEnabled) {
-                    Column {
-                        ButtonBarSettingEntry(
-                            //isEnabled = pipedApiToken.isEmpty(),
-                            title = stringResource(R.string.piped_change_instance),
-                            text = pipedInstanceName,
-                            icon = R.drawable.open,
-                            onClick = {
-                                loadInstances = true
-                            }
-                        )
-                    }
-                }
-
-                TextDialogSettingEntry(
-                    //isEnabled = pipedApiToken.isEmpty(),
-                    title = stringResource(R.string.piped_username),
-                    text = pipedUsername,
-                    currentText = pipedUsername,
-                    onTextSave = { pipedUsername = it }
-                )
-                TextDialogSettingEntry(
-                    //isEnabled = pipedApiToken.isEmpty(),
-                    title = stringResource(R.string.piped_password),
-                    text = if (pipedPassword.isNotEmpty()) "********" else "",
-                    currentText = pipedPassword,
-                    onTextSave = { pipedPassword = it },
-                    modifier = Modifier
-                        .semantics {
-                            password()
+            AnimatedVisibility(visible = isPipedEnabled) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.piped_custom_instance),
+                        text = "",
+                        isChecked = isPipedCustomEnabled,
+                        onCheckedChange = { isPipedCustomEnabled = it }
+                    )
+                    AnimatedVisibility(visible = isPipedCustomEnabled) {
+                        Column {
+                            TextDialogSettingEntry(
+                                title = stringResource(R.string.piped_custom_instance),
+                                text = pipedApiBaseUrl,
+                                currentText = pipedApiBaseUrl,
+                                onTextSave = {
+                                    pipedApiBaseUrl = it
+                                }
+                            )
                         }
-                )
-
-                ButtonBarSettingEntry(
-                    isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
-                    title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
-                        R.string.piped_connect
-                    ),
-                    text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(pipedInstanceName) else "",
-                    icon = R.drawable.piped_logo,
-                    iconColor = colorPalette.red,
-                    onClick = {
-                        if (pipedApiToken.isNotEmpty()) {
-                            pipedApiToken = ""
-                            executeLogin = false
-                        } else executeLogin = true
                     }
-                )
+                    AnimatedVisibility(visible = !isPipedCustomEnabled) {
+                        Column {
+                            ButtonBarSettingEntry(
+                                //isEnabled = pipedApiToken.isEmpty(),
+                                title = stringResource(R.string.piped_change_instance),
+                                text = pipedInstanceName,
+                                icon = R.drawable.open,
+                                onClick = {
+                                    loadInstances = true
+                                }
+                            )
+                        }
+                    }
 
+                    TextDialogSettingEntry(
+                        //isEnabled = pipedApiToken.isEmpty(),
+                        title = stringResource(R.string.piped_username),
+                        text = pipedUsername,
+                        currentText = pipedUsername,
+                        onTextSave = { pipedUsername = it }
+                    )
+                    TextDialogSettingEntry(
+                        //isEnabled = pipedApiToken.isEmpty(),
+                        title = stringResource(R.string.piped_password),
+                        text = if (pipedPassword.isNotEmpty()) "********" else "",
+                        currentText = pipedPassword,
+                        onTextSave = { pipedPassword = it },
+                        modifier = Modifier
+                            .semantics {
+                                password()
+                            }
+                    )
+
+                    ButtonBarSettingEntry(
+                        isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
+                        title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
+                            R.string.piped_connect
+                        ),
+                        text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(pipedInstanceName) else "",
+                        icon = R.drawable.piped_logo,
+                        iconColor = colorPalette.red,
+                        onClick = {
+                            if (pipedApiToken.isNotEmpty()) {
+                                pipedApiToken = ""
+                                executeLogin = false
+                            } else executeLogin = true
+                        }
+                    )
+
+                }
             }
         }
 
         /****** PIPED ******/
 
         /****** DISCORD ******/
-        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
-        var loginDiscord by remember { mutableStateOf(false) }
-        var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
-        SwitchSettingEntry(
-            isEnabled = isAtLeastAndroid81,
-            title = stringResource(R.string.discord_enable_rich_presence),
-            text = "",
-            isChecked = isDiscordPresenceEnabled,
-            onCheckedChange = { isDiscordPresenceEnabled = it }
-        )
 
-        AnimatedVisibility(visible = isDiscordPresenceEnabled) {
-            Column {
-                ButtonBarSettingEntry(
-                    isEnabled = true,
-                    title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
-                        R.string.discord_connect
-                    ),
-                    text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
-                    icon = R.drawable.logo_discord,
-                    iconColor = colorPalette.text,
-                    onClick = {
-                        if (discordPersonalAccessToken.isNotEmpty())
-                            discordPersonalAccessToken = ""
-                        else
-                            loginDiscord = true
-                    }
-                )
+        // rememberEncryptedPreference only works correct with API 24 and up
+        if(isAtLeastAndroid7){
+            var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+            var loginDiscord by remember { mutableStateOf(false) }
+            var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = stringResource(R.string.social_discord))
+            SwitchSettingEntry(
+                isEnabled = isAtLeastAndroid81,
+                title = stringResource(R.string.discord_enable_rich_presence),
+                text = "",
+                isChecked = isDiscordPresenceEnabled,
+                onCheckedChange = { isDiscordPresenceEnabled = it }
+            )
 
-                CustomModalBottomSheet(
-                    showSheet = loginDiscord,
-                    onDismissRequest = {
-                        loginDiscord = false
-                    },
-                    containerColor = colorPalette.background0,
-                    contentColor = colorPalette.background0,
-                    modifier = Modifier.fillMaxWidth(),
-                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                    dragHandle = {
-                        Surface(
-                            modifier = Modifier.padding(vertical = 0.dp),
-                            color = colorPalette.background0,
-                            shape = thumbnailShape
-                        ) {}
-                    },
-                    shape = thumbnailRoundness.shape()
-                ) {
-                    DiscordLoginAndGetToken(
-                        rememberNavController(),
-                        onGetToken = { token ->
-                            loginDiscord = false
-                            discordPersonalAccessToken = token
-                            SmartMessage(token, type = PopupType.Info, context = context)
+            AnimatedVisibility(visible = isDiscordPresenceEnabled) {
+                Column {
+                    ButtonBarSettingEntry(
+                        isEnabled = true,
+                        title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                            R.string.discord_connect
+                        ),
+                        text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
+                        icon = R.drawable.logo_discord,
+                        iconColor = colorPalette.text,
+                        onClick = {
+                            if (discordPersonalAccessToken.isNotEmpty())
+                                discordPersonalAccessToken = ""
+                            else
+                                loginDiscord = true
                         }
                     )
+
+                    CustomModalBottomSheet(
+                        showSheet = loginDiscord,
+                        onDismissRequest = {
+                            loginDiscord = false
+                        },
+                        containerColor = colorPalette.background0,
+                        contentColor = colorPalette.background0,
+                        modifier = Modifier.fillMaxWidth(),
+                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                        dragHandle = {
+                            Surface(
+                                modifier = Modifier.padding(vertical = 0.dp),
+                                color = colorPalette.background0,
+                                shape = thumbnailShape
+                            ) {}
+                        },
+                        shape = thumbnailRoundness.shape()
+                    ) {
+                        DiscordLoginAndGetToken(
+                            rememberNavController(),
+                            onGetToken = { token ->
+                                loginDiscord = false
+                                discordPersonalAccessToken = token
+                                SmartMessage(token, type = PopupType.Info, context = context)
+                            }
+                        )
+                    }
                 }
             }
         }
