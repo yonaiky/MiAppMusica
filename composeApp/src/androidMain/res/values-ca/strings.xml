@@ -406,7 +406,7 @@
     <string name="sort_album">Àlbum</string>
     <string name="use_gradient_background">Utilitza el fons degradat</string>
     <string name="show_total_time_of_queue">Mostra el temps total de la cua</string>
-    <string name="lang_telugu">Telugu</string>
+    <string name="lang_telugu">Télugu</string>
     <string name="media_permission_required_please_grant">Cal permís de mitjans, si us plau, concediu-lo.</string>
     <string name="open_permission_settings">Obriu la configuració de permisos</string>
     <string name="background_progress_bar">Barra de progrés de fons</string>
@@ -560,11 +560,11 @@
     <string name="show_player_top_actions_bar">Mostra la barra d\'accions superior</string>
     <string name="icon_like_button">Botó M\'agrada</string>
     <string name="icon_like_apple">Apple</string>
-    <string name="icon_like_breaked">Breaked</string>
-    <string name="icon_like_gift">Gift</string>
-    <string name="icon_like_shape">Shape</string>
-    <string name="icon_like_striped">Striped</string>
-    <string name="icon_like_brilliant">Brilliant</string>
+    <string name="icon_like_breaked">Trencat</string>
+    <string name="icon_like_gift">Regal</string>
+    <string name="icon_like_shape">Forma</string>
+    <string name="icon_like_striped">Ratllat</string>
+    <string name="icon_like_brilliant">Brillant</string>
     <string name="player_swap_controls_with_timeline">Canvia els controls amb la línia de temps</string>
     <string name="player_enable_lyrics_popup_message">Activa el missatge emergent de la lletra</string>
     <string name="exclude_songs_with_duration_limit">Exclou cançons amb un límit de durada</string>
@@ -740,10 +740,10 @@
     <string name="discord_disconnect">Desconnecta</string>
     <string name="discord_connect">Connecta</string>
     <string name="discord_connected_to_discord_account">Connectat al compte de Discord</string>
-    <string name="settings_reset">Reset</string>
-    <string name="settings_restore_default_settings">Restore default settings</string>
-    <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
-    <string name="settings_loudness_base_gain">Loudness base gain</string>
-    <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
+    <string name="settings_reset">Restableix</string>
+    <string name="settings_restore_default_settings">Restaura la configuració predeterminada</string>
+    <string name="piped_custom_instance">Instància personalitzada de Piped</string>
+    <string name="create_new_playlist">Crea una llista de reproducció nova</string>
+    <string name="settings_loudness_base_gain">Guany de sonoritat de base</string>
+    <string name="settings_target_gain_loudness_info">Guany objectiu per a la normalització de la sonoritat</string>
 </resources>
