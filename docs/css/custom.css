@@ -71,6 +71,7 @@ ul {
   background-repeat: no-repeat;
   background-size: auto 21px;
   text-wrap: nowrap;
+  color: #abbad0
 }
 #langOption {
   display: none;
