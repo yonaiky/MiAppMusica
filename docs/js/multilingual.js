@@ -87,18 +87,19 @@ class Multilingual {
     }, 400);
   }
   langEvent(e) {
-    console.log(e.target.id)
     if (e.target.id == langSelect.id) {
       document.body.classList.toggle("visible");
       if (window.innerWidth < 640){
        }
       return;
     }
-    if (e.target.id == "globe" || e.target.parentElement.id == "globe"){
-      document.body.classList.add("visible");
-      if (window.innerWidth > 640)
-        open("#languageSelect", "_self");
-      return;
+    if (e.target.parentElement){
+      if (e.target.id == "globe" || e.target.parentElement.id == "globe"){
+        document.body.classList.add("visible");
+        if (window.innerWidth > 640)
+          open("#languageSelect", "_self");
+        return;
+      }
     }
     if (e.target.id == langOption.id) {
       return;
@@ -108,8 +109,9 @@ class Multilingual {
         this.changeLang(e);
       }
     }
-    if (document.body.classList.contains("visible") && window.innerWidth < 640)
-    document.body.classList.remove("visible");
+    if (document.body.classList.contains("visible")){
+      document.body.classList.remove("visible");
+    }
   };
   onwheel = window.onwheel = function (e) {
     if (e.target.id == langSelect.id || e.target.attributes.lang) {
