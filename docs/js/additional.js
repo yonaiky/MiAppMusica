@@ -36,8 +36,10 @@ function detecttouch() {
 document.onmousedown = function (e) {
   multilingual.langEvent(e)
 }
-window.onhashchange = function (e) {
-  if (document.location.hash == "#footer")  {
-    document.body.classList.remove("visible");
+document.onkeyup = function (e) {
+  if (e.target.parentElement.id != "langOption" || e.keyCode == 27){
+    document.body.classList.remove("visible")
   }
+  if (e.keyCode == 13)
+    multilingual.langEvent(e)
 }
