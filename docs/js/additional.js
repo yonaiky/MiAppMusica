@@ -40,6 +40,8 @@ document.onkeyup = function (e) {
   if (e.target.parentElement.id != "langOption" || e.keyCode == 27){
     document.body.classList.remove("visible")
   }
-  if (e.keyCode == 13)
+  if (e.keyCode == 13){
     multilingual.langEvent(e)
+    document.getElementById("langOption").firstElementChild.focus() 
+  }
 }
