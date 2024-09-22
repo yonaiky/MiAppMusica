@@ -94,9 +94,10 @@ class Multilingual {
        }
       return;
     }
-    if (e.target.id == "globe"){
+    if (e.target.id == "globe" || e.target.parentElement.id == "globe"){
       document.body.classList.add("visible");
-      open("#languageSelect", "_self")
+      if (window.innerWidth > 640)
+        open("#languageSelect", "_self");
       return;
     }
     if (e.target.id == langOption.id) {
@@ -113,9 +114,6 @@ class Multilingual {
   onwheel = window.onwheel = function (e) {
     if (e.target.id == langSelect.id || e.target.attributes.lang) {
       return;
-    }
-    if (document.body.classList.contains("visible") && window.innerWidth < 640){
-    open("#footer", "_self");
     }
     document.body.classList.remove("visible");
   }
