@@ -631,7 +631,7 @@
     <string name="game_over">Game Over!</string>
     <string name="white">Weiß</string>
     <string name="black">Schwarz</string>
-    <string name="highlight">Highlight</string>
+    <string name="highlight">Hervorheben</string>
     <string name="thin_bar">Dünne Leiste</string>
     <string name="buttonzoomout">Animation des Zoom-Buttons</string>
     <string name="thumbnailpause">Thumbnail verkleinern, wenn pausiert</string>
