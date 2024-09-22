@@ -84,7 +84,7 @@
     <string name="restore">RESTAURER</string>
     <string name="restore_1">Restaurer</string>
     <string name="import_the_database">Importer la base de données à partir du stockage</string>
-    <string name="android_auto">ANDROID AUTO</string>
+    <string name="android_auto">Android Auto</string>
     <string name="enable_unknown_sources">N’oubliez pas d’activer \"Sources inconnues\" dans les paramètres développeur d’Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Activer le support pour Android Auto</string>
@@ -169,7 +169,7 @@
     <string name="in_alphabetical_order">Dans l\'ordre alphabétique :</string>
     <string name="contributors">CONTRIBUTEURS</string>
     <string name="troubleshooting">DÉPANNAGE</string>
-    <string name="social">SOCIAL</string>
+    <string name="social">Social</string>
     <string name="english">Anglais (English)</string>
     <string name="italian">Italien (Italiano)</string>
     <string name="czech">Tchèque (Čeština)</string>
@@ -284,7 +284,7 @@
     <string name="do_you_really_want_to_download_all">Voulez-vous vraiment tout télécharger ?</string>
     <string name="import_playlist">Importer une playlist</string>
     <string name="lang_ukrainian">Ukrainien (українська)</string>
-    <string name="proxy">PROXY</string>
+    <string name="proxy">Proxy</string>
     <string name="enable_proxy">Activer le Proxy</string>
     <string name="proxy_mode">Mode du proxy</string>
     <string name="proxy_host">Hôte du proxy</string>
@@ -583,7 +583,7 @@
     <string name="enable_log_debug">Activer le journal du débogage</string>
     <string name="if_enabled_create_a_log_file_to_highlight_errors">Si activé, créez un fichier journal pour mettre en surbrillance les erreurs</string>
     <string name="copy_log_to_clipboard">Copier les journaux dans le presse-papiers</string>
-    <string name="piped_account">PIPED</string>
+    <string name="piped_account">Compte Piped</string>
     <string name="enable_piped_syncronization">Activer la syncronisation de piped</string>
     <string name="piped_change_instance">Changer d\'instance</string>
     <string name="piped_username">Nom d’utilisateur</string>
