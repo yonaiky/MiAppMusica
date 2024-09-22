@@ -197,7 +197,7 @@
     <string name="not_find_battery_optimization_settings">Konnte die Einstellungen für die Batterieoptimierung nicht finden, bitte manuell auf die Whitelist setzen</string>
     <string name="search">Suche</string>
     <string name="no">Nein</string>
-    <string name="stop">Stop</string>
+    <string name="stop">Stopp</string>
     <string name="listen_on_youtube">Auf YouTube anhören</string>
     <string name="listen_on_youtube_music">Auf YouTube Music anhören</string>
     <string name="on_device">Lokal</string>
@@ -356,7 +356,7 @@
     <string name="following">Gefolgt</string>
     <string name="artist_subscribers">%s Abonnenten</string>
     <string name="but_these_updates_would_not_go_through">Diese Updates würden jedoch nicht die zusätzliche Prüfung durchlaufen, die z.B. bei IzzyOnDroid oder F-Droid durchgeführt wird.</string>
-    <string name="sleeptimer_stop">stop</string>
+    <string name="sleeptimer_stop">anhalten</string>
     <string name="player_keep_minimized">Minimiert lassen</string>
     <string name="when_click_on_a_song_player_start_minimized">Beim Klick auf einen Song startet der Player minimiert</string>
     <string name="settings_use_font_type">Schriftart</string>
@@ -744,6 +744,6 @@
     <string name="settings_restore_default_settings">Standardeinstellungen wiederherstellen</string>
     <string name="piped_custom_instance">Benutzerdefinierte Instanz</string>
     <string name="create_new_playlist">Neue Wiedergabeliste erstellen</string>
-    <string name="settings_loudness_base_gain">Loudness base gain</string>
-    <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
+    <string name="settings_loudness_base_gain">Lautstärke Grundverstärkung</string>
+    <string name="settings_target_gain_loudness_info">Zielverstärkung für die Lautstärkenormalisierung</string>
 </resources>
