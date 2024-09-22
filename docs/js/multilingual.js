@@ -40,8 +40,6 @@ class Multilingual {
     }
     if (lang)
       this.updateDom();
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
   getString(name) {
     return this.selectedValues[name] || this.defaultValues[name];
@@ -82,6 +80,7 @@ class Multilingual {
     langSel.setAttribute("value", lang);
     this.updateLanguage(a.target);
     this.loadStrings(lang);
+    document.getElementsByTagName("a")[0].focus()
     setTimeout(() => {
       LoadingScreen.loaded();
     }, 400);
@@ -97,7 +96,7 @@ class Multilingual {
       if (e.target.id == "globe" || e.target.parentElement.id == "globe"){
         document.body.classList.add("visible");
         if (window.innerWidth > 640)
-          open("#languageSelect", "_self");
+          document.getElementById("langSelect").focus()
         return;
       }
     }
