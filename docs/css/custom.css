@@ -125,20 +125,17 @@ body.visible #langBorder {
 }
 /* REVEAL STYLE */
 .is-revealing{
+  opacity: 1;
+  transform: translateY(0%);
+  transition: all 0.4s ease-in-out, opacity 0.2s;
   &.invisible{
     opacity: 0; 
-  }
-  &.up{
-    transition: all 0.4s ease-in-out, opacity 0.2s;
-    transform: translateY(22%);
-  }
-  &.down{
-    transition: all 0.4s ease-in-out, opacity 0.2s;
-    transform: translateY(-22%);
-  }
-  &.visible{
-    opacity: 1;
-    transform: translateY(0%) !important;
+    &.up{
+      transform: translateY(22%);
+    }
+    &.down{
+      transform: translateY(-22%);
+    }
   }
 }
 .flex{
@@ -310,7 +307,7 @@ a > img:hover {
     flex: 50%;
   }
   .is-revealing{
-    &.down{
+    &.down.invisible{
       transform: translateY(-38px);
     }
   }
@@ -320,6 +317,8 @@ a > img:hover {
     #langSelect {
       margin-left: auto;
       margin-right:0;
-    }
+    } 
   }
 }
+
+.feature-extended-image img,.feature-extended-image svg{overflow:hidden}
