@@ -60,6 +60,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
+            implementation(projects.desktopPlayer)
 
             implementation(libs.room)
             implementation(libs.room.runtime)

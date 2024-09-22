@@ -28,5 +28,4 @@ include(":kugou")
 include(":lrclib")
 include(":piped")
 include(":innertubes")
-
-//include(":shared")
+include(":desktopPlayer")
