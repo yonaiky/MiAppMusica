@@ -6,7 +6,6 @@ async function reveal() {
         if ((boundings.height - boundings.top < -250) && (boundings.top - window.innerHeight) > (0 - (boundings.height) * 0.35)) {
             revealObjects[a].classList.remove("visible")
             revealObjects[a].classList.add("invisible")
-            return;
         }
         if ((boundings.top - window.innerHeight) < (0 - (boundings.height) * 0.35)) {
             revealObjects[a].classList.add("visible")
