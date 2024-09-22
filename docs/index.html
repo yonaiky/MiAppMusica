@@ -18,17 +18,12 @@
   <script name="lang" src="js/multilingual.js"></script>
   <link rel="stylesheet" href="css/custom.css" />
   <script src="js/additional.js" defer></script>
-  <noscript>
-    <style type="text/css">
-      .loadingScreen, #globe, #toggledark, #languageSelect {
-        opacity: 0 !important;
-        display: none !important;
-      }
-    </style>
-  </noscript>
 </head>
 
-<body id="top" class="is-boxed has-animations" ontouchstart="detecttouch()" onload="LoadingScreen.loaded()">
+<body id="top" class="no-js is-boxed has-animations" ontouchstart="detecttouch()" onload="LoadingScreen.loaded()">
+  <script>
+    document.body.classList.remove("no-js")
+  </script>
   <div class="loadingScreen">
     <div class="loader"></div>
   </div>
@@ -46,42 +41,8 @@
             </h1>
           </div>
           <div style="align-items:right; text-align:right;display:flex; flex-direction:row">
-            <svg class="focustoggle" onclick="toggleDark()" width="36px" height="36px" viewBox="0 0 13.261058 13.427273"
-              version="1.1" id="toggledark" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-              xmlns:svg="http://www.w3.org/2000/svg">
-              <defs id="defs1" />
-              <g id="layer1" transform="translate(-107.01,-171.72)">
-                <path id="rect19" style="fill:none;stroke:var(--color);stroke-width:0.85;stroke-opacity:0.7"
-                  d="m 117.2,173.32 -9.89,9.89 z" />
-                <path id="path19"
-                  style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:var(--moon)"
-                  d="m 112.85098,172.27247 c -4.3922,0.18726 -4.60114,5.76063 -2.44418,7.85042 l 2.83261,-2.83473 c -1.08989,-0.96811 -1.39424,-3.05427 -0.38843,-5.01569 z" />
-                <path id="rect20-6" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)"
-                  d="m 111.88267,181.89664 -1.35482,1.35483 z" />
-                <ellipse style="fill:none;fill-opacity:1;stroke:var(--color);stroke-width:0.9;stroke-opacity:var(--sun)"
-                  id="path14" cx="114.46501" cy="179.3551" rx="2.17" ry="2.17" />
-                <path id="rect20" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)"
-                  d="m 114.45497,182.95789 v 2.15254 z" />
-                <path id="rect20-2" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)"
-                  d="m 120.27499,179.32535 h -2.15254 z" />
-                <path id="rect20-6-5" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)"
-                  d="m 118.37937,175.39995 -1.35482,1.35483 z" />
-                <path id="rect20-6-3" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)"
-                  d="m 118.37937,183.25147 -1.35484,-1.35483 z" />
-              </g>
-            </svg>
-            <svg id="globe" width="36px" height="36px" viewBox="0 0 13.3 13.4" version="1.1" id="toggledark"
-              xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-              <defs id="defs1" />
-              <circle style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454" id="path2" cx="6.648"
-                cy="6.717" r="5.519" />
-              <path id="rect2" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454"
-                d="M 1.413,4.95 H 11.87 Z" />
-              <path id="rect2-7" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454"
-                d="M 1.419,8.489 H 11.86 Z" />
-              <path id="rect3" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454"
-                d="M 6.841,1.235 H 6.42 c 0,0 -1.909,2.322 -1.909,5.378 0,3.236 1.909,5.577 1.909,5.577 h 0.421 c 0,0 1.943,-2.341 1.943,-5.56 0,-3.073 -1.943,-5.395 -1.943,-5.395 z" />
-              </svg> </div>
+            <svg class="focustoggle" onclick="toggleDark()" width="36px" height="36px" viewBox="0 0 13.261058 13.427273" version="1.1" id="toggledark" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"><defs id="defs1" /><g id="layer1" transform="translate(-107.01,-171.72)"><path id="rect19" style="fill:none;stroke:var(--color);stroke-width:0.85;stroke-opacity:0.7" d="m 117.2,173.32 -9.89,9.89 z" /><path id="path19" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:var(--moon)" d="m 112.85098,172.27247 c -4.3922,0.18726 -4.60114,5.76063 -2.44418,7.85042 l 2.83261,-2.83473 c -1.08989,-0.96811 -1.39424,-3.05427 -0.38843,-5.01569 z" /><path id="rect20-6" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)" d="m 111.88267,181.89664 -1.35482,1.35483 z" /><ellipse style="fill:none;fill-opacity:1;stroke:var(--color);stroke-width:0.9;stroke-opacity:var(--sun)" id="path14" cx="114.46501" cy="179.3551" rx="2.17" ry="2.17" /><path id="rect20" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)" d="m 114.45497,182.95789 v 2.15254 z" /><path id="rect20-2" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)" d="m 120.27499,179.32535 h -2.15254 z" /><path id="rect20-6-5" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)" d="m 118.37937,175.39995 -1.35482,1.35483 z" /><path id="rect20-6-3" style="fill:none;stroke:var(--color);stroke-width:0.8;stroke-opacity:var(--sun)" d="m 118.37937,183.25147 -1.35484,-1.35483 z" /></g></svg>
+            <svg id="globe" width="36px" height="36px" viewBox="0 0 13.3 13.4" version="1.1" id="toggledark" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"><defs id="defs1" /><circle style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454" id="path2" cx="6.648" cy="6.717" r="5.519" /><path id="rect2" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454" d="M 1.413,4.95 H 11.87 Z" /><path id="rect2-7" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454" d="M 1.419,8.489 H 11.86 Z" /><path id="rect3" style="fill:none;stroke:var(--color);stroke-opacity:1;stroke-width:0.75454" d="M 6.841,1.235 H 6.42 c 0,0 -1.909,2.322 -1.909,5.378 0,3.236 1.909,5.577 1.909,5.577 h 0.421 c 0,0 1.943,-2.341 1.943,-5.56 0,-3.073 -1.943,-5.395 -1.943,-5.395 z" /></svg> </div>
         </div>
       </div>
     </header>
@@ -335,14 +296,12 @@
 
   <script type="text/javascript">
     var languages = []
-
     var langSel = document.getElementById("languageSelect");
     var langSelect = langSel.firstElementChild
     var langOption = document.getElementById("langOption");
     for (let x = 0; x < langOption.children.length; x++) {
       languages[x] = langOption.children[x].getAttribute("lang")
     }
-
     // Load the locales
     const multilingual = new Multilingual(languages);
 
@@ -360,5 +319,4 @@
     reveal()
   </script>
 </body>
-
 </html>
