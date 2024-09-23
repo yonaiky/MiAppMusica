@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
+    //alias(libs.plugins.conveyor)
 }
 
 repositories {
@@ -17,6 +18,7 @@ repositories {
     mavenCentral()
     //mavenLocal()
     maven { url = uri("https://jitpack.io") }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 kotlin {
@@ -43,12 +45,12 @@ kotlin {
         desktopMain.dependencies {
             //implementation(compose.material3)
             //implementation(compose.ui)
-            //implementation(compose.components.resources)
+            implementation(compose.components.resources)
             //implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
 
-            implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.6.11")
-            implementation("uk.co.caprica:vlcj:4.8.2")
+            implementation(libs.material.icon.desktop)
+            implementation(libs.vlcj)
         }
 
         androidMain.dependencies {
@@ -178,11 +180,32 @@ android {
 
 }
 
+
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 compose.desktop {
     application {
 
         mainClass = "MainKt"
 
+        /*
+        //conveyor
+        version = "0.1"
+        group = "rimusic"
+
+
+        nativeDistributions {
+            vendor = "fast4x RiMusic"
+            description = "Desktop music player"
+        }
+        */
+
+        //jpackage
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "RiMusic.DesktopApp"
@@ -202,6 +225,7 @@ compose.desktop {
 
              */
         }
+
     }
 }
 
@@ -209,7 +233,6 @@ compose.resources {
     publicResClass = true
     generateResClass = always
 }
-
 /*
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -286,7 +309,6 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(projects.innertube)
-    implementation(projects.innertubes)
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)

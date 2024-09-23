@@ -19,7 +19,6 @@ import database.MusicDatabaseDesktop
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedPage
-import it.fast4x.rimusic.player.Player
 
 @Composable
 fun ArtistsScreen(

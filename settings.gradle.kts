@@ -27,5 +27,4 @@ include(":ktor-client-brotli")
 include(":kugou")
 include(":lrclib")
 include(":piped")
-include(":innertubes")
-include(":desktopPlayer")
+

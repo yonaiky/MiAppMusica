@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import player.PlayerInput
 import player.PlayerSource
 import player.component.ComponentPlayer
 import player.frame.FramePlayer
@@ -29,7 +30,7 @@ import vlcj.VlcjFrameController
 fun QuickPicsScreen(
     modifier: Modifier = Modifier
 ) {
-    val url by remember { mutableStateOf("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    var url = remember { "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }
 
 
             val componentController = remember(url) { VlcjComponentController() }
@@ -65,22 +66,9 @@ fun QuickPicsScreen(
                         frameController
                     )
 
-
-
-                    /*
-                    PlayerSource(
-                        url,
-                        componentController.component,
-                        componentController,
-                        VlcjFrameController().size.collectAsState(null).value?.run {
-                            IntSize(first, second)
-                        } ?: IntSize.Zero,
-                        frameController.bytes.collectAsState(null).value,
-                        frameController
-                    )
-
-                     */
-
+                    PlayerInput {
+                        url = it
+                    }
 
                 }
             }
