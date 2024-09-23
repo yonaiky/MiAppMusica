@@ -108,8 +108,8 @@
     <string name="when_device_is_connected">Quando es connectite un apparato con cablo o bluetooth</string>
     <string name="skip_silence">Saltar le silentio</string>
     <string name="skip_silent_parts_during_playback">Saltar partes in silentio durante le reproduction</string>
-    <string name="loudness_normalization">Loudness normalization</string>
-    <string name="autoadjust_the_volume">Adjust the volume to a fixed level</string>
+    <string name="loudness_normalization">Normalisation del volumine</string>
+    <string name="autoadjust_the_volume">Adjusta le volumine a un nivello fixate</string>
     <string name="interact_with_the_system_equalizer">Interact with the system equalizer</string>
     <string name="about">A proposito de</string>
     <string name="more_of">Plus de</string>
@@ -138,7 +138,7 @@
     <string name="error_the_original_video_source_of_this_song_has_been_deleted">Le fonte de video original del canto ha essite delite</string>
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">Iste canto non pote reproducer se per causa de restrictiones de servitor</string>
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">The returned video id doesn\'t match the requested one</string>
-    <string name="error_an_unknown_playback_error_has_occurred">An unknown playback error has occurred</string>
+    <string name="error_an_unknown_playback_error_has_occurred">Ocurreva un error incognite de reproduction</string>
     <string name="tips">Suggestiones</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">It\'s the minimum listening time, to include the song as a possible Tips or Quick Pics</string>
     <string name="min_listening_time">Tempore minime de ascoltamento</string>
