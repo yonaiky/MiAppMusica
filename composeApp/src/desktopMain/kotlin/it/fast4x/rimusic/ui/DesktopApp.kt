@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import database.MusicDatabaseDesktop
 import it.fast4x.rimusic.ui.screens.ArtistsScreen
 import it.fast4x.rimusic.ui.screens.QuickPicsScreen
 import org.jetbrains.compose.resources.painterResource
@@ -46,8 +47,10 @@ fun DesktopApp(
     navController: NavHostController = rememberNavController()
 ) {
 
+    MusicDatabaseDesktop.getAll()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: "quickpics"
+    val currentScreen = backStackEntry?.destination?.route ?: "artists"
 
     Scaffold(
         topBar = {
@@ -70,6 +73,18 @@ fun DesktopApp(
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
+            composable(route = "artists") {
+                VerticalLayout(
+                    navController = navController
+                ) {
+                    ArtistsScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    )
+                }
+            }
+
             composable(route = "quickpics") {
                 VerticalLayout(
                     navController = navController
@@ -82,17 +97,7 @@ fun DesktopApp(
                 }
             }
 
-            composable(route = "artists") {
-                VerticalLayout(
-                    navController = navController
-                ) {
-                    ArtistsScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    )
-                }
-            }
+
 
         }
 
@@ -234,18 +239,18 @@ fun VerticalMenuBuilder(navController: NavHostController) {
             .fillMaxSize()
             .padding(start = 16.dp, top = 16.dp)
     ) {
-        Text("Artists",
-            modifier = Modifier
-                .padding(16.dp)
-                .clickable {
-                    navController.navigate("artists")
-                }
-        )
         Text("Quick Pics",
             modifier = Modifier
                 .padding(16.dp)
                 .clickable {
                     navController.navigate("quickpics")
+                }
+        )
+        Text("Artists",
+            modifier = Modifier
+                .padding(16.dp)
+                .clickable {
+                    navController.navigate("artists")
                 }
         )
     }

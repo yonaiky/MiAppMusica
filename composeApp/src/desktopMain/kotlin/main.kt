@@ -3,7 +3,8 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import database.MusicDatabaseDesktop
-import it.fast4x.rimusic.App
+import it.fast4x.rimusic.ui.DesktopApp
+import it.fast4x.rimusic.ui.theme.DesktopTheme
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon
@@ -17,6 +18,10 @@ fun main() = application {
         ),
         title = "RiMusic MP",
     ) {
-        App(MusicDatabaseDesktop)
+        //App(MusicDatabaseDesktop)
+        DesktopTheme {
+            DesktopApp()
+        }
+
     }
 }

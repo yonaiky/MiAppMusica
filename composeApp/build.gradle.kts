@@ -41,11 +41,14 @@ kotlin {
 
         val desktopMain by getting
         desktopMain.dependencies {
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            //implementation(compose.material3)
+            //implementation(compose.ui)
+            //implementation(compose.components.resources)
+            //implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
+
+            implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.6.11")
+            implementation("uk.co.caprica:vlcj:4.8.2")
         }
 
         androidMain.dependencies {
@@ -60,7 +63,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
-            implementation(projects.desktopPlayer)
+            //implementation(projects.desktopPlayer)
 
             implementation(libs.room)
             implementation(libs.room.runtime)
