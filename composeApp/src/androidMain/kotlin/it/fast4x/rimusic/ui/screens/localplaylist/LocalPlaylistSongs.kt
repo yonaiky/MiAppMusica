@@ -360,7 +360,9 @@ fun LocalPlaylistSongs(
             onDismiss = { isRenumbering = false },
             onConfirm = {
                 query {
-                    playlistSongs.forEachIndexed { index, song ->
+                    val shuffled = playlistSongs.shuffled()
+
+                    shuffled.forEachIndexed { index, song ->
                         playlistPreview?.playlist?.let {
                             Database.updateSongPosition(it.id, song.song.id, index)
                         }
