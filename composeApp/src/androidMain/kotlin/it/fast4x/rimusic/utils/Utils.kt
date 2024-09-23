@@ -602,6 +602,9 @@ fun getVersionCode(): Int {
 inline val isAtLeastAndroid6
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 
+inline val isAtLeastAndroid7
+    get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+
 inline val isAtLeastAndroid8
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
