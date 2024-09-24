@@ -250,7 +250,7 @@ fun ArtistScreen(
                                                 ?.let(Database::update)
                                         }
                                     },
-                                    alternative = if (artist?.bookmarkedAt == null) true else false
+                                    alternative = artist?.bookmarkedAt == null
                                 )
 
                                 /*
@@ -403,7 +403,7 @@ fun ArtistScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

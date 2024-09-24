@@ -53,7 +53,7 @@ fun HistoryScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
