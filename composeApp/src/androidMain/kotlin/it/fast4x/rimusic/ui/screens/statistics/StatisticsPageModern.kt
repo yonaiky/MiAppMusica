@@ -501,13 +501,17 @@ fun StatisticsPageModern(
                             alternative = true,
                             modifier = Modifier
                                 .clickable(onClick = {
-                                    if (playlists[it].playlist.id.toString() != "")
-                                        navController.navigate(
-                                            if (playlists[it].playlist.browseId != "")
-                                                "${NavRoutes.playlist.name}/${playlists[it].playlist.browseId}"
-                                            else
-                                                "${NavRoutes.localPlaylist.name}/${playlists[it].playlist.id}"
-                                        )
+                                    val playlistId: String = playlists[it].playlist.id.toString()
+                                    if ( playlistId.isEmpty() ) return@clickable    // Fail-safe??
+
+                                    val pBrowseId: String? = playlists[it].playlist.browseId
+                                    val route: String =
+                                        if (pBrowseId?.isNotEmpty() == false)
+                                            "${NavRoutes.playlist.name}/$pBrowseId"
+                                        else
+                                            "${NavRoutes.localPlaylist.name}/$playlistId"
+
+                                    navController.navigate(route = route)
                                 })
                         )
                     }
