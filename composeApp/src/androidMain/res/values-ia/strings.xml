@@ -14,7 +14,7 @@
     <string name="remove_from_playlist">Remover ab le lista de reproduction</string>
     <string name="hide">Celar</string>
     <string name="hide_from_quick_picks">Celar ab le \"Selectiones rapide\"</string>
-    <string name="related_albums">Related albums</string>
+    <string name="related_albums">Albumes affin</string>
     <string name="similar_artists">Similar artists</string>
     <string name="playlists_you_might_like">Playlists you might like</string>
     <string name="an_error_has_occurred">Ocurreva un error</string>
@@ -316,7 +316,7 @@
     <string name="if_possible_allows_discovery_content_language">If possible, it allows to receive Discovery content in your own language.</string>
     <string name="set_to">Definir a</string>
     <string name="end_of_song">fin del canto</string>
-    <string name="restore_completed">Restore completed!</string>
+    <string name="restore_completed">Restauration completate!</string>
     <string name="click_to_close">Clicca pro clauder</string>
     <string name="lang_dutch">Nederlandese</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Desira tu vermente renumerar le positiones in iste lista de reproduction?</string>
