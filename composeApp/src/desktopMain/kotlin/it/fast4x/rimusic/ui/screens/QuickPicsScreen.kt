@@ -19,18 +19,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.PlayerResponse
+import it.fast4x.innertube.models.bodies.PlayerBody
+import it.fast4x.innertube.requests.player
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import player.PlayerInput
 import player.PlayerSource
 import player.component.ComponentPlayer
 import player.frame.FramePlayer
 import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 @Composable
 fun QuickPicsScreen(
     modifier: Modifier = Modifier
 ) {
-    var url = remember { "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }
+
+    val body = remember { mutableStateOf<PlayerResponse?>(null) }
+    runBlocking(Dispatchers.IO) {
+        Innertube.player(PlayerBody(videoId = "TVlyvIP_y1Y"))
+    }?.onSuccess {
+        body.value = it
+    }
+
+    val format = body.value?.streamingData?.adaptiveFormats
+        ?.filter { it.isAudio }
+        ?.maxByOrNull {
+            it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+            ) ?: -1 }
+
+    var url = format?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+
+
+    //var url = remember { "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }
 
 
             val componentController = remember(url) { VlcjComponentController() }

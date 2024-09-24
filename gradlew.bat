@@ -28,7 +28,8 @@ set DIRNAME=%~dp0
 if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%
-set JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+@rem set JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+set JAVA_HOME="C:\Users\rinor\.jdks\corretto-22.0.2"
 
 @rem Resolve any "." and ".." in APP_HOME to make it shorter.
 for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi

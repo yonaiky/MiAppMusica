@@ -4,6 +4,7 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import database.MusicDatabaseDesktop
 import it.fast4x.rimusic.ui.DesktopApp
+import it.fast4x.rimusic.ui.PlayerApp
 import it.fast4x.rimusic.ui.theme.DesktopTheme
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
@@ -20,7 +21,8 @@ fun main() = application {
     ) {
         //App(MusicDatabaseDesktop)
         DesktopTheme {
-            DesktopApp()
+            //DesktopApp()
+            PlayerApp()
         }
 
     }
