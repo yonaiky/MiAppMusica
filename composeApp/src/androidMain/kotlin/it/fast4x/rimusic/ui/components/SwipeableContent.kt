@@ -37,6 +37,8 @@ import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.flow.distinctUntilChanged
+import org.jetbrains.compose.resources.getString
+import rimusic.composeapp.generated.resources.Res
 
 @Composable
 fun SwipeableContent(
@@ -148,10 +150,21 @@ fun SwipeablePlaylistItem(
         if (updateLike) {
             mediaItemToggleLike(mediaItem)
             updateLike = false
-            if (likedAt == null)
-                SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
-            else
-                SmartMessage("\"" + mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString() + "\" " + context.resources.getString(R.string.removed_from_favorites), context = context, durationLong = true)
+
+            val message: String
+            if( likedAt != null ) {
+                val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
+                val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
+
+                message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
+            } else
+                message = context.resources.getString(R.string.added_to_favorites)
+
+            SmartMessage(
+                message,
+                durationLong = likedAt != null,
+                context = context
+            )
         }
     }
 
