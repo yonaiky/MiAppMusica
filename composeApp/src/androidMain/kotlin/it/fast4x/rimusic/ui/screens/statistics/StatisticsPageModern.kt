@@ -504,9 +504,9 @@ fun StatisticsPageModern(
                                     val playlistId: String = playlists[it].playlist.id.toString()
                                     if ( playlistId.isEmpty() ) return@clickable    // Fail-safe??
 
-                                    val pBrowseId: String? = playlists[it].playlist.browseId
+                                    val pBrowseId: String = playlists[it].playlist.browseId ?: ""
                                     val route: String =
-                                        if (pBrowseId?.isNotEmpty() == false)
+                                        if ( pBrowseId.isNotEmpty() )
                                             "${NavRoutes.playlist.name}/$pBrowseId"
                                         else
                                             "${NavRoutes.localPlaylist.name}/$playlistId"
