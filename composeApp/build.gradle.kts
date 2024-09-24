@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
-    //alias(libs.plugins.conveyor)
+    alias(libs.plugins.conveyor)
 }
 
 repositories {
@@ -193,11 +193,11 @@ compose.desktop {
 
         mainClass = "MainKt"
 
-        /*
-        //conveyor
-        version = "0.1"
-        group = "rimusic"
 
+        //conveyor
+        version = "0.0.1"
+        group = "rimusic"
+/*
 
         nativeDistributions {
             vendor = "fast4x RiMusic"
@@ -207,9 +207,13 @@ compose.desktop {
 
         //jpackage
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            //conveyor
+            vendor = "RiMusic.DesktopApp"
+            description = "RiMusic Desktop Music Player"
+
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "RiMusic.DesktopApp"
-            packageVersion = "1.0.0"
+            packageVersion = "0.0.1"
 
             /*
             val iconsRoot = project.file("desktop-icons")

@@ -20,6 +20,8 @@ fun FramePlayer(
     size: IntSize,
     bytes: ByteArray?,
     controller: PlayerController,
+    showControls: Boolean = true,
+    showFrame: Boolean = true
 ) {
     DisposableEffect(url) {
         controller.load(url)
@@ -30,7 +32,9 @@ fun FramePlayer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        FrameContainer(Modifier.requiredHeight(400.dp), size, bytes)
-        DefaultControls(Modifier.fillMaxWidth(), controller)
+        if (showFrame)
+            FrameContainer(Modifier, size, bytes)
+        if (showControls)
+            DefaultControls(Modifier, controller)
     }
 }

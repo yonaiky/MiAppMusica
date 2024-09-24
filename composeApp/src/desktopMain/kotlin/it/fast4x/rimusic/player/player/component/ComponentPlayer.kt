@@ -19,6 +19,8 @@ fun ComponentPlayer(
     url: String,
     component: Component,
     controller: PlayerController,
+    showControls: Boolean = true,
+    showComponent: Boolean = true
 ) {
     DisposableEffect(url) {
         controller.load(url)
@@ -29,7 +31,9 @@ fun ComponentPlayer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        ComponentContainer(Modifier.requiredHeight(400.dp), component)
-        DefaultControls(Modifier.fillMaxWidth(), controller)
+        if (showComponent)
+            ComponentContainer(Modifier.requiredHeight(400.dp), component)
+        if (showControls)
+            DefaultControls(Modifier.fillMaxWidth(), controller)
     }
 }

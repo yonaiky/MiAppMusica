@@ -1,7 +1,11 @@
 package player.frame
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -9,9 +13,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.skia.Bitmap
+import rimusic.composeapp.generated.resources.Res
+import rimusic.composeapp.generated.resources.app_icon
 
 @Composable
 fun FrameContainer(
@@ -38,6 +48,12 @@ fun FrameContainer(
                     contentDescription = "frame"
                 )
             }
-        } ?: CircularProgressIndicator()
+        } ?: Image(
+            painter = painterResource(Res.drawable.app_icon),
+            colorFilter = ColorFilter.tint(Color.Green),
+            contentDescription = "Logo",
+            modifier = Modifier.fillMaxSize(0.7f)
+        )
+            //CircularProgressIndicator()
     }
 }

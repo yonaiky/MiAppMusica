@@ -119,6 +119,6 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 room = { id = "androidx.room", version.ref = "room" }
-#conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }
+conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }
 
 
