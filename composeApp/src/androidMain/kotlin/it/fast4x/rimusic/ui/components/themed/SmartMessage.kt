@@ -22,11 +22,11 @@ fun SmartMessage(
     message: String,
     type: PopupType? = PopupType.Info,
     backgroundColor: Color? = Color.DarkGray,
-    durationLong: Boolean? = false,
+    durationLong: Boolean = false,
     context: Context,
 ) {
     CoroutineScope(Dispatchers.Main).launch {
-        val length = if (durationLong == true) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+        val length = if (durationLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
 
         if (context.preferences.getEnum(messageTypeKey, MessageType.Modern) == MessageType.Modern) {
             when (type) {
@@ -39,7 +39,7 @@ fun SmartMessage(
 
         } else
         //if (durationLong == true) context.toastLong(message) else context.toast(message)
-            Toasty.normal(context, message, length).show()
+        Toasty.normal(context, message, length).show()
     }
 }
 

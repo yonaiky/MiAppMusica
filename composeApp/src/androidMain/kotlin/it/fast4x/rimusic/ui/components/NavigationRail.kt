@@ -61,7 +61,7 @@ inline fun NavigationRail(
     showButton2: Boolean,
     bottomIconButtonId: Int? = R.drawable.search,
     noinline onBottomIconButtonClick: () -> Unit,
-    showBottomButton: Boolean? = false,
+    showBottomButton: Boolean = false,
     tabIndex: Int,
     crossinline onTabIndexChanged: (Int) -> Unit,
     content: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
@@ -283,7 +283,7 @@ inline fun NavigationRail(
                 }
             }
 
-        if (showBottomButton == true)
+        if (showBottomButton)
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier

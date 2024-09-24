@@ -360,10 +360,10 @@ fun Lyrics(
                                         coroutineScope.launch {
 
                                             SmartMessage(
-                                                context.resources.getString(R.string.info_lyrics_not_found_on_s)
-                                                    .format("LrcLib.net"),
+                                                context.resources.getString(R.string.info_lyrics_not_found_on_s).format("LrcLib.net"),
                                                 type = PopupType.Error,
-                                                durationLong = true, context = context
+                                                durationLong = true,
+                                                context = context
                                             )
                                         }
 

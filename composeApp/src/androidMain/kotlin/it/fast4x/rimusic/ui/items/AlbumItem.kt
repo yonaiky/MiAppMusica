@@ -33,8 +33,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    yearCentered: Boolean? = true,
-    showAuthors: Boolean? = false
+    yearCentered: Boolean = true,
+    showAuthors: Boolean = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
