@@ -61,7 +61,6 @@ fun NewreleasesScreen(
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
                 onHomeClick = { navController.navigate(NavRoutes.home.name) },
-                showTopActions = false,
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.new_albums), R.drawable.album)
                     //item(1, stringResource(R.string.new_albums_of_your_artists), R.drawable.album)

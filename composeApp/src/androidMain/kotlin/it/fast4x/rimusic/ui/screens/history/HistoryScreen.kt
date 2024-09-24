@@ -60,7 +60,6 @@ fun HistoryScreen(
                 tabIndex = 0,
                 onTabChanged = { },
                 onHomeClick = { homeRoute() },
-                showTopActions = false,
                 /*
                 onSettingsClick = { settingsRoute() },
                 onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
