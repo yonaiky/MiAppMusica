@@ -46,7 +46,7 @@
     <string name="fetch_lyrics_again">Recupera nuovamente lyrics</string>
     <string name="id">Id</string>
     <string name="itag">Itag</string>
-    <string name="bitrate">Bitrate</string>
+    <string name="bitrate">Velocità in bit</string>
     <string name="size">Grandezza</string>
     <string name="cached">In cache</string>
     <string name="loudness">Volume</string>
@@ -168,7 +168,7 @@
     <string name="app_language">Lingua principale</string>
     <string name="in_alphabetical_order">In ordine alfabetico:</string>
     <string name="contributors">CONTRIBUTORI</string>
-    <string name="troubleshooting">TROUBLESHOOTING</string>
+    <string name="troubleshooting">RISOLUZIONE DEI PROBLEMI</string>
     <string name="social">SOCIAL</string>
     <string name="english">Inglese</string>
     <string name="italian">Italiano</string>
@@ -187,17 +187,17 @@
     <string name="downloaded">Scaricati</string>
     <string name="turn_off">Disattiva</string>
     <string name="download">Scarica</string>
-    <string name="_default">Default</string>
+    <string name="_default">Predefinito</string>
     <string name="dynamic">Dinamico</string>
     <string name="discovery">Scopri</string>
-    <string name="mood">Mood</string>
+    <string name="mood">Stato d\'animo</string>
     <string name="new_albums">Nuovi album</string>
     <string name="moods_and_genres">Moods and generi</string>
     <string name="search_queries">" ricerche"</string>
     <string name="not_find_battery_optimization_settings">Impossibile trovare le impostazioni di ottimizzazione della batteria, si prega di farlo manualmente</string>
     <string name="search">Cerca</string>
     <string name="no">No</string>
-    <string name="stop">Stop</string>
+    <string name="stop">Interrompi</string>
     <string name="listen_on_youtube">Ascolta su YouTube</string>
     <string name="listen_on_youtube_music">Ascolta su YouTube Music</string>
     <string name="on_device">Sul dispositivo</string>
@@ -227,7 +227,7 @@
     <string name="disable_song_switching_via_swipe">Disabilita il cambio brano tramite swipe</string>
     <string name="interface_in_use">Interfaccia in uso</string>
     <string name="user_interface">Interfaccia</string>
-    <string name="ui_tab">UI</string>
+    <string name="ui_tab">Interfaccia</string>
     <string name="system_language">Lingua di sistema</string>
     <string name="biggest">Molto grande</string>
     <string name="set_custom_cache">Personalizza cache</string>
@@ -247,8 +247,8 @@
     <string name="portuguese_brazilian">Portoghese, Brasiliano</string>
     <string name="portuguese">Portoghese</string>
     <string name="indonesian">Indonesiano</string>
-    <string name="odia">Odia</string>
-    <string name="bashkir">Bashkir</string>
+    <string name="odia">Oriya</string>
+    <string name="bashkir">Baschiro</string>
     <string name="esperanto">Esperanto</string>
     <string name="close_app_with_back_button">Chiudi app con pulsante indietro</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Quando usi il pulsante indietro dalla home page</string>
@@ -297,7 +297,7 @@
     <string name="update_cover">Modifica Cover</string>
     <string name="title">Titolo</string>
     <string name="authors">Artisti</string>
-    <string name="cover">Cover</string>
+    <string name="cover">Copertina</string>
     <string name="lang_japanese">Giapponese</string>
     <string name="paste_or_type_a_valid_url">Incolla o digita un url valido</string>
     <string name="you_can_put_a_complete_link">Puoi inserire un link completo di una playlist, un album, un canale oppure di un brano su Youtube o YouTube Music</string>
@@ -356,7 +356,7 @@
     <string name="following">Segui già</string>
     <string name="artist_subscribers">%1$s iscritti</string>
     <string name="but_these_updates_would_not_go_through">Ma questi aggiornamenti non passerebbero attraverso lo screening aggiuntivo eseguito ad esempio IzzyOnDroid o F-Droid.</string>
-    <string name="sleeptimer_stop">stop</string>
+    <string name="sleeptimer_stop">interrompi</string>
     <string name="player_keep_minimized">Mantieni minimizzato</string>
     <string name="when_click_on_a_song_player_start_minimized">Quando si clicca su una canzone, il player si avvia minimizzato</string>
     <string name="settings_use_font_type">Stile font</string>
@@ -672,7 +672,7 @@
     <string name="controls_title_playback_pitch">Tono di riproduzione</string>
     <string name="controls_title_playback_volume">Volume di riproduzione</string>
     <string name="controls_title_device_volume">Volume del dispositivo</string>
-    <string name="lang_malayalam">Malayalam</string>
+    <string name="lang_malayalam">Malese</string>
     <string name="searches_suggestions">Suggerimenti</string>
     <string name="searches_saved_searches">Ricerche salvate</string>
     <string name="event_volumekeys">Cambia il brano con i tasti del volume</string>
@@ -728,7 +728,7 @@
     <string name="social_telegram_info">Unisciti al gruppo su Telegram</string>
     <string name="social_github">GitHub</string>
     <string name="update">Aggiornamento</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped. This action is irreversible.</string>
+    <string name="update_song">Vuoi davvero ricaricare questa canzone? Il tempo di riproduzione e la cache verranno cancellati. Questa azione è irreversibile.</string>
     <string name="player_pause_listen_history_info">Non salva gli eventi di riproduzione usati per statistiche, cronologia e suggerimenti nelle scelte rapide</string>
     <string name="vertical_widget">Widget verticale</string>
     <string name="horizontal_widget">Widget orizzontale</string>
