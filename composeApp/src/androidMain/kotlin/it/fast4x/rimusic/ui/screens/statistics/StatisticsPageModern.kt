@@ -248,34 +248,7 @@ fun StatisticsPageModern(
 
 
 
-            if (showStatsListeningTime)
-                SettingsEntry(
-                    title = "${allSongs.size} ${stringResource(R.string.statistics_songs_heard)}",
-                    text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
-                    onClick = {},
-                    trailingContent = {
-                        Image(
-                            painter = painterResource(R.drawable.musical_notes),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.shimmer),
-                            modifier = Modifier
-                                .size(34.dp)
-                        )
-                    },
-                    modifier = Modifier
-                        .background(
-                            color = colorPalette.background4,
-                            shape = thumbnailRoundness.shape()
-                        )
 
-                )
-
-            if (allSongs.isNotEmpty())
-                BasicText(
-                    text = "${maxStatisticsItems} ${stringResource(R.string.most_played_songs)}",
-                    style = typography.m.semiBold,
-                    modifier = sectionTextModifier
-                )
 
             val lazyGridState = rememberLazyGridState()
             LazyVerticalGrid(
@@ -316,6 +289,43 @@ fun StatisticsPageModern(
                         modifier = Modifier,
                         onClick = {}
                     )
+                }
+
+                item (
+                    key = "header_songs_heard",
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    if (showStatsListeningTime)
+                        SettingsEntry(
+                            title = "${allSongs.size} ${stringResource(R.string.statistics_songs_heard)}",
+                            text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
+                            onClick = {},
+                            trailingContent = {
+                                Image(
+                                    painter = painterResource(R.drawable.musical_notes),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                )
+                            },
+                            modifier = Modifier
+                                .background(
+                                    color = colorPalette.background4,
+                                    shape = thumbnailRoundness.shape()
+                                )
+
+                        )
+
+                    /*
+                    if (allSongs.isNotEmpty())
+                        BasicText(
+                            text = "${maxStatisticsItems} ${stringResource(R.string.most_played_songs)}",
+                            style = typography.m.semiBold,
+                            modifier = sectionTextModifier
+                        )
+
+                     */
                 }
 
                 item(

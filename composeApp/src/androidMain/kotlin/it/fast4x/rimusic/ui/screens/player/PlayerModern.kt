@@ -2023,10 +2023,11 @@ fun PlayerModern(
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
-                            Modifier
+                           Modifier
                                 .padding(vertical = 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
+
                         )
                     } else {
 
@@ -2281,7 +2282,7 @@ fun PlayerModern(
                                          previousPage = it
                                      }
                                  }
-
+                                 
                                  val screenHeight = configuration.screenHeightDp.dp
                                  val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
                                  VerticalPager(
@@ -2528,6 +2529,7 @@ fun PlayerModern(
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
                             //.weight(1f)
+
                         )
                     } else {
                                 Controls(
@@ -2537,12 +2539,15 @@ fun PlayerModern(
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
+
                                     /*
+                                    TODO: fix this because index not always correct and cause crash
                                     title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
                                         ?: "",
 
                                      */
                                     artist = mediaItem.mediaMetadata.artist?.toString(),
+                                    //TODO: fix this because index not always correct and cause crash
                                     //artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,
