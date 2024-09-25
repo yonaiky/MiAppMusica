@@ -2,7 +2,6 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 
 /*

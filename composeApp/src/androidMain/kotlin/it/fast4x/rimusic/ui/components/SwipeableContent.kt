@@ -37,8 +37,6 @@ import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.flow.distinctUntilChanged
-import org.jetbrains.compose.resources.getString
-import rimusic.composeapp.generated.resources.Res
 
 @Composable
 fun SwipeableContent(

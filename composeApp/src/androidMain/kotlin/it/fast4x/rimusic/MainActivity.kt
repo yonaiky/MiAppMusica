@@ -114,7 +114,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerModern
-import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance

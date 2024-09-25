@@ -14,16 +14,9 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.historyRoute
-import it.fast4x.rimusic.ui.screens.homeRoute
-import it.fast4x.rimusic.ui.screens.searchRoute
-import it.fast4x.rimusic.ui.screens.settingsRoute
-import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 

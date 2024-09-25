@@ -1,7 +1,5 @@
 package it.fast4x.rimusic.enums
 
-import android.util.Range
-
 enum class DurationInSeconds {
     Disabled,
     `3`,

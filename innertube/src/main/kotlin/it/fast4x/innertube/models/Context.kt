@@ -1,12 +1,8 @@
 package it.fast4x.innertube.models
 
-import io.ktor.client.request.headers
-import io.ktor.http.HttpMessageBuilder
 import io.ktor.http.headers
-import io.ktor.http.userAgent
 import it.fast4x.innertube.utils.LocalePreferences
 import kotlinx.serialization.Serializable
-import okhttp3.internal.userAgent
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

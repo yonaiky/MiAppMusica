@@ -3,7 +3,6 @@ package it.fast4x.piped.models
 import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable

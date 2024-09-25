@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPage
-import it.fast4x.innertube.requests.discoverPageNewAlbums
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition

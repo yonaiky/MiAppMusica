@@ -43,11 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
-import it.fast4x.piped.models.Instance
 import it.fast4x.piped.Piped
-
+import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -64,7 +62,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.TextCopyToClipboard
-import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.extraspaceKey

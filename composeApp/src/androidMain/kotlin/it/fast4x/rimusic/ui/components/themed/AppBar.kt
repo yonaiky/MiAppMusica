@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.DropdownMenu
@@ -46,19 +45,16 @@ import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.getCurrentRoute
 import it.fast4x.rimusic.utils.logDebugEnabledKey
-import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.menuItemColors
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon
-import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.app_logo_text
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

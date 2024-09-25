@@ -1,19 +1,12 @@
 package it.fast4x.rimusic.utils
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import androidx.compose.ui.platform.LocalDensity
-import androidx.core.net.toUri
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import it.fast4x.rimusic.service.BitmapProvider
-import it.fast4x.rimusic.service.PlayerService
 import kotlinx.coroutines.Dispatchers
-import kotlin.math.roundToInt
 
 
 fun cacheImage(context: Context, url: String, key: String) {

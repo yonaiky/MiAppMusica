@@ -33,13 +33,14 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.SearchType
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.secondary
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
