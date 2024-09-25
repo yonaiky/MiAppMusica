@@ -180,6 +180,7 @@ fun About() {
                     "IvanMaksimovic77 \n"+
                     "JZITNIK-github \n"+
                     "Kjev666 \n"+
+                    "knighthat \n"+
                     "Kptmx \n"+
                     "koliwan \n"+
                     "Lolozweipunktnull \n" +

@@ -132,6 +132,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [ikanakova](https://github.com/ikanakova)
 - [iscle](https://github.com/iscle)
 - [JZITNIK-github](https://github.com/JZITNIK-github)
+- [knighthat](https://github.com/knighthat)
 - [locxter](https://github.com/locxter)
 - [lrusso96](https://github.com/lrusso96)
 - [martkol](https://github.com/martkol)
