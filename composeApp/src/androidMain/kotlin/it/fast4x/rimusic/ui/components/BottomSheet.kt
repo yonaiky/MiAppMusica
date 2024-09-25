@@ -45,8 +45,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun BottomSheet(
     state: BottomSheetState,
-    disableVerticalDrag: Boolean? = false,
-    disableDismiss: Boolean? = false,
+    disableVerticalDrag: Boolean = false,
+    disableDismiss: Boolean = false,
     modifier: Modifier = Modifier,
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
@@ -65,9 +65,9 @@ fun BottomSheet(
 
                 detectVerticalDragGestures(
                     onVerticalDrag = { change, dragAmount ->
-                        if (disableVerticalDrag == false) {
+                        if (!disableVerticalDrag) {
                             velocityTracker.addPointerInputChange(change)
-                            if (disableDismiss == false)
+                            if (!disableDismiss)
                                 state.dispatchRawDelta(dragAmount)
                         }
                     },
@@ -76,10 +76,10 @@ fun BottomSheet(
                         state.snapTo(state.collapsedBound)
                     },
                     onDragEnd = {
-                        if (disableVerticalDrag == false) {
+                        if (!disableVerticalDrag) {
                             val velocity = -velocityTracker.calculateVelocity().y
                             velocityTracker.resetTracking()
-                            state.performFling(velocity, if (disableDismiss == false) onDismiss else null)
+                            state.performFling(velocity, if (!disableDismiss) onDismiss else null)
                         }
                     }
                 )
@@ -98,7 +98,7 @@ fun BottomSheet(
                         alpha = 1f - (state.progress * 16).coerceAtMost(1f)
                     }
                     .clickable(onClick = {
-                        if (disableVerticalDrag == false) state.expandSoft()
+                        if (!disableVerticalDrag) state.expandSoft()
                     })
                     .fillMaxWidth()
                     .height(state.collapsedBound),

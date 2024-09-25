@@ -299,7 +299,7 @@ fun CacheSettings() {
         SettingsEntry(
             title = stringResource(R.string.cache_location_folder),
             text = if (exoPlayerAlternateCacheLocation == "") "Default" else exoPlayerAlternateCacheLocation,
-            isEnabled = if (sdkVersion.toShort() < 29) true else false,
+            isEnabled = sdkVersion.toShort() < 29,
             onClick = {
                 dirRequest.launch(null)
             }

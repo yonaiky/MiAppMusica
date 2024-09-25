@@ -547,7 +547,7 @@ fun QuickPicksModern(
                             items(
                                 items = related?.songs?.distinctBy { it.key }?.filter {
                                     if (cachedSongs != null) {
-                                        if (cachedSongs.indexOf(it.asMediaItem.mediaId) < 0) true else false
+                                        cachedSongs.indexOf(it.asMediaItem.mediaId) < 0
                                     } else true
                                 }
                                     ?.dropLast(if (trending == null) 0 else 1)

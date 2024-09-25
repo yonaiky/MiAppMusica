@@ -68,11 +68,10 @@ fun StatisticsScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,
-                showBottomButton = false, //showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
@@ -83,7 +82,6 @@ fun StatisticsScreen(
                     //homeRoute()
                     navController.navigate(NavRoutes.home.name)
                 },
-                showTopActions = false,
                 /*
                 onSettingsClick = { settingsRoute() },
                 onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },

@@ -356,7 +356,7 @@ fun ArtistOverviewModern(
                                 }
                             //}
                         },
-                        alternative = if (artist?.bookmarkedAt == null) true else false,
+                        alternative = artist?.bookmarkedAt == null,
                         modifier = Modifier.padding(end = 30.dp)
                     )
 
