@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
+    <string name="opensource_multilingual_application">ଏହା ଏକ ମୁକ୍ତ ଉତ୍ସ ବିଶିଷ୍ଟ ବହୁଭାଷୀ ଆଣ୍ଡ୍ରଏଡ୍ ଆପ୍ ଯାହା ୟୁଟ୍ୟୁବ୍ ମ୍ୟୁଜିକ୍ ରୁ ସଙ୍ଗୀତ ସ୍ରୋତାବହନ କରେ</string>
+    <string name="your_library">ଆପଣଙ୍କର ସଙ୍ଗୀତାଳୟ.</string>
+    <string name="organized_in_one_place">ଆପଣଙ୍କର ପ୍ରିୟ ଗୀତ, ଡାଉନଲୋଡ୍ ହୋଇଥିବା ଗୀତ, ଶୁଣିଥିବା ଗୀତ ଓ ତୁମର ସମସ୍ତ ପ୍ଲେଲିଷ୍ଟ, ସବୁ ଗୋଟିଏ ସ୍ଥାନରେ |</string>
     <string name="beautiful_player">A beautiful player.</string>
     <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
     <string name="many_effects">Many effects.</string>
