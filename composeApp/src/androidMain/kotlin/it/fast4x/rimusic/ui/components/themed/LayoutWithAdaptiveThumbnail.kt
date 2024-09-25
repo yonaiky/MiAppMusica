@@ -53,7 +53,7 @@ fun adaptiveThumbnailContent(
     isLoading: Boolean,
     url: String?,
     shape: Shape? = null,
-    showIcon: Boolean? = false,
+    showIcon: Boolean = false,
     onOtherVersionAvailable: (() -> Unit)? = {},
     onClick: (() -> Unit)? = {}
 ): @Composable () -> Unit = {
@@ -175,7 +175,7 @@ fun adaptiveThumbnailContent(
                 contentDescription = null,
                 modifier = modifier
             )
-            if(showIcon == true)
+            if(showIcon)
                 onOtherVersionAvailable?.let {
                     Box(
                         modifier = modifier

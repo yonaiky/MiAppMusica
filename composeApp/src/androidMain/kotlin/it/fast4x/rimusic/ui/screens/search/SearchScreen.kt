@@ -170,7 +170,7 @@ fun SearchScreen(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)

@@ -59,17 +59,17 @@ inline fun NavigationRailTB(
     navController: NavController,
     topIconButtonId: Int,
     noinline onTopIconButtonClick: () -> Unit,
-    showButton1: Boolean = true,
+    showButton1: Boolean,
     topIconButton2Id: Int,
     noinline onTopIconButton2Click: () -> Unit,
     showButton2: Boolean,
-    bottomIconButtonId: Int? = R.drawable.search,
+    bottomIconButtonId: Int?,
     noinline onBottomIconButtonClick: () -> Unit,
-    showBottomButton: Boolean? = false,
+    showBottomButton: Boolean,
     tabIndex: Int,
     crossinline onTabIndexChanged: (Int) -> Unit,
-    content: @Composable() (ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit),
-    hideTabs: Boolean? = false,
+    content: @Composable (ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit),
+    hideTabs: Boolean,
     modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
@@ -113,7 +113,7 @@ inline fun NavigationRailTB(
 
     ) {
 
-        if (hideTabs == false)
+        if (!hideTabs)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround,
@@ -239,7 +239,7 @@ inline fun NavigationRailTB(
                             )
 
 
-                        if (showBottomButton == true)
+                        if (showBottomButton)
                             Image(
                                 painter = painterResource(bottomIconButtonId ?: R.drawable.search),
                                 contentDescription = null,

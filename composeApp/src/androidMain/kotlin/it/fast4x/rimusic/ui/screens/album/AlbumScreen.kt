@@ -258,7 +258,7 @@ fun AlbumScreen(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

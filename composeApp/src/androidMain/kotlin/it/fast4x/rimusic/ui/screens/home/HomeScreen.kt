@@ -217,7 +217,7 @@ fun HomeScreen(
                     //settingsRoute()
                     navController.navigate(NavRoutes.settings.name)
                 },
-                showButton1 = if(uiType == UiType.RiMusic) false else true,
+                showButton1 = uiType != UiType.RiMusic,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = {
                     //statisticsTypeRoute(StatisticsType.Today)

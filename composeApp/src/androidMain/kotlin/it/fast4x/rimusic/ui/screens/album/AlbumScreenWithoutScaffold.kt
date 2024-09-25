@@ -317,7 +317,8 @@ fun AlbumScreenWithoutScaffold(
                 adaptiveThumbnailContent(
                     album?.timestamp == null,
                     album?.thumbnailUrl,
-                    showIcon = albumPage?.otherVersions?.isNotEmpty(),
+                    // Show album icon if album page is not null and has other version
+                    showIcon = albumPage?.otherVersions?.isNotEmpty() ?: false,
                     onOtherVersionAvailable = {
                         showAlternativePage = !showAlternativePage
                     },

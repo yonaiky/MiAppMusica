@@ -119,30 +119,24 @@ fun AppBar(
                         .combinedClickable(
                             onClick = {
                                 countForReveal++
-                                if (countForReveal == 3) {
-                                    SmartMessage(
-                                        "Do you like clicking? Then continue...",
-                                        durationLong = true, context = context
-                                    )
-                                }
-                                if (countForReveal == 6) {
-                                    SmartMessage(
-                                        "Okay, you’re looking for something, keep...",
-                                        durationLong = true, context = context
-                                    )
-                                }
-                                if (countForReveal == 9) {
-                                    SmartMessage(
-                                        "You are a number one, click and enjoy the surprise",
-                                        durationLong = true, context = context
-                                    )
-                                }
+
                                 if (countForReveal == 10) {
                                     countForReveal = 0
                                     navController.navigate(NavRoutes.gamePacman.name)
+                                    return@combinedClickable
                                 }
-                                //if (navController.currentDestination?.route != NavRoutes.home.name)
-                                //    navController.navigate(NavRoutes.home.name)
+
+                                val message: String = when(countForReveal) {
+                                    3 -> "Do you like clicking? Then continue..."
+                                    6 -> "Okay, you’re looking for something, keep..."
+                                    9 -> "You are a number one, click and enjoy the surprise"
+                                    else -> ""
+                                }
+                                SmartMessage(
+                                    message,
+                                    durationLong = true,
+                                    context = context
+                                )
                             },
                             onLongClick = {
                                 SmartMessage(

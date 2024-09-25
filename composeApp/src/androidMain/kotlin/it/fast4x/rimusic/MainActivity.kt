@@ -332,9 +332,14 @@ class MainActivity :
                 }
             }
 
-        val launchedFromNotification =
-            intent?.extras?.getBoolean("expandPlayerBottomSheet") == true
-                    || intent?.extras?.getBoolean("fromWidget") == true
+        /*
+            Instead of checking getBoolean() individually, we can use .let() to express condition.
+            Or, the whole thing is 'false' if null appears in the process.
+         */
+        val launchedFromNotification: Boolean =
+            intent?.extras?.let {
+                it.getBoolean("expandPlayerBottomSheet") || it.getBoolean("fromWidget")
+            } ?: false
 
         println("MainActivity.onCreate launchedFromNotification: $launchedFromNotification intent $intent.action")
 
@@ -767,7 +772,7 @@ class MainActivity :
                         ThumbnailRoundness.Heavy
                     )
 
-                    var isVideo = binder?.player?.currentMediaItem?.isVideo
+                    val isVideo = binder?.player?.currentMediaItem?.isVideo ?: false
                     val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
                     val playerModern: @Composable () -> Unit = {
                         PlayerModern(
@@ -814,7 +819,7 @@ class MainActivity :
                     }
 
                     CustomModalBottomSheet(
-                        showSheet = isVideo == true && isVideoEnabled && showPlayer,
+                        showSheet = isVideo && isVideoEnabled && showPlayer,
                         onDismissRequest = { showPlayer = false },
                         containerColor = colorPalette.background0,
                         contentColor = colorPalette.background0,
