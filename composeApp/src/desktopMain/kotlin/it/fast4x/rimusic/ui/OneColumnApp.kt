@@ -49,6 +49,8 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import player.DefaultControls

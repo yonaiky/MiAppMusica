@@ -7,11 +7,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,10 +23,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,10 +43,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
+import it.fast4x.rimusic.items.SongItem
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import player.component.ComponentContainer
-import player.component.ComponentPlayer
 import player.frame.FrameContainer
 import player.frame.FramePlayer
 import vlcj.VlcjComponentController
@@ -59,10 +59,10 @@ fun ThreeColumnsApp(
     navController: NavHostController = rememberNavController()
 ) {
 
-    /*
+
     val body = remember { mutableStateOf<PlayerResponse?>(null) }
     runBlocking(Dispatchers.IO) {
-        Innertube.player(PlayerBody(videoId = "TVlyvIP_y1Y"))
+        Innertube.player(PlayerBody(videoId = "Cn9OyUDg22M"))
     }?.onSuccess {
         body.value = it
     }
@@ -73,22 +73,24 @@ fun ThreeColumnsApp(
             it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
             ) ?: -1 }
 
-     */
+
 
     /*
     val formatVideo = body.value?.streamingData?.adaptiveFormats
         ?.filter { it.isVideo }
         ?.maxByOrNull {
-            it.bitrate?.times( (if (it.mimeType.startsWith("video/webm")) 100 else 1)
+            it.bitrate?.times( (if (it.mimeType.startsWith("video/mp4")) 100 else 1)
             ) ?: -1 }
+    */
 
-     */
 
-    //var urlAudio by remember { mutableStateOf(formatAudio?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    var urlAudio by remember { mutableStateOf(formatAudio?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
     //var urlVideo by remember { mutableStateOf(formatVideo?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
-    var url by remember { mutableStateOf("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    //var url by remember { mutableStateOf("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
 
-    //var url by remember { mutableStateOf(urlAudio) }
+
+    var url by remember { mutableStateOf(urlAudio) }
+    //var url by remember { mutableStateOf(urlVideo) }
 
     val componentController = remember(url) { VlcjComponentController() }
     val frameController = remember(url) { VlcjFrameController() }
@@ -110,9 +112,25 @@ fun ThreeColumnsApp(
         bottomBar = {
             Row(
                 Modifier.border(BorderStroke(1.dp, Color.Red)).fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Row(
+                    Modifier.border(BorderStroke(1.dp, Color.Red)),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SongItem(
+                        thumbnailContent = {},
+                        authors = "Author",
+                        duration = "00:00",
+                        title = "Title",
+                        isDownloaded = false,
+                        onDownloadClick = {},
+                        thumbnailSizeDp = 50.dp,
+                        modifier = Modifier.width(200.dp)
+                    )
+                }
                 FramePlayer(
                     Modifier.fillMaxWidth(0.8f).border(BorderStroke(1.dp, Color.Yellow)),
                     url,
@@ -150,8 +168,6 @@ fun ThreeColumnsApp(
 
 
     }
-
-
 }
 
 @Composable
