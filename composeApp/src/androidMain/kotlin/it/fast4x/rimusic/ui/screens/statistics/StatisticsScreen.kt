@@ -66,22 +66,15 @@ fun StatisticsScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
                 },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 /*
                 onSettingsClick = { settingsRoute() },
                 onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },

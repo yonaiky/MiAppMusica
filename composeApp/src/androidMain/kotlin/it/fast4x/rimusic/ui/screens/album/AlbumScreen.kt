@@ -257,18 +257,11 @@ fun AlbumScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 showButton1 = uiType != UiType.RiMusic,
                 onTopIconButtonClick = pop,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 tabColumnContent = { Item ->
                     Item(0,
                         stringResource(R.string.album_and_alternative_versions), R.drawable.album)

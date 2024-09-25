@@ -106,12 +106,9 @@ fun DeviceListSongsScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 showBottomButton = showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
@@ -119,10 +116,6 @@ fun DeviceListSongsScreen(
                 },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 tabColumnContent = { Item ->
                     if(showFavoritesPlaylist)
                         Item(0, stringResource(R.string.favorites), R.drawable.heart)

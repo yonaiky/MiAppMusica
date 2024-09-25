@@ -140,16 +140,10 @@ fun SearchResultScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 tabIndex = tabIndex,
-                onHomeClick = {
-                    navController.navigate(NavRoutes.home.name)
-                },
                 onTabChanged = onTabIndexChanges,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)

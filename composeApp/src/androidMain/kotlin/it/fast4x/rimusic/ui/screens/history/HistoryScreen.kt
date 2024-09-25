@@ -51,15 +51,9 @@ fun HistoryScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = { homeRoute() },
                 /*
                 onSettingsClick = { settingsRoute() },
                 onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },

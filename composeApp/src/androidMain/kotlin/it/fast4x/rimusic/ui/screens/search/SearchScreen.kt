@@ -169,22 +169,15 @@ fun SearchScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 showButton1 = uiType != UiType.RiMusic,
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)
                 },
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 //hideTabs = false,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.online), R.drawable.globe)
                     Item(1, stringResource(R.string.library), R.drawable.library)

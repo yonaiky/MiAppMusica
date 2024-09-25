@@ -49,22 +49,13 @@ fun LocalPlaylistScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 //showBottomButton = showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
-                },
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
                 },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)

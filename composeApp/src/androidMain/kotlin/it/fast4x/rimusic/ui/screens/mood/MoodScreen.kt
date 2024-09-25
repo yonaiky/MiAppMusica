@@ -49,18 +49,9 @@ fun MoodScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 showButton1 = uiType != UiType.RiMusic,
                 onTopIconButtonClick = pop,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.mood), R.drawable.album)
                 }

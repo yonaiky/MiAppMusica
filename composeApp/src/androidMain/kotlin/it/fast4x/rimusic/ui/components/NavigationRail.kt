@@ -65,7 +65,7 @@ inline fun NavigationRail(
     tabIndex: Int,
     crossinline onTabIndexChanged: (Int) -> Unit,
     content: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    hideTabs: Boolean? = false,
+    hideTabs: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography) = LocalAppearance.current
@@ -87,7 +87,7 @@ inline fun NavigationRail(
             //.fillMaxWidth()
     ) {
 
-        if (hideTabs == false)
+        if (!hideTabs)
         //if(uiType == UiType.ViMusic)
             Box(
                 contentAlignment = Alignment.TopCenter,
@@ -143,7 +143,7 @@ inline fun NavigationRail(
             }
 
 
-        if (hideTabs == false)
+        if (!hideTabs)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

@@ -52,15 +52,11 @@ fun NewreleasesScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
-                onHomeClick = { navController.navigate(NavRoutes.home.name) },
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.new_albums), R.drawable.album)
                     //item(1, stringResource(R.string.new_albums_of_your_artists), R.drawable.album)

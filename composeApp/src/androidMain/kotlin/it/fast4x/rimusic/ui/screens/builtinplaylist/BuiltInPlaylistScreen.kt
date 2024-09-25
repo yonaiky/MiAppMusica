@@ -115,10 +115,8 @@ fun BuiltInPlaylistScreen(
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = uiType != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = if(uiType == UiType.RiMusic) false else showStatsInNavbar,
                 showBottomButton = if(uiType == UiType.RiMusic) false else showSearchTab,
@@ -128,10 +126,6 @@ fun BuiltInPlaylistScreen(
                 },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
                 tabColumnContent = { Item ->
                     if(showFavoritesPlaylist)
                         Item(0, stringResource(R.string.favorites), R.drawable.heart)
