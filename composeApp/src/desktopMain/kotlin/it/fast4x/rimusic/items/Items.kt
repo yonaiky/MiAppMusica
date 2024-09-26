@@ -19,10 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
@@ -138,4 +140,38 @@ fun SongItem(
             }
         }
     }
+}
+
+@Composable
+fun SongItem(
+    song: Innertube.SongItem,
+    isDownloaded: Boolean = false,
+    onDownloadClick: () -> Unit = {},
+    thumbnailSizeDp: Dp = 50.dp,
+    modifier: Modifier
+) {
+    SongItem(
+        title = song.info?.name,
+        authors = song.authors?.joinToString(", ") { it.name.toString() },
+        duration = song.durationText,
+        thumbnailSizeDp = thumbnailSizeDp,
+        modifier = modifier,
+        isDownloaded = isDownloaded,
+        thumbnailContent = {
+            /*
+            AsyncImage(
+                model = song.thumbnail?.url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clip(ThumbnailRoundness.Medium.shape())
+                    .fillMaxSize()
+            )
+             */
+
+            //onThumbnailContent?.invoke(this)
+        },
+        trailingContent = {},
+        onDownloadClick = onDownloadClick
+    )
 }
