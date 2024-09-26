@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.ui.bars.DefaultBottomBar
 import player.DefaultControls
 import player.PlayerController
 
@@ -35,6 +36,7 @@ fun FramePlayer(
         if (showFrame)
             FrameContainer(Modifier, size, bytes)
         if (showControls)
-            DefaultControls(Modifier, controller)
+            //DefaultControls(Modifier, controller)
+            DefaultBottomBar(Modifier, controller)
     }
 }

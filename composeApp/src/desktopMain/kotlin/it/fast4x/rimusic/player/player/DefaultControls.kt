@@ -39,7 +39,7 @@ fun DefaultControls(modifier: Modifier = Modifier, controller: PlayerController)
         verticalArrangement = Arrangement.Center
     ) {
 
-        /*
+
         Row(
             Modifier.border(BorderStroke(1.dp, Color.White)),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -96,7 +96,8 @@ fun DefaultControls(modifier: Modifier = Modifier, controller: PlayerController)
             */
             //}
         }
-        */
+
+        /*
         Column (
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -210,5 +211,6 @@ fun DefaultControls(modifier: Modifier = Modifier, controller: PlayerController)
 
 
         }
+        */
     }
 }

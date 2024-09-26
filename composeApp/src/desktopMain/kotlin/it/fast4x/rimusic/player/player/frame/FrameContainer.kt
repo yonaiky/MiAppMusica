@@ -50,7 +50,7 @@ fun FrameContainer(
             }
         } ?: Image(
             painter = painterResource(Res.drawable.app_icon),
-            colorFilter = ColorFilter.tint(Color.Green),
+            colorFilter = ColorFilter.tint(Color.Green.copy(alpha = 0.6f)),
             contentDescription = "Logo",
             modifier = Modifier.fillMaxSize(0.7f)
         )
