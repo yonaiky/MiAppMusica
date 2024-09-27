@@ -24,8 +24,11 @@ fun FramePlayer(
     showControls: Boolean = true,
     showFrame: Boolean = true
 ) {
+    //if (url.isEmpty()) return
+
     DisposableEffect(url) {
         controller.load(url)
+        controller.play()
         onDispose { controller.dispose() }
     }
     Column(

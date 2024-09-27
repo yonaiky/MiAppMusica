@@ -107,18 +107,32 @@ fun ThreeColumnsApp(
 ) {
 
 
-    val body = remember { mutableStateOf<PlayerResponse?>(null) }
-    runBlocking(Dispatchers.IO) {
-        Innertube.player(PlayerBody(videoId = "Cn9OyUDg22M"))
-    }?.onSuccess {
-        body.value = it
+    val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
+    //val body = remember { mutableStateOf<PlayerResponse?>(null) }
+
+    val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
+
+    LaunchedEffect(videoId.value) {
+        //runBlocking(Dispatchers.IO) {
+            Innertube.player(PlayerBody(videoId = videoId.value))
+            ?.onSuccess {
+            //body.value = it
+            formatAudio.value = it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }?.maxByOrNull {
+                it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                ) ?: -1
+            }
+        }
+        println("videoId  ${videoId.value} formatAudio url inside ${formatAudio.value?.url}")
     }
 
+    /*
     val formatAudio = body.value?.streamingData?.adaptiveFormats
         ?.filter { it.isAudio }
         ?.maxByOrNull {
             it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
             ) ?: -1 }
+
+     */
 
 
 
@@ -131,22 +145,25 @@ fun ThreeColumnsApp(
     */
 
 
-    var urlAudio by remember { mutableStateOf(formatAudio?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    //val urlAudio by remember { mutableStateOf(formatAudio.value?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
     //var urlVideo by remember { mutableStateOf(formatVideo?.url ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
     //var url by remember { mutableStateOf("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    //val url by remember { mutableStateOf(formatAudio.value?.url) }
 
+    val url = formatAudio.value?.url //"https://rr4---sn-hpa7znzr.googlevideo.com/videoplayback?expire=1727471735&ei=Fsz2ZoyiPO7Si9oPpreTiAI&ip=178.19.172.167&id=o-ABmCff7qCeQd05V_WN5fpAFEfxHP3kxR6G55H_QdlBsh&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=43&mm=31%2C26&mn=sn-hpa7znzr%2Csn-4g5lznez&ms=au%2Conr&mv=m&mvi=4&pl=22&gcr=it&initcwndbps=2505000&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3291443&dur=194.901&lmt=1714829870710563&mt=1727449746&fvip=4&keepalive=yes&fexp=51299152&c=ANDROID_MUSIC&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIhAP5IS0unA9IAhtAtkqY-63FGyG_eRi-FMMgNjWU1TWGzAiACd3c4niMxsPxXjp_55EylpIBysVBOpoD69oQ9xvF8bg%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABPmVW0wRAIgZBP07jXYZ5_4xSrp_hZ9jvIOMPsfOa-grREDshQvzSYCIC7ImmFVJCeLUMVASEkedlXa-R4je3RVC_fu2WH8XTvj"
 
-    var url by remember { mutableStateOf(urlAudio) }
+    println("url $url")
+
     //var url by remember { mutableStateOf(urlVideo) }
 
-    val componentController = remember(url) { VlcjComponentController() }
+    //val componentController = remember(url) { VlcjComponentController() }
     val frameController = remember(url) { VlcjFrameController() }
     var showPlayer by remember { mutableStateOf(false) }
 
     MusicDatabaseDesktop.getAll()
 
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: "artists"
+    //val backStackEntry by navController.currentBackStackEntryAsState()
+    //val currentScreen = backStackEntry?.destination?.route ?: "artists"
 
     Scaffold(
         containerColor = Color.Black,
@@ -193,7 +210,7 @@ fun ThreeColumnsApp(
                     }
                     FramePlayer(
                         Modifier.fillMaxWidth(0.8f), //.border(BorderStroke(1.dp, Color.Yellow)),
-                        url,
+                        url ?: "",
                         frameController.size.collectAsState(null).value?.run {
                             IntSize(first, second)
                         } ?: IntSize.Zero,
@@ -208,8 +225,10 @@ fun ThreeColumnsApp(
     ) { innerPadding ->
 
         ThreeColumnsLayout(
-            onShowPlayer = {},
-            url = url,
+            onSongClick = {
+                videoId.value = it
+                println("videoId clicked $it")
+            },
             frameController = frameController
         )
 
@@ -233,9 +252,8 @@ fun ThreeColumnsApp(
 
 @Composable
 fun ThreeColumnsLayout(
-    onShowPlayer: (Boolean) -> Unit = {},
-    url: String = "",
-    frameController: VlcjFrameController = remember { VlcjFrameController() }
+   onSongClick: (key: String) -> Unit = {},
+   frameController: VlcjFrameController = remember { VlcjFrameController() }
 ) {
     Row(Modifier.fillMaxSize()) {
         LeftPanelContent()
@@ -245,7 +263,9 @@ fun ThreeColumnsLayout(
                 .width(1.dp),
             color = Color.Gray.copy(alpha = 0.6f)
         )
-        CenterPanelContent()
+        CenterPanelContent(
+            onSongClick = onSongClick
+        )
         VerticalDivider(
             modifier = Modifier
                 .fillMaxHeight()
@@ -374,7 +394,9 @@ fun LeftPanelContent() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CenterPanelContent() {
+fun CenterPanelContent(
+    onSongClick: (key: String) -> Unit = {},
+) {
     val scrollState = rememberScrollState()
     Column(
         verticalArrangement = Arrangement.Top,
@@ -465,11 +487,13 @@ fun CenterPanelContent() {
                             song = song,
                             isDownloaded = false,
                             onDownloadClick = {},
-                            thumbnailSizeDp = 50.dp,
+                            //thumbnailSizeDp = 50.dp,
                             modifier = Modifier
                                 .combinedClickable(
                                     onLongClick = {},
-                                    onClick = {}
+                                    onClick = {
+                                        onSongClick(song.key)
+                                    }
                                 )
                                 .animateItemPlacement()
                                 .width(itemInHorizontalGridWidth)
@@ -482,6 +506,7 @@ fun CenterPanelContent() {
 
     }
 }
+
 
 @Composable
 fun RightPanelContent(

@@ -24,11 +24,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.utils.LoadImage
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon
+import rimusic.composeapp.generated.resources.loader
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,13 +56,7 @@ fun SongItem(
             modifier = Modifier
                 .size(thumbnailSizeDp) //.border(1.dp, Color.Red)
         ) {
-            if (thumbnailContent.invoke(this) == null)
-            thumbnailContent() else Image(
-                painter = painterResource(Res.drawable.app_icon),
-                colorFilter = ColorFilter.tint(Color.Green.copy(alpha = 0.6f)),
-                contentDescription = "Logo",
-                modifier = Modifier.fillMaxSize()
-            )
+            thumbnailContent()
         }
 
         ItemInfoContainer {
@@ -158,17 +155,12 @@ fun SongItem(
         modifier = modifier,
         isDownloaded = isDownloaded,
         thumbnailContent = {
-            /*
-            AsyncImage(
-                model = song.thumbnail?.url,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(ThumbnailRoundness.Medium.shape())
-                    .fillMaxSize()
-            )
-             */
 
+            song.thumbnail?.url.let {
+                if (it != null) {
+                    LoadImage(it)
+                }
+            }
             //onThumbnailContent?.invoke(this)
         },
         trailingContent = {},

@@ -43,14 +43,23 @@ kotlin {
 
         val desktopMain by getting
         desktopMain.dependencies {
-            //implementation(compose.material3)
-            //implementation(compose.ui)
             implementation(compose.components.resources)
-            //implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
 
             implementation(libs.material.icon.desktop)
             implementation(libs.vlcj)
+
+            runtimeOnly(libs.kotlinx.coroutines.swing)
+            implementation(libs.coil.network.okhttp)
+
+            /*
+            // Uncomment only for build jvm desktop version
+            // Comment before build android version
+            configurations.commonMainApi {
+                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
+            }
+             */
+
         }
 
         androidMain.dependencies {
@@ -65,7 +74,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
-            //implementation(projects.desktopPlayer)
 
             implementation(libs.room)
             implementation(libs.room.runtime)
@@ -75,6 +83,10 @@ kotlin {
 
             implementation(libs.navigation.kmp)
 
+            //coil3 mp
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
 
         }
     }
