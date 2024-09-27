@@ -111,8 +111,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 57
-        versionName = "0.6.53"
+        versionCode = 58
+        versionName = "0.6.54"
     }
 
     splits {
@@ -276,10 +276,6 @@ dependencies {
     }
 
 }
-
-// Solves implicit dependency issue and IDEs source code detection.
-// commented and replaced
-//kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
 
 dependencies {
 
