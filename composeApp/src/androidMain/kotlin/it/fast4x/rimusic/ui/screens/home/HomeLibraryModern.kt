@@ -105,7 +105,9 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.utils.MONTHLY_PREFIX
+import it.fast4x.rimusic.MONTHLY_PREFIX
+import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.autosyncKey
@@ -133,7 +135,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-const val PIPED_PREFIX = "piped:"
+
 @ExperimentalMaterial3Api
 @UnstableApi
 @ExperimentalMaterialApi

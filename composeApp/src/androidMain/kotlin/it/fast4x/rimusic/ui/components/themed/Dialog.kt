@@ -100,7 +100,7 @@ import it.fast4x.rimusic.utils.blurStrengthKey
 //import it.fast4x.rimusic.utils.blurStrength2Key
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.cleanPrefix
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.getDeviceVolume

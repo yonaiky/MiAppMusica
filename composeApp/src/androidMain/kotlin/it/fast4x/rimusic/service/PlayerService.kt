@@ -122,7 +122,7 @@ import it.fast4x.rimusic.utils.YouTubeRadio
 import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.broadCastPendingIntent
-import it.fast4x.rimusic.utils.cleanPrefix
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey

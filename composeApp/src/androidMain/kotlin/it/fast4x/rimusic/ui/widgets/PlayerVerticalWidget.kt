@@ -36,14 +36,7 @@ import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import it.fast4x.rimusic.MainActivity
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget.Companion.isPlayingKey
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget.Companion.songArtistKey
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget.Companion.songTitleKey
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget.Companion.widgetBitmap
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget.Companion.widgetPlayer
-import it.fast4x.rimusic.utils.cleanPrefix
+import it.fast4x.rimusic.cleanPrefix
 
 class PlayerVerticalWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = PlayerVerticalWidget()

@@ -20,6 +20,7 @@ import androidx.media3.exoplayer.offline.DownloadService
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalDownloader
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.MyDownloadService

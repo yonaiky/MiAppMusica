@@ -1,15 +1,13 @@
 package it.fast4x.rimusic.items
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.MaterialTheme.typography
@@ -18,20 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import it.fast4x.innertube.Innertube
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.thumbnail
 import it.fast4x.rimusic.utils.LoadImage
-import org.jetbrains.compose.resources.painterResource
-import rimusic.composeapp.generated.resources.Res
-import rimusic.composeapp.generated.resources.app_icon
-import rimusic.composeapp.generated.resources.loader
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -66,8 +60,8 @@ fun SongItem(
                         text = title ?: "",
                         style = TextStyle(
                             color = Color.White,
-                            fontSize = typography.titleMedium.fontSize,
-                            fontWeight = typography.titleMedium.fontWeight
+                            fontSize = typography.titleSmall.fontSize,
+                            //fontWeight = typography.titleMedium.fontWeight
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -83,7 +77,7 @@ fun SongItem(
                 style = TextStyle(
                     color = Color.White,
                     fontSize = typography.titleSmall.fontSize,
-                    fontWeight = typography.titleSmall.fontWeight
+                    //fontWeight = typography.titleSmall.fontWeight
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -111,7 +105,7 @@ fun SongItem(
                     style = TextStyle(
                         color = Color.White,
                         fontSize = typography.titleSmall.fontSize,
-                        fontWeight = typography.titleSmall.fontWeight
+                        //fontWeight = typography.titleSmall.fontWeight
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
@@ -126,7 +120,7 @@ fun SongItem(
                         style = TextStyle(
                             color = Color.White,
                             fontSize = typography.titleSmall.fontSize,
-                            fontWeight = typography.titleSmall.fontWeight
+                            //fontWeight = typography.titleSmall.fontWeight
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -165,5 +159,110 @@ fun SongItem(
         },
         trailingContent = {},
         onDownloadClick = onDownloadClick
+    )
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AlbumItem(
+    thumbnailUrl: String?,
+    title: String?,
+    authors: String?,
+    year: String?,
+    yearCentered: Boolean? = true,
+    thumbnailSizePx: Int?,
+    thumbnailSizeDp: Dp,
+    modifier: Modifier = Modifier,
+    alternative: Boolean = false,
+    showAuthors: Boolean? = false
+) {
+
+    ItemContainer(
+        alternative = alternative,
+        thumbnailSizeDp = thumbnailSizeDp,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        AsyncImage(
+            model = thumbnailUrl.let { cleanPrefix(it ?: "") }, //thumbnailUrl?.thumbnail(thumbnailSizePx)?.let { it1 -> cleanPrefix(it1) },) } //thumbnailUrl?.thumbnail(thumbnailSizePx)?.let { it1 -> cleanPrefix(it1) },
+            contentDescription = null,
+            //contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .clip(ThumbnailRoundness.Medium.shape())
+                .requiredSize(thumbnailSizeDp)
+        )
+
+        ItemInfoContainer {
+            BasicText(
+                text = cleanPrefix(title ?: ""),
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = typography.titleSmall.fontSize,
+                    //fontWeight = typography.titleSmall.fontWeight
+                ),
+                maxLines = 1, //if (alternative) 1 else 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee(iterations = Int.MAX_VALUE)
+            )
+
+            if (!alternative || showAuthors == true) {
+                authors?.let {
+                    BasicText(
+                        text = cleanPrefix(authors),
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = typography.titleSmall.fontSize,
+                            //fontWeight = typography.titleSmall.fontWeight
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .align(
+                                if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
+                    )
+                }
+            }
+
+            BasicText(
+                text = year ?: "",
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = typography.titleSmall.fontSize,
+                    //fontWeight = typography.titleSmall.fontWeight
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .align(
+                        if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
+            )
+        }
+    }
+}
+
+@Composable
+fun AlbumItem(
+    album: Innertube.AlbumItem,
+    yearCentered: Boolean? = true,
+    thumbnailSizeDp: Dp,
+    modifier: Modifier = Modifier,
+    alternative: Boolean = false,
+    showAuthors: Boolean? = false
+) {
+    AlbumItem(
+        thumbnailUrl = album.thumbnail?.url,
+        title = album.info?.name,
+        authors = album.authors?.joinToString(", ") { it.name.toString() },
+        year = album.year,
+        yearCentered = yearCentered,
+        thumbnailSizePx = null,
+        thumbnailSizeDp = thumbnailSizeDp,
+        modifier = modifier,
+        alternative = alternative,
+        showAuthors = showAuthors
     )
 }

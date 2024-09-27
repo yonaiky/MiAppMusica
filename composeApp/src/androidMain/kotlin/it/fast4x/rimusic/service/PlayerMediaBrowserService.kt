@@ -30,8 +30,8 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongWithContentLength
-import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
-import it.fast4x.rimusic.utils.MONTHLY_PREFIX
+import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -50,6 +50,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import rimusic.composeapp.generated.resources.Res
+import rimusic.composeapp.generated.resources.album
+import rimusic.composeapp.generated.resources.library
+import rimusic.composeapp.generated.resources.musical_notes
 
 class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -222,7 +226,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.songs)
                 .setTitle((this as Context).resources.getString(R.string.songs))
-                .setIconUri(uriFor(R.drawable.musical_notes))
+                .setIconUri(uriFor(Res.drawable.musical_notes.hashCode()))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -233,7 +237,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.playlists)
                 .setTitle((this as Context).resources.getString(R.string.library))
-                .setIconUri(uriFor(R.drawable.library))
+                .setIconUri(uriFor(Res.drawable.library.hashCode()))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -243,7 +247,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.albums)
                 .setTitle((this as Context).resources.getString(R.string.albums))
-                .setIconUri(uriFor(R.drawable.album))
+                .setIconUri(uriFor(Res.drawable.album.hashCode()))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -293,7 +297,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.ondevice)
                 .setTitle((this as Context).resources.getString(R.string.on_device))
-                .setIconUri(uriFor(R.drawable.musical_notes))
+                .setIconUri(uriFor(Res.drawable.musical_notes.hashCode()))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )

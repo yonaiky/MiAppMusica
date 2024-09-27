@@ -29,6 +29,11 @@ import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.MODIFIED_PREFIX
+import it.fast4x.rimusic.MONTHLY_PREFIX
+import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
@@ -36,10 +41,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
-import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
-import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
-import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
-import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,15 +61,6 @@ import java.util.GregorianCalendar
 import java.util.Locale
 import kotlin.time.Duration.Companion.minutes
 
-
-fun cleanPrefix(text: String): String {
-    var cleanText = text.substringAfter(PINNED_PREFIX)
-    cleanText = cleanText.substringAfter(MONTHLY_PREFIX)
-    cleanText = cleanText.substringAfter(PIPED_PREFIX)
-    cleanText = cleanText.substringAfter(EXPLICIT_PREFIX)
-    cleanText = cleanText.substringAfter(MODIFIED_PREFIX)
-    return cleanText
-}
 
 fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
     try {
@@ -364,6 +356,7 @@ fun formatAsTime(millis: Long): String {
 fun formatTimelineSongDurationToTime(millis: Long) =
     Duration.ofMillis(millis*1000).toMinutes().minutes.toString()
 
+/*
 fun TimeToString(timeMs: Int): String {
     val mFormatBuilder = StringBuilder()
     val mFormatter = Formatter(mFormatBuilder, Locale.getDefault())
@@ -379,6 +372,7 @@ fun TimeToString(timeMs: Int): String {
         mFormatter.format("%02d:%02d", minutes, seconds).toString()
     }
 }
+*/
 
 @SuppressLint("SimpleDateFormat")
 fun getCalculatedMonths( month: Int): String? {

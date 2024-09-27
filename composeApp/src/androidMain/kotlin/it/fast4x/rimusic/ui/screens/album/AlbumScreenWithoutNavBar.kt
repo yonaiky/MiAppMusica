@@ -76,7 +76,7 @@ import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.ColorPalette

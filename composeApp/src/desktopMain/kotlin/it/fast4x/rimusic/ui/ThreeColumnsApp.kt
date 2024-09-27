@@ -29,11 +29,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -74,19 +77,24 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.models.bodies.PlayerBody
+import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.SongItem
+import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
 import it.fast4x.rimusic.styling.Dimensions.itemInHorizontalGridWidth
 import it.fast4x.rimusic.styling.Dimensions.itemsVerticalPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
+import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import player.frame.FrameContainer
 import player.frame.FramePlayer
 import rimusic.composeapp.generated.resources.Res
@@ -96,6 +104,7 @@ import rimusic.composeapp.generated.resources.app_logo_text
 import rimusic.composeapp.generated.resources.artists
 import rimusic.composeapp.generated.resources.library
 import rimusic.composeapp.generated.resources.musical_notes
+import rimusic.composeapp.generated.resources.new_albums
 import rimusic.composeapp.generated.resources.play
 import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
@@ -396,6 +405,7 @@ fun LeftPanelContent() {
 @Composable
 fun CenterPanelContent(
     onSongClick: (key: String) -> Unit = {},
+    onAlbumClick: (key: String) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -454,8 +464,9 @@ fun CenterPanelContent(
 
             val quickPicksLazyGridState = rememberLazyGridState()
             val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
-            var related = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
+            val related = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
             var relatedPageResult by remember { mutableStateOf<Result<Innertube.RelatedPage?>?>(null) }
+            var discoverPage by remember { mutableStateOf<Result<Innertube.DiscoverPage?>?>(null) }
 
             LaunchedEffect(Unit) {
                 relatedPageResult = Innertube.relatedPage(
@@ -463,6 +474,8 @@ fun CenterPanelContent(
                         videoId = "HZnNt9nnEhw"
                     )
                 )
+
+                discoverPage = Innertube.discoverPage()
             }
            relatedPageResult?.getOrNull().also { related.value = it }
 
@@ -498,6 +511,30 @@ fun CenterPanelContent(
                                 .animateItemPlacement()
                                 .width(itemInHorizontalGridWidth)
                         )
+                    }
+                }
+            }
+
+            discoverPage?.getOrNull()?.let { page ->
+                val showNewAlbums = true
+                if (showNewAlbums) {
+                    Title(
+                        title = stringResource(Res.string.new_albums),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = page.newReleaseAlbums.distinctBy { it.key }, key = { it.key }) {
+                            AlbumItem(
+                                album = it,
+                                thumbnailSizeDp = albumThumbnailSize,
+                                alternative = true,
+                                modifier = Modifier.clickable(onClick = {
+                                    onAlbumClick(it.key)
+                                })
+                            )
+                        }
                     }
                 }
             }

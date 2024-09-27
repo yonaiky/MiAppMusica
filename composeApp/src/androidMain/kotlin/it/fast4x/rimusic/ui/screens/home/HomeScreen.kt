@@ -48,8 +48,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
 
-const val PINNED_PREFIX = "pinned:"
-const val MODIFIED_PREFIX = "modified:"
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterialApi

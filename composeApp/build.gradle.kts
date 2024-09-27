@@ -49,16 +49,17 @@ kotlin {
             implementation(libs.material.icon.desktop)
             implementation(libs.vlcj)
 
-            runtimeOnly(libs.kotlinx.coroutines.swing)
             implementation(libs.coil.network.okhttp)
+            runtimeOnly(libs.kotlinx.coroutines.swing)
 
-            /*
+            
             // Uncomment only for build jvm desktop version
             // Comment before build android version
             configurations.commonMainApi {
                 exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
             }
-             */
+
+
 
         }
 

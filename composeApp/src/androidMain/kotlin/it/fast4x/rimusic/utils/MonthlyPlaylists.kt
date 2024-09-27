@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistWithSongs
@@ -21,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-const val MONTHLY_PREFIX = "monthly:"
+
 
 @Composable
 fun monthlyPLaylist(playlist: String?): State<PlaylistWithSongs?> {
