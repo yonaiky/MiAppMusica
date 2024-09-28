@@ -15,7 +15,7 @@
     <string name="hide">Celar</string>
     <string name="hide_from_quick_picks">Celar ab le \"Selectiones rapide\"</string>
     <string name="related_albums">Albumes affin</string>
-    <string name="similar_artists">Similar artists</string>
+    <string name="similar_artists">Artistas affin</string>
     <string name="playlists_you_might_like">Playlists you might like</string>
     <string name="an_error_has_occurred">Ocurreva un error</string>
     <string name="albums">Albumes</string>
@@ -700,7 +700,7 @@
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Qualitate</string>
-    <string name="value_must_be_ip_address">Value must be an ip address</string>
+    <string name="value_must_be_ip_address">Le valor debe esser un adresse IP</string>
     <string name="swipe_up_to_open_the_queue">Swipe up to open Queue</string>
     <string name="pinfo_show_icons">Monstrar le information con icones</string>
     <string name="format_ms">%1$s ms</string>
@@ -729,7 +729,7 @@
     <string name="social_github">GitHub</string>
     <string name="update">Actualisar</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
-    <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
+    <string name="player_pause_listen_history_info">Non salveguarda le eventos de reproduction usate pro statisticas, chronologia e suggestiones in le selectiones rapide</string>
     <string name="vertical_widget">Widget vertical</string>
     <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
