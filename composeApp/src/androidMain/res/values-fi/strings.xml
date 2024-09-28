@@ -386,7 +386,7 @@
     <string name="export_playlist">Vie soittolista</string>
     <string name="lang_afrikaans">afrikaans</string>
     <string name="playlist_top">Soittolistan parhaat</string>
-    <string name="my_playlist_top">Suosikkini %s</string>
+    <string name="my_playlist_top">%s suosikkiani</string>
     <string name="navigation_bar_position">Navigointipalkin sijainti</string>
     <string name="direction_left">Vasen</string>
     <string name="direction_right">Oikea</string>
