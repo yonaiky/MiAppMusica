@@ -37,27 +37,26 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 
 @ExperimentalAnimationApi
 @Composable
 fun About() {
-    val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
             /*
@@ -85,7 +84,7 @@ fun About() {
         ) {
             BasicText(
                 text = "RiMusic v${getVersionName()} by fast4x",
-                style = typography.s.secondary,
+                style = typography().s.secondary,
 
                 )
         }

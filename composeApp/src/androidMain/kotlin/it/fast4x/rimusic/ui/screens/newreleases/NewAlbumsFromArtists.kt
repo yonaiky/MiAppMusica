@@ -47,6 +47,8 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @UnstableApi
@@ -57,8 +59,6 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 fun NewAlbumsFromArtists(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     var discoverPage by persist<Result<Innertube.DiscoverPageAlbums>>("home/discoveryAlbums")
     LaunchedEffect(Unit) {
         discoverPage = Innertube.discoverPageNewAlbums()
@@ -84,7 +84,7 @@ fun NewAlbumsFromArtists(
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -112,7 +112,7 @@ fun NewAlbumsFromArtists(
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                 //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                 //.fillMaxSize()
             ) {
                 item(
@@ -152,7 +152,7 @@ fun NewAlbumsFromArtists(
                     ) {
                         BasicText(
                             text = "There are no new releases for your favorite artists",
-                            style = typography.s.secondary.center,
+                            style = typography().s.secondary.center,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(all = 16.dp)

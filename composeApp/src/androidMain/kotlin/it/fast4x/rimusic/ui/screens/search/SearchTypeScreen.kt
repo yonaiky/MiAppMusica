@@ -40,6 +40,9 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.typography
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -51,9 +54,7 @@ fun SearchTypeScreen(
     navController: NavController,
     searchType: SearchType,
 ) {
-    val preferences = LocalContext.current.preferences
     val saveableStateHolder = rememberSaveableStateHolder()
-    val (colorPalette) = LocalAppearance.current
 
     val initialTextInput = ""
 
@@ -101,7 +102,7 @@ fun SearchTypeScreen(
                     IconButton(
                         onClick = {},
                         icon = R.drawable.search,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
                             .size(24.dp)
@@ -123,7 +124,7 @@ fun SearchTypeScreen(
                         BasicText(
                             text = stringResource(R.string.search), //stringResource(R.string.enter_a_name),
                             maxLines = 1,
-                            style = LocalAppearance.current.typography.l.secondary,
+                            style = typography().l.secondary,
 
                         )
                     }

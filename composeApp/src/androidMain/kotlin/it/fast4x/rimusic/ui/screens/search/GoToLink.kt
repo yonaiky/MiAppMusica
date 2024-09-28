@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -27,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.TextFieldValue
@@ -35,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
@@ -47,12 +44,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputTextField
-import it.fast4x.rimusic.ui.screens.albumRoute
-import it.fast4x.rimusic.ui.screens.artistRoute
-import it.fast4x.rimusic.ui.screens.playlistRoute
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -66,6 +58,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -83,8 +78,6 @@ fun GoToLink(
     onAction3: () -> Unit,
     onAction4: () -> Unit,
 ) {
-
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
 
@@ -97,18 +90,18 @@ fun GoToLink(
     //val context = LocalContext.current
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
 
         LazyColumn(
@@ -152,21 +145,21 @@ fun GoToLink(
                     IconButton(
                         onClick = onAction1,
                         icon = R.drawable.globe,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     IconButton(
                         onClick = onAction2,
                         icon = R.drawable.library,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     IconButton(
                         onClick = onAction3,
                         icon = R.drawable.link,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -174,7 +167,7 @@ fun GoToLink(
                     IconButton(
                         onClick = onAction4,
                         icon = R.drawable.chevron_back,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -191,7 +184,7 @@ fun GoToLink(
 
                 BasicText(
                     text = stringResource(R.string.you_can_put_a_complete_link),
-                    style = typography.s.semiBold,
+                    style = typography().s.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )

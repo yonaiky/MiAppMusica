@@ -29,6 +29,7 @@ import it.fast4x.rimusic.ui.screens.statisticsTypeRoute
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -61,14 +62,13 @@ fun StatisticsScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

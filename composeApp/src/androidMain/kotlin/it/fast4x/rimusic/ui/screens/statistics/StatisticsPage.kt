@@ -86,6 +86,9 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -100,7 +103,6 @@ fun StatisticsPage(
     navController: NavController,
     statisticsType: StatisticsType
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -199,8 +201,6 @@ fun StatisticsPage(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     BoxWithConstraints {
         val quickPicksLazyGridItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) {
             0.475f
@@ -221,13 +221,15 @@ fun StatisticsPage(
 
         Column(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if( navBarPos() != NavigationBarPosition.Right)
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
+                )
                 .verticalScroll(scrollState)
                 /*
                 .padding(
@@ -273,14 +275,14 @@ fun StatisticsPage(
                     Image(
                         painter = painterResource(R.drawable.musical_notes),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                        colorFilter = ColorFilter.tint(colorPalette().shimmer),
                         modifier = Modifier
                             .size(34.dp)
                     )
                 },
                 modifier = Modifier
                     .background(
-                        color = colorPalette.background4,
+                        color = colorPalette().background4,
                         shape = thumbnailRoundness.shape()
                     )
 
@@ -289,7 +291,7 @@ fun StatisticsPage(
             if (allSongs.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_played_songs)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -363,7 +365,7 @@ fun StatisticsPage(
             if (artists.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_listened_artists)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -395,7 +397,7 @@ fun StatisticsPage(
             if (albums.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_albums_listened)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -426,7 +428,7 @@ fun StatisticsPage(
             if (playlists.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_played_playlists)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 

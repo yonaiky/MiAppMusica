@@ -25,20 +25,20 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 inline fun Menu(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     Column(
         modifier = modifier
             .padding(top = 48.dp)
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
-            .background(colorPalette.background1)
+            .background(colorPalette().background1)
             .padding(top = 2.dp)
             .padding(vertical = 8.dp)
             .navigationBarsPadding(),
@@ -55,8 +55,6 @@ fun MenuEntry(
     enabled: Boolean = true,
     trailingContent: (@Composable () -> Unit)? = null
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -69,7 +67,7 @@ fun MenuEntry(
         Image(
             painter = painterResource(icon),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
                 .size(15.dp)
         )
@@ -81,13 +79,13 @@ fun MenuEntry(
         ) {
             BasicText(
                 text = text,
-                style = typography.xs.medium
+                style = typography().xs.medium
             )
 
             secondaryText?.let { secondaryText ->
                 BasicText(
                     text = secondaryText,
-                    style = typography.xxs.medium.secondary
+                    style = typography().xxs.medium.secondary
                 )
             }
         }

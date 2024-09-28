@@ -56,6 +56,9 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @Composable
 fun SnackbarDemo() {
@@ -93,7 +96,6 @@ fun Popup(
 ) {
     val snackState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val (colorPalette, typography, roundness) = LocalAppearance.current
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -102,9 +104,11 @@ fun Popup(
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
-        Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
+    val additionalBottomPadding =
+        if ( navBarPos() == NavigationBarPosition.Bottom )
+            Dimensions.additionalVerticalSpaceForFloatingAction
+        else
+            0.dp
     val playerSheetState = LocalPlayerSheetState.current
     val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
 
@@ -141,7 +145,7 @@ fun Popup(
                 },
                 snackbarData.visuals.message,
                 isRtl = true,
-                containerColor = colorPalette.favoritesIcon
+                containerColor = colorPalette().favoritesIcon
             )
         }
     }
@@ -155,7 +159,6 @@ fun CustomSnackBar(
     isRtl: Boolean = true,
     containerColor: Color = Color.Black
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     Snackbar(containerColor = containerColor) {
         CompositionLocalProvider(
             LocalLayoutDirection provides
@@ -174,10 +177,10 @@ fun CustomSnackBar(
                 )
                 Text(
                     text = message,
-                    fontFamily = typography.s.fontFamily,
-                    fontWeight = typography.s.fontWeight,
-                    fontSize = typography.s.fontSize,
-                    fontStyle = typography.s.fontStyle
+                    fontFamily = typography().s.fontFamily,
+                    fontWeight = typography().s.fontWeight,
+                    fontSize = typography().s.fontSize,
+                    fontStyle = typography().s.fontStyle
                 )
             }
         }

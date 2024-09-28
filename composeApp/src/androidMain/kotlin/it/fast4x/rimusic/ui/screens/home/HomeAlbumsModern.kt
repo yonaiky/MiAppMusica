@@ -106,6 +106,10 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
+import me.knighthat.uiType
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,10 +124,8 @@ fun HomeAlbumsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var sortBy by rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     var sortOrder by rememberPreference(albumSortOrderKey, SortOrder.Descending)
@@ -187,7 +189,7 @@ fun HomeAlbumsModern(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -205,7 +207,7 @@ fun HomeAlbumsModern(
             columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
 
@@ -214,7 +216,7 @@ fun HomeAlbumsModern(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                if (uiType == UiType.ViMusic)
+                if ( uiType() == UiType.ViMusic )
                     HeaderWithIcon(
                         title = stringResource(R.string.albums),
                         iconId = R.drawable.search,
@@ -240,7 +242,7 @@ fun HomeAlbumsModern(
                         .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
                 ) {
-                    if (uiType == UiType.RiMusic)
+                    if ( uiType() == UiType.RiMusic )
                         TitleSection(title = stringResource(R.string.albums))
 
                     HeaderInfo(
@@ -256,7 +258,7 @@ fun HomeAlbumsModern(
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
@@ -283,7 +285,7 @@ fun HomeAlbumsModern(
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
@@ -295,7 +297,7 @@ fun HomeAlbumsModern(
                             .rotate(rotationAngle),
                         icon = R.drawable.dice,
                         enabled = items.isNotEmpty(),
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {
                             isRotated = !isRotated
                             //onAlbumClick(items.get((0..<items.size).random()))
@@ -340,7 +342,7 @@ fun HomeAlbumsModern(
                             }
                         },
                         icon = R.drawable.resize,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         modifier = Modifier.padding(horizontal = 2.dp)
                     )
 
@@ -352,7 +354,7 @@ fun HomeAlbumsModern(
                             AlbumSortBy.Year -> stringResource(R.string.sort_year)
                             AlbumSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                         },
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -401,7 +403,7 @@ fun HomeAlbumsModern(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -409,7 +411,7 @@ fun HomeAlbumsModern(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -420,7 +422,7 @@ fun HomeAlbumsModern(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -441,7 +443,7 @@ fun HomeAlbumsModern(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -452,7 +454,7 @@ fun HomeAlbumsModern(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -472,7 +474,7 @@ fun HomeAlbumsModern(
                             HeaderIconButton(
                                 onClick = { searching = true },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp
                             )
                         }
@@ -623,8 +625,7 @@ fun HomeAlbumsModern(
                                 onAlbumClick(album)
                             }
                         )
-                        .clip(thumbnailShape)
-                        .animateItemPlacement()
+                        .clip(thumbnailShape())
                 )
             }
 
@@ -640,7 +641,7 @@ fun HomeAlbumsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if (uiType == UiType.ViMusic && showFloatingIcon)
+        if ( uiType() == UiType.ViMusic && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

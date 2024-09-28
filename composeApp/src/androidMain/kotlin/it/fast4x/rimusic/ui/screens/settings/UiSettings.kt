@@ -227,6 +227,9 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 
 @Composable
 fun DefaultUiSettings() {
@@ -564,7 +567,6 @@ fun UiSettings(
     //var lastPlayerVisualizerType by rememberPreference(lastPlayerVisualizerTypeKey, PlayerVisualizerType.Disabled)
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
     var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
-    var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
@@ -600,7 +602,6 @@ fun UiSettings(
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    val (colorPalette, typography) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
     var filter: String? by rememberSaveable { mutableStateOf(null) }
    // var filterCharSequence: CharSequence
@@ -753,7 +754,7 @@ fun UiSettings(
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -785,7 +786,7 @@ fun UiSettings(
             modifier = Modifier.padding(start = 25.dp),
             onClick = { searching = !searching },
             icon = R.drawable.search_circle,
-            color = colorPalette.text,
+            color = colorPalette().text,
             iconSize = 24.dp
         )
         /*   Search   */
@@ -808,7 +809,7 @@ fun UiSettings(
                 BasicTextField(
                     value = filter ?: "",
                     onValueChange = { filter = it },
-                    textStyle = typography.xs.semiBold,
+                    textStyle = typography().xs.semiBold,
                     singleLine = true,
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -816,7 +817,7 @@ fun UiSettings(
                         if (filter.isNullOrBlank()) filter = ""
                         focusManager.clearFocus()
                     }),
-                    cursorBrush = SolidColor(colorPalette.text),
+                    cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
                         Box(
                             contentAlignment = Alignment.CenterStart,
@@ -827,7 +828,7 @@ fun UiSettings(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.search,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(16.dp)
@@ -848,7 +849,7 @@ fun UiSettings(
                                     text = stringResource(R.string.search),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
+                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
                                 )
                             }
 
@@ -859,7 +860,7 @@ fun UiSettings(
                         .height(30.dp)
                         .fillMaxWidth()
                         .background(
-                            colorPalette.background4,
+                            colorPalette().background4,
                             shape = thumbnailRoundness.shape()
                         )
                         .focusRequester(focusRequester)
@@ -1366,10 +1367,11 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.user_interface))
 
+        var uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
         if (filter.isNullOrBlank() || stringResource(R.string.interface_in_use).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.interface_in_use),
-                selectedValue = uiType,
+                selectedValue = uiType(),
                 onValueSelected = {
                     uiType = it
                     if (uiType == UiType.ViMusic) {
@@ -1771,7 +1773,7 @@ fun UiSettings(
                 }
             )
 
-        if (uiType == UiType.ViMusic) {
+        if ( uiType() == UiType.ViMusic ) {
             if (filter.isNullOrBlank() || stringResource(R.string.vimusic_show_search_button_in_navigation_bar).contains(
                     filterCharSequence,
                     true
@@ -2004,7 +2006,7 @@ fun UiSettings(
             title = stringResource(R.string.settings_reset),
             text = stringResource(R.string.settings_restore_default_settings),
             icon = R.drawable.refresh,
-            iconColor = colorPalette.text,
+            iconColor = colorPalette().text,
             onClick = { resetToDefault = true },
         )
         if (resetToDefault) {

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -47,7 +48,6 @@ fun CircularSlider(
     text: String = "",
     onChange: ((Float)->Unit)? = null
 ){
-    val (colorPalette) = LocalAppearance.current
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
     var angle by remember { mutableStateOf(-60f) }
@@ -60,8 +60,8 @@ fun CircularSlider(
     val textMeasurer = rememberTextMeasurer()
     val style = TextStyle(
         fontSize = 25.sp,
-        color = colorPalette.text,
-        background = colorPalette.background4
+        color = colorPalette().text,
+        background = colorPalette().background4
     )
     val textLayoutResult = remember(text, style) {
         textMeasurer.measure(AnnotatedString(text), style)

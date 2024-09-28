@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun IconInfo (
@@ -24,14 +26,13 @@ fun IconInfo (
     spacer: Dp = 4.dp,
     iconSize: Dp = 20.dp
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Row (
         modifier = Modifier.fillMaxWidth()
     ) {
         Image(
             painter = icon,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
                 .size(iconSize)
         )
@@ -39,8 +40,8 @@ fun IconInfo (
         BasicText(
             text = title,
             style = TextStyle(
-                color = colorPalette.text,
-                fontStyle = typography.l.fontStyle
+                color = colorPalette().text,
+                fontStyle = typography().l.fontStyle
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

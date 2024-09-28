@@ -90,6 +90,8 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.transitionEffectKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,9 +122,6 @@ fun ScaffoldTB(
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val navigationRailTB: @Composable () -> Unit = {
         NavigationRailTB(
             navController = navController,
@@ -150,7 +149,7 @@ fun ScaffoldTB(
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-       containerColor = colorPalette.background0,
+       containerColor = colorPalette().background0,
         topBar = {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -158,7 +157,7 @@ fun ScaffoldTB(
             ) {
                 AppBar(navController)
 
-                if (navigationBarPosition == NavigationBarPosition.Top)
+                if ( navBarPos() == NavigationBarPosition.Top )
                     navigationRailTB()
 
                 /*
@@ -207,25 +206,27 @@ fun ScaffoldTB(
                     }
                      */
 
-                    if (navigationBarPosition == NavigationBarPosition.Bottom)
+                    if ( navBarPos() == NavigationBarPosition.Bottom )
                             navigationRailTB()
 
                 //}
         }
 
     ) {
-        val modifierBoxPadding =  if (navigationBarPosition != NavigationBarPosition.Top)
-            Modifier
-                .padding(it)
-                .fillMaxSize()
-            else Modifier
-                .padding(it)
-                .padding(
-                    windowInsets
-                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
-                        .asPaddingValues()
-                )
-                .fillMaxSize()
+        val modifierBoxPadding =
+            if ( navBarPos() != NavigationBarPosition.Top )
+                Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            else
+                Modifier
+                    .padding(it)
+                    .padding(
+                        windowInsets
+                            .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    )
+                    .fillMaxSize()
 
         Box(
             modifier = modifierBoxPadding
@@ -233,7 +234,7 @@ fun ScaffoldTB(
 
         Row(
             modifier = modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
             AnimatedContent(

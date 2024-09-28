@@ -62,6 +62,9 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -69,7 +72,6 @@ import it.fast4x.rimusic.utils.secondary
 fun MoodsPage(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryMoods")
@@ -77,8 +79,6 @@ fun MoodsPage(
         discoverPage = Innertube.discoverPage()
     }
     val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
-
 
     val moodAngGenresLazyGridState = rememberLazyGridState()
 
@@ -89,24 +89,24 @@ fun MoodsPage(
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         discoverPage?.getOrNull()?.let { moodResult ->
             LazyVerticalGrid(
                 state = moodAngGenresLazyGridState,
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -157,7 +157,7 @@ fun MoodsPage(
         } ?: discoverPage?.exceptionOrNull()?.let {
             BasicText(
                 text = stringResource(R.string.page_not_been_loaded),
-                style = typography.s.secondary.center,
+                style = typography().s.secondary.center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(all = 16.dp)

@@ -26,6 +26,9 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 @Composable
 fun ArtistItem(
@@ -78,8 +81,6 @@ fun ArtistItem(
     alternative: Boolean = false,
     showName: Boolean = true
 ) {
-    val (_, typography, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -91,7 +92,7 @@ fun ArtistItem(
             contentDescription = null,
             modifier = Modifier
                 //.clip(CircleShape)
-                .clip(thumbnailShape)
+                .clip(thumbnailShape())
                 .requiredSize(thumbnailSizeDp)
         )
 
@@ -101,7 +102,7 @@ fun ArtistItem(
         ) {
             BasicText(
                 text = name ?: "",
-                style = typography.xs.semiBold,
+                style = typography().xs.semiBold,
                 maxLines = 1, //if (alternative) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -111,7 +112,7 @@ fun ArtistItem(
             subscribersCount?.let {
                 BasicText(
                     text = subscribersCount,
-                    style = typography.xxs.semiBold.secondary,
+                    style = typography().xxs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -129,8 +130,6 @@ fun ArtistItemPlaceholder(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -139,7 +138,7 @@ fun ArtistItemPlaceholder(
     ) {
         Spacer(
             modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = CircleShape)
+                .background(color = colorPalette().shimmer, shape = CircleShape)
                 .size(thumbnailSizeDp)
         )
 

@@ -65,6 +65,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -81,9 +83,6 @@ import java.util.TimeZone
 fun HistoryList(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val windowInsets = LocalPlayerAwareWindowInsets.current
-
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -154,19 +153,16 @@ fun HistoryList(
         ThumbnailRoundness.Heavy
     )
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if ( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
     ) {
 
@@ -174,7 +170,7 @@ fun HistoryList(
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
 
@@ -200,7 +196,7 @@ fun HistoryList(
                         },
                         modifier = Modifier
                             .background(
-                                colorPalette.favoritesOverlay,
+                                colorPalette().favoritesOverlay,
                                 shape = thumbnailRoundness.shape()
                             )
 
@@ -266,8 +262,8 @@ fun HistoryList(
                                                     listMediaItems.remove(event.song.asMediaItem)
                                             },
                                             colors = CheckboxDefaults.colors(
-                                                checkedColor = colorPalette.accent,
-                                                uncheckedColor = colorPalette.text
+                                                checkedColor = colorPalette().accent,
+                                                uncheckedColor = colorPalette().text
                                             ),
                                             modifier = Modifier
                                                 .scale(0.7f)
@@ -289,7 +285,7 @@ fun HistoryList(
                                             binder?.player?.forcePlay(event.song.asMediaItem)
                                         }
                                     )
-                                    .background(color = colorPalette.background0)
+                                    .background(color = colorPalette().background0)
                                     .animateItemPlacement()
                             )
                         /*

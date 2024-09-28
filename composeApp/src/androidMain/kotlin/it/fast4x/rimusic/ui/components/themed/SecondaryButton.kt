@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.primaryButton
+import me.knighthat.colorPalette
 
 @Composable
 fun SecondaryCircleButton(
@@ -23,21 +24,18 @@ fun SecondaryCircleButton(
     @DrawableRes iconId: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-
-    ) {
-    val (colorPalette) = LocalAppearance.current
-
+) {
     Box(
         modifier = modifier
             .clip(CircleShape)
             .clickable(enabled = enabled, onClick = onClick)
-            .background(colorPalette.primaryButton)
+            .background(colorPalette().primaryButton)
             .size(36.dp)
     ) {
         Image(
             painter = painterResource(iconId),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(22.dp)
@@ -51,10 +49,7 @@ fun SecondaryButton(
     @DrawableRes iconId: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     Box(
         modifier = modifier
             //.clip(CircleShape)
@@ -65,7 +60,7 @@ fun SecondaryButton(
         Image(
             painter = painterResource(iconId),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(22.dp)

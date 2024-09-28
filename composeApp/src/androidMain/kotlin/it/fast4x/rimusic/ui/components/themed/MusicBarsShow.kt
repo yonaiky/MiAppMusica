@@ -22,6 +22,8 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.utils.shouldBePlaying
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 
 @Composable
 fun MusicBarsShow (
@@ -34,20 +36,18 @@ fun MusicBarsShow (
         mutableStateOf(binder?.player?.shouldBePlaying)
     }
 
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .background(
                 color = Color.Black.copy(alpha = 0.25f),
-                shape = thumbnailShape
+                shape = thumbnailShape()
             )
             .size(Dimensions.thumbnails.song)
     ) {
         if (shouldBePlaying == true && player?.currentMediaItem?.mediaId == mediaId) {
             MusicBars(
-                color = colorPalette.onOverlay,
+                color = colorPalette().onOverlay,
                 modifier = Modifier
                     .height(24.dp)
             )
@@ -56,7 +56,7 @@ fun MusicBarsShow (
             Image(
                 painter = painterResource(R.drawable.play),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.onOverlay),
+                colorFilter = ColorFilter.tint(colorPalette().onOverlay),
                 modifier = Modifier
                     .size(24.dp)
             )

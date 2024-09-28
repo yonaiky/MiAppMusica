@@ -48,6 +48,8 @@ import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class)
@@ -56,7 +58,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 @Composable
 fun CacheSettings() {
     val context = LocalContext.current
-    val (colorPalette) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
 
     var coilDiskCacheMaxSize by rememberPreference(
@@ -97,17 +98,17 @@ fun CacheSettings() {
     //if (sdkVersion.toShort() < 29) exoPlayerAlternateCacheLocation=""
     //Log.d("SystemInfo","Android SDK: " + sdkVersion + " (" + release +")")
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
             .verticalScroll(rememberScrollState())
             .padding(
                 LocalPlayerAwareWindowInsets.current

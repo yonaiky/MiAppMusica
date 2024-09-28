@@ -94,9 +94,6 @@ fun Controls(
     duration: Long,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
-
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
 

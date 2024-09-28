@@ -60,7 +60,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
-
+import me.knighthat.colorPalette
+import me.knighthat.uiType
 
 
 @ExperimentalMaterialApi
@@ -180,7 +181,6 @@ fun AlbumScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(
@@ -202,7 +202,7 @@ fun AlbumScreen(
                                 } else {
                                     R.drawable.bookmark
                                 },
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     val bookmarkedAt =
                                         if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -217,7 +217,7 @@ fun AlbumScreen(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     album?.shareUrl?.let { url ->
                                         val sendIntent = Intent().apply {
@@ -252,13 +252,11 @@ fun AlbumScreen(
                     shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

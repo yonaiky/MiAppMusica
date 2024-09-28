@@ -108,7 +108,6 @@ import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.OnDeviceBlacklist
@@ -148,6 +147,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -165,9 +168,7 @@ fun DeviceListSongs(
     deviceLists: DeviceLists,
     onSearchClick: () -> Unit
 ) {
-
     val context = LocalContext.current
-    val (colorPalette,typography) = LocalAppearance.current
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
     else Manifest.permission.READ_EXTERNAL_STORAGE
 
@@ -197,7 +198,7 @@ fun DeviceListSongs(
             BasicText(
                 text = stringResource(R.string.media_permission_required_please_grant),
                 modifier = Modifier.fillMaxWidth(0.75f),
-                style = typography.xs.semiBold
+                style = typography().xs.semiBold
             )
             /*
             Spacer(modifier = Modifier.height(12.dp))
@@ -226,7 +227,6 @@ fun DeviceListSongs(
 
         val backButtonFolder = Folder(stringResource(R.string.back))
         val binder = LocalPlayerServiceBinder.current
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         val menuState = LocalMenuState.current
         val showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
@@ -252,9 +252,6 @@ fun DeviceListSongs(
         var currentFolderPath by remember {
             mutableStateOf(defaultFolder)
         }
-
-
-
 
         if (showFolders) {
             val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
@@ -339,24 +336,24 @@ fun DeviceListSongs(
 
         val showSearchTab by rememberPreference(showSearchTabKey, false)
 
-        val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if( navBarPos() != NavigationBarPosition.Right )
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
+                )
         ) {
         LazyColumn(
             state = lazyListState,
             //contentPadding = LocalPlayerAwareWindowInsets.current
             //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
             item(
@@ -377,17 +374,17 @@ fun DeviceListSongs(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        //.background(colorPalette.background4)
+                        //.background(colorPalette().background4)
                         .fillMaxSize(0.99F)
                         .background(
-                            color = colorPalette.background1,
+                            color = colorPalette().background1,
                             shape = thumbnailRoundness.shape()
                         )
                 ) {
                     if (filteredSongs.isEmpty())
                         PlaylistItem(
                             icon = R.drawable.musical_notes,
-                            colorTint = colorPalette.favoritesIcon,
+                            colorTint = colorPalette().favoritesIcon,
                             name = stringResource(R.string.on_device),
                             songCount = null,
                             thumbnailSizeDp = playlistThumbnailSizeDp,
@@ -471,7 +468,7 @@ fun DeviceListSongs(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -493,7 +490,7 @@ fun DeviceListSongs(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             onClick = { searching = !searching },
                             icon = R.drawable.search_circle,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             iconSize = 24.dp
                         )
                     }
@@ -512,7 +509,7 @@ fun DeviceListSongs(
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = { sortOrder = !sortOrder },
                         modifier = Modifier
                             .graphicsLayer { rotationZ = sortOrderIconRotation }
@@ -528,7 +525,7 @@ fun DeviceListSongs(
                                 OnDeviceSongSortBy.Album -> stringResource(R.string.sort_album)
 
                             },
-                            style = typography.xs.semiBold,
+                            style = typography().xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -553,7 +550,7 @@ fun DeviceListSongs(
                                 OnDeviceFolderSortBy.Artist -> stringResource(R.string.sort_artist)
                                 OnDeviceFolderSortBy.Duration -> stringResource(R.string.sort_duration)
                             },
-                            style = typography.xs.semiBold,
+                            style = typography().xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -581,7 +578,7 @@ fun DeviceListSongs(
                     HeaderIconButton(
                         icon = R.drawable.locate,
                         enabled = filteredSongs.isNotEmpty(),
-                        color = if (filteredSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (filteredSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {},
                         modifier = Modifier
                             .combinedClickable(
@@ -611,7 +608,7 @@ fun DeviceListSongs(
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp
                     )
 
@@ -620,7 +617,7 @@ fun DeviceListSongs(
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
                         enabled = filteredSongs.isNotEmpty(),
-                        color = if (filteredSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (filteredSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             binder?.player?.enqueue(filteredSongs.map(Song::asMediaItem))
                         }
@@ -630,7 +627,7 @@ fun DeviceListSongs(
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = filteredSongs.isNotEmpty(),
-                        color = if (filteredSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (filteredSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {},
                         modifier = Modifier
                             .combinedClickable(
@@ -651,7 +648,7 @@ fun DeviceListSongs(
 
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
-                        color = if (filteredSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                        color = if (filteredSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                         enabled = filteredSongs.isNotEmpty() == true,
                         modifier = Modifier
                             .padding(end = 4.dp),
@@ -760,7 +757,7 @@ fun DeviceListSongs(
                         BasicTextField(
                             value = filter ?: "",
                             onValueChange = { filter = it },
-                            textStyle = typography.xs.semiBold,
+                            textStyle = typography().xs.semiBold,
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -768,7 +765,7 @@ fun DeviceListSongs(
                                 if (filter.isNullOrBlank()) filter = ""
                                 focusManager.clearFocus()
                             }),
-                            cursorBrush = SolidColor(colorPalette.text),
+                            cursorBrush = SolidColor(colorPalette().text),
                             decorationBox = { innerTextField ->
                                 Box(
                                     contentAlignment = Alignment.CenterStart,
@@ -779,7 +776,7 @@ fun DeviceListSongs(
                                     IconButton(
                                         onClick = {},
                                         icon = R.drawable.search,
-                                        color = colorPalette.favoritesIcon,
+                                        color = colorPalette().favoritesIcon,
                                         modifier = Modifier
                                             .align(Alignment.CenterStart)
                                             .size(16.dp)
@@ -800,7 +797,7 @@ fun DeviceListSongs(
                                             text = stringResource(R.string.search),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
-                                            style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                            style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                         )
                                     }
 
@@ -811,7 +808,7 @@ fun DeviceListSongs(
                                 .height(30.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    colorPalette.background4,
+                                    colorPalette().background4,
                                     shape = thumbnailRoundness.shape()
                                 )
                                 .focusRequester(focusRequester)
@@ -883,7 +880,7 @@ fun DeviceListSongs(
                     item {
                         BasicText(
                             text = stringResource(R.string.folder_was_not_found),
-                            style = typography.xs.semiBold
+                            style = typography().xs.semiBold
                         )
                     }
                 }
@@ -918,8 +915,8 @@ fun DeviceListSongs(
                                         listMediaItems.remove(song.asMediaItem)
                                 },
                                 colors = CheckboxDefaults.colors(
-                                    checkedColor = colorPalette.accent,
-                                    uncheckedColor = colorPalette.text
+                                    checkedColor = colorPalette().accent,
+                                    uncheckedColor = colorPalette().text
                                 ),
                                 modifier = Modifier
                                     .scale(0.7f)
@@ -957,7 +954,7 @@ fun DeviceListSongs(
             }
         }
 
-            if(uiType == UiType.ViMusic)
+            if( uiType() == UiType.ViMusic )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

@@ -21,6 +21,9 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,20 +31,17 @@ fun SimpleScaffold(
     navController: NavController,
     content: @Composable () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val customModifier = if(uiType == UiType.RiMusic)
+    val customModifier = if( uiType() == UiType.RiMusic)
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
 
 
     androidx.compose.material3.Scaffold(
         modifier = customModifier,
-        containerColor = colorPalette.background0,
+        containerColor = colorPalette().background0,
         topBar = {
-            if(uiType == UiType.RiMusic) {
+            if( uiType() == UiType.RiMusic) {
                 AppBar(navController)
             }
         },
@@ -50,18 +50,17 @@ fun SimpleScaffold(
         Row(
             modifier = Modifier
                 .padding(paddingValues)
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
 
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(
-                        if (navigationBarPosition == NavigationBarPosition.Left ||
-                            navigationBarPosition == NavigationBarPosition.Top ||
-                            navigationBarPosition == NavigationBarPosition.Bottom
-                        ) 1f
-                        else Dimensions.contentWidthRightBar
+                        if( navBarPos() != NavigationBarPosition.Right )
+                            1f
+                        else
+                            Dimensions.contentWidthRightBar
                     ),
                 content = content
             )

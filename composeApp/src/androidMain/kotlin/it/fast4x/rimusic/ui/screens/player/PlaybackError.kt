@@ -48,6 +48,7 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.medium
+import me.knighthat.typography
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -111,8 +112,6 @@ fun PlaybackError(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (_, typography) = LocalAppearance.current
-
     Box {
         AnimatedVisibility(
             visible = isDisplayed,
@@ -142,7 +141,7 @@ fun PlaybackError(
         ) {
             BasicText(
                 text = remember { messageProvider() },
-                style = typography.xs.center.medium.color(PureBlackColorPalette.text),
+                style = typography().xs.center.medium.color(PureBlackColorPalette.text),
                 modifier = Modifier
                     .background(Color.Black.copy(0.4f))
                     .padding(all = 8.dp)

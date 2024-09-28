@@ -57,6 +57,8 @@ import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.colorPalette
+import me.knighthat.typography
 import kotlin.math.roundToInt
 
 @SuppressLint("LongLogTag")
@@ -68,7 +70,6 @@ fun StatsForNerds(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current ?: return
 
@@ -200,7 +201,7 @@ fun StatsForNerds(
                         }
                     )
                 }
-                .background(colorPalette.overlay)
+                .background(colorPalette().overlay)
                 .fillMaxSize()
         ) {
             Row(
@@ -212,43 +213,43 @@ fun StatsForNerds(
                 Column(horizontalAlignment = Alignment.End) {
                     BasicText(
                         text = stringResource(R.string.id),
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
                             text = stringResource(R.string.itag),
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                         BasicText(
                             text = stringResource(R.string.quality),
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                     }
                     BasicText(
                         text = stringResource(R.string.bitrate),
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
                     BasicText(
                         text = stringResource(R.string.size),
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true)
                         BasicText(
                             text = stringResource(R.string.cached),
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
                             text = if (cachedBytes > downloadCachedBytes) stringResource(R.string.cached)
                             else stringResource(R.string.downloaded),
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
 
                         BasicText(
                             text = stringResource(R.string.loudness),
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                     }
                 }
@@ -257,7 +258,7 @@ fun StatsForNerds(
                     BasicText(
                         text = mediaId,
                         maxLines = 1,
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
@@ -265,30 +266,30 @@ fun StatsForNerds(
                             text = format?.itag?.toString()
                                 ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                         BasicText(
                             text = getQuality(format!!),
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                     }
                     BasicText(
                         text = format?.bitrate?.let { "${it / 1000} kbps" } ?: stringResource(R.string.audio_quality_format_unknown),
                         maxLines = 1,
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
                     BasicText(
                         text = format?.contentLength
                             ?.let { Formatter.formatShortFileSize(context, it) } ?: stringResource(R.string.audio_quality_format_unknown),
                         maxLines = 1,
-                        style = typography.xs.medium.color(colorPalette.onOverlay)
+                        style = typography().xs.medium.color(colorPalette().onOverlay)
                     )
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true) {
                         BasicText(
                             text = "100%",
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                     }
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
@@ -310,13 +311,13 @@ fun StatsForNerds(
                                 }
                             },
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                         BasicText(
                             text = format?.loudnessDb?.let { "%.2f dB".format(it) }
                                 ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.onOverlay)
+                            style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                     }
                 }
@@ -333,7 +334,7 @@ fun StatsForNerds(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = modifier
-                        .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                        .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                         .padding(vertical = 5.dp)
                         .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                 ) {
@@ -345,7 +346,7 @@ fun StatsForNerds(
                             BasicText(
                                 text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
-                                style = typography.xs.medium.color(colorPalette.text)
+                                style = typography().xs.medium.color(colorPalette().text)
                             )
                         }
                     }
@@ -357,7 +358,7 @@ fun StatsForNerds(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.text)
+                            style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
                     Box(
@@ -369,7 +370,7 @@ fun StatsForNerds(
                                 ?.let {stringResource(R.string.size) + " : " + Formatter.formatShortFileSize(context,it)}
                                 ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
-                            style = typography.xs.medium.color(colorPalette.text)
+                            style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
                 }
@@ -379,7 +380,7 @@ fun StatsForNerds(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
                           modifier = modifier
-                              .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                               .padding(vertical = 5.dp)
                               .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                       ) {
@@ -390,7 +391,7 @@ fun StatsForNerds(
                               BasicText(
                                   text = stringResource(R.string.id) + " : " + mediaId,
                                   maxLines = 1,
-                                  style = typography.xs.medium.color(colorPalette.onOverlay)
+                                  style = typography().xs.medium.color(colorPalette().onOverlay)
                               )
                           }
                           if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
@@ -404,7 +405,7 @@ fun StatsForNerds(
                                               R.string.audio_quality_format_unknown
                                           )),
                                       maxLines = 1,
-                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().onOverlay)
                                   )
                               }
                           }
@@ -413,7 +414,7 @@ fun StatsForNerds(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
                           modifier = modifier
-                              .background(colorPalette.background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                               .padding(vertical = 5.dp)
                               .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                       ) {
@@ -425,7 +426,7 @@ fun StatsForNerds(
                                   BasicText(
                                       text = stringResource(R.string.cached) + " : " + "100%",
                                       maxLines = 1,
-                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().onOverlay)
                                   )
                               }
                           }
@@ -456,7 +457,7 @@ fun StatsForNerds(
                                           }
                                       },
                                       maxLines = 1,
-                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().onOverlay)
                                   )
                               }
                               Box(
@@ -473,7 +474,7 @@ fun StatsForNerds(
                                               R.string.audio_quality_format_unknown
                                           )),
                                       maxLines = 1,
-                                      style = typography.xs.medium.color(colorPalette.onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().onOverlay)
                                   )
                               }
                           }

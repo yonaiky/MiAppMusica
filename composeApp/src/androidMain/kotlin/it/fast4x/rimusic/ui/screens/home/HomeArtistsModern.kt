@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens.home
 
 
 import android.annotation.SuppressLint
+import android.drm.DrmStore.RightsStatus
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -103,6 +104,10 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import kotlin.random.Random
 
 @ExperimentalMaterial3Api
@@ -118,11 +123,9 @@ fun HomeArtistsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
     var sortBy by rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
     var sortOrder by rememberPreference(artistSortOrderKey, SortOrder.Descending)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var items by persistList<Artist>("home/artists")
 
@@ -152,9 +155,6 @@ fun HomeArtistsModern(
     )
 
     val lazyGridState = rememberLazyGridState()
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     //val effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -173,14 +173,13 @@ fun HomeArtistsModern(
 
     Box (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if ( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
     ) {
         LazyVerticalGrid(
@@ -188,7 +187,7 @@ fun HomeArtistsModern(
             columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
             item(
@@ -196,7 +195,7 @@ fun HomeArtistsModern(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                if (uiType == UiType.ViMusic)
+                if ( uiType() == UiType.ViMusic)
                     HeaderWithIcon(
                         title = stringResource(R.string.artists),
                         iconId = R.drawable.search,
@@ -221,7 +220,7 @@ fun HomeArtistsModern(
                         .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
                 ){
-                    if (uiType == UiType.RiMusic)
+                    if ( uiType() == UiType.RiMusic )
                         TitleSection(title = stringResource(R.string.artists))
 
                     HeaderInfo(
@@ -237,7 +236,7 @@ fun HomeArtistsModern(
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
@@ -260,7 +259,7 @@ fun HomeArtistsModern(
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
@@ -272,7 +271,7 @@ fun HomeArtistsModern(
                             .rotate(rotationAngle),
                         icon = R.drawable.dice,
                         enabled = items.isNotEmpty() ,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {
                             isRotated = !isRotated
                             //onArtistClick(items.get((0..<items.size).random()))
@@ -285,7 +284,7 @@ fun HomeArtistsModern(
 
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         onClick = {},
                         modifier = Modifier
@@ -341,7 +340,7 @@ fun HomeArtistsModern(
                             }
                         },
                         icon = R.drawable.resize,
-                        color = colorPalette.text
+                        color = colorPalette().text
                     )
 
 
@@ -351,7 +350,7 @@ fun HomeArtistsModern(
                             ArtistSortBy.Name -> stringResource(R.string.sort_name)
                             ArtistSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                         },
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -400,7 +399,7 @@ fun HomeArtistsModern(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -408,7 +407,7 @@ fun HomeArtistsModern(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -419,7 +418,7 @@ fun HomeArtistsModern(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -440,7 +439,7 @@ fun HomeArtistsModern(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -451,7 +450,7 @@ fun HomeArtistsModern(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -471,7 +470,7 @@ fun HomeArtistsModern(
                             HeaderIconButton(
                                 onClick = { searching = true },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp
                             )
                         }
@@ -504,7 +503,7 @@ fun HomeArtistsModern(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if(uiType == UiType.ViMusic && showFloatingIcon)
+        if( uiType() == UiType.ViMusic && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

@@ -45,14 +45,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MiniPlayerType
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
@@ -72,37 +70,50 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.blackgradientKey
+import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.buttonzoomoutKey
+import it.fast4x.rimusic.utils.carouselKey
+import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
+import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
+import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
+import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
+import it.fast4x.rimusic.utils.playerTypeKey
+import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showBackgroundLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
 import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
 import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
@@ -110,43 +121,31 @@ import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showvisthumbnailKey
+import it.fast4x.rimusic.utils.statsfornerdsKey
+import it.fast4x.rimusic.utils.swipeUpQueueKey
+import it.fast4x.rimusic.utils.tapqueueKey
+import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
-import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import it.fast4x.rimusic.utils.transparentbarKey
-import it.fast4x.rimusic.utils.blackgradientKey
-import it.fast4x.rimusic.utils.visualizerEnabledKey
-import it.fast4x.rimusic.utils.bottomgradientKey
-import it.fast4x.rimusic.utils.buttonzoomoutKey
-import it.fast4x.rimusic.utils.carouselKey
-import it.fast4x.rimusic.utils.carouselSizeKey
-import it.fast4x.rimusic.utils.expandedlyricsKey
-import it.fast4x.rimusic.utils.fadingedgeKey
-import it.fast4x.rimusic.utils.showalbumcoverKey
-import it.fast4x.rimusic.utils.showsongsKey
-import it.fast4x.rimusic.utils.showvisthumbnailKey
-import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
-import it.fast4x.rimusic.utils.playerTypeKey
-import it.fast4x.rimusic.utils.prevNextSongsKey
-import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
-import it.fast4x.rimusic.utils.statsfornerdsKey
-import it.fast4x.rimusic.utils.tapqueueKey
-import it.fast4x.rimusic.utils.noblurKey
-import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
-import it.fast4x.rimusic.utils.playerInfoShowIconsKey
-import it.fast4x.rimusic.utils.swipeUpQueueKey
-import it.fast4x.rimusic.utils.queueTypeKey
-import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
+import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import it.fast4x.rimusic.utils.transparentbarKey
+import it.fast4x.rimusic.utils.visualizerEnabledKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -428,7 +427,6 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
     var filter: String? by rememberSaveable { mutableStateOf(null) }
     // var filterCharSequence: CharSequence
@@ -487,7 +485,7 @@ fun AppearanceSettings(
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -520,7 +518,7 @@ fun AppearanceSettings(
             modifier = Modifier.padding(start = 25.dp),
             onClick = { searching = !searching },
             icon = R.drawable.search_circle,
-            color = colorPalette.text,
+            color = colorPalette().text,
             iconSize = 24.dp
         )
         /*   Search   */
@@ -543,7 +541,7 @@ fun AppearanceSettings(
                 BasicTextField(
                     value = filter ?: "",
                     onValueChange = { filter = it },
-                    textStyle = typography.xs.semiBold,
+                    textStyle = typography().xs.semiBold,
                     singleLine = true,
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -551,7 +549,7 @@ fun AppearanceSettings(
                         if (filter.isNullOrBlank()) filter = ""
                         focusManager.clearFocus()
                     }),
-                    cursorBrush = SolidColor(colorPalette.text),
+                    cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
                         Box(
                             contentAlignment = Alignment.CenterStart,
@@ -562,7 +560,7 @@ fun AppearanceSettings(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.search,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(16.dp)
@@ -583,7 +581,7 @@ fun AppearanceSettings(
                                     text = stringResource(R.string.search),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
+                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
                                 )
                             }
 
@@ -594,7 +592,7 @@ fun AppearanceSettings(
                         .height(30.dp)
                         .fillMaxWidth()
                         .background(
-                            colorPalette.background4,
+                            colorPalette().background4,
                             shape = thumbnailRoundness.shape()
                         )
                         .focusRequester(focusRequester)
@@ -841,11 +839,11 @@ fun AppearanceSettings(
                                 modifier = Modifier
                                     .border(
                                         width = 1.dp,
-                                        color = colorPalette.accent,
+                                        color = colorPalette().accent,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .background(
-                                        color = colorPalette.background1,
+                                        color = colorPalette().background1,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .size(36.dp)
@@ -1656,7 +1654,7 @@ fun AppearanceSettings(
             title = stringResource(R.string.settings_reset),
             text = stringResource(R.string.settings_restore_default_settings),
             icon = R.drawable.refresh,
-            iconColor = colorPalette.text,
+            iconColor = colorPalette().text,
             onClick = { resetToDefault = true },
         )
         if (resetToDefault) {

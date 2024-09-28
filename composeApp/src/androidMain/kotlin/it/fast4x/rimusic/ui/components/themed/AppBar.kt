@@ -56,6 +56,9 @@ import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon
 import org.jetbrains.compose.resources.painterResource
@@ -66,15 +69,13 @@ import rimusic.composeapp.generated.resources.app_logo_text
 fun AppBar(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var expanded by remember { mutableStateOf(false) }
     var countForReveal by remember { mutableStateOf(0) }
     var showGames by remember { mutableStateOf(false) }
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val customModifier = if(uiType == UiType.RiMusic)
+    val customModifier = if( uiType() == UiType.RiMusic )
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
 
@@ -99,7 +100,7 @@ fun AppBar(
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.chevron_back),
-                        tint = colorPalette.favoritesIcon,
+                        tint = colorPalette().favoritesIcon,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp)
                     )
@@ -112,7 +113,7 @@ fun AppBar(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.app_icon),
-                    colorFilter = ColorFilter.tint(colorPalette.favoritesIcon),
+                    colorFilter = ColorFilter.tint(colorPalette().favoritesIcon),
                     contentDescription = null,
                     modifier = Modifier
                         .size(36.dp)
@@ -151,7 +152,7 @@ fun AppBar(
                     painter = painterResource(Res.drawable.app_logo_text),
                     colorFilter = ColorFilter.tint(
                         when(colorPaletteMode) {
-                            ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
+                            ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette().text
                             else -> Color.White
                         }
                     ),
@@ -168,7 +169,7 @@ fun AppBar(
                         painter = painterResource(R.drawable.shield_checkmark),
                         colorFilter = ColorFilter.tint(
                             when(colorPaletteMode) {
-                                ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
+                                ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette().text
                                 else -> Color.White
                             }
                         ),
@@ -182,10 +183,10 @@ fun AppBar(
                     BasicText(
                         text = stringResource(R.string.info_debug_mode_enabled),
                         style = TextStyle(
-                            fontSize = typography.xxs.semiBold.fontSize,
-                            fontWeight = typography.xxs.semiBold.fontWeight,
-                            fontFamily = typography.xxs.semiBold.fontFamily,
-                            color = colorPalette.red
+                            fontSize = typography().xxs.semiBold.fontSize,
+                            fontWeight = typography().xxs.semiBold.fontWeight,
+                            fontFamily = typography().xxs.semiBold.fontFamily,
+                            color = colorPalette().red
                         ),
                         modifier = Modifier
                             .clickable {
@@ -242,7 +243,7 @@ fun AppBar(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 containerColor = Color.Transparent,
-                modifier = Modifier.background( colorPalette.background0.copy(0.90f))
+                modifier = Modifier.background( colorPalette().background0.copy(0.90f))
             ) {
                 DropdownMenuItem(
                     enabled = navController.currentDestination?.route != NavRoutes.history.name,
@@ -326,11 +327,11 @@ fun AppBar(
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarColors(
-            containerColor = colorPalette.background0,
-            titleContentColor = colorPalette.text,
-            scrolledContainerColor = colorPalette.background0,
-            navigationIconContentColor = colorPalette.background0,
-            actionIconContentColor = colorPalette.text
+            containerColor = colorPalette().background0,
+            titleContentColor = colorPalette().text,
+            scrolledContainerColor = colorPalette().background0,
+            navigationIconContentColor = colorPalette().background0,
+            actionIconContentColor = colorPalette().text
         )
     )
 

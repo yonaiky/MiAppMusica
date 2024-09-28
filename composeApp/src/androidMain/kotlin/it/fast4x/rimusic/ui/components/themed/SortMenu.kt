@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.typography
 
 
 @Composable
@@ -45,7 +46,6 @@ fun SortMenu (
         mutableStateOf(0.dp)
     }
     val density = LocalDensity.current
-    val (colorPalette, typography) = LocalAppearance.current
 
     Menu(
         modifier = modifier
@@ -61,7 +61,7 @@ fun SortMenu (
             if (title != null) {
                 BasicText(
                     text = title,
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )

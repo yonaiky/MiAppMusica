@@ -56,6 +56,8 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -76,9 +78,7 @@ fun AlbumsItemMenu(
     onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
-
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
 
     var isViewingPlaylists by remember {
@@ -183,7 +183,7 @@ fun AlbumsItemMenu(
                         IconButton(
                             onClick = { isViewingPlaylists = false },
                             icon = R.drawable.chevron_back,
-                            color = colorPalette.textSecondary,
+                            color = colorPalette().textSecondary,
                             modifier = Modifier
                                 .padding(all = 4.dp)
                                 .size(20.dp)
@@ -201,7 +201,7 @@ fun AlbumsItemMenu(
                     if (pinnedPlaylists.isNotEmpty()) {
                         BasicText(
                             text = stringResource(R.string.pinned_playlists),
-                            style = typography.m.semiBold,
+                            style = typography().m.semiBold,
                             modifier = modifier.padding(start = 20.dp, top = 5.dp)
                         )
 
@@ -232,7 +232,7 @@ fun AlbumsItemMenu(
                     if (unpinnedPlaylists.isNotEmpty()) {
                         BasicText(
                             text = stringResource(R.string.playlists),
-                            style = typography.m.semiBold,
+                            style = typography().m.semiBold,
                             modifier = modifier.padding(start = 20.dp, top = 5.dp)
                         )
 
@@ -432,7 +432,7 @@ fun AlbumsItemMenu(
                                     painter = painterResource(R.drawable.chevron_forward),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(
-                                        colorPalette.textSecondary
+                                        colorPalette().textSecondary
                                     ),
                                     modifier = Modifier
                                         .size(16.dp)

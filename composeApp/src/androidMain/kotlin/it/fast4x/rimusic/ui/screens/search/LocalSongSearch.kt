@@ -52,7 +52,6 @@ import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
@@ -65,6 +64,9 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.delay
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -82,7 +84,6 @@ fun LocalSongSearch(
     onAction3: () -> Unit,
     onAction4: () -> Unit,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
@@ -115,17 +116,17 @@ fun LocalSongSearch(
 
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = lazyListState,
@@ -162,15 +163,15 @@ fun LocalSongSearch(
                         BasicTextField(
                             value = textFieldValue,
                             onValueChange = onTextFieldValueChanged,
-                            textStyle = typography.l.medium.align(TextAlign.Start),
+                            textStyle = typography().l.medium.align(TextAlign.Start),
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            cursorBrush = SolidColor(colorPalette.text),
+                            cursorBrush = SolidColor(colorPalette().text),
                             decorationBox = decorationBox,
                             modifier = Modifier
                                 .background(
-                                    colorPalette.background1,
+                                    colorPalette().background1,
                                     shape = thumbnailRoundness.shape()
                                 )
                                 .focusRequester(focusRequester)
@@ -189,21 +190,21 @@ fun LocalSongSearch(
                             IconButton(
                                 onClick = onAction1,
                                 icon = R.drawable.globe,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction2,
                                 icon = R.drawable.library,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction3,
                                 icon = R.drawable.link,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -211,7 +212,7 @@ fun LocalSongSearch(
                             IconButton(
                                 onClick = onAction4,
                                 icon = R.drawable.chevron_back,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -236,7 +237,7 @@ fun LocalSongSearch(
                             val y = size.height - strokeWidth / 2
 
                             drawLine(
-                                color = colorPalette.textDisabled,
+                                color = colorPalette().textDisabled,
                                 start = Offset(x = 0f, y = y/2),
                                 end = Offset(x = size.maxDimension, y = y/2),
                                 strokeWidth = 2.dp.toPx()

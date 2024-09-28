@@ -59,6 +59,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.scrollingInfo
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
+import me.knighthat.navBarPos
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -72,9 +73,11 @@ fun BoxScope.MultiFloatingActionsContainer(
     onClickSettings: (() -> Unit)? = null,
     onClickSearch: (() -> Unit)? = null
 ) {
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
-        Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
+    val additionalBottomPadding =
+        if ( navBarPos() == NavigationBarPosition.Bottom )
+            Dimensions.additionalVerticalSpaceForFloatingAction
+        else
+            0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -207,8 +210,7 @@ fun BoxScope.FloatingActions(
     onClick: (() -> Unit)? = null
 ) {
     val transition = updateTransition(transitionState, "")
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
+    val additionalBottomPadding = if ( navBarPos() == NavigationBarPosition.Bottom )
         Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current

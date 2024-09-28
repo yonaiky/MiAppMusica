@@ -91,6 +91,9 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 import kotlin.math.absoluteValue
 
@@ -182,7 +185,6 @@ fun PlayerEssential(
             return@rememberSwipeToDismissBoxState false
         }
     )
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.Both)
     val effectRotationEnabled by rememberPreference(effectRotationKey, true)
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
@@ -219,7 +221,7 @@ fun PlayerEssential(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorPalette.background1)
+                    .background(colorPalette().background1)
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = when (dismissState.targetValue) {
                     SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
@@ -240,12 +242,12 @@ fun PlayerEssential(
                         SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
                     },
                     contentDescription = null,
-                    tint = colorPalette.iconButtonPlayer,
+                    tint = colorPalette().iconButtonPlayer,
                 )
             }
         }
     ) {
-
+        val colorPalette = colorPalette()
         /***** */
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -279,7 +281,7 @@ fun PlayerEssential(
                         }
                     )
                 }
-                .background(colorPalette.background2)
+                .background(colorPalette().background2)
                 .fillMaxWidth()
                 .drawBehind {
                     if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
@@ -311,7 +313,7 @@ fun PlayerEssential(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .size(48.dp)
                 )
             }
@@ -329,7 +331,7 @@ fun PlayerEssential(
                     if (mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX) == true)
                         it.fast4x.rimusic.ui.components.themed.IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -337,7 +339,7 @@ fun PlayerEssential(
                         )
                     BasicText(
                         text = cleanPrefix(mediaItem.mediaMetadata.title?.toString() ?: ""),
-                        style = typography.xxs.semiBold,
+                        style = typography().xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -347,7 +349,7 @@ fun PlayerEssential(
 
                 BasicText(
                     text = mediaItem.mediaMetadata.artist?.toString() ?: "",
-                    style = typography.xxs.semiBold,
+                    style = typography().xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -369,7 +371,7 @@ fun PlayerEssential(
                if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_back,
-                    color = colorPalette.iconButtonPlayer,
+                    color = colorPalette().iconButtonPlayer,
                     onClick = {
                         binder.player.forceSeekToPrevious()
                         if (effectRotationEnabled) isRotated = !isRotated
@@ -395,13 +397,13 @@ fun PlayerEssential(
                             }
                             if (effectRotationEnabled) isRotated = !isRotated
                         }
-                        .background(colorPalette.background2)
+                        .background(colorPalette().background2)
                         .size(42.dp)
                 ) {
                     Image(
                         painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.iconButtonPlayer),
+                        colorFilter = ColorFilter.tint(colorPalette().iconButtonPlayer),
                         modifier = Modifier
                             .rotate(rotationAngle)
                             .align(Alignment.Center)
@@ -411,7 +413,7 @@ fun PlayerEssential(
                if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_forward,
-                    color = colorPalette.iconButtonPlayer,
+                    color = colorPalette().iconButtonPlayer,
                     onClick = {
                         binder.player.forceSeekToNext()
                         if (effectRotationEnabled) isRotated = !isRotated
@@ -424,7 +426,7 @@ fun PlayerEssential(
                 if (miniPlayerType == MiniPlayerType.Modern)
                  it.fast4x.rimusic.ui.components.themed.IconButton(
                      icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
-                     color = colorPalette.favoritesIcon,
+                     color = colorPalette().favoritesIcon,
                      onClick = {
                          updateLike = true
                      },

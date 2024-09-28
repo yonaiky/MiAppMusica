@@ -101,7 +101,6 @@ import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.UiTypeKey
@@ -129,6 +128,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 
 
@@ -145,11 +148,9 @@ fun Podcast(
     params: String?,
     maxDepth: Int?,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
     val menuState = LocalMenuState.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var podcastPage by persist<Innertube.Podcast?>("podcast/$browseId/listEpisodes")
 
@@ -171,7 +172,6 @@ fun Podcast(
 
 
     }
-
 
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
@@ -245,20 +245,17 @@ fun Podcast(
 
     val lazyListState = rememberLazyListState()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom
-                    ) 1f
-                    else Dimensions.contentWidthRightBar
+                    if( navBarPos() != NavigationBarPosition.Right)
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
                 )
         ) {
             LazyColumn(
@@ -266,7 +263,7 @@ fun Podcast(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
 
@@ -297,11 +294,11 @@ fun Podcast(
 
                             AutoResizeText(
                                 text = podcastPage?.title ?: "",
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                                fontWeight = typography.l.semiBold.fontWeight,
-                                fontFamily = typography.l.semiBold.fontFamily,
-                                color = typography.l.semiBold.color,
+                                fontWeight = typography().l.semiBold.fontWeight,
+                                fontFamily = typography().l.semiBold.fontFamily,
+                                color = typography().l.semiBold.color,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
@@ -315,7 +312,7 @@ fun Podcast(
                                 text = podcastPage!!.listEpisode.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
-                                style = typography.xs.medium,
+                                style = typography().xs.medium,
                                 maxLines = 1,
                                 modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -325,7 +322,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -358,7 +355,7 @@ fun Podcast(
                                     )
                                     BasicText(
                                         text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                        style = typography.xs.medium,
+                                        style = typography().xs.medium,
                                         maxLines = 1,
                                         modifier = Modifier
                                             //.padding(top = 10.dp)
@@ -392,7 +389,7 @@ fun Podcast(
                             HeaderIconButton(
                                 onClick = { searching = !searching },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -400,7 +397,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -437,7 +434,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.download,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -466,7 +463,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -485,7 +482,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) colorPalette.text else colorPalette.textDisabled,
+                                color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -510,7 +507,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -537,7 +534,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -594,7 +591,7 @@ fun Podcast(
                             /*
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     (playlistPage?.url ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
                                         val sendIntent = Intent().apply {
@@ -612,7 +609,7 @@ fun Podcast(
                         } else {
                             BasicText(
                                 text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                style = typography.xxs.medium,
+                                style = typography().xxs.medium,
                                 maxLines = 1
                             )
                         }
@@ -636,7 +633,7 @@ fun Podcast(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -644,7 +641,7 @@ fun Podcast(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -655,7 +652,7 @@ fun Podcast(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -676,7 +673,7 @@ fun Podcast(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -687,7 +684,7 @@ fun Podcast(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -805,7 +802,7 @@ fun Podcast(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

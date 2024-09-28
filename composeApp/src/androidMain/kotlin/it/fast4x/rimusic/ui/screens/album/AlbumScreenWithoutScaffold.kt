@@ -70,6 +70,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -105,7 +107,6 @@ fun AlbumScreenWithoutScaffold(
     var changeShape by remember {
         mutableStateOf(false)
     }
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
@@ -217,18 +218,17 @@ fun AlbumScreenWithoutScaffold(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(title = album?.title ?: "Unknown") {
 
-                            if (navigationBarPosition == NavigationBarPosition.Left
-                                || navigationBarPosition == NavigationBarPosition.Top
-                                ) {
+                            if ( navBarPos() == NavigationBarPosition.Left
+                                || navBarPos() == NavigationBarPosition.Top
+                            ) {
                                 IconButton(
                                     onClick = { pop() },
                                     icon = R.drawable.chevron_back,
-                                    color = colorPalette.favoritesIcon,
+                                    color = colorPalette().favoritesIcon,
                                     modifier = Modifier
                                         .size(24.dp)
                                 )
@@ -264,7 +264,7 @@ fun AlbumScreenWithoutScaffold(
                                 } else {
                                     R.drawable.bookmark
                                 },
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     val bookmarkedAt =
                                         if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -279,7 +279,7 @@ fun AlbumScreenWithoutScaffold(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     album?.shareUrl?.let { url ->
                                         val sendIntent = Intent().apply {
@@ -297,14 +297,14 @@ fun AlbumScreenWithoutScaffold(
                                     }
                                 }
                             )
-                            if (navigationBarPosition == NavigationBarPosition.Right
-                                || navigationBarPosition == NavigationBarPosition.Bottom
-                                ) {
+                            if ( navBarPos() == NavigationBarPosition.Right
+                                || navBarPos() == NavigationBarPosition.Bottom
+                            ) {
                                 Spacer(modifier = Modifier.width(10.dp))
                                 IconButton(
                                     onClick = { pop() },
                                     icon = R.drawable.chevron_back,
-                                    color = colorPalette.favoritesIcon,
+                                    color = colorPalette().favoritesIcon,
                                     modifier = Modifier
                                         .size(24.dp)
                                 )

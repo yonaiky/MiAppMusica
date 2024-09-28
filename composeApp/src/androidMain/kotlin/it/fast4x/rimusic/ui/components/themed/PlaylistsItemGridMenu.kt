@@ -61,6 +61,8 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -90,9 +92,6 @@ fun PlaylistsItemGridMenu(
     onImport: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null
     ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val density = LocalDensity.current
-
     var isViewingPlaylists by remember {
         mutableStateOf(false)
     }
@@ -186,7 +185,7 @@ fun PlaylistsItemGridMenu(
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette.textSecondary,
+                        color = colorPalette().textSecondary,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -204,7 +203,7 @@ fun PlaylistsItemGridMenu(
                 if (pinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.pinned_playlists),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -230,7 +229,7 @@ fun PlaylistsItemGridMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette.text,
+                                        color = colorPalette().text,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -250,7 +249,7 @@ fun PlaylistsItemGridMenu(
                 if (unpinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.playlists),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -276,14 +275,14 @@ fun PlaylistsItemGridMenu(
                                         Image(
                                             painter = painterResource(R.drawable.piped_logo),
                                             contentDescription = null,
-                                            colorFilter = ColorFilter.tint(colorPalette.red),
+                                            colorFilter = ColorFilter.tint(colorPalette().red),
                                             modifier = Modifier
                                                 .size(18.dp)
                                         )
 
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette.text,
+                                        color = colorPalette().text,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -302,6 +301,7 @@ fun PlaylistsItemGridMenu(
             }
         } else {
             val selectText = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}"
+            val colorPalette = colorPalette()
 
             GridMenu(
                 contentPadding = PaddingValues(

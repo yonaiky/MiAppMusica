@@ -145,6 +145,10 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -162,7 +166,6 @@ fun BuiltInPlaylistSongs(
     onSearchClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
@@ -474,21 +477,19 @@ fun BuiltInPlaylistSongs(
         )
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     Box (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if ( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
     ) {
         LazyColumn(
@@ -496,7 +497,7 @@ fun BuiltInPlaylistSongs(
             //contentPadding = LocalPlayerAwareWindowInsets.current
             //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
             item(
@@ -524,10 +525,10 @@ fun BuiltInPlaylistSongs(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        //.background(colorPalette.background4)
+                        //.background(colorPalette().background4)
                         .fillMaxSize(0.99F)
                         .background(
-                            color = colorPalette.background1,
+                            color = colorPalette().background1,
                             shape = thumbnailRoundness.shape()
                         )
                 ) {
@@ -542,7 +543,7 @@ fun BuiltInPlaylistSongs(
                             BuiltInPlaylist.Offline -> R.drawable.sync
                             BuiltInPlaylist.Top -> R.drawable.trending
                         },
-                        colorTint = colorPalette.favoritesIcon,
+                        colorTint = colorPalette().favoritesIcon,
                         name = when (builtInPlaylist) {
                             BuiltInPlaylist.All -> context.resources.getString(R.string.songs)
                             BuiltInPlaylist.OnDevice -> context.resources.getString(R.string.on_device)
@@ -637,7 +638,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.smart_shuffle,
                             enabled = true,
-                            color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                            color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -653,7 +654,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -678,7 +679,7 @@ fun BuiltInPlaylistSongs(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             onClick = { searching = !searching },
                             icon = R.drawable.search_circle,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             iconSize = 24.dp
                         )
                     }
@@ -699,7 +700,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -739,7 +740,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.download,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -779,7 +780,7 @@ fun BuiltInPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
                         enabled = songs.isNotEmpty(),
-                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             binder?.player?.enqueue(songs.map(Song::asMediaItem))
                         }
@@ -790,7 +791,7 @@ fun BuiltInPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.smart_shuffle,
                         enabled = true,
-                        color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                        color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             isRecommendationEnabled = !isRecommendationEnabled
                         }
@@ -803,7 +804,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.trash,
                             enabled = true,
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -820,7 +821,7 @@ fun BuiltInPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.random,
                             enabled = true,
-                            color = if (autoShuffle) colorPalette.text else colorPalette.textDisabled,
+                            color = if (autoShuffle) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -838,7 +839,7 @@ fun BuiltInPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = songs.isNotEmpty(),
-                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             if (songs.isNotEmpty()) {
                                 val itemsLimited = if (songs.size > maxSongsInQueue.number)  songs.shuffled().take(maxSongsInQueue.number.toInt()) else songs
@@ -873,7 +874,7 @@ fun BuiltInPlaylistSongs(
                             ),
                         icon = R.drawable.locate,
                         enabled = songs.isNotEmpty(),
-                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {}
                     )
                     LaunchedEffect(scrollToNowPlaying) {
@@ -884,7 +885,7 @@ fun BuiltInPlaylistSongs(
 
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
-                        color = if (songs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                        color = if (songs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                         enabled = songs.isNotEmpty() == true,
                         modifier = Modifier
                             .padding(end = 4.dp),
@@ -992,7 +993,7 @@ fun BuiltInPlaylistSongs(
                         builtInPlaylist == BuiltInPlaylist.Downloaded )  {
                         HeaderIconButton(
                             icon = R.drawable.arrow_up,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = { sortOrder = !sortOrder },
                             modifier = Modifier
                                 .graphicsLayer { rotationZ = sortOrderIconRotation }
@@ -1008,7 +1009,7 @@ fun BuiltInPlaylistSongs(
                                 SongSortBy.Artist -> stringResource(R.string.sort_artist)
                                 SongSortBy.Duration -> stringResource(R.string.sort_duration)
                             },
-                            style = typography.xs.semiBold,
+                            style = typography().xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -1061,7 +1062,7 @@ fun BuiltInPlaylistSongs(
                         BasicTextField(
                             value = filter ?: "",
                             onValueChange = { filter = it },
-                            textStyle = typography.xs.semiBold,
+                            textStyle = typography().xs.semiBold,
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -1069,7 +1070,7 @@ fun BuiltInPlaylistSongs(
                                 if (filter.isNullOrBlank()) filter = ""
                                 focusManager.clearFocus()
                             }),
-                            cursorBrush = SolidColor(colorPalette.text),
+                            cursorBrush = SolidColor(colorPalette().text),
                             decorationBox = { innerTextField ->
                                 Box(
                                     contentAlignment = Alignment.CenterStart,
@@ -1080,7 +1081,7 @@ fun BuiltInPlaylistSongs(
                                     IconButton(
                                         onClick = {},
                                         icon = R.drawable.search,
-                                        color = colorPalette.favoritesIcon,
+                                        color = colorPalette().favoritesIcon,
                                         modifier = Modifier
                                             .align(Alignment.CenterStart)
                                             .size(16.dp)
@@ -1101,7 +1102,7 @@ fun BuiltInPlaylistSongs(
                                             text = stringResource(R.string.search),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
-                                            style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
+                                            style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
                                         )
                                     }
 
@@ -1112,7 +1113,7 @@ fun BuiltInPlaylistSongs(
                                 .height(30.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    colorPalette.background4,
+                                    colorPalette().background4,
                                     shape = thumbnailRoundness.shape()
                                 )
                                 .focusRequester(focusRequester)
@@ -1202,7 +1203,7 @@ fun BuiltInPlaylistSongs(
                                 if (sortBy == SongSortBy.PlayTime) {
                                     BasicText(
                                         text = song.formattedTotalPlayTime,
-                                        style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
+                                        style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -1211,10 +1212,10 @@ fun BuiltInPlaylistSongs(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette.overlay
+                                                        colorPalette().overlay
                                                     )
                                                 ),
-                                                shape = thumbnailShape
+                                                shape = thumbnailShape()
                                             )
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
                                             .align(Alignment.BottomCenter)
@@ -1226,7 +1227,7 @@ fun BuiltInPlaylistSongs(
                                 if (builtInPlaylist == BuiltInPlaylist.Top)
                                     BasicText(
                                         text = (index + 1).toString(),
-                                        style = typography.m.semiBold.center.color(colorPalette.onOverlay),
+                                        style = typography().m.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -1235,10 +1236,10 @@ fun BuiltInPlaylistSongs(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette.overlay
+                                                        colorPalette().overlay
                                                     )
                                                 ),
-                                                shape = thumbnailShape
+                                                shape = thumbnailShape()
                                             )
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
                                             .align(Alignment.Center)
@@ -1254,8 +1255,8 @@ fun BuiltInPlaylistSongs(
                                                 listMediaItems.remove(song.asMediaItem)
                                         },
                                         colors = CheckboxDefaults.colors(
-                                            checkedColor = colorPalette.accent,
-                                            uncheckedColor = colorPalette.text
+                                            checkedColor = colorPalette().accent,
+                                            uncheckedColor = colorPalette().text
                                         ),
                                         modifier = Modifier
                                             .scale(0.7f)
@@ -1301,7 +1302,7 @@ fun BuiltInPlaylistSongs(
                                         } else checkedState.value = !checkedState.value
                                     }
                                 )
-                                .background(color = colorPalette.background0)
+                                .background(color = colorPalette().background0)
                                 .animateItemPlacement()
                         )
                     /*
@@ -1309,7 +1310,7 @@ fun BuiltInPlaylistSongs(
                     leftActionsContent = {
                             LeftAction(
                                 icon = R.drawable.play_skip_forward,
-                                backgroundColor = Color.Transparent, //colorPalette.background4,
+                                backgroundColor = Color.Transparent, //colorPalette().background4,
                                 onClick = {
                                     //binder?.player?.enqueue( song.asMediaItem )
                                     binder?.player?.addNext( song.asMediaItem )
@@ -1327,12 +1328,12 @@ fun BuiltInPlaylistSongs(
 
                             RightActions(
                                 iconAction1 = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-                                backgroundColorAction1 = Color.Transparent, //colorPalette.background4,
+                                backgroundColorAction1 = Color.Transparent, //colorPalette().background4,
                                 onClickAction1 = {
                                     songToggleLike(song)
                                 },
                                 iconAction2 = R.drawable.trash,
-                                backgroundColorAction2 = Color.Transparent, //colorPalette.iconButtonPlayer,
+                                backgroundColorAction2 = Color.Transparent, //colorPalette().iconButtonPlayer,
                                 enableAction2 = builtInPlaylist == BuiltInPlaylist.Offline,
                                 onClickAction2 = {
                                     if (binder != null) {

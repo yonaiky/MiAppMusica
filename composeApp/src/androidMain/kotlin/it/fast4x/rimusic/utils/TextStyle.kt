@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 fun TextStyle.style(style: FontStyle) = copy(fontStyle = style)
 
@@ -32,4 +33,4 @@ inline val TextStyle.center: TextStyle
 inline val TextStyle.secondary: TextStyle
     @Composable
     @ReadOnlyComposable
-    get() = color(LocalAppearance.current.colorPalette.textSecondary)
+    get() = color(colorPalette().textSecondary)

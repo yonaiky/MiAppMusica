@@ -20,6 +20,7 @@ import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.typography
 
 @Composable
 fun SliderControl(
@@ -62,7 +63,7 @@ fun SliderControl(
         if (showValue)
             BasicText(
                 text = toDisplay(state),
-                style = LocalAppearance.current.typography.xs.semiBold.center,
+                style = typography().xs.semiBold.center,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 modifier = Modifier

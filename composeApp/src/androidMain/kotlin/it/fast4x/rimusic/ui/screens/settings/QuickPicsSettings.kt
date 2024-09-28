@@ -44,12 +44,13 @@ import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
 fun  QuickPicsSettings() {
-    val (colorPalette) = LocalAppearance.current
     var playEventType by rememberPreference(
         playEventsTypeKey,
         PlayEventsType.MostPlayed
@@ -79,20 +80,16 @@ fun  QuickPicsSettings() {
     //var isEnabledDiscoveryLangCode by rememberPreference(isEnabledDiscoveryLangCodeKey,   true)
 
     //var showActionsBar by rememberPreference(showActionsBarKey, true)
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
             /*

@@ -43,6 +43,7 @@ import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.utils.lastVideoIdKey
 import it.fast4x.rimusic.utils.lastVideoSecondsKey
 import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.colorPalette
 
 
 @Composable
@@ -64,14 +65,12 @@ fun YoutubePlayer(
 
     if (ytVideoId != lastYTVideoId) lastYTVideoSeconds = 0f
 
-    val colorPalette = LocalAppearance.current.colorPalette
-
     Box {
         Box{
             Image(
                 painter = painterResource(R.drawable.musical_notes),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                 modifier = Modifier
                     .clickable {
                         onSwitchToAudioPlayer()

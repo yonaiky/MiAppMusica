@@ -56,6 +56,10 @@ import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.thumbnailShape
+import me.knighthat.uiType
 
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
@@ -67,9 +71,6 @@ fun HomeStatistics(
     onPlaylistClick: (Playlist) -> Unit,
     onSearchClick: () -> Unit,
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
     var isCreatingANewPlaylist by rememberSaveable {
         mutableStateOf(false)
     }
@@ -116,25 +117,20 @@ fun HomeStatistics(
     )
 */
     val thumbnailSizeDp = 108.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
-
     val lazyGridState = rememberLazyGridState()
-
-    val context = LocalContext.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         LazyVerticalGrid(
             state = lazyGridState,
@@ -148,7 +144,7 @@ fun HomeStatistics(
             ),
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
         ) {
             item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
@@ -166,13 +162,13 @@ fun HomeStatistics(
             item(key = "today") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string.today),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.Today) })
                         .animateItemPlacement()
 
@@ -182,13 +178,13 @@ fun HomeStatistics(
             item(key = "oneweek") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string._1_week),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
                         .animateItemPlacement()
 
@@ -198,13 +194,13 @@ fun HomeStatistics(
             item(key = "onemonth") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string._1_month),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
                         .animateItemPlacement()
                 )
@@ -213,13 +209,13 @@ fun HomeStatistics(
             item(key = "threemonths") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string._3_month),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
                         .animateItemPlacement()
                 )
@@ -228,13 +224,13 @@ fun HomeStatistics(
             item(key = "sixmonths") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string._6_month),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
                         .animateItemPlacement()
                 )
@@ -243,13 +239,13 @@ fun HomeStatistics(
             item(key = "oneyear") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string._1_year),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
                         .animateItemPlacement()
                 )
@@ -258,26 +254,24 @@ fun HomeStatistics(
             item(key = "all") {
                 PlaylistItem(
                     icon = R.drawable.query_stats,
-                    colorTint = colorPalette.favoritesIcon,
+                    colorTint = colorPalette().favoritesIcon,
                     name = stringResource(R.string.all),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
                     modifier = Modifier
-                        .clip(thumbnailShape)
+                        .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.All) })
                         .animateItemPlacement()
                 )
             }
 
         }
-        if(uiType == UiType.ViMusic)
-        FloatingActionsContainerWithScrollToTop(
-            lazyGridState = lazyGridState,
-            iconId = R.drawable.search,
-            onClick = onSearchClick
-        )
-
-
+        if( uiType() == UiType.ViMusic )
+            FloatingActionsContainerWithScrollToTop(
+                lazyGridState = lazyGridState,
+                iconId = R.drawable.search,
+                onClick = onSearchClick
+            )
     }
 }

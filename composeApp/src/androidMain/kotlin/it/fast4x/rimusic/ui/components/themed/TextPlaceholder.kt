@@ -10,14 +10,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
+import me.knighthat.colorPalette
 import kotlin.random.Random
 
 @Composable
 fun TextPlaceholder(
     modifier: Modifier = Modifier,
-    color: Color = LocalAppearance.current.colorPalette.shimmer
+    color: Color = colorPalette().shimmer
 ) {
     Spacer(
         modifier = modifier

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 @Composable
 fun PrimaryButton(
@@ -23,19 +24,17 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable(enabled = enabled, onClick = onClick)
-            .background(colorPalette.background2)
+            .background(colorPalette().background2)
             .size(62.dp)
     ) {
         Image(
             painter = painterResource(iconId),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette.text),
+            colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(20.dp)

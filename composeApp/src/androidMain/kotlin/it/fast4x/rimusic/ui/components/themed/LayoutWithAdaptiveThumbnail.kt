@@ -29,6 +29,8 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnail
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 
 
 @Composable
@@ -57,8 +59,6 @@ fun adaptiveThumbnailContent(
     onOtherVersionAvailable: (() -> Unit)? = {},
     onClick: (() -> Unit)? = {}
 ): @Composable () -> Unit = {
-    val (colorPalette, _, thumbnailShape) = LocalAppearance.current
-
     BoxWithConstraints(contentAlignment = Alignment.Center) {
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
         val thumbnailSizePx = thumbnailSizeDp.px
@@ -69,7 +69,7 @@ fun adaptiveThumbnailContent(
             //.padding(all = 16.dp)
             .padding(horizontal = playerThumbnailSize.size.dp)
             .padding(top = 16.dp)
-            .clip(shape ?: thumbnailShape)
+            .clip(shape ?: thumbnailShape())
             .clickable {
                 if (onClick != null) {
                     onClick()
@@ -167,7 +167,7 @@ fun adaptiveThumbnailContent(
             Spacer(
                 modifier = modifier
                     .shimmer()
-                    .background(colorPalette.shimmer)
+                    .background(colorPalette().shimmer)
             )
         } else {
             AsyncImage(
@@ -184,7 +184,7 @@ fun adaptiveThumbnailContent(
                     ) {
                         HeaderIconButton(
                             icon = R.drawable.alternative_version,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = {
                                 onOtherVersionAvailable()
                             },

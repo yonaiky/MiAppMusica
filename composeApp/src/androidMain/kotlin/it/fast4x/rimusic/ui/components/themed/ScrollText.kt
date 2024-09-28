@@ -24,7 +24,6 @@ fun ScrollText (
     style: TextStyle,
     onClick: () -> Unit
 ) {
-    //val (colorPalette, typography) = LocalAppearance.current
     val scrollState = rememberScrollState()
     var shouldAnimated by remember {
         mutableStateOf(true)

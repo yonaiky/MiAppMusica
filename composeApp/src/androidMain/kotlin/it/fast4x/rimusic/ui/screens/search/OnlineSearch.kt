@@ -77,7 +77,6 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
@@ -91,6 +90,9 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -105,9 +107,6 @@ fun OnlineSearch(
     decorationBox: @Composable (@Composable () -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
-
-    val (colorPalette, typography) = LocalAppearance.current
-
     var history by persistList<SearchQuery>("search/online/history")
 
     var reloadHistory by remember {
@@ -166,8 +165,6 @@ fun OnlineSearch(
 
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -179,15 +176,14 @@ fun OnlineSearch(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
     ) {
         LazyColumn(
@@ -225,7 +221,7 @@ fun OnlineSearch(
                         BasicTextField(
                             value = textFieldValue,
                             onValueChange = onTextFieldValueChanged,
-                            textStyle = typography.l.medium.align(TextAlign.Start),
+                            textStyle = typography().l.medium.align(TextAlign.Start),
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -236,12 +232,12 @@ fun OnlineSearch(
                                     }
                                 }
                             ),
-                            cursorBrush = SolidColor(colorPalette.text),
+                            cursorBrush = SolidColor(colorPalette().text),
                             decorationBox = decorationBox,
                             modifier = Modifier
                                 .background(
-                                    //colorPalette.background4,
-                                    colorPalette.background1,
+                                    //colorPalette().background4,
+                                    colorPalette().background1,
                                     shape = thumbnailRoundness.shape()
                                 )
                                 .padding(all = 4.dp)
@@ -261,21 +257,21 @@ fun OnlineSearch(
                             IconButton(
                                 onClick = onAction1,
                                 icon = R.drawable.globe,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction2,
                                 icon = R.drawable.library,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction3,
                                 icon = R.drawable.link,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -284,7 +280,7 @@ fun OnlineSearch(
                             IconButton(
                                 onClick = onAction4,
                                 icon = R.drawable.chevron_back,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -325,7 +321,7 @@ fun OnlineSearch(
                             val y = size.height - strokeWidth / 2
 
                             drawLine(
-                                color = colorPalette.textDisabled,
+                                color = colorPalette().textDisabled,
                                 start = Offset(x = 0f, y = y/2),
                                 end = Offset(x = size.maxDimension, y = y/2),
                                 strokeWidth = 2.dp.toPx()
@@ -423,7 +419,7 @@ fun OnlineSearch(
 
                         BasicText(
                             text = query,
-                            style = typography.s.secondary,
+                            style = typography().s.secondary,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)
                                 .weight(1f)
@@ -432,7 +428,7 @@ fun OnlineSearch(
                         Image(
                             painter = arrowForwardIconPainter,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.textDisabled),
+                            colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                             modifier = Modifier
                                 .clickable(
                                     indication = rippleIndication,
@@ -464,7 +460,7 @@ fun OnlineSearch(
                         /*
                         BasicText(
                             text = stringResource(R.string.error),
-                            style = typography.s.secondary.center,
+                            style = typography().s.secondary.center,
                             modifier = Modifier
                                 .align(Alignment.Center)
                         )
@@ -495,13 +491,13 @@ fun OnlineSearch(
                             .size(20.dp)
                             .paint(
                                 painter = timeIconPainter,
-                                colorFilter = ColorFilter.tint(colorPalette.textDisabled)
+                                colorFilter = ColorFilter.tint(colorPalette().textDisabled)
                             )
                     )
 
                     BasicText(
                         text = searchQuery.query,
-                        style = typography.s.secondary,
+                        style = typography().s.secondary,
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .weight(1f)
@@ -510,7 +506,7 @@ fun OnlineSearch(
                     Image(
                         painter = closeIconPainter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.textDisabled),
+                        colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                         modifier = Modifier
                             .combinedClickable(
                                 indication = rippleIndication,
@@ -536,7 +532,7 @@ fun OnlineSearch(
                     Image(
                         painter = arrowForwardIconPainter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.textDisabled),
+                        colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                         modifier = Modifier
                             .clickable(
                                 indication = rippleIndication,

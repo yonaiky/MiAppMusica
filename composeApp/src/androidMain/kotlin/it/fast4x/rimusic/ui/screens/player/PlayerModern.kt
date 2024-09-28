@@ -248,7 +248,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
-
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -274,8 +276,6 @@ fun PlayerModern(
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -559,7 +559,7 @@ fun PlayerModern(
 
                 BasicText(
                     text = stringResource(R.string.set_sleep_timer),
-                    style = typography.s.semiBold,
+                    style = typography().s.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -581,11 +581,11 @@ fun PlayerModern(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount > 1) { amount-- }
                                 .size(48.dp)
-                                .background(colorPalette.background0)
+                                .background(colorPalette().background0)
                         ) {
                             BasicText(
                                 text = "-",
-                                style = typography.xs.semiBold
+                                style = typography().xs.semiBold
                             )
                         }
 
@@ -595,7 +595,7 @@ fun PlayerModern(
                                     R.string.left,
                                     formatAsDuration(amount * 5 * 60 * 1000L)
                                 ),
-                                style = typography.s.semiBold,
+                                style = typography().s.semiBold,
                                 modifier = Modifier
                                     .clickable {
                                         showCircularSlider = !showCircularSlider
@@ -610,18 +610,18 @@ fun PlayerModern(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount < 60) { amount++ }
                                 .size(48.dp)
-                                .background(colorPalette.background0)
+                                .background(colorPalette().background0)
                         ) {
                             BasicText(
                                 text = "+",
-                                style = typography.xs.semiBold
+                                style = typography().xs.semiBold
                             )
                         }
 
                     } else {
                         CircularSlider(
                             stroke = 40f,
-                            thumbColor = colorPalette.accent,
+                            thumbColor = colorPalette().accent,
                             text = formatAsDuration(amount * 5 * 60 * 1000L),
                             modifier = Modifier
                                 .size(300.dp),
@@ -658,12 +658,12 @@ fun PlayerModern(
                     IconButton(
                         onClick = { showCircularSlider = !showCircularSlider },
                         icon = R.drawable.time,
-                        color = colorPalette.text
+                        color = colorPalette().text
                     )
                     IconButton(
                         onClick = { isShowingSleepTimerDialog = false },
                         icon = R.drawable.close,
-                        color = colorPalette.text
+                        color = colorPalette().text
                     )
                     IconButton(
                         enabled = amount > 0,
@@ -672,14 +672,15 @@ fun PlayerModern(
                             isShowingSleepTimerDialog = false
                         },
                         icon = R.drawable.checkmark,
-                        color = colorPalette.accent
+                        color = colorPalette().accent
                     )
                 }
             }
         }
     }
 
-    var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
+    val color = colorPalette()
+    var dynamicColorPalette by remember { mutableStateOf( color ) }
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
@@ -706,9 +707,9 @@ fun PlayerModern(
                     ),
                     isSystemDarkMode,
                     colorPaletteMode == ColorPaletteMode.PitchBlack
-                ) ?: colorPalette
+                ) ?: color
             } catch (e: Exception) {
-                dynamicColorPalette = colorPalette
+                dynamicColorPalette = color
                 e.printStackTrace()
             }
 
@@ -723,7 +724,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
             dynamicColorPalette.background2,
-            colorPalette.background2,
+            colorPalette().background2,
         ),
         listOf(0f, 1f)
     )
@@ -732,7 +733,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, 0f),
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
-            colorPalette.background1,
+            colorPalette().background1,
             dynamicColorPalette.accent,
         ),
         listOf(0f, 1f)
@@ -743,7 +744,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
             //Color.White,
-            colorPalette.background2,
+            colorPalette().background2,
             Color.Transparent,
         ),
         listOf(0f, 1f)
@@ -897,7 +898,7 @@ fun PlayerModern(
                 .conditional (playerType == PlayerType.Essential) {
                     background(
                         //dynamicColorPalette.background1
-                        colorPalette.background1
+                        color.background1
                     )
                 }
         }
@@ -921,9 +922,9 @@ fun PlayerModern(
                     .background(
                         Brush.verticalGradient(
                             0.5f to dynamicColorPalette.background2,
-                            1.0f to if (blackgradient) Color.Black else colorPalette.background2,
-                            //0.0f to colorPalette.background0,
-                            //1.0f to colorPalette.background2,
+                            1.0f to if (blackgradient) Color.Black else colorPalette().background2,
+                            //0.0f to colorPalette().background0,
+                            //1.0f to colorPalette().background2,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1078,7 +1079,7 @@ fun PlayerModern(
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .conditional(tapqueue) { clickable { showQueue = true } }
                     .background(
-                        colorPalette.background2.copy(
+                        colorPalette().background2.copy(
                             alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
                         )
                     )
@@ -1102,9 +1103,9 @@ fun PlayerModern(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                //.background(colorPalette.background2.copy(alpha = 0.3f))
+                                //.background(colorPalette().background2.copy(alpha = 0.3f))
                                 .background(
-                                    colorPalette.background2.copy(
+                                    colorPalette().background2.copy(
                                         alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
                                     )
                                 )
@@ -1138,7 +1139,7 @@ fun PlayerModern(
                                                   }
                                               }
                                           ),
-                                      tint = colorPalette.accent
+                                      tint = colorPalette().accent
                                   )
                               }
 
@@ -1221,8 +1222,8 @@ fun PlayerModern(
                                                         ?: ""
                                                 ),
                                                 style = TextStyle(
-                                                    color = colorPalette.text,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    color = colorPalette().text,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1245,7 +1246,7 @@ fun PlayerModern(
                                                         0.65f
                                                     )
                                                     else Color.Black,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1262,8 +1263,8 @@ fun PlayerModern(
                                                 ).mediaMetadata.artist?.toString()
                                                     ?: "",
                                                 style = TextStyle(
-                                                    color = colorPalette.text,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    color = colorPalette().text,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1284,7 +1285,7 @@ fun PlayerModern(
                                                         0.65f
                                                     )
                                                     else Color.Black,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1321,7 +1322,7 @@ fun PlayerModern(
                         if (showButtonPlayerVideo)
                             IconButton(
                                 icon = R.drawable.video,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     binder.callPause {}
@@ -1334,7 +1335,7 @@ fun PlayerModern(
                         if (showButtonPlayerDiscover)
                             IconButton(
                                 icon = R.drawable.star_brilliant,
-                                color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                                color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .size(24.dp)
@@ -1354,7 +1355,7 @@ fun PlayerModern(
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
                                 icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                                color = if (isDownloaded) colorPalette.accent else Color.Gray,
+                                color = if (isDownloaded) colorPalette().accent else Color.Gray,
                                 downloadState = downloadState,
                                 onClick = {
                                     manageDownload(
@@ -1373,7 +1374,7 @@ fun PlayerModern(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = if (songPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
+                                color = if (songPlaylist > 0 && playlistindicator) colorPalette().text else colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1397,7 +1398,7 @@ fun PlayerModern(
                                     .size(24.dp)
                                     .conditional(songPlaylist > 0 && playlistindicator) {
                                         background(
-                                            colorPalette.accent,
+                                            color.accent,
                                             CircleShape
                                         )
                                     }
@@ -1413,7 +1414,7 @@ fun PlayerModern(
                         if (showButtonPlayerLoop)
                             IconButton(
                                 icon = R.drawable.repeat,
-                                color = if (trackLoopEnabled) colorPalette.accent else Color.Gray,
+                                color = if (trackLoopEnabled) colorPalette().accent else Color.Gray,
                                 onClick = {
                                     trackLoopEnabled = !trackLoopEnabled
                                     if (effectRotationEnabled) isRotated = !isRotated
@@ -1426,7 +1427,7 @@ fun PlayerModern(
                         if (showButtonPlayerShuffle)
                             IconButton(
                                 icon = R.drawable.shuffle,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     binder?.player?.shuffleQueue()
@@ -1439,7 +1440,7 @@ fun PlayerModern(
                         if (showButtonPlayerLyrics)
                             IconButton(
                                 icon = R.drawable.song_lyrics,
-                                color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
+                                color = if (isShowingLyrics)  colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
@@ -1452,7 +1453,7 @@ fun PlayerModern(
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
-                                color = if (expandedplayer) colorPalette.accent else Color.Gray,
+                                color = if (expandedplayer) colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     expandedplayer = !expandedplayer
@@ -1465,7 +1466,7 @@ fun PlayerModern(
                         if (visualizerEnabled)
                             IconButton(
                                 icon = R.drawable.sound_effect,
-                                color = if (isShowingVisualizer) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isShowingVisualizer) colorPalette().text else colorPalette().textDisabled,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingLyrics) isShowingLyrics = !isShowingLyrics
@@ -1479,7 +1480,7 @@ fun PlayerModern(
                         if (showButtonPlayerSleepTimer)
                             IconButton(
                                 icon = R.drawable.sleep,
-                                color = if (sleepTimerMillisLeft != null) colorPalette.accent else Color.Gray,
+                                color = if (sleepTimerMillisLeft != null) colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     isShowingSleepTimerDialog = true
@@ -1494,7 +1495,7 @@ fun PlayerModern(
 
                             IconButton(
                                 icon = R.drawable.equalizer,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     try {
@@ -1529,7 +1530,7 @@ fun PlayerModern(
                         if (showButtonPlayerArrow)
                             IconButton(
                                 icon = R.drawable.chevron_up,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     showQueue = true
@@ -1542,7 +1543,7 @@ fun PlayerModern(
                         if (showButtonPlayerMenu && !isLandscape)
                             IconButton(
                                 icon = R.drawable.ellipsis_vertical,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
@@ -1566,7 +1567,7 @@ fun PlayerModern(
                         if (isLandscape) {
                             IconButton(
                                 icon = R.drawable.ellipsis_horizontal,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
@@ -1748,7 +1749,7 @@ fun PlayerModern(
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
-                                color = colorPalette.favoritesOverlay,
+                                color = color.favoritesOverlay,
                                 topLeft = Offset.Zero,
                                 size = Size(
                                     width = positionAndDuration.first.toFloat() /
@@ -2167,7 +2168,7 @@ fun PlayerModern(
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
-                                color = colorPalette.favoritesOverlay,
+                                color = color.favoritesOverlay,
                                 topLeft = Offset.Zero,
                                 size = Size(
                                     width = positionAndDuration.first.toFloat() /
@@ -2198,7 +2199,7 @@ fun PlayerModern(
                         Image(
                             painter = painterResource(R.drawable.chevron_down),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                            colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                             modifier = Modifier
                                 .clickable {
                                     onDismiss()
@@ -2212,7 +2213,7 @@ fun PlayerModern(
                         Image(
                             painter = painterResource(R.drawable.app_icon),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                            colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                             modifier = Modifier
                                 .clickable {
                                     onDismiss()
@@ -2228,7 +2229,7 @@ fun PlayerModern(
                             Image(
                                 painter = painterResource(R.drawable.ellipsis_vertical),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                                 modifier = Modifier
                                     .clickable {
                                         menuState.display {
@@ -2477,7 +2478,7 @@ fun PlayerModern(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.time),
-                            colorFilter = ColorFilter.tint(colorPalette.accent),
+                            colorFilter = ColorFilter.tint(colorPalette().accent),
                             modifier = Modifier
                                 .size(20.dp)
                                 .padding(horizontal = 5.dp),
@@ -2488,16 +2489,16 @@ fun PlayerModern(
                         Box {
                             BasicText(
                                 text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography.xxs.semiBold.merge(TextStyle(
+                                style = typography().xxs.semiBold.merge(TextStyle(
                                     textAlign = TextAlign.Center,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                 )),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
                             BasicText(
                                 text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography.xxs.semiBold.merge(TextStyle(
+                                style = typography().xxs.semiBold.merge(TextStyle(
                                     textAlign = TextAlign.Center,
                                     drawStyle = Stroke(
                                         width = 1f,
@@ -2575,8 +2576,8 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showQueue,
             onDismissRequest = { showQueue = false },
-            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
-            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
+            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
+            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
                 .fillMaxWidth()
                 .hazeChild(state = hazeState),
@@ -2584,8 +2585,8 @@ fun PlayerModern(
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()
@@ -2599,15 +2600,15 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showFullLyrics,
             onDismissRequest = { showFullLyrics = false },
-            containerColor = colorPalette.background2,
-            contentColor = colorPalette.background2,
+            containerColor = colorPalette().background2,
+            contentColor = colorPalette().background2,
             modifier = Modifier.fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()
@@ -2621,8 +2622,8 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showSearchEntity,
             onDismissRequest = { showSearchEntity = false },
-            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
-            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
+            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
+            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
                 .fillMaxWidth()
                 .hazeChild(state = hazeState),
@@ -2630,8 +2631,8 @@ fun PlayerModern(
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()

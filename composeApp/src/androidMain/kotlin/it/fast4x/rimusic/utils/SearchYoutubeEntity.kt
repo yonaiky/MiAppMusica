@@ -39,6 +39,7 @@ import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 @ExperimentalAnimationApi
 @ExperimentalTextApi
@@ -68,7 +69,7 @@ fun SearchYoutubeEntity (
 
     Box(
         modifier = Modifier
-            .background(LocalAppearance.current.colorPalette.background0)
+            .background(colorPalette().background0)
             .fillMaxSize()
     ) {
         Column(

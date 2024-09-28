@@ -20,6 +20,8 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @UnstableApi
 @Composable
@@ -29,8 +31,6 @@ fun FolderItem(
     modifier: Modifier = Modifier,
     icon: Int = R.drawable.folder
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     ItemContainer(
         alternative = false,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -44,7 +44,7 @@ fun FolderItem(
             Image(
                 painter = painterResource(icon),
                 contentDescription = null,
-                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(colorPalette.text),
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(colorPalette().text),
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(thumbnailSizeDp - 5.dp)
@@ -55,7 +55,7 @@ fun FolderItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicText(
                     text = folder.name ?: "",
-                    style = typography.xs.semiBold,
+                    style = typography().xs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier

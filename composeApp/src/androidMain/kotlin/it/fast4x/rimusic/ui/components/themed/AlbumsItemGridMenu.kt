@@ -53,6 +53,8 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -75,7 +77,6 @@ fun AlbumsItemGridMenu(
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
 
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
 
     var isViewingPlaylists by remember {
@@ -165,7 +166,7 @@ fun AlbumsItemGridMenu(
                         IconButton(
                             onClick = { isViewingPlaylists = false },
                             icon = R.drawable.chevron_back,
-                            color = colorPalette.textSecondary,
+                            color = colorPalette().textSecondary,
                             modifier = Modifier
                                 .padding(all = 4.dp)
                                 .size(20.dp)
@@ -183,7 +184,7 @@ fun AlbumsItemGridMenu(
                     if (pinnedPlaylists.isNotEmpty()) {
                         BasicText(
                             text = stringResource(R.string.pinned_playlists),
-                            style = typography.m.semiBold,
+                            style = typography().m.semiBold,
                             modifier = modifier.padding(start = 20.dp, top = 5.dp)
                         )
 
@@ -214,7 +215,7 @@ fun AlbumsItemGridMenu(
                     if (unpinnedPlaylists.isNotEmpty()) {
                         BasicText(
                             text = stringResource(R.string.playlists),
-                            style = typography.m.semiBold,
+                            style = typography().m.semiBold,
                             modifier = modifier.padding(start = 20.dp, top = 5.dp)
                         )
 
@@ -244,6 +245,7 @@ fun AlbumsItemGridMenu(
                 }
             } else {
                 val selectText = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}"
+                val color = colorPalette().text
                 GridMenu(
                     modifier = modifier
                         .onPlaced { height = with(density) { it.size.height.toDp() } },
@@ -269,8 +271,8 @@ fun AlbumsItemGridMenu(
                             icon = R.drawable.checked,
                             title = R.string.item_select,
                             titleString = selectText,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onSelectUnselect()
@@ -282,8 +284,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.title_edit,
                             title = R.string.update_title,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumTitle()
@@ -295,8 +297,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.artists_edit,
                             title = R.string.update_authors,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumAuthors()
@@ -308,8 +310,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.cover_edit,
                             title = R.string.update_cover,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onChangeAlbumCover()
@@ -321,8 +323,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.download_cover,
                             title = R.string.download_cover,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onDownloadAlbumCover()
@@ -334,8 +336,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.play_skip_forward,
                             title = R.string.play_next,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onPlayNext()
@@ -347,8 +349,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.enqueue,
                             title = R.string.enqueue,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 onDismiss()
                                 onEnqueue()
@@ -360,8 +362,8 @@ fun AlbumsItemGridMenu(
                         GridMenuItem(
                             icon = R.drawable.add_in_playlist,
                             title = R.string.add_to_playlist,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
+                            colorIcon = color,
+                            colorText = color,
                             onClick = {
                                 isViewingPlaylists = true
                             }

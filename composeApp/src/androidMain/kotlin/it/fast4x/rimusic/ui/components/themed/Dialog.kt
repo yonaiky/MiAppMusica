@@ -121,6 +121,8 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun TextFieldDialog(
@@ -139,7 +141,6 @@ fun TextFieldDialog(
     val focusRequester = remember {
         FocusRequester()
     }
-    val (colorPalette, typography) = LocalAppearance.current
 
     var textFieldValue by rememberSaveable(initialTextInput, stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
@@ -158,7 +159,7 @@ fun TextFieldDialog(
         BasicTextField(
             value = textFieldValue,
             onValueChange = { textFieldValue = it },
-            textStyle = typography.xs.semiBold.center,
+            textStyle = typography().xs.semiBold.center,
             singleLine = singleLine,
             maxLines = maxLines,
             keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
@@ -170,7 +171,7 @@ fun TextFieldDialog(
                     }
                 }
             ),
-            cursorBrush = SolidColor(colorPalette.text),
+            cursorBrush = SolidColor(colorPalette().text),
             decorationBox = { innerTextField ->
                 Box(
                     contentAlignment = Alignment.Center,
@@ -186,7 +187,7 @@ fun TextFieldDialog(
                             text = hintText,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography.xs.semiBold.secondary,
+                            style = typography().xs.semiBold.secondary,
                         )
                     }
 
@@ -241,15 +242,13 @@ fun ConfirmationDialog(
     cancelBackgroundPrimary: Boolean = false,
     confirmBackgroundPrimary: Boolean = true
 ) {
-    val (_, typography) = LocalAppearance.current
-
     DefaultDialog(
         onDismiss = onDismiss,
         modifier = modifier
     ) {
         BasicText(
             text = text,
-            style = typography.xs.medium.center,
+            style = typography().xs.medium.center,
             modifier = Modifier
                 .padding(all = 16.dp)
         )
@@ -285,8 +284,6 @@ inline fun DefaultDialog(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     crossinline content: @Composable ColumnScope.() -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -296,7 +293,7 @@ inline fun DefaultDialog(
             modifier = modifier
                 .padding(all = 10.dp)
                 .background(
-                    color = colorPalette.background1,
+                    color = colorPalette().background1,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(horizontal = 24.dp, vertical = 16.dp),
@@ -316,8 +313,7 @@ inline fun <T> ValueSelectorDialog(
     crossinline onValueSelected: (T) -> Unit,
     crossinline valueText: @Composable (T) -> String = { it.toString() }
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
+    val colorPalette = colorPalette()
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = modifier
@@ -327,14 +323,14 @@ inline fun <T> ValueSelectorDialog(
         ) {
             BasicText(
                 text = title,
-                style = typography.s.semiBold,
+                style = typography().s.semiBold,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
             if (titleSecondary != null) {
                 BasicText(
                     text = titleSecondary,
-                    style = typography.xxs.semiBold,
+                    style = typography().xxs.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -391,7 +387,7 @@ inline fun <T> ValueSelectorDialog(
 
                         BasicText(
                             text = valueText(value),
-                            style = typography.xs.medium
+                            style = typography().xs.medium
                         )
                     }
                 }
@@ -421,18 +417,16 @@ inline fun SelectorDialog(
     modifier: Modifier = Modifier,
     showItemsIcon: Boolean = false
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography.s.semiBold,
+                style = typography().s.semiBold,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -460,7 +454,7 @@ inline fun SelectorDialog(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.playlist,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 modifier = Modifier
                                     .size(18.dp)
                             )
@@ -469,7 +463,7 @@ inline fun SelectorDialog(
                             text = value.name ?: "Not selectable",
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography.xs.medium
+                            style = typography().xs.medium
                         )
                     }
                 }
@@ -499,7 +493,6 @@ inline fun SelectorArtistsDialog(
     modifier: Modifier = Modifier,
     //showItemsIcon: Boolean = false
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -510,7 +503,7 @@ inline fun SelectorArtistsDialog(
             modifier = modifier
                 .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
                 .clip(thumbnailRoundness.shape())
-                .background(color = colorPalette.background1)
+                .background(color = colorPalette().background1)
         ) {
             if (values != null) {
                 val pagerState = rememberPagerState(pageCount = { values.size })
@@ -546,14 +539,14 @@ inline fun SelectorArtistsDialog(
                                     text = it1,
                                     maxLines = 3,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography.xs.medium,
+                                    style = typography().xs.medium,
                                     modifier = Modifier
                                         .padding(bottom = 20.dp)
                                         .align(Alignment.BottomCenter)
                                 )
                                 BasicText(
                                     text = it1,
-                                    style = typography.xs.medium.merge(TextStyle(
+                                    style = typography().xs.medium.merge(TextStyle(
                                         drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                                         color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                                         else Color.Black
@@ -576,7 +569,7 @@ inline fun SelectorArtistsDialog(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         repeat(values.size) { iteration ->
-                            val color = if (pagerState.currentPage == iteration) colorPalette.text else colorPalette.text.copy(alpha = 0.5f)
+                            val color = if (pagerState.currentPage == iteration) colorPalette().text else colorPalette().text.copy(alpha = 0.5f)
                             Box(
                                 modifier = Modifier
                                     .padding(4.dp)
@@ -604,7 +597,6 @@ inline fun InputNumericDialog(
     crossinline setValue: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography, _) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
@@ -614,13 +606,13 @@ inline fun InputNumericDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp)
                 .requiredHeight(190.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography.s.semiBold,
+                style = typography().s.semiBold,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -646,12 +638,12 @@ inline fun InputNumericDialog(
                     ),
                      */
                     colors = TextFieldDefaults.textFieldColors(
-                        placeholderColor = colorPalette.textDisabled,
-                        cursorColor = colorPalette.text,
-                        textColor = colorPalette.text,
-                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette.background1 else colorPalette.red,
-                        focusedIndicatorColor = colorPalette.accent,
-                        unfocusedIndicatorColor = colorPalette.textDisabled
+                        placeholderColor = colorPalette().textDisabled,
+                        cursorColor = colorPalette().text,
+                        textColor = colorPalette().text,
+                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
+                        focusedIndicatorColor = colorPalette().accent,
+                        unfocusedIndicatorColor = colorPalette().textDisabled
                     ),
                     leadingIcon = {
 /*
@@ -690,7 +682,7 @@ inline fun InputNumericDialog(
 
                 BasicText(
                     text = if (txtFieldError.value.isNotEmpty()) txtFieldError.value else "---",
-                    style = typography.xs.medium,
+                    style = typography().xs.medium,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -741,7 +733,6 @@ inline fun InputTextDialog(
     validationType: ValidationType = ValidationType.None,
     prefix: String = "",
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(cleanPrefix(value)) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
@@ -756,13 +747,13 @@ inline fun InputTextDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography.s.semiBold,
+                style = typography().s.semiBold,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -778,12 +769,12 @@ inline fun InputTextDialog(
                         .fillMaxWidth(0.9f),
                     maxLines = 20,
                     colors = TextFieldDefaults.textFieldColors(
-                        placeholderColor = colorPalette.textDisabled,
-                        cursorColor = colorPalette.text,
-                        textColor = colorPalette.text,
-                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette.background1 else colorPalette.red,
-                        focusedIndicatorColor = colorPalette.accent,
-                        unfocusedIndicatorColor = colorPalette.textDisabled
+                        placeholderColor = colorPalette().textDisabled,
+                        cursorColor = colorPalette().text,
+                        textColor = colorPalette().text,
+                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
+                        focusedIndicatorColor = colorPalette().accent,
+                        unfocusedIndicatorColor = colorPalette().textDisabled
                     ),
                     leadingIcon = {
                         /*
@@ -825,15 +816,15 @@ inline fun InputTextDialog(
                                 checkedState.value = it
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = colorPalette.accent,
-                                uncheckedColor = colorPalette.text
+                                checkedColor = colorPalette().accent,
+                                uncheckedColor = colorPalette().text
                             ),
                             modifier = Modifier
                                 .scale(0.7f)
                         )
                         BasicText(
                             text = "Custom value",
-                            style = typography.xs.medium,
+                            style = typography().xs.medium,
                             maxLines = 2,
                             modifier = Modifier
                         )
@@ -896,7 +887,6 @@ inline fun StringListDialog(
     noinline onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var showStringAddDialog by remember {
         mutableStateOf(false)
     }
@@ -910,7 +900,7 @@ inline fun StringListDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
@@ -921,7 +911,7 @@ inline fun StringListDialog(
             ) {
                 BasicText(
                     text = title,
-                    style = typography.s.semiBold,
+                    style = typography().s.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -950,7 +940,7 @@ inline fun StringListDialog(
                     ) {
                         BasicText(
                             text = item,
-                            style = typography.s.semiBold,
+                            style = typography().s.semiBold,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
@@ -1005,7 +995,7 @@ inline fun StringListDialog(
         ) {
             BasicText(
                 text = conflictTitle,
-                style = typography.xs.medium.center,
+                style = typography().xs.medium.center,
                 modifier = Modifier
                     .padding(all = 16.dp)
             )
@@ -1039,18 +1029,16 @@ inline fun GenericDialog(
     textButton: String = stringResource(R.string.cancel),
     crossinline content: @Composable () -> Unit,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = modifier
                 .padding(all = 48.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography.s.bold,
+                style = typography().s.bold,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -1071,6 +1059,7 @@ inline fun GenericDialog(
         }
     }
 }
+
 @Composable
 fun NewVersionDialog (
     updatedProductName: String,
@@ -1078,24 +1067,23 @@ fun NewVersionDialog (
     updatedVersionCode: Int,
     onDismiss: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
     DefaultDialog(
         onDismiss = { onDismiss() },
         content = {
             BasicText(
                 text = stringResource(R.string.update_available),
-                style = typography.s.bold.copy(color = colorPalette.text),
+                style = typography().s.bold.copy(color = colorPalette().text),
             )
             Spacer(modifier = Modifier.height(10.dp))
             BasicText(
                 text = String.format(stringResource(R.string.app_update_dialog_new),updatedVersionName),
-                style = typography.xs.semiBold.copy(color = colorPalette.text),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
             )
             Spacer(modifier = Modifier.height(10.dp))
             BasicText(
                 text = stringResource(R.string.actions_you_can_do),
-                style = typography.xs.semiBold.copy(color = colorPalette.textSecondary),
+                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row(
@@ -1107,7 +1095,7 @@ fun NewVersionDialog (
             ) {
                 BasicText(
                     text = stringResource(R.string.open_the_github_releases_web_page_and_download_latest_version),
-                    style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary),
+                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(0.8f)
@@ -1115,7 +1103,7 @@ fun NewVersionDialog (
                 Image(
                     painter = painterResource(R.drawable.globe),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
@@ -1134,7 +1122,7 @@ fun NewVersionDialog (
             ) {
                 BasicText(
                     text = stringResource(R.string.download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it),
-                    style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary),
+                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(0.8f)
@@ -1142,7 +1130,7 @@ fun NewVersionDialog (
                 Image(
                     painter = painterResource(R.drawable.downloaded),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
@@ -1160,7 +1148,7 @@ fun NewVersionDialog (
             ) {
                 BasicText(
                     text = stringResource(R.string.f_droid_users_can_wait_for_the_update_info),
-                    style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary),
+                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth()
@@ -1179,7 +1167,6 @@ fun BlurParamsDialog(
     scaleValue: (Float) -> Unit,
     darkenFactorValue: (Float) -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
     val defaultStrength = 5f
     //val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
@@ -1215,7 +1202,7 @@ fun BlurParamsDialog(
                     blurStrength = defaultStrength
                 },
                 icon = R.drawable.droplet,
-                color = colorPalette.favoritesIcon,
+                color = colorPalette().favoritesIcon,
                 modifier = Modifier
                     .size(24.dp)
             )
@@ -1290,7 +1277,6 @@ fun BlurParamsDialog(
         scaleValue: (Float) -> Unit,
         spacingValue: (Float) -> Unit,
     ) {
-        val (colorPalette) = LocalAppearance.current
         val defaultOffset = 10f
         val defaultSpacing = 0f
         var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)
@@ -1315,7 +1301,7 @@ fun BlurParamsDialog(
                         thumbnailOffset = defaultOffset
                     },
                     icon = R.drawable.up_right_arrow,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(24.dp)
                         .rotate(if (isLandscape) 45f else 135f)
@@ -1398,7 +1384,7 @@ fun BlurParamsDialog(
                         thumbnailSpacing = defaultSpacing
                     },
                     icon = R.drawable.burger,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(24.dp)
                 )
@@ -1625,7 +1611,6 @@ fun BlurParamsDialog(
          */
 
 @androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaybackParamsDialog(
     onDismiss: () -> Unit,
@@ -1636,7 +1621,6 @@ fun PlaybackParamsDialog(
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
-    val (colorPalette) = LocalAppearance.current
     val defaultSpeed = 1f
     val defaultPitch = 1f
     //val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
@@ -1680,7 +1664,7 @@ fun PlaybackParamsDialog(
                     blurStrength = defaultStrength
                 },
                 icon = R.drawable.droplet,
-                color = colorPalette.favoritesIcon,
+                color = colorPalette().favoritesIcon,
                 modifier = Modifier
                     .size(20.dp)
             )
@@ -1764,7 +1748,7 @@ fun PlaybackParamsDialog(
                     playbackDuration = defaultDuration
                 },
                 icon = R.drawable.playbackduration,
-                color = colorPalette.favoritesIcon,
+                color = colorPalette().favoritesIcon,
                 modifier = Modifier
                     .size(20.dp)
             )
@@ -1858,7 +1842,7 @@ fun PlaybackParamsDialog(
                             PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     icon = R.drawable.slow_motion,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -1958,7 +1942,7 @@ fun PlaybackParamsDialog(
                             PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     icon = R.drawable.equalizer,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2057,7 +2041,7 @@ fun PlaybackParamsDialog(
                         binder?.player?.volume = playbackVolume
                     },
                     icon = R.drawable.volume_up,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2154,7 +2138,7 @@ fun PlaybackParamsDialog(
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     icon = R.drawable.master_volume,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2244,11 +2228,11 @@ fun <T> ValueSelectorDialogBody(
     modifier: Modifier = Modifier,
     valueText: @Composable (T) -> String = { it.toString() }
 ) = Column(modifier = modifier) {
-    val (colorPalette, typography) = LocalAppearance.current
+    val colorPalette = colorPalette()
 
     BasicText(
         text = title,
-        style = typography.s.semiBold,
+        style = typography().s.semiBold,
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
     )
 
@@ -2297,7 +2281,7 @@ fun <T> ValueSelectorDialogBody(
 
                 BasicText(
                     text = valueText(value),
-                    style = typography.xs.medium
+                    style = typography().xs.medium
                 )
             }
         }

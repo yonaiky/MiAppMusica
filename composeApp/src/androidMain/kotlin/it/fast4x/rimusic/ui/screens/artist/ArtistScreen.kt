@@ -86,6 +86,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -217,7 +219,6 @@ fun ArtistScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(title = artist?.name ?: "Unknown") {
@@ -276,7 +277,7 @@ fun ArtistScreen(
 
                                 HeaderIconButton(
                                     icon = R.drawable.share_social,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
@@ -308,7 +309,6 @@ fun ArtistScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(title = artist?.name ?: "Unknown") {
@@ -319,7 +319,7 @@ fun ArtistScreen(
                                 HeaderIconButton(
                                     icon = R.drawable.enqueue,
                                     enabled = true,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
                                         .combinedClickable(
@@ -378,7 +378,7 @@ fun ArtistScreen(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     val sendIntent = Intent().apply {
                                         action = Intent.ACTION_SEND
@@ -396,14 +396,12 @@ fun ArtistScreen(
                     }
                 }
 
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

@@ -98,6 +98,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import me.knighthat.colorPalette
+import me.knighthat.typography
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -113,7 +115,6 @@ fun StatisticsPageModern(
     navController: NavController,
     statisticsType: StatisticsType
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -233,7 +234,7 @@ fun StatisticsPageModern(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -257,14 +258,14 @@ fun StatisticsPageModern(
                         Image(
                             painter = painterResource(R.drawable.musical_notes),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                            colorFilter = ColorFilter.tint(colorPalette().shimmer),
                             modifier = Modifier
                                 .size(34.dp)
                         )
                     },
                     modifier = Modifier
                         .background(
-                            color = colorPalette.background4,
+                            color = colorPalette().background4,
                             shape = thumbnailRoundness.shape()
                         )
 
@@ -273,7 +274,7 @@ fun StatisticsPageModern(
             if (allSongs.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_played_songs)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -284,7 +285,7 @@ fun StatisticsPageModern(
                     if(statisticsCategory == StatisticsCategory.Songs) 200.dp else playlistThumbnailSizeDp
                 ),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
 
@@ -357,7 +358,7 @@ fun StatisticsPageModern(
                             onThumbnailContent = {
                                     BasicText(
                                         text = "${it + 1}",
-                                        style = typography.s.semiBold.center.color(colorPalette.text),
+                                        style = typography().s.semiBold.center.color(colorPalette().text),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -592,7 +593,7 @@ fun StatisticsPageModern(
             if (artists.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_listened_artists)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -624,7 +625,7 @@ fun StatisticsPageModern(
             if (albums.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_albums_listened)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 
@@ -655,7 +656,7 @@ fun StatisticsPageModern(
             if (playlists.isNotEmpty())
                 BasicText(
                     text = "${maxStatisticsItems} ${stringResource(R.string.most_played_playlists)}",
-                    style = typography.m.semiBold,
+                    style = typography().m.semiBold,
                     modifier = sectionTextModifier
                 )
 

@@ -43,6 +43,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.knighthat.typography
 
 @ExperimentalAnimationApi
 @Composable
@@ -57,8 +58,6 @@ inline fun <T : Innertube.Item> ItemsList(
     emptyItemsText: String = "No items found",
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
 ) {
-    val (_, typography) = LocalAppearance.current
-
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
 
     val lazyListState = rememberLazyListState()
@@ -113,7 +112,7 @@ inline fun <T : Innertube.Item> ItemsList(
                 item(key = "empty") {
                     BasicText(
                         text = emptyItemsText,
-                        style = typography.xs.secondary.center,
+                        style = typography().xs.secondary.center,
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 32.dp)
                             .fillMaxWidth()

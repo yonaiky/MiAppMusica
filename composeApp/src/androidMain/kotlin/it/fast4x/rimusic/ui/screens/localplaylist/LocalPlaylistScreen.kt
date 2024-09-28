@@ -24,6 +24,7 @@ import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.uiType
 
 @OptIn(KotlinCsvExperimental::class)
 @ExperimentalMaterialApi
@@ -39,19 +40,17 @@ fun LocalPlaylistScreen(
     playerEssential: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
     PersistMapCleanup(tagPrefix = "localPlaylist/$playlistId/")
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

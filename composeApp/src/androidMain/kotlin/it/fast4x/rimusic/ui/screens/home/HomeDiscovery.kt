@@ -79,6 +79,10 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -92,9 +96,7 @@ fun HomeDiscovery(
 ) {
     //val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     val scrollState = rememberScrollState()
     val lazyGridState = rememberLazyGridState()
@@ -121,9 +123,6 @@ fun HomeDiscovery(
     LaunchedEffect(Unit) {
         Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     //Log.d("mediaItemArtists",preferitesArtists.toString())
@@ -143,13 +142,15 @@ fun HomeDiscovery(
 
         Column(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if( navBarPos() != NavigationBarPosition.Right )
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
+                )
                 .verticalScroll(scrollState)
                 .padding(
                     windowInsets
@@ -180,7 +181,7 @@ fun HomeDiscovery(
                  if ( newReleaseAlbumsFiltered.distinct().isNotEmpty() && preferitesArtists.isNotEmpty() ) {
                     BasicText(
                         text = stringResource(R.string.new_albums_of_your_artists),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = sectionTextModifier
                     )
 
@@ -209,7 +210,7 @@ fun HomeDiscovery(
                 if (page.newReleaseAlbums.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.new_albums),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = sectionTextModifier
                     )
 
@@ -232,7 +233,7 @@ fun HomeDiscovery(
                 if (page.moods.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.moods_and_genres),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = sectionTextModifier
                     )
 
@@ -265,7 +266,7 @@ fun HomeDiscovery(
             } ?: discoverPage?.exceptionOrNull()?.let {
                 BasicText(
                     text = stringResource(R.string.an_error_has_occurred),
-                    style = typography.s.secondary.center,
+                    style = typography().s.secondary.center,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(all = 16.dp)
@@ -303,7 +304,7 @@ fun HomeDiscovery(
             }
         }
 
-        if(uiType == UiType.ViMusic)
+        if( uiType() == UiType.ViMusic )
         FloatingActionsContainerWithScrollToTop(
             scrollState = scrollState,
             iconId = R.drawable.search,
@@ -320,7 +321,6 @@ fun MoodItemColored(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -349,16 +349,16 @@ fun MoodItemColored(
             Box(
                 modifier = Modifier
                     .requiredWidth(150.dp)
-                    .background(color = colorPalette.background4)
+                    .background(color = colorPalette().background4)
                     .fillMaxSize()
             ) {
 
                 BasicText(
                     text = mood.title,
                     style = TextStyle(
-                        color = colorPalette.text,
-                        fontStyle = typography.xs.semiBold.fontStyle,
-                        fontWeight = typography.xs.semiBold.fontWeight
+                        color = colorPalette().text,
+                        fontStyle = typography().xs.semiBold.fontStyle,
+                        fontWeight = typography().xs.semiBold.fontWeight
                     ),
                     modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart),
                     maxLines = 2,
@@ -376,7 +376,6 @@ fun MoodGridItemColored(
     modifier: Modifier = Modifier,
     thumbnailSizeDp: Dp
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -411,16 +410,16 @@ fun MoodGridItemColored(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(color = colorPalette.background4)
+                        .background(color = colorPalette().background4)
                         .fillMaxSize()
                 ) {
 
                     BasicText(
                         text = mood.title,
                         style = TextStyle(
-                            color = colorPalette.text,
-                            fontStyle = typography.xs.semiBold.fontStyle,
-                            fontWeight = typography.xs.semiBold.fontWeight
+                            color = colorPalette().text,
+                            fontStyle = typography().xs.semiBold.fontStyle,
+                            fontWeight = typography().xs.semiBold.fontWeight
                         ),
                         modifier = Modifier.padding(horizontal = 10.dp)
                             .align(Alignment.CenterStart),
@@ -438,7 +437,6 @@ fun MoodItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -458,7 +456,7 @@ fun MoodItem(
         Box(
             modifier = Modifier
                 .requiredWidth(150.dp)
-                .background(color = colorPalette.background4, shape = thumbnailRoundness.shape())
+                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape())
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
         ){
@@ -466,10 +464,10 @@ fun MoodItem(
         BasicText(
             text = mood.title,
             style =  TextStyle(
-                color = colorPalette.text,
-                fontStyle = typography.xs.semiBold.fontStyle,
-                fontWeight = typography.xs.semiBold.fontWeight
-            ), //typography.xs.semiBold,
+                color = colorPalette().text,
+                fontStyle = typography().xs.semiBold.fontStyle,
+                fontWeight = typography().xs.semiBold.fontWeight
+            ), //typography().xs.semiBold,
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1,
 
@@ -485,7 +483,6 @@ fun MoodGridItem(
     modifier: Modifier = Modifier,
     thumbnailSizeDp: Dp
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -497,14 +494,14 @@ fun MoodGridItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
-            //.background(colorPalette.background1)
+            //.background(colorPalette().background1)
             .clip(thumbnailRoundness.shape())
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
-                .background(color = colorPalette.background4, shape = thumbnailRoundness.shape())
+                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape())
                 .fillMaxSize(0.9f)
                 .padding(horizontal = 10.dp)
                 .padding(vertical = 50.dp)
@@ -512,10 +509,10 @@ fun MoodGridItem(
             BasicText(
                 text = mood.title,
                 style = TextStyle(
-                    color = colorPalette.text,
-                    fontStyle = typography.xxl.semiBold.fontStyle,
-                    fontWeight = typography.xxl.semiBold.fontWeight,
-                    fontFamily = typography.xxl.fontFamily,
+                    color = colorPalette().text,
+                    fontStyle = typography().xxl.semiBold.fontStyle,
+                    fontWeight = typography().xxl.semiBold.fontWeight,
+                    fontFamily = typography().xxl.fontFamily,
                     textAlign = TextAlign.Start
                 ),
                 modifier = modifier.padding(start = 4.dp),
@@ -530,10 +527,9 @@ fun MoodItemPlaceholder(
     width: Dp,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     Spacer(
         modifier
-            .background(color = colorPalette.shimmer)
+            .background(color = colorPalette().shimmer)
             .size(width, 64.dp)
     )
 }

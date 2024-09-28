@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.medium
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun DialogTextButton(
@@ -22,20 +24,18 @@ fun DialogTextButton(
     enabled: Boolean = true,
     primary: Boolean = false,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     val textColor = when {
-        !enabled -> colorPalette.textDisabled
-        primary -> colorPalette.onAccent
-        else -> colorPalette.text
+        !enabled -> colorPalette().textDisabled
+        primary -> colorPalette().onAccent
+        else -> colorPalette().text
     }
 
     BasicText(
         text = text,
-        style = typography.xs.medium.color(textColor),
+        style = typography().xs.medium.color(textColor),
         modifier = modifier
             .clip(RoundedCornerShape(36.dp))
-            .background(if (primary) colorPalette.accent else Color.Transparent)
+            .background(if (primary) colorPalette().accent else Color.Transparent)
             //.background(if (primary) colorPalette.accent else colorPalette.background4)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp)
