@@ -111,7 +111,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
@@ -137,6 +136,9 @@ import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -151,7 +153,6 @@ fun QueueModern(
     navController: NavController,
     onDismiss: () -> Unit
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     //val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val windowInsets = WindowInsets.systemBars
 
@@ -390,7 +391,7 @@ fun QueueModern(
         Column {
             Box(
                 modifier = Modifier
-                    .background(colorPalette.background1)
+                    .background(colorPalette().background1)
                     .fillMaxWidth()
             ) {
                 if (searching)
@@ -416,7 +417,7 @@ fun QueueModern(
                                 BasicTextField(
                                     value = filter ?: "",
                                     onValueChange = { filter = it },
-                                    textStyle = typography.xs.semiBold,
+                                    textStyle = typography().xs.semiBold,
                                     singleLine = true,
                                     maxLines = 1,
                                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -424,7 +425,7 @@ fun QueueModern(
                                         if (filter.isNullOrBlank()) filter = ""
                                         focusManager.clearFocus()
                                     }),
-                                    cursorBrush = SolidColor(colorPalette.text),
+                                    cursorBrush = SolidColor(colorPalette().text),
                                     decorationBox = { innerTextField ->
                                         Box(
                                             contentAlignment = Alignment.CenterStart,
@@ -435,7 +436,7 @@ fun QueueModern(
                                             IconButton(
                                                 onClick = {},
                                                 icon = R.drawable.search,
-                                                color = colorPalette.favoritesIcon,
+                                                color = colorPalette().favoritesIcon,
                                                 modifier = Modifier
                                                     .align(Alignment.CenterStart)
                                                     .size(16.dp)
@@ -456,7 +457,7 @@ fun QueueModern(
                                                     text = stringResource(R.string.search),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                                 )
                                             }
 
@@ -467,7 +468,7 @@ fun QueueModern(
                                         .height(30.dp)
                                         .fillMaxWidth()
                                         .background(
-                                            colorPalette.background4,
+                                            colorPalette().background4,
                                             shape = thumbnailRoundness.shape()
                                         )
                                         .focusRequester(focusRequester)
@@ -487,7 +488,7 @@ fun QueueModern(
                                 HeaderIconButton(
                                     onClick = { searching = true },
                                     icon = R.drawable.search_circle,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     iconSize = 24.dp
                                 )
                             }
@@ -499,7 +500,7 @@ fun QueueModern(
             }
             Box(
                 modifier = Modifier
-                    .background(if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background1)
+                    .background(if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background1)
                     .weight(1f)
             ) {
 
@@ -552,7 +553,7 @@ fun QueueModern(
                                 if (!isReorderDisabled) {
                                     IconButton(
                                         icon = R.drawable.reorder,
-                                        color = colorPalette.textDisabled,
+                                        color = colorPalette().textDisabled,
                                         indication = rippleIndication,
                                         onClick = {},
                                         modifier = Modifier
@@ -604,13 +605,13 @@ fun QueueModern(
                                                 modifier = Modifier
                                                     .background(
                                                         color = Color.Black.copy(alpha = 0.25f),
-                                                        shape = thumbnailShape
+                                                        shape = thumbnailShape()
                                                     )
                                                     .size(Dimensions.thumbnails.song)
                                             ) {
                                                 if (shouldBePlaying) {
                                                     MusicBars(
-                                                        color = colorPalette.onOverlay,
+                                                        color = colorPalette().onOverlay,
                                                         modifier = Modifier
                                                             .height(24.dp)
                                                     )
@@ -618,7 +619,7 @@ fun QueueModern(
                                                     Image(
                                                         painter = painterResource(R.drawable.play),
                                                         contentDescription = null,
-                                                        colorFilter = ColorFilter.tint(colorPalette.onOverlay),
+                                                        colorFilter = ColorFilter.tint(colorPalette().onOverlay),
                                                         modifier = Modifier
                                                             .size(24.dp)
                                                     )
@@ -641,8 +642,8 @@ fun QueueModern(
                                                     }
                                                 },
                                                 colors = colors(
-                                                    checkedColor = colorPalette.accent,
-                                                    uncheckedColor = colorPalette.text
+                                                    checkedColor = colorPalette().accent,
+                                                    uncheckedColor = colorPalette().text
                                                 ),
                                                 modifier = Modifier
                                                     .scale(0.7f)
@@ -653,7 +654,7 @@ fun QueueModern(
                                         if (!isReorderDisabled) {
                                             IconButton(
                                                 icon = R.drawable.reorder,
-                                                color = colorPalette.textDisabled,
+                                                color = colorPalette().textDisabled,
                                                 indication = rippleIndication,
                                                 onClick = {},
                                                 modifier = Modifier
@@ -714,7 +715,7 @@ fun QueueModern(
 
                                          */
                                         .animateItemPlacement(reorderingState)
-                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background0)
+                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0)
 
                                 )
                             }
@@ -774,7 +775,7 @@ fun QueueModern(
                 modifier = Modifier
                     //.clip(shape)
                     .clickable(onClick = onDismiss)
-                    .background(colorPalette.background1)
+                    .background(colorPalette().background1)
                     .fillMaxWidth()
                     //.padding(horizontal = 8.dp)
                     //.padding(horizontalBottomPaddingValues)
@@ -783,7 +784,7 @@ fun QueueModern(
                 .drawBehind {
                     if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
                         drawRect(
-                            color = colorPalette.favoritesOverlay,
+                            color = colorPalette().favoritesOverlay,
                             topLeft = Offset.Zero,
                             size = Size(
                                 width = positionAndDuration.first.toFloat() /
@@ -814,7 +815,7 @@ fun QueueModern(
                     Image(
                         painter = painterResource(R.drawable.horizontal_bold_line_rounded),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.text),
+                        colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
                             .absoluteOffset(0.dp, -10.dp)
                             .align(Alignment.TopCenter)
@@ -833,12 +834,12 @@ fun QueueModern(
 
                     BasicText(
                         text = "${binder.player.mediaItemCount} ", //+ stringResource(R.string.songs), //+ " " + stringResource(R.string.on_queue),
-                        style = typography.xxs.medium,
+                        style = typography().xxs.medium,
                     )
                     Image(
                         painter = painterResource(R.drawable.musical_notes),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                        colorFilter = ColorFilter.tint(colorPalette().textSecondary),
                         modifier = Modifier
                             .size(12.dp)
                     )
@@ -857,7 +858,7 @@ fun QueueModern(
                 ) {
                     IconButton(
                         icon = R.drawable.search_circle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {
                             searching = !searching
                             if (searching)
@@ -871,7 +872,7 @@ fun QueueModern(
                     if (showButtonPlayerDiscover) {
                         IconButton(
                             icon = R.drawable.star_brilliant,
-                            color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                            color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
@@ -897,7 +898,7 @@ fun QueueModern(
 
                     IconButton(
                         icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = { isReorderDisabled = !isReorderDisabled },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -910,7 +911,7 @@ fun QueueModern(
                     )
                     IconButton(
                         icon = R.drawable.repeat,
-                        color = if (queueLoopEnabled) colorPalette.text else colorPalette.textDisabled,
+                        color = if (queueLoopEnabled) colorPalette().text else colorPalette().textDisabled,
                         onClick = { queueLoopEnabled = !queueLoopEnabled },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -924,7 +925,7 @@ fun QueueModern(
 
                     IconButton(
                         icon = R.drawable.shuffle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         enabled = !reorderingState.isDragging,
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -944,7 +945,7 @@ fun QueueModern(
                     )
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
-                        color = if (windows.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                        color = if (windows.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                         enabled = windows.isNotEmpty() == true,
                         modifier = Modifier
                             .padding(end = 4.dp),
@@ -1043,7 +1044,7 @@ fun QueueModern(
                         )
                         IconButton(
                             icon = R.drawable.chevron_down,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = onDismiss,
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)

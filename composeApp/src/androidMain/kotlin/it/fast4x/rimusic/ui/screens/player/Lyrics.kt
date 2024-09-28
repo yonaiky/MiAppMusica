@@ -87,6 +87,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.Languages
+import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.enums.LyricsColor
 import it.fast4x.rimusic.enums.LyricsFontSize
 import it.fast4x.rimusic.enums.LyricsHighlight
@@ -102,16 +103,17 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import it.fast4x.rimusic.ui.styling.onOverlayShimmer
 import it.fast4x.rimusic.utils.SynchronizedLyrics
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.expandedplayerKey
@@ -119,6 +121,7 @@ import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.languageDestinationName
+import it.fast4x.rimusic.utils.lyricsBackgroundKey
 import it.fast4x.rimusic.utils.lyricsColorKey
 import it.fast4x.rimusic.utils.lyricsFontSizeKey
 import it.fast4x.rimusic.utils.lyricsHighlightKey
@@ -139,6 +142,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -170,7 +176,6 @@ fun Lyrics(
         exit = fadeOut(),
     ) {
         val coroutineScope = rememberCoroutineScope()
-        val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
         val context = LocalContext.current
         val menuState = LocalMenuState.current
         val currentView = LocalView.current
@@ -591,7 +596,7 @@ fun Lyrics(
                 }
                 .fillMaxSize()
                 .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.8f))
-                .clip(thumbnailShape)
+                .clip(thumbnailShape())
 
         ) {
             AnimatedVisibility(
@@ -603,7 +608,7 @@ fun Lyrics(
             ) {
                 BasicText(
                     text = stringResource(R.string.an_error_has_occurred_while_fetching_the_lyrics),
-                    style = typography.xs.center.medium.color(PureBlackColorPalette.text),
+                    style = typography().xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
                         .background(
                             if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(
@@ -663,7 +668,7 @@ fun Lyrics(
 
                     var modifierBG = Modifier.verticalFadingEdge()
                     if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
-                        modifierBG.background(colorPalette.accent)
+                        modifierBG.background(colorPalette().accent)
 
                     LazyColumn(
                         state = lazyListState,
@@ -747,10 +752,10 @@ fun Lyrics(
                                 Color.Red.copy(0.3f)
                             )
                             val Themegradient =
-                                listOf(colorPalette.background2, colorPalette.accent)
+                                listOf(colorPalette().background2, colorPalette().accent)
                             val Themegradient2 = listOf(
-                                colorPalette.background2.copy(0.5f),
-                                colorPalette.accent.copy(0.5f)
+                                colorPalette().background2.copy(0.5f),
+                                colorPalette().accent.copy(0.5f)
                             )
                             val oldlyrics =
                                 listOf(PureBlackColorPalette.text, PureBlackColorPalette.text)
@@ -825,22 +830,22 @@ fun Lyrics(
                                         text = translatedText,
                                         style = when (fontSize) {
                                             LyricsFontSize.Light ->
-                                                typography.m.center.medium.color(
+                                                typography().m.center.medium.color(
                                                     if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled
                                                 )
 
                                             LyricsFontSize.Medium ->
-                                                typography.l.center.medium.color(
+                                                typography().l.center.medium.color(
                                                     if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled
                                                 )
 
                                             LyricsFontSize.Heavy ->
-                                                typography.xl.center.medium.color(
+                                                typography().xl.center.medium.color(
                                                     if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled
                                                 )
 
                                             LyricsFontSize.Large ->
-                                                typography.xlxl.center.medium.color(
+                                                typography().xlxl.center.medium.color(
                                                     if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled
                                                 )
                                         },
@@ -856,79 +861,79 @@ fun Lyrics(
                                         text = translatedText,
                                         style = when (fontSize) {
                                             LyricsFontSize.Light ->
-                                                typography.m.center.medium.color(
+                                                typography().m.center.medium.color(
                                                     if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.White) Color.White
                                                         else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                        else colorPalette.accent
+                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                        else colorPalette().accent
                                                     else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                         0.6f
                                                     )
                                                     else if (lyricsColor == LyricsColor.Black) Color.Black.copy(
                                                         0.6f
                                                     )
-                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette.text.copy(
+                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette().text.copy(
                                                         0.6f
                                                     )
-                                                    else colorPalette.accent.copy(0.6f)
+                                                    else colorPalette().accent.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Medium ->
-                                                typography.l.center.medium.color(
+                                                typography().l.center.medium.color(
                                                     if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.White) Color.White
                                                         else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                        else colorPalette.accent
+                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                        else colorPalette().accent
                                                     else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                         0.6f
                                                     )
                                                     else if (lyricsColor == LyricsColor.Black) Color.Black.copy(
                                                         0.6f
                                                     )
-                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette.text.copy(
+                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette().text.copy(
                                                         0.6f
                                                     )
-                                                    else colorPalette.accent.copy(0.6f)
+                                                    else colorPalette().accent.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Heavy ->
-                                                typography.xl.center.medium.color(
+                                                typography().xl.center.medium.color(
                                                     if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.White) Color.White
                                                         else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                        else colorPalette.accent
+                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                        else colorPalette().accent
                                                     else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                         0.6f
                                                     )
                                                     else if (lyricsColor == LyricsColor.Black) Color.Black.copy(
                                                         0.6f
                                                     )
-                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette.text.copy(
+                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette().text.copy(
                                                         0.6f
                                                     )
-                                                    else colorPalette.accent.copy(0.6f)
+                                                    else colorPalette().accent.copy(0.6f)
                                                 )
 
                                             LyricsFontSize.Large ->
-                                                typography.xlxl.center.medium.color(
+                                                typography().xlxl.center.medium.color(
                                                     if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.White) Color.White
                                                         else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                        else colorPalette.accent
+                                                        else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                        else colorPalette().accent
                                                     else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                         0.6f
                                                     )
                                                     else if (lyricsColor == LyricsColor.Black) Color.Black.copy(
                                                         0.6f
                                                     )
-                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette.text.copy(
+                                                    else if (lyricsColor == LyricsColor.Thememode) colorPalette().text.copy(
                                                         0.6f
                                                     )
-                                                    else colorPalette.accent.copy(0.6f)
+                                                    else colorPalette().accent.copy(0.6f)
                                                 )
                                         },
                                         modifier = Modifier
@@ -955,27 +960,27 @@ fun Lyrics(
                                         ).merge(
                                             when (fontSize) {
                                                 LyricsFontSize.Light ->
-                                                    typography.m.center.medium.color(
+                                                    typography().m.center.medium.color(
                                                         if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                        else colorPalette.text.copy(0.6f)
+                                                        else colorPalette().text.copy(0.6f)
                                                     )
 
                                                 LyricsFontSize.Medium ->
-                                                    typography.l.center.medium.color(
+                                                    typography().l.center.medium.color(
                                                         if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                        else colorPalette.text.copy(0.6f)
+                                                        else colorPalette().text.copy(0.6f)
                                                     )
 
                                                 LyricsFontSize.Heavy ->
-                                                    typography.xl.center.medium.color(
+                                                    typography().xl.center.medium.color(
                                                         if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                        else colorPalette.text.copy(0.6f)
+                                                        else colorPalette().text.copy(0.6f)
                                                     )
 
                                                 LyricsFontSize.Large ->
-                                                    typography.xlxl.center.medium.color(
+                                                    typography().xlxl.center.medium.color(
                                                         if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                        else colorPalette.text.copy(0.6f)
+                                                        else colorPalette().text.copy(0.6f)
                                                     )
                                             },
                                         ),
@@ -993,24 +998,24 @@ fun Lyrics(
                                          brush = brushtheme
                                      ).merge(when (fontSize) {
                                          LyricsFontSize.Light ->
-                                             typography.m.center.medium.color(
+                                             typography().m.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette.text.copy(0.6f)
+                                                 else colorPalette().text.copy(0.6f)
                                              )
                                          LyricsFontSize.Medium ->
-                                             typography.l.center.medium.color(
+                                             typography().l.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette.text.copy(0.6f)
+                                                 else colorPalette().text.copy(0.6f)
                                              )
                                          LyricsFontSize.Heavy ->
-                                             typography.xl.center.medium.color(
+                                             typography().xl.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette.text.copy(0.6f)
+                                                 else colorPalette().text.copy(0.6f)
                                              )
                                          LyricsFontSize.Large ->
-                                             typography.xlxl.center.medium.color(
+                                             typography().xlxl.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette.text.copy(0.6f)
+                                                 else colorPalette().text.copy(0.6f)
                                              )
                                      },
                                      ),
@@ -1063,7 +1068,7 @@ fun Lyrics(
                                             ).merge(
                                                 when (fontSize) {
                                                     LyricsFontSize.Light ->
-                                                        typography.m.center.medium.color(
+                                                        typography().m.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if (lyricsOutline == LyricsOutline.White) Color.White
                                                                 else if (lyricsOutline == LyricsOutline.Black) Color.Black
@@ -1086,7 +1091,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Medium ->
-                                                        typography.l.center.medium.color(
+                                                        typography().l.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if (lyricsOutline == LyricsOutline.White) Color.White
                                                                 else if (lyricsOutline == LyricsOutline.Black) Color.Black
@@ -1109,7 +1114,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Heavy ->
-                                                        typography.xl.center.medium.color(
+                                                        typography().xl.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if (lyricsOutline == LyricsOutline.White) Color.White
                                                                 else if (lyricsOutline == LyricsOutline.Black) Color.Black
@@ -1132,7 +1137,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Large ->
-                                                        typography.xlxl.center.medium.color(
+                                                        typography().xlxl.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if (lyricsOutline == LyricsOutline.White) Color.White
                                                                 else if (lyricsOutline == LyricsOutline.Black) Color.Black
@@ -1177,27 +1182,27 @@ fun Lyrics(
                                             ).merge(
                                                 when (fontSize) {
                                                     LyricsFontSize.Light ->
-                                                        typography.m.center.medium.color(
+                                                        typography().m.center.medium.color(
                                                             if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                            else colorPalette.text.copy(0.6f)
+                                                            else colorPalette().text.copy(0.6f)
                                                         )
 
                                                     LyricsFontSize.Medium ->
-                                                        typography.l.center.medium.color(
+                                                        typography().l.center.medium.color(
                                                             if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                            else colorPalette.text.copy(0.6f)
+                                                            else colorPalette().text.copy(0.6f)
                                                         )
 
                                                     LyricsFontSize.Heavy ->
-                                                        typography.xl.center.medium.color(
+                                                        typography().xl.center.medium.color(
                                                             if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                            else colorPalette.text.copy(0.6f)
+                                                            else colorPalette().text.copy(0.6f)
                                                         )
 
                                                     LyricsFontSize.Large ->
-                                                        typography.xlxl.center.medium.color(
+                                                        typography().xlxl.center.medium.color(
                                                             if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                            else colorPalette.text.copy(0.6f)
+                                                            else colorPalette().text.copy(0.6f)
                                                         )
                                                 }
                                             ),
@@ -1216,7 +1221,7 @@ fun Lyrics(
                                                     color = if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.Thememode) Color.White.copy(
                                                             0.3f
-                                                        ).compositeOver(colorPalette.text)
+                                                        ).compositeOver(colorPalette().text)
                                                         else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                             0.3f
                                                         ).compositeOver(Color.White)
@@ -1225,7 +1230,7 @@ fun Lyrics(
                                                         ).compositeOver(Color.Black)
                                                         else if (lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                             0.3f
-                                                        ).compositeOver(colorPalette.accent)
+                                                        ).compositeOver(colorPalette().accent)
                                                         else Color.Transparent
                                                     else Color.Transparent,
                                                     offset = Offset(0f, 0f), blurRadius = 25f
@@ -1233,7 +1238,7 @@ fun Lyrics(
                                             ).merge(
                                                 when (fontSize) {
                                                     LyricsFontSize.Light ->
-                                                        typography.m.center.medium.color(
+                                                        typography().m.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if ((lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black) || lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                                     0.3f
@@ -1242,7 +1247,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Medium ->
-                                                        typography.l.center.medium.color(
+                                                        typography().l.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if ((lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black) || lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                                     0.3f
@@ -1251,7 +1256,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Heavy ->
-                                                        typography.xl.center.medium.color(
+                                                        typography().xl.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if ((lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black) || lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                                     0.3f
@@ -1260,7 +1265,7 @@ fun Lyrics(
                                                         )
 
                                                     LyricsFontSize.Large ->
-                                                        typography.xlxl.center.medium.color(
+                                                        typography().xlxl.center.medium.color(
                                                             if (index == synchronizedLyrics.index)
                                                                 if ((lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black) || lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                                     0.3f
@@ -1396,16 +1401,16 @@ fun Lyrics(
                                     text = translatedText,
                                     style = when (fontSize) {
                                         LyricsFontSize.Light ->
-                                            typography.m.center.medium.color(PureBlackColorPalette.text)
+                                            typography().m.center.medium.color(PureBlackColorPalette.text)
 
                                         LyricsFontSize.Medium ->
-                                            typography.l.center.medium.color(PureBlackColorPalette.text)
+                                            typography().l.center.medium.color(PureBlackColorPalette.text)
 
                                         LyricsFontSize.Heavy ->
-                                            typography.xl.center.medium.color(PureBlackColorPalette.text)
+                                            typography().xl.center.medium.color(PureBlackColorPalette.text)
 
                                         LyricsFontSize.Large ->
-                                            typography.xlxl.center.medium.color(
+                                            typography().xlxl.center.medium.color(
                                                 PureBlackColorPalette.text
                                             )
                                     }
@@ -1415,38 +1420,38 @@ fun Lyrics(
                                     text = translatedText,
                                     style = when (fontSize) {
                                         LyricsFontSize.Light ->
-                                            typography.m.center.medium.color(
+                                            typography().m.center.medium.color(
                                                 if (lyricsColor == LyricsColor.White) Color.White
                                                 else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                else if (lyricsColor == LyricsColor.Accent) colorPalette.accent
+                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                else if (lyricsColor == LyricsColor.Accent) colorPalette().accent
                                                 else Color.Transparent
                                             )
 
                                         LyricsFontSize.Medium ->
-                                            typography.l.center.medium.color(
+                                            typography().l.center.medium.color(
                                                 if (lyricsColor == LyricsColor.White) Color.White
                                                 else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                else if (lyricsColor == LyricsColor.Accent) colorPalette.accent
+                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                else if (lyricsColor == LyricsColor.Accent) colorPalette().accent
                                                 else Color.Transparent
                                             )
 
                                         LyricsFontSize.Heavy ->
-                                            typography.xl.center.medium.color(
+                                            typography().xl.center.medium.color(
                                                 if (lyricsColor == LyricsColor.White) Color.White
                                                 else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                else if (lyricsColor == LyricsColor.Accent) colorPalette.accent
+                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                else if (lyricsColor == LyricsColor.Accent) colorPalette().accent
                                                 else Color.Transparent
                                             )
 
                                         LyricsFontSize.Large ->
-                                            typography.xlxl.center.medium.color(
+                                            typography().xlxl.center.medium.color(
                                                 if (lyricsColor == LyricsColor.White) Color.White
                                                 else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette.text
-                                                else if (lyricsColor == LyricsColor.Accent) colorPalette.accent
+                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
+                                                else if (lyricsColor == LyricsColor.Accent) colorPalette().accent
                                                 else Color.Transparent
                                             )
                                     }
@@ -1459,22 +1464,22 @@ fun Lyrics(
                                     ).merge(
                                         when (fontSize) {
                                             LyricsFontSize.Light ->
-                                                typography.m.center.medium.color(
+                                                typography().m.center.medium.color(
                                                     PureBlackColorPalette.text
                                                 )
 
                                             LyricsFontSize.Medium ->
-                                                typography.l.center.medium.color(
+                                                typography().l.center.medium.color(
                                                     PureBlackColorPalette.text
                                                 )
 
                                             LyricsFontSize.Heavy ->
-                                                typography.xl.center.medium.color(
+                                                typography().xl.center.medium.color(
                                                     PureBlackColorPalette.text
                                                 )
 
                                             LyricsFontSize.Large ->
-                                                typography.xlxl.center.medium.color(
+                                                typography().xlxl.center.medium.color(
                                                     PureBlackColorPalette.text
                                                 )
                                         }
@@ -1522,7 +1527,7 @@ fun Lyrics(
                                         ).merge(
                                             when (fontSize) {
                                                 LyricsFontSize.Light ->
-                                                    typography.m.center.medium.color(
+                                                    typography().m.center.medium.color(
                                                         if (lyricsOutline == LyricsOutline.White) Color.White
                                                         else if (lyricsOutline == LyricsOutline.Black) Color.Black
                                                         else if (lyricsOutline == LyricsOutline.Thememode)
@@ -1532,7 +1537,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Medium ->
-                                                    typography.l.center.medium.color(
+                                                    typography().l.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1540,7 +1545,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Heavy ->
-                                                    typography.xl.center.medium.color(
+                                                    typography().xl.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1548,7 +1553,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Large ->
-                                                    typography.xlxl.center.medium.color(
+                                                    typography().xlxl.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1572,7 +1577,7 @@ fun Lyrics(
                                         ).merge(
                                             when (fontSize) {
                                                 LyricsFontSize.Light ->
-                                                    typography.m.center.medium.color(
+                                                    typography().m.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1580,7 +1585,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Medium ->
-                                                    typography.l.center.medium.color(
+                                                    typography().l.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1588,7 +1593,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Heavy ->
-                                                    typography.xl.center.medium.color(
+                                                    typography().xl.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1596,7 +1601,7 @@ fun Lyrics(
                                                     )
 
                                                 LyricsFontSize.Large ->
-                                                    typography.xlxl.center.medium.color(
+                                                    typography().xlxl.center.medium.color(
                                                         if (lyricsColor == LyricsColor.Thememode)
                                                             if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                             else Color.Black
@@ -1619,7 +1624,7 @@ fun Lyrics(
                 ) {
                     repeat(4) {
                         TextPlaceholder(
-                            color = colorPalette.onOverlayShimmer,
+                            color = colorPalette().onOverlayShimmer,
                             modifier = Modifier
                                 .alpha(1f - it * 0.1f)
                         )
@@ -1647,7 +1652,7 @@ fun Lyrics(
                 if (isLandscape && !showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.chevron_back,
-                        color = colorPalette.accent,
+                        color = colorPalette().accent,
                         enabled = true,
                         onClick = onDismiss,
                         modifier = Modifier
@@ -1730,7 +1735,7 @@ fun Lyrics(
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.translate,
-                        color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
+                        color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled

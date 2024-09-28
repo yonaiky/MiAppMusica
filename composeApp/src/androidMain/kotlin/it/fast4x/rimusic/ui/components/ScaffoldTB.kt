@@ -19,11 +19,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,60 +32,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.BottomNavigationDefaults
 import androidx.compose.material.BottomNavigationDefaults.windowInsets
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.MenuItemColors
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.ui.components.themed.AppBar
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.getCurrentRoute
-import it.fast4x.rimusic.utils.menuItemColors
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.transitionEffectKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,9 +82,6 @@ fun ScaffoldTB(
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val navigationRailTB: @Composable () -> Unit = {
         NavigationRailTB(
             navController = navController,
@@ -150,7 +109,7 @@ fun ScaffoldTB(
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-       containerColor = colorPalette.background0,
+       containerColor = colorPalette().background0,
         topBar = {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -158,7 +117,7 @@ fun ScaffoldTB(
             ) {
                 AppBar(navController)
 
-                if (navigationBarPosition == NavigationBarPosition.Top)
+                if ( navBarPos() == NavigationBarPosition.Top )
                     navigationRailTB()
 
                 /*
@@ -207,25 +166,27 @@ fun ScaffoldTB(
                     }
                      */
 
-                    if (navigationBarPosition == NavigationBarPosition.Bottom)
+                    if ( navBarPos() == NavigationBarPosition.Bottom )
                             navigationRailTB()
 
                 //}
         }
 
     ) {
-        val modifierBoxPadding =  if (navigationBarPosition != NavigationBarPosition.Top)
-            Modifier
-                .padding(it)
-                .fillMaxSize()
-            else Modifier
-                .padding(it)
-                .padding(
-                    windowInsets
-                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
-                        .asPaddingValues()
-                )
-                .fillMaxSize()
+        val modifierBoxPadding =
+            if ( navBarPos() != NavigationBarPosition.Top )
+                Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            else
+                Modifier
+                    .padding(it)
+                    .padding(
+                        windowInsets
+                            .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    )
+                    .fillMaxSize()
 
         Box(
             modifier = modifierBoxPadding
@@ -233,7 +194,7 @@ fun ScaffoldTB(
 
         Row(
             modifier = modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
             AnimatedContent(

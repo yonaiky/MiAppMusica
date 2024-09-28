@@ -15,12 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,16 +33,15 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.applyFontPaddingKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
+
 @ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -62,7 +58,6 @@ fun SearchScreen(
     onDismiss: (() -> Unit)? = null,
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
-    val (colorPalette) = LocalAppearance.current
 
     val (tabIndex, onTabChanged) = rememberSaveable {
         mutableStateOf(0)
@@ -80,9 +75,6 @@ fun SearchScreen(
         )
     }
 
-    val applyFontPadding by rememberPreference(applyFontPaddingKey, false)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
     PersistMapCleanup(tagPrefix = "search/")
 
     RouteHandler(listenToGlobalEmitter = true) {
@@ -98,7 +90,7 @@ fun SearchScreen(
                        // .weight(1f)
                         .padding(horizontal = 10.dp)
                 ) {
-                    if (uiType == UiType.ViMusic)
+                    if ( uiType() == UiType.ViMusic )
                         Column (
                             verticalArrangement = Arrangement.Center
                         ) {
@@ -108,7 +100,7 @@ fun SearchScreen(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.search,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     //.align(Alignment.CenterStart)
                                     .size(20.dp)
@@ -134,7 +126,7 @@ fun SearchScreen(
                         BasicText(
                             text = stringResource(R.string.search), //stringResource(R.string.enter_a_name),
                             maxLines = 1,
-                            style = LocalAppearance.current.typography.l.secondary,
+                            style = typography().l.secondary,
 
                         )
                     }
@@ -156,7 +148,7 @@ fun SearchScreen(
                         IconButton(
                             onClick = { onTextFieldValueChanged(TextFieldValue("")) },
                             icon = R.drawable.close,
-                            color = colorPalette.favoritesIcon,
+                            color = colorPalette().favoritesIcon,
                             modifier = Modifier
                                 .size(24.dp)
                         )
@@ -170,7 +162,7 @@ fun SearchScreen(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)

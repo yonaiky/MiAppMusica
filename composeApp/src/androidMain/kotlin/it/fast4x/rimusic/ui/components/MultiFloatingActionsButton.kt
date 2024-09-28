@@ -1,25 +1,23 @@
 package it.fast4x.rimusic.ui.components
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,10 +28,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,23 +50,15 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.components.themed.PrimaryButton
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.overlay
-import it.fast4x.rimusic.utils.floatActionIconOffsetXkey
-import it.fast4x.rimusic.utils.floatActionIconOffsetYkey
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey
 import it.fast4x.rimusic.utils.rememberPreference
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+import me.knighthat.colorPalette
 
 enum class MultiFabState {
     Collapsed, Expanded
@@ -87,7 +79,6 @@ fun MultiFloatingActionsButton (
     onStateChanged: ((state: MultiFabState) -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var currentState by remember { mutableStateOf(MultiFabState.Collapsed) }
     val stateTransition: Transition<MultiFabState> =
         updateTransition(targetState = currentState, label = "")
@@ -140,6 +131,7 @@ fun MultiFloatingActionsButton (
             contentAlignment = Alignment.BottomEnd
         ) {
             if (currentState == MultiFabState.Expanded) {
+                val color = colorPalette().favoritesIcon.copy(0.85f)
                 Canvas(modifier = Modifier
                     //.border(BorderStroke(1.dp, Color.Green))
                     .fillMaxSize()
@@ -149,8 +141,7 @@ fun MultiFloatingActionsButton (
                     }) {
                     translate(150f, top = 300f) {
                         scale(5f) {}
-                        drawCircle(colorPalette.favoritesIcon.copy(0.85f), radius = 200.dp.toPx())
-
+                        drawCircle( color, radius = 200.dp.toPx() )
                     }
                 }
             }
@@ -189,8 +180,8 @@ fun MultiFloatingActionsButton (
                             }
                         }
                         .clip(RoundedCornerShape(16.dp))
-                        //.background(colorPalette.favoritesIcon)
-                        .background(colorPalette.background2)
+                        //.background(colorPalette().favoritesIcon)
+                        .background(colorPalette().background2)
                         //.padding(all = 20.dp)
                         //.padding(horizontal = 20.dp)
                         .height(64.dp)
@@ -217,7 +208,7 @@ fun MultiFloatingActionsButton (
                         Image(
                             painter = painterResource(R.drawable.settings),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.text),
+                            colorFilter = ColorFilter.tint(colorPalette().text),
                             modifier = Modifier
                                 .padding(top = 5.dp, end = 5.dp)
                                 .rotate(rotation)
@@ -229,7 +220,7 @@ fun MultiFloatingActionsButton (
                     Image(
                         painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.text),
+                        colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
                             .rotate(rotation)
                             .align(Alignment.Center)
@@ -250,7 +241,6 @@ fun SmallFloatingActionButtonRow(
     showLabel: Boolean,
     stateTransition: Transition<MultiFabState>
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val alpha: Float by stateTransition.animateFloat(
         transitionSpec = {
             tween(durationMillis = 50)
@@ -282,8 +272,8 @@ fun SmallFloatingActionButtonRow(
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },
-            containerColor = colorPalette.background2,
-            contentColor = colorPalette.favoritesIcon
+            containerColor = colorPalette().background2,
+            contentColor = colorPalette().favoritesIcon
         ) {
             Icon(
                 painter = item.icon,

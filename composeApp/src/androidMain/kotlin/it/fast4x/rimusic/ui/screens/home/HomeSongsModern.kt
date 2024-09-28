@@ -130,14 +130,12 @@ import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.OnDeviceOrganize
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autoShuffleKey
@@ -157,7 +155,6 @@ import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
 import it.fast4x.rimusic.utils.onDeviceSongSortByKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -180,6 +177,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -201,11 +203,8 @@ fun HomeSongsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSizePx = thumbnailSizeDp.px
 
@@ -569,9 +568,6 @@ fun HomeSongsModern(
         animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
     )
 
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val lazyListState = rememberLazyListState()
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
@@ -677,16 +673,15 @@ fun HomeSongsModern(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else Dimensions.contentWidthRightBar)
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
     ) {
         LazyColumn(
@@ -699,9 +694,9 @@ fun HomeSongsModern(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(colorPalette.background0)
+                        .background(colorPalette().background0)
                 ) {
-                    if (uiType == UiType.ViMusic)
+                    if ( uiType() == UiType.ViMusic )
                         HeaderWithIcon(
                             title = stringResource(R.string.songs),
                             iconId = R.drawable.search,
@@ -718,7 +713,7 @@ fun HomeSongsModern(
                             .padding(all = 12.dp)
                             .fillMaxSize()
                     ) {
-                        if (uiType == UiType.RiMusic)
+                        if ( uiType() == UiType.RiMusic )
                             TitleSection(title = stringResource(R.string.songs))
 
                         HeaderInfo(
@@ -732,7 +727,7 @@ fun HomeSongsModern(
                         if (builtInPlaylist != BuiltInPlaylist.Top) {
                             HeaderIconButton(
                                 icon = R.drawable.arrow_up,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 2.dp)
@@ -828,7 +823,7 @@ fun HomeSongsModern(
                         if (builtInPlaylist == BuiltInPlaylist.Top) {
                             HeaderIconButton(
                                 icon = R.drawable.stat,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 2.dp)
@@ -850,7 +845,7 @@ fun HomeSongsModern(
                         HeaderIconButton(
                             onClick = { searching = !searching },
                             icon = R.drawable.search_circle,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             iconSize = 24.dp,
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
@@ -881,7 +876,7 @@ fun HomeSongsModern(
                                 ),
                             icon = R.drawable.locate,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {}
                         )
                         LaunchedEffect(scrollToNowPlaying) {
@@ -894,7 +889,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -951,7 +946,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.download,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -1006,7 +1001,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 onClick = {},
                                 icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 modifier = Modifier
                                     .padding(horizontal = 2.dp)
                                     .combinedClickable(
@@ -1025,7 +1020,7 @@ fun HomeSongsModern(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = items.isNotEmpty(),
-                            color = if (items.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
@@ -1059,7 +1054,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.random,
                                 enabled = true,
-                                color = if (autoShuffle) colorPalette.text else colorPalette.textDisabled,
+                                color = if (autoShuffle) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -1074,7 +1069,7 @@ fun HomeSongsModern(
 
                         HeaderIconButton(
                             icon = R.drawable.ellipsis_horizontal,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = {
                                 menuState.display {
                                     PlaylistsItemMenu(
@@ -1180,7 +1175,7 @@ fun HomeSongsModern(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -1188,7 +1183,7 @@ fun HomeSongsModern(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -1199,7 +1194,7 @@ fun HomeSongsModern(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -1220,7 +1215,7 @@ fun HomeSongsModern(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -1231,7 +1226,7 @@ fun HomeSongsModern(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -1279,7 +1274,7 @@ fun HomeSongsModern(
                             BasicText(
                                 text = stringResource(R.string.media_permission_required_please_grant),
                                 modifier = Modifier.fillMaxWidth(0.75f),
-                                style = typography.xs.semiBold
+                                style = typography().xs.semiBold
                             )
                             /*
                         Spacer(modifier = Modifier.height(12.dp))
@@ -1371,7 +1366,7 @@ fun HomeSongsModern(
                             item {
                                 BasicText(
                                     text = stringResource(R.string.folder_was_not_found),
-                                    style = typography.xs.semiBold
+                                    style = typography().xs.semiBold
                                 )
                             }
                         }
@@ -1414,8 +1409,8 @@ fun HomeSongsModern(
                                                     listMediaItems.remove(song.asMediaItem)
                                             },
                                             colors = androidx.compose.material3.CheckboxDefaults.colors(
-                                                checkedColor = colorPalette.accent,
-                                                uncheckedColor = colorPalette.text
+                                                checkedColor = colorPalette().accent,
+                                                uncheckedColor = colorPalette().text
                                             ),
                                             modifier = Modifier
                                                 .scale(0.7f)
@@ -1550,7 +1545,7 @@ fun HomeSongsModern(
                                 if (sortBy == SongSortBy.PlayTime) {
                                     BasicText(
                                         text = song.song.formattedTotalPlayTime,
-                                        style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
+                                        style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -1559,10 +1554,10 @@ fun HomeSongsModern(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette.overlay
+                                                        colorPalette().overlay
                                                     )
                                                 ),
-                                                shape = thumbnailShape
+                                                shape = thumbnailShape()
                                             )
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
                                             .align(Alignment.BottomCenter)
@@ -1575,7 +1570,7 @@ fun HomeSongsModern(
                                 if (builtInPlaylist == BuiltInPlaylist.Top)
                                     BasicText(
                                         text = (index + 1).toString(),
-                                        style = typography.m.semiBold.center.color(colorPalette.onOverlay),
+                                        style = typography().m.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -1584,10 +1579,10 @@ fun HomeSongsModern(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette.overlay
+                                                        colorPalette().overlay
                                                     )
                                                 ),
-                                                shape = thumbnailShape
+                                                shape = thumbnailShape()
                                             )
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
                                             .align(Alignment.Center)
@@ -1603,8 +1598,8 @@ fun HomeSongsModern(
                                                 listMediaItems.remove(song.song.asMediaItem)
                                         },
                                         colors = CheckboxDefaults.colors(
-                                            checkedColor = colorPalette.accent,
-                                            uncheckedColor = colorPalette.text
+                                            checkedColor = colorPalette().accent,
+                                            uncheckedColor = colorPalette().text
                                         ),
                                         modifier = Modifier
                                             .scale(0.7f)
@@ -1701,7 +1696,7 @@ fun HomeSongsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if(uiType == UiType.ViMusic && showFloatingIcon)
+        if( uiType() == UiType.ViMusic && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

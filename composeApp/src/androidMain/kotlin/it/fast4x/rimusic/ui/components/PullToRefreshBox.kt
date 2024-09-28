@@ -8,8 +8,8 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import me.knighthat.colorPalette
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -19,7 +19,6 @@ fun PullToRefreshBox(
     onRefresh: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val refreshState = rememberPullRefreshState(refreshing, onRefresh)
     Box(
         modifier = modifier.pullRefresh(refreshState),
@@ -29,7 +28,7 @@ fun PullToRefreshBox(
             refreshing, refreshState,
             modifier = Modifier
                 .align(Alignment.TopCenter),
-            backgroundColor = colorPalette.favoritesIcon
+            backgroundColor = colorPalette().favoritesIcon
 
         )
     }

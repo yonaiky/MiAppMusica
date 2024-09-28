@@ -100,7 +100,6 @@ import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
@@ -109,7 +108,6 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.utils.PlayShuffledSongs
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
@@ -133,6 +131,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 
 
 
@@ -151,10 +152,8 @@ fun HomeLibraryModern(
     onStatisticsClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
     val menuState = LocalMenuState.current
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
     val binder = LocalPlayerServiceBinder.current
 
     var isCreatingANewPlaylist by rememberSaveable {
@@ -333,7 +332,7 @@ fun HomeLibraryModern(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -349,11 +348,11 @@ fun HomeLibraryModern(
             columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
         ) {
             item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
-                if (uiType == UiType.ViMusic)
+                if ( uiType() == UiType.ViMusic )
                     HeaderWithIcon(
                         title = stringResource(R.string.playlists),
                         iconId = R.drawable.search,
@@ -375,7 +374,7 @@ fun HomeLibraryModern(
                         .fillMaxWidth()
 
                 ) {
-                    if (uiType == UiType.RiMusic)
+                    if ( uiType() == UiType.RiMusic )
                         TitleSection(title = stringResource(R.string.playlists))
 
                     HeaderInfo(
@@ -389,7 +388,7 @@ fun HomeLibraryModern(
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -416,7 +415,7 @@ fun HomeLibraryModern(
                     HeaderIconButton(
                         onClick = {},
                         icon = R.drawable.sync,
-                        color = if (autosync) colorPalette.text else colorPalette.textDisabled,
+                        color = if (autosync) colorPalette().text else colorPalette().textDisabled,
                         iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 2.dp)
@@ -433,14 +432,14 @@ fun HomeLibraryModern(
                     HeaderIconButton(
                         onClick = { searching = !searching },
                         icon = R.drawable.search_circle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
                     )
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         onClick = {},
                         modifier = Modifier
@@ -482,7 +481,7 @@ fun HomeLibraryModern(
                     )
                     HeaderIconButton(
                         icon = R.drawable.add_in_playlist,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 24.dp,
                         onClick = { },
                         modifier = Modifier
@@ -499,7 +498,7 @@ fun HomeLibraryModern(
                     )
                     HeaderIconButton(
                         icon = R.drawable.resource_import,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 22.dp,
                         onClick = {},
                         modifier = Modifier
@@ -560,7 +559,7 @@ fun HomeLibraryModern(
                             }
                         },
                         icon = R.drawable.resize,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         iconSize = 22.dp,
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -596,7 +595,7 @@ fun HomeLibraryModern(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -604,7 +603,7 @@ fun HomeLibraryModern(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -615,7 +614,7 @@ fun HomeLibraryModern(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -636,7 +635,7 @@ fun HomeLibraryModern(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -647,7 +646,7 @@ fun HomeLibraryModern(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -667,7 +666,7 @@ fun HomeLibraryModern(
                             HeaderIconButton(
                                 onClick = { searching = true },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp
                             )
                         }
@@ -775,7 +774,7 @@ fun HomeLibraryModern(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if (uiType == UiType.ViMusic && showFloatingIcon)
+        if( uiType() == UiType.ViMusic && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

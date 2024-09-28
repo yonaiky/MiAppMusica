@@ -12,8 +12,9 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.ui.components.MusicBars
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 
 @Composable
 fun NowPlayingShow (
@@ -22,21 +23,19 @@ fun NowPlayingShow (
     val binder = LocalPlayerServiceBinder.current
     val player = binder?.player
 
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .background(
                 color = Color.Black.copy(alpha = 0.25f),
-                shape = thumbnailShape
+                shape = thumbnailShape()
             )
             .size(Dimensions.thumbnails.song)
     ) {
 
         if (player?.currentMediaItem?.mediaId == mediaId) {
             MusicBars(
-                color = colorPalette.onOverlay,
+                color = colorPalette().onOverlay,
                 modifier = Modifier
                     .height(40.dp)
             )

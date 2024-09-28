@@ -1,63 +1,48 @@
 package it.fast4x.rimusic.ui.screens.settings
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.startActivity
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.getVersionName
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.preferences
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 
 @ExperimentalAnimationApi
 @Composable
 fun About() {
-    val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
             /*
@@ -85,7 +70,7 @@ fun About() {
         ) {
             BasicText(
                 text = "RiMusic v${getVersionName()} by fast4x",
-                style = typography.s.secondary,
+                style = typography().s.secondary,
 
                 )
         }
@@ -180,7 +165,6 @@ fun About() {
                     "IvanMaksimovic77 \n"+
                     "JZITNIK-github \n"+
                     "Kjev666 \n"+
-                    "knighthat \n"+
                     "Kptmx \n"+
                     "koliwan \n"+
                     "Lolozweipunktnull \n" +

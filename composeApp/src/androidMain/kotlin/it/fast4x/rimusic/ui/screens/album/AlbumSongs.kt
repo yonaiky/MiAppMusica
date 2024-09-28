@@ -86,8 +86,6 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
@@ -106,6 +104,9 @@ import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -124,11 +125,8 @@ fun AlbumSongs(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
     var songs by persistList<Song>("album/$browseId/songs")
     var album by persist<Album?>("album/$browseId")
 
@@ -400,7 +398,7 @@ fun AlbumSongs(
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
@@ -412,7 +410,7 @@ fun AlbumSongs(
                     //contentPadding = LocalPlayerAwareWindowInsets.current
                     //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                     modifier = Modifier
-                        .background(colorPalette.background0)
+                        .background(colorPalette().background0)
                         .fillMaxSize()
                 ) {
                     item(
@@ -435,7 +433,7 @@ fun AlbumSongs(
                             headerContent {
                                 HeaderIconButton(
                                     icon = R.drawable.downloaded,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
                                         .combinedClickable(
@@ -450,7 +448,7 @@ fun AlbumSongs(
 
                                 HeaderIconButton(
                                     icon = R.drawable.download,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
                                         .combinedClickable(
@@ -469,7 +467,7 @@ fun AlbumSongs(
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {
                                     if (!selectItems)
                                     showSelectDialog = true else {
@@ -487,7 +485,7 @@ fun AlbumSongs(
                                 HeaderIconButton(
                                     icon = R.drawable.shuffle,
                                     enabled = songs.isNotEmpty(),
-                                    color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                    color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                     onClick = {},
                                     modifier = Modifier
                                         .combinedClickable(
@@ -527,7 +525,7 @@ fun AlbumSongs(
                                         ),
                                     icon = R.drawable.locate,
                                     enabled = songs.isNotEmpty(),
-                                    color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                    color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                     onClick = {}
 
 
@@ -537,7 +535,7 @@ fun AlbumSongs(
                                 HeaderIconButton(
                                     icon = R.drawable.ellipsis_horizontal,
                                     enabled = songs.isNotEmpty(),
-                                    color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                    color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                     onClick = {
                                         menuState.display {
                                             album?.let {
@@ -656,7 +654,7 @@ fun AlbumSongs(
                             album?.title?.let {
                                 BasicText(
                                     text = it,
-                                    style = typography.xs.semiBold,
+                                    style = typography().xs.semiBold,
                                     maxLines = 1
                                 )
                             }
@@ -666,7 +664,7 @@ fun AlbumSongs(
                                     text = songs.size.toString() + " "
                                             + stringResource(R.string.songs)
                                             + " - " + formatAsTime(totalPlayTimes),
-                                    style = typography.xxs.medium,
+                                    style = typography().xxs.medium,
                                     maxLines = 1,
                                     modifier = Modifier
                                         .padding(all = 5.dp)
@@ -674,7 +672,7 @@ fun AlbumSongs(
                             } else {
                                 BasicText(
                                     text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                    style = typography.xxs.medium,
+                                    style = typography().xxs.medium,
                                     maxLines = 1
                                 )
                             }
@@ -740,7 +738,7 @@ fun AlbumSongs(
 
                                         BasicText(
                                             text = "${index + 1}",
-                                            style = typography.s.semiBold.center.color(colorPalette.textDisabled),
+                                            style = typography().s.semiBold.center.color(colorPalette().textDisabled),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier
@@ -782,8 +780,8 @@ fun AlbumSongs(
                                                         listMediaItems.remove(song.asMediaItem)
                                                 },
                                                 colors = CheckboxDefaults.colors(
-                                                    checkedColor = colorPalette.accent,
-                                                    uncheckedColor = colorPalette.text
+                                                    checkedColor = colorPalette().accent,
+                                                    uncheckedColor = colorPalette().text
                                                 ),
                                                 modifier = Modifier
                                                     .scale(0.7f)
@@ -816,9 +814,8 @@ fun AlbumSongs(
                     }
                 }
 
-
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {

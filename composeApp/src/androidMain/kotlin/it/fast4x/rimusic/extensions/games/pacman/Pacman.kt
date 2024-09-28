@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.extensions.games.pacman
 
-import android.content.res.Resources
 import android.util.Log
 import android.util.Range
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import it.fast4x.rimusic.R
@@ -33,7 +31,6 @@ import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanBackground
 import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanComposeTheme
 import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanYellow
 import it.fast4x.rimusic.extensions.games.pacman.utils.GameConstants
-import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

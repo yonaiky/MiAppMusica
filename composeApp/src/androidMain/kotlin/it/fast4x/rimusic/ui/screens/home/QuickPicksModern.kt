@@ -96,9 +96,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
@@ -109,7 +107,6 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -131,6 +128,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -154,11 +155,9 @@ fun QuickPicksModern(
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     var playEventType  by rememberPreference(playEventsTypeKey, PlayEventsType.MostPlayed)
 
     var trending by persist<Song?>("home/trending")
@@ -196,8 +195,6 @@ fun QuickPicksModern(
     val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
     val showTips by rememberPreference(showTipsKey, true)
     val showCharts by rememberPreference(showChartsKey, true)
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
 
     val refreshScope = rememberCoroutineScope()
     val now = System.currentTimeMillis()
@@ -326,11 +323,10 @@ fun QuickPicksModern(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom
-                    ) 1f
-                    else Dimensions.contentWidthRightBar
+                    if( navBarPos() != NavigationBarPosition.Right )
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
                 )
 
         ) {
@@ -348,7 +344,7 @@ fun QuickPicksModern(
 
             Column(
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
                     /*
@@ -363,7 +359,7 @@ fun QuickPicksModern(
                 //relatedPageResult?.getOrNull()?.let { related ->
                 related = relatedPageResult?.getOrNull()
 
-                if (uiType == UiType.ViMusic)
+                if ( uiType() == UiType.ViMusic )
                     HeaderWithIcon(
                         title = stringResource(R.string.quick_picks),
                         iconId = R.drawable.search,
@@ -422,7 +418,7 @@ fun QuickPicksModern(
                             PlayEventsType.LastPlayed -> stringResource(R.string.by_last_played_song)
                             PlayEventsType.CasualPlayed -> stringResource(R.string.by_casual_played_song)
                         },
-                        style = typography.xxs.secondary,
+                        style = typography().xxs.secondary,
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .padding(bottom = 8.dp)
@@ -481,7 +477,7 @@ fun QuickPicksModern(
                                         Image(
                                             painter = painterResource(R.drawable.star),
                                             contentDescription = null,
-                                            colorFilter = ColorFilter.tint(colorPalette.accent),
+                                            colorFilter = ColorFilter.tint(colorPalette().accent),
                                             modifier = Modifier
                                                 .size(16.dp)
                                         )
@@ -639,7 +635,7 @@ fun QuickPicksModern(
                     if (related == null) {
                         BasicText(
                             text = stringResource(R.string.sorry_tips_are_not_available),
-                            style = typography.xs.semiBold.center,
+                            style = typography().xs.semiBold.center,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(all = 16.dp)
@@ -662,7 +658,7 @@ fun QuickPicksModern(
 
                                 BasicText(
                                     text = stringResource(R.string.new_albums_of_your_artists),
-                                    style = typography.l.semiBold,
+                                    style = typography().l.semiBold,
                                     modifier = sectionTextModifier
                                 )
 
@@ -711,7 +707,7 @@ fun QuickPicksModern(
                         related?.albums?.let { albums ->
                             BasicText(
                                 text = stringResource(R.string.related_albums),
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 modifier = sectionTextModifier
                             )
 
@@ -736,7 +732,7 @@ fun QuickPicksModern(
                         related?.artists?.let { artists ->
                             BasicText(
                                 text = stringResource(R.string.similar_artists),
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 modifier = sectionTextModifier
                             )
 
@@ -761,7 +757,7 @@ fun QuickPicksModern(
                         related?.playlists?.let { playlists ->
                             BasicText(
                                 text = stringResource(R.string.playlists_you_might_like),
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 24.dp, bottom = 8.dp)
@@ -830,7 +826,7 @@ fun QuickPicksModern(
                         if (playlists.isNotEmpty()) {
                             BasicText(
                                 text = stringResource(R.string.monthly_playlists),
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 24.dp, bottom = 8.dp)
@@ -885,7 +881,7 @@ fun QuickPicksModern(
                             /*
                            BasicText(
                                text = stringResource(R.string.playlists),
-                               style = typography.l.semiBold,
+                               style = typography().l.semiBold,
                                modifier = Modifier
                                    .padding(horizontal = 16.dp)
                                    .padding(top = 24.dp, bottom = 8.dp)
@@ -914,7 +910,7 @@ fun QuickPicksModern(
                             if (songs.isNotEmpty()) {
                                 BasicText(
                                     text = stringResource(R.string.chart_top_songs),
-                                    style = typography.l.semiBold,
+                                    style = typography().l.semiBold,
                                     modifier = Modifier
                                         .padding(horizontal = 16.dp)
                                         .padding(top = 24.dp, bottom = 8.dp)
@@ -940,7 +936,7 @@ fun QuickPicksModern(
                                         ) {
                                             BasicText(
                                                 text = "${index + 1}",
-                                                style = typography.l.bold.center.color(colorPalette.text),
+                                                style = typography().l.bold.center.color(colorPalette().text),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -970,7 +966,7 @@ fun QuickPicksModern(
                             if (artists.isNotEmpty()) {
                                 BasicText(
                                     text = stringResource(R.string.chart_top_artists),
-                                    style = typography.l.semiBold,
+                                    style = typography().l.semiBold,
                                     modifier = Modifier
                                         .padding(horizontal = 16.dp)
                                         .padding(top = 24.dp, bottom = 8.dp)
@@ -994,7 +990,7 @@ fun QuickPicksModern(
                                         ) {
                                             BasicText(
                                                 text = "${index + 1}",
-                                                style = typography.l.bold.center.color(colorPalette.text),
+                                                style = typography().l.bold.center.color(colorPalette().text),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -1022,7 +1018,7 @@ fun QuickPicksModern(
                 relatedPageResult?.exceptionOrNull()?.let {
                     BasicText(
                         text = stringResource(R.string.page_not_been_loaded),
-                        style = typography.s.secondary.center,
+                        style = typography().s.secondary.center,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(all = 16.dp)
@@ -1080,7 +1076,7 @@ fun QuickPicksModern(
 
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

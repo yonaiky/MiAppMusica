@@ -7,7 +7,6 @@ import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.Languages
 import me.bush.translator.Language
-import timber.log.Timber
 
 
 @Composable

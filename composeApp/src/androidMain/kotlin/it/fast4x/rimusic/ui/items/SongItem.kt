@@ -43,7 +43,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
@@ -55,6 +54,9 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 
 
@@ -179,7 +181,7 @@ fun SongItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clip(LocalAppearance.current.thumbnailShape)
+                    .clip(thumbnailShape())
                     .fillMaxSize()
             )
 
@@ -208,8 +210,6 @@ fun SongItem(
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     ItemContainer(
         alternative = false,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -227,7 +227,7 @@ fun SongItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BasicText(
                         text = title ?: "",
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -239,7 +239,7 @@ fun SongItem(
                 }
             } ?: BasicText(
                 text = title ?: "",
-                style = typography.xs.semiBold,
+                style = typography().xs.semiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -252,7 +252,7 @@ fun SongItem(
                 IconButton(
                     onClick = onDownloadClick,
                     icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                    color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                    color = if (isDownloaded) colorPalette().text else colorPalette().textDisabled,
                     modifier = Modifier
                         .size(16.dp)
                 )
@@ -261,7 +261,7 @@ fun SongItem(
 
                 BasicText(
                     text = authors ?: "",
-                    style = typography.xs.semiBold.secondary,
+                    style = typography().xs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
@@ -272,7 +272,7 @@ fun SongItem(
                 duration?.let {
                     BasicText(
                         text = duration,
-                        style = typography.xxs.secondary.medium,
+                        style = typography().xxs.secondary.medium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -303,7 +303,6 @@ fun SongItem(
     isExplicit: Boolean = false,
     mediaId: String
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var songPlaylist by remember {
         mutableStateOf(0)
     }
@@ -338,7 +337,7 @@ fun SongItem(
                 HeaderIconButton(
                     onClick = {},
                     icon = R.drawable.heart,
-                    color = colorPalette.favoritesIcon,
+                    color = colorPalette().favoritesIcon,
                     iconSize = 12.dp,
                     modifier = Modifier
                         //.padding(start = 4.dp)
@@ -352,7 +351,7 @@ fun SongItem(
                     HeaderIconButton(
                         onClick = {},
                         icon = R.drawable.noteslashed,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         iconSize = 12.dp,
                         modifier = Modifier
                             .padding(start = 4.dp)
@@ -365,7 +364,7 @@ fun SongItem(
             /*
             BasicText(
                 text = totalPlayTimeMs.toString() ?: "",
-                style = typography.xs.semiBold,
+                style = typography().xs.semiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(all = 16.dp)
@@ -379,7 +378,7 @@ fun SongItem(
                     if (isRecommended)
                         IconButton(
                             icon = R.drawable.smart_shuffle,
-                            color = colorPalette.accent,
+                            color = colorPalette().accent,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -389,12 +388,12 @@ fun SongItem(
                     if (playlistindicator && (songPlaylist > 0)) {
                         IconButton(
                             icon = R.drawable.add_in_playlist,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
                                 .size(14.dp)
-                                .background(colorPalette.accent, CircleShape)
+                                .background(colorPalette().accent, CircleShape)
                                 .padding(all = 3.dp)
                                 .combinedClickable(onClick = {}, onLongClick = {
                                     SmartMessage(
@@ -409,7 +408,7 @@ fun SongItem(
                     if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
                         IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -418,12 +417,12 @@ fun SongItem(
 
                     BasicText(
                         text = cleanPrefix(title ?: ""),
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         /*
                         style = TextStyle(
-                            color = if (isRecommended) colorPalette.accent else colorPalette.text,
-                            fontStyle = typography.xs.semiBold.fontStyle,
-                            fontSize = typography.xs.semiBold.fontSize
+                            color = if (isRecommended) colorPalette().accent else colorPalette().text,
+                            fontStyle = typography().xs.semiBold.fontStyle,
+                            fontSize = typography().xs.semiBold.fontSize
                         ),
                          */
                         maxLines = 1,
@@ -437,12 +436,12 @@ fun SongItem(
                     if (playlistindicator && (songPlaylist > 0)) {
                         IconButton(
                             icon = R.drawable.add_in_playlist,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
                                 .size(18.dp)
-                                .background(colorPalette.accent, CircleShape)
+                                .background(colorPalette().accent, CircleShape)
                                 .padding(all = 3.dp)
                                 .combinedClickable(onClick = {}, onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
@@ -457,7 +456,7 @@ fun SongItem(
                     if (isRecommended)
                         IconButton(
                             icon = R.drawable.smart_shuffle,
-                            color = colorPalette.accent,
+                            color = colorPalette().accent,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -467,7 +466,7 @@ fun SongItem(
                     if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
                         IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -475,7 +474,7 @@ fun SongItem(
                         )
                     BasicText(
                         text = cleanPrefix(title ?: ""),
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -485,12 +484,12 @@ fun SongItem(
                 if (playlistindicator && (songPlaylist > 0)) {
                     IconButton(
                         icon = R.drawable.add_in_playlist,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         enabled = true,
                         onClick = {},
                         modifier = Modifier
                             .size(18.dp)
-                            .background(colorPalette.accent, CircleShape)
+                            .background(colorPalette().accent, CircleShape)
                             .padding(all = 3.dp)
                             .combinedClickable(onClick = {}, onLongClick = {
                                 SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
@@ -521,14 +520,14 @@ fun SongItem(
                             )
                         },
                         icon = R.drawable.download_progress,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         modifier = Modifier
                             .size(16.dp)
                     )
                     /*
                     CircularProgressIndicator(
                         strokeWidth = 2.dp,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         modifier = Modifier
                             .size(16.dp)
                             .clickable {
@@ -545,7 +544,7 @@ fun SongItem(
                    IconButton(
                         onClick = onDownloadClick,
                         icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                        color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                        color = if (isDownloaded) colorPalette().text else colorPalette().textDisabled,
                         modifier = Modifier
                             .size(16.dp)
                     )
@@ -556,7 +555,7 @@ fun SongItem(
 
                 BasicText(
                     text = authors ?: "",
-                    style = typography.xs.semiBold.secondary,
+                    style = typography().xs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
@@ -567,7 +566,7 @@ fun SongItem(
                 duration?.let {
                     BasicText(
                         text = duration,
-                        style = typography.xxs.secondary.medium,
+                        style = typography().xxs.secondary.medium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -593,7 +592,7 @@ fun SongItem(
                             )
                         },
                         icon = R.drawable.download_progress,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         modifier = Modifier
                             .size(20.dp)
                     )
@@ -601,7 +600,7 @@ fun SongItem(
                     IconButton(
                         onClick = onDownloadClick,
                         icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                        color = if (isDownloaded) colorPalette.text else colorPalette.textDisabled,
+                        color = if (isDownloaded) colorPalette().text else colorPalette().textDisabled,
                         modifier = Modifier
                             .size(20.dp)
                     )
@@ -618,8 +617,6 @@ fun SongItemPlaceholder(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, _, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = false,
         thumbnailSizeDp =thumbnailSizeDp,
@@ -627,7 +624,7 @@ fun SongItemPlaceholder(
     ) {
         Spacer(
             modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = thumbnailShape)
+                .background(color = colorPalette().shimmer, shape = thumbnailShape())
                 .size(thumbnailSizeDp)
         )
 

@@ -5,7 +5,6 @@ import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 
 class OnDeviceOrganize {

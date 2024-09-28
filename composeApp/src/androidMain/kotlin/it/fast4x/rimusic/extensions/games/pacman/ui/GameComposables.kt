@@ -9,11 +9,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,19 +33,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,13 +55,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.media3.common.util.Log
 import it.fast4x.rimusic.extensions.games.pacman.GameViewModel
 import it.fast4x.rimusic.extensions.games.pacman.models.DialogState
 import it.fast4x.rimusic.extensions.games.pacman.models.EnemyMovementModel
 import it.fast4x.rimusic.extensions.games.pacman.models.GameStatsModel
 import it.fast4x.rimusic.extensions.games.pacman.models.PacFood
-import it.fast4x.rimusic.extensions.games.pacman.ui.theme.*
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.HeaderFont
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanMazeColor
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanOrange
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanPink
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanRed
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanWhite
+import it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanYellow
 import it.fast4x.rimusic.extensions.games.pacman.utils.GameConstants
 
 @Composable

@@ -5,15 +5,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,14 +18,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +37,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PlayerVisualizerType
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftBar
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftCBar
@@ -69,17 +60,17 @@ import it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 import it.fast4x.rimusic.extensions.nextvisualizer.views.VisualizerView
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.currentVisualizerKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
-import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 import timber.log.Timber
 
 @OptIn(UnstableApi::class)
@@ -87,8 +78,6 @@ import timber.log.Timber
 fun NextVisualizer() {
 
     val context = LocalContext.current
-    val (_, typography) = LocalAppearance.current
-
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
     if (visualizerEnabled) {
@@ -123,7 +112,7 @@ fun NextVisualizer() {
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(0.75f),
-                    style = typography.xs.semiBold
+                    style = typography().xs.semiBold
                 )
                 /*
                 Spacer(modifier = Modifier.height(12.dp))
@@ -170,7 +159,7 @@ fun NextVisualizer() {
                         .border(
                             BorderStroke(
                                 8.dp,
-                                LocalAppearance.current.colorPalette.accent
+                                colorPalette().accent
                             )
                         ),
                          */
@@ -211,20 +200,20 @@ fun NextVisualizer() {
                                 if (currentVisualizer < 0) currentVisualizer = visualizersList.lastIndex
                             },
                             icon = R.drawable.arrow_left,
-                            color = LocalAppearance.current.colorPalette.text,
+                            color = colorPalette().text,
                             modifier = Modifier
                                 .size(32.dp)
                         )
                         
                         BasicText(
                             text = "${currentVisualizer + 1}/${visualizersList.size}",
-                            style = typography.xs.semiBold.copy(color = LocalAppearance.current.colorPalette.text),
+                            style = typography().xs.semiBold.copy(color = colorPalette().text),
                         )
                         
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++ else currentVisualizer = 0 },
                             icon = R.drawable.arrow_right,
-                            color = LocalAppearance.current.colorPalette.text,
+                            color = colorPalette().text,
                             modifier = Modifier
                                 .size(32.dp)
                         )
@@ -243,7 +232,7 @@ fun getVisualizers(): List<Painter> {
     val circleBitmap: Bitmap
     val ampR = 3f
     val yR = 0.2f
-    val color = LocalAppearance.current.colorPalette.text.hashCode()
+    val color = colorPalette().text.hashCode()
     var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
     val binder = LocalPlayerServiceBinder.current
     LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {

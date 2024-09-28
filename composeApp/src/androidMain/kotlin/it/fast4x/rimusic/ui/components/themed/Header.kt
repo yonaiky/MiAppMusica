@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,14 +31,14 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import kotlin.random.Random
 
 @Composable
@@ -49,14 +47,12 @@ fun Header(
     modifier: Modifier = Modifier,
     actionsContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val typography = LocalAppearance.current.typography
-
     Header(
         modifier = modifier,
         titleContent = {
             BasicText(
                 text = title,
-                style = typography.xxl.medium,
+                style = typography().xxl.medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -94,8 +90,6 @@ fun Header(
 fun HeaderPlaceholder(
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     Box(
         contentAlignment = Alignment.CenterEnd,
         modifier = modifier
@@ -105,12 +99,12 @@ fun HeaderPlaceholder(
     ) {
         Box(
             modifier = Modifier
-                .background(colorPalette.shimmer)
+                .background(colorPalette().shimmer)
                 .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
         ) {
             BasicText(
                 text = "",
-                style = typography.xxl.medium,
+                style = typography().xxl.medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -163,12 +157,7 @@ fun HeaderWithIcon (
     enabled: Boolean = true,
     onClick: () -> Unit
 ){
-    val typography = LocalAppearance.current.typography
-    val colorPalette = LocalAppearance.current.colorPalette
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     //val disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Row (
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
@@ -181,21 +170,20 @@ fun HeaderWithIcon (
         BasicText(
             text = title,
             style = TextStyle(
-                fontSize = typography.xxl.bold.fontSize,
-                fontWeight = typography.xxl.bold.fontWeight,
-                color = colorPalette.text,
-                textAlign = if(uiType != UiType.ViMusic) TextAlign.Center else TextAlign.End
+                fontSize = typography().xxl.bold.fontSize,
+                fontWeight = typography().xxl.bold.fontWeight,
+                color = colorPalette().text,
+                textAlign = if( uiType() != UiType.ViMusic) TextAlign.Center else TextAlign.End
 
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .fillMaxSize(if(showIcon && uiType == UiType.ViMusic) 0.9f else 1f)
+                .fillMaxSize(if( showIcon && uiType() == UiType.ViMusic ) 0.9f else 1f)
         )
 
-        if (showIcon && uiType == UiType.ViMusic &&
-            (navigationBarPosition == NavigationBarPosition.Left
-                    || navigationBarPosition == NavigationBarPosition.Right))
+        if ( showIcon && uiType() == UiType.ViMusic &&
+            ( navBarPos() == NavigationBarPosition.Left || navBarPos() == NavigationBarPosition.Right))
             SecondaryButton(
                 iconId = iconId,
                 enabled = enabled,
@@ -211,16 +199,12 @@ fun HalfHeader(
     modifier: Modifier = Modifier,
     actionsContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val typography = LocalAppearance.current.typography
-    val colorPalette = LocalAppearance.current.colorPalette
-
-
     HalfHeader(
         modifier = modifier,
         titleContent = {
             BasicText(
                 text = title,
-                style = typography.xxl.medium,
+                style = typography().xxl.medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -260,21 +244,20 @@ fun HeaderInfo (
     icon: Painter,
     spacer: Int = 5
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Image(
         painter = icon,
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+        colorFilter = ColorFilter.tint(colorPalette().textSecondary),
         modifier = Modifier
             .size(12.dp)
     )
     BasicText(
         text = title,
         style = TextStyle(
-            color = colorPalette.textSecondary,
-            fontStyle = typography.xxxs.semiBold.fontStyle,
-            fontWeight = typography.xxxs.semiBold.fontWeight,
-            fontSize = typography.xxxs.semiBold.fontSize
+            color = colorPalette().textSecondary,
+            fontStyle = typography().xxxs.semiBold.fontStyle,
+            fontWeight = typography().xxxs.semiBold.fontWeight,
+            fontSize = typography().xxxs.semiBold.fontSize
         ),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

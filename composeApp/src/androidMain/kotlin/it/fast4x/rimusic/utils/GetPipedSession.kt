@@ -1,12 +1,8 @@
 package it.fast4x.rimusic.utils
 
-import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.net.toUri
 import io.ktor.http.Url
-import it.fast4x.rimusic.MainApplication
 import it.fast4x.rimusic.models.PipedSession
 import timber.log.Timber
 

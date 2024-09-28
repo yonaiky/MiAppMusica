@@ -13,7 +13,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -47,11 +46,8 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.ColorPaletteName
-import it.fast4x.rimusic.ui.components.BottomSheet
-import it.fast4x.rimusic.ui.components.BottomSheetState
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
@@ -65,6 +61,9 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -76,7 +75,6 @@ fun FullLyricsSheetModern(
     onMaximize: () -> Unit,
     onRefresh: () -> Unit
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val (thumbnailSizeDp) = Dimensions.thumbnails.player.song.let {
         it to (it - 64.dp).px
     }
@@ -155,7 +153,7 @@ fun FullLyricsSheetModern(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .padding(all = 10.dp)
-                            .clip(thumbnailShape)
+                            .clip(thumbnailShape())
                             .size(Dimensions.collapsedPlayer * 2)
                     )
                 }
@@ -169,14 +167,14 @@ fun FullLyricsSheetModern(
                 ) {
                     BasicText(
                         text = player.currentMediaItem?.mediaMetadata?.title?.toString() ?: "",
-                        style = typography.m.medium.secondary,
+                        style = typography().m.medium.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
 
                     BasicText(
                         text = player.currentMediaItem?.mediaMetadata?.artist?.toString() ?: "",
-                        style = typography.s.medium.secondary,
+                        style = typography().s.medium.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -225,7 +223,7 @@ fun FullLyricsSheetModern(
 
                                         IconButton(
                                             icon = R.drawable.play_skip_back,
-                                            color = colorPalette.collapsedPlayerProgressBar,
+                                            color = colorPalette().collapsedPlayerProgressBar,
                                             onClick = {
                                                 binder.player.forceSeekToPrevious()
                                                 onRefresh()
@@ -262,15 +260,15 @@ fun FullLyricsSheetModern(
                                                     }
                                                 }
                                                 .background(when (colorPaletteName) {
-                                                    ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
-                                                    else -> colorPalette.background2
+                                                    ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette().background4
+                                                    else -> colorPalette().background2
                                                 })
                                                 .size(42.dp)
                                         ) {
                                             Image(
                                                 painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                                                 contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                                                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                                                 modifier = Modifier
 
                                                     .align(Alignment.Center)
@@ -280,7 +278,7 @@ fun FullLyricsSheetModern(
 
                                         IconButton(
                                             icon = R.drawable.play_skip_forward,
-                                            color = colorPalette.collapsedPlayerProgressBar,
+                                            color = colorPalette().collapsedPlayerProgressBar,
                                             onClick = {
                                                 binder.player.forceSeekToNext()
                                                 onRefresh()

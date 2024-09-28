@@ -98,9 +98,7 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
@@ -130,6 +128,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -148,10 +149,8 @@ fun AlbumDetailsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var songs by persistList<Song>("album/$browseId/songs")
     var album by persist<Album?>("album/$browseId")
@@ -454,7 +453,8 @@ fun AlbumDetailsModern(
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette()
+.background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
@@ -466,7 +466,8 @@ fun AlbumDetailsModern(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette()
+.background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -499,11 +500,11 @@ fun AlbumDetailsModern(
 
                             AutoResizeText(
                                 text = cleanPrefix(album?.title ?: ""),
-                                style = typography.l.semiBold,
+                                style = typography().l.semiBold,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                                fontWeight = typography.l.semiBold.fontWeight,
-                                fontFamily = typography.l.semiBold.fontFamily,
-                                color = typography.l.semiBold.color,
+                                fontWeight = typography().l.semiBold.fontWeight,
+                                fontFamily = typography().l.semiBold.fontFamily,
+                                color = typography().l.semiBold.color,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
@@ -516,7 +517,7 @@ fun AlbumDetailsModern(
                             /*
                             BasicText(
                                 text = albumPage?.year ?: "",
-                                style = typography.xs.medium,
+                                style = typography().xs.medium,
                                 maxLines = 1,
                                 modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -527,7 +528,7 @@ fun AlbumDetailsModern(
                                 text = songs.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
-                                style = typography.xs.medium,
+                                style = typography().xs.medium,
                                 maxLines = 1,
                                 modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -537,7 +538,8 @@ fun AlbumDetailsModern(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette()
+.text,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -575,7 +577,7 @@ fun AlbumDetailsModern(
                                     )
                                     BasicText(
                                         text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                        style = typography.xs.medium,
+                                        style = typography().xs.medium,
                                         maxLines = 1,
                                         modifier = Modifier
                                         //.padding(top = 10.dp)
@@ -603,7 +605,7 @@ fun AlbumDetailsModern(
                                 text = "${albumPage?.year} - " + songs.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
-                                style = typography.xs.medium,
+                                style = typography().xs.medium,
                                 maxLines = 1
                             )
                         }
@@ -627,7 +629,8 @@ fun AlbumDetailsModern(
                             } else {
                                 R.drawable.bookmark
                             },
-                            color = colorPalette.accent,
+                            color = colorPalette()
+.accent,
                             modifier = Modifier
                                 .padding(horizontal = 25.dp)
                                 .combinedClickable(
@@ -649,7 +652,8 @@ fun AlbumDetailsModern(
                         )
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
-                            color = colorPalette.text,
+                            color = colorPalette()
+.text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -665,7 +669,8 @@ fun AlbumDetailsModern(
 
                         HeaderIconButton(
                             icon = R.drawable.download,
-                            color = colorPalette.text,
+                            color = colorPalette()
+.text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -684,7 +689,9 @@ fun AlbumDetailsModern(
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
                         enabled = songs.isNotEmpty(),
-                        color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (songs.isNotEmpty()) colorPalette()
+.text else colorPalette()
+.textDisabled,
                         onClick = {
                             if (!selectItems)
                             showSelectDialog = true else {
@@ -702,7 +709,9 @@ fun AlbumDetailsModern(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette()
+.text else colorPalette()
+.textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -726,7 +735,8 @@ fun AlbumDetailsModern(
                         HeaderIconButton(
                             icon = R.drawable.radio,
                             enabled = true,
-                            color = colorPalette.text,
+                            color = colorPalette()
+.text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -766,7 +776,9 @@ fun AlbumDetailsModern(
                                 ),
                             icon = R.drawable.locate,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette()
+.text else colorPalette()
+.textDisabled,
                             onClick = {}
 
 
@@ -778,7 +790,9 @@ fun AlbumDetailsModern(
                                 .padding(horizontal = 5.dp),
                             icon = R.drawable.ellipsis_horizontal,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (songs.isNotEmpty()) colorPalette()
+.text else colorPalette()
+.textDisabled,
                             onClick = {
                                 menuState.display {
                                     album?.let {
@@ -886,7 +900,7 @@ fun AlbumDetailsModern(
                 ) {
                     BasicText(
                         text = stringResource(R.string.songs),
-                        style = typography.m.semiBold.align(TextAlign.Start),
+                        style = typography().m.semiBold.align(TextAlign.Start),
                         modifier = sectionTextModifier
                             .fillMaxWidth()
                     )
@@ -949,7 +963,8 @@ fun AlbumDetailsModern(
                              */
                                 BasicText(
                                     text = "${index + 1}",
-                                    style = typography.s.semiBold.center.color(colorPalette.textDisabled),
+                                    style = typography().s.semiBold.center.color(colorPalette()
+.textDisabled),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier
@@ -992,8 +1007,10 @@ fun AlbumDetailsModern(
                                                 listMediaItems.remove(song.asMediaItem)
                                         },
                                         colors = CheckboxDefaults.colors(
-                                            checkedColor = colorPalette.accent,
-                                            uncheckedColor = colorPalette.text
+                                            checkedColor = colorPalette()
+.accent,
+                                            uncheckedColor = colorPalette()
+.text
                                         ),
                                         modifier = Modifier
                                             .scale(0.7f)
@@ -1008,7 +1025,7 @@ fun AlbumDetailsModern(
                 item(key = "alternateVersionsTitle") {
                     BasicText(
                         text = stringResource(R.string.album_alternative_versions),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         maxLines = 1,
                         modifier = Modifier
                             .padding(all = 16.dp)
@@ -1064,7 +1081,7 @@ fun AlbumDetailsModern(
 
                         BasicText(
                             text = stringResource(R.string.information),
-                            style = typography.m.semiBold.align(TextAlign.Start),
+                            style = typography().m.semiBold.align(TextAlign.Start),
                             modifier = sectionTextModifier
                                 .fillMaxWidth()
                         )
@@ -1078,7 +1095,9 @@ fun AlbumDetailsModern(
                         ) {
                             IconButton(
                                 icon = R.drawable.translate,
-                                color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
+                                color = if (translateEnabled == true) colorPalette()
+.text else colorPalette()
+.textDisabled,
                                 enabled = true,
                                 onClick = {},
                                 modifier = Modifier
@@ -1095,7 +1114,7 @@ fun AlbumDetailsModern(
                             )
                             BasicText(
                                 text = "“",
-                                style = typography.xxl.semiBold,
+                                style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
                                     .align(Alignment.Top)
@@ -1133,7 +1152,7 @@ fun AlbumDetailsModern(
 
                             BasicText(
                                 text = translatedText,
-                                style = typography.xxs.secondary.align(TextAlign.Justify),
+                                style = typography().xxs.secondary.align(TextAlign.Justify),
                                 modifier = Modifier
                                     .padding(horizontal = 8.dp)
                                     .weight(1f)
@@ -1141,7 +1160,7 @@ fun AlbumDetailsModern(
 
                             BasicText(
                                 text = "„",
-                                style = typography.xxl.semiBold,
+                                style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)
                                     .align(Alignment.Bottom)
@@ -1151,7 +1170,8 @@ fun AlbumDetailsModern(
                         if (attributionsIndex != -1) {
                             BasicText(
                                 text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography.xxs.color(colorPalette.textDisabled).align(
+                                style = typography().xxs.color(colorPalette()
+.textDisabled).align(
                                     TextAlign.Start
                                 ),
                                 modifier = Modifier
@@ -1189,7 +1209,7 @@ fun AlbumDetailsModern(
 
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if (uiType == UiType.ViMusic && showFloatingIcon)
+            if ( uiType() == UiType.ViMusic && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {
