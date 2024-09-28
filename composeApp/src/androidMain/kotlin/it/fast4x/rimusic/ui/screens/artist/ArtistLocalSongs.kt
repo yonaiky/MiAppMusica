@@ -47,9 +47,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
@@ -57,9 +55,11 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -77,10 +77,7 @@ fun ArtistLocalSongs(
     onSettingsClick: () -> Unit
 ) {
     val binder = LocalPlayerServiceBinder.current
-    val (colorPalette) = LocalAppearance.current
     val menuState = LocalMenuState.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
     var songs by persist<List<Song>?>("artist/$browseId/localSongs")
 
     var downloadState by remember {
@@ -126,25 +123,25 @@ fun ArtistLocalSongs(
         mutableStateOf(false)
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
-                .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom) 1f
-                else Dimensions.contentWidthRightBar)
+                .fillMaxWidth(
+                    if ( navBarPos() != NavigationBarPosition.Right )
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
+                )
         ) {
             LazyColumn(
                 state = lazyListState,
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -156,7 +153,7 @@ fun ArtistLocalSongs(
 
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -203,7 +200,7 @@ fun ArtistLocalSongs(
 
                             HeaderIconButton(
                                 icon = R.drawable.download,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -240,7 +237,7 @@ fun ArtistLocalSongs(
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
                                 enabled = !songs.isNullOrEmpty(),
-                                color = if (!songs.isNullOrEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {  },
                                 modifier = Modifier
                                     .combinedClickable(
@@ -255,7 +252,7 @@ fun ArtistLocalSongs(
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = !songs.isNullOrEmpty(),
-                                color = if (!songs.isNullOrEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -346,7 +343,7 @@ fun ArtistLocalSongs(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {

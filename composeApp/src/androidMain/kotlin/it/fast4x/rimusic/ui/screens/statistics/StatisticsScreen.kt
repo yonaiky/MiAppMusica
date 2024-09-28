@@ -4,7 +4,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -21,8 +20,7 @@ import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -55,20 +53,26 @@ fun StatisticsScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
+                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
+                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
+                showButton2 = false,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)
                 },
                 tabIndex = tabIndex,
                 onTabChanged = onTabIndexChanged,
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 /*
                 onSettingsClick = { settingsRoute() },
                 onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },

@@ -54,12 +54,13 @@ import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.typography
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -80,15 +81,18 @@ fun SettingsScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
         host {
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
+                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
+                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
+                showButton2 = false,
                 tabIndex = tabIndex,
+                onHomeClick = { homeRoute() },
                 onTabChanged = onTabChanged,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.ui_tab), R.drawable.ui)
@@ -249,8 +253,6 @@ fun SettingsEntry(
     isEnabled: Boolean = true,
     trailingContent: (@Composable () -> Unit)? = null
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -267,14 +269,14 @@ fun SettingsEntry(
         ) {
             BasicText(
                 text = title,
-                style = typography.xs.semiBold.copy(color = colorPalette.text),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             )
             if (text != "")
                 BasicText(
                     text = text,
-                    style = typography.xs.semiBold.copy(color = colorPalette.textSecondary),
+                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
                 )
         }
 
@@ -283,7 +285,7 @@ fun SettingsEntry(
         if (titleSecondary != null) {
             BasicText(
                 text = titleSecondary,
-                style = typography.xxs.secondary,
+                style = typography().xxs.secondary,
                 maxLines = 2,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 //modifier = Modifier
@@ -298,11 +300,9 @@ fun SettingsTopDescription(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    val (_, typography) = LocalAppearance.current
-
     BasicText(
         text = text,
-        style = typography.xs.secondary,
+        style = typography().xs.secondary,
         modifier = modifier
             .padding(start = 16.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -315,12 +315,10 @@ fun SettingsDescription(
     modifier: Modifier = Modifier,
     important: Boolean = false,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     BasicText(
         text = text,
-        style = if (important) typography.xxs.semiBold.color(colorPalette.red)
-        else typography.xxs.secondary,
+        style = if (important) typography().xxs.semiBold.color(colorPalette().red)
+        else typography().xxs.secondary,
         modifier = modifier
             .padding(start = 16.dp)
             .padding(horizontal = 16.dp)
@@ -333,11 +331,9 @@ fun ImportantSettingsDescription(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     BasicText(
         text = text,
-        style = typography.xxs.semiBold.color(colorPalette.red),
+        style = typography().xxs.semiBold.color(colorPalette().red),
         modifier = modifier
             .padding(start = 16.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -349,11 +345,9 @@ fun SettingsEntryGroupText(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     BasicText(
         text = title.uppercase(),
-        style = typography.xs.semiBold.copy(colorPalette.accent),
+        style = typography().xs.semiBold.copy(colorPalette().accent),
         modifier = modifier
             .padding(start = 16.dp)
             .padding(horizontal = 16.dp)
@@ -465,7 +459,6 @@ fun ButtonBarSettingEntry(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
 ) {
-    val (colorPalette, _) = LocalAppearance.current
     SettingsEntry(
         title = title,
         text = text,
@@ -474,7 +467,7 @@ fun ButtonBarSettingEntry(
         trailingContent = {
             Image(
                 painter = painterResource(icon),
-                colorFilter = ColorFilter.tint(iconColor ?: colorPalette.text),
+                colorFilter = ColorFilter.tint(iconColor ?: colorPalette().text),
                 modifier = Modifier.size(iconSize),
                 contentDescription = null,
                 contentScale = ContentScale.Fit

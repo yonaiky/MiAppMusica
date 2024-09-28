@@ -29,13 +29,13 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @ExperimentalAnimationApi
 @Composable
@@ -50,8 +50,6 @@ inline fun <T : Innertube.Item> ItemsPage(
     emptyItemsText: String = "No items found",
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
 
     val lazyListState = rememberLazyListState()
@@ -79,17 +77,17 @@ inline fun <T : Innertube.Item> ItemsPage(
             }
     }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         LazyColumn(
             state = lazyListState,
@@ -115,7 +113,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 item(key = "empty") {
                     BasicText(
                         text = emptyItemsText,
-                        style = typography.xs.secondary.center,
+                        style = typography().xs.secondary.center,
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 32.dp)
                             .fillMaxWidth()

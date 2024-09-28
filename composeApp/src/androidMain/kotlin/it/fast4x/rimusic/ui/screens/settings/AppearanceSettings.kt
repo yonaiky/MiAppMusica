@@ -70,7 +70,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -145,6 +144,8 @@ import it.fast4x.rimusic.utils.thumbnailpauseKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -426,7 +427,6 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     var searching by rememberSaveable { mutableStateOf(false) }
     var filter: String? by rememberSaveable { mutableStateOf(null) }
     // var filterCharSequence: CharSequence
@@ -485,7 +485,7 @@ fun AppearanceSettings(
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -518,7 +518,7 @@ fun AppearanceSettings(
             modifier = Modifier.padding(start = 25.dp),
             onClick = { searching = !searching },
             icon = R.drawable.search_circle,
-            color = colorPalette.text,
+            color = colorPalette().text,
             iconSize = 24.dp
         )
         /*   Search   */
@@ -541,7 +541,7 @@ fun AppearanceSettings(
                 BasicTextField(
                     value = filter ?: "",
                     onValueChange = { filter = it },
-                    textStyle = typography.xs.semiBold,
+                    textStyle = typography().xs.semiBold,
                     singleLine = true,
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -549,7 +549,7 @@ fun AppearanceSettings(
                         if (filter.isNullOrBlank()) filter = ""
                         focusManager.clearFocus()
                     }),
-                    cursorBrush = SolidColor(colorPalette.text),
+                    cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
                         Box(
                             contentAlignment = Alignment.CenterStart,
@@ -560,7 +560,7 @@ fun AppearanceSettings(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.search,
-                                color = colorPalette.favoritesIcon,
+                                color = colorPalette().favoritesIcon,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(16.dp)
@@ -581,7 +581,7 @@ fun AppearanceSettings(
                                     text = stringResource(R.string.search),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
+                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
                                 )
                             }
 
@@ -592,7 +592,7 @@ fun AppearanceSettings(
                         .height(30.dp)
                         .fillMaxWidth()
                         .background(
-                            colorPalette.background4,
+                            colorPalette().background4,
                             shape = thumbnailRoundness.shape()
                         )
                         .focusRequester(focusRequester)
@@ -839,11 +839,11 @@ fun AppearanceSettings(
                                 modifier = Modifier
                                     .border(
                                         width = 1.dp,
-                                        color = colorPalette.accent,
+                                        color = colorPalette().accent,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .background(
-                                        color = colorPalette.background1,
+                                        color = colorPalette().background1,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .size(36.dp)
@@ -1654,7 +1654,7 @@ fun AppearanceSettings(
             title = stringResource(R.string.settings_reset),
             text = stringResource(R.string.settings_restore_default_settings),
             icon = R.drawable.refresh,
-            iconColor = colorPalette.text,
+            iconColor = colorPalette().text,
             onClick = { resetToDefault = true },
         )
         if (resetToDefault) {

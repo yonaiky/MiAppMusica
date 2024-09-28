@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextRange
@@ -36,10 +35,10 @@ import it.fast4x.rimusic.enums.SearchType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -52,9 +51,7 @@ fun SearchTypeScreen(
     navController: NavController,
     searchType: SearchType,
 ) {
-    val preferences = LocalContext.current.preferences
     val saveableStateHolder = rememberSaveableStateHolder()
-    val (colorPalette) = LocalAppearance.current
 
     val initialTextInput = ""
 
@@ -102,7 +99,7 @@ fun SearchTypeScreen(
                     IconButton(
                         onClick = {},
                         icon = R.drawable.search,
-                        color = colorPalette.favoritesIcon,
+                        color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
                             .size(24.dp)
@@ -124,7 +121,7 @@ fun SearchTypeScreen(
                         BasicText(
                             text = stringResource(R.string.search), //stringResource(R.string.enter_a_name),
                             maxLines = 1,
-                            style = LocalAppearance.current.typography.l.secondary,
+                            style = typography().l.secondary,
 
                         )
                     }
@@ -135,13 +132,20 @@ fun SearchTypeScreen(
 
             Scaffold(
                 navController = navController,
+                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)
                 },
+                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
+                showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
+                onHomeClick = {
+                    //homeRoute()
+                    navController.navigate(NavRoutes.home.name)
+                },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.online), R.drawable.globe)
                     Item(1, stringResource(R.string.library), R.drawable.library)

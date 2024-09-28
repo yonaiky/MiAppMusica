@@ -89,10 +89,8 @@ import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -105,7 +103,6 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -115,6 +112,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 
 
@@ -131,11 +132,9 @@ fun PlaylistSongList(
     params: String?,
     maxDepth: Int?,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
     val menuState = LocalMenuState.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistPage by persist<Innertube.PlaylistOrAlbumPage?>("playlist/$browseId/playlistPage")
 
@@ -304,13 +303,13 @@ fun PlaylistSongList(
                 HeaderIconButton(
                     onClick = { searching = !searching },
                     icon = R.drawable.search_circle,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     iconSize = 24.dp
                 )
 
                 HeaderIconButton(
                     icon = R.drawable.downloaded,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
@@ -346,7 +345,7 @@ fun PlaylistSongList(
 
                 HeaderIconButton(
                     icon = R.drawable.download,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
@@ -374,7 +373,7 @@ fun PlaylistSongList(
                 HeaderIconButton(
                     icon = R.drawable.enqueue,
                     enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                    color =  if (playlistPage?.songsPage?.items?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                    color =  if (playlistPage?.songsPage?.items?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
@@ -392,7 +391,7 @@ fun PlaylistSongList(
                 HeaderIconButton(
                     icon = R.drawable.shuffle,
                     enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                    color = if (playlistPage?.songsPage?.items?.isNotEmpty() ==true) colorPalette.text else colorPalette.textDisabled,
+                    color = if (playlistPage?.songsPage?.items?.isNotEmpty() ==true) colorPalette().text else colorPalette().textDisabled,
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
@@ -415,7 +414,7 @@ fun PlaylistSongList(
 
                 HeaderIconButton(
                     icon = R.drawable.add_in_playlist,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     onClick = {},
                     modifier = Modifier
                         .combinedClickable(
@@ -529,7 +528,7 @@ fun PlaylistSongList(
 
                 HeaderIconButton(
                     icon = R.drawable.share_social,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     onClick = {
                         (playlistPage?.url ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
                             val sendIntent = Intent().apply {
@@ -563,7 +562,7 @@ fun PlaylistSongList(
                     BasicTextField(
                         value = filter ?: "",
                         onValueChange = { filter = it },
-                        textStyle = typography.xs.semiBold,
+                        textStyle = typography().xs.semiBold,
                         singleLine = true,
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -571,7 +570,7 @@ fun PlaylistSongList(
                             if (filter.isNullOrBlank()) filter = ""
                             focusManager.clearFocus()
                         }),
-                        cursorBrush = SolidColor(colorPalette.text),
+                        cursorBrush = SolidColor(colorPalette().text),
                         decorationBox = { innerTextField ->
                             Box(
                                 contentAlignment = Alignment.CenterStart,
@@ -582,7 +581,7 @@ fun PlaylistSongList(
                                 IconButton(
                                     onClick = {},
                                     icon = R.drawable.search,
-                                    color = colorPalette.favoritesIcon,
+                                    color = colorPalette().favoritesIcon,
                                     modifier = Modifier
                                         .align(Alignment.CenterStart)
                                         .size(16.dp)
@@ -603,7 +602,7 @@ fun PlaylistSongList(
                                         text = stringResource(R.string.search),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
-                                        style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                        style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                     )
                                 }
 
@@ -614,7 +613,7 @@ fun PlaylistSongList(
                             .height(30.dp)
                             .fillMaxWidth()
                             .background(
-                                colorPalette.background4,
+                                colorPalette().background4,
                                 shape = thumbnailRoundness.shape()
                             )
                             .focusRequester(focusRequester)
@@ -638,20 +637,17 @@ fun PlaylistSongList(
 
     val lazyListState = rememberLazyListState()
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom
-                    ) 1f
-                    else Dimensions.contentWidthRightBar
+                    if( navBarPos() != NavigationBarPosition.Right)
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
                 )
         ) {
             LazyColumn(
@@ -659,7 +655,7 @@ fun PlaylistSongList(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -675,7 +671,7 @@ fun PlaylistSongList(
                             playlistPage?.title?.let {
                                 BasicText(
                                     text = it,
-                                    style = typography.xs.semiBold,
+                                    style = typography().xs.semiBold,
                                     maxLines = 1
                                 )
                             }
@@ -683,13 +679,13 @@ fun PlaylistSongList(
                                 text = playlistPage?.songsPage?.items?.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
-                                style = typography.xxs.medium,
+                                style = typography().xxs.medium,
                                 maxLines = 1
                             )
                         } else {
                             BasicText(
                                 text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                style = typography.xxs.medium,
+                                style = typography().xxs.medium,
                                 maxLines = 1
                             )
                         }
@@ -773,7 +769,7 @@ fun PlaylistSongList(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

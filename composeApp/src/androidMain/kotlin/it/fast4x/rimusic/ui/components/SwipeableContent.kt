@@ -31,12 +31,12 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.albumItemToggleBookmarked
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.colorPalette
 
 @Composable
 fun SwipeableContent(
@@ -47,7 +47,6 @@ fun SwipeableContent(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
     val hapticFeedback = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState(
         positionalThreshold = { distance: Float -> distance * 0.25f },
@@ -99,7 +98,7 @@ fun SwipeableContent(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = colorPalette.accent,
+                            tint = colorPalette().accent,
                         )
                 }
             }

@@ -36,7 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,8 +51,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.ButtonState
+import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
+import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
@@ -56,34 +64,27 @@ import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.themed.IconButton
-import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
+import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.buttonStateKey
+import it.fast4x.rimusic.utils.cleanPrefix
+import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.trackLoopEnabledKey
-import androidx.compose.ui.graphics.Color
-import it.fast4x.rimusic.enums.PlayerControlsType
-import it.fast4x.rimusic.utils.playerControlsTypeKey
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.graphics.drawscope.Stroke
-import it.fast4x.rimusic.enums.ButtonState
-import it.fast4x.rimusic.enums.ColorPaletteMode
-import it.fast4x.rimusic.enums.PlayerBackgroundColors
-import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
-import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
-import it.fast4x.rimusic.ui.screens.player.bounceClick
-import it.fast4x.rimusic.utils.buttonStateKey
-import it.fast4x.rimusic.utils.cleanPrefix
-import it.fast4x.rimusic.utils.colorPaletteModeKey
-import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
+import it.fast4x.rimusic.utils.trackLoopEnabledKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -102,7 +103,6 @@ fun InfoAlbumAndArtistEssential(
     disableScrollingText: Boolean = false
 ) {
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
-    val (colorPalette, typography) = LocalAppearance.current
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var showthumbnail by rememberPreference(showthumbnailKey, false)
@@ -142,7 +142,7 @@ fun InfoAlbumAndArtistEssential(
              if (title?.startsWith(EXPLICIT_PREFIX) == true)
                  IconButton(
                      icon = R.drawable.explicit,
-                     color = colorPalette.text,
+                     color = colorPalette().text,
                      enabled = true,
                      onClick = {},
                      modifier = Modifier
@@ -160,12 +160,12 @@ fun InfoAlbumAndArtistEssential(
                     style = TextStyle(
                         textAlign = TextAlign.Center,
                         color = if (albumId == null)
-                                 if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
-                                else colorPalette.text,
-                        fontStyle = typography.l.bold.fontStyle,
-                        fontWeight = typography.l.bold.fontWeight,
-                        fontSize = typography.l.bold.fontSize,
-                        fontFamily = typography.l.bold.fontFamily
+                                 if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
+                                else colorPalette().text,
+                        fontStyle = typography().l.bold.fontStyle,
+                        fontWeight = typography().l.bold.fontWeight,
+                        fontSize = typography().l.bold.fontSize,
+                        fontFamily = typography().l.bold.fontFamily
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
@@ -177,10 +177,10 @@ fun InfoAlbumAndArtistEssential(
                         textAlign = TextAlign.Center,
                         color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                         else Color.Black,
-                        fontStyle = typography.l.bold.fontStyle,
-                        fontWeight = typography.l.bold.fontWeight,
-                        fontSize = typography.l.bold.fontSize,
-                        fontFamily = typography.l.bold.fontFamily
+                        fontStyle = typography().l.bold.fontStyle,
+                        fontWeight = typography().l.bold.fontWeight,
+                        fontSize = typography().l.bold.fontSize,
+                        fontFamily = typography().l.bold.fontFamily
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
@@ -193,7 +193,7 @@ fun InfoAlbumAndArtistEssential(
                  modifier = Modifier.weight(0.1f)
              ) {
                  IconButton(
-                     color = colorPalette.favoritesIcon,
+                     color = colorPalette().favoritesIcon,
                      icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
                      onClick = {
                          val currentMediaItem = binder.player.currentMediaItem
@@ -219,7 +219,7 @@ fun InfoAlbumAndArtistEssential(
                  if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                      Icon(
                          painter = painterResource(id = getUnlikedIcon()),
-                         tint = colorPalette.text,
+                         tint = colorPalette().text,
                          contentDescription = null,
                          modifier = Modifier
                              .padding(start = 5.dp)
@@ -279,12 +279,12 @@ fun InfoAlbumAndArtistEssential(
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = if (artistIds?.isEmpty() == true)
-                        if (showthumbnail) colorPalette.textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette.textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette.textDisabled.copy(0.35f).compositeOver(Color.White)
-                            else colorPalette.text,
-                    fontStyle = typography.m.bold.fontStyle,
-                    fontSize = typography.m.bold.fontSize,
-                    //fontWeight = typography.m.bold.fontWeight,
-                    fontFamily = typography.m.bold.fontFamily
+                        if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
+                            else colorPalette().text,
+                    fontStyle = typography().m.bold.fontStyle,
+                    fontSize = typography().m.bold.fontSize,
+                    //fontWeight = typography().m.bold.fontWeight,
+                    fontFamily = typography().m.bold.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -297,10 +297,10 @@ fun InfoAlbumAndArtistEssential(
                     textAlign = TextAlign.Center,
                     color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black,
-                    fontStyle = typography.m.bold.fontStyle,
-                    fontSize = typography.m.bold.fontSize,
-                    //fontWeight = typography.m.bold.fontWeight,
-                    fontFamily = typography.m.bold.fontFamily
+                    fontStyle = typography().m.bold.fontStyle,
+                    fontSize = typography().m.bold.fontSize,
+                    //fontWeight = typography().m.bold.fontWeight,
+                    fontFamily = typography().m.bold.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -327,9 +327,6 @@ fun ControlsEssential(
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
 ) {
-
-
-    val (colorPalette, typography) = LocalAppearance.current
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -344,7 +341,7 @@ fun ControlsEssential(
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
     Box {
         IconButton(
-            color = colorPalette.favoritesIcon,
+            color = colorPalette().favoritesIcon,
             icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
             onClick = {
                 val currentMediaItem = binder.player.currentMediaItem
@@ -370,7 +367,7 @@ fun ControlsEssential(
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
             Icon(
                 painter = painterResource(id = getUnlikedIcon()),
-                tint = colorPalette.text,
+                tint = colorPalette().text,
                 contentDescription = null,
                 modifier = Modifier
                     //.padding(10.dp)
@@ -383,7 +380,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_back),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette.text),
+        colorFilter = ColorFilter.tint(colorPalette().text),
         modifier = Modifier
             .combinedClickable(
                 indication = ripple(bounded = false),
@@ -434,17 +431,17 @@ fun ControlsEssential(
                         when (playerPlayButtonType) {
                             PlayerPlayButtonType.CircularRibbed, PlayerPlayButtonType.Disabled -> Color.Transparent
                             else -> {
-                                if (isGradientBackgroundEnabled) colorPalette.background1
-                                else colorPalette.background2
+                                if (isGradientBackgroundEnabled) colorPalette().background1
+                                else colorPalette().background2
                             }
                         }
                     }
 
                     ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
                         if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                            colorPalette.background1 else
+                            colorPalette().background1 else
                             if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
-                                colorPalette.background4 else Color.Transparent
+                                colorPalette().background4 else Color.Transparent
                 }
             )
             .width(playerPlayButtonType.width.dp)
@@ -457,9 +454,9 @@ fun ControlsEssential(
                 painter = painterResource(R.drawable.a13shape),
                 colorFilter = ColorFilter.tint(
                     when (colorPaletteName) {
-                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette.background4
-                        else -> if (isGradientBackgroundEnabled) colorPalette.background1
-                        else colorPalette.background2
+                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette().background4
+                        else -> if (isGradientBackgroundEnabled) colorPalette().background1
+                        else colorPalette().background2
                     }
                 ),
                 modifier = Modifier
@@ -473,7 +470,7 @@ fun ControlsEssential(
         Image(
             painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette.accent else colorPalette.text),
+            colorFilter = ColorFilter.tint(if (playerPlayButtonType == PlayerPlayButtonType.Disabled) colorPalette().accent else colorPalette().text),
             modifier = Modifier
                 .rotate(rotationAngle)
                 .align(Alignment.Center)
@@ -491,9 +488,9 @@ fun ControlsEssential(
                 BasicText(
                     text = fmtSpeed,
                     style = TextStyle(
-                        color = colorPalette.text,
-                        fontStyle = typography.xxxs.semiBold.fontStyle,
-                        fontSize = typography.xxxs.semiBold.fontSize
+                        color = colorPalette().text,
+                        fontStyle = typography().xxxs.semiBold.fontStyle,
+                        fontSize = typography().xxxs.semiBold.fontSize
                     ),
                     maxLines = 1,
                     modifier = Modifier
@@ -508,7 +505,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_forward),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette.text),
+        colorFilter = ColorFilter.tint(colorPalette().text),
         modifier = Modifier
             .combinedClickable(
                 indication = ripple(bounded = false),
@@ -532,7 +529,7 @@ fun ControlsEssential(
 
     IconButton(
         icon = R.drawable.repeat,
-        color = if (trackLoopEnabled) colorPalette.iconButtonPlayer else colorPalette.textDisabled,
+        color = if (trackLoopEnabled) colorPalette().iconButtonPlayer else colorPalette().textDisabled,
         onClick = {
             trackLoopEnabled = !trackLoopEnabled
         },

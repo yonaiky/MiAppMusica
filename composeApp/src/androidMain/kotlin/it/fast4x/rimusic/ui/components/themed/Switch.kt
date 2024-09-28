@@ -14,24 +14,22 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.drawCircle
+import me.knighthat.colorPalette
 
 @Composable
 fun Switch(
     isChecked: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette) = LocalAppearance.current
-
     val transition = updateTransition(targetState = isChecked, label = null)
 
     val backgroundColor by transition.animateColor(label = "") {
-        if (it) colorPalette.accent else colorPalette.background1
+        if (it) colorPalette().accent else colorPalette().background1
     }
 
     val color by transition.animateColor(label = "") {
-        if (it) colorPalette.onAccent else colorPalette.textDisabled
+        if (it) colorPalette().onAccent else colorPalette().textDisabled
     }
 
     val offset by transition.animateDp(label = "") {

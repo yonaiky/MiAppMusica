@@ -60,7 +60,6 @@ import it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 import it.fast4x.rimusic.extensions.nextvisualizer.views.VisualizerView
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.currentVisualizerKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.getBitmapFromUrl
@@ -70,6 +69,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 import timber.log.Timber
 
 @OptIn(UnstableApi::class)
@@ -77,8 +78,6 @@ import timber.log.Timber
 fun NextVisualizer() {
 
     val context = LocalContext.current
-    val (_, typography) = LocalAppearance.current
-
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
     if (visualizerEnabled) {
@@ -113,7 +112,7 @@ fun NextVisualizer() {
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(0.75f),
-                    style = typography.xs.semiBold
+                    style = typography().xs.semiBold
                 )
                 /*
                 Spacer(modifier = Modifier.height(12.dp))
@@ -160,7 +159,7 @@ fun NextVisualizer() {
                         .border(
                             BorderStroke(
                                 8.dp,
-                                LocalAppearance.current.colorPalette.accent
+                                colorPalette().accent
                             )
                         ),
                          */
@@ -201,20 +200,20 @@ fun NextVisualizer() {
                                 if (currentVisualizer < 0) currentVisualizer = visualizersList.lastIndex
                             },
                             icon = R.drawable.arrow_left,
-                            color = LocalAppearance.current.colorPalette.text,
+                            color = colorPalette().text,
                             modifier = Modifier
                                 .size(32.dp)
                         )
                         
                         BasicText(
                             text = "${currentVisualizer + 1}/${visualizersList.size}",
-                            style = typography.xs.semiBold.copy(color = LocalAppearance.current.colorPalette.text),
+                            style = typography().xs.semiBold.copy(color = colorPalette().text),
                         )
                         
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++ else currentVisualizer = 0 },
                             icon = R.drawable.arrow_right,
-                            color = LocalAppearance.current.colorPalette.text,
+                            color = colorPalette().text,
                             modifier = Modifier
                                 .size(32.dp)
                         )
@@ -233,7 +232,7 @@ fun getVisualizers(): List<Painter> {
     val circleBitmap: Bitmap
     val ampR = 3f
     val yR = 0.2f
-    val color = LocalAppearance.current.colorPalette.text.hashCode()
+    val color = colorPalette().text.hashCode()
     var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
     val binder = LocalPlayerServiceBinder.current
     LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {

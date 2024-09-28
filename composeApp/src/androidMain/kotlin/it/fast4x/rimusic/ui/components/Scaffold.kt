@@ -37,18 +37,17 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.AppBar
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -56,21 +55,21 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 fun Scaffold(
     navController: NavController,
     playerEssential: @Composable (() -> Unit)? = null,
-    topIconButtonId: Int = R.drawable.chevron_back,
+    topIconButtonId: Int,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = false,
-    topIconButton2Id: Int = R.drawable.chevron_back,
+    topIconButton2Id: Int,
     onTopIconButton2Click: () -> Unit,
-    showButton2: Boolean = false,
+    showButton2: Boolean,
     bottomIconButtonId: Int? = R.drawable.search,
     onBottomIconButtonClick: (() -> Unit)? = {},
     showBottomButton: Boolean = false,
     hideTabs: Boolean = false,
-    tabIndex: Int = 0,
-    onTabChanged: (Int) -> Unit = {},
+    tabIndex: Int,
+    onTabChanged: (Int) -> Unit,
     showTopActions: Boolean = false,
     tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    onHomeClick: () -> Unit = { navController.navigate( NavRoutes.home.name ) },
+    onHomeClick: () -> Unit,
     onSettingsClick: (() -> Unit)? = {},
     onStatisticsClick: (() -> Unit)? = {},
     onHistoryClick: (() -> Unit)? = {},
@@ -78,13 +77,10 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
-    if (navigationBarPosition == NavigationBarPosition.Top || navigationBarPosition == NavigationBarPosition.Bottom) {
+    if ( navBarPos() == NavigationBarPosition.Top || navBarPos() == NavigationBarPosition.Bottom) {
             ScaffoldTB(
                 navController = navController,
                 playerEssential = playerEssential,
@@ -112,16 +108,18 @@ fun Scaffold(
     } else {
         //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-        val customModifier = if(uiType == UiType.RiMusic)
-            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-        else Modifier
+        val customModifier =
+            if( uiType() == UiType.RiMusic )
+                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            else
+                Modifier
 
 
         androidx.compose.material3.Scaffold(
             modifier = customModifier,
-            containerColor = colorPalette.background0,
+            containerColor = colorPalette().background0,
             topBar = {
-                if(uiType == UiType.RiMusic) {
+                if( uiType() == UiType.RiMusic ) {
                     AppBar(navController)
                 }
             },
@@ -158,7 +156,7 @@ fun Scaffold(
 
                 Row(
                     modifier = modifier
-                        .background(colorPalette.background0)
+                        .background( colorPalette().background0 )
                         .fillMaxSize()
                 ) {
                     val navigationRail: @Composable () -> Unit = {
@@ -179,10 +177,10 @@ fun Scaffold(
                         )
                     }
 
-                    if (navigationBarPosition == NavigationBarPosition.Left)
+                    if ( navBarPos() == NavigationBarPosition.Left )
                         navigationRail()
 
-                    val topPadding = if (uiType == UiType.ViMusic) 30.dp else 0.dp
+                    val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
 
                     AnimatedContent(
                         targetState = tabIndex,
@@ -244,7 +242,7 @@ fun Scaffold(
                             .padding(top = topPadding)
                     )
 
-                    if (navigationBarPosition == NavigationBarPosition.Right)
+                    if ( navBarPos() == NavigationBarPosition.Right )
                         navigationRail()
 
                 }

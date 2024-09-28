@@ -17,11 +17,11 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -45,17 +45,19 @@ fun NewreleasesScreen(
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
 
-        val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
-
         host {
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
+                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
+                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
+                showButton2 = false,
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
+                onHomeClick = { navController.navigate(NavRoutes.home.name) },
                 tabColumnContent = { item ->
                     item(0, stringResource(R.string.new_albums), R.drawable.album)
                     //item(1, stringResource(R.string.new_albums_of_your_artists), R.drawable.album)

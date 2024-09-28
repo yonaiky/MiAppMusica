@@ -44,9 +44,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
 import android.graphics.Color as AndroidColor
 
 
@@ -55,7 +55,6 @@ fun DialogColorPicker(
     onDismiss: () -> Unit,
     onColorSelected: (Color) -> Unit
 ) {
-    val (colorPalette) = LocalAppearance.current
     DefaultDialog(
         onDismiss = onDismiss
     ) {
@@ -105,7 +104,7 @@ fun DialogColorPicker(
                 IconButton(
                     onClick = onDismiss,
                     icon = R.drawable.close,
-                    color = colorPalette.text
+                    color = colorPalette().text
                 )
 
                 IconButton(
@@ -114,7 +113,7 @@ fun DialogColorPicker(
                         onDismiss()
                     },
                     icon = R.drawable.checkmark,
-                    color = colorPalette.accent
+                    color = colorPalette().accent
                 )
             }
         }

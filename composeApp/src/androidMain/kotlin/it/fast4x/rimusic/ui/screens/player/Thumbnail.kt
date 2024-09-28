@@ -58,7 +58,6 @@ import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.clickLyricsTextKey
@@ -71,6 +70,8 @@ import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -206,17 +207,17 @@ fun Thumbnail(
                         .aspectRatio(1f)
                         //.size(thumbnailSizeDp)
                         .fillMaxSize()
-                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                        //.dropShadow(LocalAppearance.current.thumbnailShape, LocalAppearance.current.colorPalette.overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
-                        .doubleShadowDrop(LocalAppearance.current.thumbnailShape, 4.dp, 8.dp)
-                        .clip(LocalAppearance.current.thumbnailShape)
+                        //.dropShadow(thumbnailShape(), colorPalette().overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                        //.dropShadow(thumbnailShape(), colorPalette().overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                        .doubleShadowDrop(thumbnailShape(), 4.dp, 8.dp)
+                        .clip(thumbnailShape())
                 //.padding(14.dp)
                 else modifierUiType = modifier
                     .aspectRatio(1f)
                     //.size(thumbnailSizeDp)
                     //.padding(14.dp)
                     .fillMaxSize()
-                    .clip(LocalAppearance.current.thumbnailShape)
+                    .clip(thumbnailShape())
 
 
 
@@ -264,7 +265,7 @@ fun Thumbnail(
 
                                 }
                                 .fillMaxSize()
-                                .clip(LocalAppearance.current.thumbnailShape)
+                                .clip(thumbnailShape())
 
 
                         )
@@ -272,7 +273,7 @@ fun Thumbnail(
                 if (!artImageAvailable)
                     Image(
                         painter = painterResource(R.drawable.app_icon),
-                        colorFilter = ColorFilter.tint(LocalAppearance.current.colorPalette.accent),
+                        colorFilter = ColorFilter.tint(colorPalette().accent),
                         modifier = Modifier
                             .pointerInput(Unit) {
                                 detectTapGestures(
@@ -288,7 +289,7 @@ fun Thumbnail(
 
                             }
                             .fillMaxSize()
-                            .clip(LocalAppearance.current.thumbnailShape),
+                            .clip(thumbnailShape()),
                         contentDescription = "Background Image",
                         contentScale = ContentScale.Fit
                     )

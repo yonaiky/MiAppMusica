@@ -49,13 +49,13 @@ import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
 
@@ -66,7 +66,6 @@ fun MoodList(
     navController: NavController,
     mood: Mood
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
     val browseId = mood.browseId ?: defaultBrowseId
@@ -88,17 +87,17 @@ fun MoodList(
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         moodPage?.getOrNull()?.let { moodResult ->
             LazyColumn(
@@ -106,7 +105,7 @@ fun MoodList(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -129,7 +128,7 @@ fun MoodList(
                     item {
                         BasicText(
                             text = item.title,
-                            style = typography.m.semiBold,
+                            style = typography().m.semiBold,
                             modifier = sectionTextModifier
                         )
                     }
@@ -207,7 +206,7 @@ fun MoodList(
         } ?: moodPage?.exceptionOrNull()?.let {
             BasicText(
                 text = stringResource(R.string.page_not_been_loaded),
-                style = typography.s.secondary.center,
+                style = typography().s.secondary.center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(all = 16.dp)

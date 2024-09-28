@@ -37,7 +37,6 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -51,6 +50,9 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 import timber.log.Timber
 
 @Composable
@@ -226,8 +228,6 @@ fun PlaylistItem(
     showName: Boolean = true,
     showSongsCount: Boolean = true
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -235,8 +235,8 @@ fun PlaylistItem(
     ) { //centeredModifier ->
         Box(
             modifier = Modifier // KOTLIN 2
-                .clip(thumbnailShape)
-                .background(color = colorPalette.background4)
+                .clip(thumbnailShape())
+                .background(color = colorPalette().background4)
                 .requiredSize(thumbnailSizeDp)
         ) {
             thumbnailContent(
@@ -251,7 +251,7 @@ fun PlaylistItem(
                 if (it.startsWith(PIPED_PREFIX,0,true)) {
                     Image(
                         painter = painterResource(R.drawable.piped_logo),
-                        colorFilter = ColorFilter.tint(colorPalette.red),
+                        colorFilter = ColorFilter.tint(colorPalette().red),
                         modifier = Modifier
                             .size(40.dp)
                             .padding(all = 5.dp),
@@ -262,7 +262,7 @@ fun PlaylistItem(
                 if (it.startsWith(PINNED_PREFIX,0,true)) {
                     Image(
                         painter = painterResource(R.drawable.pin),
-                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                        colorFilter = ColorFilter.tint(colorPalette().accent),
                         modifier = Modifier
                             .size(40.dp)
                             .padding(all = 5.dp),
@@ -273,7 +273,7 @@ fun PlaylistItem(
                 if (it.startsWith(MONTHLY_PREFIX,0,true)) {
                     Image(
                         painter = painterResource(R.drawable.stat_month),
-                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                        colorFilter = ColorFilter.tint(colorPalette().accent),
                         modifier = Modifier
                             .size(40.dp)
                             .padding(all = 5.dp),
@@ -288,12 +288,12 @@ fun PlaylistItem(
                 songCount?.let {
                     BasicText(
                         text = "$songCount",
-                        style = typography.xxs.medium.color(colorPalette.onOverlay),
+                        style = typography().xxs.medium.color(colorPalette().onOverlay),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .padding(all = 4.dp)
-                            .background(color = colorPalette.overlay, shape = RoundedCornerShape(4.dp))
+                            .background(color = colorPalette().overlay, shape = RoundedCornerShape(4.dp))
                             .padding(horizontal = 6.dp, vertical = 6.dp)
                             .align(Alignment.BottomEnd)
                     )
@@ -317,7 +317,7 @@ fun PlaylistItem(
                                 getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
                             if (name.startsWith(PIPED_PREFIX,0,true))
                             name.substringAfter(PIPED_PREFIX) else name,
-                        style = typography.xs.semiBold,
+                        style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -328,7 +328,7 @@ fun PlaylistItem(
             channelName?.let {
                 BasicText(
                     text = channelName,
-                    style = typography.xs.semiBold.secondary,
+                    style = typography().xs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -345,8 +345,6 @@ fun PlaylistItemPlaceholder(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
 ) {
-    val (colorPalette, _, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -354,7 +352,7 @@ fun PlaylistItemPlaceholder(
     ) {
         Spacer(
             modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = thumbnailShape)
+                .background(color = colorPalette().shimmer, shape = thumbnailShape())
                 .size(thumbnailSizeDp)
         )
 

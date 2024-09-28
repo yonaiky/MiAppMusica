@@ -18,12 +18,14 @@ import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.cleanPrefix
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 @Composable
 fun AlbumItem(
@@ -85,8 +87,6 @@ fun AlbumItem(
     alternative: Boolean = false,
     showAuthors: Boolean? = false
 ) {
-    val (_, typography, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -98,14 +98,14 @@ fun AlbumItem(
             contentDescription = null,
             //contentScale = ContentScale.Crop,
             modifier = Modifier
-                .clip(thumbnailShape)
+                .clip(thumbnailShape())
                 .requiredSize(thumbnailSizeDp)
         )
 
         ItemInfoContainer {
             BasicText(
                 text = cleanPrefix(title ?: ""),
-                style = typography.xs.semiBold,
+                style = typography().xs.semiBold,
                 maxLines = 1, //if (alternative) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -116,7 +116,7 @@ fun AlbumItem(
                 authors?.let {
                     BasicText(
                         text = cleanPrefix(authors),
-                        style = typography.xs.semiBold.secondary,
+                        style = typography().xs.semiBold.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -129,7 +129,7 @@ fun AlbumItem(
 
             BasicText(
                 text = year ?: "",
-                style = typography.xxs.semiBold.secondary,
+                style = typography().xxs.semiBold.secondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -147,8 +147,6 @@ fun AlbumItemPlaceholder(
     modifier: Modifier = Modifier,
     alternative: Boolean = false
 ) {
-    val (colorPalette, _, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
@@ -156,7 +154,7 @@ fun AlbumItemPlaceholder(
     ) {
         Spacer(
             modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = thumbnailShape)
+                .background(color = colorPalette().shimmer, shape = thumbnailShape())
                 .size(thumbnailSizeDp)
         )
 

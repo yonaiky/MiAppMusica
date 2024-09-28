@@ -68,9 +68,7 @@ import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -86,6 +84,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -217,7 +217,6 @@ fun ArtistScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(title = artist?.name ?: "Unknown") {
@@ -276,7 +275,7 @@ fun ArtistScreen(
 
                                 HeaderIconButton(
                                     icon = R.drawable.share_social,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
@@ -308,7 +307,6 @@ fun ArtistScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(title = artist?.name ?: "Unknown") {
@@ -319,7 +317,7 @@ fun ArtistScreen(
                                 HeaderIconButton(
                                     icon = R.drawable.enqueue,
                                     enabled = true,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
                                         .combinedClickable(
@@ -378,7 +376,7 @@ fun ArtistScreen(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     val sendIntent = Intent().apply {
                                         action = Intent.ACTION_SEND
@@ -396,15 +394,19 @@ fun ArtistScreen(
                     }
                 }
 
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
+                topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
+                topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
+                showButton2 = false,
                 tabIndex = tabIndex,
+                onHomeClick = {
+                    navController.navigate(NavRoutes.home.name)
+                },
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.overview), R.drawable.artist)

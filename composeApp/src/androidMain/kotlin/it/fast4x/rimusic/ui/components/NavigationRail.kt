@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -33,18 +30,17 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.navigationBarTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.navBarType
+import me.knighthat.typography
+import me.knighthat.uiType
 
 @Composable
 inline fun NavigationRail(
@@ -60,18 +56,10 @@ inline fun NavigationRail(
     tabIndex: Int,
     crossinline onTabIndexChanged: (Int) -> Unit,
     content: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    hideTabs: Boolean = false,
+    hideTabs: Boolean? = false,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     val isLandscape = isLandscape
-
-    val paddingValues = LocalPlayerAwareWindowInsets.current
-        .only(WindowInsetsSides.Vertical + WindowInsetsSides.Start).asPaddingValues()
-
-    val navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,14 +70,17 @@ inline fun NavigationRail(
             //.fillMaxWidth()
     ) {
 
-        if (!hideTabs)
+        if (hideTabs == false)
         //if(uiType == UiType.ViMusic)
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
                     .height(
-                        if(uiType == UiType.ViMusic)
-                            if (showButton2) Dimensions.headerHeight else Dimensions.halfheaderHeight
+                        if( uiType() == UiType.ViMusic )
+                            if (showButton2)
+                                Dimensions.headerHeight
+                            else
+                                Dimensions.halfheaderHeight
                         else 0.dp
                     )
                     /*
@@ -105,7 +96,7 @@ inline fun NavigationRail(
                     Image(
                         painter = painterResource(topIconButtonId),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                        colorFilter = ColorFilter.tint(colorPalette().favoritesIcon), //ColorFilter.tint(colorPalette().textSecondary),
                         modifier = Modifier
                             .offset(
                                 x = 0.dp, //if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
@@ -121,7 +112,7 @@ inline fun NavigationRail(
                     Image(
                         painter = painterResource(topIconButton2Id),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                        colorFilter = ColorFilter.tint(colorPalette().textSecondary),
                         modifier = Modifier
                             .offset(
                                 x = 0.dp, //if (isLandscape) 0.dp else Dimensions.navigationRailIconOffset,
@@ -138,7 +129,7 @@ inline fun NavigationRail(
             }
 
 
-        if (!hideTabs)
+        if (hideTabs == false)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -153,14 +144,14 @@ inline fun NavigationRail(
                 content { index, text, icon ->
 
                     val textColor by transition.animateColor(label = "") {
-                        if (it == index) colorPalette.text else colorPalette.textDisabled
+                        if (it == index) colorPalette().text else colorPalette().textDisabled
                     }
                     val dothAlpha by transition.animateFloat(label = "") {
                         if (it == index) 1f else 0f
                     }
 
                     val textContent: @Composable () -> Unit = {
-                        if (navigationBarType == NavigationBarType.IconOnly) {
+                        if ( navBarType() == NavigationBarType.IconOnly ) {
                             /*
                             BasicText(
                                 text = "",
@@ -174,9 +165,9 @@ inline fun NavigationRail(
                                 text = text,
                                 //style = typography.xs.semiBold.center.color(textColor),
                                 style = TextStyle(
-                                    fontSize = typography.xs.semiBold.fontSize,
-                                    fontWeight = typography.xs.semiBold.fontWeight,
-                                    color = colorPalette.text,
+                                    fontSize = typography().xs.semiBold.fontSize,
+                                    fontWeight = typography().xs.semiBold.fontWeight,
+                                    color = colorPalette().text,
                                     //textAlign = if(uiType != UiType.ViMusic) TextAlign.Center else TextAlign.End
 
                                 ),
@@ -189,7 +180,7 @@ inline fun NavigationRail(
                     }
 
                     val iconContent: @Composable () -> Unit = {
-                        if (navigationBarType == NavigationBarType.IconOnly) {
+                        if ( navBarType() == NavigationBarType.IconOnly ) {
                             Image(
                                 painter = painterResource(icon),
                                 contentDescription = null,
@@ -203,7 +194,7 @@ inline fun NavigationRail(
                             Image(
                                 painter = painterResource(icon),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.text),
+                                colorFilter = ColorFilter.tint(colorPalette().text),
                                 modifier = Modifier
                                     .vertical(enabled = !isLandscape)
                                     .graphicsLayer {
@@ -222,14 +213,14 @@ inline fun NavigationRail(
                     }
 
                     val textColor by transition.animateColor(label = "") {
-                        if (it == index) colorPalette.text else colorPalette.textDisabled
+                        if (it == index) colorPalette().text else colorPalette().textDisabled
                     }
 
                     val iconContent: @Composable () -> Unit = {
                         Image(
                             painter = painterResource(icon),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.text),
+                            colorFilter = ColorFilter.tint(colorPalette().text),
                             modifier = Modifier
                                 .vertical(enabled = !isLandscape)
                                 .graphicsLayer {
@@ -290,7 +281,7 @@ inline fun NavigationRail(
                 Image(
                     painter = painterResource(bottomIconButtonId ?: R.drawable.search ),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                    colorFilter = ColorFilter.tint(colorPalette().textSecondary),
                     modifier = Modifier
                         .clickable(onClick = onBottomIconButtonClick )
                         .padding(all = 12.dp)

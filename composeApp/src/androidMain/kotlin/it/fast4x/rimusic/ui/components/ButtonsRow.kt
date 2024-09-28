@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 @Composable
 fun <E> ButtonsRow(
@@ -21,7 +21,6 @@ fun <E> ButtonsRow(
     onValueUpdate: (E) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -35,10 +34,10 @@ fun <E> ButtonsRow(
                 selected = currentValue == value,
                 colors = FilterChipDefaults
                     .filterChipColors(
-                        containerColor = colorPalette.background1,
-                        labelColor = colorPalette.text,
-                        selectedContainerColor = colorPalette.background3,
-                        selectedLabelColor = colorPalette.text,
+                        containerColor = colorPalette().background1,
+                        labelColor = colorPalette().text,
+                        selectedContainerColor = colorPalette().background3,
+                        selectedLabelColor = colorPalette().text,
                     ),
                 onClick = { onValueUpdate(value) }
             )

@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -42,11 +41,11 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.ScrollingInfo
 import it.fast4x.rimusic.utils.floatActionIconOffsetXkey
 import it.fast4x.rimusic.utils.floatActionIconOffsetYkey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.scrollingInfo
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
+import me.knighthat.navBarPos
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -60,9 +59,11 @@ fun BoxScope.MultiFloatingActionsContainer(
     onClickSettings: (() -> Unit)? = null,
     onClickSearch: (() -> Unit)? = null
 ) {
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
-        Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
+    val additionalBottomPadding =
+        if ( navBarPos() == NavigationBarPosition.Bottom )
+            Dimensions.additionalVerticalSpaceForFloatingAction
+        else
+            0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -195,8 +196,7 @@ fun BoxScope.FloatingActions(
     onClick: (() -> Unit)? = null
 ) {
     val transition = updateTransition(transitionState, "")
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-    val additionalBottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
+    val additionalBottomPadding = if ( navBarPos() == NavigationBarPosition.Bottom )
         Dimensions.additionalVerticalSpaceForFloatingAction else 0.dp
     //val bottomPaddingValues = windowInsets.only(WindowInsetsSides.Bottom).asPaddingValues()
     val density = LocalDensity.current

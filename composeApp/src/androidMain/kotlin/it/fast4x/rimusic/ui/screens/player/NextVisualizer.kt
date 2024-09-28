@@ -31,12 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import me.knighthat.typography
 
 @UnstableApi
 @Composable
@@ -45,8 +45,6 @@ fun NextVisualizer(
 ) {
 
     val context = LocalContext.current
-    val (_,typography) = LocalAppearance.current
-
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
     if (visualizerEnabled) {
@@ -78,7 +76,7 @@ fun NextVisualizer(
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(0.75f),
-                    style = typography.xs.semiBold
+                    style = typography().xs.semiBold
                 )
                 /*
                 Spacer(modifier = Modifier.height(12.dp))

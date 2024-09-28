@@ -48,7 +48,6 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistModern
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.GetControls
 import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.buttonzoomoutKey
@@ -56,19 +55,19 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
-import kotlinx.coroutines.flow.distinctUntilChanged
-import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,9 +93,6 @@ fun Controls(
     duration: Long,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
-
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
 

@@ -50,10 +50,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Icon
-import androidx.compose.material3.rememberModalBottomSheetState
-
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,40 +80,65 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
+import androidx.compose.ui.util.lerp
+import androidx.compose.ui.zIndex
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
+import it.fast4x.rimusic.enums.CarouselSize
+import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
+import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueType
+import it.fast4x.rimusic.enums.SongsNumber
+import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.BlurParamsDialog
-import it.fast4x.rimusic.ui.components.themed.ThumbnailOffsetDialog
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -123,40 +147,67 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.components.themed.ThumbnailOffsetDialog
 import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.BlurTransformation
 import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.SearchYoutubeEntity
+import it.fast4x.rimusic.utils.actionspacedevenlyKey
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
+import it.fast4x.rimusic.utils.bottomgradientKey
+import it.fast4x.rimusic.utils.carouselKey
+import it.fast4x.rimusic.utils.carouselSizeKey
+import it.fast4x.rimusic.utils.cleanPrefix
+import it.fast4x.rimusic.utils.clickLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.expandedplayerKey
+import it.fast4x.rimusic.utils.expandedplayertoggleKey
+import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.fadingedgeKey
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToNext
+import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
+import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerTypeKey
+import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.positionAndDurationState
+import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
 import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
 import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
@@ -164,91 +215,40 @@ import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showalbumcoverKey
+import it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import it.fast4x.rimusic.utils.showsongsKey
+import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.showvisthumbnailKey
 import it.fast4x.rimusic.utils.shuffleQueue
+import it.fast4x.rimusic.utils.statsfornerdsKey
+import it.fast4x.rimusic.utils.swipeUpQueueKey
+import it.fast4x.rimusic.utils.tapqueueKey
+import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnail
+import it.fast4x.rimusic.utils.thumbnailOffsetKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
+import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import it.fast4x.rimusic.utils.verticalFadingEdge
+import it.fast4x.rimusic.utils.visualizerEnabledKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.absoluteValue
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.times
-import androidx.compose.ui.util.lerp
-import androidx.compose.ui.zIndex
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Timeline
-import dev.chrisbanes.haze.HazeDefaults
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
-import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ClickLyricsText
-import it.fast4x.rimusic.enums.PlayerType
-import it.fast4x.rimusic.enums.QueueType
-import it.fast4x.rimusic.enums.SongsNumber
-import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.enums.ThumbnailType
-import it.fast4x.rimusic.transaction
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.SearchYoutubeEntity
-import it.fast4x.rimusic.utils.actionspacedevenlyKey
-import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.expandedplayerKey
-import it.fast4x.rimusic.utils.expandedplayertoggleKey
-import it.fast4x.rimusic.utils.showthumbnailKey
-import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import it.fast4x.rimusic.utils.blackgradientKey
-import it.fast4x.rimusic.utils.visualizerEnabledKey
-import it.fast4x.rimusic.utils.bottomgradientKey
-import it.fast4x.rimusic.utils.carouselKey
-import it.fast4x.rimusic.utils.carouselSizeKey
-import it.fast4x.rimusic.utils.cleanPrefix
-import it.fast4x.rimusic.utils.textoutlineKey
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 import kotlin.Float.Companion.POSITIVE_INFINITY
-import it.fast4x.rimusic.utils.clickLyricsTextKey
-import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.discoverKey
-import it.fast4x.rimusic.utils.doubleShadowDrop
-import it.fast4x.rimusic.utils.expandedlyricsKey
-import it.fast4x.rimusic.utils.extraspaceKey
-import it.fast4x.rimusic.utils.fadingedgeKey
-import it.fast4x.rimusic.utils.forcePlayAtIndex
-import it.fast4x.rimusic.utils.forceSeekToPrevious
-import it.fast4x.rimusic.utils.horizontalFadingEdge
-import it.fast4x.rimusic.utils.noblurKey
-import it.fast4x.rimusic.utils.playerTypeKey
-import it.fast4x.rimusic.utils.playlistindicatorKey
-import it.fast4x.rimusic.utils.queueTypeKey
-import it.fast4x.rimusic.utils.resize
-import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
-import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
-import it.fast4x.rimusic.utils.showalbumcoverKey
-import it.fast4x.rimusic.utils.showsongsKey
-import it.fast4x.rimusic.utils.showvisthumbnailKey
-import it.fast4x.rimusic.utils.statsfornerdsKey
-import it.fast4x.rimusic.utils.swipeUpQueueKey
-import it.fast4x.rimusic.utils.tapqueueKey
-import it.fast4x.rimusic.utils.thumbnailOffsetKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.thumbnailSpacingKey
-import it.fast4x.rimusic.utils.thumbnailTypeKey
-import it.fast4x.rimusic.utils.verticalFadingEdge
-
+import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -274,8 +274,6 @@ fun PlayerModern(
 
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -559,7 +557,7 @@ fun PlayerModern(
 
                 BasicText(
                     text = stringResource(R.string.set_sleep_timer),
-                    style = typography.s.semiBold,
+                    style = typography().s.semiBold,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -581,11 +579,11 @@ fun PlayerModern(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount > 1) { amount-- }
                                 .size(48.dp)
-                                .background(colorPalette.background0)
+                                .background(colorPalette().background0)
                         ) {
                             BasicText(
                                 text = "-",
-                                style = typography.xs.semiBold
+                                style = typography().xs.semiBold
                             )
                         }
 
@@ -595,7 +593,7 @@ fun PlayerModern(
                                     R.string.left,
                                     formatAsDuration(amount * 5 * 60 * 1000L)
                                 ),
-                                style = typography.s.semiBold,
+                                style = typography().s.semiBold,
                                 modifier = Modifier
                                     .clickable {
                                         showCircularSlider = !showCircularSlider
@@ -610,18 +608,18 @@ fun PlayerModern(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount < 60) { amount++ }
                                 .size(48.dp)
-                                .background(colorPalette.background0)
+                                .background(colorPalette().background0)
                         ) {
                             BasicText(
                                 text = "+",
-                                style = typography.xs.semiBold
+                                style = typography().xs.semiBold
                             )
                         }
 
                     } else {
                         CircularSlider(
                             stroke = 40f,
-                            thumbColor = colorPalette.accent,
+                            thumbColor = colorPalette().accent,
                             text = formatAsDuration(amount * 5 * 60 * 1000L),
                             modifier = Modifier
                                 .size(300.dp),
@@ -658,12 +656,12 @@ fun PlayerModern(
                     IconButton(
                         onClick = { showCircularSlider = !showCircularSlider },
                         icon = R.drawable.time,
-                        color = colorPalette.text
+                        color = colorPalette().text
                     )
                     IconButton(
                         onClick = { isShowingSleepTimerDialog = false },
                         icon = R.drawable.close,
-                        color = colorPalette.text
+                        color = colorPalette().text
                     )
                     IconButton(
                         enabled = amount > 0,
@@ -672,14 +670,15 @@ fun PlayerModern(
                             isShowingSleepTimerDialog = false
                         },
                         icon = R.drawable.checkmark,
-                        color = colorPalette.accent
+                        color = colorPalette().accent
                     )
                 }
             }
         }
     }
 
-    var dynamicColorPalette by remember { mutableStateOf(colorPalette) }
+    val color = colorPalette()
+    var dynamicColorPalette by remember { mutableStateOf( color ) }
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
@@ -706,9 +705,9 @@ fun PlayerModern(
                     ),
                     isSystemDarkMode,
                     colorPaletteMode == ColorPaletteMode.PitchBlack
-                ) ?: colorPalette
+                ) ?: color
             } catch (e: Exception) {
-                dynamicColorPalette = colorPalette
+                dynamicColorPalette = color
                 e.printStackTrace()
             }
 
@@ -723,7 +722,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
             dynamicColorPalette.background2,
-            colorPalette.background2,
+            colorPalette().background2,
         ),
         listOf(0f, 1f)
     )
@@ -732,7 +731,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, 0f),
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
-            colorPalette.background1,
+            colorPalette().background1,
             dynamicColorPalette.accent,
         ),
         listOf(0f, 1f)
@@ -743,7 +742,7 @@ fun PlayerModern(
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
             //Color.White,
-            colorPalette.background2,
+            colorPalette().background2,
             Color.Transparent,
         ),
         listOf(0f, 1f)
@@ -897,7 +896,7 @@ fun PlayerModern(
                 .conditional (playerType == PlayerType.Essential) {
                     background(
                         //dynamicColorPalette.background1
-                        colorPalette.background1
+                        color.background1
                     )
                 }
         }
@@ -921,9 +920,9 @@ fun PlayerModern(
                     .background(
                         Brush.verticalGradient(
                             0.5f to dynamicColorPalette.background2,
-                            1.0f to if (blackgradient) Color.Black else colorPalette.background2,
-                            //0.0f to colorPalette.background0,
-                            //1.0f to colorPalette.background2,
+                            1.0f to if (blackgradient) Color.Black else colorPalette().background2,
+                            //0.0f to colorPalette().background0,
+                            //1.0f to colorPalette().background2,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1078,7 +1077,7 @@ fun PlayerModern(
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .conditional(tapqueue) { clickable { showQueue = true } }
                     .background(
-                        colorPalette.background2.copy(
+                        colorPalette().background2.copy(
                             alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
                         )
                     )
@@ -1102,9 +1101,9 @@ fun PlayerModern(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                //.background(colorPalette.background2.copy(alpha = 0.3f))
+                                //.background(colorPalette().background2.copy(alpha = 0.3f))
                                 .background(
-                                    colorPalette.background2.copy(
+                                    colorPalette().background2.copy(
                                         alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
                                     )
                                 )
@@ -1138,7 +1137,7 @@ fun PlayerModern(
                                                   }
                                               }
                                           ),
-                                      tint = colorPalette.accent
+                                      tint = colorPalette().accent
                                   )
                               }
 
@@ -1221,8 +1220,8 @@ fun PlayerModern(
                                                         ?: ""
                                                 ),
                                                 style = TextStyle(
-                                                    color = colorPalette.text,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    color = colorPalette().text,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1245,7 +1244,7 @@ fun PlayerModern(
                                                         0.65f
                                                     )
                                                     else Color.Black,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1262,8 +1261,8 @@ fun PlayerModern(
                                                 ).mediaMetadata.artist?.toString()
                                                     ?: "",
                                                 style = TextStyle(
-                                                    color = colorPalette.text,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    color = colorPalette().text,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1284,7 +1283,7 @@ fun PlayerModern(
                                                         0.65f
                                                     )
                                                     else Color.Black,
-                                                    fontSize = typography.xxxs.semiBold.fontSize,
+                                                    fontSize = typography().xxxs.semiBold.fontSize,
                                                 ),
                                                 maxLines = 1,
                                                 //overflow = TextOverflow.Ellipsis,
@@ -1321,7 +1320,7 @@ fun PlayerModern(
                         if (showButtonPlayerVideo)
                             IconButton(
                                 icon = R.drawable.video,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     binder.callPause {}
@@ -1334,7 +1333,7 @@ fun PlayerModern(
                         if (showButtonPlayerDiscover)
                             IconButton(
                                 icon = R.drawable.star_brilliant,
-                                color = if (discoverIsEnabled) colorPalette.text else colorPalette.textDisabled,
+                                color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .size(24.dp)
@@ -1354,7 +1353,7 @@ fun PlayerModern(
                         if (showButtonPlayerDownload)
                             DownloadStateIconButton(
                                 icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                                color = if (isDownloaded) colorPalette.accent else Color.Gray,
+                                color = if (isDownloaded) colorPalette().accent else Color.Gray,
                                 downloadState = downloadState,
                                 onClick = {
                                     manageDownload(
@@ -1373,7 +1372,7 @@ fun PlayerModern(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = if (songPlaylist > 0 && playlistindicator) colorPalette.text else colorPalette.accent,
+                                color = if (songPlaylist > 0 && playlistindicator) colorPalette().text else colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
@@ -1397,7 +1396,7 @@ fun PlayerModern(
                                     .size(24.dp)
                                     .conditional(songPlaylist > 0 && playlistindicator) {
                                         background(
-                                            colorPalette.accent,
+                                            color.accent,
                                             CircleShape
                                         )
                                     }
@@ -1413,7 +1412,7 @@ fun PlayerModern(
                         if (showButtonPlayerLoop)
                             IconButton(
                                 icon = R.drawable.repeat,
-                                color = if (trackLoopEnabled) colorPalette.accent else Color.Gray,
+                                color = if (trackLoopEnabled) colorPalette().accent else Color.Gray,
                                 onClick = {
                                     trackLoopEnabled = !trackLoopEnabled
                                     if (effectRotationEnabled) isRotated = !isRotated
@@ -1426,7 +1425,7 @@ fun PlayerModern(
                         if (showButtonPlayerShuffle)
                             IconButton(
                                 icon = R.drawable.shuffle,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     binder?.player?.shuffleQueue()
@@ -1439,7 +1438,7 @@ fun PlayerModern(
                         if (showButtonPlayerLyrics)
                             IconButton(
                                 icon = R.drawable.song_lyrics,
-                                color = if (isShowingLyrics)  colorPalette.accent else Color.Gray,
+                                color = if (isShowingLyrics)  colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
@@ -1452,7 +1451,7 @@ fun PlayerModern(
                          if (expandedplayertoggle && (!showlyricsthumbnail) && !expandedlyrics)
                             IconButton(
                                 icon = R.drawable.minmax,
-                                color = if (expandedplayer) colorPalette.accent else Color.Gray,
+                                color = if (expandedplayer) colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     expandedplayer = !expandedplayer
@@ -1465,7 +1464,7 @@ fun PlayerModern(
                         if (visualizerEnabled)
                             IconButton(
                                 icon = R.drawable.sound_effect,
-                                color = if (isShowingVisualizer) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isShowingVisualizer) colorPalette().text else colorPalette().textDisabled,
                                 enabled = true,
                                 onClick = {
                                     if (isShowingLyrics) isShowingLyrics = !isShowingLyrics
@@ -1479,7 +1478,7 @@ fun PlayerModern(
                         if (showButtonPlayerSleepTimer)
                             IconButton(
                                 icon = R.drawable.sleep,
-                                color = if (sleepTimerMillisLeft != null) colorPalette.accent else Color.Gray,
+                                color = if (sleepTimerMillisLeft != null) colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {
                                     isShowingSleepTimerDialog = true
@@ -1494,7 +1493,7 @@ fun PlayerModern(
 
                             IconButton(
                                 icon = R.drawable.equalizer,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     try {
@@ -1529,7 +1528,7 @@ fun PlayerModern(
                         if (showButtonPlayerArrow)
                             IconButton(
                                 icon = R.drawable.chevron_up,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
                                     showQueue = true
@@ -1542,7 +1541,7 @@ fun PlayerModern(
                         if (showButtonPlayerMenu && !isLandscape)
                             IconButton(
                                 icon = R.drawable.ellipsis_vertical,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
@@ -1566,7 +1565,7 @@ fun PlayerModern(
                         if (isLandscape) {
                             IconButton(
                                 icon = R.drawable.ellipsis_horizontal,
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         PlayerMenu(
@@ -1748,7 +1747,7 @@ fun PlayerModern(
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
-                                color = colorPalette.favoritesOverlay,
+                                color = color.favoritesOverlay,
                                 topLeft = Offset.Zero,
                                 size = Size(
                                     width = positionAndDuration.first.toFloat() /
@@ -2168,7 +2167,7 @@ fun PlayerModern(
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
                             drawRect(
-                                color = colorPalette.favoritesOverlay,
+                                color = color.favoritesOverlay,
                                 topLeft = Offset.Zero,
                                 size = Size(
                                     width = positionAndDuration.first.toFloat() /
@@ -2199,7 +2198,7 @@ fun PlayerModern(
                         Image(
                             painter = painterResource(R.drawable.chevron_down),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                            colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                             modifier = Modifier
                                 .clickable {
                                     onDismiss()
@@ -2213,7 +2212,7 @@ fun PlayerModern(
                         Image(
                             painter = painterResource(R.drawable.app_icon),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                            colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                             modifier = Modifier
                                 .clickable {
                                     onDismiss()
@@ -2229,7 +2228,7 @@ fun PlayerModern(
                             Image(
                                 painter = painterResource(R.drawable.ellipsis_vertical),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.collapsedPlayerProgressBar),
+                                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                                 modifier = Modifier
                                     .clickable {
                                         menuState.display {
@@ -2478,7 +2477,7 @@ fun PlayerModern(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.time),
-                            colorFilter = ColorFilter.tint(colorPalette.accent),
+                            colorFilter = ColorFilter.tint(colorPalette().accent),
                             modifier = Modifier
                                 .size(20.dp)
                                 .padding(horizontal = 5.dp),
@@ -2489,16 +2488,16 @@ fun PlayerModern(
                         Box {
                             BasicText(
                                 text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography.xxs.semiBold.merge(TextStyle(
+                                style = typography().xxs.semiBold.merge(TextStyle(
                                     textAlign = TextAlign.Center,
-                                    color = colorPalette.text,
+                                    color = colorPalette().text,
                                 )),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
                             BasicText(
                                 text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography.xxs.semiBold.merge(TextStyle(
+                                style = typography().xxs.semiBold.merge(TextStyle(
                                     textAlign = TextAlign.Center,
                                     drawStyle = Stroke(
                                         width = 1f,
@@ -2580,8 +2579,8 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showQueue,
             onDismissRequest = { showQueue = false },
-            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
-            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette.background2,
+            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
+            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
                 .fillMaxWidth()
                 .hazeChild(state = hazeState),
@@ -2589,8 +2588,8 @@ fun PlayerModern(
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()
@@ -2604,15 +2603,15 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showFullLyrics,
             onDismissRequest = { showFullLyrics = false },
-            containerColor = colorPalette.background2,
-            contentColor = colorPalette.background2,
+            containerColor = colorPalette().background2,
+            contentColor = colorPalette().background2,
             modifier = Modifier.fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()
@@ -2626,8 +2625,8 @@ fun PlayerModern(
         CustomModalBottomSheet(
             showSheet = showSearchEntity,
             onDismissRequest = { showSearchEntity = false },
-            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
-            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette.background2,
+            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
+            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
                 .fillMaxWidth()
                 .hazeChild(state = hazeState),
@@ -2635,8 +2634,8 @@ fun PlayerModern(
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette.background0,
-                    shape = thumbnailShape
+                    color = colorPalette().background0,
+                    shape = thumbnailShape()
                 ) {}
             },
             shape = thumbnailRoundness.shape()

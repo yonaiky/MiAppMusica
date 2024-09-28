@@ -54,11 +54,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey
 import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.colorPalette
 
 enum class MultiFabState {
     Collapsed, Expanded
@@ -79,7 +79,6 @@ fun MultiFloatingActionsButton (
     onStateChanged: ((state: MultiFabState) -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     var currentState by remember { mutableStateOf(MultiFabState.Collapsed) }
     val stateTransition: Transition<MultiFabState> =
         updateTransition(targetState = currentState, label = "")
@@ -132,6 +131,7 @@ fun MultiFloatingActionsButton (
             contentAlignment = Alignment.BottomEnd
         ) {
             if (currentState == MultiFabState.Expanded) {
+                val color = colorPalette().favoritesIcon.copy(0.85f)
                 Canvas(modifier = Modifier
                     //.border(BorderStroke(1.dp, Color.Green))
                     .fillMaxSize()
@@ -141,8 +141,7 @@ fun MultiFloatingActionsButton (
                     }) {
                     translate(150f, top = 300f) {
                         scale(5f) {}
-                        drawCircle(colorPalette.favoritesIcon.copy(0.85f), radius = 200.dp.toPx())
-
+                        drawCircle( color, radius = 200.dp.toPx() )
                     }
                 }
             }
@@ -181,8 +180,8 @@ fun MultiFloatingActionsButton (
                             }
                         }
                         .clip(RoundedCornerShape(16.dp))
-                        //.background(colorPalette.favoritesIcon)
-                        .background(colorPalette.background2)
+                        //.background(colorPalette().favoritesIcon)
+                        .background(colorPalette().background2)
                         //.padding(all = 20.dp)
                         //.padding(horizontal = 20.dp)
                         .height(64.dp)
@@ -209,7 +208,7 @@ fun MultiFloatingActionsButton (
                         Image(
                             painter = painterResource(R.drawable.settings),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette.text),
+                            colorFilter = ColorFilter.tint(colorPalette().text),
                             modifier = Modifier
                                 .padding(top = 5.dp, end = 5.dp)
                                 .rotate(rotation)
@@ -221,7 +220,7 @@ fun MultiFloatingActionsButton (
                     Image(
                         painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.text),
+                        colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
                             .rotate(rotation)
                             .align(Alignment.Center)
@@ -242,7 +241,6 @@ fun SmallFloatingActionButtonRow(
     showLabel: Boolean,
     stateTransition: Transition<MultiFabState>
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val alpha: Float by stateTransition.animateFloat(
         transitionSpec = {
             tween(durationMillis = 50)
@@ -274,8 +272,8 @@ fun SmallFloatingActionButtonRow(
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },
-            containerColor = colorPalette.background2,
-            contentColor = colorPalette.favoritesIcon
+            containerColor = colorPalette().background2,
+            contentColor = colorPalette().favoritesIcon
         ) {
             Icon(
                 painter = item.icon,

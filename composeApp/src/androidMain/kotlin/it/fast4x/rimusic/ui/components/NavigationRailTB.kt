@@ -41,12 +41,12 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.navigationBarTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.navBarType
+import me.knighthat.typography
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -67,8 +67,6 @@ inline fun NavigationRailTB(
     hideTabs: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     /*
     val isLandscape = isLandscape
 
@@ -77,19 +75,17 @@ inline fun NavigationRailTB(
 
      */
 
-    val navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconAndText)
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
     //val localSheetState = LocalPlayerSheetState.current
     /*
     val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom)
         if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
     else 0.dp
      */
-    val bottomPadding = if (navigationBarPosition == NavigationBarPosition.Bottom) bottomDp else 5.dp
+    val bottomPadding = if ( navBarPos() == NavigationBarPosition.Bottom ) bottomDp else 5.dp
 
     //val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
     val topPadding = 0.dp
@@ -103,9 +99,6 @@ inline fun NavigationRailTB(
             //.background(colorPalette.background0)
             //.background(colorPalette.background1)
             //.background(Color.Transparent)
-
-
-
     ) {
 
         if (!hideTabs)
@@ -124,7 +117,10 @@ inline fun NavigationRailTB(
                 content { index, text, icon ->
 
                     val textColor by transition.animateColor(label = "") {
-                        if (it == index) colorPalette.text else colorPalette.textDisabled
+                        if (it == index)
+                            colorPalette().text
+                        else
+                            colorPalette().textDisabled
                     }
 
                     val contentModifier = Modifier
@@ -135,7 +131,7 @@ inline fun NavigationRailTB(
                         Box(
                             modifier = contentModifier
                         ) {
-                            if (navigationBarType == NavigationBarType.IconOnly) {
+                            if ( navBarType() == NavigationBarType.IconOnly ) {
                                 Image(
                                     painter = painterResource(icon),
                                     contentDescription = null,
@@ -163,9 +159,9 @@ inline fun NavigationRailTB(
                                         BasicText(
                                             text = text,
                                             style = TextStyle(
-                                                fontSize = typography.xs.semiBold.fontSize,
-                                                fontWeight = typography.xs.semiBold.fontWeight,
-                                                fontFamily = typography.xs.semiBold.fontFamily,
+                                                fontSize = typography().xs.semiBold.fontSize,
+                                                fontWeight = typography().xs.semiBold.fontWeight,
+                                                fontFamily = typography().xs.semiBold.fontFamily,
                                                 color = textColor,
                                             ),
                                             maxLines = 2,
@@ -182,14 +178,14 @@ inline fun NavigationRailTB(
                    }
 
                 val scrollState = rememberScrollState()
-                val roundedCornerShape = if (navigationBarPosition == NavigationBarPosition.Bottom)
+                val roundedCornerShape = if ( navBarPos() == NavigationBarPosition.Bottom )
                     RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
                 else RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(roundedCornerShape)
-                        .background(colorPalette.background1)
+                        .background(colorPalette().background1)
                 ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -213,7 +209,7 @@ inline fun NavigationRailTB(
                             Image(
                                 painter = painterResource(topIconButtonId),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.favoritesIcon), //ColorFilter.tint(colorPalette.textSecondary),
+                                colorFilter = ColorFilter.tint(colorPalette().favoritesIcon), //ColorFilter.tint(colorPalette().textSecondary),
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .clickable(onClick = onTopIconButtonClick)
@@ -225,7 +221,7 @@ inline fun NavigationRailTB(
                             Image(
                                 painter = painterResource(topIconButton2Id),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                                colorFilter = ColorFilter.tint(colorPalette().textSecondary),
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .clickable(onClick = onTopIconButton2Click)
@@ -238,7 +234,7 @@ inline fun NavigationRailTB(
                             Image(
                                 painter = painterResource(bottomIconButtonId ?: R.drawable.search),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette.textSecondary),
+                                colorFilter = ColorFilter.tint(colorPalette().textSecondary),
                                 modifier = Modifier
                                     .clickable(onClick = onBottomIconButtonClick)
                                     .padding(all = 4.dp)

@@ -18,9 +18,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 fun ButtonWithTitle(
@@ -29,7 +30,6 @@ fun ButtonWithTitle(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -40,7 +40,7 @@ fun ButtonWithTitle(
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(colorPalette.favoritesIcon)
+                .background(colorPalette().favoritesIcon)
                 .clickable(onClick = onClick)
         ) {
             Icon(
@@ -52,7 +52,7 @@ fun ButtonWithTitle(
 
         Text(
             text = title,
-            style = typography.xxs.semiBold,
+            style = typography().xxs.semiBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

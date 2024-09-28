@@ -83,7 +83,6 @@ import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
@@ -111,6 +110,8 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.typography
 import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
@@ -609,7 +610,6 @@ fun FolderItemMenu(
     onDismiss: () -> Unit,
     onEnqueue: () -> Unit,
 ) {
-    val (colorPalette) = LocalAppearance.current
     val density = LocalDensity.current
 
     Menu(
@@ -624,7 +624,7 @@ fun FolderItemMenu(
             Image(
                 painter = painterResource(R.drawable.chevron_down),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.text),
+                colorFilter = ColorFilter.tint(colorPalette().text),
                 modifier = Modifier
                     .absoluteOffset(0.dp, -10.dp)
                     .align(Alignment.TopCenter)
@@ -685,7 +685,6 @@ fun MediaItemMenu(
     onShare: () -> Unit,
     onGoToPlaylist: ((Long) -> Unit)? = null
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val density = LocalDensity.current
 
     val binder = LocalPlayerServiceBinder.current
@@ -888,7 +887,7 @@ fun MediaItemMenu(
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette.textSecondary,
+                        color = colorPalette().textSecondary,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -906,7 +905,7 @@ fun MediaItemMenu(
                 if (pinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.pinned_playlists),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -923,7 +922,7 @@ fun MediaItemMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette.text,
+                                        color = colorPalette().text,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -943,7 +942,7 @@ fun MediaItemMenu(
                 if (unpinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.playlists),
-                        style = typography.m.semiBold,
+                        style = typography().m.semiBold,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -962,14 +961,14 @@ fun MediaItemMenu(
                                         Image(
                                             painter = painterResource(R.drawable.piped_logo),
                                             contentDescription = null,
-                                            colorFilter = ColorFilter.tint(colorPalette.red),
+                                            colorFilter = ColorFilter.tint(colorPalette().red),
                                             modifier = Modifier
                                                 .size(18.dp)
                                         )
 
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette.text,
+                                        color = colorPalette().text,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -1005,7 +1004,7 @@ fun MediaItemMenu(
                     Image(
                         painter = painterResource(R.drawable.chevron_down),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette.text),
+                        colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
                             .absoluteOffset(0.dp, -10.dp)
                             .align(Alignment.TopCenter)
@@ -1061,8 +1060,8 @@ fun MediaItemMenu(
                         IconButton(
                             icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
                             //icon = R.drawable.heart,
-                            color = colorPalette.favoritesIcon,
-                            //color = if (likedAt == null) colorPalette.textDisabled else colorPalette.text,
+                            color = colorPalette().favoritesIcon,
+                            //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
                                 query {
                                     if (Database.like(
@@ -1081,7 +1080,7 @@ fun MediaItemMenu(
 
                         if (!isLocal) IconButton(
                             icon = R.drawable.share_social,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = onShare,
                             modifier = Modifier
                                 .padding(all = 4.dp)
@@ -1100,7 +1099,7 @@ fun MediaItemMenu(
                             .padding(start = 12.dp, end = 12.dp)
                             .fillMaxWidth()
                             //.border(BorderStroke(1.dp, Color.Red))
-                            .background(colorPalette.background1)
+                            .background(colorPalette().background1)
                     ) {
                         artistsList.forEach { artist ->
                             if (artist != null) {
@@ -1133,7 +1132,7 @@ fun MediaItemMenu(
                     modifier = Modifier
                         .alpha(0.5f)
                         .align(Alignment.CenterHorizontally)
-                        .background(colorPalette.textDisabled)
+                        .background(colorPalette().textDisabled)
                         .height(1.dp)
                         .fillMaxWidth(1f)
                 )
@@ -1220,7 +1219,6 @@ fun MediaItemMenu(
                 // TODO: find solution to this shit
                 onShowSleepTimer?.let {
                     val binder = LocalPlayerServiceBinder.current
-                    val (_, typography) = LocalAppearance.current
                     var isShowingSleepTimerDialog by remember {
                         mutableStateOf(false)
                     }
@@ -1261,7 +1259,7 @@ fun MediaItemMenu(
 
                                 BasicText(
                                     text = stringResource(R.string.set_sleep_timer),
-                                    style = typography.s.semiBold,
+                                    style = typography().s.semiBold,
                                     modifier = Modifier
                                         .padding(vertical = 8.dp, horizontal = 24.dp)
                                 )
@@ -1283,11 +1281,11 @@ fun MediaItemMenu(
                                                 .clip(CircleShape)
                                                 .clickable(enabled = amount > 1) { amount-- }
                                                 .size(48.dp)
-                                                .background(colorPalette.background0)
+                                                .background(colorPalette().background0)
                                         ) {
                                             BasicText(
                                                 text = "-",
-                                                style = typography.xs.semiBold
+                                                style = typography().xs.semiBold
                                             )
                                         }
 
@@ -1297,7 +1295,7 @@ fun MediaItemMenu(
                                                     R.string.left,
                                                     formatAsDuration(amount * 5 * 60 * 1000L)
                                                 ),
-                                                style = typography.s.semiBold,
+                                                style = typography().s.semiBold,
                                                 modifier = Modifier
                                                     .clickable {
                                                         showCircularSlider = !showCircularSlider
@@ -1312,18 +1310,18 @@ fun MediaItemMenu(
                                                 .clip(CircleShape)
                                                 .clickable(enabled = amount < 60) { amount++ }
                                                 .size(48.dp)
-                                                .background(colorPalette.background0)
+                                                .background(colorPalette().background0)
                                         ) {
                                             BasicText(
                                                 text = "+",
-                                                style = typography.xs.semiBold
+                                                style = typography().xs.semiBold
                                             )
                                         }
 
                                     } else {
                                         CircularSlider(
                                             stroke = 40f,
-                                            thumbColor = colorPalette.accent,
+                                            thumbColor = colorPalette().accent,
                                             text = formatAsDuration(amount * 5 * 60 * 1000L),
                                             modifier = Modifier
                                                 .size(300.dp),
@@ -1360,12 +1358,12 @@ fun MediaItemMenu(
                                     IconButton(
                                         onClick = { showCircularSlider = !showCircularSlider },
                                         icon = R.drawable.time,
-                                        color = colorPalette.text
+                                        color = colorPalette().text
                                     )
                                     IconButton(
                                         onClick = { isShowingSleepTimerDialog = false },
                                         icon = R.drawable.close,
-                                        color = colorPalette.text
+                                        color = colorPalette().text
                                     )
                                     IconButton(
                                         enabled = amount > 0,
@@ -1374,7 +1372,7 @@ fun MediaItemMenu(
                                             isShowingSleepTimerDialog = false
                                         },
                                         icon = R.drawable.checkmark,
-                                        color = colorPalette.accent
+                                        color = colorPalette().accent
                                     )
                                 }
                             }
@@ -1396,10 +1394,10 @@ fun MediaItemMenu(
                                                 .plusSeconds(it / 1000)
                                                 .format(DateTimeFormatter.ofPattern("HH:mm:ss")) + " " +
                                             stringResource(R.string.sleeptimer_stop),
-                                    style = typography.xxs.medium,
+                                    style = typography().xxs.medium,
                                     modifier = modifier
                                         .background(
-                                            color = colorPalette.background0,
+                                            color = colorPalette().background0,
                                             shape = RoundedCornerShape(16.dp)
                                         )
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -1420,7 +1418,7 @@ fun MediaItemMenu(
                                 painter = painterResource(R.drawable.chevron_forward),
                                 contentDescription = null,
                                 colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                    colorPalette.textSecondary
+                                    colorPalette().textSecondary
                                 ),
                                 modifier = Modifier
                                     .size(16.dp)

@@ -56,7 +56,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
@@ -65,11 +64,13 @@ import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.intent
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -83,7 +84,6 @@ import kotlin.system.exitProcess
 @Composable
 fun DataSettings() {
     val context = LocalContext.current
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
 
     var coilDiskCacheMaxSize by rememberPreference(
@@ -181,18 +181,18 @@ fun DataSettings() {
             content = {
                 BasicText(
                     text = stringResource(R.string.restore_completed),
-                    style = typography.s.bold.copy(color = colorPalette.text),
+                    style = typography().s.bold.copy(color = colorPalette().text),
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 BasicText(
                     text = stringResource(R.string.click_to_close),
-                    style = typography.xs.semiBold.copy(color = colorPalette.textSecondary),
+                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Image(
                     painter = painterResource(R.drawable.server),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.shimmer),
+                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier
                         .size(40.dp)
                         .clickable {
@@ -248,8 +248,6 @@ fun DataSettings() {
         Database.queriesCount().distinctUntilChanged()
     }.collectAsState(initial = 0)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     var cleanCacheOfflineSongs by remember {
         mutableStateOf(false)
     }
@@ -303,15 +301,14 @@ fun DataSettings() {
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right)
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
             /*
@@ -368,7 +365,7 @@ fun DataSettings() {
                     HeaderIconButton(
                         icon = R.drawable.trash,
                         enabled = true,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = { cleanCacheImages = true }
                     )
                 },
@@ -487,13 +484,13 @@ fun DataSettings() {
                         text = stringResource(R.string.song_cache_max_size),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        style = typography.xs.semiBold.secondary.copy(color = colorPalette.text),
+                        style = typography().xs.semiBold.secondary.copy(color = colorPalette().text),
                     )
                     BasicText(
                         text = Formatter.formatShortFileSize(context, diskCacheSize),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled),
+                        style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
                     )
                 }
 
@@ -501,7 +498,7 @@ fun DataSettings() {
                 HeaderIconButton(
                     icon = R.drawable.trash,
                     enabled = true,
-                    color = colorPalette.text,
+                    color = colorPalette().text,
                     onClick = { cleanCacheOfflineSongs = true }
                 )
             }
@@ -527,7 +524,7 @@ fun DataSettings() {
                     HeaderIconButton(
                         icon = R.drawable.trash,
                         enabled = true,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = { cleanCacheOfflineSongs = true }
                     )
                 },
@@ -630,7 +627,7 @@ fun DataSettings() {
                     HeaderIconButton(
                         icon = R.drawable.trash,
                         enabled = true,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = { cleanDownloadCache = true }
                     )
                 },
