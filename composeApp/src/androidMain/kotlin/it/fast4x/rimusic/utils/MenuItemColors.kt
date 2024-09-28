@@ -2,7 +2,6 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.runtime.Composable
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.colorPalette
 

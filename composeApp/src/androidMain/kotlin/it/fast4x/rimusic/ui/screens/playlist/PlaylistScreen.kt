@@ -18,7 +18,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 

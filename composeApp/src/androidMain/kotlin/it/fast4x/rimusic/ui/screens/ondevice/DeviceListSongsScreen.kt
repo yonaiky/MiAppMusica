@@ -25,7 +25,6 @@ import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistSongs
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey

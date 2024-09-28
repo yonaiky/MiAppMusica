@@ -4,7 +4,6 @@ import androidx.annotation.IntRange
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import me.knighthat.colorPalette
 
 @Composable

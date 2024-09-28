@@ -2,7 +2,6 @@ package it.fast4x.rimusic.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
@@ -13,7 +12,6 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import timber.log.Timber
-import java.security.GeneralSecurityException
 
 
 const val pipedUsernameKey = "pipedUsername"

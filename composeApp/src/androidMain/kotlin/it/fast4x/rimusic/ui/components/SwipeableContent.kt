@@ -31,15 +31,12 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.albumItemToggleBookmarked
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.colorPalette
-import org.jetbrains.compose.resources.getString
-import rimusic.composeapp.generated.resources.Res
 
 @Composable
 fun SwipeableContent(

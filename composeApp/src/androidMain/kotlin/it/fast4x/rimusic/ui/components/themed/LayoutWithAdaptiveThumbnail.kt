@@ -22,7 +22,6 @@ import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.isLandscape

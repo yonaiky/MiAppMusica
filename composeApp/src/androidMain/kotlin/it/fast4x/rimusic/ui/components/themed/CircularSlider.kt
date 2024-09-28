@@ -23,7 +23,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import me.knighthat.colorPalette
 import kotlin.math.PI
 import kotlin.math.atan2

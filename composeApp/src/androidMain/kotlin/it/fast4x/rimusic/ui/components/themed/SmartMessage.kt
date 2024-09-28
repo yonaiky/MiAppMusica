@@ -11,8 +11,6 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.messageTypeKey
 import it.fast4x.rimusic.utils.preferences
-import it.fast4x.rimusic.utils.toast
-import it.fast4x.rimusic.utils.toastLong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

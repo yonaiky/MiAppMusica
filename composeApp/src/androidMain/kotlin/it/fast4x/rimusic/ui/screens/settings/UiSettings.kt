@@ -59,11 +59,11 @@ import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.FontType
-import it.fast4x.rimusic.enums.Languages
-import it.fast4x.rimusic.enums.MaxStatisticsItems
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.IconLikeType
+import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.MaxStatisticsItems
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.MessageType
@@ -95,7 +95,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey

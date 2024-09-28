@@ -3,7 +3,6 @@ package it.fast4x.rimusic.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import timber.log.Timber
-import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
