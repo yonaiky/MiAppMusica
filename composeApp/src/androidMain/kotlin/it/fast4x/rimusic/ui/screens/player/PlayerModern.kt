@@ -1007,8 +1007,8 @@ fun PlayerModern(
 
 
     val controlsContent: @Composable (
-        //modifier: Modifier
-    ) -> Unit = { //modifier ->
+        modifier: Modifier
+    ) -> Unit = { modifierValue ->
         Controls(
             navController = navController,
             onCollapse = onDismiss,
@@ -1022,7 +1022,7 @@ fun PlayerModern(
             shouldBePlaying = shouldBePlaying,
             position = positionAndDuration.first,
             duration = positionAndDuration.second,
-            modifier = modifier,
+            modifier = modifierValue,
             onBlurScaleChange = { blurStrength = it }
         )
     }
@@ -2023,12 +2023,11 @@ fun PlayerModern(
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
-                            /*
-                            modifier = Modifier
+                           Modifier
                                 .padding(vertical = 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
-                             */
+
                         )
                     } else {
 
@@ -2526,12 +2525,11 @@ fun PlayerModern(
                     .conditional(!expandedplayer){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
                         controlsContent(
-                            /*
-                            modifier = Modifier
+                            Modifier
                                 .padding(vertical = 4.dp)
                                 .fillMaxWidth()
                             //.weight(1f)
-                             */
+
                         )
                     } else {
                                 Controls(
@@ -2541,12 +2539,15 @@ fun PlayerModern(
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
+
                                     /*
+                                    TODO: fix this because index not always correct and cause crash
                                     title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
                                         ?: "",
 
                                      */
                                     artist = mediaItem.mediaMetadata.artist?.toString(),
+                                    //TODO: fix this because index not always correct and cause crash
                                     //artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,

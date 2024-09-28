@@ -1674,6 +1674,9 @@ fun UiSettings(
                 title = stringResource(R.string.navigation_bar_position),
                 selectedValue = navigationBarPosition,
                 onValueSelected = { navigationBarPosition = it },
+                // As of version 0.6.53, changing navigation bar to top or bottom
+                // while using ViMusic theme breaks the UI
+                isEnabled = uiType != UiType.ViMusic,
                 valueText = {
                     when (it) {
                         NavigationBarPosition.Left -> stringResource(R.string.direction_left)

@@ -2,6 +2,7 @@ package it.fast4x.rimusic.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
@@ -11,6 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import timber.log.Timber
+import java.security.GeneralSecurityException
 
 
 const val pipedUsernameKey = "pipedUsername"
@@ -42,15 +45,34 @@ inline fun <reified T : Enum<T>> SharedPreferences.Editor.putEnum(
 
 
 val Context.encryptedPreferences: SharedPreferences
-    get() = EncryptedSharedPreferences.create(
-        applicationContext,
-        "secure_preferences",
-        MasterKey.Builder(applicationContext, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build(),
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    get() = getEncryptedSharedPreferencesResult().onFailure {
+        // idea based on https://gist.github.com/rynkowsg/86ebd680a67669dfcece4cc9ec9974df
+        run {
+            Timber.w("Cannot retrieve preferences encrypted with current master key. Deleting and recreating.")
+
+            /**
+             * can only delete preferences this way on high enough API level.
+             * the code should behave the same as before for lower api levels
+             * (maybe this bug is only present on devices with high API levels anyway).
+             */
+            if (isAtLeastAndroid7) {
+                deleteSharedPreferences("secure_preferences")
+            }
+            return getEncryptedSharedPreferencesResult().getOrThrow()
+        }
+    }.getOrThrow()
+
+fun Context.getEncryptedSharedPreferencesResult(): Result<SharedPreferences> = runCatching {
+        EncryptedSharedPreferences.create(
+            applicationContext,
+            "secure_preferences",
+            MasterKey.Builder(applicationContext, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build(),
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
 
 @Composable
 fun rememberEncryptedPreference(key: String, defaultValue: Boolean): MutableState<Boolean> {

@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
+    alias(libs.plugins.conveyor)
 }
 
 repositories {
@@ -17,13 +18,14 @@ repositories {
     mavenCentral()
     //mavenLocal()
     maven { url = uri("https://jitpack.io") }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_22)
             freeCompilerArgs.add("-Xcontext-receivers")
         }
     }
@@ -41,11 +43,23 @@ kotlin {
 
         val desktopMain by getting
         desktopMain.dependencies {
-            implementation(compose.material3)
-            implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.desktop.currentOs)
+
+            implementation(libs.material.icon.desktop)
+            implementation(libs.vlcj)
+
+            runtimeOnly(libs.kotlinx.coroutines.swing)
+            implementation(libs.coil.network.okhttp)
+
+            /*
+            // Uncomment only for build jvm desktop version
+            // Comment before build android version
+            configurations.commonMainApi {
+                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
+            }
+             */
+
         }
 
         androidMain.dependencies {
@@ -68,6 +82,11 @@ kotlin {
             implementation(libs.mediaplayer.kmp)
 
             implementation(libs.navigation.kmp)
+
+            //coil3 mp
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
 
         }
     }
@@ -92,8 +111,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 57
-        versionName = "0.6.53"
+        versionCode = 58
+        versionName = "0.6.54"
     }
 
     splits {
@@ -153,8 +172,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_22
+        targetCompatibility = JavaVersion.VERSION_22
     }
 
     composeOptions {
@@ -174,15 +193,40 @@ android {
 
 }
 
+
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(22))
+    }
+}
+
 compose.desktop {
     application {
 
         mainClass = "MainKt"
 
+
+        //conveyor
+        version = "0.0.1"
+        group = "rimusic"
+/*
+
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            vendor = "fast4x RiMusic"
+            description = "Desktop music player"
+        }
+        */
+
+        //jpackage
+        nativeDistributions {
+            //conveyor
+            vendor = "RiMusic.DesktopApp"
+            description = "RiMusic Desktop Music Player"
+
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "RiMusic.DesktopApp"
-            packageVersion = "1.0.0"
+            packageVersion = "0.0.1"
 
             /*
             val iconsRoot = project.file("desktop-icons")
@@ -198,6 +242,7 @@ compose.desktop {
 
              */
         }
+
     }
 }
 
@@ -205,7 +250,6 @@ compose.resources {
     publicResClass = true
     generateResClass = always
 }
-
 /*
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -232,10 +276,6 @@ dependencies {
     }
 
 }
-
-// Solves implicit dependency issue and IDEs source code detection.
-// commented and replaced
-//kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
 
 dependencies {
 
@@ -282,7 +322,6 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(projects.innertube)
-    implementation(projects.innertubes)
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)
