@@ -6,16 +6,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.favoritesIcon
+import me.knighthat.colorPalette
 
 @Composable
 fun <E> ButtonsRow(
@@ -24,7 +21,6 @@ fun <E> ButtonsRow(
     onValueUpdate: (E) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -38,10 +34,10 @@ fun <E> ButtonsRow(
                 selected = currentValue == value,
                 colors = FilterChipDefaults
                     .filterChipColors(
-                        containerColor = colorPalette.background1,
-                        labelColor = colorPalette.text,
-                        selectedContainerColor = colorPalette.background3,
-                        selectedLabelColor = colorPalette.text,
+                        containerColor = colorPalette().background1,
+                        labelColor = colorPalette().text,
+                        selectedContainerColor = colorPalette().background3,
+                        selectedLabelColor = colorPalette().text,
                     ),
                 onClick = { onValueUpdate(value) }
             )

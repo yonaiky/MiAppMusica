@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -27,6 +26,9 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
 
 @Composable
 fun VideoItem(
@@ -58,8 +60,6 @@ fun VideoItem(
     thumbnailWidthDp: Dp,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = false,
         thumbnailSizeDp = 0.dp,
@@ -71,19 +71,19 @@ fun VideoItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clip(thumbnailShape)
+                    .clip(thumbnailShape())
                     .size(width = thumbnailWidthDp, height = thumbnailHeightDp)
             )
 
             duration?.let {
                 BasicText(
                     text = duration,
-                    style = typography.xxs.medium.color(colorPalette.onOverlay),
+                    style = typography().xxs.medium.color(colorPalette().onOverlay),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(all = 4.dp)
-                        .background(color = colorPalette.overlay, shape = RoundedCornerShape(2.dp))
+                        .background(color = colorPalette().overlay, shape = RoundedCornerShape(2.dp))
                         .padding(horizontal = 4.dp, vertical = 2.dp)
                         .align(Alignment.BottomEnd)
                 )
@@ -93,7 +93,7 @@ fun VideoItem(
         ItemInfoContainer {
             BasicText(
                 text = title ?: "",
-                style = typography.xs.semiBold,
+                style = typography().xs.semiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -102,7 +102,7 @@ fun VideoItem(
 
             BasicText(
                 text = uploader ?: "",
-                style = typography.xs.semiBold.secondary,
+                style = typography().xs.semiBold.secondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -112,7 +112,7 @@ fun VideoItem(
             views?.let {
                 BasicText(
                     text = views,
-                    style = typography.xxs.medium.secondary,
+                    style = typography().xxs.medium.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -130,8 +130,6 @@ fun VideoItemPlaceholder(
     thumbnailWidthDp: Dp,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, _, thumbnailShape) = LocalAppearance.current
-
     ItemContainer(
         alternative = false,
         thumbnailSizeDp = 0.dp,
@@ -139,7 +137,7 @@ fun VideoItemPlaceholder(
     ) {
         Spacer(
             modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = thumbnailShape)
+                .background(color = colorPalette().shimmer, shape = thumbnailShape())
                 .size(width = thumbnailWidthDp, height = thumbnailHeightDp)
         )
 

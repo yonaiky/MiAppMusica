@@ -88,9 +88,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
@@ -105,7 +103,6 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
@@ -116,6 +113,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
+import me.knighthat.uiType
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,11 +140,9 @@ fun ArtistOverviewModern(
     thumbnailContent: @Composable () -> Unit,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     val songThumbnailSizeDp = Dimensions.thumbnails.song
     val songThumbnailSizePx = songThumbnailSizeDp.px
@@ -178,9 +177,6 @@ fun ArtistOverviewModern(
 
     val translator = Translator(getHttpClient())
     val languageDestination = languageDestination()
-
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     val listMediaItems = remember { mutableListOf<MediaItem>() }
 
     var artist by persist<Artist?>("artist/$browseId/artist")
@@ -196,21 +192,20 @@ fun ArtistOverviewModern(
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette.background0)
+                .background(colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if (navigationBarPosition == NavigationBarPosition.Left ||
-                        navigationBarPosition == NavigationBarPosition.Top ||
-                        navigationBarPosition == NavigationBarPosition.Bottom
-                    ) 1f
-                    else Dimensions.contentWidthRightBar
+                    if ( navBarPos() != NavigationBarPosition.Right )
+                        1f
+                    else
+                        Dimensions.contentWidthRightBar
                 )
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     /*
@@ -247,11 +242,11 @@ fun ArtistOverviewModern(
 
                         AutoResizeText(
                             text = youtubeArtistPage.name.toString(),
-                            style = typography.l.semiBold,
+                            style = typography().l.semiBold,
                             fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                            fontWeight = typography.l.semiBold.fontWeight,
-                            fontFamily = typography.l.semiBold.fontFamily,
-                            color = typography.l.semiBold.color,
+                            fontWeight = typography().l.semiBold.fontWeight,
+                            fontFamily = typography().l.semiBold.fontFamily,
+                            color = typography().l.semiBold.color,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
@@ -268,7 +263,7 @@ fun ArtistOverviewModern(
                                     stringResource(R.string.artist_subscribers),
                                     it
                                 ),
-                                style = typography.xs.semiBold,
+                                style = typography().xs.semiBold,
                                 maxLines = 1,
                                 modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -278,7 +273,7 @@ fun ArtistOverviewModern(
                          */
                         HeaderIconButton(
                             icon = R.drawable.share_social,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             iconSize = 24.dp,
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
@@ -327,7 +322,7 @@ fun ArtistOverviewModern(
                                 stringResource(R.string.artist_subscribers),
                                 it
                             ),
-                            style = typography.xs.semiBold,
+                            style = typography().xs.semiBold,
                             maxLines = 1
                         )
                     }
@@ -362,7 +357,7 @@ fun ArtistOverviewModern(
 
                     HeaderIconButton(
                         icon = R.drawable.downloaded,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -410,7 +405,7 @@ fun ArtistOverviewModern(
 
                     HeaderIconButton(
                         icon = R.drawable.download,
-                        color = colorPalette.text,
+                        color = colorPalette().text,
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -449,7 +444,7 @@ fun ArtistOverviewModern(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = true,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -468,7 +463,7 @@ fun ArtistOverviewModern(
                         HeaderIconButton(
                             icon = R.drawable.radio,
                             enabled = true,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -487,7 +482,7 @@ fun ArtistOverviewModern(
                         HeaderIconButton(
                             icon = R.drawable.enqueue,
                             enabled = true,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
@@ -670,14 +665,14 @@ fun ArtistOverviewModern(
                             /*
                             BasicText(
                                 text = stringResource(R.string.albums),
-                                style = typography.m.semiBold,
+                                style = typography().m.semiBold,
                                 modifier = sectionTextModifier
                             )
 
                             youtubeArtistPage.albumsEndpoint?.let {
                                 BasicText(
                                     text = stringResource(R.string.view_all),
-                                    style = typography.xs.secondary,
+                                    style = typography().xs.secondary,
                                     modifier = sectionTextModifier
                                         .clickable(onClick = onViewAllAlbumsClick),
                                 )
@@ -725,14 +720,14 @@ fun ArtistOverviewModern(
                             /*
                             BasicText(
                                 text = stringResource(R.string.singles),
-                                style = typography.m.semiBold,
+                                style = typography().m.semiBold,
                                 modifier = sectionTextModifier
                             )
 
                             youtubeArtistPage.singlesEndpoint?.let {
                                 BasicText(
                                     text = stringResource(R.string.view_all),
-                                    style = typography.xs.secondary,
+                                    style = typography().xs.secondary,
                                     modifier = sectionTextModifier
                                         .clickable(onClick = onViewAllSinglesClick),
                                 )
@@ -767,7 +762,7 @@ fun ArtistOverviewModern(
 
                         BasicText(
                             text = stringResource(R.string.information),
-                            style = typography.m.semiBold.align(TextAlign.Start),
+                            style = typography().m.semiBold.align(TextAlign.Start),
                             modifier = sectionTextModifier
                                 .fillMaxWidth()
                         )
@@ -781,7 +776,7 @@ fun ArtistOverviewModern(
                         ) {
                             IconButton(
                                 icon = R.drawable.translate,
-                                color = if (translateEnabled == true) colorPalette.text else colorPalette.textDisabled,
+                                color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
                                 enabled = true,
                                 onClick = {},
                                 modifier = Modifier
@@ -798,7 +793,7 @@ fun ArtistOverviewModern(
                             )
                             BasicText(
                                 text = "“",
-                                style = typography.xxl.semiBold,
+                                style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
                                     .align(Alignment.Top)
@@ -835,7 +830,7 @@ fun ArtistOverviewModern(
 
                             BasicText(
                                 text = translatedText,
-                                style = typography.xxs.secondary.align(TextAlign.Justify),
+                                style = typography().xxs.secondary.align(TextAlign.Justify),
                                 modifier = Modifier
                                     .padding(horizontal = 8.dp)
                                     .weight(1f)
@@ -843,7 +838,7 @@ fun ArtistOverviewModern(
 
                             BasicText(
                                 text = "„",
-                                style = typography.xxl.semiBold,
+                                style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)
                                     .align(Alignment.Bottom)
@@ -853,7 +848,7 @@ fun ArtistOverviewModern(
                         if (attributionsIndex != -1) {
                             BasicText(
                                 text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography.xxs.color(colorPalette.textDisabled).align(TextAlign.Start),
+                                style = typography().xxs.color(colorPalette().textDisabled).align(TextAlign.Start),
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(bottom = 16.dp)
@@ -874,7 +869,7 @@ fun ArtistOverviewModern(
 
                         BasicText(
                             text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                            style = typography.xxs.medium,
+                            style = typography().xxs.medium,
                             maxLines = 1
                         )
 
@@ -898,7 +893,7 @@ fun ArtistOverviewModern(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if(uiType == UiType.ViMusic && showFloatingIcon)
+            if( uiType() == UiType.ViMusic && showFloatingIcon )
                 youtubeArtistPage?.radioEndpoint?.let { endpoint ->
 
                     MultiFloatingActionsContainer(

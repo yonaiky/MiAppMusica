@@ -43,11 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
-import it.fast4x.piped.models.Instance
 import it.fast4x.piped.Piped
-
+import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -62,9 +60,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.TextCopyToClipboard
-import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.extraspaceKey
@@ -81,7 +77,6 @@ import it.fast4x.rimusic.utils.isPipedCustomEnabledKey
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
@@ -96,6 +91,9 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.thumbnailShape
 import timber.log.Timber
 import java.io.File
 import java.net.Proxy
@@ -106,7 +104,6 @@ import java.net.Proxy
 @Composable
 fun OtherSettings() {
     val context = LocalContext.current
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -153,8 +150,6 @@ fun OtherSettings() {
 
     //var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
     var blackListedPaths by remember {
@@ -173,15 +168,14 @@ fun OtherSettings() {
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background( colorPalette().background0 )
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
             /*
@@ -420,7 +414,7 @@ fun OtherSettings() {
                         ),
                         text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(pipedInstanceName) else "",
                         icon = R.drawable.piped_logo,
-                        iconColor = colorPalette.red,
+                        iconColor = colorPalette().red,
                         onClick = {
                             if (pipedApiToken.isNotEmpty()) {
                                 pipedApiToken = ""
@@ -461,7 +455,7 @@ fun OtherSettings() {
                         ),
                         text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
                         icon = R.drawable.logo_discord,
-                        iconColor = colorPalette.text,
+                        iconColor = colorPalette().text,
                         onClick = {
                             if (discordPersonalAccessToken.isNotEmpty())
                                 discordPersonalAccessToken = ""
@@ -475,15 +469,15 @@ fun OtherSettings() {
                         onDismissRequest = {
                             loginDiscord = false
                         },
-                        containerColor = colorPalette.background0,
-                        contentColor = colorPalette.background0,
+                        containerColor = colorPalette().background0,
+                        contentColor = colorPalette().background0,
                         modifier = Modifier.fillMaxWidth(),
                         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                         dragHandle = {
                             Surface(
                                 modifier = Modifier.padding(vertical = 0.dp),
-                                color = colorPalette.background0,
-                                shape = thumbnailShape
+                                color = colorPalette().background0,
+                                shape = thumbnailShape()
                             ) {}
                         },
                         shape = thumbnailRoundness.shape()

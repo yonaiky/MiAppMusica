@@ -4,8 +4,6 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.MusicShelfRenderer
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.v0624.podcasts.BrowsePodcastsResponse0624

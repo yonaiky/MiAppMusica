@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 val GridMenuItemHeight = 96.dp
 
@@ -42,12 +42,11 @@ fun GridMenu(
     content: LazyGridScope.() -> Unit
 ) {
 
-    val (colorPalette) = LocalAppearance.current
     Column(
         modifier = modifier
             .padding(top = 48.dp)
             .fillMaxWidth()
-            .background(colorPalette.background1)
+            .background(colorPalette().background1)
             .padding(top = 2.dp)
             .padding(vertical = 8.dp),
     ) {

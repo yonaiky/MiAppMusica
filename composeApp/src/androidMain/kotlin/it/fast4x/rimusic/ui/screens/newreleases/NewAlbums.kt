@@ -28,18 +28,17 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPage
-import it.fast4x.innertube.requests.discoverPageNewAlbums
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
+import me.knighthat.colorPalette
 
 @ExperimentalTextApi
 @UnstableApi
@@ -50,8 +49,6 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 fun NewAlbums(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
-
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryAlbums")
     LaunchedEffect(Unit) {
         discoverPage = Innertube.discoverPage()
@@ -72,7 +69,7 @@ fun NewAlbums(
 
     Column(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -91,7 +88,7 @@ fun NewAlbums(
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                 //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                 //.fillMaxSize()
             ) {
                 item(

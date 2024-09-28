@@ -4,7 +4,6 @@ import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -27,36 +25,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.models.ui.UiMedia
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.ProgressPercentage
 import it.fast4x.rimusic.ui.components.SeekBar
 import it.fast4x.rimusic.ui.components.SeekBarAudioWaves
-import it.fast4x.rimusic.ui.components.SeekBarColored
 import it.fast4x.rimusic.ui.components.SeekBarCustom
 import it.fast4x.rimusic.ui.components.SeekBarThin
 import it.fast4x.rimusic.ui.components.SeekBarWaved
-import it.fast4x.rimusic.ui.components.WaveInteraction
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.utils.transparentbarKey
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -68,7 +59,6 @@ fun GetSeekBar(
     ) {
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
-    val (colorPalette, typography) = LocalAppearance.current
     val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
@@ -130,8 +120,8 @@ fun GetSeekBar(
                     scrubbingPosition?.let(binder.player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                color = colorPalette().collapsedPlayerProgressBar,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 shape = RoundedCornerShape(8.dp),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
@@ -155,8 +145,8 @@ fun GetSeekBar(
                     scrubbingPosition?.let(binder.player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                color = colorPalette().collapsedPlayerProgressBar,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 shape = RoundedCornerShape(8.dp),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
@@ -180,8 +170,8 @@ fun GetSeekBar(
                     scrubbingPosition?.let(binder.player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                color = colorPalette().collapsedPlayerProgressBar,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 shape = RoundedCornerShape(8.dp),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
@@ -228,9 +218,9 @@ fun GetSeekBar(
                 }
                  */
                 },
-                color = colorPalette.collapsedPlayerProgressBar,
+                color = colorPalette().collapsedPlayerProgressBar,
                 isActive = binder.player.isPlaying,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 shape = RoundedCornerShape(8.dp),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
@@ -239,8 +229,8 @@ fun GetSeekBar(
         if (playerTimelineType == PlayerTimelineType.FakeAudioBar)
             SeekBarAudioWaves(
                 progressPercentage = ProgressPercentage(position.toFloat() / duration.toFloat()),
-                playedColor = colorPalette.accent,
-                notPlayedColor = if (transparentbar) Color.Transparent else colorPalette.textSecondary,
+                playedColor = colorPalette().accent,
+                notPlayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 waveInteraction = {
                     scrubbingPosition = (it.value * duration.toFloat()).toLong()
                     binder.player.seekTo(scrubbingPosition!!)
@@ -271,8 +261,8 @@ fun GetSeekBar(
                     scrubbingPosition?.let(binder.player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette.collapsedPlayerProgressBar,
-                backgroundColor = colorPalette.textSecondary,
+                color = colorPalette().collapsedPlayerProgressBar,
+                backgroundColor = colorPalette().textSecondary,
                 shape = RoundedCornerShape(8.dp),
             )
          */
@@ -297,13 +287,13 @@ fun GetSeekBar(
         ) {
             BasicText(
                 text = formatAsDuration(scrubbingPosition ?: position),
-                style = typography.xxs.semiBold,
+                style = typography().xxs.semiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             BasicText(
                 text = formatAsDuration(scrubbingPosition ?: position),
-                style = typography.xxs.semiBold.merge(TextStyle(
+                style = typography().xxs.semiBold.merge(TextStyle(
                     drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                     color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black)),
@@ -342,7 +332,7 @@ fun GetSeekBar(
                     ){
                     BasicText(
                         text = "-${formatAsDuration(timeRemaining.toLong())}",
-                        style = typography.xxs.semiBold,
+                        style = typography().xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -350,7 +340,7 @@ fun GetSeekBar(
                     )
                     BasicText(
                         text = "-${formatAsDuration(timeRemaining.toLong())}",
-                        style = typography.xxs.semiBold.merge(TextStyle(
+                        style = typography().xxs.semiBold.merge(TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                             color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                             else Color.Black)),
@@ -370,7 +360,7 @@ fun GetSeekBar(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.time),
-                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                        colorFilter = ColorFilter.tint(colorPalette().accent),
                         modifier = Modifier
                             .size(20.dp)
                             .padding(horizontal = 5.dp),
@@ -379,7 +369,7 @@ fun GetSeekBar(
                     )
                     BasicText(
                         text = " ${formatAsTime(totalPlayTimes)}",
-                        style = typography.xxs.semiBold,
+                        style = typography().xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -389,7 +379,7 @@ fun GetSeekBar(
             } else {
                /* Image(
                     painter = painterResource(R.drawable.pause),
-                    colorFilter = ColorFilter.tint(colorPalette.accent),
+                    colorFilter = ColorFilter.tint(colorPalette().accent),
                     modifier = Modifier
                         .size(20.dp),
                     contentDescription = "Background Image",
@@ -400,7 +390,7 @@ fun GetSeekBar(
             /*
             BasicText(
                 text = "-${formatAsDuration(timeRemaining.toLong())} / ${formatAsDuration(duration)}",
-                style = typography.xxs.semiBold,
+                style = typography().xxs.semiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -410,13 +400,13 @@ fun GetSeekBar(
             ) {
                 BasicText(
                     text = formatAsDuration(duration),
-                    style = typography.xxs.semiBold,
+                    style = typography().xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 BasicText(
                     text = formatAsDuration(duration),
-                    style = typography.xxs.semiBold.merge(
+                    style = typography().xxs.semiBold.merge(
                         TextStyle(
                             drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                             color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(

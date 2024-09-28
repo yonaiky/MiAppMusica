@@ -31,13 +31,12 @@ import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.toUiMood
-import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.Scaffold
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchResultRoute
 import it.fast4x.rimusic.ui.screens.searchRoute
 import it.fast4x.rimusic.utils.CheckAvailableNewVersion
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.enableQuickPicksPageKey
 import it.fast4x.rimusic.utils.getEnum
@@ -47,6 +46,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
+import me.knighthat.uiType
 
 const val PINNED_PREFIX = "pinned:"
 const val MODIFIED_PREFIX = "modified:"
@@ -76,7 +76,6 @@ fun HomeScreen(
     val preferences = LocalContext.current.preferences
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val enableQuickPicksPage by rememberPreference(enableQuickPicksPageKey, true)
 
     PersistMapCleanup("home/")
@@ -217,14 +216,14 @@ fun HomeScreen(
                     //settingsRoute()
                     navController.navigate(NavRoutes.settings.name)
                 },
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = {
                     //statisticsTypeRoute(StatisticsType.Today)
                     navController.navigate(NavRoutes.statistics.name)
                 },
-                showButton2 = if(uiType == UiType.RiMusic) false else showStatsInNavbar,
-                showBottomButton = if(uiType == UiType.RiMusic) false else showSearchTab,
+                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
+                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)

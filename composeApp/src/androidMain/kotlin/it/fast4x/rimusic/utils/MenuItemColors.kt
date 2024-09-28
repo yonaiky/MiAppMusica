@@ -2,19 +2,18 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.runtime.Composable
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import me.knighthat.colorPalette
 
 @Composable
 fun menuItemColors(): MenuItemColors {
-    val (colorPalette, _) = LocalAppearance.current
     return MenuItemColors(
-        leadingIconColor =  colorPalette.favoritesIcon,
-        trailingIconColor =  colorPalette.favoritesIcon,
-        textColor = colorPalette.textSecondary,
-        disabledTextColor = colorPalette.text,
-        disabledLeadingIconColor = colorPalette.text,
-        disabledTrailingIconColor = colorPalette.text,
+        leadingIconColor =  colorPalette().favoritesIcon,
+        trailingIconColor =  colorPalette().favoritesIcon,
+        textColor = colorPalette().textSecondary,
+        disabledTextColor = colorPalette().text,
+        disabledLeadingIconColor = colorPalette().text,
+        disabledTrailingIconColor = colorPalette().text,
     )
 
 }

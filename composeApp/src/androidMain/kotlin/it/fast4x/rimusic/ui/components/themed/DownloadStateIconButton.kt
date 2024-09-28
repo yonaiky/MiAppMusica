@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -18,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
-import it.fast4x.rimusic.ui.styling.LocalAppearance
+import me.knighthat.colorPalette
 
 @UnstableApi
 @Composable
@@ -32,15 +31,13 @@ fun DownloadStateIconButton(
     downloadState: Int
 ) {
 
-    val (colorPalette, typography) = LocalAppearance.current
-
     if (downloadState == Download.STATE_DOWNLOADING
                 || downloadState == Download.STATE_QUEUED
                 || downloadState == Download.STATE_RESTARTING
                 ){
         CircularProgressIndicator(
             strokeWidth = 2.dp,
-            color = colorPalette.text,
+            color = colorPalette().text,
             modifier = Modifier
                 .size(16.dp)
 

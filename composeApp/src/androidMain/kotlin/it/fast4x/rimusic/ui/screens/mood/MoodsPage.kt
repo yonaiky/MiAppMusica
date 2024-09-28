@@ -3,8 +3,6 @@ package it.fast4x.rimusic.ui.screens.mood
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,17 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,10 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
@@ -56,12 +45,11 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.colorPalette
+import me.knighthat.navBarPos
+import me.knighthat.typography
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -69,7 +57,6 @@ import it.fast4x.rimusic.utils.secondary
 fun MoodsPage(
     navController: NavController
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryMoods")
@@ -77,8 +64,6 @@ fun MoodsPage(
         discoverPage = Innertube.discoverPage()
     }
     val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
-
 
     val moodAngGenresLazyGridState = rememberLazyGridState()
 
@@ -89,24 +74,24 @@ fun MoodsPage(
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
-
     Column (
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
-            .fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left ||
-                navigationBarPosition == NavigationBarPosition.Top ||
-                navigationBarPosition == NavigationBarPosition.Bottom) 1f
-            else Dimensions.contentWidthRightBar)
+            .fillMaxWidth(
+                if( navBarPos() != NavigationBarPosition.Right )
+                    1f
+                else
+                    Dimensions.contentWidthRightBar
+            )
     ) {
         discoverPage?.getOrNull()?.let { moodResult ->
             LazyVerticalGrid(
                 state = moodAngGenresLazyGridState,
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -157,7 +142,7 @@ fun MoodsPage(
         } ?: discoverPage?.exceptionOrNull()?.let {
             BasicText(
                 text = stringResource(R.string.page_not_been_loaded),
-                style = typography.s.secondary.center,
+                style = typography().s.secondary.center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(all = 16.dp)

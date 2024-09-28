@@ -81,6 +81,7 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
+import it.fast4x.compose.reordering.animateItemPlacement
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
@@ -124,17 +125,16 @@ import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
+import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.home.PINNED_PREFIX
 import it.fast4x.rimusic.ui.screens.home.PIPED_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MONTHLY_PREFIX
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -160,6 +160,7 @@ import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playlistSongSortByKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -178,13 +179,14 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
+import me.knighthat.typography
+import me.knighthat.uiType
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
-import it.fast4x.compose.reordering.animateItemPlacement
-import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
-import it.fast4x.rimusic.utils.parentalControlEnabledKey
 
 
 @KotlinCsvExperimental
@@ -201,10 +203,8 @@ fun LocalPlaylistSongs(
     playlistId: Long,
     onDelete: () -> Unit,
 ) {
-    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
-    val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
@@ -675,7 +675,7 @@ fun LocalPlaylistSongs(
 
     Box(
         modifier = Modifier
-            .background(colorPalette.background0)
+            .background(colorPalette().background0)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -693,7 +693,7 @@ fun LocalPlaylistSongs(
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
                 //    .asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette.background0)
+                    .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -733,10 +733,10 @@ fun LocalPlaylistSongs(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            //.background(colorPalette.background4)
+                            //.background(colorPalette().background4)
                             .fillMaxSize(0.99F)
                             .background(
-                                color = colorPalette.background1,
+                                color = colorPalette().background1,
                                 shape = thumbnailRoundness.shape()
                             )
                     ) {
@@ -789,7 +789,7 @@ fun LocalPlaylistSongs(
                             HeaderIconButton(
                                 icon = R.drawable.smart_shuffle,
                                 enabled = true,
-                                color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                                color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -808,7 +808,7 @@ fun LocalPlaylistSongs(
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = playlistSongs.isNotEmpty() == true,
-                                color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                color = if (playlistSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -839,7 +839,7 @@ fun LocalPlaylistSongs(
                                 modifier = Modifier.padding(horizontal = 5.dp),
                                 onClick = { searching = !searching },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp
                             )
                         }
@@ -867,7 +867,7 @@ fun LocalPlaylistSongs(
                                         true
                                     ) == true
                                 )
-                                    colorPalette.text else colorPalette.textDisabled,
+                                    colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -896,7 +896,7 @@ fun LocalPlaylistSongs(
                             HeaderIconButton(
                                 icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
                                 enabled = playlistSongs.isNotEmpty() == true,
-                                color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                color = if (playlistSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -922,7 +922,7 @@ fun LocalPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
                             enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (playlistSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -988,7 +988,7 @@ fun LocalPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.download,
                             enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                            color = if (playlistSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -1041,7 +1041,7 @@ fun LocalPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.enqueue,
                         enabled = playlistSongs.isNotEmpty(),
-                        color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        color = if (playlistSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             playlistSongs
                                 .map(Song::asMediaItem)
@@ -1056,7 +1056,7 @@ fun LocalPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.smart_shuffle,
                         enabled = true,
-                        color = if (isRecommendationEnabled) colorPalette.text else colorPalette.textDisabled,
+                        color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             isRecommendationEnabled = !isRecommendationEnabled
                         }
@@ -1065,7 +1065,7 @@ fun LocalPlaylistSongs(
                     HeaderIconButton(
                         icon = R.drawable.shuffle,
                         enabled = playlistSongs.isNotEmpty() == true,
-                        color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                        color = if (playlistSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                         onClick = {
                             playlistSongs.let { songs ->
                                 if (songs.isNotEmpty()) {
@@ -1081,7 +1081,7 @@ fun LocalPlaylistSongs(
                     */
                         HeaderIconButton(
                             icon = R.drawable.ellipsis_horizontal,
-                            color = colorPalette.text, //if (playlistWithSongs?.songs?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                            color = colorPalette().text, //if (playlistWithSongs?.songs?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
                             enabled = true, //playlistWithSongs?.songs?.isNotEmpty() == true,
                             modifier = Modifier
                                 .padding(end = 4.dp),
@@ -1349,7 +1349,7 @@ fun LocalPlaylistSongs(
 
                         HeaderIconButton(
                             icon = R.drawable.arrow_up,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             onClick = { sortOrder = !sortOrder },
                             modifier = Modifier
                                 .graphicsLayer { rotationZ = sortOrderIconRotation }
@@ -1374,7 +1374,7 @@ fun LocalPlaylistSongs(
                                 PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                                 PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             },
-                            style = typography.xs.semiBold,
+                            style = typography().xs.semiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -1435,7 +1435,7 @@ fun LocalPlaylistSongs(
                                     ),
                                 icon = R.drawable.locate,
                                 enabled = playlistSongs.isNotEmpty(),
-                                color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                                color = if (playlistSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {}
                             )
                             LaunchedEffect(scrollToNowPlaying) {
@@ -1448,7 +1448,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             onClick = { searching = !searching },
                             icon = R.drawable.search_circle,
-                            color = colorPalette.text,
+                            color = colorPalette().text,
                             iconSize = 24.dp
                         )
                          */
@@ -1476,7 +1476,7 @@ fun LocalPlaylistSongs(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography.xs.semiBold,
+                                textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -1484,7 +1484,7 @@ fun LocalPlaylistSongs(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette.text),
+                                cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -1495,7 +1495,7 @@ fun LocalPlaylistSongs(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette.favoritesIcon,
+                                            color = colorPalette().favoritesIcon,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -1516,7 +1516,7 @@ fun LocalPlaylistSongs(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography.xs.semiBold.secondary.copy(color = colorPalette.textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
                                             )
                                         }
 
@@ -1527,7 +1527,7 @@ fun LocalPlaylistSongs(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette.background4,
+                                        colorPalette().background4,
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
@@ -1610,7 +1610,7 @@ fun LocalPlaylistSongs(
 
                                 IconButton(
                                     icon = R.drawable.reorder,
-                                    color = colorPalette.textDisabled,
+                                    color = colorPalette().textDisabled,
                                     indication = rippleIndication,
                                     onClick = {},
                                     modifier = Modifier
@@ -1702,8 +1702,8 @@ fun LocalPlaylistSongs(
                                                     listMediaItems.remove(song.asMediaItem)
                                             },
                                             colors = CheckboxDefaults.colors(
-                                                checkedColor = colorPalette.accent,
-                                                uncheckedColor = colorPalette.text
+                                                checkedColor = colorPalette().accent,
+                                                uncheckedColor = colorPalette().text
                                             ),
                                             modifier = Modifier
                                                 .scale(0.7f)
@@ -1714,8 +1714,8 @@ fun LocalPlaylistSongs(
                                     if (sortBy == PlaylistSongSortBy.PlayTime) {
                                         BasicText(
                                             text = song.song.formattedTotalPlayTime,
-                                            style = typography.xxs.semiBold.center.color(
-                                                colorPalette.onOverlay
+                                            style = typography().xxs.semiBold.center.color(
+                                                colorPalette().onOverlay
                                             ),
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis,
@@ -1725,10 +1725,10 @@ fun LocalPlaylistSongs(
                                                     brush = Brush.verticalGradient(
                                                         colors = listOf(
                                                             Color.Transparent,
-                                                            colorPalette.overlay
+                                                            colorPalette().overlay
                                                         )
                                                     ),
-                                                    shape = thumbnailShape
+                                                    shape = thumbnailShape()
                                                 )
                                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                                                 .align(Alignment.BottomCenter)
@@ -1739,7 +1739,7 @@ fun LocalPlaylistSongs(
                                 if (sortBy == PlaylistSongSortBy.Position)
                                     BasicText(
                                         text = (index + 1).toString(),
-                                        style = typography.m.semiBold.center.color(colorPalette.onOverlay),
+                                        style = typography().m.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
@@ -1748,7 +1748,7 @@ fun LocalPlaylistSongs(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette.overlay
+                                                        colorPalette().overlay
                                                     )
                                                 ),
                                                 shape = thumbnailShape
@@ -1800,7 +1800,7 @@ fun LocalPlaylistSongs(
                                     )
 
  */
-                                    .background(color = colorPalette.background0)
+                                    .background(color = colorPalette().background0)
                                     .zIndex(2f)
                             )
                         }
@@ -1819,7 +1819,7 @@ fun LocalPlaylistSongs(
             FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if (uiType == UiType.ViMusic && showFloatingIcon)
+            if ( uiType() == UiType.ViMusic && showFloatingIcon )
                 FloatingActionsContainerWithScrollToTop(
                     lazyListState = lazyListState,
                     iconId = R.drawable.shuffle,

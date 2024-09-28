@@ -3,16 +3,12 @@ package it.fast4x.innertube.requests
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.FormData
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
-import it.fast4x.innertube.models.v0624.charts.MusicResponsiveListItemRenderer
-import java.util.Locale.IsoCountryCode
 
 suspend fun Innertube.chartsPage(countryCode: String = "") = runCatching {
     val response = client.post(browse) {

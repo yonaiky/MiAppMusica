@@ -26,9 +26,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.textCopyFromClipboard
+import me.knighthat.colorPalette
+import me.knighthat.typography
 
 @Composable
 inline fun InputTextField(
@@ -39,7 +40,6 @@ inline fun InputTextField(
     crossinline setValue: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography) = LocalAppearance.current
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
     val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
@@ -55,13 +55,13 @@ inline fun InputTextField(
     Column(
         modifier = modifier
             .padding(all = 10.dp)
-            .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+            .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
             .padding(vertical = 16.dp)
             .defaultMinSize(Dp.Unspecified, 190.dp)
     ) {
         BasicText(
             text = title,
-            style = typography.s.semiBold,
+            style = typography().s.semiBold,
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 24.dp)
         )
@@ -77,12 +77,12 @@ inline fun InputTextField(
                     //.padding(horizontal = 30.dp)
                     .fillMaxWidth(0.7f),
                 colors = TextFieldDefaults.textFieldColors(
-                    placeholderColor = colorPalette.textDisabled,
-                    cursorColor = colorPalette.text,
-                    textColor = colorPalette.text,
-                    backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette.background1 else colorPalette.red,
-                    focusedIndicatorColor = colorPalette.accent,
-                    unfocusedIndicatorColor = colorPalette.textDisabled
+                    placeholderColor = colorPalette().textDisabled,
+                    cursorColor = colorPalette().text,
+                    textColor = colorPalette().text,
+                    backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
+                    focusedIndicatorColor = colorPalette().accent,
+                    unfocusedIndicatorColor = colorPalette().textDisabled
                 ),
                 leadingIcon = {
 /*

@@ -43,14 +43,13 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
+import me.knighthat.colorPalette
+import me.knighthat.uiType
 
 @OptIn(KotlinCsvExperimental::class)
 @ExperimentalMaterialApi
@@ -66,8 +65,6 @@ fun LocalPlaylistScreenWithoutNavBar(
     modifier: Modifier = Modifier,
     playerEssential: @Composable () -> Unit = {}
 ) {
-    val (colorPalette) = LocalAppearance.current
-    val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -78,9 +75,9 @@ fun LocalPlaylistScreenWithoutNavBar(
         host {
             androidx.compose.material3.Scaffold(
                 modifier = modifier,
-                containerColor = colorPalette.background0,
+                containerColor = colorPalette().background0,
                 topBar = {
-                    if( uiType == UiType.RiMusic )
+                    if( uiType() == UiType.RiMusic )
                         AppBar(navController)
                 }
             ) {
@@ -93,10 +90,10 @@ fun LocalPlaylistScreenWithoutNavBar(
 
                     Row(
                         modifier = modifier
-                            .background(colorPalette.background0)
+                            .background(colorPalette().background0)
                             .fillMaxSize()
                     ) {
-                        val topPadding = if (uiType == UiType.ViMusic) 30.dp else 0.dp
+                        val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
 
                         AnimatedContent(
                             targetState = 0,

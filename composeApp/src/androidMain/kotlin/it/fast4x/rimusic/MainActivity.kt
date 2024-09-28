@@ -114,7 +114,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.player.PlayerEssential
 import it.fast4x.rimusic.ui.screens.player.PlayerModern
-import it.fast4x.rimusic.ui.screens.player.PlayerSheetState
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance
@@ -199,6 +198,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -766,7 +767,6 @@ class MainActivity :
                     if (appRunningInBackground) showPlayer = false
 
 
-                    val (colorPalette, typography, thumbnailShape) = LocalAppearance.current
                     val thumbnailRoundness by rememberPreference(
                         thumbnailRoundnessKey,
                         ThumbnailRoundness.Heavy
@@ -802,15 +802,15 @@ class MainActivity :
                             showPlayer = false
                             switchToAudioPlayer = false
                         },
-                        containerColor = colorPalette.background0,
-                        contentColor = colorPalette.background0,
+                        containerColor = colorPalette().background0,
+                        contentColor = colorPalette().background0,
                         modifier = Modifier.fillMaxWidth(),
                         sheetState = playerState,
                         dragHandle = {
                             Surface(
                                 modifier = Modifier.padding(vertical = 0.dp),
-                                color = colorPalette.background0,
-                                shape = thumbnailShape
+                                color = colorPalette().background0,
+                                shape = thumbnailShape()
                             ) {}
                         },
                         shape = thumbnailRoundness.shape()
@@ -821,15 +821,15 @@ class MainActivity :
                     CustomModalBottomSheet(
                         showSheet = isVideo && isVideoEnabled && showPlayer,
                         onDismissRequest = { showPlayer = false },
-                        containerColor = colorPalette.background0,
-                        contentColor = colorPalette.background0,
+                        containerColor = colorPalette().background0,
+                        contentColor = colorPalette().background0,
                         modifier = Modifier.fillMaxWidth(),
                         sheetState = playerState,
                         dragHandle = {
                             Surface(
                                 modifier = Modifier.padding(vertical = 0.dp),
-                                color = colorPalette.background0,
-                                shape = thumbnailShape
+                                color = colorPalette().background0,
+                                shape = thumbnailShape()
                             ) {}
                         },
                         shape = thumbnailRoundness.shape()

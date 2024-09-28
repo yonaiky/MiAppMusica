@@ -6,7 +6,6 @@ import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
-import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable

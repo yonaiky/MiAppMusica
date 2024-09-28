@@ -41,26 +41,25 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.home.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
-
+import me.knighthat.colorPalette
+import me.knighthat.uiType
 
 
 @ExperimentalMaterialApi
@@ -180,7 +179,6 @@ fun AlbumScreen(
                                 .shimmer()
                         )
                     } else {
-                        val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
                         Header(
@@ -202,7 +200,7 @@ fun AlbumScreen(
                                 } else {
                                     R.drawable.bookmark
                                 },
-                                color = colorPalette.accent,
+                                color = colorPalette().accent,
                                 onClick = {
                                     val bookmarkedAt =
                                         if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -217,7 +215,7 @@ fun AlbumScreen(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette.text,
+                                color = colorPalette().text,
                                 onClick = {
                                     album?.shareUrl?.let { url ->
                                         val sendIntent = Intent().apply {
@@ -252,13 +250,11 @@ fun AlbumScreen(
                     shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
                 )
 
-            val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
-
             Scaffold(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType != UiType.RiMusic,
+                showButton1 = uiType() != UiType.RiMusic,
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
