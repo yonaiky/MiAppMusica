@@ -7,8 +7,6 @@ import coil3.compose.setSingletonImageLoaderFactory
 import it.fast4x.rimusic.getAsyncImageLoader
 import it.fast4x.rimusic.ui.ThreeColumnsApp
 import it.fast4x.rimusic.ui.theme.DesktopTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainCoroutineDispatcher
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon

@@ -2,16 +2,14 @@ package it.fast4x.rimusic
 
 import androidx.compose.runtime.Composable
 import database.MusicDatabaseDao
-import it.fast4x.rimusic.ui.DesktopApp
-import it.fast4x.rimusic.ui.theme.DesktopTheme
 
 @Composable
 fun App(db: MusicDatabaseDao) {
-
+/*
     DesktopTheme {
         DesktopApp()
     }
-
+*/
 
     /*
     MaterialTheme {

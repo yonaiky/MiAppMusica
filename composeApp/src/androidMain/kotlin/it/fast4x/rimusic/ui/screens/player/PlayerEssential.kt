@@ -68,7 +68,7 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.items.EXPLICIT_PREFIX
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -90,14 +90,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.flow.distinctUntilChanged
-import it.fast4x.rimusic.enums.MiniPlayerType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.EXPLICIT_PREFIX
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.utils.getLikedIcon
-import it.fast4x.rimusic.utils.getUnlikedIcon
-
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography

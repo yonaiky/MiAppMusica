@@ -50,7 +50,15 @@ fun PlaylistScreen(
                 onTopIconButton2Click = pop,
                 tabColumnContent = { Item ->
                     Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                }
+                },
+                onTabChanged = {},
+                onHomeClick = {},
+                onBottomIconButtonClick = {},
+                showBottomButton = false,
+                tabIndex = 0,
+                topIconButtonId = R.drawable.ui,
+                topIconButton2Id = R.drawable.ui,
+                showButton2 = false
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {
