@@ -250,8 +250,8 @@
     <string name="odia">odia</string>
     <string name="bashkir">baškiiri</string>
     <string name="esperanto">esperanto</string>
-    <string name="close_app_with_back_button">Sulje sovellus takaisin-painikkeella</string>
-    <string name="when_you_use_the_back_button_from_the_home_page">Kun takaisin-painiketta/elettä käytetään kotisivulla</string>
+    <string name="close_app_with_back_button">Sulje sovellus takaisinpainikkeella</string>
+    <string name="when_you_use_the_back_button_from_the_home_page">Kun takaisinpainiketta/-elettä käytetään kotisivulla</string>
     <string name="audio_quality_format_high">Korkea</string>
     <string name="audio_quality_format_medium">Keskitaso</string>
     <string name="audio_quality_format_low">Matala</string>
@@ -378,7 +378,7 @@
     <string name="restore_from_backup">Palauta varmuuskopiosta</string>
     <string name="tab_miscellaneous">Sekalaiset</string>
     <string name="swipe_to_action">Pyyhkäisytoiminto</string>
-    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Aktivoi toimintovalikko pyyhkäisemällä kappaletta vasemmalle tai oikealle</string>
+    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Suorita toimintoja pyyhkäisemällä kappaletta vasemmalle tai oikealle</string>
     <string name="smart_recommendations">ÄLYKKÄÄT SUOSITUKSET</string>
     <string name="player_collapsed_disable_swiping_down">Poista pyyhkäisy alas -toiminto</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Vältä soittimen sulkeminen ja jonon puhdistaminen pyyhkäisemällä alaspäin, kun se on pienennettynä</string>
@@ -555,7 +555,7 @@
     <string name="removed_from_favorites">Poistettu suosikeista</string>
     <string name="lang_filipino">filippiini</string>
     <string name="action_bar_transparent_background">Läpinäkyvä tausta</string>
-    <string name="pinfo_type">Info type</string>
+    <string name="pinfo_type">Tietojen tyyli</string>
     <string name="pinfo_album_and_artist_name">Albumin ja artistin nimi</string>
     <string name="show_player_top_actions_bar">Näytä ylätoimintapalkki</string>
     <string name="icon_like_button">Tykkää -nappi</string>
@@ -565,7 +565,7 @@
     <string name="icon_like_shape">Muoto</string>
     <string name="icon_like_striped">Raidoitettu</string>
     <string name="icon_like_brilliant">Loistava</string>
-    <string name="player_swap_controls_with_timeline">Vaihda säätimiä aikajanalla</string>
+    <string name="player_swap_controls_with_timeline">Vaihda aikajanan ja nappien paikkaa keskenään</string>
     <string name="player_enable_lyrics_popup_message">Ota sanoitusten ponnahdusikkuna käyttöön</string>
     <string name="exclude_songs_with_duration_limit">Jätä pois kappaleet, joiden kesto on rajoitettu</string>
     <string name="exclude_songs_with_duration_limit_description">Jos käytössä, kappaleet joiden kesto ylittää rajan, jätetään pois suosikkini- ja toistojonosta</string>
@@ -698,7 +698,7 @@
     <string name="songs_number_to_show">Näytettävät kappaleet</string>
     <string name="discover_has_been_applied_to_queue">Löydä uutta -toiminto asetettu jonolle ja poistettu kappaleet: %s</string>
     <string name="player_pause_on_volume_zero">Äänenvoimakkuuden ollessa nolla, laita soitto tauolle</string>
-    <string name="info_pauses_player_when_volume_zero">Pysäyttää soiton, kun äänenvoimakkuus on 0 ja jatkaa soittoa kun äänenvoimakkuus &gt;0</string>
+    <string name="info_pauses_player_when_volume_zero">Pysäyttää soiton, kun äänenvoimakkuus on 0 ja jatkaa soittoa, kun äänenvoimakkuus suurempi kuin 0</string>
     <string name="quality">Laatu</string>
     <string name="value_must_be_ip_address">Arvon on oltava IP-osoite</string>
     <string name="swipe_up_to_open_the_queue">Pyyhkäise ylös avataksesi jonon</string>
@@ -729,7 +729,7 @@
     <string name="social_github">GitHub</string>
     <string name="update">Päivitä</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
-    <string name="player_pause_listen_history_info">Ei tallenna toiston tapahtumia, joita käytetään tilastoissa, historiassa ja ehdotuksissa pikavalinnoissa</string>
+    <string name="player_pause_listen_history_info">Ei tallenna toiston tapahtumia, joita käytetään tilastoissa, historiassa ja pikavalinnan ehdotuksissa</string>
     <string name="vertical_widget">Pystysuora widgetti</string>
     <string name="horizontal_widget">Vaakasuora widgetti</string>
     <string name="social_reddit">Reddit</string>
