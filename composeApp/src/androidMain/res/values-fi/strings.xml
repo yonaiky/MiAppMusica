@@ -466,7 +466,7 @@
     <string name="info_not_find_app_create_doc">Asiakirjojen luomiseen tarkoitettua sovellusta ei löytynyt</string>
     <string name="info_not_find_app_browse_internet">Internet-selainta ei löytynyt</string>
     <string name="show_floating_icon">Näytä kelluva nappi</string>
-    <string name="show_equalizer">Näytä taajuuskorjain</string>
+    <string name="show_equalizer">Näytä Taajuuskorjain -nappi</string>
     <string name="theme_pure_black">Kokonaan musta</string>
     <string name="theme_modern_black">Moderni musta</string>
     <string name="theme_mode_pitch_black">Pikimusta</string>
@@ -723,7 +723,7 @@
     <string name="lang_norwegian">norja</string>
     <string name="translate_to">Käännä kielelle %s</string>
     <string name="translate_to_other_language">Käännä toiselle kielelle</string>
-    <string name="action_bar_show_video_button">Näytä video -nappi</string>
+    <string name="action_bar_show_video_button">Näytä Video -nappi</string>
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Liity ryhmään Telegramissa</string>
     <string name="social_github">GitHub</string>
