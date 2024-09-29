@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
@@ -53,21 +54,21 @@ import me.knighthat.colorPalette
 fun Scaffold(
     navController: NavController,
     playerEssential: @Composable (() -> Unit)? = null,
-    topIconButtonId: Int,
+    topIconButtonId: Int = R.drawable.chevron_back,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = false,
-    topIconButton2Id: Int,
+    topIconButton2Id: Int = R.drawable.chevron_back,
     onTopIconButton2Click: () -> Unit,
-    showButton2: Boolean,
+    showButton2: Boolean = false,
     bottomIconButtonId: Int? = R.drawable.search,
     onBottomIconButtonClick: (() -> Unit)? = {},
     showBottomButton: Boolean = false,
     hideTabs: Boolean = false,
-    tabIndex: Int,
-    onTabChanged: (Int) -> Unit,
+    tabIndex: Int = 0,
+    onTabChanged: (Int) -> Unit = {},
     showTopActions: Boolean = false,
     tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    onHomeClick: () -> Unit,
+    onHomeClick: () -> Unit = { navController.navigate( NavRoutes.home.name ) },
     onSettingsClick: (() -> Unit)? = {},
     onStatisticsClick: (() -> Unit)? = {},
     onHistoryClick: (() -> Unit)? = {},
