@@ -331,10 +331,13 @@ fun HomeScreen(
                         )
 
                         4 -> HomeLibraryModern(
+                            /*
                             onBuiltInPlaylist = {
                                 //builtInPlaylistRoute(it)
                                 navController.navigate(route = "${NavRoutes.builtInPlaylist.name}/${it.ordinal}")
                             },
+
+                             */
                             onPlaylistClick = {
                                 //localPlaylistRoute(it.id)
                                 navController.navigate(route = "${NavRoutes.localPlaylist.name}/${it.id}")
@@ -343,6 +346,7 @@ fun HomeScreen(
                                 //searchRoute("")
                                 navController.navigate(NavRoutes.search.name)
                             },
+                            /*
                             onDeviceListSongsClick = {
                                 //deviceListSongRoute("")
                                 navController.navigate(NavRoutes.onDevice.name)
@@ -351,6 +355,8 @@ fun HomeScreen(
                                 //statisticsTypeRoute(StatisticsType.Today)
                                 navController.navigate(NavRoutes.statistics.name)
                             },
+
+                             */
                             onSettingsClick = {
                                 //settingsRoute()
                                 navController.navigate(NavRoutes.settings.name)

@@ -46,12 +46,4 @@ fun getPipedSession(): PipedSession {
 
     return pipedSession
 
-    /*
-    return PipedSession(
-        instanceName = MainApplication.pipedInstanceName ?: "",
-        apiBaseUrl = Url(MainApplication.pipedApiBaseUrl ?: ""),
-        token = MainApplication.pipedApiToken ?: "",
-        username = MainApplication.pipedUsername ?: ""
-    )
-     */
 }

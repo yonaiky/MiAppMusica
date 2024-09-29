@@ -77,12 +77,14 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
 
 @Composable
 fun ImportPipedPlaylists(){
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    if (!isPipedEnabled) return
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+
     val pipedSession = getPipedSession()
-    if (isPipedEnabled && (pipedSession.token == "" || pipedSession.token.isEmpty())) {
+    if (pipedSession.token == "" || pipedSession.token.isEmpty()) {
         SmartMessage(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
         return
     }
@@ -127,13 +129,15 @@ fun ImportPipedPlaylists(){
                                         }
                                     }
                                     playlist.videos.forEachIndexed { index, song ->
-                                        Database.insert(
-                                            SongPlaylistMap(
-                                                songId = song.id.toString(),
-                                                playlistId = playlistId,
-                                                position = index
+                                        if (!song.id.isNullOrBlank() || !song.id.isNullOrEmpty()) {
+                                            Database.insert(
+                                                SongPlaylistMap(
+                                                    songId = song.id.toString(),
+                                                    playlistId = playlistId,
+                                                    position = index
+                                                )
                                             )
-                                        )
+                                        }
                                     }
 
                                 }

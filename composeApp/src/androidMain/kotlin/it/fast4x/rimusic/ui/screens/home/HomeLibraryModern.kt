@@ -134,7 +134,7 @@ import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.typography
 import me.knighthat.uiType
-
+import timber.log.Timber
 
 
 @ExperimentalMaterial3Api
@@ -145,14 +145,12 @@ import me.knighthat.uiType
 @ExperimentalFoundationApi
 @Composable
 fun HomeLibraryModern(
-    onBuiltInPlaylist: (BuiltInPlaylist) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
-    onDeviceListSongsClick: () -> Unit,
     onSearchClick: () -> Unit,
-    onStatisticsClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val windowInsets = LocalPlayerAwareWindowInsets.current
+    Timber.d("HomeLibraryModern - start")
+    //val windowInsets = LocalPlayerAwareWindowInsets.current
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
 
@@ -190,7 +188,8 @@ fun HomeLibraryModern(
         )
     }
 
-    ImportPipedPlaylists()
+    if (isPipedEnabled)
+        ImportPipedPlaylists()
 
     var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
@@ -204,13 +203,13 @@ fun HomeLibraryModern(
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
 
-    var filterCharSequence: CharSequence
+    val filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
     //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
     if (!filter.isNullOrBlank())
         items = items
             .filter {
-                it.playlist.name.contains(filterCharSequence, true) ?: false
+                it.playlist.name.contains(filterCharSequence, true)
             }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -223,7 +222,7 @@ fun HomeLibraryModern(
     val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
-    val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
+    //val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
     var plistId by remember {
         mutableStateOf(0L)
