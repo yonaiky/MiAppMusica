@@ -23,7 +23,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -51,6 +50,7 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.nav.HorizontalNavigationBar
 import me.knighthat.navBarPos
 
 
@@ -82,24 +82,8 @@ fun ScaffoldTB(
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
-    val navigationRailTB: @Composable () -> Unit = {
-        NavigationRailTB(
-            navController = navController,
-            topIconButtonId = topIconButtonId,
-            onTopIconButtonClick = onTopIconButtonClick,
-            showButton1 = showButton1,
-            topIconButton2Id = topIconButton2Id,
-            onTopIconButton2Click = onTopIconButton2Click,
-            showButton2 = showButton2,
-            bottomIconButtonId = bottomIconButtonId,
-            onBottomIconButtonClick = onBottomIconButtonClick ?: {},
-            showBottomButton = showBottomButton,
-            tabIndex = tabIndex,
-            onTabIndexChanged = onTabChanged,
-            content = tabColumnContent,
-            hideTabs = hideTabs
-        )
-    }
+    val horizontalNavBar = HorizontalNavigationBar( tabIndex, onTabChanged, navController, modifier )
+    horizontalNavBar.add( tabColumnContent )
 
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -118,7 +102,7 @@ fun ScaffoldTB(
                 AppBar(navController)
 
                 if ( navBarPos() == NavigationBarPosition.Top )
-                    navigationRailTB()
+                    horizontalNavBar.Draw()
 
                 /*
                 if (playerEssential != null && playerPosition == PlayerPosition.Top) {
@@ -167,8 +151,7 @@ fun ScaffoldTB(
                      */
 
                     if ( navBarPos() == NavigationBarPosition.Bottom )
-                            navigationRailTB()
-
+                        horizontalNavBar.Draw()
                 //}
         }
 
