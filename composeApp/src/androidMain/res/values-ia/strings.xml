@@ -530,7 +530,7 @@
     <string name="color_text">Texto</string>
     <string name="color_text_secondary">Texto secundari</string>
     <string name="color_text_disabled">Texto disactivate</string>
-    <string name="color_icon_button_player">Icon button player</string>
+    <string name="color_icon_button_player">Button de icone de reproductor</string>
     <string name="color_accent">Accento</string>
     <string name="title_customized_dark_theme_colors">Themas de color obscur personalisate</string>
     <string name="title_reset_customized_dark_colors">Reinitalisar le colores obscur personalisate</string>
@@ -549,8 +549,8 @@
     <string name="pcontrols_type">Typo de controlos</string>
     <string name="player_swiping_down_is_disabled">Player swiping down is disabled</string>
     <string name="player_position">Player position</string>
-    <string name="position_top">Top</string>
-    <string name="position_bottom">Bottom</string>
+    <string name="position_top">In alto</string>
+    <string name="position_bottom">In basso</string>
     <string name="added_to_favorites">Addite al favorites</string>
     <string name="removed_from_favorites">Removite del favorites</string>
     <string name="lang_filipino">Filipino</string>
