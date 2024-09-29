@@ -426,7 +426,7 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Kansio, joka näkyy, kun avaat Laitteella -sivun.</string>
     <string name="folder_was_not_found">Kansiota ei löydy</string>
     <string name="direction_top">Ylhäällä</string>
-    <string name="pick_from">Pick from</string>
+    <string name="pick_from">Valitse palvelusta</string>
     <string name="download_cover">Lataa kansikuva</string>
     <string name="menu_style">Valikon tyyli</string>
     <string name="style_grid">Ruudukko</string>
@@ -466,7 +466,7 @@
     <string name="info_not_find_app_create_doc">Asiakirjojen luomiseen tarkoitettua sovellusta ei löytynyt</string>
     <string name="info_not_find_app_browse_internet">Internet-selainta ei löytynyt</string>
     <string name="show_floating_icon">Näytä kelluva nappi</string>
-    <string name="show_equalizer">Näytä taajuuskorjain</string>
+    <string name="show_equalizer">Näytä Taajuuskorjain -nappi</string>
     <string name="theme_pure_black">Kokonaan musta</string>
     <string name="theme_modern_black">Moderni musta</string>
     <string name="theme_mode_pitch_black">Pikimusta</string>
@@ -562,7 +562,7 @@
     <string name="icon_like_apple">Omena</string>
     <string name="icon_like_breaked">Rikki</string>
     <string name="icon_like_gift">Lahja</string>
-    <string name="icon_like_shape">Muoto</string>
+    <string name="icon_like_shape">Söpö</string>
     <string name="icon_like_striped">Raidoitettu</string>
     <string name="icon_like_brilliant">Loistava</string>
     <string name="player_swap_controls_with_timeline">Vaihda aikajanan ja nappien paikkaa keskenään</string>
@@ -723,7 +723,7 @@
     <string name="lang_norwegian">norja</string>
     <string name="translate_to">Käännä kielelle %s</string>
     <string name="translate_to_other_language">Käännä toiselle kielelle</string>
-    <string name="action_bar_show_video_button">Näytä video -nappi</string>
+    <string name="action_bar_show_video_button">Näytä Video -nappi</string>
     <string name="social_telegram">Telegram</string>
     <string name="social_telegram_info">Liity ryhmään Telegramissa</string>
     <string name="social_github">GitHub</string>
