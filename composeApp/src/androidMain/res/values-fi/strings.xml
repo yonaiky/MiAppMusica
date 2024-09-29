@@ -426,7 +426,7 @@
     <string name="folder_that_will_show_when_you_open_on_device_page">Kansio, joka näkyy, kun avaat Laitteella -sivun.</string>
     <string name="folder_was_not_found">Kansiota ei löydy</string>
     <string name="direction_top">Ylhäällä</string>
-    <string name="pick_from">Pick from</string>
+    <string name="pick_from">Valitse palvelusta</string>
     <string name="download_cover">Lataa kansikuva</string>
     <string name="menu_style">Valikon tyyli</string>
     <string name="style_grid">Ruudukko</string>
@@ -562,7 +562,7 @@
     <string name="icon_like_apple">Omena</string>
     <string name="icon_like_breaked">Rikki</string>
     <string name="icon_like_gift">Lahja</string>
-    <string name="icon_like_shape">Muoto</string>
+    <string name="icon_like_shape">Söpö</string>
     <string name="icon_like_striped">Raidoitettu</string>
     <string name="icon_like_brilliant">Loistava</string>
     <string name="player_swap_controls_with_timeline">Vaihda aikajanan ja nappien paikkaa keskenään</string>
