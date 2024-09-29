@@ -55,7 +55,7 @@ inline fun NavigationRail(
     showBottomButton: Boolean = false,
     tabIndex: Int,
     crossinline onTabIndexChanged: (Int) -> Unit,
-    content: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
+    content: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
     hideTabs: Boolean? = false,
     modifier: Modifier = Modifier
 ) {
