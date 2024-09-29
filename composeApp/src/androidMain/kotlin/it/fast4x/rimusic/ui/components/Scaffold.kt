@@ -67,7 +67,7 @@ fun Scaffold(
     tabIndex: Int = 0,
     onTabChanged: (Int) -> Unit = {},
     showTopActions: Boolean = false,
-    tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
+    tabColumnContent: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
     onHomeClick: () -> Unit = { navController.navigate( NavRoutes.home.name ) },
     onSettingsClick: (() -> Unit)? = {},
     onStatisticsClick: (() -> Unit)? = {},

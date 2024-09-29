@@ -77,7 +77,7 @@ fun ScaffoldTB(
     onSearchClick: (() -> Unit)?,
     tabIndex: Int,
     onTabChanged: (Int) -> Unit,
-    tabColumnContent: @Composable (ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit),
+    tabColumnContent: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
