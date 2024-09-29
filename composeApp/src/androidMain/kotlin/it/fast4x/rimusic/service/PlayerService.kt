@@ -194,6 +194,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import me.knighthat.appContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ObjectInputStream
@@ -554,7 +555,7 @@ class PlayerService : InvincibleService(),
 
         player.repeatMode = when {
             preferences.getBoolean(trackLoopEnabledKey, false) -> Player.REPEAT_MODE_ONE
-            preferences.getBoolean(queueLoopEnabledKey, true) -> Player.REPEAT_MODE_ALL
+            preferences.getBoolean(queueLoopEnabledKey, false) -> Player.REPEAT_MODE_ALL
             else -> Player.REPEAT_MODE_OFF
         }
 
@@ -1568,7 +1569,7 @@ class PlayerService : InvincibleService(),
             trackLoopEnabledKey, queueLoopEnabledKey -> {
                 player.repeatMode = when {
                     preferences.getBoolean(trackLoopEnabledKey, false) -> Player.REPEAT_MODE_ONE
-                    preferences.getBoolean(queueLoopEnabledKey, true) -> Player.REPEAT_MODE_ALL
+                    preferences.getBoolean(queueLoopEnabledKey, false) -> Player.REPEAT_MODE_ALL
                     else -> Player.REPEAT_MODE_OFF
                 }
             }
@@ -2506,12 +2507,12 @@ class PlayerService : InvincibleService(),
 
     @JvmInline
     private value class Action(val value: String) {
-        context(Context)
+        //context(Context)
         val pendingIntent: PendingIntent
             get() = PendingIntent.getBroadcast(
-                this@Context,
+                appContext(),
                 100,
-                Intent(value).setPackage(packageName),
+                Intent(value).setPackage(appContext().packageName),
                 PendingIntent.FLAG_UPDATE_CURRENT.or(if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0)
             )
 

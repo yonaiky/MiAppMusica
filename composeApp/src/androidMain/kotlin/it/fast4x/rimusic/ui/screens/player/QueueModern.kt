@@ -134,6 +134,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
@@ -178,7 +179,8 @@ fun QueueModern(
 
         val player = binder.player
 
-        var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = true)
+        var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
+        var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
 
         val menuState = LocalMenuState.current
 
@@ -912,7 +914,10 @@ fun QueueModern(
                     IconButton(
                         icon = R.drawable.repeat,
                         color = if (queueLoopEnabled) colorPalette().text else colorPalette().textDisabled,
-                        onClick = { queueLoopEnabled = !queueLoopEnabled },
+                        onClick = {
+                            queueLoopEnabled = !queueLoopEnabled
+                            if (queueLoopEnabled) trackLoopEnabled = false
+                        },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
                             .size(24.dp)

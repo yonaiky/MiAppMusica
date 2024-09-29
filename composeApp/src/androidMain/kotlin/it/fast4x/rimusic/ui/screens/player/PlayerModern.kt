@@ -233,6 +233,7 @@ import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
@@ -481,9 +482,6 @@ fun PlayerModern(
         }
     }
 
-    var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-
-
     var likedAt by rememberSaveable {
         mutableStateOf<Long?>(null)
     }
@@ -521,6 +519,10 @@ fun PlayerModern(
         backgroundProgressKey,
         BackgroundProgress.Both
     )
+
+    var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
+    if (!showButtonPlayerLoop) trackLoopEnabled = false
+    var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -1417,6 +1419,7 @@ fun PlayerModern(
                                 color = if (trackLoopEnabled) colorPalette().accent else Color.Gray,
                                 onClick = {
                                     trackLoopEnabled = !trackLoopEnabled
+                                    if (trackLoopEnabled) queueLoopEnabled = false
                                     if (effectRotationEnabled) isRotated = !isRotated
                                 },
                                 modifier = Modifier

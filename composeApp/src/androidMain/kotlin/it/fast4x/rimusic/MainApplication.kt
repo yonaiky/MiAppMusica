@@ -19,7 +19,8 @@ class MainApplication : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
-        DatabaseInitializer()
+        //DatabaseInitializer()
+        Dependencies.init(this)
 
         /**** LOG *********/
         val logEnabled = preferences.getBoolean(logDebugEnabledKey, false)
@@ -71,4 +72,14 @@ class MainApplication : Application(), ImageLoaderFactory {
             .build()
     }
 
+}
+
+object Dependencies {
+    lateinit var application: MainApplication
+        private set
+
+    internal fun init(application: MainApplication) {
+        this.application = application
+        DatabaseInitializer()
+    }
 }

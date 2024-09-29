@@ -78,6 +78,7 @@ import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
+import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.trackLoopEnabledKey
@@ -338,6 +339,7 @@ fun ControlsEssential(
     )
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
+    var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
     Box {
         IconButton(
@@ -532,6 +534,7 @@ fun ControlsEssential(
         color = if (trackLoopEnabled) colorPalette().iconButtonPlayer else colorPalette().textDisabled,
         onClick = {
             trackLoopEnabled = !trackLoopEnabled
+            if (trackLoopEnabled) queueLoopEnabled = false
         },
         modifier = Modifier
             //.padding(10.dp)

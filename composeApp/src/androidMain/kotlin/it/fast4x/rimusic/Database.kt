@@ -6,6 +6,7 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import android.os.Parcel
 import androidx.core.database.getFloatOrNull
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.room.AutoMigration
@@ -61,6 +62,7 @@ import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import kotlin.jvm.Throws
 import kotlinx.coroutines.flow.Flow
+import me.knighthat.appContext
 
 
 @Dao
@@ -1471,21 +1473,27 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
     abstract val database: Database
 
     companion object {
+
         lateinit var Instance: DatabaseInitializer
 
-        context(Context)
+        private fun getDatabase() = Room
+            .databaseBuilder(appContext(), DatabaseInitializer::class.java, "data.db")
+            .addMigrations(
+                From8To9Migration(),
+                From10To11Migration(),
+                From14To15Migration(),
+                From22To23Migration()
+            )
+            .build()
+
+
+        //context(Context)
         operator fun invoke() {
-            if (!::Instance.isInitialized) {
-                Instance = Room
-                    .databaseBuilder(this@Context, DatabaseInitializer::class.java, "data.db")
-                    .addMigrations(
-                        From8To9Migration(),
-                        From10To11Migration(),
-                        From14To15Migration(),
-                        From22To23Migration()
-                    )
-                    .build()
-            }
+            if (!::Instance.isInitialized) reload()
+        }
+
+        fun reload() = synchronized(this) {
+            Instance = getDatabase()
         }
     }
 

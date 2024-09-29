@@ -12,9 +12,10 @@ import coil.request.CachePolicy
 import coil.request.Disposable
 import coil.request.ImageRequest
 import it.fast4x.rimusic.utils.thumbnail
+import me.knighthat.appContext
 import timber.log.Timber
 
-context(Context)
+//context(Context)
 class BitmapProvider(
     private val bitmapSize: Int,
     private val colorProvider: (isSystemInDarkMode: Boolean) -> Int
@@ -43,7 +44,7 @@ class BitmapProvider(
     }
 
     fun setDefaultBitmap(): Boolean {
-        val isSystemInDarkMode = resources.configuration.uiMode and
+        val isSystemInDarkMode = appContext().resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
         if (::defaultBitmap.isInitialized && isSystemInDarkMode == lastIsSystemInDarkMode) return false
@@ -69,8 +70,8 @@ class BitmapProvider(
         lastUri = uri
 
         runCatching {
-            lastEnqueued = applicationContext.imageLoader.enqueue(
-                ImageRequest.Builder(applicationContext)
+            lastEnqueued = appContext().imageLoader.enqueue(
+                ImageRequest.Builder(appContext())
                     .networkCachePolicy(CachePolicy.ENABLED)
                     .data(uri.thumbnail(bitmapSize))
                     .allowHardware(false)
