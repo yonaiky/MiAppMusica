@@ -21,7 +21,6 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,6 +46,7 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.nav.VerticalNavigationBar
 import me.knighthat.navBarPos
 import me.knighthat.uiType
 
@@ -160,26 +160,11 @@ fun Scaffold(
                         .background( colorPalette().background0 )
                         .fillMaxSize()
                 ) {
-                    val navigationRail: @Composable () -> Unit = {
-                        NavigationRail(
-                            topIconButtonId = topIconButtonId,
-                            onTopIconButtonClick = onTopIconButtonClick,
-                            showButton1 = showButton1,
-                            topIconButton2Id = topIconButton2Id,
-                            onTopIconButton2Click = onTopIconButton2Click,
-                            showButton2 = showButton2,
-                            bottomIconButtonId = bottomIconButtonId,
-                            onBottomIconButtonClick = onBottomIconButtonClick ?: {},
-                            showBottomButton = showBottomButton,
-                            tabIndex = tabIndex,
-                            onTabIndexChanged = onTabChanged,
-                            content = tabColumnContent,
-                            hideTabs = hideTabs
-                        )
-                    }
+                    val verticalNavBar = VerticalNavigationBar( tabIndex, onTabChanged, navController )
+                    verticalNavBar.add( tabColumnContent )
 
                     if ( navBarPos() == NavigationBarPosition.Left )
-                        navigationRail()
+                        verticalNavBar.Draw()
 
                     val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
 
@@ -244,7 +229,7 @@ fun Scaffold(
                     )
 
                     if ( navBarPos() == NavigationBarPosition.Right )
-                        navigationRail()
+                        verticalNavBar.Draw()
 
                 }
                 //**
