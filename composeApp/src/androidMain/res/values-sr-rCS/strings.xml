@@ -664,7 +664,7 @@
     <string name="playlistindicatorinfo2">Pesma je prisutna na jednoj od Plejlista</string>
     <string name="statsfornerdsplayer">Prikaži Statistiku za Štrebere u Plejeru</string>
     <string name="discover">Otkrij</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
+    <string name="discoverinfo">Uklanja pesme koje vam se Sviđaju i pesme sa Plejliste iz reda</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
