@@ -210,6 +210,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         .appendPath(resources.getResourceEntryName(id))
         .build()
 
+    private fun uriFor(path: String) = Res.getUri(path).toUri()
+
 
     private val shuffleBrowserMediaItem
         inline get() = MediaItem(
@@ -226,7 +228,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.songs)
                 .setTitle((this as Context).resources.getString(R.string.songs))
-                .setIconUri(uriFor(Res.drawable.musical_notes.hashCode()))
+                .setIconUri(uriFor("drawable/musical_notes.xml"))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -237,7 +239,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.playlists)
                 .setTitle((this as Context).resources.getString(R.string.library))
-                .setIconUri(uriFor(Res.drawable.library.hashCode()))
+                .setIconUri(uriFor("drawable/library.xml"))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -247,7 +249,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.albums)
                 .setTitle((this as Context).resources.getString(R.string.albums))
-                .setIconUri(uriFor(Res.drawable.album.hashCode()))
+                .setIconUri(uriFor("drawable/album.xml"))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -297,7 +299,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.ondevice)
                 .setTitle((this as Context).resources.getString(R.string.on_device))
-                .setIconUri(uriFor(Res.drawable.musical_notes.hashCode()))
+                .setIconUri(uriFor("drawable/musical_notes.xml"))
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
