@@ -420,10 +420,13 @@ fun HomeLibraryModern(
                             .padding(horizontal = 2.dp)
                             .combinedClickable(onClick = { autosync = !autosync },
                                 onLongClick = {
+                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.autosync),
                                         context = context
                                     )
+
+                                     */
                                 }
                             )
                     )
@@ -471,10 +474,13 @@ fun HomeLibraryModern(
 
                                 },
                                 onLongClick = {
+                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.shuffle),
                                         context = context
                                     )
+
+                                     */
                                 }
                             )
                     )
@@ -488,10 +494,13 @@ fun HomeLibraryModern(
                             .combinedClickable (
                                 onClick = { isCreatingANewPlaylist = true },
                                 onLongClick = {
+                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.create_new_playlist),
                                         context = context
                                     )
+
+                                     */
                                 }
                             )
                     )
@@ -511,17 +520,23 @@ fun HomeLibraryModern(
                                             )
                                         )
                                     } catch (e: ActivityNotFoundException) {
+                                        /*
                                         SmartMessage(
                                             context.resources.getString(R.string.info_not_find_app_open_doc),
                                             type = PopupType.Warning, context = context
                                         )
+
+                                         */
                                     }
                                 },
                                 onLongClick = {
+                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.import_playlist),
                                         context = context
                                     )
+
+                                     */
                                 }
                             )
                     )

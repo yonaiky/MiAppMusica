@@ -63,6 +63,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanString
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -227,7 +228,7 @@ fun OnlineSearch(
                             keyboardActions = KeyboardActions(
                                 onSearch = {
                                     if (textFieldValue.text.isNotEmpty() && textFieldValue.text != "/") {
-                                        onSearch(textFieldValue.text.replace("/","",true))
+                                        onSearch(cleanString(textFieldValue.text))
                                     }
                                 }
                             ),
@@ -480,7 +481,14 @@ fun OnlineSearch(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable(onClick = { onSearch(searchQuery.query.replace("/", "", true)) })
+                        .clickable(onClick = {
+                            //onSearch(searchQuery.query.replace("/", "", true))
+                            onTextFieldValueChanged(
+                                TextFieldValue(
+                                    cleanString(searchQuery.query)
+                                )
+                            )
+                        })
                         .fillMaxWidth()
                         .padding(all = 16.dp)
                 ) {

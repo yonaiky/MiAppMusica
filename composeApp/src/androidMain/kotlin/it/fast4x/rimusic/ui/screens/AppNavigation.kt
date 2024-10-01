@@ -43,6 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.cleanString
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.NavRoutes
@@ -380,7 +381,8 @@ fun AppNavigation(
                 onViewPlaylist = {},
                 //pop = popDestination,
                 onSearch = { query ->
-                    navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                    println("onSearch: $query")
+                    navController.navigate(route = "${NavRoutes.searchResults.name}/${cleanString(query)}")
 
                     if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
                         it.fast4x.rimusic.query {
