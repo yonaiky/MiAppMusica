@@ -1987,14 +1987,14 @@ class PlayerService : InvincibleService(),
                     println("mediaItem PlayerService createDataSourceResolverFactory adaptiveFormats selected $format")
 
 
-                    if (format == null) throw PlayableFormatNotFoundException()
+                    //if (format == null) throw PlayableFormatNotFoundException()
 
 
-                    val url = when (val status = body.playabilityStatus?.status) {
+                    val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format.let { formatIn ->
                             val mediaItem = mediaItemToPlay(videoId)
                             if (mediaItem?.mediaMetadata?.extras?.getString("durationText") == null)
-                                formatIn.approxDurationMs?.div(1000)
+                                formatIn?.approxDurationMs?.div(1000)
                                     ?.let(DateUtils::formatElapsedTime)?.removePrefix("0")
                                     ?.let { durationText ->
                                         mediaItem?.mediaMetadata?.extras?.putString(
@@ -2010,17 +2010,17 @@ class PlayerService : InvincibleService(),
                                 Database.insert(
                                     Format(
                                         songId = videoId,
-                                        itag = formatIn.itag,
-                                        mimeType = formatIn.mimeType,
-                                        bitrate = formatIn.bitrate,
+                                        itag = formatIn?.itag,
+                                        mimeType = formatIn?.mimeType,
+                                        bitrate = formatIn?.bitrate,
                                         loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                        contentLength = formatIn.contentLength,
-                                        lastModified = formatIn.lastModified
+                                        contentLength = formatIn?.contentLength,
+                                        lastModified = formatIn?.lastModified
                                     )
                                 )
                             }
 
-                            formatIn.url
+                            formatIn?.url
                         } ?: throw PlayableFormatNotFoundException()
 
                         "UNPLAYABLE" -> throw UnplayableException()
@@ -2028,6 +2028,7 @@ class PlayerService : InvincibleService(),
 
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory status $status")
+                            println("mediaItem PlayerService createDataSourceResolverFactory status $status")
                             throw UnknownException()
                             //throw PlaybackException(status, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
                         }
@@ -2039,7 +2040,7 @@ class PlayerService : InvincibleService(),
                         .setUri(url.toUri())
                         .build()
                         .let { spec ->
-                            (chunkLength ?: format.contentLength)?.let {
+                            (chunkLength ?: format?.contentLength)?.let {
                                 spec.subrange(dataSpec.uriPositionOffset, it)
                             } ?: spec
                         }
