@@ -98,7 +98,7 @@ object SearchSuggestionPage {
              */
             renderer.isSong -> {
                 val explicitBadge = if (renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null) "e:" else ""
                 Innertube.SongItem(
                     info = Innertube.Info(
@@ -123,7 +123,7 @@ object SearchSuggestionPage {
                     thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality()
                         ?: return null,
                     explicit = renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null
                 )
             }

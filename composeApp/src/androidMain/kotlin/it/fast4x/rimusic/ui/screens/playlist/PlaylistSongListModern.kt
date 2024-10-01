@@ -170,8 +170,11 @@ fun PlaylistSongListModern(
             Innertube.playlistPage(BrowseBody(browseId = browseId))?.completed()?.getOrNull()
         }
 
+        println("mediaItem playlistPage ${playlistPage?.songsPage}")
+
         playlistSongs = if (parentalControlEnabled)
-            playlistPage?.songsPage?.items?.filter { !it.asSong.title.startsWith(EXPLICIT_PREFIX) }!! else playlistPage?.songsPage?.items!!
+            playlistPage?.songsPage?.items?.filter { !it.asSong.title.startsWith(EXPLICIT_PREFIX) }!!
+        else playlistPage?.songsPage?.items ?: emptyList()
         /*
         playlistPage = withContext(Dispatchers.IO) {
             Innertube

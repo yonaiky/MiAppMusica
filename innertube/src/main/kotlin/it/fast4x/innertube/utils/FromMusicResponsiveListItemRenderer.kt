@@ -20,7 +20,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
     val explicitBadge = if (renderer
         .badges
         ?.find {
-            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
         } != null) "e:" else ""
 
     return Innertube.SongItem(
@@ -72,7 +72,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
         explicit = renderer
             .badges
             ?.find {
-                it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
            } != null,
     )      .takeIf { it.info?.endpoint?.videoId != null }
 }
