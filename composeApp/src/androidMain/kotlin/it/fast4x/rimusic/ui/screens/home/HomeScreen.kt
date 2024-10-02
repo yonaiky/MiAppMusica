@@ -29,9 +29,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.toUiMood
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchResultRoute
@@ -46,8 +44,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
-import me.knighthat.uiType
-
+import me.knighthat.Skeleton
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -207,47 +204,12 @@ fun HomeScreen(
 
             if (!enableQuickPicksPage && tabIndex==0) tabIndex = 1
 
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.settings,
-                onTopIconButtonClick = {
-                    //settingsRoute()
-                    navController.navigate(NavRoutes.settings.name)
-                },
-                showButton1 = uiType() != UiType.RiMusic,
-                topIconButton2Id = R.drawable.stats_chart,
-                onTopIconButton2Click = {
-                    //statisticsTypeRoute(StatisticsType.Today)
-                    navController.navigate(NavRoutes.statistics.name)
-                },
-                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
-                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
-                onBottomIconButtonClick = {
-                    //searchRoute("")
-                    navController.navigate(NavRoutes.search.name)
-                },
-                tabIndex = tabIndex,
-                onTabChanged = onTabChanged,
-                showTopActions = true,
-                onHomeClick = {},
-                onSettingsClick = {
-                    //settingsRoute()
-                    navController.navigate(NavRoutes.settings.name)
-                },
-                onStatisticsClick = {
-                    //statisticsTypeRoute(StatisticsType.Today)
-                    navController.navigate(NavRoutes.statistics.name)
-                },
-                onHistoryClick = {
-                    //historyRoute()
-                    navController.navigate(NavRoutes.history.name)
-                },
-                onSearchClick = {
-                    //searchRoute("")
-                    navController.navigate(NavRoutes.search.name)
-                },
-                tabColumnContent = { Item ->
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabChanged,
+                playerEssential,
+                navBarContent = { Item ->
                     if (enableQuickPicksPage)
                         Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
@@ -357,32 +319,186 @@ fun HomeScreen(
                             }
 
                         )
-                        /*
-                        5 -> HomeDiscovery(
-                            onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
-                            onNewReleaseAlbumClick = { albumRoute(it) },
-                            onSearchClick = { searchRoute("") }
-                        )
-                         */
-
-                        //6 -> HomeEqualizer( )
-                        /*
-                        5 -> HomeStatistics(
-                            onStatisticsType = { statisticsTypeRoute(it)},
-                            onBuiltInPlaylist = { builtInPlaylistRoute(it) },
-                            onPlaylistClick = { localPlaylistRoute(it.id) },
-                            onSearchClick = { searchRoute("") }
-                        )
-                         */
-
-                        /*
-                        6 -> HomeSearch(
-                            onSearchType = { searchTypeRoute(it) }
-                        )
-                         */
                     }
                 }
             }
+
+//            Scaffold(
+//                navController = navController,
+//                playerEssential = playerEssential,
+//                topIconButtonId = R.drawable.settings,
+//                onTopIconButtonClick = {
+//                    //settingsRoute()
+//                    navController.navigate(NavRoutes.settings.name)
+//                },
+//                showButton1 = uiType() != UiType.RiMusic,
+//                topIconButton2Id = R.drawable.stats_chart,
+//                onTopIconButton2Click = {
+//                    //statisticsTypeRoute(StatisticsType.Today)
+//                    navController.navigate(NavRoutes.statistics.name)
+//                },
+//                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
+//                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
+//                onBottomIconButtonClick = {
+//                    //searchRoute("")
+//                    navController.navigate(NavRoutes.search.name)
+//                },
+//                tabIndex = tabIndex,
+//                onTabChanged = onTabChanged,
+//                showTopActions = true,
+//                onHomeClick = {},
+//                onSettingsClick = {
+//                    //settingsRoute()
+//                    navController.navigate(NavRoutes.settings.name)
+//                },
+//                onStatisticsClick = {
+//                    //statisticsTypeRoute(StatisticsType.Today)
+//                    navController.navigate(NavRoutes.statistics.name)
+//                },
+//                onHistoryClick = {
+//                    //historyRoute()
+//                    navController.navigate(NavRoutes.history.name)
+//                },
+//                onSearchClick = {
+//                    //searchRoute("")
+//                    navController.navigate(NavRoutes.search.name)
+//                },
+//                tabColumnContent = { Item ->
+//                    if (enableQuickPicksPage)
+//                        Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
+//                    Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
+//                    Item(2, stringResource(R.string.artists), R.drawable.artists)
+//                    Item(3, stringResource(R.string.albums), R.drawable.album)
+//                    Item(4, stringResource(R.string.playlists), R.drawable.library)
+//                }
+//            ) { currentTabIndex ->
+//                saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
+//                    when (currentTabIndex) {
+//                        0 -> QuickPicksModern(
+//                            onAlbumClick = {
+//                                //albumRoute(it)
+//                                navController.navigate(route = "${NavRoutes.album.name}/$it")
+//                            },
+//                            onArtistClick = {
+//                                //artistRoute(it)
+//                                navController.navigate(route = "${NavRoutes.artist.name}/$it")
+//                            },
+//                            onPlaylistClick = {
+//                                //playlistRoute(it)
+//                                navController.navigate(route = "${NavRoutes.playlist.name}/$it")
+//                            },
+//                            onSearchClick = {
+//                                //searchRoute("")
+//                                navController.navigate(NavRoutes.search.name)
+//                            },
+//                            onMoodClick = { mood ->
+//                                //moodRoute(mood.toUiMood())
+//                                navController.currentBackStackEntry?.savedStateHandle?.set("mood", mood.toUiMood())
+//                                navController.navigate(NavRoutes.mood.name)
+//                            },
+//                            onSettingsClick = {
+//                                //settingsRoute()
+//                                navController.navigate(NavRoutes.settings.name)
+//                            },
+//                            navController = navController
+//
+//                        )
+//
+//                        1 -> HomeSongsModern(
+//                            navController = navController,
+//                            onSearchClick = {
+//                                //searchRoute("")
+//                                navController.navigate(NavRoutes.search.name)
+//                            },
+//                            onSettingsClick = {
+//                                //settingsRoute()
+//                                navController.navigate(NavRoutes.settings.name)
+//                            }
+//                        )
+//
+//                        2 -> HomeArtistsModern(
+//                            onArtistClick = {
+//                                //artistRoute(it.id)
+//                                navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
+//                            },
+//                            onSearchClick = {
+//                                //searchRoute("")
+//                                navController.navigate(NavRoutes.search.name)
+//                            },
+//                            onSettingsClick = {
+//                                //settingsRoute()
+//                                navController.navigate(NavRoutes.settings.name)
+//                            }
+//                        )
+//
+//                        3 -> HomeAlbumsModern(
+//                            onAlbumClick = {
+//                                //albumRoute(it.id)
+//                                navController.navigate(route = "${NavRoutes.album.name}/${it.id}")
+//                            },
+//                            onSearchClick = {
+//                                //searchRoute("")
+//                                navController.navigate(NavRoutes.search.name)
+//                            },
+//                            onSettingsClick = {
+//                                //settingsRoute()
+//                                navController.navigate(NavRoutes.settings.name)
+//                            }
+//                        )
+//
+//                        4 -> HomeLibraryModern(
+//                            onBuiltInPlaylist = {
+//                                //builtInPlaylistRoute(it)
+//                                navController.navigate(route = "${NavRoutes.builtInPlaylist.name}/${it.ordinal}")
+//                            },
+//                            onPlaylistClick = {
+//                                //localPlaylistRoute(it.id)
+//                                navController.navigate(route = "${NavRoutes.localPlaylist.name}/${it.id}")
+//                            },
+//                            onSearchClick = {
+//                                //searchRoute("")
+//                                navController.navigate(NavRoutes.search.name)
+//                            },
+//                            onDeviceListSongsClick = {
+//                                //deviceListSongRoute("")
+//                                navController.navigate(NavRoutes.onDevice.name)
+//                            },
+//                            onStatisticsClick = {
+//                                //statisticsTypeRoute(StatisticsType.Today)
+//                                navController.navigate(NavRoutes.statistics.name)
+//                            },
+//                            onSettingsClick = {
+//                                //settingsRoute()
+//                                navController.navigate(NavRoutes.settings.name)
+//                            }
+//
+//                        )
+//                        /*
+//                        5 -> HomeDiscovery(
+//                            onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
+//                            onNewReleaseAlbumClick = { albumRoute(it) },
+//                            onSearchClick = { searchRoute("") }
+//                        )
+//                         */
+//
+//                        //6 -> HomeEqualizer( )
+//                        /*
+//                        5 -> HomeStatistics(
+//                            onStatisticsType = { statisticsTypeRoute(it)},
+//                            onBuiltInPlaylist = { builtInPlaylistRoute(it) },
+//                            onPlaylistClick = { localPlaylistRoute(it.id) },
+//                            onSearchClick = { searchRoute("") }
+//                        )
+//                         */
+//
+//                        /*
+//                        6 -> HomeSearch(
+//                            onSearchType = { searchTypeRoute(it) }
+//                        )
+//                         */
+//                    }
+//                }
+//            }
         }
     }
 

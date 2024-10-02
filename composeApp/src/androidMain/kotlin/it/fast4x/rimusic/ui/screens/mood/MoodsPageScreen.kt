@@ -17,6 +17,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import me.knighthat.Skeleton
 import me.knighthat.uiType
 
 @ExperimentalMaterialApi
@@ -36,21 +37,9 @@ fun MoodsPageScreen(
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
         host {
-            Scaffold(
-                navController = navController,
-                topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType() != UiType.RiMusic,
-                onTopIconButtonClick = pop,
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                tabColumnContent = { item ->
+            Skeleton(
+                navController,
+                navBarContent = { item ->
                     item(0, stringResource(R.string.moods_and_genres), R.drawable.album)
                 }
             ) { currentTabIndex ->

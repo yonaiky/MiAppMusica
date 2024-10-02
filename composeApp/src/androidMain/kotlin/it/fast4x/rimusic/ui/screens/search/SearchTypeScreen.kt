@@ -37,6 +37,7 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.secondary
+import me.knighthat.Skeleton
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
@@ -75,19 +76,7 @@ fun SearchTypeScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        /*
-        searchResultRoute { query ->
-            SearchResultScreen(
-                navController = navController,
-                query = query,
-                onSearchAgain = {
-                    searchRoute(query)
-                }
-            )
-        }
 
-        val onGoToHome = homeRoute::global
-*/
         host {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
                 Box(
@@ -130,26 +119,14 @@ fun SearchTypeScreen(
                 }
             }
 
-            Scaffold(
-                navController = navController,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = {
-                    //onGoToHome()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = tabIndex,
-                onTabChanged = onTabChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.online), R.drawable.globe)
-                    Item(1, stringResource(R.string.library), R.drawable.library)
-                    Item(2, stringResource(R.string.go_to_link), R.drawable.link)
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabChanged,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.online), R.drawable.globe)
+                    item(1, stringResource(R.string.library), R.drawable.library)
+                    item(2, stringResource(R.string.go_to_link), R.drawable.link)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {
@@ -158,20 +135,7 @@ fun SearchTypeScreen(
                             navController = navController,
                             textFieldValue = textFieldValue,
                             onTextFieldValueChanged = onTextFieldValueChanged,
-                            onSearch = {
-                                navController.navigate("${NavRoutes.searchResults.name}/$it")
-                            },
-                            /*
-                            onSearch = { query ->
-                                    //pop()
-                                    searchResultRoute(query)
-                                    if (!preferences.getBoolean(pauseSearchHistoryKey, false)) {
-                                        transaction {
-                                            Database.insert(SearchQuery(query = query))
-                                        }
-                                    }
-                            },
-                             */
+                            onSearch = { navController.navigate("${NavRoutes.searchResults.name}/$it") },
                             decorationBox = decorationBox
                         )
 
@@ -183,10 +147,7 @@ fun SearchTypeScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = {
-                                //onGoToHome()
-                                navController.navigate(NavRoutes.home.name)
-                            }
+                            onAction4 = { navController.navigate(NavRoutes.home.name) }
                         )
 
                         2 -> GoToLink(
@@ -197,10 +158,7 @@ fun SearchTypeScreen(
                             onAction1 = { onTabChanged(0) },
                             onAction2 = { onTabChanged(1) },
                             onAction3 = { onTabChanged(2) },
-                            onAction4 = {
-                                //onGoToHome()
-                                navController.navigate(NavRoutes.home.name)
-                            }
+                            onAction4 = { navController.navigate(NavRoutes.home.name) }
                         )
                     }
                 }

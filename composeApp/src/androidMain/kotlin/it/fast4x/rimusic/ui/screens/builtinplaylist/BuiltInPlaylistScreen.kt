@@ -34,6 +34,7 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
+import me.knighthat.Skeleton
 import me.knighthat.uiType
 
 @ExperimentalMaterialApi
@@ -71,122 +72,53 @@ fun BuiltInPlaylistScreen(
     val showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     val showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     val showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
-    val showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
 
     PersistMapCleanup(tagPrefix = "${builtInPlaylist.name}/")
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        /*
-        searchResultRoute { query ->
-            SearchResultScreen(
-                navController = navController,
-                query = query,
-                onSearchAgain = {
-                    searchRoute(query)
-                }
-            )
-        }
 
-        searchRoute { initialTextInput ->
-            val context = LocalContext.current
-
-            SearchScreen(
-                navController = navController,
-                initialTextInput = initialTextInput,
-                onSearch = { query ->
-                    pop()
-                    searchResultRoute(query)
-
-                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
-                        query {
-                            Database.insert(SearchQuery(query = query))
-                        }
-                    }
-                },
-                onViewPlaylist = {}
-            )
-        }
-*/
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = uiType() != UiType.RiMusic,
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
-                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
-                onBottomIconButtonClick = {
-                    //searchRoute("")
-                    navController.navigate(NavRoutes.search.name)
-                },
-                tabIndex = tabIndex,
-                onTabChanged = onTabIndexChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                tabColumnContent = { Item ->
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabIndexChanged,
+                playerEssential,
+                navBarContent = { item ->
                     if(showFavoritesPlaylist)
-                        Item(0, stringResource(R.string.favorites), R.drawable.heart)
+                        item(0, stringResource(R.string.favorites), R.drawable.heart)
                     if(showCachedPlaylist)
-                        Item(1, stringResource(R.string.cached), R.drawable.sync)
+                        item(1, stringResource(R.string.cached), R.drawable.sync)
                     if(showDownloadedPlaylist)
-                        Item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
+                        item(2, stringResource(R.string.downloaded), R.drawable.downloaded)
                     if(showMyTopPlaylist)
-                        Item(3, stringResource(R.string.my_playlist_top).format(maxTopPlaylistItems.number) , R.drawable.trending)
+                        item(3, stringResource(R.string.my_playlist_top).format(maxTopPlaylistItems.number) , R.drawable.trending)
                     if(showOnDevicePlaylist)
-                        Item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
+                        item(4, stringResource(R.string.on_device), R.drawable.musical_notes)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
-                    when (currentTabIndex) {
-                        0 -> BuiltInPlaylistSongs(
-                            navController = navController,
-                            builtInPlaylist = BuiltInPlaylist.Favorites,
-                            onSearchClick = {
-                                //searchRoute("")
-                                navController.navigate(NavRoutes.search.name)
-                            }
-                        )
-                        1 -> BuiltInPlaylistSongs(
-                            navController = navController,
-                            builtInPlaylist = BuiltInPlaylist.Offline,
-                            onSearchClick = {
-                                //searchRoute("")
-                                navController.navigate(NavRoutes.search.name)
-                            }
-                        )
-                        2 -> BuiltInPlaylistSongs(
-                            navController = navController,
-                            builtInPlaylist = BuiltInPlaylist.Downloaded,
-                            onSearchClick = {
-                                //searchRoute("")
-                                navController.navigate(NavRoutes.search.name)
-                            }
-                        )
-                        3 -> BuiltInPlaylistSongs(
-                            navController = navController,
-                            builtInPlaylist = BuiltInPlaylist.Top,
-                            onSearchClick = {
-                                //searchRoute("")
-                                navController.navigate(NavRoutes.search.name)
-                            }
-                        )
-                        4 -> DeviceListSongs(
+                    val playlist: BuiltInPlaylist =
+                        when( currentTabIndex ) {
+                            0 -> BuiltInPlaylist.Favorites
+                            1 -> BuiltInPlaylist.Offline
+                            2 -> BuiltInPlaylist.Downloaded
+                            3 -> BuiltInPlaylist.Top
+                            else -> BuiltInPlaylist.OnDevice
+                        }
+
+                    if( playlist == BuiltInPlaylist.OnDevice )
+                        DeviceListSongs(
                             navController = navController,
                             deviceLists = DeviceLists.LocalSongs,
-                            onSearchClick = {
-                                //searchRoute("")
-                                navController.navigate(NavRoutes.search.name)
-                            }
+                            onSearchClick = { navController.navigate(NavRoutes.search.name) }
                         )
-
-                    }
+                    else
+                        BuiltInPlaylistSongs(
+                            navController = navController,
+                            builtInPlaylist = playlist,
+                            onSearchClick = { navController.navigate(NavRoutes.search.name) }
+                        )
                 }
             }
         }
