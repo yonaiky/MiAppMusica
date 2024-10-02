@@ -37,6 +37,7 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.button.Button
 import me.knighthat.colorPalette
+import me.knighthat.navBarPos
 import me.knighthat.navBarType
 import me.knighthat.showSearchIconInNav
 import me.knighthat.showStatsIconInNav
@@ -199,6 +200,11 @@ class VerticalNavigationBar(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.verticalScroll( rememberScrollState() )
         ) {
+            val boxPadding: Dp =
+                if( uiType() == UiType.ViMusic )
+                    30.dp
+                else
+                    Dp.Hairline
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
@@ -209,7 +215,7 @@ class VerticalNavigationBar(
                             else
                                 Dimensions.halfheaderHeight
                         else 0.dp
-                    )
+                    ).padding( top = boxPadding )
             ) {
                 // Show settings and statistics buttons in homepage
                 // Show back button in other screens
