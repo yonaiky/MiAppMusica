@@ -35,6 +35,7 @@ import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -61,7 +62,6 @@ object DownloadUtil {
     private lateinit var audioQualityFormat: AudioQualityFormat
 
 
-
     var downloads = MutableStateFlow<Map<String, Download>>(emptyMap())
 
     fun getDownload(songId: String): Flow<Download?> {
@@ -82,98 +82,85 @@ object DownloadUtil {
     }
 
 
-
-
     @SuppressLint("SuspiciousIndentation")
     @Synchronized
-    fun getResolvingDataSourceFactory (context: Context): ResolvingDataSource.Factory {
+    fun getResolvingDataSourceFactory(context: Context): ResolvingDataSource.Factory {
         val cache = getDownloadCache(context)
-        audioQualityFormat =  context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
+        //audioQualityFormat =
+        //    context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
 
         //connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
 
-        val dataSourceFactory = ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
-            val videoId = dataSpec.key ?: error("A key must be set")
-            //val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
-            //    ?: error("A key must be set")
-            //val chunkLength = 512 * 1024L
-            //val chunkLength = 1024 * 1024L
-            //val chunkLength = 10000 * 1024L
-            //val chunkLength = 30000 * 1024L
-            val chunkLength = 180000 * 1024L
-            //val chunkLength = if (dataSpec.length >= 0) dataSpec.length else 1
-            val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
-            if (cache.isCached(videoId, dataSpec.position, chunkLength)) {
-                dataSpec
-            } else {
-                when (videoId) {
-                    ringBuffer.getOrNull(0)?.first -> dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
-                    ringBuffer.getOrNull(1)?.first -> dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
-                    "initVideoId" -> dataSpec
-                    else -> {
-                        val urlResult = runBlocking(Dispatchers.IO) {
-                            Innertube.player(PlayerBody(videoId = videoId))
-                        }?.mapCatching { body ->
-                            if (body.videoDetails?.videoId != videoId) {
-                                throw VideoIdMismatchException()
-                            }
+        val dataSourceFactory =
+            ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
+                val videoId = dataSpec.key ?: error("A key must be set")
+                //val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
+                //    ?: error("A key must be set")
+                //val chunkLength = 512 * 1024L
+                //val chunkLength = 1024 * 1024L
+                //val chunkLength = 10000 * 1024L
+                //val chunkLength = 30000 * 1024L
+                val chunkLength = 180000 * 1024L
+                //val chunkLength = if (dataSpec.length >= 0) dataSpec.length else 1
+                val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+                if (
+                //cache.isCached(videoId, dataSpec.position, chunkLength)
+                    dataSpec.isLocal ||
+                    downloadCache.isCached(
+                        videoId,
+                        dataSpec.position,
+                        if (dataSpec.length >= 0) dataSpec.length else 1
+                    )
+                ) {
+                    dataSpec
+                } else {
+                    when (videoId) {
+                        ringBuffer.getOrNull(0)?.first -> dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
+                        ringBuffer.getOrNull(1)?.first -> dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
+                        "initVideoId" -> dataSpec
+                        else -> {
+                            val urlResult = runBlocking(Dispatchers.IO) {
+                                Innertube.player(PlayerBody(videoId = videoId))
+                            }?.mapCatching { body ->
+                                if (body.videoDetails?.videoId != videoId) {
+                                    throw VideoIdMismatchException()
+                                }
 
-                            when (val status = body.playabilityStatus?.status) {
-                                "OK" -> body.streamingData?.adaptiveFormats
-                                    ?.filter {
-                                        when (audioQualityFormat) {
-                                            AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
-                                                    it.itag == 250 || it.itag == 140 ||
-                                                    it.itag == 249 || it.itag == 139 ||
-                                                    it.itag == 171
-                                            AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
-                                            AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
-                                            AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
+                                val bestPlayedFormat = runBlocking(Dispatchers.IO) {
+                                    Database.getBestFormat(videoId).firstOrNull()
+                                }
+
+                                when (val status = body.playabilityStatus?.status) {
+                                    "OK" -> if (bestPlayedFormat != null) {
+                                        body.streamingData?.adaptiveFormats?.find {
+                                            it.itag == bestPlayedFormat.itag
                                         }
-
-                                    }
-                                    ?.sortedByDescending { it.bitrate }
-                                    ?.firstOrNull()
-                                    /*
-                                    ?.maxByOrNull {
-                                        (it.bitrate?.times(
-                                            when (audioQualityFormat) {
-                                                AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                                AudioQualityFormat.High -> 1
-                                                AudioQualityFormat.Medium -> -1
-                                                AudioQualityFormat.Low -> -1
+                                    } else {
+                                        body.streamingData?.adaptiveFormats
+                                            ?.filter { it.isAudio }
+                                            ?.maxByOrNull {
+                                                it.bitrate?.times(
+                                                    (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                                                ) ?: -1
                                             }
-                                        ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                                     }
-                                     */
-                                    ?.let { format ->
-                                /*
-                                "OK" -> when(audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> body.streamingData?.autoMaxQualityFormat
-                                    AudioQualityFormat.High -> body.streamingData?.highestQualityFormat
-                                    AudioQualityFormat.Medium -> body.streamingData?.mediumQualityFormat
-                                    AudioQualityFormat.Low -> body.streamingData?.lowestQualityFormat
-                                }?.let { format ->
-                                                      /*
-                                 */
-                                    val mediaItem = runBlocking(Dispatchers.Main) {
-                                        Innertube.player(PlayerBody(videoId = videoId))
-                                    }
-                                     */
-                                    query {
-                                        if (Database.songExist(videoId) == 1) {
-                                            Database.insert(
-                                                Format(
-                                                    songId = videoId,
-                                                    itag = format.itag,
-                                                    mimeType = format.mimeType,
-                                                    bitrate = format.bitrate,
-                                                    loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                                    contentLength = format.contentLength,
-                                                    lastModified = format.lastModified
-                                                )
-                                            )
-                                        } /* else {
+                                        ?.let { format ->
+
+                                            query {
+                                                if (Database.songExist(videoId) == 1) {
+                                                    Database.insert(
+                                                        Format(
+                                                            songId = videoId,
+                                                            itag = format.itag,
+                                                            mimeType = format.mimeType,
+                                                            bitrate = format.bitrate,
+                                                            loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
+                                                            contentLength = format.contentLength,
+                                                            lastModified = format.lastModified
+                                                        )
+                                                    )
+                                                }
+                                                /* else {
                                             Database.insert(mediaItem as Song)
                                             if (Database.songExist(videoId) == 1) {
                                                 Database.insert(
@@ -189,46 +176,43 @@ object DownloadUtil {
                                                 )
                                             }
                                         }*/
-                                    }
+                                            }
 
-                                    format.url
-                                } ?: throw PlayableFormatNotFoundException()
+                                            format.url
+                                        } ?: throw PlayableFormatNotFoundException()
 
-                                "UNPLAYABLE" -> throw UnplayableException()
-                                "LOGIN_REQUIRED" -> throw LoginRequiredException()
-                                else -> throw PlaybackException(
-                                    status,
-                                    null,
-                                    PlaybackException.ERROR_CODE_REMOTE_ERROR
-                                )
+                                    "UNPLAYABLE" -> throw UnplayableException()
+                                    "LOGIN_REQUIRED" -> throw LoginRequiredException()
+                                    else -> throw UnknownException()
+                                }
                             }
-                        }
 
-                        urlResult?.getOrNull()?.let { url ->
-                            ringBuffer.append(videoId to url.toUri())
-                            dataSpec.withUri(url.toUri())
-                                .subrange(dataSpec.uriPositionOffset, chunkLength)
-                        } ?: throw PlaybackException(
-                            null,
-                            urlResult?.exceptionOrNull(),
-                            PlaybackException.ERROR_CODE_REMOTE_ERROR
-                        )
+                            urlResult?.getOrNull()?.let { url ->
+                                ringBuffer.append(videoId to url.toUri())
+                                dataSpec.withUri(url.toUri())
+                                    .subrange(dataSpec.uriPositionOffset, chunkLength)
+                            } ?: throw PlaybackException(
+                                null,
+                                urlResult?.exceptionOrNull(),
+                                PlaybackException.ERROR_CODE_REMOTE_ERROR
+                            )
+                        }
                     }
                 }
+
+
             }
-
-
-        }
         return dataSourceFactory
     }
 
-    private fun okHttpClient() : OkHttpClient {
-        ProxyPreferences.preference?.let{
+    private fun okHttpClient(): OkHttpClient {
+        ProxyPreferences.preference?.let {
             return OkHttpClient.Builder()
                 .proxy(
-                    Proxy(it.proxyMode,
-                    InetSocketAddress(it.proxyHost,it.proxyPort)
-                )
+                    Proxy(
+                        it.proxyMode,
+                        InetSocketAddress(it.proxyHost, it.proxyPort)
+                    )
                 )
                 .connectTimeout(Duration.ofSeconds(16))
                 .readTimeout(Duration.ofSeconds(8))
@@ -260,7 +244,7 @@ object DownloadUtil {
 
     @Synchronized
     fun getDownloadNotificationHelper(context: Context?): DownloadNotificationHelper {
-        if(!DownloadUtil::downloadNotificationHelper.isInitialized) {
+        if (!DownloadUtil::downloadNotificationHelper.isInitialized) {
             downloadNotificationHelper =
                 DownloadNotificationHelper(context!!, DOWNLOAD_NOTIFICATION_CHANNEL_ID)
         }
@@ -273,15 +257,14 @@ object DownloadUtil {
         return downloadManager
     }
 
-/*
-    @Synchronized
-    fun getDownloadTracker(context: Context): DownloadTracker {
-        ensureDownloadManagerInitialized(context)
-        return downloadTracker
-    }
+    /*
+        @Synchronized
+        fun getDownloadTracker(context: Context): DownloadTracker {
+            ensureDownloadManagerInitialized(context)
+            return downloadTracker
+        }
 
- */
-
+     */
 
 
     fun getDownloadString(context: Context, @Download.State downloadState: Int): String {
@@ -310,7 +293,7 @@ object DownloadUtil {
 
     @Synchronized
     private fun getDownloadCache(context: Context): Cache {
-        if(!DownloadUtil::downloadCache.isInitialized) {
+        if (!DownloadUtil::downloadCache.isInitialized) {
             val downloadContentDirectory =
                 File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
             downloadCache = SimpleCache(
@@ -324,7 +307,7 @@ object DownloadUtil {
 
     @Synchronized
     fun getDownloadSimpleCache(context: Context): Cache {
-        if(!DownloadUtil::downloadCache.isInitialized) {
+        if (!DownloadUtil::downloadCache.isInitialized) {
             val downloadContentDirectory =
                 File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
             downloadCache = SimpleCache(
@@ -338,7 +321,7 @@ object DownloadUtil {
 
     @Synchronized
     private fun ensureDownloadManagerInitialized(context: Context) {
-        if(!DownloadUtil::downloadManager.isInitialized) {
+        if (!DownloadUtil::downloadManager.isInitialized) {
             downloadManager = DownloadManager(
                 context,
                 getDatabaseProvider(context),
@@ -358,14 +341,14 @@ object DownloadUtil {
 
     @Synchronized
     private fun getDatabaseProvider(context: Context): DatabaseProvider {
-        if(!DownloadUtil::databaseProvider.isInitialized) databaseProvider =
+        if (!DownloadUtil::databaseProvider.isInitialized) databaseProvider =
             StandaloneDatabaseProvider(context)
         return databaseProvider
     }
 
     @Synchronized
     fun getDownloadDirectory(context: Context): File {
-        if(!DownloadUtil::downloadDirectory.isInitialized) {
+        if (!DownloadUtil::downloadDirectory.isInitialized) {
             downloadDirectory = context.getExternalFilesDir(null) ?: context.filesDir
             downloadDirectory.resolve(DOWNLOAD_CONTENT_DIRECTORY).also { directory ->
                 if (directory.exists()) return@also

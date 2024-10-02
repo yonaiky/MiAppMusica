@@ -46,13 +46,17 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
@@ -80,7 +84,12 @@ fun SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         isDownloaded = isDownloaded,
-        onDownloadClick = onDownloadClick,
+        onDownloadClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                Database.upsert(song.asSong)
+            }
+            onDownloadClick()
+        },
         downloadState = downloadState,
         isExplicit = song.explicit,
         mediaId = song.key,
@@ -113,7 +122,12 @@ fun SongItem(
         trailingContent = trailingContent,
         modifier = modifier,
         isDownloaded = isDownloaded,
-        onDownloadClick = onDownloadClick,
+        onDownloadClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                Database.upsert(song.asSong)
+            }
+            onDownloadClick()
+        },
         downloadState = downloadState,
         isRecommended = isRecommended,
         mediaId = song.mediaId
@@ -144,7 +158,12 @@ fun SongItem(
         trailingContent = trailingContent,
         modifier = modifier,
         isDownloaded = isDownloaded,
-        onDownloadClick = onDownloadClick,
+        onDownloadClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                Database.upsert(song)
+            }
+            onDownloadClick()
+        },
         downloadState = downloadState,
         mediaId = song.id
     )
@@ -342,7 +361,7 @@ fun SongItem(
                     modifier = Modifier
                         //.padding(start = 4.dp)
                         .align(Alignment.BottomStart)
-                        .absoluteOffset(-8.dp,0.dp)
+                        .absoluteOffset(-8.dp, 0.dp)
 
                 )
             /*
@@ -492,7 +511,10 @@ fun SongItem(
                             .background(colorPalette().accent, CircleShape)
                             .padding(all = 3.dp)
                             .combinedClickable(onClick = {}, onLongClick = {
-                                SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
+                                SmartMessage(
+                                    context.resources.getString(R.string.playlistindicatorinfo2),
+                                    context = context
+                                )
                             })
                     )
                 }

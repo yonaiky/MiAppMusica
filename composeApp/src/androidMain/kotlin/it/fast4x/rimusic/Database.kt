@@ -1419,6 +1419,9 @@ interface Database {
     @Upsert
     fun upsert(format: Format)
 
+    @Upsert
+    fun upsert(song: Song)
+
     @Delete
     fun delete(searchQuery: SearchQuery)
 
