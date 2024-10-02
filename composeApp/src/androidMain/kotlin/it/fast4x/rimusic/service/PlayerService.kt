@@ -181,6 +181,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -1917,12 +1918,6 @@ class PlayerService : InvincibleService(),
 
                 else -> {
                     Timber.i("PlayerService createDataSourceResolverFactory videoId $videoId")
-                    /*
-                    val body = runBlocking(Dispatchers.IO) {
-                        Innertube.player(PlayerBody(videoId = videoId))
-                    }?.getOrThrow()
-                     */
-
 
                     val body = runBlocking(Dispatchers.IO) {
                         Innertube.player(PlayerBody(videoId = videoId))
@@ -1944,12 +1939,22 @@ class PlayerService : InvincibleService(),
 
                     println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
-                    val format = body?.streamingData?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                        ) ?: -1 }
+                    val bestPlayedFormat = runBlocking(Dispatchers.IO) { Database.getBestFormat(videoId).firstOrNull() }
 
+                    val format =
+                        if (bestPlayedFormat != null) {
+                            body?.streamingData?.adaptiveFormats?.find {
+                                it.itag == bestPlayedFormat.itag
+                            }
+                        } else {
+                            body?.streamingData?.adaptiveFormats
+                                ?.filter { it.isAudio }
+                                ?.maxByOrNull {
+                                    it.bitrate?.times(
+                                        (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                                    ) ?: -1
+                                }
+                        }
                     /*
                     val format = body.streamingData?.adaptiveFormats
                         ?.filter { it.isAudio }
@@ -2027,10 +2032,9 @@ class PlayerService : InvincibleService(),
                         "LOGIN_REQUIRED" -> throw LoginRequiredException()
 
                         else -> {
-                            Timber.i("PlayerService createDataSourceResolverFactory status $status")
-                            println("mediaItem PlayerService createDataSourceResolverFactory status $status")
+                            Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
+                            println("mediaItem PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
                             throw UnknownException()
-                            //throw PlaybackException(status, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
                         }
                     }
                     ringBuffer.append(videoId to url.toUri())

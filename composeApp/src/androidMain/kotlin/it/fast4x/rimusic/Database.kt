@@ -70,6 +70,18 @@ interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
     @Transaction
+    @Query("SELECT * FROM Format WHERE songId = :songId ORDER BY bitrate DESC LIMIT 1")
+    fun getBestFormat(songId: String): Flow<Format?>
+
+    @Transaction
+    @Query("SELECT * FROM Format ORDER BY lastModified DESC LIMIT 1")
+    fun getLastBestFormat(): Flow<Format?>
+
+    @Transaction
+    @Query("SELECT * FROM Song WHERE id in (SELECT songId FROM Format ORDER BY lastModified DESC LIMIT 1)")
+    fun getLastSongPlayed(): Flow<Song?>
+
+    @Transaction
     @Query("SELECT COUNT(id) from Song WHERE id = :id and title LIKE '${EXPLICIT_PREFIX}%'")
     fun isSongExplicit(id: String): Int
 

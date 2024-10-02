@@ -11,7 +11,8 @@ data class PlayerResponse(
 ) {
     @Serializable
     data class PlayabilityStatus(
-        val status: String?
+        val status: String?,
+        val reason: String?
     )
 
     @Serializable
