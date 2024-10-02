@@ -1,4 +1,4 @@
-package me.knighthat.menu
+package me.knighthat.component.header
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -115,7 +115,7 @@ fun AppTitle(
         AppLogo( navController, context )
         AppLogoText( navController )
 
-        if( Preference.parentalControl() )
+        if(Preference.parentalControl())
             Button(
                 iconId = R.drawable.shield_checkmark,
                 color = AppBar.contentColor(),
@@ -123,7 +123,7 @@ fun AppTitle(
                 size = 20.dp
             ).Draw()
 
-        if ( Preference.debugLog() )
+        if (Preference.debugLog())
             BasicText(
                 text = stringResource(R.string.info_debug_mode_enabled),
                 style = TextStyle(

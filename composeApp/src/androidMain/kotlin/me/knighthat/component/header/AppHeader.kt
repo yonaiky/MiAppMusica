@@ -18,7 +18,6 @@ import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.button.Button
 import me.knighthat.colorPalette
-import me.knighthat.menu.AppTitle
 
 class AppHeader(
     val navController: NavController
