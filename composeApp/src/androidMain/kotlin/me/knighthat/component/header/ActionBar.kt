@@ -13,7 +13,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import me.knighthat.colorPalette
 import me.knighthat.menu.DropdownMenu
-import me.knighthat.menu.HeaderIcon
 
 @Composable
 private fun HamburgerMenu(

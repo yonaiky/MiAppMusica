@@ -1,4 +1,4 @@
-package me.knighthat.menu
+package me.knighthat.component.header
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -59,7 +59,7 @@ internal class AppBar {
 
         @Composable
         fun contentColor(): Color =
-             when( Preference.colorTheme() ) {
+             when(Preference.colorTheme()) {
                 ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette().text
                 else -> Color.White
             }
