@@ -13,10 +13,8 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
+import me.knighthat.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -37,26 +35,10 @@ fun HistoryScreen(
         globalRoutes()
 
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = { homeRoute() },
-                /*
-                onSettingsClick = { settingsRoute() },
-                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
-                onHistoryClick = { historyRoute() },
-                onSearchClick = { searchRoute("") },
-
-                 */
-                tabColumnContent = { item ->
+            Skeleton(
+                navController,
+                mediaPlayer = playerEssential,
+                navBarContent = { item ->
                     item(0, stringResource(R.string.history), R.drawable.history)
                 }
             ) { currentTabIndex ->

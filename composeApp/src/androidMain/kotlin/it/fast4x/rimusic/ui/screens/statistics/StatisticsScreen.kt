@@ -20,6 +20,8 @@ import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import me.knighthat.Skeleton
+import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -44,7 +46,6 @@ fun StatisticsScreen(
             StatisticsType.SixMonths -> 4
             StatisticsType.OneYear -> 5
             StatisticsType.All -> 6
-
         })
     }
 
@@ -53,72 +54,34 @@ fun StatisticsScreen(
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                onBottomIconButtonClick = {
-                    //searchRoute("")
-                    navController.navigate(NavRoutes.search.name)
-                },
-                tabIndex = tabIndex,
-                onTabChanged = onTabIndexChanged,
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                /*
-                onSettingsClick = { settingsRoute() },
-                onStatisticsClick = { statisticsTypeRoute(StatisticsType.Today) },
-                onHistoryClick = { historyRoute() },
-                onSearchClick = { searchRoute("") },
-                 */
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.today), R.drawable.stat_today)
-                    Item(1, stringResource(R.string._1_week), R.drawable.stat_week)
-                    Item(2, stringResource(R.string._1_month), R.drawable.stat_month)
-                    Item(3, stringResource(R.string._3_month), R.drawable.stat_3months)
-                    Item(4, stringResource(R.string._6_month), R.drawable.stat_6months)
-                    Item(5, stringResource(R.string._1_year), R.drawable.stat_year)
-                    Item(6, stringResource(R.string.all), R.drawable.calendar_clear)
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabIndexChanged,
+                playerEssential,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.today), R.drawable.stat_today)
+                    item(1, stringResource(R.string._1_week), R.drawable.stat_week)
+                    item(2, stringResource(R.string._1_month), R.drawable.stat_month)
+                    item(3, stringResource(R.string._3_month), R.drawable.stat_3months)
+                    item(4, stringResource(R.string._6_month), R.drawable.stat_6months)
+                    item(5, stringResource(R.string._1_year), R.drawable.stat_year)
+                    item(6, stringResource(R.string.all), R.drawable.calendar_clear)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
-                    when (currentTabIndex) {
-                        0 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.Today
-                        )
-                        1 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.OneWeek
-                        )
-                        2 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.OneMonth
-                        )
-                        3 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.ThreeMonths
-                        )
-                        4 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.SixMonths
-                        )
-                        5 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.OneYear
-                        )
-                        6 -> StatisticsPageModern(
-                            navController = navController,
-                            statisticsType = StatisticsType.All
-                        )
-                    }
+                    val type: StatisticsType =
+                        when( currentTabIndex ) {
+                            0 -> StatisticsType.Today
+                            1 -> StatisticsType.OneWeek
+                            2 -> StatisticsType.OneMonth
+                            3 -> StatisticsType.ThreeMonths
+                            4 -> StatisticsType.SixMonths
+                            5 -> StatisticsType.OneYear
+                            else -> StatisticsType.All
+                        }
+
+                    StatisticsPageModern( navController, type )
                 }
             }
         }
