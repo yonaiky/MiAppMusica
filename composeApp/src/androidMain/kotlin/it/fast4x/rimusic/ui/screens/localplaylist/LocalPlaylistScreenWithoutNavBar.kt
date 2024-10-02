@@ -49,6 +49,7 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
 import me.knighthat.uiType
 
 @OptIn(KotlinCsvExperimental::class)
@@ -78,7 +79,7 @@ fun LocalPlaylistScreenWithoutNavBar(
                 containerColor = colorPalette().background0,
                 topBar = {
                     if( uiType() == UiType.RiMusic )
-                        AppBar(navController)
+                        AppHeader( navController ).Draw()
                 }
             ) {
                 //**

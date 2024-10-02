@@ -88,6 +88,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
 import me.knighthat.uiType
 
 
@@ -288,7 +289,7 @@ fun AlbumScreenWithoutNavBar(
                 containerColor = colorPalette().background0,
                 topBar = {
                     if( uiType() == UiType.RiMusic )
-                        AppBar(navController)
+                        AppHeader( navController ).Draw()
                 }
             ) {
                 //**
