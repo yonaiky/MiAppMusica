@@ -53,10 +53,7 @@ import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.typography
 import me.knighthat.uiType
-import org.jetbrains.compose.resources.painterResource
-import rimusic.composeapp.generated.resources.Res
-import rimusic.composeapp.generated.resources.app_icon
-import rimusic.composeapp.generated.resources.app_logo_text
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -106,7 +103,7 @@ fun AppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(Res.drawable.app_icon),
+                    painter = painterResource(R.drawable.app_icon),
                     colorFilter = ColorFilter.tint(colorPalette().favoritesIcon),
                     contentDescription = null,
                     modifier = Modifier
@@ -143,7 +140,7 @@ fun AppBar(
                         )
                 )
                 Image(
-                    painter = painterResource(Res.drawable.app_logo_text),
+                    painter = painterResource(R.drawable.app_logo_text),
                     colorFilter = ColorFilter.tint(
                         when(colorPaletteMode) {
                             ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette().text
