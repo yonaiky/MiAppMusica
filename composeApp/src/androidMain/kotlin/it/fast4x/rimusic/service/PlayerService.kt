@@ -208,6 +208,7 @@ import java.net.UnknownHostException
 import java.time.Duration
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import android.os.Binder as AndroidBinder
 
@@ -701,6 +702,19 @@ class PlayerService : InvincibleService(),
             }
         }
 
+
+        // Send discord presence periodically
+        coroutineScope.launch {
+            while (isActive) {
+                delay(30.seconds)
+                withContext(Dispatchers.Main) {
+                    updateDiscordPresence()
+                }
+            }
+        }
+
+
+
         maybeResumePlaybackWhenDeviceConnected()
 
         //workaround for android 12+
@@ -727,16 +741,21 @@ class PlayerService : InvincibleService(),
     }
 
     private fun updateDiscordPresence() {
-        if (!isAtLeastAndroid81) return
-        val discordPersonalAccessToken = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
         val isDiscordPresenceEnabled = preferences.getBoolean(isDiscordPresenceEnabledKey, false)
+        if (!isDiscordPresenceEnabled || !isAtLeastAndroid81) return
+
+        val discordPersonalAccessToken = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
+
         runCatching {
-            if (!discordPersonalAccessToken.isNullOrEmpty() && isDiscordPresenceEnabled) {
+            if (!discordPersonalAccessToken.isNullOrEmpty()) {
                 player.currentMediaItem?.let {
                     sendDiscordPresence(
                         discordPersonalAccessToken,
                         it,
-                        player.duration
+                        timeStart = if (player.isPlaying)
+                            System.currentTimeMillis() - player.currentPosition else 0L,
+                        timeEnd = if (player.isPlaying)
+                                (System.currentTimeMillis() - player.currentPosition) + player.duration else 0L
                     )
                 }
             }

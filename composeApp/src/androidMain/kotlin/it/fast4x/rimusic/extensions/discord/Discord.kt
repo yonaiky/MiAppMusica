@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.my.kizzyrpc.KizzyRPC
 import com.my.kizzyrpc.model.Activity
 import com.my.kizzyrpc.model.Assets
+import com.my.kizzyrpc.model.Timestamps
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -111,7 +112,8 @@ fun DiscordLoginAndGetToken(
 fun sendDiscordPresence(
     token: String,
     mediaItem: MediaItem,
-    duration: Long
+    timeStart: Long,
+    timeEnd: Long
 ) {
     if (token.isEmpty()) return
 
@@ -123,23 +125,15 @@ fun sendDiscordPresence(
             details = mediaItem.mediaMetadata.title.toString(),
             state = mediaItem.mediaMetadata.artist.toString(),
             type = TypeDiscordActivity.LISTENING.value,
-            /*
             timestamps = Timestamps(
-                start = System.currentTimeMillis(),
-                end = System.currentTimeMillis() + duration
+                start = timeStart,
+                end = timeEnd
             ),
-             */
             assets = Assets(
-                //largeImage = mediaItem.mediaMetadata.artworkUri.toString(),
-                //smallImage = mediaItem.mediaMetadata.extras?.getString("thumbnail").toString(),
-                //largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
-                //smallImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
-                largeImage = "mp:icona_rimusic",
-                smallImage = "mp:musical-note",
+                largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
+                smallImage = "icona_rimusic",
                 //largeText = mediaItem.mediaMetadata.title.toString(),
                 //smallText = mediaItem.mediaMetadata.artist.toString(),
-                //largeText = "Largelabel",
-                //smallText = "Smalllabel",
             ),
             buttons = listOf("Get RiMusic", "Listen to YTMusic"),
             metadata = com.my.kizzyrpc.model.Metadata(
