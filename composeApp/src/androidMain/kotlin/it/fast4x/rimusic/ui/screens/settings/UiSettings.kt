@@ -228,7 +228,6 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @Composable
 fun DefaultUiSettings() {
@@ -1370,7 +1369,7 @@ fun UiSettings(
         if (filter.isNullOrBlank() || stringResource(R.string.interface_in_use).contains(filterCharSequence,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.interface_in_use),
-                selectedValue = uiType(),
+                selectedValue = uiType,
                 onValueSelected = {
                     uiType = it
                     if (uiType == UiType.ViMusic) {
@@ -1775,7 +1774,7 @@ fun UiSettings(
                 }
             )
 
-        if ( uiType() == UiType.ViMusic ) {
+        if ( UiType.ViMusic.isCurrent() ) {
             if (filter.isNullOrBlank() || stringResource(R.string.vimusic_show_search_button_in_navigation_bar).contains(
                     filterCharSequence,
                     true

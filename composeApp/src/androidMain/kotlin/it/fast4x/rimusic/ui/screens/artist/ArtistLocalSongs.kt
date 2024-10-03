@@ -58,8 +58,6 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
-import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -130,10 +128,10 @@ fun ArtistLocalSongs(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if ( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
             LazyColumn(
@@ -343,7 +341,7 @@ fun ArtistLocalSongs(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( uiType() == UiType.ViMusic && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {

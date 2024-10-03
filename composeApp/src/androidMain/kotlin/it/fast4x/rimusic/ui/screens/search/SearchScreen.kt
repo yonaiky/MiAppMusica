@@ -40,7 +40,6 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.secondary
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -90,7 +89,7 @@ fun SearchScreen(
                        // .weight(1f)
                         .padding(horizontal = 10.dp)
                 ) {
-                    if ( uiType() == UiType.ViMusic )
+                    if ( UiType.ViMusic.isCurrent() )
                         Column (
                             verticalArrangement = Arrangement.Center
                         ) {
@@ -162,7 +161,7 @@ fun SearchScreen(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 onTopIconButtonClick = {
                     //onGoToHome()
                     navController.navigate(NavRoutes.home.name)

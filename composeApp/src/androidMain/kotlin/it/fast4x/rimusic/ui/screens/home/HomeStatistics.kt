@@ -52,9 +52,7 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.thumbnailShape
-import me.knighthat.uiType
 
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
@@ -121,10 +119,10 @@ fun HomeStatistics(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyVerticalGrid(
@@ -262,7 +260,7 @@ fun HomeStatistics(
             }
 
         }
-        if( uiType() == UiType.ViMusic )
+        if( UiType.ViMusic.isCurrent() )
             FloatingActionsContainerWithScrollToTop(
                 lazyGridState = lazyGridState,
                 iconId = R.drawable.search,

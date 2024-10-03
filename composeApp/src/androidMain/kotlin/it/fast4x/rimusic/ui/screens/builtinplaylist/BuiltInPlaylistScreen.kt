@@ -34,7 +34,6 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -115,11 +114,11 @@ fun BuiltInPlaylistScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
-                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
-                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
+                showButton2 = if( UiType.RiMusic.isCurrent() ) false else showStatsInNavbar,
+                showBottomButton = if( UiType.RiMusic.isCurrent() ) false else showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)

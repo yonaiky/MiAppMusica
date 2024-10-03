@@ -114,9 +114,7 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
-import me.knighthat.uiType
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,10 +194,10 @@ fun ArtistOverviewModern(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if ( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
             Column(
@@ -893,7 +891,7 @@ fun ArtistOverviewModern(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( uiType() == UiType.ViMusic && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 youtubeArtistPage?.radioEndpoint?.let { endpoint ->
 
                     MultiFloatingActionsContainer(

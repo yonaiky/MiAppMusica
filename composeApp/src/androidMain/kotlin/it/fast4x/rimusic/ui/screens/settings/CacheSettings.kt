@@ -46,7 +46,6 @@ import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class)
@@ -101,10 +100,10 @@ fun CacheSettings() {
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
             .verticalScroll(rememberScrollState())
             .padding(

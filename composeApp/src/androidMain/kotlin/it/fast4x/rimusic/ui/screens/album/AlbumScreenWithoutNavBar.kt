@@ -58,6 +58,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerPosition
@@ -75,8 +76,6 @@ import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.MODIFIED_PREFIX
-import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistSongs
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
@@ -88,7 +87,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.uiType
 
 
 @ExperimentalMaterialApi
@@ -287,7 +285,7 @@ fun AlbumScreenWithoutNavBar(
                 modifier = Modifier,
                 containerColor = colorPalette().background0,
                 topBar = {
-                    if( uiType() == UiType.RiMusic )
+                    if( UiType.RiMusic.isCurrent() )
                         AppBar(navController)
                 }
             ) {
@@ -303,7 +301,7 @@ fun AlbumScreenWithoutNavBar(
                             .background(colorPalette().background0)
                             .fillMaxSize()
                     ) {
-                        val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
+                        val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
                         AnimatedContent(
                             targetState = 0,

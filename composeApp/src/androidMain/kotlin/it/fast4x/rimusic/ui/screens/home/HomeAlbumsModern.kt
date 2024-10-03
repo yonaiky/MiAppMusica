@@ -108,7 +108,6 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
-import me.knighthat.uiType
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -215,7 +214,7 @@ fun HomeAlbumsModern(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                if ( uiType() == UiType.ViMusic )
+                if ( UiType.ViMusic.isCurrent() )
                     HeaderWithIcon(
                         title = stringResource(R.string.albums),
                         iconId = R.drawable.search,
@@ -241,7 +240,7 @@ fun HomeAlbumsModern(
                         .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
                 ) {
-                    if ( uiType() == UiType.RiMusic )
+                    if ( UiType.RiMusic.isCurrent() )
                         TitleSection(title = stringResource(R.string.albums))
 
                     HeaderInfo(
@@ -640,7 +639,7 @@ fun HomeAlbumsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if ( uiType() == UiType.ViMusic && showFloatingIcon )
+        if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

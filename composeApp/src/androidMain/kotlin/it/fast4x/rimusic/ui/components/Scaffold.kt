@@ -46,8 +46,6 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
-import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -80,7 +78,7 @@ fun Scaffold(
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
-    if ( navBarPos() == NavigationBarPosition.Top || navBarPos() == NavigationBarPosition.Bottom) {
+    if ( NavigationBarPosition.Top.isCurrent() || NavigationBarPosition.Bottom.isCurrent() ) {
             ScaffoldTB(
                 navController = navController,
                 playerEssential = playerEssential,
@@ -109,7 +107,7 @@ fun Scaffold(
         //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         val customModifier =
-            if( uiType() == UiType.RiMusic )
+            if( UiType.RiMusic.isCurrent() )
                 Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             else
                 Modifier
@@ -119,7 +117,7 @@ fun Scaffold(
             modifier = customModifier,
             containerColor = colorPalette().background0,
             topBar = {
-                if( uiType() == UiType.RiMusic ) {
+                if( UiType.RiMusic.isCurrent() ) {
                     AppBar(navController)
                 }
             },
@@ -177,10 +175,10 @@ fun Scaffold(
                         )
                     }
 
-                    if ( navBarPos() == NavigationBarPosition.Left )
+                    if ( NavigationBarPosition.Left.isCurrent() )
                         navigationRail()
 
-                    val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
+                    val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
                     AnimatedContent(
                         targetState = tabIndex,
@@ -242,7 +240,7 @@ fun Scaffold(
                             .padding(top = topPadding)
                     )
 
-                    if ( navBarPos() == NavigationBarPosition.Right )
+                    if ( NavigationBarPosition.Right.isCurrent() )
                         navigationRail()
 
                 }

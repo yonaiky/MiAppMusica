@@ -32,7 +32,6 @@ import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.showSearchTabKey
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -107,7 +106,7 @@ fun DeviceListSongsScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

@@ -67,6 +67,7 @@ import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -92,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -129,9 +129,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -323,10 +321,10 @@ fun QuickPicksModern(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
 
         ) {
@@ -359,7 +357,7 @@ fun QuickPicksModern(
                 //relatedPageResult?.getOrNull()?.let { related ->
                 related = relatedPageResult?.getOrNull()
 
-                if ( uiType() == UiType.ViMusic )
+                if ( UiType.ViMusic.isCurrent() )
                     HeaderWithIcon(
                         title = stringResource(R.string.quick_picks),
                         iconId = R.drawable.search,
@@ -1076,7 +1074,7 @@ fun QuickPicksModern(
 
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( uiType() == UiType.ViMusic && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

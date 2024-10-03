@@ -46,8 +46,6 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
-import me.knighthat.uiType
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -215,14 +213,14 @@ fun HomeScreen(
                     //settingsRoute()
                     navController.navigate(NavRoutes.settings.name)
                 },
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 topIconButton2Id = R.drawable.stats_chart,
                 onTopIconButton2Click = {
                     //statisticsTypeRoute(StatisticsType.Today)
                     navController.navigate(NavRoutes.statistics.name)
                 },
-                showButton2 = if( uiType() == UiType.RiMusic ) false else showStatsInNavbar,
-                showBottomButton = if( uiType() == UiType.RiMusic ) false else showSearchTab,
+                showButton2 = if( UiType.RiMusic.isCurrent() ) false else showStatsInNavbar,
+                showBottomButton = if( UiType.RiMusic.isCurrent() ) false else showSearchTab,
                 onBottomIconButtonClick = {
                     //searchRoute("")
                     navController.navigate(NavRoutes.search.name)

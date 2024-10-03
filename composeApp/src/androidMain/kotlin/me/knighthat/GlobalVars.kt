@@ -7,19 +7,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.LocalAppearance
-import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
-import it.fast4x.rimusic.utils.navigationBarTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
-
-@Composable
-fun uiType() = rememberPreference( UiTypeKey, UiType.RiMusic ).value
-
-@Composable
-fun navBarType() = rememberPreference( navigationBarTypeKey, NavigationBarType.IconAndText ).value
-
-@Composable
-fun navBarPos() = rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom).value
 
 @Composable
 fun typography() = LocalAppearance.current.typography

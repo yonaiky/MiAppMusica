@@ -17,7 +17,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.homeRoute
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -43,7 +42,7 @@ fun HistoryScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

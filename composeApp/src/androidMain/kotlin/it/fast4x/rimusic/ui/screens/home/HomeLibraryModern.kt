@@ -68,6 +68,9 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.MONTHLY_PREFIX
+import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.LibraryItemSize
@@ -104,9 +107,6 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.MONTHLY_PREFIX
-import it.fast4x.rimusic.PINNED_PREFIX
-import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
@@ -133,7 +133,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 
 
@@ -351,7 +350,7 @@ fun HomeLibraryModern(
         ) {
             item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
 
-                if ( uiType() == UiType.ViMusic )
+                if ( UiType.ViMusic.isCurrent() )
                     HeaderWithIcon(
                         title = stringResource(R.string.playlists),
                         iconId = R.drawable.search,
@@ -373,7 +372,7 @@ fun HomeLibraryModern(
                         .fillMaxWidth()
 
                 ) {
-                    if ( uiType() == UiType.RiMusic )
+                    if ( UiType.RiMusic.isCurrent() )
                         TitleSection(title = stringResource(R.string.playlists))
 
                     HeaderInfo(
@@ -420,13 +419,10 @@ fun HomeLibraryModern(
                             .padding(horizontal = 2.dp)
                             .combinedClickable(onClick = { autosync = !autosync },
                                 onLongClick = {
-                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.autosync),
                                         context = context
                                     )
-
-                                     */
                                 }
                             )
                     )
@@ -474,13 +470,10 @@ fun HomeLibraryModern(
 
                                 },
                                 onLongClick = {
-                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.shuffle),
                                         context = context
                                     )
-
-                                     */
                                 }
                             )
                     )
@@ -494,13 +487,10 @@ fun HomeLibraryModern(
                             .combinedClickable (
                                 onClick = { isCreatingANewPlaylist = true },
                                 onLongClick = {
-                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.create_new_playlist),
                                         context = context
                                     )
-
-                                     */
                                 }
                             )
                     )
@@ -520,23 +510,17 @@ fun HomeLibraryModern(
                                             )
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        /*
                                         SmartMessage(
                                             context.resources.getString(R.string.info_not_find_app_open_doc),
                                             type = PopupType.Warning, context = context
                                         )
-
-                                         */
                                     }
                                 },
                                 onLongClick = {
-                                    /*
                                     SmartMessage(
                                         context.resources.getString(R.string.import_playlist),
                                         context = context
                                     )
-
-                                     */
                                 }
                             )
                     )
@@ -788,7 +772,7 @@ fun HomeLibraryModern(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( uiType() == UiType.ViMusic && showFloatingIcon )
+        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,
