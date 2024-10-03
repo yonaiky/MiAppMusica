@@ -576,7 +576,7 @@
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
     <string name="cache_location_system">Systema</string>
-    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or piped playlist</string>
+    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Non pote renominar un lista de reproduction mensual o de piped</string>
     <string name="debug">DEPURATION</string>
     <string name="enable_log_debug">Activar registro de depuration</string>
     <string name="if_enabled_create_a_log_file_to_highlight_errors">Si es activate, crea un file de registro pro evidentiar le errores</string>
@@ -694,9 +694,9 @@
     <string name="message_type_modern">Moderne</string>
     <string name="message_type_essential">Essential</string>
     <string name="discoverinforadio">Removes Liked and Playlist songs from Radio</string>
-    <string name="discover_has_been_applied_to_radio">Discover has been applied to radio, removed songs: %s</string>
+    <string name="discover_has_been_applied_to_radio">Discoperir ha essite applicate al radio, cantos removite: %s</string>
     <string name="songs_number_to_show">Numero de cantos a monstrar</string>
-    <string name="discover_has_been_applied_to_queue">Discover has been applied to queue, removed songs: %s</string>
+    <string name="discover_has_been_applied_to_queue">Discoperir ha essite applicate al cauda, cantos removite: %s</string>
     <string name="player_pause_on_volume_zero">Pause on volume zero</string>
     <string name="info_pauses_player_when_volume_zero">Pauses the player when the volume reaches 0 and resumes when the volume is greater than 0</string>
     <string name="quality">Qualitate</string>
