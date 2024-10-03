@@ -1,10 +1,12 @@
 package it.fast4x.rimusic.ui.screens.settings
 
+import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,11 +28,12 @@ import it.fast4x.rimusic.utils.secondary
 import me.knighthat.colorPalette
 import me.knighthat.navBarPos
 import me.knighthat.typography
+import me.knighthat.ui.screens.settings.about.DevBoard
 
 
 @ExperimentalAnimationApi
 @Composable
-fun About() {
+fun About( context: Context ) {
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -126,10 +129,18 @@ fun About() {
 
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = stringResource(R.string.contributors))
-        SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
+        HeaderWithIcon(
+            title = stringResource(R.string.contributors),
+            iconId = 0,
+            enabled = false,
+            showIcon = true,
+            modifier = Modifier,
+            onClick = {}
+        )
+        SettingsGroupSpacer()
 
-        SettingsTopDescription( text ="Translator:")
+        SettingsEntryGroupText(title = "Translators")
+        SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
         SettingsTopDescription( text =
             "2010furs \n"+
                     "821938089 \n"+
@@ -205,26 +216,10 @@ fun About() {
                     "ZeroZero00 \n"
         )
 
-        SettingsTopDescription( text ="Developer / Designer:")
-        SettingsTopDescription( text =
-            "25huizengek1 \n"+
-                    "821938089 \n"+
-                    "aneesh1122\n"+
-                    "bbyeen \n"+
-                "Craeckie \n"+
-                "DanielSevillano \n"+
-                "Fast4x \n"+
-                "Ikanakova \n"+
-                 "Iscle \n"+
-                "JZITNIK-github \n" +
-                "Locxter \n"+
-                 "lrusso96 \n"+
-                 "martkol \n"+
-                "Roklc \n"+
-                "sharunkumar \n" +
-                "SuhasDissa \n" +
-            "twistios \n"
-        )
+        SettingsEntryGroupText(title = "Developers / Designers")
+        SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
+        DevBoard( context )
+
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
