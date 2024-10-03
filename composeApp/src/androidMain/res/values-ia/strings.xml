@@ -471,7 +471,7 @@
     <string name="theme_modern_black">Nigre moderne</string>
     <string name="theme_mode_pitch_black">Nigre intense</string>
     <string name="show_actions_bar">Monstrar le barra de actiones</string>
-    <string name="transition_effect">Transition effect</string>
+    <string name="transition_effect">Effecto de transition</string>
     <string name="te_expand">Expand</string>
     <string name="te_fade">Fade</string>
     <string name="te_scale">Scala</string>
@@ -566,7 +566,7 @@
     <string name="icon_like_striped">Striped</string>
     <string name="icon_like_brilliant">Brilliant</string>
     <string name="player_swap_controls_with_timeline">Excambiar le controlos con le chronologia</string>
-    <string name="player_enable_lyrics_popup_message">Enable lyrics popup message</string>
+    <string name="player_enable_lyrics_popup_message">Activa le message emergente del parolas de canto</string>
     <string name="exclude_songs_with_duration_limit">Exclude songs with duration limit</string>
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
     <string name="no_log_available">Nulle registro disponibile</string>
