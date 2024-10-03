@@ -53,7 +53,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
-import me.knighthat.uiType
 
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
@@ -261,7 +260,7 @@ fun HomeStatistics(
             }
 
         }
-        if( uiType() == UiType.ViMusic )
+        if( UiType.ViMusic.isCurrent() )
             FloatingActionsContainerWithScrollToTop(
                 lazyGridState = lazyGridState,
                 iconId = R.drawable.search,

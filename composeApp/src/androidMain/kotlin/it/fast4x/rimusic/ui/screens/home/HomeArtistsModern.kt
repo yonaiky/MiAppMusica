@@ -102,7 +102,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 import kotlin.random.Random
 
 @ExperimentalMaterial3Api
@@ -190,7 +189,7 @@ fun HomeArtistsModern(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                if ( uiType() == UiType.ViMusic)
+                if ( UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
                         title = stringResource(R.string.artists),
                         iconId = R.drawable.search,
@@ -215,7 +214,7 @@ fun HomeArtistsModern(
                         .padding(top = 10.dp, bottom = 16.dp)
                         .fillMaxWidth()
                 ){
-                    if ( uiType() == UiType.RiMusic )
+                    if ( UiType.RiMusic.isCurrent() )
                         TitleSection(title = stringResource(R.string.artists))
 
                     HeaderInfo(
@@ -498,7 +497,7 @@ fun HomeArtistsModern(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( uiType() == UiType.ViMusic && showFloatingIcon )
+        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

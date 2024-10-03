@@ -180,7 +180,6 @@ import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -695,7 +694,7 @@ fun HomeSongsModern(
                         .fillMaxWidth()
                         .background(colorPalette().background0)
                 ) {
-                    if ( uiType() == UiType.ViMusic )
+                    if ( UiType.ViMusic.isCurrent() )
                         HeaderWithIcon(
                             title = stringResource(R.string.songs),
                             iconId = R.drawable.search,
@@ -712,7 +711,7 @@ fun HomeSongsModern(
                             .padding(all = 12.dp)
                             .fillMaxSize()
                     ) {
-                        if ( uiType() == UiType.RiMusic )
+                        if ( UiType.RiMusic.isCurrent() )
                             TitleSection(title = stringResource(R.string.songs))
 
                         HeaderInfo(
@@ -1695,7 +1694,7 @@ fun HomeSongsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( uiType() == UiType.ViMusic && showFloatingIcon )
+        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

@@ -17,7 +17,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -39,7 +38,7 @@ fun MoodsPageScreen(
             Scaffold(
                 navController = navController,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

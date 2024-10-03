@@ -58,7 +58,6 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.knighthat.colorPalette
-import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -342,7 +341,7 @@ fun ArtistLocalSongs(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( uiType() == UiType.ViMusic && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {

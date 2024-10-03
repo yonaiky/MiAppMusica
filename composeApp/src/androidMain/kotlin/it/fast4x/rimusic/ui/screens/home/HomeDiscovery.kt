@@ -78,7 +78,6 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -300,7 +299,7 @@ fun HomeDiscovery(
             }
         }
 
-        if( uiType() == UiType.ViMusic )
+        if( UiType.ViMusic.isCurrent() )
         FloatingActionsContainerWithScrollToTop(
             scrollState = scrollState,
             iconId = R.drawable.search,

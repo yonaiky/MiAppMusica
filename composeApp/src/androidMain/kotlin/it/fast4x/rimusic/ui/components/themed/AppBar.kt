@@ -52,7 +52,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 import org.jetbrains.compose.resources.painterResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.app_icon
@@ -69,7 +68,7 @@ fun AppBar(
     var showGames by remember { mutableStateOf(false) }
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val customModifier = if( uiType() == UiType.RiMusic )
+    val customModifier = if( UiType.RiMusic.isCurrent() )
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
 

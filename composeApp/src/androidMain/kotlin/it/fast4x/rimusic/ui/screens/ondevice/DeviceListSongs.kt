@@ -147,7 +147,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -951,7 +950,7 @@ fun DeviceListSongs(
             }
         }
 
-            if( uiType() == UiType.ViMusic )
+            if( UiType.ViMusic.isCurrent() )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

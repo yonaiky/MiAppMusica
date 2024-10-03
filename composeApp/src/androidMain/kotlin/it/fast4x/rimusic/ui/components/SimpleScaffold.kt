@@ -17,7 +17,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.styling.Dimensions
 import me.knighthat.colorPalette
-import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +25,7 @@ fun SimpleScaffold(
     content: @Composable () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val customModifier = if( uiType() == UiType.RiMusic)
+    val customModifier = if( UiType.RiMusic.isCurrent())
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     else Modifier
 
@@ -35,7 +34,7 @@ fun SimpleScaffold(
         modifier = customModifier,
         containerColor = colorPalette().background0,
         topBar = {
-            if( uiType() == UiType.RiMusic) {
+            if( UiType.RiMusic.isCurrent()) {
                 AppBar(navController)
             }
         },

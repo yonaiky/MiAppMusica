@@ -37,7 +37,6 @@ import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 import kotlin.random.Random
 
 @Composable
@@ -172,16 +171,16 @@ fun HeaderWithIcon (
                 fontSize = typography().xxl.bold.fontSize,
                 fontWeight = typography().xxl.bold.fontWeight,
                 color = colorPalette().text,
-                textAlign = if( uiType() != UiType.ViMusic) TextAlign.Center else TextAlign.End
+                textAlign = if( UiType.ViMusic.isNotCurrent()) TextAlign.Center else TextAlign.End
 
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .fillMaxSize(if( showIcon && uiType() == UiType.ViMusic ) 0.9f else 1f)
+                .fillMaxSize(if( showIcon && UiType.ViMusic.isCurrent() ) 0.9f else 1f)
         )
 
-        if ( showIcon && uiType() == UiType.ViMusic &&
+        if ( showIcon && UiType.ViMusic.isCurrent() &&
             ( NavigationBarPosition.Left.isCurrent() || NavigationBarPosition.Right.isCurrent()) )
             SecondaryButton(
                 iconId = iconId,

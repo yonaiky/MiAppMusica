@@ -39,7 +39,6 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @Composable
 inline fun NavigationRail(
@@ -75,7 +74,7 @@ inline fun NavigationRail(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
                     .height(
-                        if( uiType() == UiType.ViMusic )
+                        if( UiType.ViMusic.isCurrent() )
                             if (showButton2)
                                 Dimensions.headerHeight
                             else
