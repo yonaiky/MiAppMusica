@@ -64,6 +64,7 @@ import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -539,7 +540,7 @@ class PlayerService : InvincibleService(),
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
-            //.setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
+            .setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
