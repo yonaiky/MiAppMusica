@@ -36,7 +36,6 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import kotlin.random.Random
@@ -183,7 +182,7 @@ fun HeaderWithIcon (
         )
 
         if ( showIcon && uiType() == UiType.ViMusic &&
-            ( navBarPos() == NavigationBarPosition.Left || navBarPos() == NavigationBarPosition.Right))
+            ( NavigationBarPosition.Left.isCurrent() || NavigationBarPosition.Right.isCurrent()) )
             SecondaryButton(
                 iconId = iconId,
                 enabled = enabled,

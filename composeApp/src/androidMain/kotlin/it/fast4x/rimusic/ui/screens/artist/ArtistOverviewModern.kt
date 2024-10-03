@@ -114,7 +114,6 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import kotlin.random.Random
@@ -196,10 +195,10 @@ fun ArtistOverviewModern(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if ( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
             Column(

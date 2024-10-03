@@ -17,7 +17,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.styling.Dimensions
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,10 +51,10 @@ fun SimpleScaffold(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(
-                        if( navBarPos() != NavigationBarPosition.Right )
-                            1f
-                        else
+                        if( NavigationBarPosition.Right.isCurrent() )
                             Dimensions.contentWidthRightBar
+                        else
+                            1f
                     ),
                 content = content
             )

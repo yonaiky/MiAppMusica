@@ -72,6 +72,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
@@ -100,7 +101,6 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -133,7 +133,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import timber.log.Timber
@@ -301,10 +300,10 @@ fun PlaylistSongListModern(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right)
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
             LazyColumn(

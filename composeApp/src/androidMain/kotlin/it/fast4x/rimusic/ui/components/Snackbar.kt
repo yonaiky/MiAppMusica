@@ -49,7 +49,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 
 @Composable
@@ -97,7 +96,7 @@ fun Popup(
     val windowsInsets = WindowInsets.systemBars
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
     val additionalBottomPadding =
-        if ( navBarPos() == NavigationBarPosition.Bottom )
+        if ( NavigationBarPosition.Bottom.isCurrent() )
             Dimensions.additionalVerticalSpaceForFloatingAction
         else
             0.dp

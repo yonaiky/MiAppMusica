@@ -43,7 +43,6 @@ import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -84,10 +83,10 @@ fun  QuickPicsSettings() {
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
             .verticalScroll(rememberScrollState())
             /*

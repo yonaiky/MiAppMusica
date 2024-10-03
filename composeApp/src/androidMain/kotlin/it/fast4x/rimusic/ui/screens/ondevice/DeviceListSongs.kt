@@ -146,7 +146,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import timber.log.Timber
@@ -340,10 +339,10 @@ fun DeviceListSongs(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
         LazyColumn(

@@ -85,7 +85,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -223,10 +222,10 @@ fun StatisticsPage(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right)
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
                 .verticalScroll(scrollState)
                 /*

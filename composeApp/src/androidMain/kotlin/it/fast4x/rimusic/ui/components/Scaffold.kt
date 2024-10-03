@@ -46,7 +46,6 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,7 +79,7 @@ fun Scaffold(
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
-    if ( navBarPos() == NavigationBarPosition.Top || navBarPos() == NavigationBarPosition.Bottom) {
+    if ( NavigationBarPosition.Top.isCurrent() || NavigationBarPosition.Bottom.isCurrent() ) {
             ScaffoldTB(
                 navController = navController,
                 playerEssential = playerEssential,
@@ -177,7 +176,7 @@ fun Scaffold(
                         )
                     }
 
-                    if ( navBarPos() == NavigationBarPosition.Left )
+                    if ( NavigationBarPosition.Left.isCurrent() )
                         navigationRail()
 
                     val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
@@ -242,7 +241,7 @@ fun Scaffold(
                             .padding(top = topPadding)
                     )
 
-                    if ( navBarPos() == NavigationBarPosition.Right )
+                    if ( NavigationBarPosition.Right.isCurrent() )
                         navigationRail()
 
                 }

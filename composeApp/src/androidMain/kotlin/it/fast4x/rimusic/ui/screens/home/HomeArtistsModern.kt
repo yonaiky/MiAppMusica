@@ -101,7 +101,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import kotlin.random.Random
@@ -172,10 +171,10 @@ fun HomeArtistsModern(
             .background(colorPalette().background0)
             .fillMaxHeight()
             .fillMaxWidth(
-                if ( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyVerticalGrid(

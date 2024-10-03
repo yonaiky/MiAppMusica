@@ -67,6 +67,7 @@ import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -92,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -129,7 +129,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import me.knighthat.uiType
 import timber.log.Timber
@@ -323,10 +322,10 @@ fun QuickPicksModern(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
 
         ) {

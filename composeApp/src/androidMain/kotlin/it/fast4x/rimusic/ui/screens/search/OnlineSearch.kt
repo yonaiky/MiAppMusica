@@ -90,7 +90,6 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 
 @UnstableApi
@@ -179,10 +178,10 @@ fun OnlineSearch(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyColumn(

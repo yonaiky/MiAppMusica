@@ -24,7 +24,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.secondary
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 
 
@@ -39,10 +38,10 @@ fun About() {
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
             .verticalScroll(rememberScrollState())
             /*

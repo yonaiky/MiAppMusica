@@ -44,7 +44,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 
 @OptIn(UnstableApi::class)
@@ -84,7 +83,7 @@ inline fun NavigationRailTB(
         if (localSheetState.isCollapsed) bottomDp + Dimensions.navigationBarHeight else bottomDp
     else 0.dp
      */
-    val bottomPadding = if ( navBarPos() == NavigationBarPosition.Bottom ) bottomDp else 5.dp
+    val bottomPadding = if ( NavigationBarPosition.Bottom.isCurrent() ) bottomDp else 5.dp
 
     //val topPadding = if (navigationBarPosition == NavigationBarPosition.Top) 30.dp else 0.dp
     val topPadding = 0.dp
@@ -177,7 +176,7 @@ inline fun NavigationRailTB(
                    }
 
                 val scrollState = rememberScrollState()
-                val roundedCornerShape = if ( navBarPos() == NavigationBarPosition.Bottom )
+                val roundedCornerShape = if ( NavigationBarPosition.Bottom.isCurrent() )
                     RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
                 else RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 Box(
