@@ -73,6 +73,7 @@ fun SettingsScreen(
     playerEssential: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
+    val context = LocalContext.current
 
     val (tabIndex, onTabChanged) = rememberSaveable {
         mutableStateOf(0)
@@ -110,7 +111,7 @@ fun SettingsScreen(
                         2 -> QuickPicsSettings()
                         3 -> DataSettings()
                         4 -> OtherSettings()
-                        5 -> About()
+                        5 -> About( context )
 
                     }
                 }
