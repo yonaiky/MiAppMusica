@@ -131,7 +131,7 @@ fun sendDiscordPresence(
             ),
             assets = Assets(
                 largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
-                smallImage = "icona_rimusic",
+                smallImage = "mp:{icona_rimusic}",
                 //largeText = mediaItem.mediaMetadata.title.toString(),
                 //smallText = mediaItem.mediaMetadata.artist.toString(),
             ),
