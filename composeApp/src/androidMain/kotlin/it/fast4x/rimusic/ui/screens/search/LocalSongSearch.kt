@@ -64,7 +64,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.delay
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 
 @ExperimentalTextApi
@@ -121,10 +120,10 @@ fun LocalSongSearch(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyColumn(

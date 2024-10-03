@@ -32,7 +32,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.thumbnailShape
 
 @ExperimentalAnimationApi
@@ -50,10 +49,10 @@ fun HomeSearch(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyVerticalGrid(

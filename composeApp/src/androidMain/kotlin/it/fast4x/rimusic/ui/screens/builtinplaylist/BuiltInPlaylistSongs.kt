@@ -144,7 +144,6 @@ import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import java.text.SimpleDateFormat
@@ -484,10 +483,10 @@ fun BuiltInPlaylistSongs(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if ( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyColumn(

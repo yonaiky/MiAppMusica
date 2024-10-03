@@ -113,9 +113,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 
 
@@ -644,10 +642,10 @@ fun PlaylistSongList(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right)
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
             LazyColumn(
@@ -769,7 +767,7 @@ fun PlaylistSongList(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( uiType() == UiType.ViMusic && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

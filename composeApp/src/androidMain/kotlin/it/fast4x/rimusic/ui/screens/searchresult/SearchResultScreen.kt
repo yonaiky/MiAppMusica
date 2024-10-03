@@ -38,6 +38,7 @@ import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
@@ -56,7 +57,6 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -85,7 +85,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -141,7 +140,7 @@ fun SearchResultScreen(
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,
                 showButton2 = false,

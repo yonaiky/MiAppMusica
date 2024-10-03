@@ -80,6 +80,7 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
@@ -125,7 +126,6 @@ import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
@@ -178,10 +178,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -678,10 +676,10 @@ fun HomeSongsModern(
             .fillMaxHeight()
             //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else Dimensions.contentWidthRightBar)
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         LazyColumn(
@@ -696,7 +694,7 @@ fun HomeSongsModern(
                         .fillMaxWidth()
                         .background(colorPalette().background0)
                 ) {
-                    if ( uiType() == UiType.ViMusic )
+                    if ( UiType.ViMusic.isCurrent() )
                         HeaderWithIcon(
                             title = stringResource(R.string.songs),
                             iconId = R.drawable.search,
@@ -713,7 +711,7 @@ fun HomeSongsModern(
                             .padding(all = 12.dp)
                             .fillMaxSize()
                     ) {
-                        if ( uiType() == UiType.RiMusic )
+                        if ( UiType.RiMusic.isCurrent() )
                             TitleSection(title = stringResource(R.string.songs))
 
                         HeaderInfo(
@@ -1696,7 +1694,7 @@ fun HomeSongsModern(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( uiType() == UiType.ViMusic && showFloatingIcon )
+        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,

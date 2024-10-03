@@ -34,6 +34,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -49,7 +50,6 @@ import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
@@ -59,7 +59,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.uiType
 
 
 @ExperimentalMaterialApi
@@ -254,7 +253,7 @@ fun AlbumScreen(
                 navController = navController,
                 playerEssential = playerEssential,
                 topIconButtonId = R.drawable.chevron_back,
-                showButton1 = uiType() != UiType.RiMusic,
+                showButton1 = UiType.RiMusic.isNotCurrent(),
                 onTopIconButtonClick = pop,
                 topIconButton2Id = R.drawable.chevron_back,
                 onTopIconButton2Click = pop,

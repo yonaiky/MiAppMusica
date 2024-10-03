@@ -51,7 +51,6 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,7 +116,7 @@ fun ScaffoldTB(
             ) {
                 AppBar(navController)
 
-                if ( navBarPos() == NavigationBarPosition.Top )
+                if ( NavigationBarPosition.Top.isCurrent() )
                     navigationRailTB()
 
                 /*
@@ -166,7 +165,7 @@ fun ScaffoldTB(
                     }
                      */
 
-                    if ( navBarPos() == NavigationBarPosition.Bottom )
+                    if ( NavigationBarPosition.Bottom.isCurrent() )
                             navigationRailTB()
 
                 //}
@@ -174,11 +173,7 @@ fun ScaffoldTB(
 
     ) {
         val modifierBoxPadding =
-            if ( navBarPos() != NavigationBarPosition.Top )
-                Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            else
+            if ( NavigationBarPosition.Top.isCurrent() )
                 Modifier
                     .padding(it)
                     .padding(
@@ -186,6 +181,10 @@ fun ScaffoldTB(
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                             .asPaddingValues()
                     )
+                    .fillMaxSize()
+            else
+                Modifier
+                    .padding(it)
                     .fillMaxSize()
 
         Box(

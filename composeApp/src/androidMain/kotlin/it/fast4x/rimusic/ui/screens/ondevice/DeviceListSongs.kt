@@ -146,9 +146,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
-import me.knighthat.uiType
 import timber.log.Timber
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -340,10 +338,10 @@ fun DeviceListSongs(
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
-                    if( navBarPos() != NavigationBarPosition.Right )
-                        1f
-                    else
+                    if( NavigationBarPosition.Right.isCurrent() )
                         Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
         ) {
         LazyColumn(
@@ -952,7 +950,7 @@ fun DeviceListSongs(
             }
         }
 
-            if( uiType() == UiType.ViMusic )
+            if( UiType.ViMusic.isCurrent() )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

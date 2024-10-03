@@ -69,7 +69,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.typography
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -305,10 +304,10 @@ fun DataSettings() {
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right)
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
             .verticalScroll(rememberScrollState())
             /*

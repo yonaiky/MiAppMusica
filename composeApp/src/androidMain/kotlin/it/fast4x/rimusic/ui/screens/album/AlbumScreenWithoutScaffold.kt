@@ -69,7 +69,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -220,9 +219,7 @@ fun AlbumScreenWithoutScaffold(
 
                         Header(title = album?.title ?: "Unknown") {
 
-                            if ( navBarPos() == NavigationBarPosition.Left
-                                || navBarPos() == NavigationBarPosition.Top
-                            ) {
+                            if ( NavigationBarPosition.Left.isCurrent() || NavigationBarPosition.Top.isCurrent() ) {
                                 IconButton(
                                     onClick = { pop() },
                                     icon = R.drawable.chevron_back,
@@ -295,9 +292,7 @@ fun AlbumScreenWithoutScaffold(
                                     }
                                 }
                             )
-                            if ( navBarPos() == NavigationBarPosition.Right
-                                || navBarPos() == NavigationBarPosition.Bottom
-                            ) {
+                            if ( NavigationBarPosition.Right.isCurrent() || NavigationBarPosition.Bottom.isCurrent() ) {
                                 Spacer(modifier = Modifier.width(10.dp))
                                 IconButton(
                                     onClick = { pop() },

@@ -92,7 +92,6 @@ import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
 import me.knighthat.thumbnailShape
 import timber.log.Timber
 import java.io.File
@@ -172,10 +171,10 @@ fun OtherSettings() {
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( navBarPos() != NavigationBarPosition.Right )
-                    1f
-                else
+                if( NavigationBarPosition.Right.isCurrent() )
                     Dimensions.contentWidthRightBar
+                else
+                    1f
             )
             .verticalScroll(rememberScrollState())
             /*
