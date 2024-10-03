@@ -45,7 +45,6 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.navBarPos
-import me.knighthat.navBarType
 import me.knighthat.typography
 
 @OptIn(UnstableApi::class)
@@ -131,7 +130,7 @@ inline fun NavigationRailTB(
                         Box(
                             modifier = contentModifier
                         ) {
-                            if ( navBarType() == NavigationBarType.IconOnly ) {
+                            if ( NavigationBarType.IconOnly.isCurrent() ) {
                                 Image(
                                     painter = painterResource(icon),
                                     contentDescription = null,

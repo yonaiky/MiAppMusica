@@ -38,7 +38,6 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
-import me.knighthat.navBarType
 import me.knighthat.typography
 import me.knighthat.uiType
 
@@ -151,7 +150,7 @@ inline fun NavigationRail(
                     }
 
                     val textContent: @Composable () -> Unit = {
-                        if ( navBarType() == NavigationBarType.IconOnly ) {
+                        if ( NavigationBarType.IconOnly.isCurrent() ) {
                             /*
                             BasicText(
                                 text = "",
@@ -180,7 +179,7 @@ inline fun NavigationRail(
                     }
 
                     val iconContent: @Composable () -> Unit = {
-                        if ( navBarType() == NavigationBarType.IconOnly ) {
+                        if ( NavigationBarType.IconOnly.isCurrent() ) {
                             Image(
                                 painter = painterResource(icon),
                                 contentDescription = null,

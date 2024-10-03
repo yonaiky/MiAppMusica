@@ -15,9 +15,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 fun uiType() = rememberPreference( UiTypeKey, UiType.RiMusic ).value
 
 @Composable
-fun navBarType() = rememberPreference( navigationBarTypeKey, NavigationBarType.IconAndText ).value
-
-@Composable
 fun navBarPos() = rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom).value
 
 @Composable
