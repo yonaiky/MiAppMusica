@@ -131,7 +131,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [fast4x](https://github.com/fast4x)
 - [ikanakova](https://github.com/ikanakova)
 - [iscle](https://github.com/iscle)
-- [JZITNIK-github](https://github.com/JZITNIK-github)
+- [JZITNIK](https://github.com/jzitnik-dev)
 - [knighthat](https://github.com/knighthat)
 - [locxter](https://github.com/locxter)
 - [lrusso96](https://github.com/lrusso96)
