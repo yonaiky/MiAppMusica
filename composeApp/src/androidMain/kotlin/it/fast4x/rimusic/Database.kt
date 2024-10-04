@@ -882,6 +882,11 @@ interface Database {
     fun playlistSongs(id: Long): Flow<List<Song>?>
 
     @Transaction
+    @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN SongAlbumMap SM ON S.id=SM.songId " +
+            "INNER JOIN Album A ON A.id=SM.albumId WHERE A.bookmarkedAt IS NOT NULL")
+    fun songsInAllBookmarkedAlbums(): Flow<List<Song>?>
+
+    @Transaction
     @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN SongArtistMap SM ON S.id=SM.songId " +
             "INNER JOIN Artist A ON A.id=SM.artistId WHERE A.bookmarkedAt IS NOT NULL")
     fun songsInAllFollowedArtists(): Flow<List<Song>?>

@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -86,12 +87,14 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
@@ -105,6 +108,9 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -124,6 +130,8 @@ fun HomeAlbumsModern(
 ) {
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var sortBy by rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     var sortOrder by rememberPreference(albumSortOrderKey, SortOrder.Descending)
@@ -306,6 +314,32 @@ fun HomeAlbumsModern(
                             )
                         },
                         iconSize = 16.dp
+                    )
+
+                    HeaderIconButton(
+                        icon = R.drawable.shuffle,
+                        color = colorPalette().text,
+                        iconSize = 24.dp,
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .combinedClickable (
+                                onClick = {
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            Database.songsInAllBookmarkedAlbums()
+                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                        }
+                                    }
+
+                                },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.shuffle),
+                                        context = context
+                                    )
+                                }
+                            )
                     )
 
                     HeaderIconButton(
