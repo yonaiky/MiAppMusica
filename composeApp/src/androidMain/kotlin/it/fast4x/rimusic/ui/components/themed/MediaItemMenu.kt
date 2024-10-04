@@ -321,6 +321,8 @@ fun NonQueuedMediaItemMenu(
         MenuStyle.List
     )
 
+    //println("mediaItem in NonQueuedMediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
+
     if (menuStyle == MenuStyle.Grid) {
         BaseMediaItemGridMenu(
             navController = navController,
@@ -475,7 +477,7 @@ fun BaseMediaItemMenu(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val pipedSession = getPipedSession()
 
-
+    //println("mediaItem in BaseMediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
 
     MediaItemMenu(
         navController = navController,
@@ -522,7 +524,7 @@ fun BaseMediaItemMenu(
             if (onClosePlayer != null) {
                 onClosePlayer()
             }
-        }, //albumRoute::global,
+        },
         onGoToArtist = {
             navController.navigate(route = "${NavRoutes.artist.name}/${it}")
             if (onClosePlayer != null) {
@@ -705,12 +707,16 @@ fun MediaItemMenu(
         mutableStateOf(0.dp)
     }
 
+    //println("mediaItem in MediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
+
 
     var albumInfo by remember {
         mutableStateOf(mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
             Info(albumId, null)
         })
     }
+
+    //println("mediaItem in MediaItemMenu albumInfo albumId ${albumInfo?.id}")
 
     var artistsInfo by remember {
         mutableStateOf(
@@ -740,10 +746,10 @@ fun MediaItemMenu(
 
     LaunchedEffect(Unit, mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
-            //if (albumInfo == null)
-            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-            //if (artistsInfo == null)
-            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
+            if (albumInfo?.id.isNullOrEmpty())
+                albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
+            if (artistsInfo.isNullOrEmpty())
+                artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
 
             artistsInfo?.forEach { info ->
                 if (info.id.isNotEmpty()) artistIds.add(info.id)
@@ -1440,6 +1446,9 @@ fun MediaItemMenu(
                     }
                 }
                  */
+
+                //println("mediaItem in MediaItemMenu onGoToAlbum  ALBUMiD ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
+                //println("mediaItem in MediaItemMenu onGoToAlbum  albumInfo ${albumInfo?.id}")
 
                 if (!isLocal) onGoToAlbum?.let { onGoToAlbum ->
                     albumInfo?.let { (albumId) ->
