@@ -73,7 +73,7 @@ data class Developer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 10.dp, horizontal = 15.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Avatar
@@ -81,7 +81,7 @@ data class Developer(
                     painter = avatarPainter,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .clip( RoundedCornerShape( 25.dp ) )
                         .border( 1.dp, Color.White, RoundedCornerShape( 25.dp ) ),
                     contentScale = ContentScale.Fit
@@ -95,7 +95,7 @@ data class Developer(
                         text = displayName ?: username,
                         style = TextStyle(
                             color = colorPalette().text,
-                            fontSize = typography().xl.fontSize,
+                            fontSize = typography().m.fontSize,
                             fontWeight = FontWeight.Bold
                         ),
                         textAlign = TextAlign.Start
@@ -107,7 +107,7 @@ data class Developer(
                             text = "@$handle",
                             style = TextStyle(
                                 color = colorPalette().textSecondary,
-                                fontSize = typography().s.fontSize,
+                                fontSize = typography().xs.fontSize,
                                 fontStyle = FontStyle.Italic,
                             ),
                             modifier = Modifier
@@ -124,7 +124,7 @@ data class Developer(
                             text = contributions.toString(),
                             style = TextStyle(
                                 color = color,
-                                fontSize = typography().s.fontSize,
+                                fontSize = typography().xs.fontSize,
                             ),
                             textAlign = TextAlign.End,
                             modifier = Modifier.weight( 1f )
@@ -137,7 +137,7 @@ data class Developer(
                             painter = painterResource( R.drawable.git_pull_request_outline ),
                             contentDescription = null,
                             tint = color,
-                            modifier = Modifier.size( typography().s.fontSize.value.dp )
+                            modifier = Modifier.size( typography().xs.fontSize.value.dp )
                         )
                     }
                 }
