@@ -742,7 +742,7 @@ fun HomeSongsModern(
                     }
 
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
