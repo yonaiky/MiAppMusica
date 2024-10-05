@@ -708,8 +708,9 @@ fun HomeSongsModern(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(all = 12.dp)
-                            .fillMaxSize()
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
                     ) {
                         if ( UiType.RiMusic.isCurrent() )
                             TitleSection(title = stringResource(R.string.songs))
@@ -722,6 +723,33 @@ fun HomeSongsModern(
                             modifier = Modifier
                                 .weight(1f)
                         )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        ButtonsRow(
+                            chips = buttonsList,
+                            currentValue = builtInPlaylist,
+                            onValueUpdate = { builtInPlaylist = it },
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+
                         if (builtInPlaylist != BuiltInPlaylist.Top) {
                             HeaderIconButton(
                                 icon = R.drawable.arrow_up,
@@ -1245,12 +1273,7 @@ fun HomeSongsModern(
                     //}
 
 
-                    ButtonsRow(
-                        chips = buttonsList,
-                        currentValue = builtInPlaylist,
-                        onValueUpdate = { builtInPlaylist = it },
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
+
                 }
             }
 
