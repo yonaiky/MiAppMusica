@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -631,6 +632,22 @@ fun QuickPicksModern(
                     }
 
                     if (related == null) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                //.background(colorPalette().background0)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.loader),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(colorPalette().text),
+                                modifier = Modifier
+                                    .padding(all = 5.dp)
+                                    .align(Alignment.Center)
+                                    .size(32.dp)
+                            )
+                        }
+                        /*
                         BasicText(
                             text = stringResource(R.string.sorry_tips_are_not_available),
                             style = typography().xs.semiBold.center,
@@ -638,6 +655,8 @@ fun QuickPicksModern(
                                 .align(Alignment.CenterHorizontally)
                                 .padding(all = 16.dp)
                         )
+
+                         */
                     }
                 }
 
