@@ -3,6 +3,7 @@ package it.fast4x.rimusic.models
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import it.fast4x.rimusic.utils.setLikeState
 
 @Immutable
 @Entity
@@ -30,7 +31,8 @@ data class Song(
 
     fun toggleLike(): Song {
         return copy(
-            likedAt = if (likedAt == null) System.currentTimeMillis() else null
+            //likedAt = if (likedAt == null) System.currentTimeMillis() else null
+            likedAt = setLikeState(likedAt)
         )
     }
 }

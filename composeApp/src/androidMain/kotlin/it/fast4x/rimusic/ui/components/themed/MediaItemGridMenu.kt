@@ -154,7 +154,7 @@ fun BaseMediaItemGridMenu(
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
 ) {
-    val context = LocalContext.current
+    //val context = LocalContext.current
 
     MediaItemGridMenu(
         navController = navController,
@@ -331,10 +331,10 @@ fun MediaItemGridMenu (
 
     LaunchedEffect(Unit, mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
-            //if (albumInfo == null)
-            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-            //if (artistsInfo == null)
-            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
+            if (albumInfo == null)
+                albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
+            if (artistsInfo == null)
+                artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
 
             artistsInfo?.forEach { info ->
                 if (info.id.isNotEmpty()) artistIds.add(info.id)

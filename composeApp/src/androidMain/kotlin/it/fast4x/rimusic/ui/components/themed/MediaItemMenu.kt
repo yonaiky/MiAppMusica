@@ -95,6 +95,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
@@ -106,6 +107,7 @@ import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -1114,7 +1116,8 @@ fun MediaItemMenu(
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         IconButton(
-                            icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                            //icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                            icon = getLikeState(mediaItem.mediaId),
                             //icon = R.drawable.heart,
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
@@ -1122,7 +1125,8 @@ fun MediaItemMenu(
                                 query {
                                     if (Database.like(
                                             mediaItem.mediaId,
-                                            if (likedAt == null) System.currentTimeMillis() else null
+                                            //if (likedAt == null) System.currentTimeMillis() else null
+                                            setLikeState(likedAt)
                                         ) == 0
                                     ) {
                                         Database.insert(mediaItem, Song::toggleLike)
