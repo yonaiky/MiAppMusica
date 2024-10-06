@@ -76,6 +76,7 @@ fun PlaylistsItemMenu(
     onEnqueue: (() -> Unit)? = null,
     onImportOnlinePlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null,
     showOnSyncronize: Boolean = false,
     onSyncronize: (() -> Unit)? = null,
     onRenumberPositions: (() -> Unit)? = null,
@@ -111,6 +112,7 @@ fun PlaylistsItemMenu(
             onEnqueue = onEnqueue,
             onImportOnlinePlaylist = onImportOnlinePlaylist,
             onAddToPlaylist = onAddToPlaylist,
+            onAddToPreferites = onAddToPreferites,
             showOnSyncronize = showOnSyncronize,
             onSyncronize = onSyncronize,
             onRenumberPositions = onRenumberPositions,
@@ -457,6 +459,13 @@ fun PlaylistsItemMenu(
                             }
                         )
                     }
+
+                    if (onAddToPreferites != null)
+                        MenuEntry(
+                            icon = R.drawable.heart,
+                            text = stringResource(R.string.add_to_preferites),
+                            onClick = onAddToPreferites
+                        )
 
                     if (onAddToPlaylist != null) {
                         MenuEntry(

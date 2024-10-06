@@ -1201,6 +1201,27 @@ fun LocalPlaylistSongs(
                                                         context = context
                                                     )
                                             },
+                                            onAddToPreferites = {
+                                                if (listMediaItems.isNotEmpty()) {
+                                                    listMediaItems.map {
+                                                        transaction {
+                                                            Database.like(
+                                                                it.mediaId,
+                                                                System.currentTimeMillis()
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    playlistSongs.map {
+                                                        transaction {
+                                                            Database.like(
+                                                                it.asMediaItem.mediaId,
+                                                                System.currentTimeMillis()
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            },
                                             onAddToPlaylist = { playlistPreview ->
                                                 position =
                                                     playlistPreview.songCount.minus(1) ?: 0

@@ -77,6 +77,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -99,6 +100,7 @@ import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
+import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -106,6 +108,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -296,6 +299,54 @@ fun HomeSongsModern(
     var currentFolderPath by remember {
         mutableStateOf(defaultFolder)
     }
+
+    val importLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+
+            //requestPermission(activity, "Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED")
+
+            context.applicationContext.contentResolver.openInputStream(uri)
+                ?.use { inputStream ->
+                    csvReader().open(inputStream) {
+                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
+                            println("mediaItem index song ${index}")
+                            transaction {
+                                /**/
+                                if (row["MediaId"] != null && row["Title"] != null) {
+                                    val song =
+                                        row["MediaId"]?.let {
+                                            row["Title"]?.let { it1 ->
+                                                Song(
+                                                    id = it,
+                                                    title = it1,
+                                                    artistsText = row["Artists"],
+                                                    durationText = row["Duration"],
+                                                    thumbnailUrl = row["ThumbnailUrl"],
+                                                    totalPlayTimeMs = 1L
+                                                )
+                                            }
+                                        }
+                                    transaction {
+                                        if (song != null) {
+                                            Database.upsert(song)
+                                            Database.like(
+                                                song.id,
+                                                System.currentTimeMillis()
+                                            )
+                                        }
+                                    }
+
+
+                                }
+                                /**/
+
+                            }
+
+                        }
+                    }
+                }
+        }
 
     /************ */
 
@@ -1023,7 +1074,7 @@ fun HomeSongsModern(
                             }
                         }
 
-                        if (builtInPlaylist == BuiltInPlaylist.All)
+                        //if (builtInPlaylist == BuiltInPlaylist.All)
                             HeaderIconButton(
                                 onClick = {},
                                 icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
@@ -1093,6 +1144,38 @@ fun HomeSongsModern(
                                     )
                             )
 
+                        if (builtInPlaylist != BuiltInPlaylist.Favorites)
+                            HeaderIconButton(
+                                icon = R.drawable.resource_import,
+                                color = colorPalette().text,
+                                //iconSize = 22.dp,
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(horizontal = 2.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            try {
+                                                importLauncher.launch(
+                                                    arrayOf(
+                                                        "text/*"
+                                                    )
+                                                )
+                                            } catch (e: ActivityNotFoundException) {
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.info_not_find_app_open_doc),
+                                                    type = PopupType.Warning, context = context
+                                                )
+                                            }
+                                        },
+                                        onLongClick = {
+                                            SmartMessage(
+                                                context.resources.getString(R.string.import_preferites),
+                                                context = context
+                                            )
+                                        }
+                                    )
+                            )
+
                         HeaderIconButton(
                             icon = R.drawable.ellipsis_horizontal,
                             color = colorPalette().text,
@@ -1134,6 +1217,27 @@ fun HomeSongsModern(
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
                                                 selectItems = false
+                                            }
+                                        },
+                                        onAddToPreferites = {
+                                            if (listMediaItems.isNotEmpty()) {
+                                                listMediaItems.map {
+                                                    transaction {
+                                                        Database.like(
+                                                            it.mediaId,
+                                                            System.currentTimeMillis()
+                                                        )
+                                                    }
+                                                }
+                                            } else {
+                                                items.map {
+                                                    transaction {
+                                                        Database.like(
+                                                            it.asMediaItem.mediaId,
+                                                            System.currentTimeMillis()
+                                                        )
+                                                    }
+                                                }
                                             }
                                         },
                                         onAddToPlaylist = { playlistPreview ->

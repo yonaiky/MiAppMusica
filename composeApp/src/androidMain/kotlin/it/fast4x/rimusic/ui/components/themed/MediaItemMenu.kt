@@ -158,6 +158,11 @@ fun InHistoryMediaItemMenu(
         onDismiss = onDismiss,
         onHideFromDatabase = onHideFromDatabase,
         onDeleteFromDatabase = onDeleteFromDatabase,
+        onAddToPreferites = {
+            transaction {
+                Database.like(song.id, System.currentTimeMillis())
+            }
+        },
         modifier = modifier
     )
 }
@@ -199,6 +204,11 @@ fun InPlaylistMediaItemMenu(
                     id = UUID.fromString(playlist?.playlist?.browseId),
                     positionInPlaylist
                 )
+            }
+        },
+        onAddToPreferites = {
+            transaction {
+                Database.like(song.id, System.currentTimeMillis())
             }
         },
         modifier = modifier
@@ -269,6 +279,14 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             modifier = modifier
         )
     } else {
@@ -293,6 +311,14 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             modifier = modifier
         )
     }
@@ -312,6 +338,7 @@ fun NonQueuedMediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -345,6 +372,7 @@ fun NonQueuedMediaItemMenu(
             onHideFromDatabase = onHideFromDatabase,
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = onAddToPreferites,
             modifier = modifier
         )
     } else {
@@ -370,6 +398,7 @@ fun NonQueuedMediaItemMenu(
             onHideFromDatabase = onHideFromDatabase,
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = onAddToPreferites,
             modifier = modifier
         )
     }
@@ -418,7 +447,15 @@ fun QueuedMediaItemMenu(
             modifier = modifier,
             onGoToPlaylist = {
                 navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
-            }
+            },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
         )
     } else {
         BaseMediaItemMenu(
@@ -443,7 +480,15 @@ fun QueuedMediaItemMenu(
             modifier = modifier,
             onGoToPlaylist = {
                 navController.navigate(route = "${NavRoutes.playlist.name}/$it")
-            }
+            },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
         )
     }
 }
@@ -469,7 +514,8 @@ fun BaseMediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onClosePlayer: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)? = null
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?
 ) {
     val context = LocalContext.current
 
@@ -489,6 +535,7 @@ fun BaseMediaItemMenu(
         onPlayNext = onPlayNext,
         onEnqueue = onEnqueue,
         onDownload = onDownload,
+        onAddToPreferites = onAddToPreferites,
         onAddToPlaylist = { playlist, position ->
             transaction {
                 Database.insert(mediaItem)
@@ -560,6 +607,7 @@ fun MiniMediaItemMenu(
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -599,6 +647,7 @@ fun MiniMediaItemMenu(
 
             context.startActivity(Intent.createChooser(sendIntent, null))
         },
+        onAddToPreferites = onAddToPreferites,
         modifier = modifier
     )
 }
@@ -680,6 +729,7 @@ fun MediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?,
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
@@ -1413,6 +1463,13 @@ fun MediaItemMenu(
                         }
                     )
                 }
+
+                if (onAddToPreferites != null)
+                    MenuEntry(
+                        icon = R.drawable.heart,
+                        text = stringResource(R.string.add_to_preferites),
+                        onClick = onAddToPreferites
+                    )
 
                 if (onAddToPlaylist != null) {
                     MenuEntry(

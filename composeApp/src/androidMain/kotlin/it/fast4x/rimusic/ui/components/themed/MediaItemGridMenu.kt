@@ -151,7 +151,8 @@ fun BaseMediaItemGridMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onClosePlayer: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)? = null
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -165,6 +166,7 @@ fun BaseMediaItemGridMenu(
         onPlayNext = onPlayNext,
         onEnqueue = onEnqueue,
         onDownload = onDownload,
+        onAddToPreferites = onAddToPreferites,
         onAddToPlaylist = { playlist, position ->
             transaction {
                 Database.insert(mediaItem)
@@ -221,6 +223,8 @@ fun MiniMediaItemGridMenu(
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null,
+
     modifier: Modifier = Modifier,
 ) {
 
@@ -247,6 +251,7 @@ fun MiniMediaItemGridMenu(
                 onGoToPlaylist(it)
             }
         },
+        onAddToPreferites = onAddToPreferites,
         modifier = modifier
     )
 }
@@ -269,6 +274,7 @@ fun MediaItemGridMenu (
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?,
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
@@ -935,6 +941,14 @@ fun MediaItemGridMenu (
                     }
                 )
 
+                if (onAddToPreferites != null)
+                    GridMenuItem(
+                        icon = R.drawable.heart,
+                        title = R.string.add_to_preferites,
+                        colorIcon = colorPalette.text,
+                        colorText = colorPalette.text,
+                        onClick = onAddToPreferites
+                    )
 
                 onAddToPlaylist?.let { onAddToPlaylist ->
                     GridMenuItem(
