@@ -221,6 +221,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
@@ -230,9 +231,11 @@ import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.horizontalFadingEdge
+import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueLoopEnabledKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.resize
@@ -248,6 +251,8 @@ import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
+import it.fast4x.rimusic.utils.timelineExpandedKey
+import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
@@ -356,6 +361,9 @@ fun PlayerModern(
     var playerError by remember {
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
+
+    var queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
+    var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
 
 
     binder.player.DisposableListener {
@@ -517,7 +525,7 @@ fun PlayerModern(
     val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     val backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.Both
+        BackgroundProgress.MiniPlayer
     )
 
     var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
@@ -825,6 +833,9 @@ fun PlayerModern(
 
     var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
+    var titleExpanded by rememberPreference(titleExpandedKey, true)
+    var timelineExpanded by rememberPreference(timelineExpandedKey, true)
+    var controlsExpanded by rememberPreference(controlsExpandedKey, true)
 
 
 
@@ -1016,6 +1027,10 @@ fun PlayerModern(
             navController = navController,
             onCollapse = onDismiss,
             expandedplayer = expandedplayer,
+            titleExpanded = titleExpanded,
+            timelineExpanded = timelineExpanded,
+            controlsExpanded = controlsExpanded,
+            isShowingLyrics = isShowingLyrics,
             media = mediaItem.toUiMedia(positionAndDuration.second),
             mediaId = mediaItem.mediaId,
             title = mediaItem.mediaMetadata.title?.toString() ?: "",
@@ -1077,7 +1092,7 @@ fun PlayerModern(
             Row(
                 modifier = Modifier
                     .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
-                    .requiredHeight(if (showNextSongsInPlayer) 90.dp else 50.dp)
+                    .requiredHeight(if (showNextSongsInPlayer && (!expandedplayer || !isShowingLyrics || miniQueueExpanded)) 90.dp else 50.dp)
                     .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                     .conditional(tapqueue) { clickable { showQueue = true } }
                     .background(
@@ -1101,202 +1116,210 @@ fun PlayerModern(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     if (showNextSongsInPlayer) {
-                        Row(
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                //.background(colorPalette().background2.copy(alpha = 0.3f))
-                                .background(
-                                    colorPalette().background2.copy(
-                                        alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
-                                    )
-                                )
-                                .padding(horizontal = 12.dp)
-                                .fillMaxWidth()
-                        ) {
-                            val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                            val pagerStateQueue = rememberPagerState(pageCount = { mediaItems.size })
-                            val scope = rememberCoroutineScope()
-                            val fling = PagerDefaults.flingBehavior(state = pagerStateQueue,snapPositionalThreshold = 0.15f, pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number))
-                            LaunchedEffect(binder.player.currentMediaItemIndex) {
-                                pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
-                            }
+                        if (!expandedplayer || !isShowingLyrics || miniQueueExpanded) {
                             Row(
-                                  modifier = Modifier
-                                      .padding(vertical = 7.5.dp)
-                                      .weight(0.07f)
-                              ){
-                                  Icon(
-                                      painter = painterResource(id = if (pagerStateQueue.settledPage >= binder.player.currentMediaItemIndex) R.drawable.chevron_forward else R.drawable.chevron_back),
-                                      contentDescription = null,
-                                      modifier = Modifier
-                                          .size(25.dp)
-                                          .clip(CircleShape)
-                                          .clickable(
-                                              indication = ripple(bounded = false),
-                                              interactionSource = remember { MutableInteractionSource() },
-                                              onClick = {
-                                                  scope.launch {
-                                                      pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                                  }
-                                              }
-                                          ),
-                                      tint = colorPalette().accent
-                                  )
-                              }
-
-                            val threePagesPerViewport = object : PageSize {
-                                override fun Density.calculateMainAxisPageSize(
-                                    availableSpace: Int,
-                                    pageSpacing: Int
-                                ): Int {
-                                    return if (showsongs == SongsNumber.`1`) (availableSpace) else ((availableSpace - 2 * pageSpacing)/(showsongs.number))
-                                }
-                            }
-
-                            HorizontalPager(state = pagerStateQueue,
-                                pageSize = threePagesPerViewport,
-                                pageSpacing = 10.dp,
-                                flingBehavior = fling,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onClick = {
-                                                binder.player.forcePlayAtIndex(mediaItems,
-                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                )
-                                            },
-                                            onLongClick = {
-                                                if (it < mediaItems.size) {
-                                                    binder.player.addNext(
-                                                        binder.player.getMediaItemAt(it + 1)
-                                                    )
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.addednext),
-                                                        type = PopupType.Info,
-                                                        context = context
-                                                    )
-                                                    hapticFeedback.performHapticFeedback(
-                                                        HapticFeedbackType.LongPress
-                                                    )
-                                                }
-                                            }
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    //.background(colorPalette().background2.copy(alpha = 0.3f))
+                                    .background(
+                                        colorPalette().background2.copy(
+                                            alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
                                         )
-                                        //.width(IntrinsicSize.Min)
+                                    )
+                                    .padding(horizontal = 12.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                val nextMediaItemIndex = binder.player.nextMediaItemIndex
+                                val pagerStateQueue =
+                                    rememberPagerState(pageCount = { mediaItems.size })
+                                val scope = rememberCoroutineScope()
+                                val fling = PagerDefaults.flingBehavior(
+                                    state = pagerStateQueue,
+                                    snapPositionalThreshold = 0.15f,
+                                    pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number)
+                                )
+                                LaunchedEffect(binder.player.currentMediaItemIndex) {
+                                    pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .padding(vertical = 7.5.dp)
+                                        .weight(0.07f)
                                 ) {
-                                    if (showalbumcover) {
-                                        Box(
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                        ) {
-                                            AsyncImage(
-                                                model = binder.player.getMediaItemAt(
-                                                   if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                ).mediaMetadata.artworkUri.thumbnail(
-                                                    Dimensions.thumbnails.song.px / 2
-                                                ),
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .padding(end = 5.dp)
-                                                    .clip(RoundedCornerShape(5.dp))
-                                                    .size(30.dp)
-                                            )
-                                        }
-                                    }
-                                    Column(
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                    Icon(
+                                        painter = painterResource(id = if (pagerStateQueue.settledPage >= binder.player.currentMediaItemIndex) R.drawable.chevron_forward else R.drawable.chevron_back),
+                                        contentDescription = null,
                                         modifier = Modifier
-                                            .height(40.dp)
+                                            .size(25.dp)
+                                            .clip(CircleShape)
+                                            .clickable(
+                                                indication = ripple(bounded = false),
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                onClick = {
+                                                    scope.launch {
+                                                        pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                                    }
+                                                }
+                                            ),
+                                        tint = colorPalette().accent
+                                    )
+                                }
+
+                                val threePagesPerViewport = object : PageSize {
+                                    override fun Density.calculateMainAxisPageSize(
+                                        availableSpace: Int,
+                                        pageSpacing: Int
+                                    ): Int {
+                                        return if (showsongs == SongsNumber.`1`) (availableSpace) else ((availableSpace - 2 * pageSpacing) / (showsongs.number))
+                                    }
+                                }
+
+                                HorizontalPager(
+                                    state = pagerStateQueue,
+                                    pageSize = threePagesPerViewport,
+                                    pageSpacing = 10.dp,
+                                    flingBehavior = fling,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    binder.player.forcePlayAtIndex(
+                                                        mediaItems,
+                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                    )
+                                                },
+                                                onLongClick = {
+                                                    if (it < mediaItems.size) {
+                                                        binder.player.addNext(
+                                                            binder.player.getMediaItemAt(it + 1)
+                                                        )
+                                                        SmartMessage(
+                                                            context.resources.getString(R.string.addednext),
+                                                            type = PopupType.Info,
+                                                            context = context
+                                                        )
+                                                        hapticFeedback.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        //.width(IntrinsicSize.Min)
                                     ) {
-                                        Box(
-
-                                        ) {
-                                            BasicText(
-                                                text = cleanPrefix(
-                                                    binder.player.getMediaItemAt(
-                                                        if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                    ).mediaMetadata.title?.toString()
-                                                        ?: ""
-                                                ),
-                                                style = TextStyle(
-                                                    color = colorPalette().text,
-                                                    fontSize = typography().xxxs.semiBold.fontSize,
-                                                ),
-                                                maxLines = 1,
-                                                //overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                            )
-                                            BasicText(
-                                                text = cleanPrefix(
-                                                    binder.player.getMediaItemAt(
-                                                        if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                    ).mediaMetadata.title?.toString()
-                                                        ?: ""
-                                                ),
-                                                style = TextStyle(
-                                                    drawStyle = Stroke(
-                                                        width = 0.25f,
-                                                        join = StrokeJoin.Round
+                                        if (showalbumcover) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                            ) {
+                                                AsyncImage(
+                                                    model = binder.player.getMediaItemAt(
+                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                    ).mediaMetadata.artworkUri.thumbnail(
+                                                        Dimensions.thumbnails.song.px / 2
                                                     ),
-                                                    color = if (!textoutline) Color.Transparent
-                                                    else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                        0.65f
-                                                    )
-                                                    else Color.Black,
-                                                    fontSize = typography().xxxs.semiBold.fontSize,
-                                                ),
-                                                maxLines = 1,
-                                                //overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                            )
+                                                    contentDescription = null,
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier
+                                                        .padding(end = 5.dp)
+                                                        .clip(RoundedCornerShape(5.dp))
+                                                        .size(30.dp)
+                                                )
+                                            }
                                         }
-
-                                        Box(
-
+                                        Column(
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .height(40.dp)
                                         ) {
-                                            BasicText(
-                                                text = binder.player.getMediaItemAt(
-                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                ).mediaMetadata.artist?.toString()
-                                                    ?: "",
-                                                style = TextStyle(
-                                                    color = colorPalette().text,
-                                                    fontSize = typography().xxxs.semiBold.fontSize,
-                                                ),
-                                                maxLines = 1,
-                                                //overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                            )
-                                            BasicText(
-                                                text = binder.player.getMediaItemAt(
-                                                    if (it + 1 <= mediaItems.size -1) it + 1 else it
-                                                ).mediaMetadata.artist?.toString()
-                                                    ?: "",
-                                                style = TextStyle(
-                                                    drawStyle = Stroke(
-                                                        width = 0.25f,
-                                                        join = StrokeJoin.Round
+                                            Box(
+
+                                            ) {
+                                                BasicText(
+                                                    text = cleanPrefix(
+                                                        binder.player.getMediaItemAt(
+                                                            if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        ).mediaMetadata.title?.toString()
+                                                            ?: ""
                                                     ),
-                                                    color = if (!textoutline) Color.Transparent
-                                                    else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                        0.65f
-                                                    )
-                                                    else Color.Black,
-                                                    fontSize = typography().xxxs.semiBold.fontSize,
-                                                ),
-                                                maxLines = 1,
-                                                //overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                            )
+                                                    style = TextStyle(
+                                                        color = colorPalette().text,
+                                                        fontSize = typography().xxxs.semiBold.fontSize,
+                                                    ),
+                                                    maxLines = 1,
+                                                    //overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                                )
+                                                BasicText(
+                                                    text = cleanPrefix(
+                                                        binder.player.getMediaItemAt(
+                                                            if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        ).mediaMetadata.title?.toString()
+                                                            ?: ""
+                                                    ),
+                                                    style = TextStyle(
+                                                        drawStyle = Stroke(
+                                                            width = 0.25f,
+                                                            join = StrokeJoin.Round
+                                                        ),
+                                                        color = if (!textoutline) Color.Transparent
+                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
+                                                            0.65f
+                                                        )
+                                                        else Color.Black,
+                                                        fontSize = typography().xxxs.semiBold.fontSize,
+                                                    ),
+                                                    maxLines = 1,
+                                                    //overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                                )
+                                            }
+
+                                            Box(
+
+                                            ) {
+                                                BasicText(
+                                                    text = binder.player.getMediaItemAt(
+                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                    ).mediaMetadata.artist?.toString()
+                                                        ?: "",
+                                                    style = TextStyle(
+                                                        color = colorPalette().text,
+                                                        fontSize = typography().xxxs.semiBold.fontSize,
+                                                    ),
+                                                    maxLines = 1,
+                                                    //overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                                )
+                                                BasicText(
+                                                    text = binder.player.getMediaItemAt(
+                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                    ).mediaMetadata.artist?.toString()
+                                                        ?: "",
+                                                    style = TextStyle(
+                                                        drawStyle = Stroke(
+                                                            width = 0.25f,
+                                                            join = StrokeJoin.Round
+                                                        ),
+                                                        color = if (!textoutline) Color.Transparent
+                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
+                                                            0.65f
+                                                        )
+                                                        else Color.Black,
+                                                        fontSize = typography().xxxs.semiBold.fontSize,
+                                                    ),
+                                                    maxLines = 1,
+                                                    //overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
                                 if (showsongs == SongsNumber.`1`) {
                                     IconButton(
                                         icon = R.drawable.trash,
@@ -1312,6 +1335,7 @@ fun PlayerModern(
                                     )
                                 }
 
+                            }
                         }
                     }
                     Row(
@@ -1596,7 +1620,7 @@ fun PlayerModern(
         }
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player ?: return
-        val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+        val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
         var extraspace by rememberPreference(extraspaceKey, false)
         val nextMediaItemIndex = binder.player.nextMediaItemIndex
         val prevMediaItemIndex = binder.player.previousMediaItemIndex
@@ -1855,10 +1879,7 @@ fun PlayerModern(
                                 onMaximize = {
                                     showFullLyrics = true
                                 },
-                                enableClick = when (clickLyricsText) {
-                                    ClickLyricsText.Player, ClickLyricsText.Both -> true
-                                    else -> false
-                                }
+                                clickLyricsText = clickLyricsText,
                             )
                     }
                 }
@@ -2027,7 +2048,7 @@ fun PlayerModern(
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
                         controlsContent(
-                           Modifier
+                            Modifier
                                 .padding(vertical = 8.dp)
                                 .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
                                 .conditional(playerType == PlayerType.Essential) { weight(1f) }
@@ -2039,6 +2060,10 @@ fun PlayerModern(
                                     navController = navController,
                                     onCollapse = onDismiss,
                                     expandedplayer = expandedplayer,
+                                    titleExpanded = titleExpanded,
+                                    timelineExpanded = timelineExpanded,
+                                    controlsExpanded = controlsExpanded,
+                                    isShowingLyrics = isShowingLyrics,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
@@ -2457,10 +2482,7 @@ fun PlayerModern(
                                 onMaximize = {
                                     showFullLyrics = true
                                 },
-                                enableClick = when (clickLyricsText) {
-                                    ClickLyricsText.Player, ClickLyricsText.Both -> true
-                                    else -> false
-                                }
+                                clickLyricsText = clickLyricsText,
                             )
                         if (!showvisthumbnail)
                             NextVisualizer(
@@ -2474,57 +2496,64 @@ fun PlayerModern(
                     modifier = Modifier
                     .conditional(!expandedplayer){weight(1f)}
                 ){
-                if (showTotalTimeQueue)
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.time),
-                            colorFilter = ColorFilter.tint(colorPalette().accent),
+                if (!expandedplayer || !isShowingLyrics || queueDurationExpanded) {
+                    if (showTotalTimeQueue)
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .size(20.dp)
-                                .padding(horizontal = 5.dp),
-                            contentDescription = "Background Image",
-                            contentScale = ContentScale.Fit
-                        )
-
-                        Box {
-                            BasicText(
-                                text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography().xxs.semiBold.merge(TextStyle(
-                                    textAlign = TextAlign.Center,
-                                    color = colorPalette().text,
-                                )),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.time),
+                                colorFilter = ColorFilter.tint(colorPalette().accent),
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .padding(horizontal = 5.dp),
+                                contentDescription = "Background Image",
+                                contentScale = ContentScale.Fit
                             )
-                            BasicText(
-                                text = " ${formatAsTime(totalPlayTimes)}",
-                                style = typography().xxs.semiBold.merge(TextStyle(
-                                    textAlign = TextAlign.Center,
-                                    drawStyle = Stroke(
-                                        width = 1f,
-                                        join = StrokeJoin.Round
+
+                            Box {
+                                BasicText(
+                                    text = " ${formatAsTime(totalPlayTimes)}",
+                                    style = typography().xxs.semiBold.merge(
+                                        TextStyle(
+                                            textAlign = TextAlign.Center,
+                                            color = colorPalette().text,
+                                        )
                                     ),
-                                    color = if (!textoutline) Color.Transparent
-                                    else if (colorPaletteMode == ColorPaletteMode.Light ||
-                                        (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme())))
-                                        Color.White.copy(0.5f)
-                                    else Color.Black,
-                                )),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                                BasicText(
+                                    text = " ${formatAsTime(totalPlayTimes)}",
+                                    style = typography().xxs.semiBold.merge(
+                                        TextStyle(
+                                            textAlign = TextAlign.Center,
+                                            drawStyle = Stroke(
+                                                width = 1f,
+                                                join = StrokeJoin.Round
+                                            ),
+                                            color = if (!textoutline) Color.Transparent
+                                            else if (colorPaletteMode == ColorPaletteMode.Light ||
+                                                (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+                                            )
+                                                Color.White.copy(0.5f)
+                                            else Color.Black,
+                                        )
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
                         }
-                    }
 
 
-                Spacer(
-                    modifier = Modifier
-                        .height(10.dp)
-                )
+                    Spacer(
+                        modifier = Modifier
+                            .height(10.dp)
+                    )
+                }
                 Box(modifier = Modifier
                     .conditional(!expandedplayer){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
@@ -2540,6 +2569,10 @@ fun PlayerModern(
                                     navController = navController,
                                     onCollapse = onDismiss,
                                     expandedplayer = expandedplayer,
+                                    titleExpanded = titleExpanded,
+                                    timelineExpanded = timelineExpanded,
+                                    controlsExpanded = controlsExpanded,
+                                    isShowingLyrics = isShowingLyrics,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),

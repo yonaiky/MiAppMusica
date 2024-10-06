@@ -79,6 +79,7 @@ import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
@@ -92,6 +93,7 @@ import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
+import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -106,6 +108,7 @@ import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.prevNextSongsKey
+import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -141,6 +144,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.thumbnailpauseKey
+import it.fast4x.rimusic.utils.timelineExpandedKey
+import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
@@ -244,15 +249,15 @@ fun DefaultAppearanceSettings() {
     showTotalTimeQueue = true
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.Both
+        BackgroundProgress.MiniPlayer
     )
-    backgroundProgress = BackgroundProgress.Both
+    backgroundProgress = BackgroundProgress.MiniPlayer
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     showNextSongsInPlayer = false
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     showRemainingSongTime = true
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
-    clickLyricsText = ClickLyricsText.FullScreen
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
     var thumbnailRoundness by rememberPreference(
@@ -421,11 +426,11 @@ fun AppearanceSettings(
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.Both
+        BackgroundProgress.MiniPlayer
     )
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     var searching by rememberSaveable { mutableStateOf(false) }
     var filter: String? by rememberSaveable { mutableStateOf(null) }
@@ -482,6 +487,11 @@ fun AppearanceSettings(
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
     var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
+    var queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
+    var titleExpanded by rememberPreference(titleExpandedKey, true)
+    var timelineExpanded by rememberPreference(timelineExpandedKey, true)
+    var controlsExpanded by rememberPreference(controlsExpandedKey, true)
+    var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
 
     Column(
         modifier = Modifier
@@ -1303,19 +1313,11 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            SwitchSettingEntry(
                 title = stringResource(R.string.click_lyrics_text),
-                selectedValue = clickLyricsText,
-                onValueSelected = {
-                    clickLyricsText = it
-                },
-                valueText = {
-                    when (it) {
-                        ClickLyricsText.Player -> stringResource(R.string.player)
-                        ClickLyricsText.FullScreen -> stringResource(R.string.full_screen)
-                        ClickLyricsText.Both -> stringResource(R.string.both)
-                    }
-                },
+                text = "",
+                isChecked = clickLyricsText,
+                onCheckedChange = { clickLyricsText = it }
             )
         if (showlyricsthumbnail)
             if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
@@ -1595,6 +1597,74 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerMenu = it }
             )
 
+        if (!showlyricsthumbnail && (expandedplayertoggle || expandedlyrics)) {
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
+
+            if (showTotalTimeQueue) {
+                if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.show_total_time_of_queue),
+                        text = "",
+                        isChecked = queueDurationExpanded,
+                        onCheckedChange = { queueDurationExpanded = it }
+                    )
+            }
+
+            if (filter.isNullOrBlank() || stringResource(R.string.titleartist).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.titleartist),
+                    text = "",
+                    isChecked = titleExpanded,
+                    onCheckedChange = { titleExpanded = it }
+                )
+
+            if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.timeline),
+                    text = "",
+                    isChecked = timelineExpanded,
+                    onCheckedChange = { timelineExpanded = it }
+                )
+
+            if (filter.isNullOrBlank() || stringResource(R.string.controls).contains(
+                    filterCharSequence,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.controls),
+                    text = "",
+                    isChecked = controlsExpanded,
+                    onCheckedChange = { controlsExpanded = it }
+                )
+
+            if (showNextSongsInPlayer) {
+                if (filter.isNullOrBlank() || stringResource(R.string.miniqueue).contains(
+                        filterCharSequence,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.miniqueue),
+                        text = "",
+                        isChecked = miniQueueExpanded,
+                        onCheckedChange = { miniQueueExpanded = it }
+                    )
+            }
+        }
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.background_player))
 

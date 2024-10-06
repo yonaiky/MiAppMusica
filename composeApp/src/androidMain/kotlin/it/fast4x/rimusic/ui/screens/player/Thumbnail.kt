@@ -132,7 +132,7 @@ fun Thumbnail(
         mutableStateOf(true)
     }
 
-    val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 
@@ -308,10 +308,7 @@ fun Thumbnail(
                         durationProvider = player::getDuration,
                         onMaximize = onMaximize,
                         isLandscape = isLandscape,
-                        enableClick = when (clickLyricsText) {
-                            ClickLyricsText.Player, ClickLyricsText.Both -> true
-                            else -> false
-                        }
+                        clickLyricsText = clickLyricsText,
                     )
 
                 StatsForNerds(
