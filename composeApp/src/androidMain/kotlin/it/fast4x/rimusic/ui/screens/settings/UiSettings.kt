@@ -476,13 +476,13 @@ fun DefaultUiSettings() {
     effectRotationEnabled = true
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
     thumbnailTapEnabled = false
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
-    clickLyricsText = ClickLyricsText.FullScreen
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    clickLyricsText = true
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.Both
+        BackgroundProgress.MiniPlayer
     )
-    backgroundProgress = BackgroundProgress.Both
+    backgroundProgress = BackgroundProgress.MiniPlayer
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
         false
@@ -714,10 +714,10 @@ fun UiSettings(
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
-        BackgroundProgress.Both
+        BackgroundProgress.MiniPlayer
     )
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
@@ -1406,7 +1406,7 @@ fun UiSettings(
                         showNextSongsInPlayer = false
                         disableScrollingText = false
                         effectRotationEnabled = true
-                        clickLyricsText = ClickLyricsText.FullScreen
+                        clickLyricsText = true
                         playerEnableLyricsPopupMessage = true
                         backgroundProgress = BackgroundProgress.MiniPlayer
                         transparentBackgroundActionBarPlayer = true

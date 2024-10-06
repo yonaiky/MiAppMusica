@@ -263,6 +263,11 @@ const val lastVideoSecondsKey = "lastVideoSeconds"
 const val isDiscordPresenceEnabledKey = "isDiscordPresenceEnabled"
 const val loudnessBaseGainKey = "loudnessBaseGain"
 const val statisticsCategoryKey = "statisticsCategory"
+const val queueDurationExpandedKey = "queueDurationExpanded"
+const val titleExpandedKey = "titleExpanded"
+const val timelineExpandedKey = "timelineExpanded"
+const val controlsExpandedKey = "controlsExpanded"
+const val miniQueueExpandedKey = "miniQueueExpanded"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
