@@ -2054,6 +2054,8 @@ class PlayerService : InvincibleService(),
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
                             println("mediaItem PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
+                            binder.cache.removeResource(videoId)
+                            binder.downloadCache.removeResource(videoId)
                             transaction {
                                 Database.resetTotalPlayTimeMs(videoId)
                             }

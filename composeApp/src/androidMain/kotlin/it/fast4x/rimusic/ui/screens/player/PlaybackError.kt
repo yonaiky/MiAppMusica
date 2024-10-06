@@ -69,7 +69,8 @@ fun PlayerError(error: PlaybackException) {
     val unknownplaybackerror =
         stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
-    val unknownerror = stringResource(R.string.error_unknown)
+    //val unknownerror = stringResource(R.string.error_unknown)
+    val unknownerror = stringResource(R.string.error_media_cannot_be_played)
     val nointerneterror = stringResource(R.string.error_no_internet)
     val timeouterror = stringResource(R.string.error_timeout)
 
@@ -94,7 +95,7 @@ fun PlayerError(error: PlaybackException) {
                     is NoInternetException -> nointerneterror
                     is TimeoutException -> timeouterror
                     is UnknownException -> unknownerror
-                    is FakeException -> ""
+                    is FakeException -> unknownerror
                     else -> unknownplaybackerror
                 }, PopupType.Error, context = context
             )

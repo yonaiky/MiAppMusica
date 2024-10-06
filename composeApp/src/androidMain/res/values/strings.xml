@@ -748,4 +748,5 @@
     <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
     <string name="add_to_preferites">Add to preferites</string>
     <string name="import_preferites">Import preferites</string>
+    <string name="error_media_cannot_be_played">Media cannot be played</string>
 </resources>
