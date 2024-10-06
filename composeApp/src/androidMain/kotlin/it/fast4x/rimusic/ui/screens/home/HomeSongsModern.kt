@@ -179,6 +179,7 @@ import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
@@ -359,8 +360,8 @@ fun HomeSongsModern(
     var buttonsList = listOf(BuiltInPlaylist.All to stringResource(R.string.all))
     if (showFavoritesPlaylist) buttonsList +=
         BuiltInPlaylist.Favorites to stringResource(R.string.favorites)
-    //if (showCachedPlaylist) buttonsList +=
-    //    BuiltInPlaylist.Offline to stringResource(R.string.cached)
+    if (showCachedPlaylist) buttonsList +=
+        BuiltInPlaylist.Offline to stringResource(R.string.cached)
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
@@ -384,6 +385,7 @@ fun HomeSongsModern(
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
+                        /*
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
                             .combine(
@@ -400,18 +402,19 @@ fun HomeSongsModern(
                                 items = it.toList()
                             }
 
-                        /*
+                         */
+
+
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
                             .map {
                                 it.filter { song ->
-                                    downloads[song.id]?.state == Download.STATE_COMPLETED
+                                    downloads[song.song.id]?.state == Download.STATE_COMPLETED
                                 }
                             }
                             .collect {
                                 items = it
                             }
-                         */
                     }
 
                     if (builtInPlaylist == BuiltInPlaylist.Favorites) {
@@ -424,12 +427,12 @@ fun HomeSongsModern(
                             }
                     }
 
-                /*
+
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
                         .map { songs ->
-                            songs.filter { binder?.isCached(it) ?: false }.map { it.song }
+                            songs.filter { binder?.isCached(it) ?: false }
                         }
                         .collect {
                             items = it
@@ -461,7 +464,7 @@ fun HomeSongsModern(
 
                     */
                 }
-                */
+
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
                         if (topPlaylistPeriod.duration == Duration.INFINITE) {
