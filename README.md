@@ -131,6 +131,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [fast4x](https://github.com/fast4x)
 - [ikanakova](https://github.com/ikanakova)
 - [iscle](https://github.com/iscle)
+- [jaimtres](https://github.com/jaimtres)
 - [JZITNIK](https://github.com/jzitnik-dev)
 - [knighthat](https://github.com/knighthat)
 - [locxter](https://github.com/locxter)
@@ -145,13 +146,12 @@ WARNING, the custom version is not an official release, download only if invited
 
 ## 🫂 Acknowledgments
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
-- **RiMusic Logo and icons** [@ikanakova](https://github.com/ikanakova)
+- **RiMusic actual Logo Design** [jaimtres](https://github.com/jaimtres)
+- **RiMusic previous Logo and many actual icons** [@ikanakova](https://github.com/ikanakova)
 - **RiMusic Website and other features** [JZITNIK-github](https://github.com/JZITNIK-github) and [martkol](https://github.com/martkol)
 - **RiMusic New player and lyrics layouts** [aneesh1122](https://github.com/aneesh1122)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
-- [**Rubik** Font](https://fonts.google.com/specimen/Rubik): Rubik is RiMusic's default font.
-- [**Poppins** Font](https://fonts.google.com/specimen/Poppins): Poppins is ViMusic's default font.
 - [**Translator**](https://github.com/therealbush/translator): A simple and free Google Translate library for Kotlin/JVM and Java.
 - [**KuGou**](https://www.kugou.com): Lyrics provider
 - [**LrcLib**](https://lrclib.net): Lyrics provider
