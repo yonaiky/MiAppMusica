@@ -746,4 +746,8 @@
     <string name="create_new_playlist">Crea una llista de reproducció nova</string>
     <string name="settings_loudness_base_gain">Guany de sonoritat de base</string>
     <string name="settings_target_gain_loudness_info">Guany objectiu per a la normalització de la sonoritat</string>
+    <string name="full_screen_lyrics_components">Components de Lletres a pantalla completa</string>
+    <string name="titleartist">Títol i Artistes</string>
+    <string name="miniqueue">Mini cua</string>
+    <string name="controls">Controls</string>
 </resources>
