@@ -2054,7 +2054,10 @@ class PlayerService : InvincibleService(),
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
                             println("mediaItem PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
-                            throw UnknownException()
+                            transaction {
+                                Database.resetTotalPlayTimeMs(videoId)
+                            }
+                            format?.url ?: throw UnknownException()
                         }
                     }
                     ringBuffer.append(videoId to url.toUri())

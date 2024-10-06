@@ -19,4 +19,6 @@ class NoInternetException : PlaybackException(null, null, ERROR_CODE_IO_NETWORK_
 class TimeoutException : PlaybackException(null, null, ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT)
 @UnstableApi
 class UnknownException : PlaybackException(null, null, ERROR_CODE_REMOTE_ERROR)
+@UnstableApi
+class FakeException : PlaybackException(null, null, ERROR_CODE_IO_NETWORK_CONNECTION_FAILED)
 
