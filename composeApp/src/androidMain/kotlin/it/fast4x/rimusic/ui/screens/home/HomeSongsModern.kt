@@ -179,6 +179,7 @@ import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
@@ -407,6 +408,7 @@ fun HomeSongsModern(
 
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
+                            .flowOn(Dispatchers.IO)
                             .map {
                                 it.filter { song ->
                                     downloads[song.song.id]?.state == Download.STATE_COMPLETED
@@ -431,12 +433,29 @@ fun HomeSongsModern(
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
+                        .flowOn(Dispatchers.IO)
+                        .map { songs ->
+                            songs.filter { song ->
+                                song.contentLength?.let {
+                                    binder?.cache?.isCached(song.song.id, 0, song.contentLength)
+                                } ?: false
+                            }
+                        }
+                        .collect {
+                            items = it
+                        }
+
+                    /*
+                    Database
+                        .songsOffline(sortBy, sortOrder)
                         .map { songs ->
                             songs.filter { binder?.isCached(it) ?: false }
                         }
                         .collect {
                             items = it
                         }
+
+                     */
 
                     //println("mediaItem offline items: ${items.size} filter ${filter}")
                     /*
