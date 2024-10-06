@@ -184,7 +184,7 @@ fun PlayerEssential(
             return@rememberSwipeToDismissBoxState false
         }
     )
-    val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.Both)
+    val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
     val effectRotationEnabled by rememberPreference(effectRotationKey, true)
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
     val playPauseRoundness by shouldBePlayingTransition.animateDp(

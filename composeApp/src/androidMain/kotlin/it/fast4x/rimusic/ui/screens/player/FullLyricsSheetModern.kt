@@ -118,7 +118,7 @@ fun FullLyricsSheetModern(
      */
 
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
-    val clickLyricsText by rememberPreference(clickLyricsTextKey, ClickLyricsText.FullScreen)
+    val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
 
     Box(
         modifier = Modifier
@@ -195,10 +195,6 @@ fun FullLyricsSheetModern(
                     player.currentMediaItem?.mediaId?.let {
                         player.currentMediaItem!!::mediaMetadata.let { it1 ->
                             Lyrics(
-                                enableClick = when (clickLyricsText) {
-                                    ClickLyricsText.FullScreen, ClickLyricsText.Both -> true
-                                    else -> false
-                                },
                                 mediaId = it,
                                 isDisplayed = true,
                                 onDismiss = {},
@@ -214,6 +210,7 @@ fun FullLyricsSheetModern(
                                 mediaMetadataProvider = it1,
                                 durationProvider = player::getDuration,
                                 isLandscape = isLandscape,
+                                clickLyricsText = clickLyricsText,
                                 trailingContent = {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,

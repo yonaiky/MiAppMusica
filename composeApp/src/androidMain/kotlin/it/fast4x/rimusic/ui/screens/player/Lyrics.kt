@@ -165,7 +165,7 @@ fun Lyrics(
     durationProvider: () -> Long,
     ensureSongInserted: () -> Unit,
     modifier: Modifier = Modifier,
-    enableClick: Boolean = false,
+    clickLyricsText: Boolean,
     trailingContent: (@Composable () -> Unit)? = null,
     isLandscape: Boolean,
 ) {
@@ -676,7 +676,7 @@ fun Lyrics(
                         verticalArrangement = Arrangement.Center,
                         modifier = modifierBG
                             .background(
-                                if (isDisplayed && !showlyricsthumbnail) if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(0.4f)
+                                if (isDisplayed && !showlyricsthumbnail) if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(0.6f)
                                 else if (lyricsBackground == LyricsBackground.White) Color.White.copy(0.4f)
                                 else Color.Transparent else Color.Transparent
                             )
@@ -851,7 +851,7 @@ fun Lyrics(
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .clickable {
-                                                if (enableClick)
+                                                if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
                                     )
@@ -938,7 +938,7 @@ fun Lyrics(
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .clickable {
-                                                if (enableClick)
+                                                if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
                                             .background(
@@ -986,7 +986,7 @@ fun Lyrics(
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .clickable {
-                                                if (enableClick)
+                                                if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
                                             }
                                     )
@@ -1162,7 +1162,7 @@ fun Lyrics(
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .clickable {
-                                                    if (enableClick)
+                                                    if (clickLyricsText)
                                                         binder?.player?.seekTo(sentence.first)
                                                 }
                                         )
@@ -1208,7 +1208,7 @@ fun Lyrics(
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .clickable {
-                                                    if (enableClick)
+                                                    if (clickLyricsText)
                                                         binder?.player?.seekTo(sentence.first)
                                                 }
                                         )
@@ -1276,7 +1276,7 @@ fun Lyrics(
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .clickable {
-                                                    if (enableClick)
+                                                    if (clickLyricsText)
                                                         binder?.player?.seekTo(sentence.first)
                                                 }
                                         )

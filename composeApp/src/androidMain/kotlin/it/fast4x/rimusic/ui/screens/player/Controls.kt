@@ -51,11 +51,13 @@ import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtis
 import it.fast4x.rimusic.utils.GetControls
 import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.buttonzoomoutKey
+import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
 import it.fast4x.rimusic.utils.playerPlayButtonTypeKey
@@ -63,9 +65,12 @@ import it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
 import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerTypeKey
+import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.timelineExpandedKey
+import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -82,6 +87,10 @@ fun Controls(
     onCollapse: () -> Unit,
     onBlurScaleChange: (Float) -> Unit,
     expandedplayer: Boolean,
+    titleExpanded: Boolean,
+    timelineExpanded: Boolean,
+    controlsExpanded: Boolean,
+    isShowingLyrics: Boolean,
     media: UiMedia,
     mediaId: String,
     title: String?,
@@ -221,61 +230,67 @@ fun Controls(
                 modifier = Modifier
                     .padding(horizontal = playerTimelineSize.size.dp)
             ) {
-                if (playerInfoType == PlayerInfoType.Modern)
-                    InfoAlbumAndArtistModern(
-                        binder = binder,
-                        navController = navController,
-                        media = media,
-                        title = title,
-                        albumId = albumId,
-                        mediaId = mediaId,
-                        likedAt = likedAt,
-                        onCollapse = onCollapse,
-                        disableScrollingText = disableScrollingText,
-                        artist = artist,
-                        artistIds = artistIds,
-                    )
+                if (!isShowingLyrics || titleExpanded) {
+                    if (playerInfoType == PlayerInfoType.Modern)
+                        InfoAlbumAndArtistModern(
+                            binder = binder,
+                            navController = navController,
+                            media = media,
+                            title = title,
+                            albumId = albumId,
+                            mediaId = mediaId,
+                            likedAt = likedAt,
+                            onCollapse = onCollapse,
+                            disableScrollingText = disableScrollingText,
+                            artist = artist,
+                            artistIds = artistIds,
+                        )
 
-                if (playerInfoType == PlayerInfoType.Essential)
-                    InfoAlbumAndArtistEssential(
-                        binder = binder,
-                        navController = navController,
-                        media = media,
-                        title = title,
-                        albumId = albumId,
-                        mediaId = mediaId,
-                        likedAt = likedAt,
-                        onCollapse = onCollapse,
-                        disableScrollingText = disableScrollingText,
-                        artist = artist,
-                        artistIds = artistIds,
+                    if (playerInfoType == PlayerInfoType.Essential)
+                        InfoAlbumAndArtistEssential(
+                            binder = binder,
+                            navController = navController,
+                            media = media,
+                            title = title,
+                            albumId = albumId,
+                            mediaId = mediaId,
+                            likedAt = likedAt,
+                            onCollapse = onCollapse,
+                            disableScrollingText = disableScrollingText,
+                            artist = artist,
+                            artistIds = artistIds,
+                        )
+                    Spacer(
+                        modifier = Modifier
+                            .height(10.dp)
                     )
-                Spacer(
-                    modifier = Modifier
-                        .height(10.dp)
-                )
-                GetSeekBar(
-                    position = position,
-                    duration = duration,
-                    media = media,
-                    mediaId = mediaId
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(if (playerPlayButtonType != PlayerPlayButtonType.Disabled) 10.dp else 5.dp)
-                )
-                GetControls(
-                    binder = binder,
-                    position = position,
-                    shouldBePlaying = shouldBePlaying,
-                    likedAt = likedAt,
-                    mediaId = mediaId,
-                    onBlurScaleChange = onBlurScaleChange
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(5.dp)
-                )
+                }
+                if (!isShowingLyrics || timelineExpanded) {
+                    GetSeekBar(
+                        position = position,
+                        duration = duration,
+                        media = media,
+                        mediaId = mediaId
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(if (playerPlayButtonType != PlayerPlayButtonType.Disabled) 10.dp else 5.dp)
+                    )
+                }
+                if (!isShowingLyrics || controlsExpanded) {
+                    GetControls(
+                        binder = binder,
+                        position = position,
+                        shouldBePlaying = shouldBePlaying,
+                        likedAt = likedAt,
+                        mediaId = mediaId,
+                        onBlurScaleChange = onBlurScaleChange
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(5.dp)
+                    )
+                }
                 if (((playerControlsType == PlayerControlsType.Modern) || (!transparentBackgroundActionBarPlayer)) && (playerPlayButtonType != PlayerPlayButtonType.Disabled)) {
                     Spacer(
                         modifier = Modifier
