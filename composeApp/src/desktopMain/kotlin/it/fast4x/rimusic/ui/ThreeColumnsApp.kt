@@ -82,11 +82,14 @@ import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.items.AlbumItem
+import it.fast4x.rimusic.items.ArtistItem
 import it.fast4x.rimusic.items.SongItem
 import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
+import it.fast4x.rimusic.styling.Dimensions.artistThumbnailSize
 import it.fast4x.rimusic.styling.Dimensions.itemInHorizontalGridWidth
 import it.fast4x.rimusic.styling.Dimensions.itemsVerticalPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.ui.components.Title
@@ -106,6 +109,8 @@ import rimusic.composeapp.generated.resources.library
 import rimusic.composeapp.generated.resources.musical_notes
 import rimusic.composeapp.generated.resources.new_albums
 import rimusic.composeapp.generated.resources.play
+import rimusic.composeapp.generated.resources.related_albums
+import rimusic.composeapp.generated.resources.similar_artists
 import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
 
@@ -538,6 +543,58 @@ fun CenterPanelContent(
                     }
                 }
             }
+
+            related.value?.albums?.let { albums ->
+                val showRelatedAlbums = true
+                if (showRelatedAlbums) {
+                    Title(
+                        title = stringResource(Res.string.related_albums),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = albums.distinctBy { it.key }, key = { it.key }) {
+                            AlbumItem(
+                                album = it,
+                                thumbnailSizeDp = albumThumbnailSize,
+                                alternative = true,
+                                modifier = Modifier.clickable(onClick = {
+                                    onAlbumClick(it.key)
+                                })
+                            )
+                        }
+                    }
+                }
+            }
+
+            related.value?.artists?.let { artists ->
+                val showSimilarArtists = true
+                if (showSimilarArtists) {
+                    Title(
+                        title = stringResource(Res.string.similar_artists),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = artists.distinctBy { it.key }, key = { it.key }) {
+                            ArtistItem(
+                                artist = it,
+                                thumbnailSizeDp = artistThumbnailSize,
+                                alternative = true,
+                                modifier = Modifier.clickable(onClick = {
+                                    onAlbumClick(it.key)
+                                })
+                            )
+
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(layoutColumnBottomSpacer))
+
 
         }
 

@@ -266,3 +266,83 @@ fun AlbumItem(
         showAuthors = showAuthors
     )
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ArtistItem(
+    thumbnailUrl: String?,
+    name: String?,
+    subscribersCount: String?,
+    //thumbnailSizePx: Int,
+    thumbnailSizeDp: Dp,
+    modifier: Modifier = Modifier,
+    alternative: Boolean = false,
+    showName: Boolean = true
+) {
+    ItemContainer(
+        alternative = alternative,
+        thumbnailSizeDp = thumbnailSizeDp,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        AsyncImage(
+            model = thumbnailUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .clip(ThumbnailRoundness.Medium.shape())
+                .requiredSize(thumbnailSizeDp)
+        )
+
+        if (showName)
+            ItemInfoContainer(
+                horizontalAlignment = if (alternative) Alignment.CenterHorizontally else Alignment.Start,
+            ) {
+                BasicText(
+                    text = name ?: "",
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = typography.titleSmall.fontSize,
+                        //fontWeight = typography.titleSmall.fontWeight
+                    ),
+                    maxLines = 1, //if (alternative) 1 else 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .basicMarquee(iterations = Int.MAX_VALUE)
+                )
+
+                subscribersCount?.let {
+                    BasicText(
+                        text = subscribersCount,
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = typography.titleSmall.fontSize,
+                            //fontWeight = typography.titleSmall.fontWeight
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .basicMarquee(iterations = Int.MAX_VALUE)
+                    )
+                }
+            }
+    }
+}
+
+@Composable
+fun ArtistItem(
+    artist: Innertube.ArtistItem,
+    //thumbnailSizePx: Int,
+    thumbnailSizeDp: Dp,
+    modifier: Modifier = Modifier,
+    alternative: Boolean = false,
+) {
+    ArtistItem(
+        thumbnailUrl = artist.thumbnail?.url,
+        name = artist.info?.name,
+        subscribersCount = artist.subscribersCountText,
+        thumbnailSizeDp = thumbnailSizeDp,
+        modifier = modifier,
+        alternative = alternative
+    )
+}
