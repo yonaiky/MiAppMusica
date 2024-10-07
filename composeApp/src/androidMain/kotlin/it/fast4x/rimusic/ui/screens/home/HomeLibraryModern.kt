@@ -59,10 +59,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.room.util.copy
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -590,9 +593,15 @@ fun HomeLibraryModern(
                                 focusRequester.requestFocus()
                             }
 
+                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ?: "" ) ) }
                             BasicTextField(
-                                value = filter ?: "",
-                                onValueChange = { filter = it },
+                                value = searchInput,
+                                onValueChange = {
+                                    searchInput = it.copy(
+                                        selection = TextRange( it.text.length )
+                                    )
+                                    filter = it.text
+                                },
                                 textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
