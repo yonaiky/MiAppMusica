@@ -59,10 +59,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.room.util.copy
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -194,7 +197,8 @@ fun HomeLibraryModern(
     var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
 
     var searching by rememberSaveable { mutableStateOf(false) }
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var isSearchInputFocused by rememberSaveable { mutableStateOf( false ) }
+    var filter by rememberSaveable { mutableStateOf("") }
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
@@ -202,13 +206,10 @@ fun HomeLibraryModern(
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
 
-    val filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
-    if (!filter.isNullOrBlank())
+    if ( filter.isNotBlank() )
         items = items
             .filter {
-                it.playlist.name.contains(filterCharSequence, true)
+                it.playlist.name.contains( filter, true )
             }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -447,7 +448,10 @@ fun HomeLibraryModern(
                     )
 
                     HeaderIconButton(
-                        onClick = { searching = !searching },
+                        onClick = {
+                            searching = !searching
+                            isSearchInputFocused = searching
+                        },
                         icon = R.drawable.search_circle,
                         color = colorPalette().text,
                         iconSize = 24.dp,
@@ -603,22 +607,27 @@ fun HomeLibraryModern(
                         AnimatedVisibility(visible = searching) {
                             val focusRequester = remember { FocusRequester() }
                             val focusManager = LocalFocusManager.current
-                            val keyboardController = LocalSoftwareKeyboardController.current
 
                             LaunchedEffect(searching) {
-                                focusRequester.requestFocus()
+                                if( isSearchInputFocused ) focusRequester.requestFocus()
                             }
 
+                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ) ) }
                             BasicTextField(
-                                value = filter ?: "",
-                                onValueChange = { filter = it },
+                                value = searchInput,
+                                onValueChange = {
+                                    searchInput = it.copy(
+                                        selection = TextRange( it.text.length )
+                                    )
+                                    filter = it.text
+                                },
                                 textStyle = typography().xs.semiBold,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(onDone = {
-                                    if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
+                                    searching = filter.isNotBlank()
                                 }),
                                 cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
@@ -644,7 +653,7 @@ fun HomeLibraryModern(
                                             .padding(horizontal = 30.dp)
                                     ) {
                                         androidx.compose.animation.AnimatedVisibility(
-                                            visible = filter?.isEmpty() ?: true,
+                                            visible = filter.isBlank(),
                                             enter = fadeIn(tween(100)),
                                             exit = fadeOut(tween(100)),
                                         ) {
@@ -667,30 +676,9 @@ fun HomeLibraryModern(
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
-                                    .onFocusChanged {
-                                        if (!it.hasFocus) {
-                                            keyboardController?.hide()
-                                            if (filter?.isBlank() == true) {
-                                                filter = null
-                                                searching = false
-                                            }
-                                        }
-                                    }
                             )
                         }
-                        /*
-                        else {
-                            HeaderIconButton(
-                                onClick = { searching = true },
-                                icon = R.drawable.search_circle,
-                                color = colorPalette().text,
-                                iconSize = 24.dp
-                            )
-                        }
-
-                         */
                     }
-                    /*        */
                 }
 
             item(
@@ -722,7 +710,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -739,7 +735,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -755,7 +759,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -771,7 +783,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
