@@ -197,7 +197,7 @@ fun HomeLibraryModern(
     var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
 
     var searching by rememberSaveable { mutableStateOf(false) }
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var filter by rememberSaveable { mutableStateOf("") }
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
@@ -205,13 +205,10 @@ fun HomeLibraryModern(
         Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
     }
 
-    val filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
-    if (!filter.isNullOrBlank())
+    if ( filter.isNotBlank() )
         items = items
             .filter {
-                it.playlist.name.contains(filterCharSequence, true)
+                it.playlist.name.contains( filter, true)
             }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -587,13 +584,12 @@ fun HomeLibraryModern(
                         AnimatedVisibility(visible = searching) {
                             val focusRequester = remember { FocusRequester() }
                             val focusManager = LocalFocusManager.current
-                            val keyboardController = LocalSoftwareKeyboardController.current
 
                             LaunchedEffect(searching) {
                                 focusRequester.requestFocus()
                             }
 
-                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ?: "" ) ) }
+                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ) ) }
                             BasicTextField(
                                 value = searchInput,
                                 onValueChange = {
@@ -607,8 +603,8 @@ fun HomeLibraryModern(
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(onDone = {
-                                    if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
+                                    searching = filter.isNotBlank()
                                 }),
                                 cursorBrush = SolidColor(colorPalette().text),
                                 decorationBox = { innerTextField ->
@@ -634,7 +630,7 @@ fun HomeLibraryModern(
                                             .padding(horizontal = 30.dp)
                                     ) {
                                         androidx.compose.animation.AnimatedVisibility(
-                                            visible = filter?.isEmpty() ?: true,
+                                            visible = filter.isBlank(),
                                             enter = fadeIn(tween(100)),
                                             exit = fadeOut(tween(100)),
                                         ) {
@@ -657,30 +653,9 @@ fun HomeLibraryModern(
                                         shape = thumbnailRoundness.shape()
                                     )
                                     .focusRequester(focusRequester)
-                                    .onFocusChanged {
-                                        if (!it.hasFocus) {
-                                            keyboardController?.hide()
-                                            if (filter?.isBlank() == true) {
-                                                filter = null
-                                                searching = false
-                                            }
-                                        }
-                                    }
                             )
                         }
-                        /*
-                        else {
-                            HeaderIconButton(
-                                onClick = { searching = true },
-                                icon = R.drawable.search_circle,
-                                color = colorPalette().text,
-                                iconSize = 24.dp
-                            )
-                        }
-
-                         */
                     }
-                    /*        */
                 }
 
             item(
