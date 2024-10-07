@@ -13,4 +13,5 @@ object Dimensions {
 
     val albumThumbnailSize = 100.dp
     val artistThumbnailSize = 100.dp
+    val playlistThumbnailSize = 100.dp
 }
