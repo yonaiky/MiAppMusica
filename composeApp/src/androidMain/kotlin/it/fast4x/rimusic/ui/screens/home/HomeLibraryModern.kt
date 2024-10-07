@@ -197,6 +197,7 @@ fun HomeLibraryModern(
     var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
 
     var searching by rememberSaveable { mutableStateOf(false) }
+    var isSearchInputFocused by rememberSaveable { mutableStateOf( false ) }
     var filter by rememberSaveable { mutableStateOf("") }
 
     var items by persistList<PlaylistPreview>("home/playlists")
@@ -208,7 +209,7 @@ fun HomeLibraryModern(
     if ( filter.isNotBlank() )
         items = items
             .filter {
-                it.playlist.name.contains( filter, true)
+                it.playlist.name.contains( filter, true )
             }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -428,7 +429,10 @@ fun HomeLibraryModern(
                     )
 
                     HeaderIconButton(
-                        onClick = { searching = !searching },
+                        onClick = {
+                            searching = !searching
+                            isSearchInputFocused = searching
+                        },
                         icon = R.drawable.search_circle,
                         color = colorPalette().text,
                         iconSize = 24.dp,
@@ -586,7 +590,7 @@ fun HomeLibraryModern(
                             val focusManager = LocalFocusManager.current
 
                             LaunchedEffect(searching) {
-                                focusRequester.requestFocus()
+                                if( isSearchInputFocused ) focusRequester.requestFocus()
                             }
 
                             var searchInput by remember { mutableStateOf( TextFieldValue( filter ) ) }
@@ -687,7 +691,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -704,7 +716,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -720,7 +740,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
@@ -736,7 +764,15 @@ fun HomeLibraryModern(
                         thumbnailSizePx = thumbnailSizePx,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onPlaylistClick(playlistPreview.playlist) })
+                            .clickable(onClick = {
+                                onPlaylistClick(playlistPreview.playlist)
+
+                                if( searching )
+                                    if( filter.isBlank() )
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+                            })
                             .animateItem(fadeInSpec = null, fadeOutSpec = null)
                             .fillMaxSize()
                     )
