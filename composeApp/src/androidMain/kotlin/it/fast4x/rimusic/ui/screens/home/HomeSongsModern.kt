@@ -1191,7 +1191,7 @@ fun HomeSongsModern(
                                         },
                                         onLongClick = {
                                             SmartMessage(
-                                                context.resources.getString(R.string.import_preferites),
+                                                context.resources.getString(R.string.import_favorites),
                                                 context = context
                                             )
                                         }

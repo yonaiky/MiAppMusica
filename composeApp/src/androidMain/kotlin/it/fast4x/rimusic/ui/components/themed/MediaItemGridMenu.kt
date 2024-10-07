@@ -944,7 +944,7 @@ fun MediaItemGridMenu (
                 if (onAddToPreferites != null)
                     GridMenuItem(
                         icon = R.drawable.heart,
-                        title = R.string.add_to_preferites,
+                        title = R.string.add_to_favorites,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = onAddToPreferites

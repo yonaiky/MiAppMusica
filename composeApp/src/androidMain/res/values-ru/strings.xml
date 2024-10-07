@@ -748,11 +748,11 @@
     <string name="create_new_playlist">Создать новый плейлист</string>
     <string name="settings_loudness_base_gain">Повышение уровня громкости</string>
     <string name="settings_target_gain_loudness_info">Наличие цели для нормализации громкости</string>
-    <string name="add_to_preferites">Add to preferites</string>
-    <string name="import_preferites">Import preferites</string>
     <string name="error_media_cannot_be_played">Media cannot be played</string>
     <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
     <string name="titleartist">Title and Artists</string>
     <string name="miniqueue">Mini Queue</string>
     <string name="controls">Controls</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="import_favorites">Import favorites</string>
 </resources>

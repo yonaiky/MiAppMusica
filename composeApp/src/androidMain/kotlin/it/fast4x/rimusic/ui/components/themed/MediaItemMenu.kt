@@ -1471,7 +1471,7 @@ fun MediaItemMenu(
                 if (onAddToPreferites != null)
                     MenuEntry(
                         icon = R.drawable.heart,
-                        text = stringResource(R.string.add_to_preferites),
+                        text = stringResource(R.string.add_to_favorites),
                         onClick = onAddToPreferites
                     )
 
