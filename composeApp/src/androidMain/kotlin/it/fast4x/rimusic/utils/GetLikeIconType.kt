@@ -34,3 +34,8 @@ fun getUnlikedIcon(): Int {
         IconLikeType.Striped -> R.drawable.heart_striped_outline
     }
 }
+
+@Composable
+fun getDislikedIcon(): Int {
+    return R.drawable.heart_dislike
+}

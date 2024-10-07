@@ -50,6 +50,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ClickLyricsText
@@ -100,6 +101,7 @@ import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
+import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
@@ -198,6 +200,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
+import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
@@ -555,7 +558,7 @@ fun UiSettings(
 
     var skipSilence by rememberPreference(skipSilenceKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
-    //var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
+    var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
 
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
 
@@ -610,7 +613,7 @@ fun UiSettings(
     )
 
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
-    //var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
     var showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
     var showDownloadedPlaylist by rememberPreference(showDownloadedPlaylistKey, true)
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
@@ -938,7 +941,7 @@ fun UiSettings(
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
-        /*
+
         if (filter.isNullOrBlank() || stringResource(R.string.audio_quality_format).contains(filterCharSequence,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
@@ -975,7 +978,7 @@ fun UiSettings(
                 }
             }
         }
-        */
+
         if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_listen_history),
@@ -1861,7 +1864,7 @@ fun UiSettings(
                 isChecked = showFavoritesPlaylist,
                 onCheckedChange = { showFavoritesPlaylist = it }
             )
-        /*
+
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
@@ -1869,7 +1872,7 @@ fun UiSettings(
                 isChecked = showCachedPlaylist,
                 onCheckedChange = { showCachedPlaylist = it }
             )
-         */
+
         if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",

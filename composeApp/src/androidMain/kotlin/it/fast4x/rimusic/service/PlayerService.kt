@@ -21,6 +21,7 @@ import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -124,6 +125,8 @@ import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey
@@ -235,7 +238,7 @@ class PlayerService : InvincibleService(),
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
-    //private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var connectivityManager: ConnectivityManager
 
     private val actions = PlaybackStateCompat.ACTION_PLAY or
             PlaybackStateCompat.ACTION_PAUSE or
@@ -351,7 +354,7 @@ class PlayerService : InvincibleService(),
         get() = NotificationId
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
-    //private lateinit var audioQualityFormat: AudioQualityFormat
+    private lateinit var audioQualityFormat: AudioQualityFormat
     private val playerVerticalWidget = PlayerVerticalWidget()
     private val playerHorizontalWidget = PlayerHorizontalWidget()
 
@@ -454,7 +457,7 @@ class PlayerService : InvincibleService(),
         isShowingThumbnailInLockscreen =
             preferences.getBoolean(isShowingThumbnailInLockscreenKey, false)
 
-        //audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
+        audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
         showLikeButton = preferences.getBoolean(showLikeButtonBackgroundPlayerKey, true)
         showDownloadButton = preferences.getBoolean(showDownloadButtonBackgroundPlayerKey, true)
 
@@ -584,7 +587,7 @@ class PlayerService : InvincibleService(),
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
 
-        //connectivityManager = getSystemService()!!
+        connectivityManager = getSystemService()!!
 
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())
@@ -1970,10 +1973,22 @@ class PlayerService : InvincibleService(),
                             body?.streamingData?.adaptiveFormats
                                 ?.filter { it.isAudio }
                                 ?.maxByOrNull {
+                                    (it.bitrate?.times(
+                                        when (audioQualityFormat) {
+                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                            AudioQualityFormat.High -> 1
+                                            AudioQualityFormat.Low, AudioQualityFormat.Medium -> -1
+                                        }
+                                    ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                                }
+
+                                /*
+                                ?.maxByOrNull {
                                     it.bitrate?.times(
                                         (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
                                     ) ?: -1
                                 }
+                                 */
                         }
                     /*
                     val format = body.streamingData?.adaptiveFormats
@@ -2054,7 +2069,12 @@ class PlayerService : InvincibleService(),
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
                             println("mediaItem PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
-                            throw UnknownException()
+                            binder.cache.removeResource(videoId)
+                            binder.downloadCache.removeResource(videoId)
+                            transaction {
+                                Database.resetTotalPlayTimeMs(videoId)
+                            }
+                            format?.url ?: throw UnknownException()
                         }
                     }
                     ringBuffer.append(videoId to url.toUri())

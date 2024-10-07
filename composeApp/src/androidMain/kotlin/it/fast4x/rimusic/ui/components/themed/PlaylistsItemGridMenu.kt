@@ -78,6 +78,7 @@ fun PlaylistsItemGridMenu(
     onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onImportOnlinePlaylist: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
     showOnSyncronize: Boolean = false,
     onSyncronize: (() -> Unit)? = null,
@@ -386,6 +387,15 @@ fun PlaylistsItemGridMenu(
                         }
                     )
                 }
+
+                if (onAddToPreferites != null)
+                    GridMenuItem(
+                        icon = R.drawable.heart,
+                        title = R.string.add_to_favorites,
+                        colorIcon = colorPalette.text,
+                        colorText = colorPalette.text,
+                        onClick = onAddToPreferites
+                    )
 
                 onAddToPlaylist?.let { onAddToPlaylist ->
                     GridMenuItem(

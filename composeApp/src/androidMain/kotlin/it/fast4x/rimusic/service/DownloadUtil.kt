@@ -3,14 +3,16 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.HttpDataSource
+//import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -48,18 +50,19 @@ import java.util.concurrent.Executors
 @UnstableApi
 object DownloadUtil {
     const val DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel"
-    private const val TAG = "DownloadUtil"
+    //private const val TAG = "DownloadUtil"
     private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
 
     private lateinit var databaseProvider: DatabaseProvider
     private lateinit var downloadCache: Cache
-    private lateinit var dataSourceFactory: DataSource.Factory
-    private lateinit var httpDataSourceFactory: HttpDataSource.Factory
-    private lateinit var ResolvingDataSourceFactory: ResolvingDataSource.Factory
+    //private lateinit var dataSourceFactory: DataSource.Factory
+    //private lateinit var httpDataSourceFactory: HttpDataSource.Factory
+    //private lateinit var ResolvingDataSourceFactory: ResolvingDataSource.Factory
     private lateinit var downloadNotificationHelper: DownloadNotificationHelper
     private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
     private lateinit var audioQualityFormat: AudioQualityFormat
+    private lateinit var connectivityManager: ConnectivityManager
 
 
     var downloads = MutableStateFlow<Map<String, Download>>(emptyMap())
@@ -85,11 +88,11 @@ object DownloadUtil {
     @SuppressLint("SuspiciousIndentation")
     @Synchronized
     fun getResolvingDataSourceFactory(context: Context): ResolvingDataSource.Factory {
-        val cache = getDownloadCache(context)
-        //audioQualityFormat =
-        //    context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.High)
+        //val cache = getDownloadCache(context)
+        audioQualityFormat =
+            context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
-        //connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
 
         val dataSourceFactory =
             ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
@@ -130,7 +133,7 @@ object DownloadUtil {
                                     Database.getBestFormat(videoId).firstOrNull()
                                 }
 
-                                when (val status = body.playabilityStatus?.status) {
+                                when (body.playabilityStatus?.status) {
                                     "OK" -> if (bestPlayedFormat != null) {
                                         body.streamingData?.adaptiveFormats?.find {
                                             it.itag == bestPlayedFormat.itag
@@ -139,16 +142,27 @@ object DownloadUtil {
                                         body.streamingData?.adaptiveFormats
                                             ?.filter { it.isAudio }
                                             ?.maxByOrNull {
+                                                (it.bitrate?.times(
+                                                    when (audioQualityFormat) {
+                                                        AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                                        AudioQualityFormat.High -> 1
+                                                        AudioQualityFormat.Low, AudioQualityFormat.Medium -> -1
+                                                    }
+                                                ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                                            }
+                                            /*
+                                            ?.maxByOrNull {
                                                 it.bitrate?.times(
                                                     (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
                                                 ) ?: -1
                                             }
+                                             */
                                     }
                                         ?.let { format ->
 
                                             query {
                                                 if (Database.songExist(videoId) == 1) {
-                                                    Database.insert(
+                                                    Database.upsert(
                                                         Format(
                                                             songId = videoId,
                                                             itag = format.itag,
@@ -191,11 +205,7 @@ object DownloadUtil {
                                 ringBuffer.append(videoId to url.toUri())
                                 dataSpec.withUri(url.toUri())
                                     .subrange(dataSpec.uriPositionOffset, chunkLength)
-                            } ?: throw PlaybackException(
-                                null,
-                                urlResult?.exceptionOrNull(),
-                                PlaybackException.ERROR_CODE_REMOTE_ERROR
-                            )
+                            } ?: throw UnknownException()
                         }
                     }
                 }
@@ -267,6 +277,7 @@ object DownloadUtil {
      */
 
 
+    /*
     fun getDownloadString(context: Context, @Download.State downloadState: Int): String {
         return when (downloadState) {
             /*
@@ -290,6 +301,7 @@ object DownloadUtil {
 
         }
     }
+    */
 
     @Synchronized
     private fun getDownloadCache(context: Context): Cache {

@@ -47,6 +47,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -355,7 +356,7 @@ fun SongItem(
             if (likedAt != null)
                 HeaderIconButton(
                     onClick = {},
-                    icon = R.drawable.heart,
+                    icon = getLikeState(mediaId),
                     color = colorPalette().favoritesIcon,
                     iconSize = 12.dp,
                     modifier = Modifier

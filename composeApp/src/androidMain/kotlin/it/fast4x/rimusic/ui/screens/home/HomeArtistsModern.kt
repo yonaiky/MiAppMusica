@@ -211,7 +211,7 @@ fun HomeArtistsModern(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
-                        .padding(top = 10.dp, bottom = 16.dp)
+                        .padding(top = 10.dp, bottom = 4.dp)
                         .fillMaxWidth()
                 ){
                     if ( UiType.RiMusic.isCurrent() )
@@ -227,6 +227,24 @@ fun HomeArtistsModern(
                         modifier = Modifier
                             .weight(1f)
                     )
+
+                    }
+                }
+
+            item(
+                key = "headerButtons",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+
+                Row (
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(vertical = 4.dp)
+                        .fillMaxWidth()
+                ){
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,

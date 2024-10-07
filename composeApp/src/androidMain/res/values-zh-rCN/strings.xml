@@ -746,8 +746,11 @@
     <string name="create_new_playlist">创建播放列表</string>
     <string name="settings_loudness_base_gain">低音响度增益</string>
     <string name="settings_target_gain_loudness_info">标准化响度的目标增益</string>
+    <string name="error_media_cannot_be_played">Media cannot be played</string>
     <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
     <string name="titleartist">Title and Artists</string>
     <string name="miniqueue">Mini Queue</string>
     <string name="controls">Controls</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="import_favorites">Import favorites</string>
 </resources>

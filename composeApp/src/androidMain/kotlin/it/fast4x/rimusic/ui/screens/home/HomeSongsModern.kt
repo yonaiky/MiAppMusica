@@ -77,6 +77,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -99,6 +100,7 @@ import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
+import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -106,6 +108,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -176,6 +179,8 @@ import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
@@ -297,6 +302,54 @@ fun HomeSongsModern(
         mutableStateOf(defaultFolder)
     }
 
+    val importLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+
+            //requestPermission(activity, "Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED")
+
+            context.applicationContext.contentResolver.openInputStream(uri)
+                ?.use { inputStream ->
+                    csvReader().open(inputStream) {
+                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
+                            println("mediaItem index song ${index}")
+                            transaction {
+                                /**/
+                                if (row["MediaId"] != null && row["Title"] != null) {
+                                    val song =
+                                        row["MediaId"]?.let {
+                                            row["Title"]?.let { it1 ->
+                                                Song(
+                                                    id = it,
+                                                    title = it1,
+                                                    artistsText = row["Artists"],
+                                                    durationText = row["Duration"],
+                                                    thumbnailUrl = row["ThumbnailUrl"],
+                                                    totalPlayTimeMs = 1L
+                                                )
+                                            }
+                                        }
+                                    transaction {
+                                        if (song != null) {
+                                            Database.upsert(song)
+                                            Database.like(
+                                                song.id,
+                                                System.currentTimeMillis()
+                                            )
+                                        }
+                                    }
+
+
+                                }
+                                /**/
+
+                            }
+
+                        }
+                    }
+                }
+        }
+
     /************ */
 
     val showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
@@ -308,8 +361,8 @@ fun HomeSongsModern(
     var buttonsList = listOf(BuiltInPlaylist.All to stringResource(R.string.all))
     if (showFavoritesPlaylist) buttonsList +=
         BuiltInPlaylist.Favorites to stringResource(R.string.favorites)
-    //if (showCachedPlaylist) buttonsList +=
-    //    BuiltInPlaylist.Offline to stringResource(R.string.cached)
+    if (showCachedPlaylist) buttonsList +=
+        BuiltInPlaylist.Offline to stringResource(R.string.cached)
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
@@ -333,6 +386,7 @@ fun HomeSongsModern(
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
+                        /*
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
                             .combine(
@@ -349,18 +403,20 @@ fun HomeSongsModern(
                                 items = it.toList()
                             }
 
-                        /*
+                         */
+
+
                         val downloads = DownloadUtil.downloads.value
                         Database.listAllSongsAsFlow()
+                            .flowOn(Dispatchers.IO)
                             .map {
                                 it.filter { song ->
-                                    downloads[song.id]?.state == Download.STATE_COMPLETED
+                                    downloads[song.song.id]?.state == Download.STATE_COMPLETED
                                 }
                             }
                             .collect {
                                 items = it
                             }
-                         */
                     }
 
                     if (builtInPlaylist == BuiltInPlaylist.Favorites) {
@@ -373,16 +429,33 @@ fun HomeSongsModern(
                             }
                     }
 
-                /*
+
                 if (builtInPlaylist == BuiltInPlaylist.Offline) {
                     Database
                         .songsOffline(sortBy, sortOrder)
+                        .flowOn(Dispatchers.IO)
                         .map { songs ->
-                            songs.filter { binder?.isCached(it) ?: false }.map { it.song }
+                            songs.filter { song ->
+                                song.contentLength?.let {
+                                    binder?.cache?.isCached(song.song.id, 0, song.contentLength)
+                                } ?: false
+                            }
                         }
                         .collect {
                             items = it
                         }
+
+                    /*
+                    Database
+                        .songsOffline(sortBy, sortOrder)
+                        .map { songs ->
+                            songs.filter { binder?.isCached(it) ?: false }
+                        }
+                        .collect {
+                            items = it
+                        }
+
+                     */
 
                     //println("mediaItem offline items: ${items.size} filter ${filter}")
                     /*
@@ -410,7 +483,7 @@ fun HomeSongsModern(
 
                     */
                 }
-                */
+
                 if (builtInPlaylist == BuiltInPlaylist.Top) {
 
                         if (topPlaylistPeriod.duration == Duration.INFINITE) {
@@ -708,8 +781,9 @@ fun HomeSongsModern(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(all = 12.dp)
-                            .fillMaxSize()
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
                     ) {
                         if ( UiType.RiMusic.isCurrent() )
                             TitleSection(title = stringResource(R.string.songs))
@@ -722,6 +796,33 @@ fun HomeSongsModern(
                             modifier = Modifier
                                 .weight(1f)
                         )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        ButtonsRow(
+                            chips = buttonsList,
+                            currentValue = builtInPlaylist,
+                            onValueUpdate = { builtInPlaylist = it },
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .padding(vertical = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+
                         if (builtInPlaylist != BuiltInPlaylist.Top) {
                             HeaderIconButton(
                                 icon = R.drawable.arrow_up,
@@ -995,7 +1096,7 @@ fun HomeSongsModern(
                             }
                         }
 
-                        if (builtInPlaylist == BuiltInPlaylist.All)
+                        //if (builtInPlaylist == BuiltInPlaylist.All)
                             HeaderIconButton(
                                 onClick = {},
                                 icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
@@ -1065,6 +1166,38 @@ fun HomeSongsModern(
                                     )
                             )
 
+                        if (builtInPlaylist != BuiltInPlaylist.Favorites)
+                            HeaderIconButton(
+                                icon = R.drawable.resource_import,
+                                color = colorPalette().text,
+                                //iconSize = 22.dp,
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(horizontal = 2.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            try {
+                                                importLauncher.launch(
+                                                    arrayOf(
+                                                        "text/*"
+                                                    )
+                                                )
+                                            } catch (e: ActivityNotFoundException) {
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.info_not_find_app_open_doc),
+                                                    type = PopupType.Warning, context = context
+                                                )
+                                            }
+                                        },
+                                        onLongClick = {
+                                            SmartMessage(
+                                                context.resources.getString(R.string.import_favorites),
+                                                context = context
+                                            )
+                                        }
+                                    )
+                            )
+
                         HeaderIconButton(
                             icon = R.drawable.ellipsis_horizontal,
                             color = colorPalette().text,
@@ -1106,6 +1239,27 @@ fun HomeSongsModern(
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
                                                 selectItems = false
+                                            }
+                                        },
+                                        onAddToPreferites = {
+                                            if (listMediaItems.isNotEmpty()) {
+                                                listMediaItems.map {
+                                                    transaction {
+                                                        Database.like(
+                                                            it.mediaId,
+                                                            System.currentTimeMillis()
+                                                        )
+                                                    }
+                                                }
+                                            } else {
+                                                items.map {
+                                                    transaction {
+                                                        Database.like(
+                                                            it.asMediaItem.mediaId,
+                                                            System.currentTimeMillis()
+                                                        )
+                                                    }
+                                                }
                                             }
                                         },
                                         onAddToPlaylist = { playlistPreview ->
@@ -1245,12 +1399,7 @@ fun HomeSongsModern(
                     //}
 
 
-                    ButtonsRow(
-                        chips = buttonsList,
-                        currentValue = builtInPlaylist,
-                        onValueUpdate = { builtInPlaylist = it },
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
+
                 }
             }
 

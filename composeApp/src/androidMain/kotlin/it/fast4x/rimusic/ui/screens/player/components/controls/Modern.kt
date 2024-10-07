@@ -71,6 +71,8 @@ import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.getDislikedIcon
+import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -78,6 +80,7 @@ import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import me.knighthat.colorPalette
@@ -209,19 +212,22 @@ fun InfoAlbumAndArtistModern(
          Box{
              IconButton(
                  color = colorPalette().favoritesIcon,
-                 icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+                 icon = getLikeState(mediaId),
+                 //if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
                  onClick = {
                      val currentMediaItem = binder.player.currentMediaItem
                      query {
                          if (Database.like(
                                  mediaId,
-                                 if (likedAt == null) System.currentTimeMillis() else null
+                                 //if (likedAt == null) System.currentTimeMillis() else null
+                                 setLikeState(likedAt)
                              ) == 0
                          ) {
                              currentMediaItem
                                  ?.takeIf { it.mediaId == mediaId }
                                  ?.let {
                                      Database.insert(currentMediaItem, Song::toggleLike)
+
                                  }
                          }
                      }

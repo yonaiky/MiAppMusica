@@ -28,6 +28,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.service.FakeException
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.PlayableFormatNonSupported
@@ -68,7 +69,8 @@ fun PlayerError(error: PlaybackException) {
     val unknownplaybackerror =
         stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
-    val unknownerror = stringResource(R.string.error_unknown)
+    //val unknownerror = stringResource(R.string.error_unknown)
+    val unknownerror = stringResource(R.string.error_media_cannot_be_played)
     val nointerneterror = stringResource(R.string.error_no_internet)
     val timeouterror = stringResource(R.string.error_timeout)
 
@@ -80,7 +82,7 @@ fun PlayerError(error: PlaybackException) {
         errorCounter = errorCounter.plus(1)
 
         if (errorCounter < 3) {
-            Timber.e("Playback error: ${error?.cause?.cause}")
+            Timber.e("Playback error: ${error.cause?.cause}")
             SmartMessage(
                 if (binder.player.currentWindow?.mediaItem?.isLocal == true) localMusicFileNotFoundError
                 else when (error.cause?.cause) {
@@ -93,6 +95,7 @@ fun PlayerError(error: PlaybackException) {
                     is NoInternetException -> nointerneterror
                     is TimeoutException -> timeouterror
                     is UnknownException -> unknownerror
+                    is FakeException -> unknownerror
                     else -> unknownplaybackerror
                 }, PopupType.Error, context = context
             )

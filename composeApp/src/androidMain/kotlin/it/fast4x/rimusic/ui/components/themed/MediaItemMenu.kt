@@ -95,6 +95,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
@@ -106,6 +107,7 @@ import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -158,6 +160,11 @@ fun InHistoryMediaItemMenu(
         onDismiss = onDismiss,
         onHideFromDatabase = onHideFromDatabase,
         onDeleteFromDatabase = onDeleteFromDatabase,
+        onAddToPreferites = {
+            transaction {
+                Database.like(song.id, System.currentTimeMillis())
+            }
+        },
         modifier = modifier
     )
 }
@@ -199,6 +206,11 @@ fun InPlaylistMediaItemMenu(
                     id = UUID.fromString(playlist?.playlist?.browseId),
                     positionInPlaylist
                 )
+            }
+        },
+        onAddToPreferites = {
+            transaction {
+                Database.like(song.id, System.currentTimeMillis())
             }
         },
         modifier = modifier
@@ -269,6 +281,14 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             modifier = modifier
         )
     } else {
@@ -293,6 +313,14 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromPlaylist = onRemoveFromPlaylist,
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             modifier = modifier
         )
     }
@@ -312,6 +340,7 @@ fun NonQueuedMediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)? = null
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -345,6 +374,7 @@ fun NonQueuedMediaItemMenu(
             onHideFromDatabase = onHideFromDatabase,
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = onAddToPreferites,
             modifier = modifier
         )
     } else {
@@ -370,6 +400,7 @@ fun NonQueuedMediaItemMenu(
             onHideFromDatabase = onHideFromDatabase,
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
+            onAddToPreferites = onAddToPreferites,
             modifier = modifier
         )
     }
@@ -418,7 +449,15 @@ fun QueuedMediaItemMenu(
             modifier = modifier,
             onGoToPlaylist = {
                 navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
-            }
+            },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
         )
     } else {
         BaseMediaItemMenu(
@@ -443,7 +482,15 @@ fun QueuedMediaItemMenu(
             modifier = modifier,
             onGoToPlaylist = {
                 navController.navigate(route = "${NavRoutes.playlist.name}/$it")
-            }
+            },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
         )
     }
 }
@@ -469,7 +516,8 @@ fun BaseMediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onClosePlayer: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)? = null
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?
 ) {
     val context = LocalContext.current
 
@@ -489,6 +537,7 @@ fun BaseMediaItemMenu(
         onPlayNext = onPlayNext,
         onEnqueue = onEnqueue,
         onDownload = onDownload,
+        onAddToPreferites = onAddToPreferites,
         onAddToPlaylist = { playlist, position ->
             transaction {
                 Database.insert(mediaItem)
@@ -560,6 +609,7 @@ fun MiniMediaItemMenu(
     onDismiss: () -> Unit,
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -599,6 +649,7 @@ fun MiniMediaItemMenu(
 
             context.startActivity(Intent.createChooser(sendIntent, null))
         },
+        onAddToPreferites = onAddToPreferites,
         modifier = modifier
     )
 }
@@ -680,6 +731,7 @@ fun MediaItemMenu(
     onDeleteFromDatabase: (() -> Unit)? = null,
     onRemoveFromQueue: (() -> Unit)? = null,
     onRemoveFromPlaylist: (() -> Unit)? = null,
+    onAddToPreferites: (() -> Unit)?,
     onAddToPlaylist: ((Playlist, Int) -> Unit)? = null,
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
@@ -1064,7 +1116,8 @@ fun MediaItemMenu(
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         IconButton(
-                            icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                            //icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                            icon = getLikeState(mediaItem.mediaId),
                             //icon = R.drawable.heart,
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
@@ -1072,7 +1125,8 @@ fun MediaItemMenu(
                                 query {
                                     if (Database.like(
                                             mediaItem.mediaId,
-                                            if (likedAt == null) System.currentTimeMillis() else null
+                                            //if (likedAt == null) System.currentTimeMillis() else null
+                                            setLikeState(likedAt)
                                         ) == 0
                                     ) {
                                         Database.insert(mediaItem, Song::toggleLike)
@@ -1413,6 +1467,13 @@ fun MediaItemMenu(
                         }
                     )
                 }
+
+                if (onAddToPreferites != null)
+                    MenuEntry(
+                        icon = R.drawable.heart,
+                        text = stringResource(R.string.add_to_favorites),
+                        onClick = onAddToPreferites
+                    )
 
                 if (onAddToPlaylist != null) {
                     MenuEntry(

@@ -20,6 +20,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
@@ -42,9 +43,9 @@ fun PlayerMenu(
         MenuStyle.List
     )
 
-    val context = LocalContext.current
+    //val context = LocalContext.current
 
-    val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder?.player?.audioSessionId })
+    val launchEqualizer by rememberEqualizerLauncher(audioSessionId = { binder.player.audioSessionId })
 
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
@@ -121,6 +122,14 @@ fun PlayerMenu(
             onShowSleepTimer = {},
             onHideFromDatabase = { isHiding = true },
             onDismiss = onDismiss,
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             onClosePlayer = onClosePlayer
         )
     }
@@ -152,6 +161,14 @@ fun MiniPlayerMenu(
             onGoToPlaylist = {
                 onClosePlayer()
             },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
+            },
             onDismiss = onDismiss
         )
     } else {
@@ -160,6 +177,14 @@ fun MiniPlayerMenu(
             mediaItem = mediaItem,
             onGoToPlaylist = {
                 onClosePlayer()
+            },
+            onAddToPreferites = {
+                transaction {
+                    Database.like(
+                        mediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                }
             },
             onDismiss = onDismiss
         )
