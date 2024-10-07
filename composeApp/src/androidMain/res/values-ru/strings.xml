@@ -748,6 +748,9 @@
     <string name="create_new_playlist">Создать новый плейлист</string>
     <string name="settings_loudness_base_gain">Повышение уровня громкости</string>
     <string name="settings_target_gain_loudness_info">Целевая громкость для нормализации громкости</string>
+    <string name="add_to_preferites">Add to preferites</string>
+    <string name="import_preferites">Import preferites</string>
+    <string name="error_media_cannot_be_played">Media cannot be played</string>
     <string name="full_screen_lyrics_components">Компоненты полноэкранных текстов</string>
     <string name="titleartist">Название и Исполнители</string>
     <string name="miniqueue">Мини-очередь</string>
