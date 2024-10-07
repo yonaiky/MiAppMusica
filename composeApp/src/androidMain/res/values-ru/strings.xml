@@ -747,9 +747,9 @@
     <string name="piped_custom_instance">Пользовательское зеркало Piped</string>
     <string name="create_new_playlist">Создать новый плейлист</string>
     <string name="settings_loudness_base_gain">Повышение уровня громкости</string>
-    <string name="settings_target_gain_loudness_info">Наличие цели для нормализации громкости</string>
-    <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
-    <string name="titleartist">Title and Artists</string>
-    <string name="miniqueue">Mini Queue</string>
-    <string name="controls">Controls</string>
+    <string name="settings_target_gain_loudness_info">Целевая громкость для нормализации громкости</string>
+    <string name="full_screen_lyrics_components">Компоненты полноэкранных текстов</string>
+    <string name="titleartist">Название и Исполнители</string>
+    <string name="miniqueue">Мини-очередь</string>
+    <string name="controls">Управление</string>
 </resources>
