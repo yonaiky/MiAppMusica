@@ -543,7 +543,7 @@ class PlayerService : InvincibleService(),
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
-            .setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
+            //.setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -556,18 +556,18 @@ class PlayerService : InvincibleService(),
             .setHandleAudioBecomingNoisy(true)
             //.setSeekForwardIncrementMs(5000)
             //.setSeekBackIncrementMs(5000)
-            //.setUsePlatformDiagnostics(false)
+            .setUsePlatformDiagnostics(false)
             .build()
+
+        player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
+        player.addListener(this@PlayerService)
+        player.addAnalyticsListener(PlaybackStatsListener(false, this@PlayerService))
 
         player.repeatMode = when {
             preferences.getBoolean(trackLoopEnabledKey, false) -> Player.REPEAT_MODE_ONE
             preferences.getBoolean(queueLoopEnabledKey, false) -> Player.REPEAT_MODE_ALL
             else -> Player.REPEAT_MODE_OFF
         }
-
-        player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
-        player.addListener(this)
-        player.addAnalyticsListener(PlaybackStatsListener(false, this))
 
         // Build a PendingIntent that can be used to launch the UI.
         val sessionActivityPendingIntent =
@@ -1821,16 +1821,52 @@ class PlayerService : InvincibleService(),
         )
     }
 
+    private fun createRendersFactory() = object : DefaultRenderersFactory(this) {
+        override fun buildAudioSink(
+            context: Context,
+            enableFloatOutput: Boolean,
+            enableAudioTrackPlaybackParams: Boolean
+        ): AudioSink {
+            val minimumSilenceDuration = preferences.getLong(
+                minimumSilenceDurationKey, 2_000_000L).coerceIn(1000L..2_000_000L)
+
+            return DefaultAudioSink.Builder(applicationContext)
+                .setEnableFloatOutput(enableFloatOutput)
+                .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
+                .setAudioOffloadSupportProvider(
+                    DefaultAudioOffloadSupportProvider(applicationContext)
+                )
+                .setAudioProcessorChain(
+                    DefaultAudioProcessorChain(
+                        arrayOf(),
+                        SilenceSkippingAudioProcessor(
+                            /* minimumSilenceDurationUs = */ minimumSilenceDuration,
+                            /* silenceRetentionRatio = */ 0.01f,
+                            /* maxSilenceToKeepDurationUs = */ minimumSilenceDuration,
+                            /* minVolumeToKeepPercentageWhenMuting = */ 0,
+                            /* silenceThresholdLevel = */ 256
+                        ),
+                        SonicAudioProcessor()
+                    )
+                )
+                .build()
+                .apply {
+                    if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
+                }
+        }
+    }
+
+    /*
     private fun createRendersFactory(): RenderersFactory {
         val minimumSilenceDuration = preferences.getLong(
-            minimumSilenceDurationKey, 2_000_000L) //PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
+            minimumSilenceDurationKey, 2_000_000L).coerceIn(1000L..2_000_000L)
         val audioSink = DefaultAudioSink.Builder(applicationContext)
             .setEnableFloatOutput(false)
             .setEnableAudioTrackPlaybackParams(false)
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
             .setAudioProcessorChain(
                 DefaultAudioProcessorChain(
-                    emptyArray(),
+                    arrayOf(),
                     SilenceSkippingAudioProcessor(
                         /* minimumSilenceDurationUs = */ minimumSilenceDuration,
                         /* silenceRetentionRatio = */ 0.01f,
@@ -1865,7 +1901,7 @@ class PlayerService : InvincibleService(),
             )
         }
     }
-
+    */
 
     private fun createDataSourceResolverFactory(
         mediaItemToPlay: (videoId: String) -> MediaItem?
