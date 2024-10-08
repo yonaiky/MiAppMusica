@@ -1551,7 +1551,7 @@ class PlayerService : InvincibleService(),
                     getString(
                         R.string.skip_media_on_error_message,
                         prev.mediaMetadata.title
-                    ), type = PopupType.Error, context = this@PlayerService
+                    ), type = PopupType.Error, durationLong = true ,context = this@PlayerService
                 )
             }
         }
