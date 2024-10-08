@@ -181,8 +181,10 @@ fun AppNavigation(
     ) {
         val navigateToAlbum =
             { browseId: String -> navController.navigate(route = "${NavRoutes.album.name}/$browseId") }
-        val navigateToArtist = { browseId: String -> navController.navigate("${NavRoutes.artist.name}/$browseId") }
-        val navigateToPlaylist = { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
+        val navigateToArtist =
+            { browseId: String -> navController.navigate("${NavRoutes.artist.name}/$browseId") }
+        val navigateToPlaylist =
+            { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
         val pop = {
             if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) navController.popBackStack()
         }
@@ -253,12 +255,12 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-                ArtistScreen(
-                    navController = navController,
-                    browseId = id,
-                    playerEssential = playerEssential,
-                )
-            }
+            ArtistScreen(
+                navController = navController,
+                browseId = id,
+                playerEssential = playerEssential,
+            )
+        }
 
         composable(
             route = "${NavRoutes.album.name}/{id}",
@@ -314,12 +316,12 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.settings.name) {
-                SettingsScreen(
-                    navController = navController,
-                    playerEssential = playerEssential,
-                    //pop = popDestination,
-                    //onGoToSettingsPage = { index -> navController.navigate("settingsPage/$index") }
-                )
+            SettingsScreen(
+                navController = navController,
+                playerEssential = playerEssential,
+                //pop = popDestination,
+                //onGoToSettingsPage = { index -> navController.navigate("settingsPage/$index") }
+            )
         }
 
         composable(route = NavRoutes.statistics.name) {
@@ -335,7 +337,7 @@ fun AppNavigation(
                 navController = navController,
                 playerEssential = playerEssential,
 
-            )
+                )
         }
 
         /*
@@ -382,7 +384,13 @@ fun AppNavigation(
                 //pop = popDestination,
                 onSearch = { query ->
                     println("onSearch: $query")
-                    navController.navigate(route = "${NavRoutes.searchResults.name}/${cleanString(query)}")
+                    navController.navigate(
+                        route = "${NavRoutes.searchResults.name}/${
+                            cleanString(
+                                query
+                            )
+                        }"
+                    )
 
                     if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
                         it.fast4x.rimusic.query {
@@ -391,7 +399,7 @@ fun AppNavigation(
                     }
                 },
 
-            )
+                )
         }
 
         composable(
@@ -481,7 +489,7 @@ fun AppNavigation(
         composable(
             route = NavRoutes.onDevice.name
         ) { navBackStackEntry ->
-              DeviceListSongsScreen(
+            DeviceListSongsScreen(
                 navController = navController,
                 deviceLists = DeviceLists.LocalSongs,
                 playerEssential = playerEssential,
@@ -497,5 +505,26 @@ fun AppNavigation(
             )
         }
 
+        composable(
+            "searchScreenRoute/{query}"
+        ) { backStackEntry ->
+            val context = LocalContext.current
+            val query = backStackEntry.arguments?.getString("query")?: ""
+            SearchScreen(
+                navController = navController,
+                playerEssential = playerEssential,
+                initialTextInput = query ,
+                onViewPlaylist = {},
+                onSearch = { newQuery ->
+                    navController.navigate(route = "${NavRoutes.searchResults.name}/${cleanString(newQuery)}")
+
+                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                        it.fast4x.rimusic.query {
+                            Database.insert(SearchQuery(query = newQuery))
+                        }
+                    }
+                },
+            )
+        }
     }
 }

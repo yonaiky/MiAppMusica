@@ -125,10 +125,13 @@ fun SearchResultScreen(
                     modifier = Modifier
                         .pointerInput(Unit) {
                             detectTapGestures {
+                                /*
                                 context.persistMap?.keys?.removeAll {
-                                    it.startsWith("searchResults/$query/")
+                                   it.startsWith("searchResults/$query/")
                                 }
                                 onSearchAgain()
+                                */
+                                navController.navigate("searchScreenRoute/${query}")
                             }
                         }
                 )
