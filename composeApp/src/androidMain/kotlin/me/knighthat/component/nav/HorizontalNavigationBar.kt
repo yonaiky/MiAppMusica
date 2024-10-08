@@ -81,12 +81,12 @@ class HorizontalNavigationBar(
 
     @Composable
     private fun bottomPadding(): Dp {
-        if ( NavigationBarPosition.Bottom.isCurrent() )
-            return 5.dp
-
-        return with( LocalDensity.current ) {
-            WindowInsets.systemBars.getBottom( this ).toDp()
-        }
+        return if ( NavigationBarPosition.Bottom.isCurrent() )
+            with( LocalDensity.current ) {
+                WindowInsets.systemBars.getBottom( this ).toDp()
+            }
+        else
+            5.dp
     }
 
     private fun topPadding(): Dp = 0.dp
