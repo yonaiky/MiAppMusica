@@ -1532,7 +1532,9 @@ class PlayerService : InvincibleService(),
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
-        if (error.errorCode == 416) {
+        println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
+        if (error.errorCode in arrayOf(416,2000)) {
+            println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
             player.pause()
             player.prepare()
             player.play()
@@ -1546,11 +1548,21 @@ class PlayerService : InvincibleService(),
         val prev = player.currentMediaItem ?: return
         player.seekToNextMediaItem()
 
-        SmartMessage(resources.getString(R.string.skip_media_on_error_message,prev.mediaMetadata.title), type = PopupType.Error , context = this )
+        coroutineScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                SmartMessage(
+                    getString(
+                        R.string.skip_media_on_error_message,
+                        prev.mediaMetadata.title
+                    ), type = PopupType.Error, context = this@PlayerService
+                )
+            }
+        }
 
 
     }
 
+    /*
     override fun onPlayerErrorChanged(error: PlaybackException?) {
         super.onPlayerErrorChanged(error)
         Timber.e("PlayerService onPlayerErrorChanged ${error?.stackTraceToString()}")
@@ -1558,14 +1570,19 @@ class PlayerService : InvincibleService(),
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
 
-        onPlayerError(error!!)
+        //onPlayerError(error!!)
     }
+     */
 
+
+
+    /*
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
         super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
         //Timber.e("PlayerService onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
         //Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
     }
+     */
 
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
