@@ -1529,12 +1529,9 @@ class PlayerService : InvincibleService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
-        //this.stopService(this.intent<MyDownloadService>())
-        //this.stopService(this.intent<PlayerService>())
-        //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
-        println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
+        //println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
         if (error.errorCode in arrayOf(416,2000)) {
-            println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
+            //println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
             player.pause()
             player.prepare()
             player.play()
