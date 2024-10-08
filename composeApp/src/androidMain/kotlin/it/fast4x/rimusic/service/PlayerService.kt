@@ -2058,9 +2058,10 @@ class PlayerService : InvincibleService(),
                                 ?.maxByOrNull {
                                     (it.bitrate?.times(
                                         when (audioQualityFormat) {
-                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
                                             AudioQualityFormat.High -> 1
-                                            AudioQualityFormat.Low, AudioQualityFormat.Medium -> -1
+                                            AudioQualityFormat.Medium -> -1
+                                            AudioQualityFormat.Low -> -2
                                         }
                                     ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                                 }

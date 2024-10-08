@@ -22,6 +22,7 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
+import androidx.media3.exoplayer.scheduler.Requirements
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
@@ -144,9 +145,10 @@ object DownloadUtil {
                                             ?.maxByOrNull {
                                                 (it.bitrate?.times(
                                                     when (audioQualityFormat) {
-                                                        AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                                        AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
                                                         AudioQualityFormat.High -> 1
-                                                        AudioQualityFormat.Low, AudioQualityFormat.Medium -> -1
+                                                        AudioQualityFormat.Medium -> -1
+                                                        AudioQualityFormat.Low -> -2
                                                     }
                                                 ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                                             }
@@ -343,7 +345,9 @@ object DownloadUtil {
                 getResolvingDataSourceFactory(context),
                 Executors.newFixedThreadPool(6)
             ).apply {
-                maxParallelDownloads = 2
+                maxParallelDownloads = 3
+                minRetryCount = 1
+                requirements = Requirements(Requirements.NETWORK)
             }
 
             //downloadTracker =
