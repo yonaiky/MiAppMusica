@@ -31,9 +31,7 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -41,7 +39,6 @@ import it.fast4x.rimusic.utils.secondary
 import me.knighthat.Skeleton
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -90,7 +87,7 @@ fun SearchScreen(
                        // .weight(1f)
                         .padding(horizontal = 10.dp)
                 ) {
-                    if ( uiType() == UiType.ViMusic )
+                    if ( UiType.ViMusic.isCurrent() )
                         Column (
                             verticalArrangement = Arrangement.Center
                         ) {

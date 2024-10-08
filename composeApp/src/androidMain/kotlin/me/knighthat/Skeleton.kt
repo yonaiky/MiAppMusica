@@ -49,7 +49,7 @@ fun Skeleton(
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
     val navigationBar: AbstractNavigationBar =
-        when( navBarPos() ) {
+        when( NavigationBarPosition.current() ) {
             NavigationBarPosition.Left, NavigationBarPosition.Right ->
                 VerticalNavigationBar( tabIndex, onTabChanged, navController )
             NavigationBarPosition.Top, NavigationBarPosition.Bottom ->
@@ -62,17 +62,17 @@ fun Skeleton(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if( uiType() == UiType.RiMusic )
+            if( UiType.RiMusic.isCurrent() )
                 AppHeader( navController ).Draw()
 
-            if ( navBarPos() == NavigationBarPosition.Top )
+            if ( NavigationBarPosition.Top.isCurrent() )
                 navigationBar.Draw()
         }
     }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val modifier: Modifier =
-        if( uiType() == UiType.ViMusic && navigationBar is HorizontalNavigationBar )
+        if( UiType.ViMusic.isCurrent() && navigationBar is HorizontalNavigationBar )
             Modifier
         else
             Modifier.nestedScroll( scrollBehavior.nestedScrollConnection )
@@ -82,13 +82,13 @@ fun Skeleton(
         containerColor = colorPalette().background0,
         topBar = appHeader,
         bottomBar = {
-            if ( navBarPos() == NavigationBarPosition.Bottom )
+            if ( NavigationBarPosition.Bottom.isCurrent() )
                 navigationBar.Draw()
         }
     ) {
         val paddingSides = WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
         val innerPadding =
-            if( navBarPos() == NavigationBarPosition.Top )
+            if( NavigationBarPosition.Top.isCurrent() )
                 windowInsets.only( paddingSides ).asPaddingValues()
             else
                 PaddingValues( Dp.Hairline )
@@ -104,10 +104,10 @@ fun Skeleton(
                     .background(colorPalette().background0)
                     .fillMaxSize()
             ) {
-                if( navBarPos() == NavigationBarPosition.Left )
+                if( NavigationBarPosition.Left.isCurrent() )
                     navigationBar.Draw()
 
-                val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
+                val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
                 AnimatedContent(
                     targetState = tabIndex,
                     transitionSpec = transition(),
@@ -116,7 +116,7 @@ fun Skeleton(
                     modifier = Modifier.fillMaxHeight().padding( top = topPadding )
                 )
 
-                if( navBarPos() == NavigationBarPosition.Right )
+                if( NavigationBarPosition.Right.isCurrent() )
                     navigationBar.Draw()
             }
 

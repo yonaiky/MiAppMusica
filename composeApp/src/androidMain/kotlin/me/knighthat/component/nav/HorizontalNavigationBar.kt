@@ -35,14 +35,14 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import me.knighthat.button.Button
 import me.knighthat.button.TextIconButton
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
-import me.knighthat.navBarType
 import me.knighthat.showSearchIconInNav
 import me.knighthat.showStatsIconInNav
-import me.knighthat.uiType
 
 // Shown when "Navigation bar position" is set to "top" or "bottom"
 class HorizontalNavigationBar(
@@ -81,7 +81,7 @@ class HorizontalNavigationBar(
 
     @Composable
     private fun bottomPadding(): Dp {
-        if ( navBarPos() != NavigationBarPosition.Bottom )
+        if ( NavigationBarPosition.Bottom.isCurrent() )
             return 5.dp
 
         return with( LocalDensity.current ) {
@@ -102,7 +102,7 @@ class HorizontalNavigationBar(
             }
 
             val button: Button =
-                if ( navBarType() == NavigationBarType.IconOnly )
+                if ( NavigationBarType.IconOnly.isCurrent() )
                     Button( iconId, color, 12.dp, 20.dp )
                 else
                     TextIconButton( text, iconId, color, 0.dp, Dimensions.navigationRailIconOffset * 3 )
@@ -160,14 +160,14 @@ class HorizontalNavigationBar(
 
                 val scrollState = rememberScrollState()
                 val roundedCornerShape =
-                    if ( navBarPos() == NavigationBarPosition.Bottom )
+                    if ( NavigationBarPosition.Bottom.isCurrent() )
                         RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
                     else
                         RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
 
                 // Settings button only visible when
                 // UI is not RiMusic and current location isn't home screen
-                if( uiType() != UiType.RiMusic && navController.currentBackStackEntry?.destination?.route != NavRoutes.home.name )
+                if( UiType.ViMusic.isCurrent() && NavRoutes.home.isNotHere( navController ) )
                     BackButton().Draw()
 
                 Box(
@@ -189,17 +189,17 @@ class HorizontalNavigationBar(
 
                 // Search button only visible when
                 // UI is not RiMusic and must be explicitly turned on
-                if( uiType() == UiType.ViMusic && showSearchIconInNav() )
+                if( UiType.ViMusic.isCurrent() && showSearchIconInNav() )
                     SearchButton()
 
                 // Settings button only visible when
                 // UI is not RiMusic
-                if( uiType() == UiType.ViMusic )
+                if( UiType.ViMusic.isCurrent() )
                     SettingsButton().Draw()
 
                 // Statistics button only visible when
                 // UI is not RiMusic and must be explicitly turned on
-                if( uiType() == UiType.ViMusic && showStatsIconInNav() )
+                if( UiType.ViMusic.isCurrent() && showStatsIconInNav() )
                     StatsButton()
             }
         }

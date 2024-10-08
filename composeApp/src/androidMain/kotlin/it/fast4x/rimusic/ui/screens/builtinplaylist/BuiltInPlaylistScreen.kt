@@ -21,8 +21,6 @@ import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongs
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
@@ -32,10 +30,7 @@ import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
-import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import me.knighthat.Skeleton
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

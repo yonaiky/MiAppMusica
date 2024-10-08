@@ -37,12 +37,9 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.button.Button
 import me.knighthat.colorPalette
-import me.knighthat.navBarPos
-import me.knighthat.navBarType
 import me.knighthat.showSearchIconInNav
 import me.knighthat.showStatsIconInNav
 import me.knighthat.typography
-import me.knighthat.uiType
 
 // TODO: Move this to where it belongs. Currently, UNKNOWN
 fun Modifier.vertical( enabled: Boolean = true ) =
@@ -94,7 +91,7 @@ class VerticalNavigationBar(
             }
 
             val textContent: @Composable () -> Unit = {
-                if ( navBarType() != NavigationBarType.IconOnly )
+                if ( NavigationBarType.IconAndText.isCurrent() )
                     BasicText(
                         text = text,
                         style = TextStyle(
@@ -109,7 +106,7 @@ class VerticalNavigationBar(
             }
 
             val buttonModifier: Modifier =
-                if ( navBarType() == NavigationBarType.IconOnly ) {
+                if ( NavigationBarType.IconOnly.isCurrent() ) {
                     Modifier.padding( top = 12.dp, bottom = 12.dp )
                             .size(24.dp)
                 } else {
@@ -201,7 +198,7 @@ class VerticalNavigationBar(
             modifier = modifier.verticalScroll( rememberScrollState() )
         ) {
             val boxPadding: Dp =
-                if( uiType() == UiType.ViMusic )
+                if( UiType.ViMusic.isCurrent() )
                     30.dp
                 else
                     Dp.Hairline
@@ -209,7 +206,7 @@ class VerticalNavigationBar(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
                     .height(
-                        if( uiType() == UiType.ViMusic )
+                        if( UiType.ViMusic.isCurrent() )
                             if ( showStatsIconInNav() )
                                 Dimensions.headerHeight
                             else
@@ -233,7 +230,7 @@ class VerticalNavigationBar(
 
             // Only show search icon when UI is ViMusic and
             // setting is turned on
-            if( uiType() == UiType.ViMusic && showSearchIconInNav() ) {
+            if( UiType.ViMusic.isCurrent() && showSearchIconInNav() ) {
                 val iconWidth: Dp =
                     if( isLandscape )
                         Dimensions.navigationRailWidthLandscape

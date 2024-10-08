@@ -86,7 +86,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.uiType
+import me.knighthat.component.header.AppHeader
 
 
 @ExperimentalMaterialApi
@@ -301,7 +301,7 @@ fun AlbumScreenWithoutNavBar(
                             .background(colorPalette().background0)
                             .fillMaxSize()
                     ) {
-                        val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
+                        val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
                         AnimatedContent(
                             targetState = 0,

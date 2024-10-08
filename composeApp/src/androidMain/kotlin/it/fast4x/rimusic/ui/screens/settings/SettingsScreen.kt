@@ -43,9 +43,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.enums.ValidationType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
@@ -54,14 +52,12 @@ import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.Skeleton
 import me.knighthat.colorPalette
 import me.knighthat.typography
-import me.knighthat.uiType
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -74,6 +70,7 @@ fun SettingsScreen(
     navController: NavController,
     playerEssential: @Composable () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabChanged) = rememberSaveable {
@@ -105,7 +102,7 @@ fun SettingsScreen(
                         2 -> QuickPicsSettings()
                         3 -> DataSettings()
                         4 -> OtherSettings()
-                        5 -> About()
+                        5 -> About( context )
 
                     }
                 }

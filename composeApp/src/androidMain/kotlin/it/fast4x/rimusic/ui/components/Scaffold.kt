@@ -41,14 +41,12 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
 import me.knighthat.component.nav.VerticalNavigationBar
-import me.knighthat.navBarPos
-import me.knighthat.uiType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -161,10 +159,10 @@ fun Scaffold(
                     val verticalNavBar = VerticalNavigationBar( tabIndex, onTabChanged, navController )
                     verticalNavBar.add( tabColumnContent )
 
-                    if ( navBarPos() == NavigationBarPosition.Left )
+                    if ( NavigationBarPosition.Left.isCurrent() )
                         verticalNavBar.Draw()
 
-                    val topPadding = if ( uiType() == UiType.ViMusic ) 30.dp else 0.dp
+                    val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
                     AnimatedContent(
                         targetState = tabIndex,
