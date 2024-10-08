@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.enums
 
+import androidx.navigation.NavController
+
 enum class NavRoutes {
     home,
     album,
@@ -21,5 +23,14 @@ enum class NavRoutes {
     statistics,
     newAlbums,
     moodsPage,
-    podcast
+    podcast;
+
+    companion object {
+
+        fun current( navController: NavController ) = navController.currentBackStackEntry?.destination?.route
+    }
+
+    fun isHere( navController: NavController ) = current( navController ) == this.name
+
+    fun isNotHere( navController: NavController ) = !isHere( navController )
 }

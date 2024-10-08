@@ -53,7 +53,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.DurationInMilliseconds

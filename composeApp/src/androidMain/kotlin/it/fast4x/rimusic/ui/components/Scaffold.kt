@@ -21,7 +21,6 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,15 +36,17 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
+import me.knighthat.component.nav.VerticalNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -53,21 +54,21 @@ import me.knighthat.colorPalette
 fun Scaffold(
     navController: NavController,
     playerEssential: @Composable (() -> Unit)? = null,
-    topIconButtonId: Int,
+    topIconButtonId: Int = R.drawable.chevron_back,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = false,
-    topIconButton2Id: Int,
+    topIconButton2Id: Int = R.drawable.chevron_back,
     onTopIconButton2Click: () -> Unit,
-    showButton2: Boolean,
+    showButton2: Boolean = false,
     bottomIconButtonId: Int? = R.drawable.search,
     onBottomIconButtonClick: (() -> Unit)? = {},
     showBottomButton: Boolean = false,
     hideTabs: Boolean = false,
-    tabIndex: Int,
-    onTabChanged: (Int) -> Unit,
+    tabIndex: Int = 0,
+    onTabChanged: (Int) -> Unit = {},
     showTopActions: Boolean = false,
-    tabColumnContent: @Composable ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit,
-    onHomeClick: () -> Unit,
+    tabColumnContent: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
+    onHomeClick: () -> Unit = { navController.navigate( NavRoutes.home.name ) },
     onSettingsClick: (() -> Unit)? = {},
     onStatisticsClick: (() -> Unit)? = {},
     onHistoryClick: (() -> Unit)? = {},
@@ -117,9 +118,7 @@ fun Scaffold(
             modifier = customModifier,
             containerColor = colorPalette().background0,
             topBar = {
-                if( UiType.RiMusic.isCurrent() ) {
-                    AppBar(navController)
-                }
+                if( UiType.RiMusic.isCurrent() ) AppHeader( navController ).Draw()
             },
 
             bottomBar = {
@@ -157,26 +156,11 @@ fun Scaffold(
                         .background( colorPalette().background0 )
                         .fillMaxSize()
                 ) {
-                    val navigationRail: @Composable () -> Unit = {
-                        NavigationRail(
-                            topIconButtonId = topIconButtonId,
-                            onTopIconButtonClick = onTopIconButtonClick,
-                            showButton1 = showButton1,
-                            topIconButton2Id = topIconButton2Id,
-                            onTopIconButton2Click = onTopIconButton2Click,
-                            showButton2 = showButton2,
-                            bottomIconButtonId = bottomIconButtonId,
-                            onBottomIconButtonClick = onBottomIconButtonClick ?: {},
-                            showBottomButton = showBottomButton,
-                            tabIndex = tabIndex,
-                            onTabIndexChanged = onTabChanged,
-                            content = tabColumnContent,
-                            hideTabs = hideTabs
-                        )
-                    }
+                    val verticalNavBar = VerticalNavigationBar( tabIndex, onTabChanged, navController )
+                    verticalNavBar.add( tabColumnContent )
 
                     if ( NavigationBarPosition.Left.isCurrent() )
-                        navigationRail()
+                        verticalNavBar.Draw()
 
                     val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
@@ -241,7 +225,7 @@ fun Scaffold(
                     )
 
                     if ( NavigationBarPosition.Right.isCurrent() )
-                        navigationRail()
+                        verticalNavBar.Draw()
 
                 }
                 //**

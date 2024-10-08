@@ -43,12 +43,12 @@ import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
 
 @OptIn(KotlinCsvExperimental::class)
 @ExperimentalMaterialApi
@@ -77,7 +77,7 @@ fun LocalPlaylistScreenWithoutNavBar(
                 containerColor = colorPalette().background0,
                 topBar = {
                     if( UiType.RiMusic.isCurrent() )
-                        AppBar(navController)
+                        AppHeader( navController ).Draw()
                 }
             ) {
                 //**
