@@ -217,6 +217,7 @@ import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.swipeUpQueueKey
 import it.fast4x.rimusic.utils.tapqueueKey
@@ -253,6 +254,8 @@ fun DefaultUiSettings() {
 
     var skipSilence by rememberPreference(skipSilenceKey, false)
     skipSilence = false
+    var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
+    skipMediaOnError = false
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     volumeNormalization = false
     var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
@@ -557,6 +560,7 @@ fun UiSettings(
     )
 
     var skipSilence by rememberPreference(skipSilenceKey, false)
+    var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
 
@@ -1231,6 +1235,43 @@ fun UiSettings(
                     closebackgroundPlayer = it
                 }
             )
+
+        if (filter.isNullOrBlank() || stringResource(R.string.skip_media_on_error).contains(filterCharSequence,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.skip_media_on_error),
+                text = stringResource(R.string.skip_media_on_error_description),
+                isChecked = skipMediaOnError,
+                onCheckedChange = {
+                    skipMediaOnError = it
+                    restartService = true
+                }
+            )
+
+            AnimatedVisibility(visible = restartService) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        SettingsDescription(
+                            text = stringResource(R.string.minimum_silence_length_warning),
+                            important = true,
+                            modifier = Modifier.weight(2f)
+                        )
+                        SecondaryTextButton(
+                            text = stringResource(R.string.restart_service),
+                            onClick = {
+                                binder?.restartForegroundOrStop()?.let { restartService = false }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 24.dp)
+                        )
+                    }
+
+                }
+            }
+
+        }
 
         if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true)) {
             SwitchSettingEntry(

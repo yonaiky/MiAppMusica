@@ -55,8 +55,10 @@ import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -81,6 +83,7 @@ import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.ExtractorsFactory
 import androidx.media3.extractor.mkv.MatroskaExtractor
@@ -126,6 +129,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
@@ -140,6 +144,8 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.handleCatchingErrors
+import it.fast4x.rimusic.utils.handleRangeErrors
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
@@ -164,6 +170,7 @@ import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
+import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.startFadeAnimator
 import it.fast4x.rimusic.utils.thumbnail
@@ -202,6 +209,7 @@ import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.ConnectException
@@ -1524,6 +1532,23 @@ class PlayerService : InvincibleService(),
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
+        if (error.errorCode == 416) {
+            player.pause()
+            player.prepare()
+            player.play()
+            return
+        }
+
+        if (!preferences.getBoolean(skipMediaOnErrorKey, false)
+            || !player.hasNextMediaItem())
+            return
+
+        val prev = player.currentMediaItem ?: return
+        player.seekToNextMediaItem()
+
+        SmartMessage(resources.getString(R.string.skip_media_on_error_message,prev.mediaMetadata.title), type = PopupType.Error , context = this )
+
+
     }
 
     override fun onPlayerErrorChanged(error: PlaybackException?) {
@@ -1532,6 +1557,8 @@ class PlayerService : InvincibleService(),
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
+
+        onPlayerError(error!!)
     }
 
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
@@ -1805,6 +1832,10 @@ class PlayerService : InvincibleService(),
         ),
         DefaultExtractorsFactory()
         //getExtractorsFactory()
+    ).setLoadErrorHandlingPolicy(
+        object : DefaultLoadErrorHandlingPolicy() {
+            override fun isEligibleForFallback(exception: IOException) = true
+        }
     )
 
     private fun getExtractorsFactory(): ExtractorsFactory = ExtractorsFactory {
@@ -1905,7 +1936,9 @@ class PlayerService : InvincibleService(),
 
     private fun createDataSourceResolverFactory(
         mediaItemToPlay: (videoId: String) -> MediaItem?
-    ): ResolvingDataSource.Factory {
+    ): //ResolvingDataSource.Factory { // not required for handlers
+       DataSource.Factory { // required for handlers
+
         val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
         val chunkLength = 512 * 1024L
 
@@ -2127,6 +2160,8 @@ class PlayerService : InvincibleService(),
                 }
             }
         }
+            .handleCatchingErrors() // required for Datasource.Factory
+            .handleRangeErrors() // required for Datasource.Factory
     }
 
 
