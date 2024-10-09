@@ -3,7 +3,7 @@ name: Weekly Android app deploy
 on:
   schedule:
   # Gotta wait until contributors.json is updated
-  - cron: '1 0 * * 1'  # Every Monday at 1AM
+  - cron: '0 0 * * 2'  # Every Tuesday at 0AM
 
   # Allow manual trigger
   workflow_dispatch:
