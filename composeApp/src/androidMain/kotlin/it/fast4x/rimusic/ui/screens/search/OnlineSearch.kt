@@ -135,6 +135,7 @@ fun OnlineSearch(
         }
     }
 
+    /*
     val playlistId = remember(textFieldValue.text) {
         val isPlaylistUrl = listOf(
             "https://www.youtube.com/playlist?",
@@ -145,6 +146,7 @@ fun OnlineSearch(
 
         if (isPlaylistUrl) textFieldValue.text.toUri().getQueryParameter("list") else null
     }
+    */
 
     val rippleIndication = ripple(bounded = false)
     val timeIconPainter = painterResource(R.drawable.search_circle)
@@ -406,7 +408,16 @@ fun OnlineSearch(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .clickable(onClick = { onSearch(query.replace("/", "", true)) })
+                            .clickable (
+                                onClick = {
+                                    //onSearch(query.replace("/", "", true)) }
+                                    onTextFieldValueChanged(
+                                        TextFieldValue(
+                                            cleanString(query)
+                                        )
+                                    )
+                                }
+                            )
                             .fillMaxWidth()
                             .padding(all = 16.dp)
                     ) {
