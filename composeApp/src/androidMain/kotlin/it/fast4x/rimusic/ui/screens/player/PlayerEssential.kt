@@ -141,7 +141,7 @@ fun PlayerEssential(
 
             override fun onPlayerError(playbackException: PlaybackException) {
                 playerError = playbackException
-                binder.stopRadio()
+                //binder.stopRadio()
             }
         }
     }

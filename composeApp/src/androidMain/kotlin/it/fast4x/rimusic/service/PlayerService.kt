@@ -1529,8 +1529,8 @@ class PlayerService : InvincibleService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
-        //println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
-        if (error.errorCode in arrayOf(416,2000)) {
+        println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
+        if (error.errorCode in arrayOf(416,4003)) {
             //println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
             player.pause()
             player.prepare()
@@ -1538,40 +1538,43 @@ class PlayerService : InvincibleService(),
             return
         }
 
-        if (!preferences.getBoolean(skipMediaOnErrorKey, false)
-            || !player.hasNextMediaItem())
+        if (error.errorCode in arrayOf(2000)) {
+            //println("mediaItem onPlayerError recovered occurred 2000 errorCodeName ${error.errorCodeName}")
+            player.pause()
+            player.prepare()
+            player.forceSeekToNext()
+            player.play()
+
+            showSmartMessage(
+                message = getString(
+                    R.string.skip_media_on_notavailable_message,
+                ))
+
+            return
+        }
+
+
+        if (!preferences.getBoolean(skipMediaOnErrorKey, false) || !player.hasNextMediaItem())
             return
 
         val prev = player.currentMediaItem ?: return
         player.seekToNextMediaItem()
 
+        showSmartMessage(
+            message = getString(
+                R.string.skip_media_on_error_message,
+                prev.mediaMetadata.title
+            ))
+
+    }
+
+    private fun showSmartMessage(message: String) {
         coroutineScope.launch(Dispatchers.Main) {
             withContext(Dispatchers.Main) {
-                SmartMessage(
-                    getString(
-                        R.string.skip_media_on_error_message,
-                        prev.mediaMetadata.title
-                    ), type = PopupType.Success, durationLong = true ,context = this@PlayerService
-                )
+                SmartMessage( message, type = PopupType.Info, durationLong = true ,context = this@PlayerService )
             }
         }
-
-
     }
-
-    /*
-    override fun onPlayerErrorChanged(error: PlaybackException?) {
-        super.onPlayerErrorChanged(error)
-        Timber.e("PlayerService onPlayerErrorChanged ${error?.stackTraceToString()}")
-        //this.stopService(this.intent<MyDownloadService>())
-        //this.stopService(this.intent<PlayerService>())
-        //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
-
-        //onPlayerError(error!!)
-    }
-     */
-
-
 
     /*
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
@@ -2036,6 +2039,16 @@ class PlayerService : InvincibleService(),
 
                     }
 
+                    runBlocking(Dispatchers.IO) {
+                        println("PlayerService createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
+                        when (body?.playabilityStatus?.status) {
+                            "LOGIN_REQUIRED" -> throw LoginRequiredException()
+                            "UNPLAYABLE" -> throw UnplayableException()
+                            else -> {}
+                        }
+                    }
+
+
                     //Removed temporally
                     //if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
@@ -2114,6 +2127,7 @@ class PlayerService : InvincibleService(),
                     //if (format == null) throw PlayableFormatNotFoundException()
 
 
+
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format.let { formatIn ->
                             val mediaItem = mediaItemToPlay(videoId)
@@ -2146,9 +2160,6 @@ class PlayerService : InvincibleService(),
 
                             formatIn?.url
                         } ?: throw PlayableFormatNotFoundException()
-
-                        "UNPLAYABLE" -> throw UnplayableException()
-                        "LOGIN_REQUIRED" -> throw LoginRequiredException()
 
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")

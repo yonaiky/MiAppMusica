@@ -54,20 +54,22 @@ import java.nio.channels.UnresolvedAddressException
 fun PlayerError(error: PlaybackException) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val player = binder?.player ?: return
+    //val player = binder?.player ?: return
 
     val localMusicFileNotFoundError = stringResource(R.string.error_local_music_not_found)
     val networkerror = stringResource(R.string.error_a_network_error_has_occurred)
     val notfindplayableaudioformaterror =
         stringResource(R.string.error_couldn_t_find_a_playable_audio_format)
-    val originalvideodeletederror =
-        stringResource(R.string.error_the_original_video_source_of_this_song_has_been_deleted)
-    val songnotplayabledueserverrestrictionerror =
-        stringResource(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)
+    //val originalvideodeletederror =
+    //    stringResource(R.string.error_the_original_video_source_of_this_song_has_been_deleted)
+    val unplayableerror = stringResource(R.string.error_media_cannot_be_played)
+    //val songnotplayabledueserverrestrictionerror =
+    //    stringResource(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)
+    val loginrequirederror = stringResource(R.string.login_required_to_play_this_media)
     val videoidmismatcherror =
         stringResource(R.string.error_the_returned_video_id_doesn_t_match_the_requested_one)
-    val unknownplaybackerror =
-        stringResource(R.string.error_an_unknown_playback_error_has_occurred)
+    //val unknownplaybackerror =
+    //    stringResource(R.string.error_an_unknown_playback_error_has_occurred)
 
     //val unknownerror = stringResource(R.string.error_unknown)
     val unknownerror = stringResource(R.string.error_media_cannot_be_played)
@@ -77,29 +79,27 @@ fun PlayerError(error: PlaybackException) {
     val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
     var errorCounter = 0
+    errorCounter = errorCounter.plus(1)
 
-
-        errorCounter = errorCounter.plus(1)
-
-        if (errorCounter < 3) {
-            Timber.e("Playback error: ${error.cause?.cause}")
-            SmartMessage(
-                if (binder.player.currentWindow?.mediaItem?.isLocal == true) localMusicFileNotFoundError
-                else when (error.cause?.cause) {
-                    is UnresolvedAddressException, is UnknownHostException -> networkerror
-                    is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                    is UnplayableException -> originalvideodeletederror
-                    is LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                    is VideoIdMismatchException -> videoidmismatcherror
-                    is PlayableFormatNonSupported -> formatUnsupported
-                    is NoInternetException -> nointerneterror
-                    is TimeoutException -> timeouterror
-                    is UnknownException -> unknownerror
-                    is FakeException -> unknownerror
-                    else -> unknownplaybackerror
-                }, PopupType.Error, context = context
-            )
-        }
+    if (errorCounter < 3) {
+        Timber.e("Playback error: ${error.cause?.cause}")
+        SmartMessage(
+            if (binder?.player?.currentWindow?.mediaItem?.isLocal == true) localMusicFileNotFoundError
+            else when (error.cause?.cause) {
+                is UnresolvedAddressException, is UnknownHostException -> networkerror
+                is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                is UnplayableException -> unplayableerror
+                is LoginRequiredException -> loginrequirederror
+                is VideoIdMismatchException -> videoidmismatcherror
+                is PlayableFormatNonSupported -> formatUnsupported
+                is NoInternetException -> nointerneterror
+                is TimeoutException -> timeouterror
+                is UnknownException -> unknownerror
+                is FakeException -> unknownerror
+                else -> unknownerror
+            }, PopupType.Error, context = context
+        )
+    }
 
 }
 

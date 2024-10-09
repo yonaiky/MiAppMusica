@@ -386,7 +386,7 @@ fun PlayerModern(
             }
             override fun onPlayerError(playbackException: PlaybackException) {
                 playerError = playbackException
-                binder.stopRadio()
+                //binder.stopRadio()
             }
         }
     }
@@ -394,6 +394,7 @@ fun PlayerModern(
     val mediaItem = nullableMediaItem ?: return
 
     val pagerState = rememberPagerState(pageCount = { mediaItems.size })
+
 
     playerError?.let { PlayerError(error = it) }
 
