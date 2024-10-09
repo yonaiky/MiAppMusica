@@ -5,7 +5,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,7 +18,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -28,7 +28,6 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
-import it.fast4x.compose.persist.persistMap
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -49,8 +48,8 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -119,6 +118,25 @@ fun SearchResultScreen(
 
         host {
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
+                Title(
+                    title = stringResource(R.string.search_results_for),
+                    verticalPadding = 4.dp
+                )
+                Title(
+                    title = query,
+                    onClick = {
+                        /*
+                                context.persistMap?.keys?.removeAll {
+                                   it.startsWith("searchResults/$query/")
+                                }
+                                onSearchAgain()
+                                */
+                        navController.navigate("searchScreenRoute/${query}")
+                    },
+                    verticalPadding = 4.dp
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                /*
                 Header(
                     title = query,
                     modifier = Modifier
@@ -134,6 +152,7 @@ fun SearchResultScreen(
                             }
                         }
                 )
+                 */
             }
 
             val emptyItemsText = stringResource(R.string.no_results_found)

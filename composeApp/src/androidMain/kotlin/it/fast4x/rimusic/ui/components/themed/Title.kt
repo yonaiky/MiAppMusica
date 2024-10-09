@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.utils.bold
@@ -30,6 +31,7 @@ import me.knighthat.typography
 fun Title(
     title: String,
     modifier: Modifier = Modifier,
+    verticalPadding: Dp = 12.dp,
     @DrawableRes icon: Int? = R.drawable.arrow_forward,
     onClick: (() -> Unit)? = null,
 ) {
@@ -41,7 +43,7 @@ fun Title(
             .clickable(enabled = onClick != null) {
                 onClick?.invoke()
             }
-            .padding(horizontal = 12.dp, vertical = 12.dp)
+            .padding(horizontal = 12.dp, vertical = verticalPadding)
     ) {
         Text(
             text = title,
