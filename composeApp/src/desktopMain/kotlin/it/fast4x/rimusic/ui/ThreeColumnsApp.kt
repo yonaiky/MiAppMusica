@@ -14,7 +14,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -82,13 +85,19 @@ import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.items.AlbumItem
+import it.fast4x.rimusic.items.ArtistItem
+import it.fast4x.rimusic.items.MoodItemColored
+import it.fast4x.rimusic.items.PlaylistItem
 import it.fast4x.rimusic.items.SongItem
 import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
+import it.fast4x.rimusic.styling.Dimensions.artistThumbnailSize
 import it.fast4x.rimusic.styling.Dimensions.itemInHorizontalGridWidth
 import it.fast4x.rimusic.styling.Dimensions.itemsVerticalPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
+import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
+import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import kotlinx.coroutines.Dispatchers
@@ -103,9 +112,13 @@ import rimusic.composeapp.generated.resources.app_icon
 import rimusic.composeapp.generated.resources.app_logo_text
 import rimusic.composeapp.generated.resources.artists
 import rimusic.composeapp.generated.resources.library
+import rimusic.composeapp.generated.resources.moods_and_genres
 import rimusic.composeapp.generated.resources.musical_notes
 import rimusic.composeapp.generated.resources.new_albums
 import rimusic.composeapp.generated.resources.play
+import rimusic.composeapp.generated.resources.playlists_you_might_like
+import rimusic.composeapp.generated.resources.related_albums
+import rimusic.composeapp.generated.resources.similar_artists
 import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
 
@@ -290,7 +303,8 @@ fun ThreeColumnsLayout(
                 verticalArrangement = Arrangement.Top
             ) {
                 FrameContainer(
-                    Modifier.requiredHeight(200.dp).border(BorderStroke(1.dp, Color.Red)),
+                    Modifier.requiredHeight(200.dp),
+                        //.border(BorderStroke(1.dp, Color.Red)),
                     frameController.size.collectAsState(null).value?.run {
                         IntSize(first, second)
                     } ?: IntSize.Zero,
@@ -406,6 +420,9 @@ fun LeftPanelContent() {
 fun CenterPanelContent(
     onSongClick: (key: String) -> Unit = {},
     onAlbumClick: (key: String) -> Unit = {},
+    onArtistClick: (key: String) -> Unit = {},
+    onPlaylistClick: (key: String) -> Unit = {},
+    onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -463,10 +480,12 @@ fun CenterPanelContent(
             )
 
             val quickPicksLazyGridState = rememberLazyGridState()
+            val moodAngGenresLazyGridState = rememberLazyGridState()
             val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
             val related = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
             var relatedPageResult by remember { mutableStateOf<Result<Innertube.RelatedPage?>?>(null) }
-            var discoverPage by remember { mutableStateOf<Result<Innertube.DiscoverPage?>?>(null) }
+            var discoverPageResult by remember { mutableStateOf<Result<Innertube.DiscoverPage?>?>(null) }
+            var discover = remember { mutableStateOf<Innertube.DiscoverPage?>(null) }
 
             LaunchedEffect(Unit) {
                 relatedPageResult = Innertube.relatedPage(
@@ -475,9 +494,10 @@ fun CenterPanelContent(
                     )
                 )
 
-                discoverPage = Innertube.discoverPage()
+                discoverPageResult = Innertube.discoverPage()
             }
            relatedPageResult?.getOrNull().also { related.value = it }
+           discoverPageResult?.getOrNull().also { discover.value = it }
 
             LazyHorizontalGrid(
                 state = quickPicksLazyGridState,
@@ -515,7 +535,7 @@ fun CenterPanelContent(
                 }
             }
 
-            discoverPage?.getOrNull()?.let { page ->
+            discover.let { page ->
                 val showNewAlbums = true
                 if (showNewAlbums) {
                     Title(
@@ -525,7 +545,33 @@ fun CenterPanelContent(
                     )
 
                     LazyRow(contentPadding = endPaddingValues) {
-                        items(items = page.newReleaseAlbums.distinctBy { it.key }, key = { it.key }) {
+                        page.value?.newReleaseAlbums?.let {
+                            items(items = it.distinctBy { it.key }, key = { it.key }) {
+                                AlbumItem(
+                                    album = it,
+                                    thumbnailSizeDp = albumThumbnailSize,
+                                    alternative = true,
+                                    modifier = Modifier.clickable(onClick = {
+                                        onAlbumClick(it.key)
+                                    })
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            related.value?.albums?.let { albums ->
+                val showRelatedAlbums = true
+                if (showRelatedAlbums) {
+                    Title(
+                        title = stringResource(Res.string.related_albums),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = albums.distinctBy { it.key }, key = { it.key }) {
                             AlbumItem(
                                 album = it,
                                 thumbnailSizeDp = albumThumbnailSize,
@@ -538,6 +584,98 @@ fun CenterPanelContent(
                     }
                 }
             }
+
+            related.value?.artists?.let { artists ->
+                val showSimilarArtists = true
+                if (showSimilarArtists) {
+                    Title(
+                        title = stringResource(Res.string.similar_artists),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = artists.distinctBy { it.key }, key = { it.key }) {
+                            ArtistItem(
+                                artist = it,
+                                thumbnailSizeDp = artistThumbnailSize,
+                                alternative = true,
+                                modifier = Modifier.clickable(onClick = {
+                                    onArtistClick(it.key)
+                                })
+                            )
+
+                        }
+                    }
+                }
+            }
+
+            related.value?.playlists?.let { playlists ->
+                val showPlaylistMightLike = true
+                if (showPlaylistMightLike) {
+                    Title(
+                        title = stringResource(Res.string.playlists_you_might_like),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                    LazyRow(contentPadding = endPaddingValues) {
+                        items(items = playlists.distinctBy { it.key }, key = { it.key }) {
+                            PlaylistItem(
+                                playlist = it,
+                                thumbnailSizeDp = playlistThumbnailSize,
+                                alternative = true,
+                                showSongsCount = false,
+                                modifier = Modifier.clickable(onClick = {
+                                    onPlaylistClick(it.key)
+                                })
+                            )
+
+                        }
+                    }
+                }
+            }
+
+            discover.let { page ->
+                val showNewAlbums = true
+                if (showNewAlbums) {
+                    Title(
+                        title = stringResource(Res.string.moods_and_genres),
+                        onClick = {},
+                        //modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+
+                        LazyHorizontalGrid(
+                            state = moodAngGenresLazyGridState,
+                            rows = GridCells.Fixed(4),
+                            flingBehavior = ScrollableDefaults.flingBehavior(),
+                            contentPadding = endPaddingValues,
+                            modifier = Modifier
+                                //.fillMaxWidth()
+                                .height(itemsVerticalPadding * 4 * 8)
+                        ) {
+                            page.value?.moods?.let {
+                                items(
+                                    items = it.sortedBy { it.title },
+                                    key = { it.endpoint.params ?: it.title }
+                                ) {
+                                    MoodItemColored(
+                                        mood = it,
+                                        onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
+                                        modifier = Modifier
+                                            //.width(itemWidth)
+                                            .padding(4.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                }
+            }
+
+
+            Spacer(Modifier.height(layoutColumnBottomSpacer))
+
 
         }
 

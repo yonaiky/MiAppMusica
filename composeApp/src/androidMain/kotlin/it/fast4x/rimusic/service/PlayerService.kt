@@ -55,8 +55,10 @@ import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -81,6 +83,7 @@ import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.ExtractorsFactory
 import androidx.media3.extractor.mkv.MatroskaExtractor
@@ -126,6 +129,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
@@ -140,6 +144,8 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.handleCatchingErrors
+import it.fast4x.rimusic.utils.handleRangeErrors
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
@@ -164,6 +170,7 @@ import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
+import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.startFadeAnimator
 import it.fast4x.rimusic.utils.thumbnail
@@ -202,6 +209,7 @@ import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.ConnectException
@@ -543,7 +551,7 @@ class PlayerService : InvincibleService(),
         downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
-            .setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
+            //.setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -556,18 +564,18 @@ class PlayerService : InvincibleService(),
             .setHandleAudioBecomingNoisy(true)
             //.setSeekForwardIncrementMs(5000)
             //.setSeekBackIncrementMs(5000)
-            //.setUsePlatformDiagnostics(false)
+            .setUsePlatformDiagnostics(false)
             .build()
+
+        player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
+        player.addListener(this@PlayerService)
+        player.addAnalyticsListener(PlaybackStatsListener(false, this@PlayerService))
 
         player.repeatMode = when {
             preferences.getBoolean(trackLoopEnabledKey, false) -> Player.REPEAT_MODE_ONE
             preferences.getBoolean(queueLoopEnabledKey, false) -> Player.REPEAT_MODE_ALL
             else -> Player.REPEAT_MODE_OFF
         }
-
-        player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
-        player.addListener(this)
-        player.addAnalyticsListener(PlaybackStatsListener(false, this))
 
         // Build a PendingIntent that can be used to launch the UI.
         val sessionActivityPendingIntent =
@@ -1521,24 +1529,57 @@ class PlayerService : InvincibleService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
-        //this.stopService(this.intent<MyDownloadService>())
-        //this.stopService(this.intent<PlayerService>())
-        //Log.d("mediaItem","onPlayerError ${error.errorCodeName}")
+        //println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
+        if (error.errorCode in arrayOf(416,2000)) {
+            //println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
+            player.pause()
+            player.prepare()
+            player.play()
+            return
+        }
+
+        if (!preferences.getBoolean(skipMediaOnErrorKey, false)
+            || !player.hasNextMediaItem())
+            return
+
+        val prev = player.currentMediaItem ?: return
+        player.seekToNextMediaItem()
+
+        coroutineScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                SmartMessage(
+                    getString(
+                        R.string.skip_media_on_error_message,
+                        prev.mediaMetadata.title
+                    ), type = PopupType.Success, durationLong = true ,context = this@PlayerService
+                )
+            }
+        }
+
+
     }
 
+    /*
     override fun onPlayerErrorChanged(error: PlaybackException?) {
         super.onPlayerErrorChanged(error)
         Timber.e("PlayerService onPlayerErrorChanged ${error?.stackTraceToString()}")
         //this.stopService(this.intent<MyDownloadService>())
         //this.stopService(this.intent<PlayerService>())
         //Log.d("mediaItem","onPlayerErrorChanged ${error?.errorCodeName}")
-    }
 
+        //onPlayerError(error!!)
+    }
+     */
+
+
+
+    /*
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
         super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
         //Timber.e("PlayerService onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
         //Log.d("mediaItem","onPlaybackSuppressionReasonChanged $playbackSuppressionReason")
     }
+     */
 
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -1805,6 +1846,10 @@ class PlayerService : InvincibleService(),
         ),
         DefaultExtractorsFactory()
         //getExtractorsFactory()
+    ).setLoadErrorHandlingPolicy(
+        object : DefaultLoadErrorHandlingPolicy() {
+            override fun isEligibleForFallback(exception: IOException) = true
+        }
     )
 
     private fun getExtractorsFactory(): ExtractorsFactory = ExtractorsFactory {
@@ -1821,16 +1866,52 @@ class PlayerService : InvincibleService(),
         )
     }
 
+    private fun createRendersFactory() = object : DefaultRenderersFactory(this) {
+        override fun buildAudioSink(
+            context: Context,
+            enableFloatOutput: Boolean,
+            enableAudioTrackPlaybackParams: Boolean
+        ): AudioSink {
+            val minimumSilenceDuration = preferences.getLong(
+                minimumSilenceDurationKey, 2_000_000L).coerceIn(1000L..2_000_000L)
+
+            return DefaultAudioSink.Builder(applicationContext)
+                .setEnableFloatOutput(enableFloatOutput)
+                .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
+                .setAudioOffloadSupportProvider(
+                    DefaultAudioOffloadSupportProvider(applicationContext)
+                )
+                .setAudioProcessorChain(
+                    DefaultAudioProcessorChain(
+                        arrayOf(),
+                        SilenceSkippingAudioProcessor(
+                            /* minimumSilenceDurationUs = */ minimumSilenceDuration,
+                            /* silenceRetentionRatio = */ 0.01f,
+                            /* maxSilenceToKeepDurationUs = */ minimumSilenceDuration,
+                            /* minVolumeToKeepPercentageWhenMuting = */ 0,
+                            /* silenceThresholdLevel = */ 256
+                        ),
+                        SonicAudioProcessor()
+                    )
+                )
+                .build()
+                .apply {
+                    if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
+                }
+        }
+    }
+
+    /*
     private fun createRendersFactory(): RenderersFactory {
         val minimumSilenceDuration = preferences.getLong(
-            minimumSilenceDurationKey, 2_000_000L) //PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
+            minimumSilenceDurationKey, 2_000_000L).coerceIn(1000L..2_000_000L)
         val audioSink = DefaultAudioSink.Builder(applicationContext)
             .setEnableFloatOutput(false)
             .setEnableAudioTrackPlaybackParams(false)
             .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
             .setAudioProcessorChain(
                 DefaultAudioProcessorChain(
-                    emptyArray(),
+                    arrayOf(),
                     SilenceSkippingAudioProcessor(
                         /* minimumSilenceDurationUs = */ minimumSilenceDuration,
                         /* silenceRetentionRatio = */ 0.01f,
@@ -1865,11 +1946,13 @@ class PlayerService : InvincibleService(),
             )
         }
     }
-
+    */
 
     private fun createDataSourceResolverFactory(
         mediaItemToPlay: (videoId: String) -> MediaItem?
-    ): ResolvingDataSource.Factory {
+    ): //ResolvingDataSource.Factory { // not required for handlers
+       DataSource.Factory { // required for handlers
+
         val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
         val chunkLength = 512 * 1024L
 
@@ -1975,9 +2058,10 @@ class PlayerService : InvincibleService(),
                                 ?.maxByOrNull {
                                     (it.bitrate?.times(
                                         when (audioQualityFormat) {
-                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
                                             AudioQualityFormat.High -> 1
-                                            AudioQualityFormat.Low, AudioQualityFormat.Medium -> -1
+                                            AudioQualityFormat.Medium -> -1
+                                            AudioQualityFormat.Low -> -2
                                         }
                                     ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                                 }
@@ -2091,6 +2175,8 @@ class PlayerService : InvincibleService(),
                 }
             }
         }
+            .handleCatchingErrors() // required for Datasource.Factory
+            .handleRangeErrors() // required for Datasource.Factory
     }
 
 

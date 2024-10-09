@@ -753,4 +753,7 @@
     <string name="controls">Kontroller</string>
     <string name="add_to_favorites">Favorilere ekle</string>
     <string name="import_favorites">Favorileri içeri aktar</string>
+    <string name="skip_media_on_error">Autoskip on error</string>
+    <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
+    <string name="skip_media_on_error_message">The media %1$s went wrong</string>
 </resources>

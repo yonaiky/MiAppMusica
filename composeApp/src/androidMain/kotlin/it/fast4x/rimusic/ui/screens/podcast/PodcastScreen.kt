@@ -13,10 +13,8 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import me.knighthat.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -38,24 +36,13 @@ fun PodcastScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
+
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = 0,
-                onTabChanged = { },
-                onHomeClick = {
-                    //homeRoute()
-                    navController.navigate(NavRoutes.home.name)
-                },
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.podcast_episodes), R.drawable.podcast)
+            Skeleton(
+                navController,
+                mediaPlayer = playerEssential,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.podcast_episodes), R.drawable.podcast)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

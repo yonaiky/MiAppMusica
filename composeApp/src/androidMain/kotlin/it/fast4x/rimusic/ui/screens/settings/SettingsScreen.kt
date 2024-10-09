@@ -43,9 +43,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.enums.ValidationType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
@@ -54,10 +52,10 @@ import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.ui.screens.globalRoutes
-import it.fast4x.rimusic.ui.screens.homeRoute
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.Skeleton
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
@@ -72,8 +70,8 @@ fun SettingsScreen(
     navController: NavController,
     playerEssential: @Composable () -> Unit = {},
 ) {
-    val saveableStateHolder = rememberSaveableStateHolder()
     val context = LocalContext.current
+    val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabChanged) = rememberSaveable {
         mutableStateOf(0)
@@ -82,25 +80,18 @@ fun SettingsScreen(
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = tabIndex,
-                onHomeClick = { homeRoute() },
-                onTabChanged = onTabChanged,
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.ui_tab), R.drawable.ui)
-                    Item(1, stringResource(R.string.player_appearance), R.drawable.color_palette)
-                    Item(2, stringResource(R.string.quick_picks), R.drawable.sparkles)
-                    Item(3, stringResource(R.string.tab_data), R.drawable.server)
-                    Item(4, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
-                    Item(5, stringResource(R.string.about), R.drawable.information)
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabChanged,
+                playerEssential,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.ui_tab), R.drawable.ui)
+                    item(1, stringResource(R.string.player_appearance), R.drawable.color_palette)
+                    item(2, stringResource(R.string.quick_picks), R.drawable.sparkles)
+                    item(3, stringResource(R.string.tab_data), R.drawable.server)
+                    item(4, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
+                    item(5, stringResource(R.string.about), R.drawable.information)
 
                 }
             ) { currentTabIndex ->

@@ -19,6 +19,7 @@ import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
+import me.knighthat.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -40,25 +41,14 @@ fun PlaylistScreen(
 
     RouteHandler(listenToGlobalEmitter = true) {
         globalRoutes()
-        val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
+
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                onTopIconButtonClick = pop,
-                showButton1 = uiType != UiType.RiMusic,
-                onTopIconButton2Click = pop,
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                },
-                onTabChanged = {},
-                onHomeClick = {},
-                onBottomIconButtonClick = {},
-                showBottomButton = false,
-                tabIndex = 0,
-                topIconButtonId = R.drawable.ui,
-                topIconButton2Id = R.drawable.ui,
-                showButton2 = false
+            Skeleton(
+                navController,
+                mediaPlayer = playerEssential,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.songs), R.drawable.musical_notes)
+                }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {

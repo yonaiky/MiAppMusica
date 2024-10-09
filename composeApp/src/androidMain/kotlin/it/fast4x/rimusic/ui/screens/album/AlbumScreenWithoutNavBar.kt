@@ -68,7 +68,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
@@ -87,6 +86,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
 
 
 @ExperimentalMaterialApi
@@ -286,7 +286,7 @@ fun AlbumScreenWithoutNavBar(
                 containerColor = colorPalette().background0,
                 topBar = {
                     if( UiType.RiMusic.isCurrent() )
-                        AppBar(navController)
+                        AppHeader( navController ).Draw()
                 }
             ) {
                 //**

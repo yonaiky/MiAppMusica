@@ -23,7 +23,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -46,11 +45,12 @@ import androidx.navigation.NavController
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
-import it.fast4x.rimusic.ui.components.themed.AppBar
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.AppHeader
+import me.knighthat.component.nav.HorizontalNavigationBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,28 +77,12 @@ fun ScaffoldTB(
     onSearchClick: (() -> Unit)?,
     tabIndex: Int,
     onTabChanged: (Int) -> Unit,
-    tabColumnContent: @Composable (ColumnScope.(@Composable (Int, String, Int) -> Unit) -> Unit),
+    tabColumnContent: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
-    val navigationRailTB: @Composable () -> Unit = {
-        NavigationRailTB(
-            navController = navController,
-            topIconButtonId = topIconButtonId,
-            onTopIconButtonClick = onTopIconButtonClick,
-            showButton1 = showButton1,
-            topIconButton2Id = topIconButton2Id,
-            onTopIconButton2Click = onTopIconButton2Click,
-            showButton2 = showButton2,
-            bottomIconButtonId = bottomIconButtonId,
-            onBottomIconButtonClick = onBottomIconButtonClick ?: {},
-            showBottomButton = showBottomButton,
-            tabIndex = tabIndex,
-            onTabIndexChanged = onTabChanged,
-            content = tabColumnContent,
-            hideTabs = hideTabs
-        )
-    }
+    val horizontalNavBar = HorizontalNavigationBar( tabIndex, onTabChanged, navController, modifier )
+    horizontalNavBar.add( tabColumnContent )
 
     //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -114,10 +98,10 @@ fun ScaffoldTB(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                AppBar(navController)
+                AppHeader( navController ).Draw()
 
                 if ( NavigationBarPosition.Top.isCurrent() )
-                    navigationRailTB()
+                    horizontalNavBar.Draw()
 
                 /*
                 if (playerEssential != null && playerPosition == PlayerPosition.Top) {
@@ -166,8 +150,7 @@ fun ScaffoldTB(
                      */
 
                     if ( NavigationBarPosition.Bottom.isCurrent() )
-                            navigationRailTB()
-
+                        horizontalNavBar.Draw()
                 //}
         }
 
@@ -176,15 +159,15 @@ fun ScaffoldTB(
             if ( NavigationBarPosition.Top.isCurrent() )
                 Modifier
                     .padding(it)
+                    .fillMaxSize()
+            else
+                Modifier
+                    .padding(it)
                     .padding(
                         windowInsets
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                             .asPaddingValues()
                     )
-                    .fillMaxSize()
-            else
-                Modifier
-                    .padding(it)
                     .fillMaxSize()
 
         Box(

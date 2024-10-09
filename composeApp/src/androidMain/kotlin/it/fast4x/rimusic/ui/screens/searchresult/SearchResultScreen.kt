@@ -42,13 +42,11 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.Header
@@ -85,6 +83,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -138,34 +137,26 @@ fun SearchResultScreen(
             }
 
             val emptyItemsText = stringResource(R.string.no_results_found)
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = tabIndex,
-                onHomeClick = {
-                    navController.navigate(NavRoutes.home.name)
-                },
-                onTabChanged = onTabIndexChanges,
-                tabColumnContent = { Item ->
-                    Item(0, stringResource(R.string.songs), R.drawable.musical_notes)
-                    Item(1, stringResource(R.string.albums), R.drawable.album)
-                    Item(2, stringResource(R.string.artists), R.drawable.artist)
-                    Item(3, stringResource(R.string.videos), R.drawable.video)
-                    Item(4, stringResource(R.string.playlists), R.drawable.playlist)
-                    Item(5, stringResource(R.string.featured), R.drawable.featured_playlist)
-                    Item(6, stringResource(R.string.podcasts), R.drawable.podcast)
+
+            Skeleton(
+                navController,
+                tabIndex,
+                onTabIndexChanges,
+                playerEssential,
+                navBarContent = { item ->
+                    item(0, stringResource(R.string.songs), R.drawable.musical_notes)
+                    item(1, stringResource(R.string.albums), R.drawable.album)
+                    item(2, stringResource(R.string.artists), R.drawable.artist)
+                    item(3, stringResource(R.string.videos), R.drawable.video)
+                    item(4, stringResource(R.string.playlists), R.drawable.playlist)
+                    item(5, stringResource(R.string.featured), R.drawable.featured_playlist)
+                    item(6, stringResource(R.string.podcasts), R.drawable.podcast)
                 }
-            ) { tabIndex ->
-                saveableStateHolder.SaveableStateProvider(tabIndex) {
-                    when (tabIndex) {
+            ) { currentTabIndex ->
+                saveableStateHolder.SaveableStateProvider(currentTabIndex) {
+                    when ( currentTabIndex ) {
                         0 -> {
-                            val binder = LocalPlayerServiceBinder.current
+                            val localBinder = LocalPlayerServiceBinder.current
                             val menuState = LocalMenuState.current
                             val thumbnailSizeDp = Dimensions.thumbnails.song
                             val thumbnailSizePx = thumbnailSizeDp.px
@@ -198,7 +189,7 @@ fun SearchResultScreen(
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
                                         onSwipeToRight = {
-                                            binder?.player?.addNext(song.asMediaItem)
+                                            localBinder?.player?.addNext(song.asMediaItem)
                                         }
                                     ) {
                                         downloadState = getDownloadState(song.asMediaItem.mediaId)
@@ -208,7 +199,7 @@ fun SearchResultScreen(
                                             song = song,
                                             isDownloaded = isDownloaded,
                                             onDownloadClick = {
-                                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                 query {
                                                     Database.insert(
                                                         Song(
@@ -246,9 +237,9 @@ fun SearchResultScreen(
                                                         )
                                                     },
                                                     onClick = {
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlay(song.asMediaItem)
-                                                        binder?.setupRadio(song.info?.endpoint)
+                                                        localBinder?.stopRadio()
+                                                        localBinder?.player?.forcePlay(song.asMediaItem)
+                                                        localBinder?.setupRadio(song.info?.endpoint)
                                                     }
                                                 )
                                         )
@@ -292,8 +283,8 @@ fun SearchResultScreen(
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 Database
                                                     .album(album.key)
-                                                    .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
-                                                    .collect { (currentAlbum) ->
+                                                    .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                    .collect {
                                                         if (albumPage == null)
                                                             withContext(Dispatchers.IO) {
                                                                 Innertube.albumPage(
@@ -305,7 +296,7 @@ fun SearchResultScreen(
                                                                         albumPage =
                                                                             currentAlbumPage
 
-                                                                        println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
+                                                                        println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
 
                                                                         albumPage
                                                                             ?.songsPage
@@ -342,8 +333,8 @@ fun SearchResultScreen(
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 Database
                                                     .album(album.key)
-                                                    .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
-                                                    .collect { (currentAlbum) ->
+                                                    .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                    .collect {
                                                         if (albumPage == null)
                                                             withContext(Dispatchers.IO) {
                                                                 Innertube.albumPage(
@@ -355,27 +346,27 @@ fun SearchResultScreen(
                                                                         albumPage =
                                                                             currentAlbumPage
 
-                                                                        println("mediaItem success home album songsPage ${currentAlbumPage?.songsPage} description ${currentAlbumPage?.description} year ${currentAlbumPage?.year}")
+                                                                        println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
 
                                                                         Database.upsert(
                                                                             Album(
                                                                                 id = album.key,
-                                                                                title = currentAlbumPage?.title,
-                                                                                thumbnailUrl = currentAlbumPage?.thumbnail?.url,
-                                                                                year = currentAlbumPage?.year,
-                                                                                authorsText = currentAlbumPage?.authors
+                                                                                title = currentAlbumPage.title,
+                                                                                thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                                                                year = currentAlbumPage.year,
+                                                                                authorsText = currentAlbumPage.authors
                                                                                     ?.joinToString(
                                                                                         ""
                                                                                     ) {
                                                                                         it.name
                                                                                             ?: ""
                                                                                     },
-                                                                                shareUrl = currentAlbumPage?.url,
+                                                                                shareUrl = currentAlbumPage.url,
                                                                                 timestamp = System.currentTimeMillis(),
                                                                                 bookmarkedAt = System.currentTimeMillis()
                                                                             ),
                                                                             currentAlbumPage
-                                                                                ?.songsPage
+                                                                                .songsPage
                                                                                 ?.items
                                                                                 ?.map(
                                                                                     Innertube.SongItem::asMediaItem
@@ -399,8 +390,6 @@ fun SearchResultScreen(
                                                                     }
 
                                                             }
-
-                                                        //}
                                                     }
                                             }
                                         }
@@ -470,7 +459,7 @@ fun SearchResultScreen(
                         }
 
                         3 -> {
-                            val binder = LocalPlayerServiceBinder.current
+                            val localBinder = LocalPlayerServiceBinder.current
                             val menuState = LocalMenuState.current
                             val thumbnailHeightDp = 72.dp
                             val thumbnailWidthDp = 128.dp
@@ -499,7 +488,7 @@ fun SearchResultScreen(
                                     SwipeablePlaylistItem(
                                         mediaItem = video.asMediaItem,
                                         onSwipeToRight = {
-                                            binder?.player?.addNext(video.asMediaItem)
+                                            localBinder?.player?.addNext(video.asMediaItem)
                                         }
                                     ) {
                                         VideoItem(
@@ -521,11 +510,11 @@ fun SearchResultScreen(
                                                         )
                                                     },
                                                     onClick = {
-                                                        binder?.stopRadio()
+                                                        localBinder?.stopRadio()
                                                         if (isVideoEnabled)
-                                                            binder?.player?.playVideo(video.asMediaItem)
+                                                            localBinder?.player?.playVideo(video.asMediaItem)
                                                         else
-                                                            binder?.player?.forcePlay(video.asMediaItem)
+                                                            localBinder?.player?.forcePlay(video.asMediaItem)
                                                         //binder?.setupRadio(video.info?.endpoint)
                                                     }
                                                 )
@@ -549,14 +538,14 @@ fun SearchResultScreen(
 
                             ItemsPage(
                                 tag = "searchResults/$query/${
-                                    when (tabIndex) {
+                                    when (currentTabIndex) {
                                         4 -> "playlists"
                                         else -> "featured"
                                     }
                                 }",
                                 itemsPageProvider = { continuation ->
                                     if (continuation == null) {
-                                        val filter = when (tabIndex) {
+                                        val filter = when (currentTabIndex) {
                                             4 -> Innertube.SearchFilter.CommunityPlaylist
                                             else -> Innertube.SearchFilter.FeaturedPlaylist
                                         }

@@ -17,10 +17,8 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.components.Scaffold
 import it.fast4x.rimusic.ui.screens.globalRoutes
+import me.knighthat.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -45,21 +43,13 @@ fun NewreleasesScreen(
         globalRoutes()
 
         host {
-            Scaffold(
-                navController = navController,
-                playerEssential = playerEssential,
-                topIconButtonId = R.drawable.chevron_back,
-                onTopIconButtonClick = pop,
-                showButton1 = UiType.RiMusic.isNotCurrent(),
-                topIconButton2Id = R.drawable.chevron_back,
-                onTopIconButton2Click = pop,
-                showButton2 = false,
-                tabIndex = tabIndex,
+            Skeleton(
+                navController,
+                tabIndex,
                 onTabChanged = { tabIndex = it },
-                onHomeClick = { navController.navigate(NavRoutes.home.name) },
-                tabColumnContent = { item ->
+                playerEssential,
+                navBarContent = { item ->
                     item(0, stringResource(R.string.new_albums), R.drawable.album)
-                    //item(1, stringResource(R.string.new_albums_of_your_artists), R.drawable.album)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
