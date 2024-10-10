@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -119,7 +120,7 @@ fun StatisticsPageModern(
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
     val songThumbnailSizeDp = Dimensions.thumbnails.song
-    val songThumbnailSizePx = songThumbnailSizeDp.px
+    //val songThumbnailSizePx = songThumbnailSizeDp.px
     val albumThumbnailSizeDp = 108.dp
     val albumThumbnailSizePx = albumThumbnailSizeDp.px
     val artistThumbnailSizeDp = 92.dp
@@ -127,7 +128,7 @@ fun StatisticsPageModern(
     val playlistThumbnailSizeDp = 108.dp
     val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
 
-    val scrollState = rememberScrollState()
+    //val scrollState = rememberScrollState()
     //val quickPicksLazyGridState = rememberLazyGridState()
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
@@ -244,39 +245,6 @@ fun StatisticsPageModern(
                 else Dimensions.contentWidthRightBar
             )
     ) {
-
-
-
-
-            if (showStatsListeningTime)
-                SettingsEntry(
-                    title = "${allSongs.size} ${stringResource(R.string.statistics_songs_heard)}",
-                    text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
-                    onClick = {},
-                    trailingContent = {
-                        Image(
-                            painter = painterResource(R.drawable.musical_notes),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                            modifier = Modifier
-                                .size(34.dp)
-                        )
-                    },
-                    modifier = Modifier
-                        .background(
-                            color = colorPalette().background4,
-                            shape = thumbnailRoundness.shape()
-                        )
-
-                )
-
-            if (allSongs.isNotEmpty())
-                BasicText(
-                    text = "${maxStatisticsItems} ${stringResource(R.string.most_played_songs)}",
-                    style = typography().m.semiBold,
-                    modifier = sectionTextModifier
-                )
-
             val lazyGridState = rememberLazyGridState()
             LazyVerticalGrid(
                 state = lazyGridState,
@@ -327,12 +295,43 @@ fun StatisticsPageModern(
                         chips = buttonsList,
                         currentValue = statisticsCategory,
                         onValueUpdate = { statisticsCategory = it },
-                        modifier = Modifier.padding(end = 12.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     )
 
                 }
 
-                if (statisticsCategory == StatisticsCategory.Songs)
+                if (statisticsCategory == StatisticsCategory.Songs) {
+
+                        if (showStatsListeningTime)
+                            item(
+                                key = "headerListeningTime",
+                                span = { GridItemSpan(maxLineSpan) }
+                            ) {
+                                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp)) {
+                                    SettingsEntry(
+                                        title = "${allSongs.size} ${stringResource(R.string.statistics_songs_heard)}",
+                                        text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
+                                        onClick = {},
+                                        trailingContent = {
+                                            Image(
+                                                painter = painterResource(R.drawable.musical_notes),
+                                                contentDescription = null,
+                                                colorFilter = ColorFilter.tint(colorPalette().shimmer),
+                                                modifier = Modifier
+                                                    .size(34.dp)
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .background(
+                                                color = colorPalette().background4,
+                                                shape = thumbnailRoundness.shape()
+                                            )
+
+                                    )
+                                }
+                            }
+
+
                     items(
                         count = songs.count(),
                     ) {
@@ -355,15 +354,15 @@ fun StatisticsPageModern(
                             thumbnailSizeDp = thumbnailSizeDp,
                             thumbnailSizePx = thumbnailSize,
                             onThumbnailContent = {
-                                    BasicText(
-                                        text = "${it + 1}",
-                                        style = typography().s.semiBold.center.color(colorPalette().text),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier
-                                            .width(thumbnailSizeDp)
-                                            .align(Alignment.Center)
-                                    )
+                                BasicText(
+                                    text = "${it + 1}",
+                                    style = typography().s.semiBold.center.color(colorPalette().text),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .width(thumbnailSizeDp)
+                                        .align(Alignment.Center)
+                                )
                             },
                             modifier = Modifier
                                 .combinedClickable(
@@ -387,6 +386,7 @@ fun StatisticsPageModern(
                                 .fillMaxWidth()
                         )
                     }
+                }
 
                 if (statisticsCategory == StatisticsCategory.Artists)
                     items(
