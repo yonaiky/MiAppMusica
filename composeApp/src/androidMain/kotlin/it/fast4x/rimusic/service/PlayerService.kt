@@ -1530,7 +1530,7 @@ class PlayerService : InvincibleService(),
         super.onPlayerError(error)
         Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
         println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
-        if (error.errorCode in arrayOf(416,4003)) {
+        if (error.errorCode in PlayerErrorsToReload) {
             //println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
             player.pause()
             player.prepare()
@@ -1538,7 +1538,8 @@ class PlayerService : InvincibleService(),
             return
         }
 
-        if (error.errorCode in arrayOf(2000)) {
+        /*
+        if (error.errorCode in PlayerErrorsToSkip) {
             //println("mediaItem onPlayerError recovered occurred 2000 errorCodeName ${error.errorCodeName}")
             player.pause()
             player.prepare()
@@ -1552,13 +1553,15 @@ class PlayerService : InvincibleService(),
 
             return
         }
+         */
 
 
         if (!preferences.getBoolean(skipMediaOnErrorKey, false) || !player.hasNextMediaItem())
             return
 
         val prev = player.currentMediaItem ?: return
-        player.seekToNextMediaItem()
+        //player.seekToNextMediaItem()
+        player.forceSeekToNext()
 
         showSmartMessage(
             message = getString(
@@ -2678,6 +2681,8 @@ class PlayerService : InvincibleService(),
         const val SleepTimerNotificationId = 1002
         const val SleepTimerNotificationChannelId = "sleep_timer_channel_id"
 
+        val PlayerErrorsToReload = arrayOf(416,4003)
+        val PlayerErrorsToSkip = arrayOf(2000)
 
     }
 
