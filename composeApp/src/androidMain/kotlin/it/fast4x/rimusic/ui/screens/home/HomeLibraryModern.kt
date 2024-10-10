@@ -17,6 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -103,6 +104,7 @@ import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.autosyncKey
+import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
@@ -126,6 +128,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.tab.TabHeader
 import me.knighthat.typography
 import timber.log.Timber
 
@@ -333,53 +336,19 @@ fun HomeLibraryModern(
                 else Dimensions.contentWidthRightBar
             )
     ) {
+        TabHeader( R.string.playlists ) {
+            HeaderInfo( items.size.toString(), R.drawable.playlist )
+        }
+
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             modifier = Modifier
-                .fillMaxSize()
+                .padding( top = TabHeader.height() )
+                .align(Alignment.BottomStart)
                 .background(colorPalette().background0)
+
         ) {
-            item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-
-                if ( UiType.ViMusic.isCurrent() )
-                    HeaderWithIcon(
-                        title = stringResource(R.string.playlists),
-                        iconId = R.drawable.search,
-                        enabled = true,
-                        showIcon = !showSearchTab,
-                        modifier = Modifier,
-                        onClick = onSearchClick
-                    )
-            }
-
-            item(key = "headerNew", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 10.dp, bottom = 4.dp)
-                        .fillMaxWidth()
-
-                ) {
-                    if ( UiType.RiMusic.isCurrent() )
-                        TitleSection(title = stringResource(R.string.playlists))
-
-                    HeaderInfo(
-                        title = "${items.size}",
-                        iconId = R.drawable.playlist
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .weight(0.3f)
-                    )
-
-                }
-
-            }
-
             item(
                 key = "headerButtons",
                 contentType = 0,
@@ -456,26 +425,53 @@ fun HomeLibraryModern(
                         onClick = {},
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .combinedClickable (
+                            .combinedClickable(
                                 onClick = {
                                     coroutineScope.launch {
                                         withContext(Dispatchers.IO) {
                                             when (playlistType) {
                                                 PlaylistsType.Playlist -> {
                                                     Database.songsInAllPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                        .collect {
+                                                            PlayShuffledSongs(
+                                                                songsList = it,
+                                                                binder = binder,
+                                                                context = context
+                                                            )
+                                                        }
                                                 }
+
                                                 PlaylistsType.PipedPlaylist -> {
                                                     Database.songsInAllPipedPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                        .collect {
+                                                            PlayShuffledSongs(
+                                                                songsList = it,
+                                                                binder = binder,
+                                                                context = context
+                                                            )
+                                                        }
                                                 }
+
                                                 PlaylistsType.PinnedPlaylist -> {
                                                     Database.songsInAllPinnedPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                        .collect {
+                                                            PlayShuffledSongs(
+                                                                songsList = it,
+                                                                binder = binder,
+                                                                context = context
+                                                            )
+                                                        }
                                                 }
+
                                                 PlaylistsType.MonthlyPlaylist -> {
                                                     Database.songsInAllMonthlyPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
+                                                        .collect {
+                                                            PlayShuffledSongs(
+                                                                songsList = it,
+                                                                binder = binder,
+                                                                context = context
+                                                            )
+                                                        }
                                                 }
                                             }
 
@@ -498,7 +494,7 @@ fun HomeLibraryModern(
                         onClick = { },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .combinedClickable (
+                            .combinedClickable(
                                 onClick = { isCreatingANewPlaylist = true },
                                 onLongClick = {
                                     SmartMessage(
@@ -600,15 +596,15 @@ fun HomeLibraryModern(
                             val focusManager = LocalFocusManager.current
 
                             LaunchedEffect(searching) {
-                                if( isSearchInputFocused ) focusRequester.requestFocus()
+                                if (isSearchInputFocused) focusRequester.requestFocus()
                             }
 
-                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ) ) }
+                            var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
                             BasicTextField(
                                 value = searchInput,
                                 onValueChange = {
                                     searchInput = it.copy(
-                                        selection = TextRange( it.text.length )
+                                        selection = TextRange(it.text.length)
                                     )
                                     filter = it.text
                                 },
@@ -652,7 +648,9 @@ fun HomeLibraryModern(
                                                 text = stringResource(R.string.search),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
+                                                style = typography().xs.semiBold.secondary.copy(
+                                                    color = colorPalette().textDisabled
+                                                )
                                             )
                                         }
 
@@ -704,8 +702,8 @@ fun HomeLibraryModern(
                             .clickable(onClick = {
                                 onPlaylistClick(playlistPreview.playlist)
 
-                                if( searching )
-                                    if( filter.isBlank() )
+                                if (searching)
+                                    if (filter.isBlank())
                                         searching = false
                                     else
                                         isSearchInputFocused = false
@@ -729,8 +727,8 @@ fun HomeLibraryModern(
                             .clickable(onClick = {
                                 onPlaylistClick(playlistPreview.playlist)
 
-                                if( searching )
-                                    if( filter.isBlank() )
+                                if (searching)
+                                    if (filter.isBlank())
                                         searching = false
                                     else
                                         isSearchInputFocused = false
@@ -741,9 +739,9 @@ fun HomeLibraryModern(
                 }
 
             if (playlistType == PlaylistsType.PinnedPlaylist)
-                 items(items = items.filter {
-                     it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                 }, key = { it.playlist.id }) { playlistPreview ->
+                items(items = items.filter {
+                    it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                }, key = { it.playlist.id }) { playlistPreview ->
                     PlaylistItem(
                         playlist = playlistPreview,
                         thumbnailSizeDp = thumbnailSizeDp,
@@ -753,8 +751,8 @@ fun HomeLibraryModern(
                             .clickable(onClick = {
                                 onPlaylistClick(playlistPreview.playlist)
 
-                                if( searching )
-                                    if( filter.isBlank() )
+                                if (searching)
+                                    if (filter.isBlank())
                                         searching = false
                                     else
                                         isSearchInputFocused = false
@@ -777,8 +775,8 @@ fun HomeLibraryModern(
                             .clickable(onClick = {
                                 onPlaylistClick(playlistPreview.playlist)
 
-                                if( searching )
-                                    if( filter.isBlank() )
+                                if (searching)
+                                    if (filter.isBlank())
                                         searching = false
                                     else
                                         isSearchInputFocused = false
@@ -789,20 +787,20 @@ fun HomeLibraryModern(
                 }
 
 
-                item(
-                    key = "footer",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-                }
+            item(
+                key = "footer",
+                contentType = 0,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+            }
 
         }
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+        if (UiType.ViMusic.isCurrent() && showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,
@@ -817,7 +815,5 @@ fun HomeLibraryModern(
             onClick = onSearchClick
         )
          */
-
-
     }
 }

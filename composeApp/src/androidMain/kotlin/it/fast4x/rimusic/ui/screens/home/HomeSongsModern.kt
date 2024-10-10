@@ -180,6 +180,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
+import me.knighthat.component.tab.TabHeader
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
@@ -752,10 +753,18 @@ fun HomeSongsModern(
                     1f
             )
     ) {
+        TabHeader( R.string.songs ) {
+            val size =
+                if( builtInPlaylist == BuiltInPlaylist.OnDevice )
+                    filteredSongs.size
+                else
+                    items.size
+            HeaderInfo( size.toString(), R.drawable.musical_notes )
+        }
+
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier
-
+            modifier = Modifier.padding( top = TabHeader.height() )
         ) {
 
             stickyHeader {
@@ -764,37 +773,6 @@ fun HomeSongsModern(
                         .fillMaxWidth()
                         .background(colorPalette().background0)
                 ) {
-                    if ( UiType.ViMusic.isCurrent() )
-                        HeaderWithIcon(
-                            title = stringResource(R.string.songs),
-                            iconId = R.drawable.search,
-                            enabled = true,
-                            showIcon = !showSearchTab,
-                            modifier = Modifier,
-                            onClick = onSearchClick
-                        )
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .padding(vertical = 4.dp)
-                            .fillMaxWidth()
-                    ) {
-                        if ( UiType.RiMusic.isCurrent() )
-                            TitleSection(title = stringResource(R.string.songs))
-
-                        HeaderInfo(
-                            title = if (builtInPlaylist == BuiltInPlaylist.OnDevice) "${filteredSongs.size}" else "${items.size}",
-                            iconId = R.drawable.musical_notes
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-                    }
-
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,

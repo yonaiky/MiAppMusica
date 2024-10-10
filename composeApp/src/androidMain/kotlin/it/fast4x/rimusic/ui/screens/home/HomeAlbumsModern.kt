@@ -112,6 +112,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.tab.TabHeader
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import kotlin.random.Random
@@ -206,66 +207,19 @@ fun HomeAlbumsModern(
                 else Dimensions.contentWidthRightBar
             )
     ) {
-
+        TabHeader( R.string.albums ) {
+            HeaderInfo( items.size.toString(), R.drawable.album )
+        }
 
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Adaptive(itemSize.dp + 24.dp),
             //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             modifier = Modifier
+                .padding( top = TabHeader.height() )
                 .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
-
-            item(
-                key = "header",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
-                if ( UiType.ViMusic.isCurrent() )
-                    HeaderWithIcon(
-                        title = stringResource(R.string.albums),
-                        iconId = R.drawable.search,
-                        enabled = true,
-                        showIcon = !showSearchTab,
-                        modifier = Modifier,
-                        onClick = onSearchClick
-                    )
-
-            }
-
-            item(
-                key = "headerNew",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 10.dp, bottom = 4.dp)
-                        .fillMaxWidth()
-                ) {
-                    if (UiType.RiMusic.isCurrent())
-                        TitleSection(title = stringResource(R.string.albums))
-
-                    HeaderInfo(
-                        title = "${items.size}",
-                        iconId = R.drawable.album,
-                        spacer = Dp.Hairline
-                    )
-
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
-
-                }
-
-            }
-
             item(
                 key = "headerButtons",
                 contentType = 0,
