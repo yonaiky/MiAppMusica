@@ -53,11 +53,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
@@ -253,8 +253,8 @@ fun HomeAlbumsModern(
 
                     HeaderInfo(
                         title = "${items.size}",
-                        icon = painterResource(R.drawable.album),
-                        spacer = 0
+                        iconId = R.drawable.album,
+                        spacer = Dp.Hairline
                     )
 
                     Spacer(
