@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -60,15 +65,21 @@ import it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 import it.fast4x.rimusic.extensions.nextvisualizer.views.VisualizerView
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.currentVisualizerKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.typography
 import timber.log.Timber
@@ -235,6 +246,8 @@ fun getVisualizers(): List<Painter> {
     val color = colorPalette().text.hashCode()
     var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
     val binder = LocalPlayerServiceBinder.current
+    val coroutineScope = rememberCoroutineScope()
+    /*
     LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {
         try {
             bitmapCover = getBitmapFromUrl(
@@ -243,6 +256,25 @@ fun getVisualizers(): List<Painter> {
             )
         } catch (e: Exception) {
             Timber.e("Failed get bitmap in NextVisualizer ${e.stackTraceToString()}")
+        }
+    }
+     */
+
+    binder?.player?.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                try {
+                    coroutineScope.launch {
+                        bitmapCover = getBitmapFromUrl(
+                            context,
+                            binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                                .resize(1200, 1200)
+                        )
+                    }
+                } catch (e: Exception) {
+                    Timber.e("Failed get bitmap in NextVisualizer ${e.stackTraceToString()}")
+                }
+            }
         }
     }
 
