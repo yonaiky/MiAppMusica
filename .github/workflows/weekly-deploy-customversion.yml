@@ -74,7 +74,7 @@ jobs:
         tag_name: "custom-version"
         body: |
           <div align="center">
-            <img src="/assets/design/latest/app_logo.svg" width="300" height="100" />
+            <img src="https://github.com/user-attachments/assets/3f576450-4249-4ad9-bd8e-104ce7b4d448" width="300" height="100" />
             <p><b>RiMusic</b> Custom Version</p>
             <p>Remember, the custom version is not an official release.</p>
           </div>
