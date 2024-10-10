@@ -133,6 +133,7 @@ WARNING, the custom version is not an official release, download only if invited
 - [iscle](https://github.com/iscle)
 - [jaimtres](https://github.com/jaimtres)
 - [JZITNIK](https://github.com/jzitnik-dev)
+- [KyNarec](https://github.com/KyNarec)
 - [knighthat](https://github.com/knighthat)
 - [locxter](https://github.com/locxter)
 - [lrusso96](https://github.com/lrusso96)
