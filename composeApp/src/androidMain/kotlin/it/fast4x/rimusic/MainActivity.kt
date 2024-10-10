@@ -777,7 +777,9 @@ class MainActivity :
                     val playerModern: @Composable () -> Unit = {
                         PlayerModern(
                             navController = navController,
-                            onDismiss = { showPlayer = false }
+                            onDismiss = {
+                                showPlayer = false
+                            }
                         )
                     }
 
@@ -890,8 +892,6 @@ class MainActivity :
                                     if (preferences.getBoolean(keepPlayerMinimizedKey, false))
                                         showPlayer = false
                                     else showPlayer = true
-                                } else {
-                                    showPlayer = false
                                 }
                             }
                         }
