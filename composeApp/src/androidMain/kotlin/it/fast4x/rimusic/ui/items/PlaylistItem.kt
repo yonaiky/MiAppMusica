@@ -201,8 +201,7 @@ fun PlaylistItem(
             AsyncImage(
                 model = thumbnailUrl?.thumbnail(thumbnailSizePx),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
-                //modifier = it KOTLIN 2
+                contentScale = ContentScale.Crop
             )
         },
         songCount = songCount,
@@ -235,7 +234,7 @@ fun PlaylistItem(
         modifier = modifier
     ) { //centeredModifier ->
         Box(
-            modifier = Modifier // KOTLIN 2
+            modifier = Modifier
                 .clip(thumbnailShape())
                 .background(color = colorPalette().background4)
                 .requiredSize(thumbnailSizeDp)
