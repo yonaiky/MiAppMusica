@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -348,6 +349,7 @@ fun HomeLibraryModern(
             ) {
                 TabToolBar.Icon(
                     iconId = R.drawable.arrow_up,
+                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
                     onShortClick = { sortOrder = !sortOrder },
                     onLongClick = {
                         menuState.display {
@@ -355,9 +357,7 @@ fun HomeLibraryModern(
                                 title = stringResource(R.string.sorting_order),
                                 onDismiss = menuState::hide,
                                 onName = { sortBy = PlaylistSortBy.Name },
-                                onSongNumber = {
-                                    sortBy = PlaylistSortBy.SongCount
-                                },
+                                onSongNumber = { sortBy = PlaylistSortBy.SongCount },
                                 onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
                                 onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
                             )
