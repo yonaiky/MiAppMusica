@@ -514,92 +514,86 @@ fun HomeLibraryModern(
             }
 
             // Sticky search bar
-            if (searching)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier
-                        //.requiredHeight(30.dp)
-                        .padding(all = 10.dp)
-                        .fillMaxWidth()
-                ) {
-                    AnimatedVisibility(visible = searching) {
-                        val focusRequester = remember { FocusRequester() }
-                        val focusManager = LocalFocusManager.current
+            AnimatedVisibility(
+                visible = searching,
+                modifier = Modifier.padding( all = 10.dp )
+                                   .fillMaxWidth()
+            ) {
+                val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
 
-                        LaunchedEffect(searching) {
-                            if (isSearchInputFocused) focusRequester.requestFocus()
-                        }
-
-                        var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
-                        BasicTextField(
-                            value = searchInput,
-                            onValueChange = {
-                                searchInput = it.copy(
-                                    selection = TextRange(it.text.length)
-                                )
-                                filter = it.text
-                            },
-                            textStyle = typography().xs.semiBold,
-                            singleLine = true,
-                            maxLines = 1,
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                focusManager.clearFocus()
-                                searching = filter.isNotBlank()
-                            }),
-                            cursorBrush = SolidColor(colorPalette().text),
-                            decorationBox = { innerTextField ->
-                                Box(
-                                    contentAlignment = Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(horizontal = 10.dp)
-                                ) {
-                                    IconButton(
-                                        onClick = {},
-                                        icon = R.drawable.search,
-                                        color = colorPalette().favoritesIcon,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterStart)
-                                            .size(16.dp)
-                                    )
-                                }
-                                Box(
-                                    contentAlignment = Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(horizontal = 30.dp)
-                                ) {
-                                    androidx.compose.animation.AnimatedVisibility(
-                                        visible = filter.isBlank(),
-                                        enter = fadeIn(tween(100)),
-                                        exit = fadeOut(tween(100)),
-                                    ) {
-                                        BasicText(
-                                            text = stringResource(R.string.search),
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            style = typography().xs.semiBold.secondary.copy(
-                                                color = colorPalette().textDisabled
-                                            )
-                                        )
-                                    }
-
-                                    innerTextField()
-                                }
-                            },
-                            modifier = Modifier
-                                .height(30.dp)
-                                .fillMaxWidth()
-                                .background(
-                                    colorPalette().background4,
-                                    shape = thumbnailRoundness.shape()
-                                )
-                                .focusRequester(focusRequester)
-                        )
-                    }
+                LaunchedEffect(searching) {
+                    if (isSearchInputFocused) focusRequester.requestFocus()
                 }
+
+                var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
+                BasicTextField(
+                    value = searchInput,
+                    onValueChange = {
+                        searchInput = it.copy(
+                            selection = TextRange(it.text.length)
+                        )
+                        filter = it.text
+                    },
+                    textStyle = typography().xs.semiBold,
+                    singleLine = true,
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        focusManager.clearFocus()
+                        searching = filter.isNotBlank()
+                    }),
+                    cursorBrush = SolidColor(colorPalette().text),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 10.dp)
+                        ) {
+                            IconButton(
+                                onClick = {},
+                                icon = R.drawable.search,
+                                color = colorPalette().favoritesIcon,
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .size(16.dp)
+                            )
+                        }
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 30.dp)
+                        ) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = filter.isBlank(),
+                                enter = fadeIn(tween(100)),
+                                exit = fadeOut(tween(100)),
+                            ) {
+                                BasicText(
+                                    text = stringResource(R.string.search),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = typography().xs.semiBold.secondary.copy(
+                                        color = colorPalette().textDisabled
+                                    )
+                                )
+                            }
+
+                            innerTextField()
+                        }
+                    },
+                    modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth()
+                        .background(
+                            colorPalette().background4,
+                            shape = thumbnailRoundness.shape()
+                        )
+                        .focusRequester(focusRequester)
+                )
+            }
 
             LazyVerticalGrid(
                 state = lazyGridState,
