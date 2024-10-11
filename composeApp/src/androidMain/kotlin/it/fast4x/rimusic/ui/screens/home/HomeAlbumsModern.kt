@@ -49,7 +49,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -57,7 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
@@ -79,9 +77,7 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -89,7 +85,6 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
-import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -112,6 +107,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -235,150 +231,87 @@ fun HomeAlbumsModern(
                         .fillMaxWidth()
                 ) {
 
-                    HeaderIconButton(
-                        icon = R.drawable.arrow_up,
-                        color = colorPalette().text,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
-                            .combinedClickable(
-                                onClick = { sortOrder = !sortOrder },
-                                onLongClick = {
-                                    menuState.display {
-                                        SortMenu(
-                                            title = stringResource(R.string.sorting_order),
-                                            onDismiss = menuState::hide,
-                                            onTitle = { sortBy = AlbumSortBy.Title },
-                                            onYear = { sortBy = AlbumSortBy.Year },
-                                            onDateAdded = { sortBy = AlbumSortBy.DateAdded },
-                                            onArtist = { sortBy = AlbumSortBy.Artist },
-                                            onSongNumber = { sortBy = AlbumSortBy.Songs },
-                                            onDuration = { sortBy = AlbumSortBy.Duration }
-                                        )
-                                    }
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = { searching = !searching },
-                        icon = R.drawable.search_circle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                    )
-
-                    HeaderIconButton(
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                            .rotate(rotationAngle),
-                        icon = R.drawable.dice,
-                        enabled = items.isNotEmpty(),
-                        color = colorPalette().text,
-                        onClick = {
-                            isRotated = !isRotated
-                            //onAlbumClick(items.get((0..<items.size).random()))
-                            onAlbumClick(
-                                items.get(
-                                    Random(System.currentTimeMillis()).nextInt(0, items.size - 1)
-                                )
-                            )
-                        },
-                        iconSize = 16.dp
-                    )
-
-                    HeaderIconButton(
-                        icon = R.drawable.shuffle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable (
-                                onClick = {
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            Database.songsInAllBookmarkedAlbums()
-                                                .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                        }
-                                    }
-
-                                },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.shuffle),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = {
+                    TabToolBar.Icon(
+                        iconId = R.drawable.arrow_up,
+                        onShortClick = { sortOrder = !sortOrder },
+                        onLongClick = {
                             menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.small),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Small.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.medium),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Medium.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.big),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Big.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                }
+                                SortMenu(
+                                    title = stringResource(R.string.sorting_order),
+                                    onDismiss = menuState::hide,
+                                    onTitle = { sortBy = AlbumSortBy.Title },
+                                    onYear = { sortBy = AlbumSortBy.Year },
+                                    onDateAdded = { sortBy = AlbumSortBy.DateAdded },
+                                    onArtist = { sortBy = AlbumSortBy.Artist },
+                                    onSongNumber = { sortBy = AlbumSortBy.Songs },
+                                    onDuration = { sortBy = AlbumSortBy.Duration }
+                                )
                             }
-                        },
-                        icon = R.drawable.resize,
-                        color = colorPalette().text,
-                        modifier = Modifier.padding(horizontal = 2.dp)
+                        }
                     )
 
+                    TabToolBar.Icon( R.drawable.search_circle ) { searching = !searching }
 
-                    /*
-                    BasicText(
-                        text = when (sortBy) {
-                            AlbumSortBy.Title -> stringResource(R.string.sort_title)
-                            AlbumSortBy.Year -> stringResource(R.string.sort_year)
-                            AlbumSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                        },
-                        style = typography().xs.semiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .clickable {
-                                menuState.display{
-                                    SortMenu(
-                                        title = stringResource(R.string.sorting_order),
-                                        onDismiss = menuState::hide,
-                                        onTitle = { sortBy = AlbumSortBy.Title },
-                                        onYear = { sortBy = AlbumSortBy.Year },
-                                        onDateAdded = { sortBy = AlbumSortBy.DateAdded },
-                                    )
+                    TabToolBar.Icon(
+                        iconId = R.drawable.dice,
+                        enabled = items.isNotEmpty(),
+                        modifier = Modifier.rotate( rotationAngle )
+                    ) {
+                        isRotated = !isRotated
+
+                        val randIndex = Random( System.currentTimeMillis() ).nextInt( items.size )
+                        onAlbumClick( items[randIndex] )
+                    }
+
+                    TabToolBar.Icon(
+                        iconId = R.drawable.shuffle,
+                        onShortClick = {
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    Database.songsInAllBookmarkedAlbums()
+                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
                                 }
-                                //showSortTypeSelectDialog = true
                             }
+
+                        },
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.shuffle),
+                                context = context
+                            )
+                        }
                     )
-                    */
 
-
+                    TabToolBar.Icon( R.drawable.resize ) {
+                        menuState.display {
+                            Menu {
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.small),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Small.size
+                                        menuState.hide()
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.medium),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Medium.size
+                                        menuState.hide()
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.big),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Big.size
+                                        menuState.hide()
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
             if (searching)

@@ -19,7 +19,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -115,7 +114,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
@@ -126,7 +124,6 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
-import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
@@ -180,6 +177,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
+import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -798,187 +796,151 @@ fun HomeSongsModern(
                             .fillMaxWidth()
                     ) {
 
-                        if (builtInPlaylist != BuiltInPlaylist.Top) {
-                            HeaderIconButton(
-                                icon = R.drawable.arrow_up,
-                                color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 2.dp)
-                                    .graphicsLayer {
-                                        rotationZ =
-                                            sortOrderIconRotation
-                                    }
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                                                sortOrder = !sortOrder
-                                            else sortOrderOnDevice = !sortOrderOnDevice
-                                        },
-                                        onLongClick = {
-                                            menuState.display {
-                                                when (builtInPlaylist) {
-                                                    BuiltInPlaylist.OnDevice -> {
-                                                        if (!showFolders)
-                                                            SortMenu(
-                                                                title = stringResource(R.string.sorting_order),
-                                                                onDismiss = menuState::hide,
-                                                                onTitle = {
-                                                                    sortByOnDevice =
-                                                                        OnDeviceSongSortBy.Title
-                                                                },
-                                                                onDateAdded = {
-                                                                    sortByOnDevice =
-                                                                        OnDeviceSongSortBy.DateAdded
-                                                                },
-                                                                onArtist = {
-                                                                    sortByOnDevice =
-                                                                        OnDeviceSongSortBy.Artist
-                                                                },
-                                                                onAlbum = {
-                                                                    sortByOnDevice =
-                                                                        OnDeviceSongSortBy.Album
-                                                                },
-                                                            )
-                                                        else
-                                                            SortMenu(
-                                                                title = stringResource(R.string.sorting_order),
-                                                                onDismiss = menuState::hide,
-                                                                onTitle = {
-                                                                    sortByFolderOnDevice =
-                                                                        OnDeviceFolderSortBy.Title
-                                                                },
-                                                                onArtist = {
-                                                                    sortByFolderOnDevice =
-                                                                        OnDeviceFolderSortBy.Artist
-                                                                },
-                                                                onDuration = {
-                                                                    sortByFolderOnDevice =
-                                                                        OnDeviceFolderSortBy.Duration
-                                                                },
-                                                            )
-                                                    }
-
-                                                    else -> {
-                                                        SortMenu(
-                                                            title = stringResource(R.string.sorting_order),
-                                                            onDismiss = menuState::hide,
-                                                            onTitle = { sortBy = SongSortBy.Title },
-                                                            onDatePlayed = {
-                                                                sortBy = SongSortBy.DatePlayed
-                                                            },
-                                                            onDateAdded = {
-                                                                sortBy = SongSortBy.DateAdded
-                                                            },
-                                                            onPlayTime = {
-                                                                sortBy = SongSortBy.PlayTime
-                                                            },
-                                                            onDateLiked = {
-                                                                sortBy = SongSortBy.DateLiked
-                                                            },
-                                                            onArtist = {
-                                                                sortBy = SongSortBy.Artist
-                                                            },
-                                                            onDuration = {
-                                                                sortBy = SongSortBy.Duration
-                                                            },
-                                                            onAlbum = {
-                                                                sortBy = SongSortBy.AlbumName
-                                                            },
-                                                        )
-                                                    }
-                                                }
-
+                        if (builtInPlaylist != BuiltInPlaylist.Top)
+                            TabToolBar.Icon(
+                                iconId = R.drawable.arrow_up,
+                                modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
+                                onShortClick = {
+                                    if (builtInPlaylist != BuiltInPlaylist.OnDevice)
+                                        sortOrder = !sortOrder
+                                    else
+                                        sortOrderOnDevice = !sortOrderOnDevice
+                                },
+                                onLongClick = {
+                                    menuState.display {
+                                        when (builtInPlaylist) {
+                                            BuiltInPlaylist.OnDevice -> {
+                                                if (!showFolders)
+                                                    SortMenu(
+                                                        title = stringResource(R.string.sorting_order),
+                                                        onDismiss = menuState::hide,
+                                                        onTitle = {
+                                                            sortByOnDevice =
+                                                                OnDeviceSongSortBy.Title
+                                                        },
+                                                        onDateAdded = {
+                                                            sortByOnDevice =
+                                                                OnDeviceSongSortBy.DateAdded
+                                                        },
+                                                        onArtist = {
+                                                            sortByOnDevice =
+                                                                OnDeviceSongSortBy.Artist
+                                                        },
+                                                        onAlbum = {
+                                                            sortByOnDevice =
+                                                                OnDeviceSongSortBy.Album
+                                                        },
+                                                    )
+                                                else
+                                                    SortMenu(
+                                                        title = stringResource(R.string.sorting_order),
+                                                        onDismiss = menuState::hide,
+                                                        onTitle = {
+                                                            sortByFolderOnDevice =
+                                                                OnDeviceFolderSortBy.Title
+                                                        },
+                                                        onArtist = {
+                                                            sortByFolderOnDevice =
+                                                                OnDeviceFolderSortBy.Artist
+                                                        },
+                                                        onDuration = {
+                                                            sortByFolderOnDevice =
+                                                                OnDeviceFolderSortBy.Duration
+                                                        },
+                                                    )
                                             }
-                                        }
-                                    )
-                            )
-                        }
-                        if (builtInPlaylist == BuiltInPlaylist.Top) {
-                            HeaderIconButton(
-                                icon = R.drawable.stat,
-                                color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 2.dp)
-                                    .clickable(
-                                        onClick = {
-                                            menuState.display {
-                                                PeriodMenu(
-                                                    onDismiss = {
-                                                        topPlaylistPeriod = it
-                                                        menuState.hide()
-                                                    }
+
+                                            else -> {
+                                                SortMenu(
+                                                    title = stringResource(R.string.sorting_order),
+                                                    onDismiss = menuState::hide,
+                                                    onTitle = { sortBy = SongSortBy.Title },
+                                                    onDatePlayed = {
+                                                        sortBy = SongSortBy.DatePlayed
+                                                    },
+                                                    onDateAdded = {
+                                                        sortBy = SongSortBy.DateAdded
+                                                    },
+                                                    onPlayTime = {
+                                                        sortBy = SongSortBy.PlayTime
+                                                    },
+                                                    onDateLiked = {
+                                                        sortBy = SongSortBy.DateLiked
+                                                    },
+                                                    onArtist = {
+                                                        sortBy = SongSortBy.Artist
+                                                    },
+                                                    onDuration = {
+                                                        sortBy = SongSortBy.Duration
+                                                    },
+                                                    onAlbum = {
+                                                        sortBy = SongSortBy.AlbumName
+                                                    },
                                                 )
                                             }
                                         }
-                                    )
-                            )
-                        }
 
-                        HeaderIconButton(
-                            onClick = { searching = !searching },
-                            icon = R.drawable.search_circle,
-                            color = colorPalette().text,
-                            iconSize = 24.dp,
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                        )
-
-                        HeaderIconButton(
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                                .combinedClickable(
-                                    onClick = {
-                                        nowPlayingItem = -1
-                                        scrollToNowPlaying = false
-                                        items
-                                            .forEachIndexed { index, song ->
-                                                if (song.song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                                    nowPlayingItem = index
-                                            }
-
-                                        if (nowPlayingItem > -1)
-                                            scrollToNowPlaying = true
-                                    },
-                                    onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                                            context = context
-                                        )
                                     }
-                                ),
-                            icon = R.drawable.locate,
+                                }
+                            )
+
+                        if (builtInPlaylist == BuiltInPlaylist.Top)
+                            TabToolBar.Icon(iconId = R.drawable.stat) {
+                                menuState.display {
+                                    PeriodMenu(
+                                        onDismiss = {
+                                            topPlaylistPeriod = it
+                                            menuState.hide()
+                                        }
+                                    )
+                                }
+                            }
+
+                        TabToolBar.Icon( R.drawable.search_circle ) { searching = !searching }
+
+                        TabToolBar.Icon(
+                            iconId = R.drawable.locate,
+                            tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                            onClick = {}
+                            onShortClick = {
+                                nowPlayingItem = -1
+                                scrollToNowPlaying = false
+                                items
+                                    .forEachIndexed { index, song ->
+                                        if (song.song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
+                                            nowPlayingItem = index
+                                    }
+
+                                if (nowPlayingItem > -1)
+                                    scrollToNowPlaying = true
+                            },
+                            onLongClick = {
+                                SmartMessage(
+                                    context.resources.getString(R.string.info_find_the_song_that_is_playing),
+                                    context = context
+                                )
+                            }
                         )
+
                         LaunchedEffect(scrollToNowPlaying) {
                             if (scrollToNowPlaying)
                                 lazyListState.scrollToItem(nowPlayingItem, 1)
                             scrollToNowPlaying = false
                         }
 
-                        if (builtInPlaylist == BuiltInPlaylist.Favorites) {
-                            HeaderIconButton(
-                                icon = R.drawable.downloaded,
+                        if (builtInPlaylist == BuiltInPlaylist.Favorites)
+                            TabToolBar.Icon(
+                                iconId = R.drawable.downloaded,
+                                tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            showConfirmDownloadAllDialog = true
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_download_all_songs),
-                                                context = context
-                                            )
-                                        }
+                                onShortClick ={ showConfirmDownloadAllDialog = true },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.info_download_all_songs),
+                                        context = context
                                     )
+                                }
                             )
-                        }
 
                         if (showConfirmDownloadAllDialog) {
                             ConfirmationDialog(
@@ -1017,23 +979,17 @@ fun HomeSongsModern(
                         }
 
                         if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded) {
-                            HeaderIconButton(
-                                icon = R.drawable.download,
+                            TabToolBar.Icon(
+                                iconId = R.drawable.download,
+                                tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            showConfirmDeleteDownloadDialog = true
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_remove_all_downloaded_songs),
-                                                context = context
-                                            )
-                                        }
+                                onShortClick = { showConfirmDeleteDownloadDialog = true },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.info_remove_all_downloaded_songs),
+                                        context = context
                                     )
+                                }
                             )
 
                             if (showConfirmDeleteDownloadDialog) {
@@ -1071,106 +1027,78 @@ fun HomeSongsModern(
                             }
                         }
 
-                        //if (builtInPlaylist == BuiltInPlaylist.All)
-                            HeaderIconButton(
-                                onClick = {},
-                                icon = if (showHiddenSongs == 0) R.drawable.eye_off else R.drawable.eye,
-                                color = colorPalette().text,
-                                modifier = Modifier
-                                    .padding(horizontal = 2.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_show_hide_hidden_songs),
-                                                context = context
-                                            )
-                                        }
-                                    )
-                            )
-
-                        HeaderIconButton(
-                            icon = R.drawable.shuffle,
-                            enabled = items.isNotEmpty(),
-                            color = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                                .combinedClickable(
-                                    onClick = {
-                                        if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
-                                            filteredSongs
-                                        if (items.isNotEmpty()) {
-                                            val itemsLimited =
-                                                if (items.size > maxSongsInQueue.number) items
-                                                    .shuffled()
-                                                    .take(maxSongsInQueue.number.toInt()) else items
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayFromBeginning(
-                                                itemsLimited
-                                                    .shuffled()
-                                                    .map(SongEntity::asMediaItem)
-                                            )
-                                        }
-                                    },
-                                    onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_shuffle),
-                                            context = context
-                                        )
-                                    }
+                        TabToolBar.Toggleable(
+                            onIconId = R.drawable.eye,
+                            offIconId = R.drawable.eye_off,
+                            toggleCondition = showHiddenSongs != 0,
+                            onShortClick = {
+                                showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
+                            },
+                            onLongClick = {
+                                SmartMessage(
+                                    context.resources.getString(R.string.info_show_hide_hidden_songs),
+                                    context = context
                                 )
+                            }
+                        )
+
+                        TabToolBar.Icon(
+                            iconId = R.drawable.shuffle,
+                            tint = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                            enabled = items.isNotEmpty(),
+                            onShortClick = {
+                                if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
+                                    filteredSongs
+                                if (items.isNotEmpty()) {
+                                    val itemsLimited =
+                                        if (items.size > maxSongsInQueue.number) items
+                                            .shuffled()
+                                            .take(maxSongsInQueue.number.toInt()) else items
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayFromBeginning(
+                                        itemsLimited
+                                            .shuffled()
+                                            .map(SongEntity::asMediaItem)
+                                    )
+                                }
+                            },
+                            onLongClick = {
+                                SmartMessage(
+                                    context.resources.getString(R.string.info_shuffle),
+                                    context = context
+                                )
+                            }
                         )
 
                         if (builtInPlaylist == BuiltInPlaylist.Favorites)
-                            HeaderIconButton(
-                                icon = R.drawable.random,
-                                enabled = true,
-                                color = if (autoShuffle) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            autoShuffle = !autoShuffle
-                                        },
-                                        onLongClick = {
-                                            SmartMessage("Random sorting", context = context)
-                                        }
-                                    )
+                            TabToolBar.Icon(
+                                iconId = R.drawable.random,
+                                tint = if (autoShuffle) colorPalette().text else colorPalette().textDisabled,
+                                onShortClick = { autoShuffle = !autoShuffle },
+                                // TODO: Add string to language pack
+                                onLongClick = { SmartMessage( "Random sorting", context = context) }
                             )
-
-                        if (builtInPlaylist != BuiltInPlaylist.Favorites)
-                            HeaderIconButton(
-                                icon = R.drawable.resource_import,
-                                color = colorPalette().text,
-                                //iconSize = 22.dp,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 2.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            try {
-                                                importLauncher.launch(
-                                                    arrayOf(
-                                                        "text/*"
-                                                    )
-                                                )
-                                            } catch (e: ActivityNotFoundException) {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.info_not_find_app_open_doc),
-                                                    type = PopupType.Warning, context = context
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.import_favorites),
-                                                context = context
-                                            )
-                                        }
+                        else
+                            TabToolBar.Icon(
+                                iconId = R.drawable.resource_import,
+                                onShortClick = {
+                                    try {
+                                        importLauncher.launch(
+                                            arrayOf( "text/*" )
+                                        )
+                                    } catch (e: ActivityNotFoundException) {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_not_find_app_open_doc),
+                                            type = PopupType.Warning, context = context
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.import_favorites),
+                                        context = context
                                     )
+                                }
                             )
 
                         HeaderIconButton(

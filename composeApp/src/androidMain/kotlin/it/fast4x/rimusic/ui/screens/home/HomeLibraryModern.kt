@@ -14,10 +14,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -50,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -85,9 +82,7 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -95,7 +90,6 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
-import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -104,7 +98,6 @@ import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.autosyncKey
-import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
@@ -128,6 +121,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.typography
 import timber.log.Timber
@@ -364,215 +358,171 @@ fun HomeLibraryModern(
                         .fillMaxWidth()
                 ) {
 
-                    HeaderIconButton(
-                        icon = R.drawable.arrow_up,
-                        color = colorPalette().text,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
-                            .combinedClickable(
-                                onClick = { sortOrder = !sortOrder },
-                                onLongClick = {
-                                    menuState.display {
-                                        SortMenu(
-                                            title = stringResource(R.string.sorting_order),
-                                            onDismiss = menuState::hide,
-                                            onName = { sortBy = PlaylistSortBy.Name },
-                                            onSongNumber = {
-                                                sortBy = PlaylistSortBy.SongCount
-                                            },
-                                            onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
-                                            onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
-                                        )
-                                    }
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = {},
-                        icon = R.drawable.sync,
-                        color = if (autosync) colorPalette().text else colorPalette().textDisabled,
-                        iconSize = 22.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                            .combinedClickable(onClick = { autosync = !autosync },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.autosync),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = {
-                            searching = !searching
-                            isSearchInputFocused = searching
-                        },
-                        icon = R.drawable.search_circle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.shuffle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            when (playlistType) {
-                                                PlaylistsType.Playlist -> {
-                                                    Database.songsInAllPlaylists()
-                                                        .collect {
-                                                            PlayShuffledSongs(
-                                                                songsList = it,
-                                                                binder = binder,
-                                                                context = context
-                                                            )
-                                                        }
-                                                }
-
-                                                PlaylistsType.PipedPlaylist -> {
-                                                    Database.songsInAllPipedPlaylists()
-                                                        .collect {
-                                                            PlayShuffledSongs(
-                                                                songsList = it,
-                                                                binder = binder,
-                                                                context = context
-                                                            )
-                                                        }
-                                                }
-
-                                                PlaylistsType.PinnedPlaylist -> {
-                                                    Database.songsInAllPinnedPlaylists()
-                                                        .collect {
-                                                            PlayShuffledSongs(
-                                                                songsList = it,
-                                                                binder = binder,
-                                                                context = context
-                                                            )
-                                                        }
-                                                }
-
-                                                PlaylistsType.MonthlyPlaylist -> {
-                                                    Database.songsInAllMonthlyPlaylists()
-                                                        .collect {
-                                                            PlayShuffledSongs(
-                                                                songsList = it,
-                                                                binder = binder,
-                                                                context = context
-                                                            )
-                                                        }
-                                                }
-                                            }
-
-                                        }
-                                    }
-
-                                },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.shuffle),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.add_in_playlist,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        onClick = { },
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable(
-                                onClick = { isCreatingANewPlaylist = true },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.create_new_playlist),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.resource_import,
-                        color = colorPalette().text,
-                        iconSize = 22.dp,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable(
-                                onClick = {
-                                    try {
-                                        importLauncher.launch(
-                                            arrayOf(
-                                                "text/*"
-                                            )
-                                        )
-                                    } catch (e: ActivityNotFoundException) {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_not_find_app_open_doc),
-                                            type = PopupType.Warning, context = context
-                                        )
-                                    }
-                                },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.import_playlist),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = {
+                    TabToolBar.Icon(
+                        iconId = R.drawable.arrow_up,
+                        onShortClick = { sortOrder = !sortOrder },
+                        onLongClick = {
                             menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.small),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Small.size
-                                            menuState.hide()
+                                SortMenu(
+                                    title = stringResource(R.string.sorting_order),
+                                    onDismiss = menuState::hide,
+                                    onName = { sortBy = PlaylistSortBy.Name },
+                                    onSongNumber = {
+                                        sortBy = PlaylistSortBy.SongCount
+                                    },
+                                    onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
+                                    onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
+                                )
+                            }
+                        }
+                    )
+
+                    TabToolBar.Icon(
+                        iconId = R.drawable.sync,
+                        tint = if (autosync) colorPalette().text else colorPalette().textDisabled,
+                        onShortClick = { autosync = !autosync },
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.autosync),
+                                context = context
+                            )
+                        }
+                    )
+
+                    TabToolBar.Icon( iconId  = R.drawable.search_circle ) {
+                        searching = !searching
+                        isSearchInputFocused = searching
+                    }
+
+                    TabToolBar.Icon(
+                        iconId = R.drawable.shuffle,
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.shuffle),
+                                context = context
+                            )
+                        },
+                        onShortClick = {
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    when (playlistType) {
+                                        PlaylistsType.Playlist -> {
+                                            Database.songsInAllPlaylists()
+                                                .collect {
+                                                    PlayShuffledSongs(
+                                                        songsList = it,
+                                                        binder = binder,
+                                                        context = context
+                                                    )
+                                                }
                                         }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.medium),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Medium.size
-                                            menuState.hide()
+
+                                        PlaylistsType.PipedPlaylist -> {
+                                            Database.songsInAllPipedPlaylists()
+                                                .collect {
+                                                    PlayShuffledSongs(
+                                                        songsList = it,
+                                                        binder = binder,
+                                                        context = context
+                                                    )
+                                                }
                                         }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.big),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Big.size
-                                            menuState.hide()
+
+                                        PlaylistsType.PinnedPlaylist -> {
+                                            Database.songsInAllPinnedPlaylists()
+                                                .collect {
+                                                    PlayShuffledSongs(
+                                                        songsList = it,
+                                                        binder = binder,
+                                                        context = context
+                                                    )
+                                                }
                                         }
-                                    )
+
+                                        PlaylistsType.MonthlyPlaylist -> {
+                                            Database.songsInAllMonthlyPlaylists()
+                                                .collect {
+                                                    PlayShuffledSongs(
+                                                        songsList = it,
+                                                        binder = binder,
+                                                        context = context
+                                                    )
+                                                }
+                                        }
+                                    }
+
                                 }
                             }
-                        },
-                        icon = R.drawable.resize,
-                        color = colorPalette().text,
-                        iconSize = 22.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
+
+                        }
                     )
 
+                    TabToolBar.Icon(
+                        iconId =  R.drawable.add_in_playlist,
+                        onShortClick = { isCreatingANewPlaylist = true },
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.create_new_playlist),
+                                context = context
+                            )
+                        }
+                    )
+
+                    TabToolBar.Icon(
+                        iconId = R.drawable.resource_import,
+                        size = 30.dp,
+                        onShortClick = {
+                            try {
+                                importLauncher.launch(
+                                    arrayOf(
+                                        "text/*"
+                                    )
+                                )
+                            } catch (e: ActivityNotFoundException) {
+                                SmartMessage(
+                                    context.resources.getString(R.string.info_not_find_app_open_doc),
+                                    type = PopupType.Warning, context = context
+                                )
+                            }
+                        },
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.import_playlist),
+                                context = context
+                            )
+                        }
+                    )
+
+                    TabToolBar.Icon( R.drawable.resize ) {
+                        menuState.display {
+                            Menu {
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.small),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Small.size
+                                        menuState.hide()
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.medium),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Medium.size
+                                        menuState.hide()
+                                    }
+                                )
+                                MenuEntry(
+                                    icon = R.drawable.arrow_forward,
+                                    text = stringResource(R.string.big),
+                                    onClick = {
+                                        itemSize = LibraryItemSize.Big.size
+                                        menuState.hide()
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
