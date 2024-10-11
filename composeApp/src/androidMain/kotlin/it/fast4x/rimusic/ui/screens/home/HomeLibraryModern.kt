@@ -520,10 +520,10 @@ fun HomeLibraryModern(
                                    .fillMaxWidth()
             ) {
                 val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
 
-                LaunchedEffect(searching) {
-                    if (isSearchInputFocused) focusRequester.requestFocus()
+                LaunchedEffect(searching, isSearchInputFocused) {
+                    if( searching && isSearchInputFocused )
+                        focusRequester.requestFocus()
                 }
 
                 var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
@@ -531,7 +531,7 @@ fun HomeLibraryModern(
                     value = searchInput,
                     onValueChange = {
                         searchInput = it.copy(
-                            selection = TextRange(it.text.length)
+                            selection = TextRange( it.text.length )
                         )
                         filter = it.text
                     },
@@ -540,8 +540,8 @@ fun HomeLibraryModern(
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
                         searching = filter.isNotBlank()
+                        isSearchInputFocused = filter.isNotBlank()
                     }),
                     cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
