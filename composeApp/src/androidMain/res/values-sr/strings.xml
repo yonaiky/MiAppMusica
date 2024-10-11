@@ -756,4 +756,7 @@
     <string name="skip_media_on_error">Autoskip on error</string>
     <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
+    <string name="login_required_to_play_this_media">Login required to play this media</string>
+    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
+    <string name="search_results_for">Search results for:</string>
 </resources>
