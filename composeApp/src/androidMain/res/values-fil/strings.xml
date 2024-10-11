@@ -33,7 +33,7 @@
     <string name="from_wikipedia_cca">Mula sa Wikipedia sa ilalim ng Creative Commons Attribution CC-BY-SA 3.0</string>
     <string name="overview">Ang Overview</string>
     <string name="singles">Singles</string>
-    <string name="library">Library</string>
+    <string name="library">Libraryo</string>
     <string name="artist_no_release_album">Hindi pa naglabas ng album ang artist</string>
     <string name="artist_no_release_single">Hindi pa naglabas ng single ang artist</string>
     <string name="delete_playlist">Gusto mo ba talagang burahin ang playlist na ito?</string>
@@ -226,7 +226,7 @@
     <string name="disable_horizontal_swipe">Patayin ang horizontal swipe</string>
     <string name="disable_song_switching_via_swipe">Patayin ang song switching via swipe</string>
     <string name="interface_in_use">Itong interface ay ginagamit</string>
-    <string name="user_interface">User interface</string>
+    <string name="user_interface">Interface ng user</string>
     <string name="ui_tab">UI</string>
     <string name="system_language">Lengguwahe ng System</string>
     <string name="biggest">Pinakamalaki</string>
