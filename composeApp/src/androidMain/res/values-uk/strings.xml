@@ -715,7 +715,7 @@
     <string name="lang_interlingua">Interlingua</string>
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
-    <string name="error_unknown">Unknown error</string>
+    <string name="error_unknown">Невідома помилка</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
@@ -756,4 +756,7 @@
     <string name="skip_media_on_error">Autoskip on error</string>
     <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
+    <string name="login_required_to_play_this_media">Login required to play this media</string>
+    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
+    <string name="search_results_for">Search results for:</string>
 </resources>
