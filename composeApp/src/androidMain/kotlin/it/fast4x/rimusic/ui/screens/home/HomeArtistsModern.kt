@@ -15,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -175,239 +176,216 @@ fun HomeArtistsModern(
                     1f
             )
     ) {
-        TabHeader( R.string.artists ) {
-            HeaderInfo(items.size.toString(), R.drawable.artists)
-        }
+        Column( Modifier.fillMaxSize() ) {
+            // Sticky tab's title
+            TabHeader( R.string.artists ) {
+                HeaderInfo(items.size.toString(), R.drawable.artists)
+            }
 
-        LazyVerticalGrid(
-            state = lazyGridState,
-            columns = GridCells.Adaptive(itemSize.dp + 24.dp),
-            //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
-            modifier = Modifier
-                .padding( top = TabHeader.height() )
-                .background(colorPalette().background0)
-                .fillMaxSize()
-        ) {
-            item(
-                key = "headerButtons",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(vertical = 4.dp)
-                        .fillMaxWidth()
-                ){
-
-                    TabToolBar.Icon(
-                        iconId = R.drawable.arrow_up,
-                        modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
-                        onShortClick = { sortOrder = !sortOrder },
-                        onLongClick = {
-                            menuState.display {
-                                SortMenu(
-                                    title = stringResource(R.string.sorting_order),
-                                    onDismiss = menuState::hide,
-                                    onName = { sortBy = ArtistSortBy.Name },
-                                    onDateAdded = { sortBy = ArtistSortBy.DateAdded },
-                                )
-                            }
-                        }
-                    )
-
-                    TabToolBar.Icon(iconId = R.drawable.search_circle) { searching = !searching }
-
-                    TabToolBar.Icon(
-                        iconId = R.drawable.dice,
-                        enabled = items.isNotEmpty(),
-                        modifier = Modifier.rotate( rotationAngle )
-                    ) {
-                        isRotated = !isRotated
-
-                        val randIndex = Random( System.currentTimeMillis() ).nextInt( items.size )
-                        onArtistClick( items[randIndex] )
-                    }
-
-                    TabToolBar.Icon(
-                        iconId = R.drawable.shuffle,
-                        onShortClick = {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    Database.songsInAllFollowedArtists()
-                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                }
-                            }
-                        },
-                        onLongClick = {
-                            SmartMessage(
-                                context.resources.getString(R.string.shuffle),
-                                context = context
+            // Sticky tab's tool bar
+            Row (
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 4.dp)
+                    .fillMaxWidth()
+            ){
+                TabToolBar.Icon(
+                    iconId = R.drawable.arrow_up,
+                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
+                    onShortClick = { sortOrder = !sortOrder },
+                    onLongClick = {
+                        menuState.display {
+                            SortMenu(
+                                title = stringResource(R.string.sorting_order),
+                                onDismiss = menuState::hide,
+                                onName = { sortBy = ArtistSortBy.Name },
+                                onDateAdded = { sortBy = ArtistSortBy.DateAdded },
                             )
                         }
-                    )
+                    }
+                )
 
-                    TabToolBar.Icon( R.drawable.resize ) {
-                        menuState.display {
-                            Menu {
-                                MenuEntry(
-                                    icon = R.drawable.arrow_forward,
-                                    text = stringResource(R.string.small),
-                                    onClick = {
-                                        itemSize = LibraryItemSize.Small.size
-                                        menuState.hide()
-                                    }
-                                )
-                                MenuEntry(
-                                    icon = R.drawable.arrow_forward,
-                                    text = stringResource(R.string.medium),
-                                    onClick = {
-                                        itemSize = LibraryItemSize.Medium.size
-                                        menuState.hide()
-                                    }
-                                )
-                                MenuEntry(
-                                    icon = R.drawable.arrow_forward,
-                                    text = stringResource(R.string.big),
-                                    onClick = {
-                                        itemSize = LibraryItemSize.Big.size
-                                        menuState.hide()
-                                    }
-                                )
+                TabToolBar.Icon(iconId = R.drawable.search_circle) { searching = !searching }
+
+                TabToolBar.Icon(
+                    iconId = R.drawable.dice,
+                    enabled = items.isNotEmpty(),
+                    modifier = Modifier.rotate( rotationAngle )
+                ) {
+                    isRotated = !isRotated
+
+                    val randIndex = Random( System.currentTimeMillis() ).nextInt( items.size )
+                    onArtistClick( items[randIndex] )
+                }
+
+                TabToolBar.Icon(
+                    iconId = R.drawable.shuffle,
+                    onShortClick = {
+                        coroutineScope.launch {
+                            withContext(Dispatchers.IO) {
+                                Database.songsInAllFollowedArtists()
+                                    .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
                             }
+                        }
+                    },
+                    onLongClick = {
+                        SmartMessage(
+                            context.resources.getString(R.string.shuffle),
+                            context = context
+                        )
+                    }
+                )
+
+                TabToolBar.Icon( R.drawable.resize ) {
+                    menuState.display {
+                        Menu {
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.small),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Small.size
+                                    menuState.hide()
+                                }
+                            )
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.medium),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Medium.size
+                                    menuState.hide()
+                                }
+                            )
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.big),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Big.size
+                                    menuState.hide()
+                                }
+                            )
                         }
                     }
                 }
             }
 
+            // Sticky search bar
             if (searching)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        //.requiredHeight(30.dp)
+                        .padding(all = 10.dp)
+                        .fillMaxWidth()
+                ) {
+                    AnimatedVisibility(visible = searching) {
+                        val focusRequester = remember { FocusRequester() }
+                        val focusManager = LocalFocusManager.current
+                        val keyboardController = LocalSoftwareKeyboardController.current
+
+                        LaunchedEffect(searching) {
+                            focusRequester.requestFocus()
+                        }
+
+                        BasicTextField(
+                            value = filter ?: "",
+                            onValueChange = { filter = it },
+                            textStyle = typography().xs.semiBold,
+                            singleLine = true,
+                            maxLines = 1,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                if (filter.isNullOrBlank()) filter = ""
+                                focusManager.clearFocus()
+                            }),
+                            cursorBrush = SolidColor(colorPalette().text),
+                            decorationBox = { innerTextField ->
+                                Box(
+                                    contentAlignment = Alignment.CenterStart,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(horizontal = 10.dp)
+                                ) {
+                                    IconButton(
+                                        onClick = {},
+                                        icon = R.drawable.search,
+                                        color = colorPalette().favoritesIcon,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterStart)
+                                            .size(16.dp)
+                                    )
+                                }
+                                Box(
+                                    contentAlignment = Alignment.CenterStart,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(horizontal = 30.dp)
+                                ) {
+                                    androidx.compose.animation.AnimatedVisibility(
+                                        visible = filter?.isEmpty() ?: true,
+                                        enter = fadeIn(tween(100)),
+                                        exit = fadeOut(tween(100)),
+                                    ) {
+                                        BasicText(
+                                            text = stringResource(R.string.search),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
+                                        )
+                                    }
+
+                                    innerTextField()
+                                }
+                            },
+                            modifier = Modifier
+                                .height(30.dp)
+                                .fillMaxWidth()
+                                .background(
+                                    colorPalette().background4,
+                                    shape = thumbnailRoundness.shape()
+                                )
+                                .focusRequester(focusRequester)
+                                .onFocusChanged {
+                                    if (!it.hasFocus) {
+                                        keyboardController?.hide()
+                                        if (filter?.isBlank() == true) {
+                                            filter = null
+                                            searching = false
+                                        }
+                                    }
+                                }
+                        )
+                    }
+                }
+
+            LazyVerticalGrid(
+                state = lazyGridState,
+                columns = GridCells.Adaptive(itemSize.dp + 24.dp),
+                //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+                modifier = Modifier
+                    .background(colorPalette().background0)
+                    .fillMaxSize()
+            ) {
+                items(items = items, key = Artist::id) { artist ->
+                    ArtistItem(
+                        artist = artist,
+                        thumbnailSizePx = thumbnailSizePx,
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        alternative = true,
+                        modifier = Modifier
+                            .clickable(onClick = { onArtistClick(artist) })
+                            .animateItemPlacement()
+                    )
+                }
                 item(
-                    key = "headerFilter",
+                    key = "footer",
                     contentType = 0,
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
-                    /*        */
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier
-                            //.requiredHeight(30.dp)
-                            .padding(all = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        AnimatedVisibility(visible = searching) {
-                            val focusRequester = remember { FocusRequester() }
-                            val focusManager = LocalFocusManager.current
-                            val keyboardController = LocalSoftwareKeyboardController.current
-
-                            LaunchedEffect(searching) {
-                                focusRequester.requestFocus()
-                            }
-
-                            BasicTextField(
-                                value = filter ?: "",
-                                onValueChange = { filter = it },
-                                textStyle = typography().xs.semiBold,
-                                singleLine = true,
-                                maxLines = 1,
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(onDone = {
-                                    if (filter.isNullOrBlank()) filter = ""
-                                    focusManager.clearFocus()
-                                }),
-                                cursorBrush = SolidColor(colorPalette().text),
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 10.dp)
-                                    ) {
-                                        IconButton(
-                                            onClick = {},
-                                            icon = R.drawable.search,
-                                            color = colorPalette().favoritesIcon,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterStart)
-                                                .size(16.dp)
-                                        )
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 30.dp)
-                                    ) {
-                                        androidx.compose.animation.AnimatedVisibility(
-                                            visible = filter?.isEmpty() ?: true,
-                                            enter = fadeIn(tween(100)),
-                                            exit = fadeOut(tween(100)),
-                                        ) {
-                                            BasicText(
-                                                text = stringResource(R.string.search),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
-                                            )
-                                        }
-
-                                        innerTextField()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        colorPalette().background4,
-                                        shape = thumbnailRoundness.shape()
-                                    )
-                                    .focusRequester(focusRequester)
-                                    .onFocusChanged {
-                                        if (!it.hasFocus) {
-                                            keyboardController?.hide()
-                                            if (filter?.isBlank() == true) {
-                                                filter = null
-                                                searching = false
-                                            }
-                                        }
-                                    }
-                            )
-                        }
-                        /*
-                        else {
-                            HeaderIconButton(
-                                onClick = { searching = true },
-                                icon = R.drawable.search_circle,
-                                color = colorPalette().text,
-                                iconSize = 24.dp
-                            )
-                        }
-
-                         */
-                    }
-                    /*        */
+                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                 }
-
-            items(items = items, key = Artist::id) { artist ->
-                ArtistItem(
-                    artist = artist,
-                    thumbnailSizePx = thumbnailSizePx,
-                    thumbnailSizeDp = thumbnailSizeDp,
-                    alternative = true,
-                    modifier = Modifier
-                        .clickable(onClick = { onArtistClick(artist) })
-                        .animateItemPlacement()
-                )
-            }
-            item(
-                key = "footer",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
-                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
             }
         }
 
