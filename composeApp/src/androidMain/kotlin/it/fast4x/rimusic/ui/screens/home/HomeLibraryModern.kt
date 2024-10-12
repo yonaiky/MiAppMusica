@@ -48,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -520,10 +522,18 @@ fun HomeLibraryModern(
                                    .fillMaxWidth()
             ) {
                 val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
+                val keyboardController = LocalSoftwareKeyboardController.current
 
                 LaunchedEffect(searching, isSearchInputFocused) {
-                    if( searching && isSearchInputFocused )
+                    if( !searching ) return@LaunchedEffect
+
+                    if( isSearchInputFocused )
                         focusRequester.requestFocus()
+                    else {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
                 }
 
                 var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
@@ -541,7 +551,7 @@ fun HomeLibraryModern(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
                         searching = filter.isNotBlank()
-                        isSearchInputFocused = filter.isNotBlank()
+                        isSearchInputFocused = false
                     }),
                     cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->

@@ -68,7 +68,9 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -221,7 +223,7 @@ fun HomeSongsModern(
     }
      */
 
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var filter by rememberSaveable { mutableStateOf( "" ) }
     var builtInPlaylist by rememberPreference(
         builtInPlaylistKey,
         BuiltInPlaylist.Favorites
@@ -601,34 +603,27 @@ fun HomeSongsModern(
 
     }
 
-    var filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-    /******** OnDeviceDev */
-    if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
-        if (!filter.isNullOrBlank())
-            filteredSongs = songs
-                .filter {
-                    it.song.title.contains(filterCharSequence,true) ?: false
-                            || it.song.artistsText?.contains(filterCharSequence,true) ?: false
-                            || it.albumTitle?.contains(filterCharSequence,true) ?: false
-                }
-        if (!filter.isNullOrBlank())
-            filteredFolders = folders
-                .filter {
-                    it.name.contains(filterCharSequence,true)
-                }
-    } else {
-        if (!filter.isNullOrBlank())
-            items = items
-                .filter {
-                    it.song.title.contains(filterCharSequence,true) ?: false
-                            || it.song.artistsText?.contains(filterCharSequence,true) ?: false
-                            || it.albumTitle?.contains(filterCharSequence,true) ?: false
-                }
-    }
+    if( filter.isNotBlank() )
+        if( builtInPlaylist == BuiltInPlaylist.OnDevice ) {
+            filteredSongs = songs.filter {
+                it.song.title.contains( filter, true )
+                        || it.song.artistsText?.contains( filter, true ) ?: false
+                        || it.albumTitle?.contains( filter, true ) ?: false
+            }
+
+            filteredFolders = folders.filter {
+                it.name.contains( filter, true )
+            }
+        } else
+            items.filter {
+                it.song.title.contains( filter, true )
+                        || it.song.artistsText?.contains( filter, true ) ?: false
+                        || it.albumTitle?.contains( filter, true ) ?: false
+            }
     /******** */
 
     var searching by rememberSaveable { mutableStateOf(false) }
+    var isSearchInputFocused by rememberSaveable { mutableStateOf( false ) }
 
     val sortOrderIconRotation by animateFloatAsState(
         targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
@@ -871,7 +866,10 @@ fun HomeSongsModern(
                         }
                     }
 
-                TabToolBar.Icon( R.drawable.search_circle ) { searching = !searching }
+                TabToolBar.Icon( R.drawable.search_circle ) {
+                    searching = !searching
+                    isSearchInputFocused = searching
+                }
 
                 TabToolBar.Icon(
                     iconId = R.drawable.locate,
@@ -975,7 +973,7 @@ fun HomeSongsModern(
                                 showConfirmDeleteDownloadDialog = false
                                 downloadState = Download.STATE_DOWNLOADING
                                 if (listMediaItems.isEmpty()) {
-                                    if (items.isNotEmpty() == true)
+                                    if ( items.isNotEmpty() )
                                         items.forEach {
                                             binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
                                             manageDownload(
@@ -1186,20 +1184,33 @@ fun HomeSongsModern(
                 val focusManager = LocalFocusManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
 
-                LaunchedEffect(searching) {
-                    focusRequester.requestFocus()
+                LaunchedEffect(searching, isSearchInputFocused) {
+                    if( !searching ) return@LaunchedEffect
+
+                    if( isSearchInputFocused )
+                        focusRequester.requestFocus()
+                    else {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
                 }
 
+                var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
                 BasicTextField(
-                    value = filter ?: "",
-                    onValueChange = { filter = it },
+                    value = searchInput,
+                    onValueChange = {
+                        searchInput = it.copy(
+                            selection = TextRange( it.text.length )
+                        )
+                        filter = it.text
+                    },
                     textStyle = typography().xs.semiBold,
                     singleLine = true,
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        if (filter.isNullOrBlank()) filter = ""
-                        focusManager.clearFocus()
+                        searching = filter.isNotBlank()
+                        isSearchInputFocused = false
                     }),
                     cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
@@ -1225,7 +1236,7 @@ fun HomeSongsModern(
                                 .padding(horizontal = 30.dp)
                         ) {
                             androidx.compose.animation.AnimatedVisibility(
-                                visible = filter?.isEmpty() ?: true,
+                                visible = filter.isBlank(),
                                 enter = fadeIn(tween(100)),
                                 exit = fadeOut(tween(100)),
                             ) {
@@ -1248,15 +1259,6 @@ fun HomeSongsModern(
                             shape = thumbnailRoundness.shape()
                         )
                         .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (!it.hasFocus) {
-                                keyboardController?.hide()
-                                if (filter?.isBlank() == true) {
-                                    filter = null
-                                    searching = false
-                                }
-                            }
-                        }
                 )
             }
 
@@ -1383,6 +1385,12 @@ fun HomeSongsModern(
                                                 },
                                                 onClick = {
                                                     currentFolderPath += folder.name + "/"
+
+                                                    if (searching)
+                                                        if (filter.isBlank())
+                                                            searching = false
+                                                        else
+                                                            isSearchInputFocused = false
                                                 }
                                             ),
                                     )
@@ -1455,9 +1463,13 @@ fun HomeSongsModern(
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             },
                                             onClick = {
+                                                if (searching)
+                                                    if (filter.isBlank())
+                                                        searching = false
+                                                    else
+                                                        isSearchInputFocused = false
+
                                                 if (!selectItems) {
-                                                    searching = false
-                                                    filter = null
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
                                                         filteredSongs.map(SongEntity::asMediaItem),
@@ -1647,7 +1659,7 @@ fun HomeSongsModern(
                                         },
                                         onClick = {
                                             searching = false
-                                            filter = null
+                                            filter = ""
 
                                             val maxSongs = maxSongsInQueue.number.toInt()
                                             val itemsRange: IntRange

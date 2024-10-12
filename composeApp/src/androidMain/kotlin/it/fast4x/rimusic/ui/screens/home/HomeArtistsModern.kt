@@ -56,7 +56,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -124,19 +126,17 @@ fun HomeArtistsModern(
     var items by persistList<Artist>("home/artists")
 
     var searching by rememberSaveable { mutableStateOf(false) }
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var isSearchInputFocused by rememberSaveable { mutableStateOf( false ) }
+    var filter by rememberSaveable { mutableStateOf( "" ) }
 
     LaunchedEffect(sortBy, sortOrder, filter) {
         Database.artists(sortBy, sortOrder).collect { items = it }
     }
 
-    var filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-    //Log.d("mediaItemFilter", "<${filter}>  <${filterCharSequence}>")
-    if (!filter.isNullOrBlank())
+    if ( filter.isNotBlank() )
         items = items
             .filter {
-                it.name?.contains(filterCharSequence, true) ?: false
+                it.name?.contains( filter, true) ?: false
             }
 
     var itemSize by rememberPreference(artistsItemSizeKey, LibraryItemSize.Small.size)
@@ -207,7 +207,10 @@ fun HomeArtistsModern(
                     }
                 )
 
-                TabToolBar.Icon(iconId = R.drawable.search_circle) { searching = !searching }
+                TabToolBar.Icon(iconId = R.drawable.search_circle) {
+                    searching = !searching
+                    isSearchInputFocused = searching
+                }
 
                 TabToolBar.Icon(
                     iconId = R.drawable.dice,
@@ -280,20 +283,33 @@ fun HomeArtistsModern(
                 val focusManager = LocalFocusManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
 
-                LaunchedEffect(searching) {
-                    focusRequester.requestFocus()
+                LaunchedEffect(searching, isSearchInputFocused) {
+                    if( !searching ) return@LaunchedEffect
+
+                    if( isSearchInputFocused )
+                        focusRequester.requestFocus()
+                    else {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
                 }
 
+                var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
                 BasicTextField(
-                    value = filter ?: "",
-                    onValueChange = { filter = it },
+                    value = searchInput,
+                    onValueChange = {
+                        searchInput = it.copy(
+                            selection = TextRange( it.text.length )
+                        )
+                        filter = it.text
+                    },
                     textStyle = typography().xs.semiBold,
                     singleLine = true,
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        if (filter.isNullOrBlank()) filter = ""
-                        focusManager.clearFocus()
+                        searching = filter.isNotBlank()
+                        isSearchInputFocused = false
                     }),
                     cursorBrush = SolidColor(colorPalette().text),
                     decorationBox = { innerTextField ->
@@ -319,7 +335,7 @@ fun HomeArtistsModern(
                                 .padding(horizontal = 30.dp)
                         ) {
                             androidx.compose.animation.AnimatedVisibility(
-                                visible = filter?.isEmpty() ?: true,
+                                visible = filter.isBlank(),
                                 enter = fadeIn(tween(100)),
                                 exit = fadeOut(tween(100)),
                             ) {
@@ -342,15 +358,6 @@ fun HomeArtistsModern(
                             shape = thumbnailRoundness.shape()
                         )
                         .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (!it.hasFocus) {
-                                keyboardController?.hide()
-                                if (filter?.isBlank() == true) {
-                                    filter = null
-                                    searching = false
-                                }
-                            }
-                        }
                 )
             }
             if (searching)
@@ -380,7 +387,15 @@ fun HomeArtistsModern(
                         thumbnailSizeDp = thumbnailSizeDp,
                         alternative = true,
                         modifier = Modifier
-                            .clickable(onClick = { onArtistClick(artist) })
+                            .clickable(onClick = {
+                                if (searching)
+                                    if (filter.isBlank())
+                                        searching = false
+                                    else
+                                        isSearchInputFocused = false
+
+                                onArtistClick(artist)
+                            })
                             .animateItemPlacement()
                     )
                 }
