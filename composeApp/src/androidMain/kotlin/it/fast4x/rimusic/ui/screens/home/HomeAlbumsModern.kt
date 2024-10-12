@@ -47,10 +47,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -235,7 +234,8 @@ fun HomeAlbumsModern(
                                 onDuration = { sortBy = AlbumSortBy.Duration }
                             )
                         }
-                    }
+                    },
+                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
                 )
 
                 TabToolBar.Icon( R.drawable.search_circle ) {
