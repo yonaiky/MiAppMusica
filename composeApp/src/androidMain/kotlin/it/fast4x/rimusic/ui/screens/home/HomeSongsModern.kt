@@ -615,7 +615,7 @@ fun HomeSongsModern(
                 it.name.contains( filter, true )
             }
         } else
-            items.filter {
+            items = items.filter {
                 it.song.title.contains( filter, true )
                         || it.song.artistsText?.contains( filter, true ) ?: false
                         || it.albumTitle?.contains( filter, true ) ?: false
