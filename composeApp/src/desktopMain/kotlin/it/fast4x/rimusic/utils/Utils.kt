@@ -2,6 +2,11 @@ package it.fast4x.rimusic.utils
 
 import coil3.Uri
 import coil3.toUri
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.UserAgent
+import it.fast4x.innertube.utils.ProxyPreferences
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 fun String.resize(
     width: Int? = null,
@@ -34,4 +39,16 @@ fun String?.thumbnail(): String? {
 }
 fun Uri?.thumbnail(size: Int): Uri? {
     return toString().thumbnail(size)?.toUri()
+}
+
+fun getHttpClient() = HttpClient() {
+    install(UserAgent) {
+        agent = "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
+    }
+    engine {
+        ProxyPreferences.preference?.let{
+            proxy = Proxy(it.proxyMode, InetSocketAddress(it.proxyHost, it.proxyPort))
+        }
+
+    }
 }

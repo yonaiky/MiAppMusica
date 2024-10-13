@@ -51,14 +51,14 @@ kotlin {
 
             implementation(libs.coil.network.okhttp)
             runtimeOnly(libs.kotlinx.coroutines.swing)
-
-
+            
             // Uncomment only for build jvm desktop version
             // Comment before build android version
             configurations.commonMainApi {
                 exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
             }
-            
+
+
 
 
 
@@ -89,6 +89,8 @@ kotlin {
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
+
+            implementation(libs.translator)
 
         }
     }
@@ -305,7 +307,7 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.core.ktx)
     implementation(libs.compose.animation)
-    implementation(libs.translator)
+    //implementation(libs.translator)
     implementation(libs.kotlin.csv)
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)

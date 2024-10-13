@@ -86,6 +86,7 @@ import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.relatedPage
+import it.fast4x.rimusic.enums.PageType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.ArtistItem
@@ -102,6 +103,7 @@ import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
+import it.fast4x.rimusic.ui.components.ExpandIcon
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import it.fast4x.rimusic.ui.screens.ArtistScreen
@@ -188,7 +190,9 @@ fun ThreeColumnsApp(
     //val componentController = remember(url) { VlcjComponentController() }
     val frameController = remember(url) { VlcjFrameController() }
     var showPlayer by remember { mutableStateOf(false) }
-    var showArtistPage by remember { mutableStateOf(false) }
+
+    var showPageSheet by remember { mutableStateOf(false) }
+    var showPageType by remember { mutableStateOf(PageType.EMPTY) }
 
     MusicDatabaseDesktop.getAll()
 
@@ -221,12 +225,16 @@ fun ThreeColumnsApp(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    ExpandIcon(
+                        onAction = { showPageSheet = true }
+                    )
 
                     Row(
                         //Modifier.border(BorderStroke(1.dp, Color.Red)),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         SongItem(
                             thumbnailContent = {},
                             authors = "Author",
@@ -261,7 +269,8 @@ fun ThreeColumnsApp(
             },
             onArtistClick = {
                 artistId.value = it
-                showArtistPage = true
+                showPageType = PageType.ARTIST
+                showPageSheet = true
             },
             onAlbumClick = {},
             onPlaylistClick = {},
@@ -283,8 +292,8 @@ fun ThreeColumnsApp(
         }
 
         CustomModalBottomSheet(
-            showSheet = showArtistPage,
-            onDismissRequest = { showArtistPage = false },
+            showSheet = showPageSheet,
+            onDismissRequest = { showPageSheet = false },
             containerColor = Color.Black,
             contentColor = Color.White,
             modifier = Modifier.fillMaxWidth(),
@@ -298,13 +307,22 @@ fun ThreeColumnsApp(
             },
             shape = ThumbnailRoundness.Medium.shape()
         ) {
-           ArtistScreen(
-               browseId = artistId.value,
-               onPlaylistClick = {},
-               onViewAllAlbumsClick = {},
-               onViewAllSinglesClick = {},
-               onAlbumClick = {}
-           )
+            when(showPageType){
+                PageType.ALBUM -> {}
+                PageType.ARTIST -> {
+                    ArtistScreen(
+                        browseId = artistId.value,
+                        onPlaylistClick = {},
+                        onViewAllAlbumsClick = {},
+                        onViewAllSinglesClick = {},
+                        onAlbumClick = {},
+                        onClosePage = { showPageSheet = false }
+                    )
+                }
+                PageType.PLAYLIST -> {}
+                PageType.MOOD -> {}
+                else -> {}
+            }
         }
 
 
