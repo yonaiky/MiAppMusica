@@ -1457,7 +1457,7 @@ fun PlayerModern(
                                 color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
-                                    binder?.player?.shuffleQueue()
+                                    binder.player?.shuffleQueue()
                                     //binder.player.forceSeekToNext()
                                 },
                                 modifier = Modifier
@@ -1618,12 +1618,12 @@ fun PlayerModern(
                 }
             }
         }
-        val binder = LocalPlayerServiceBinder.current
-        val player = binder?.player ?: return
+        //val binder = LocalPlayerServiceBinder.current
+        val player = binder.player ?: return
         val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
         var extraspace by rememberPreference(extraspaceKey, false)
-        val nextMediaItemIndex = binder.player.nextMediaItemIndex
-        val prevMediaItemIndex = binder.player.previousMediaItemIndex
+        //val nextMediaItemIndex = binder.player.nextMediaItemIndex
+        //val prevMediaItemIndex = binder.player.previousMediaItemIndex
         /*
         val nextMediaItem = if (binder.player.hasNextMediaItem())
             binder.player.getMediaItemAt(binder.player.nextMediaItemIndex)
