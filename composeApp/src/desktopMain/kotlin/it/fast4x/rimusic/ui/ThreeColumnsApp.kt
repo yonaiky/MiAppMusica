@@ -48,10 +48,13 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.DrawerDefaults.windowInsets
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -98,8 +101,10 @@ import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
+import it.fast4x.rimusic.ui.screens.ArtistScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
@@ -123,6 +128,7 @@ import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThreeColumnsApp(
     navController: NavHostController = rememberNavController()
@@ -130,6 +136,7 @@ fun ThreeColumnsApp(
 
 
     val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
+    val artistId = remember { mutableStateOf("") }
     //val body = remember { mutableStateOf<PlayerResponse?>(null) }
 
     val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
@@ -181,6 +188,7 @@ fun ThreeColumnsApp(
     //val componentController = remember(url) { VlcjComponentController() }
     val frameController = remember(url) { VlcjFrameController() }
     var showPlayer by remember { mutableStateOf(false) }
+    var showArtistPage by remember { mutableStateOf(false) }
 
     MusicDatabaseDesktop.getAll()
 
@@ -251,6 +259,12 @@ fun ThreeColumnsApp(
                 videoId.value = it
                 println("videoId clicked $it")
             },
+            onArtistClick = {
+                artistId.value = it
+                showArtistPage = true
+            },
+            onAlbumClick = {},
+            onPlaylistClick = {},
             frameController = frameController
         )
 
@@ -268,6 +282,31 @@ fun ThreeColumnsApp(
             }
         }
 
+        CustomModalBottomSheet(
+            showSheet = showArtistPage,
+            onDismissRequest = { showArtistPage = false },
+            containerColor = Color.Black,
+            contentColor = Color.White,
+            modifier = Modifier.fillMaxWidth(),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = {
+                Surface(
+                    modifier = Modifier.padding(vertical = 0.dp),
+                    color =Color.Black,
+                    shape = ThumbnailRoundness.Medium.shape()
+                ) {}
+            },
+            shape = ThumbnailRoundness.Medium.shape()
+        ) {
+           ArtistScreen(
+               browseId = artistId.value,
+               onPlaylistClick = {},
+               onViewAllAlbumsClick = {},
+               onViewAllSinglesClick = {},
+               onAlbumClick = {}
+           )
+        }
+
 
     }
 }
@@ -275,6 +314,10 @@ fun ThreeColumnsApp(
 @Composable
 fun ThreeColumnsLayout(
    onSongClick: (key: String) -> Unit = {},
+   onArtistClick: (key: String) -> Unit = {},
+   onAlbumClick: (key: String) -> Unit = {},
+   onPlaylistClick: (key: String) -> Unit = {},
+   onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
    frameController: VlcjFrameController = remember { VlcjFrameController() }
 ) {
     Row(Modifier.fillMaxSize()) {
@@ -286,7 +329,11 @@ fun ThreeColumnsLayout(
             color = Color.Gray.copy(alpha = 0.6f)
         )
         CenterPanelContent(
-            onSongClick = onSongClick
+            onSongClick = onSongClick,
+            onArtistClick = onArtistClick,
+            onAlbumClick = onAlbumClick,
+            onPlaylistClick = onPlaylistClick,
+            onMoodClick = onMoodClick
         )
         VerticalDivider(
             modifier = Modifier
