@@ -6,30 +6,43 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 @OptIn(UnstableApi::class)
 fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerService.Binder?) {
 
     if (songsList == null || binder == null) return
 
-    val maxSongsInQueue = context.preferences.getEnum(maxSongsInQueueKey, MaxSongs.`500`)
+    // Send message saying that there's no song to play
+    if( songsList.isEmpty() ) {
+        // TODO: add this string to R.string
+        SmartMessage(
+            message = "There's no song to play",
+            context = context
+        )
+        return
+    }
+
+    val maxSongsInQueue = context.preferences
+                                 .getEnum( maxSongsInQueueKey, MaxSongs.`500` )
+                                 .number
+                                 .toInt()
 
     songsList.let { songs ->
-        if (songs.isNotEmpty() == true) {
-            val itemsLimited =
-                if (songs.size > maxSongsInQueue.number) songs.shuffled()
-                    .take(maxSongsInQueue.number.toInt()) else songs
 
-            CoroutineScope(Dispatchers.Main).launch {
-                binder.stopRadio()
-                binder.player.forcePlayFromBeginning(
-                    itemsLimited.shuffled()
-                        .map(Song::asMediaItem)
-                )
-            }
+        // Return whole list if its size is less than queue size
+        val songsInQueue = songs.shuffled().take( maxSongsInQueue )
+
+        CoroutineScope(Dispatchers.Main).launch {
+            binder.stopRadio()
+            binder.player.forcePlayFromBeginning(
+                songsInQueue.shuffled()
+                    .map(Song::asMediaItem)
+            )
         }
     }
 }

@@ -14,18 +14,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -57,7 +54,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -65,17 +61,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import androidx.room.util.copy
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -93,9 +86,7 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -103,7 +94,6 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
-import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -135,6 +125,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.tab.TabHeader
 import me.knighthat.typography
 import timber.log.Timber
 
@@ -342,460 +334,398 @@ fun HomeLibraryModern(
                 else Dimensions.contentWidthRightBar
             )
     ) {
-        LazyVerticalGrid(
-            state = lazyGridState,
-            columns = GridCells.Adaptive(itemSize.dp + 24.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorPalette().background0)
-        ) {
-            item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-
-                if ( UiType.ViMusic.isCurrent() )
-                    HeaderWithIcon(
-                        title = stringResource(R.string.playlists),
-                        iconId = R.drawable.search,
-                        enabled = true,
-                        showIcon = !showSearchTab,
-                        modifier = Modifier,
-                        onClick = onSearchClick
-                    )
+        Column( Modifier.fillMaxSize() ) {
+            // Sticky tab's title
+            TabHeader( R.string.playlists ) {
+                HeaderInfo( items.size.toString(), R.drawable.playlist )
             }
 
-            item(key = "headerNew", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 10.dp, bottom = 4.dp)
-                        .fillMaxWidth()
-
-                ) {
-                    if ( UiType.RiMusic.isCurrent() )
-                        TitleSection(title = stringResource(R.string.playlists))
-
-                    HeaderInfo(
-                        title = "${items.size}",
-                        icon = painterResource(R.drawable.playlist)
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .weight(0.3f)
-                    )
-
-                }
-
-            }
-
-            item(
-                key = "headerButtons",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }
+            // Sticky tab's tool bar
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 4.dp)
+                    .fillMaxWidth()
             ) {
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(vertical = 4.dp)
-                        .fillMaxWidth()
-                ) {
-
-                    HeaderIconButton(
-                        icon = R.drawable.arrow_up,
-                        color = colorPalette().text,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
-                            .combinedClickable(
-                                onClick = { sortOrder = !sortOrder },
-                                onLongClick = {
-                                    menuState.display {
-                                        SortMenu(
-                                            title = stringResource(R.string.sorting_order),
-                                            onDismiss = menuState::hide,
-                                            onName = { sortBy = PlaylistSortBy.Name },
-                                            onSongNumber = {
-                                                sortBy = PlaylistSortBy.SongCount
-                                            },
-                                            onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
-                                            onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
-                                        )
-                                    }
-                                }
+                TabToolBar.Icon(
+                    iconId = R.drawable.arrow_up,
+                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
+                    onShortClick = { sortOrder = !sortOrder },
+                    onLongClick = {
+                        menuState.display {
+                            SortMenu(
+                                title = stringResource(R.string.sorting_order),
+                                onDismiss = menuState::hide,
+                                onName = { sortBy = PlaylistSortBy.Name },
+                                onSongNumber = { sortBy = PlaylistSortBy.SongCount },
+                                onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
+                                onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
                             )
-                    )
+                        }
+                    }
+                )
 
-                    HeaderIconButton(
-                        onClick = {},
-                        icon = R.drawable.sync,
-                        color = if (autosync) colorPalette().text else colorPalette().textDisabled,
-                        iconSize = 22.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                            .combinedClickable(onClick = { autosync = !autosync },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.autosync),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
+                TabToolBar.Icon(
+                    iconId = R.drawable.sync,
+                    tint = if (autosync) colorPalette().text else colorPalette().textDisabled,
+                    onShortClick = { autosync = !autosync },
+                    onLongClick = {
+                        SmartMessage(
+                            context.resources.getString(R.string.autosync),
+                            context = context
+                        )
+                    }
+                )
 
-                    HeaderIconButton(
-                        onClick = {
-                            searching = !searching
-                            isSearchInputFocused = searching
-                        },
-                        icon = R.drawable.search_circle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.shuffle,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable (
-                                onClick = {
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            when (playlistType) {
-                                                PlaylistsType.Playlist -> {
-                                                    Database.songsInAllPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                                }
-                                                PlaylistsType.PipedPlaylist -> {
-                                                    Database.songsInAllPipedPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                                }
-                                                PlaylistsType.PinnedPlaylist -> {
-                                                    Database.songsInAllPinnedPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                                }
-                                                PlaylistsType.MonthlyPlaylist -> {
-                                                    Database.songsInAllMonthlyPlaylists()
-                                                        .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                                                }
-                                            }
-
-                                        }
-                                    }
-
-                                },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.shuffle),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.add_in_playlist,
-                        color = colorPalette().text,
-                        iconSize = 24.dp,
-                        onClick = { },
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable (
-                                onClick = { isCreatingANewPlaylist = true },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.create_new_playlist),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-                    HeaderIconButton(
-                        icon = R.drawable.resource_import,
-                        color = colorPalette().text,
-                        iconSize = 22.dp,
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .combinedClickable(
-                                onClick = {
-                                    try {
-                                        importLauncher.launch(
-                                            arrayOf(
-                                                "text/*"
-                                            )
-                                        )
-                                    } catch (e: ActivityNotFoundException) {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_not_find_app_open_doc),
-                                            type = PopupType.Warning, context = context
-                                        )
-                                    }
-                                },
-                                onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.import_playlist),
-                                        context = context
-                                    )
-                                }
-                            )
-                    )
-
-                    HeaderIconButton(
-                        onClick = {
-                            menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.small),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Small.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.medium),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Medium.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.arrow_forward,
-                                        text = stringResource(R.string.big),
-                                        onClick = {
-                                            itemSize = LibraryItemSize.Big.size
-                                            menuState.hide()
-                                        }
-                                    )
-                                }
-                            }
-                        },
-                        icon = R.drawable.resize,
-                        color = colorPalette().text,
-                        iconSize = 22.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                    )
-
+                TabToolBar.Icon( iconId  = R.drawable.search_circle ) {
+                    searching = !searching
+                    isSearchInputFocused = searching
                 }
-            }
 
-            if (searching)
-                item(
-                    key = "headerFilter",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    /*        */
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier
-                            //.requiredHeight(30.dp)
-                            .padding(all = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        AnimatedVisibility(visible = searching) {
-                            val focusRequester = remember { FocusRequester() }
-                            val focusManager = LocalFocusManager.current
+                TabToolBar.Icon(
+                    iconId = R.drawable.shuffle,
+                    onLongClick = {
+                        SmartMessage(
+                            context.resources.getString(R.string.shuffle),
+                            context = context
+                        )
+                    },
+                    onShortClick = {
+                        coroutineScope.launch {
+                            withContext(Dispatchers.IO) {
+                                when (playlistType) {
+                                    PlaylistsType.Playlist -> {
+                                        Database.songsInAllPlaylists()
+                                            .collect {
+                                                PlayShuffledSongs(
+                                                    songsList = it,
+                                                    binder = binder,
+                                                    context = context
+                                                )
+                                            }
+                                    }
 
-                            LaunchedEffect(searching) {
-                                if( isSearchInputFocused ) focusRequester.requestFocus()
+                                    PlaylistsType.PipedPlaylist -> {
+                                        Database.songsInAllPipedPlaylists()
+                                            .collect {
+                                                PlayShuffledSongs(
+                                                    songsList = it,
+                                                    binder = binder,
+                                                    context = context
+                                                )
+                                            }
+                                    }
+
+                                    PlaylistsType.PinnedPlaylist -> {
+                                        Database.songsInAllPinnedPlaylists()
+                                            .collect {
+                                                PlayShuffledSongs(
+                                                    songsList = it,
+                                                    binder = binder,
+                                                    context = context
+                                                )
+                                            }
+                                    }
+
+                                    PlaylistsType.MonthlyPlaylist -> {
+                                        Database.songsInAllMonthlyPlaylists()
+                                            .collect {
+                                                PlayShuffledSongs(
+                                                    songsList = it,
+                                                    binder = binder,
+                                                    context = context
+                                                )
+                                            }
+                                    }
+                                }
+
                             }
+                        }
 
-                            var searchInput by remember { mutableStateOf( TextFieldValue( filter ) ) }
-                            BasicTextField(
-                                value = searchInput,
-                                onValueChange = {
-                                    searchInput = it.copy(
-                                        selection = TextRange( it.text.length )
-                                    )
-                                    filter = it.text
-                                },
-                                textStyle = typography().xs.semiBold,
-                                singleLine = true,
-                                maxLines = 1,
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(onDone = {
-                                    focusManager.clearFocus()
-                                    searching = filter.isNotBlank()
-                                }),
-                                cursorBrush = SolidColor(colorPalette().text),
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 10.dp)
-                                    ) {
-                                        IconButton(
-                                            onClick = {},
-                                            icon = R.drawable.search,
-                                            color = colorPalette().favoritesIcon,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterStart)
-                                                .size(16.dp)
-                                        )
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 30.dp)
-                                    ) {
-                                        androidx.compose.animation.AnimatedVisibility(
-                                            visible = filter.isBlank(),
-                                            enter = fadeIn(tween(100)),
-                                            exit = fadeOut(tween(100)),
-                                        ) {
-                                            BasicText(
-                                                text = stringResource(R.string.search),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
-                                            )
-                                        }
+                    }
+                )
 
-                                        innerTextField()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        colorPalette().background4,
-                                        shape = thumbnailRoundness.shape()
-                                    )
-                                    .focusRequester(focusRequester)
+                TabToolBar.Icon(
+                    iconId =  R.drawable.add_in_playlist,
+                    onShortClick = { isCreatingANewPlaylist = true },
+                    onLongClick = {
+                        SmartMessage(
+                            context.resources.getString(R.string.create_new_playlist),
+                            context = context
+                        )
+                    }
+                )
+
+                TabToolBar.Icon(
+                    iconId = R.drawable.resource_import,
+                    size = 30.dp,
+                    onShortClick = {
+                        try {
+                            importLauncher.launch(
+                                arrayOf(
+                                    "text/*"
+                                )
+                            )
+                        } catch (e: ActivityNotFoundException) {
+                            SmartMessage(
+                                context.resources.getString(R.string.info_not_find_app_open_doc),
+                                type = PopupType.Warning, context = context
+                            )
+                        }
+                    },
+                    onLongClick = {
+                        SmartMessage(
+                            context.resources.getString(R.string.import_playlist),
+                            context = context
+                        )
+                    }
+                )
+
+                TabToolBar.Icon( R.drawable.resize ) {
+                    menuState.display {
+                        Menu {
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.small),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Small.size
+                                    menuState.hide()
+                                }
+                            )
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.medium),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Medium.size
+                                    menuState.hide()
+                                }
+                            )
+                            MenuEntry(
+                                icon = R.drawable.arrow_forward,
+                                text = stringResource(R.string.big),
+                                onClick = {
+                                    itemSize = LibraryItemSize.Big.size
+                                    menuState.hide()
+                                }
                             )
                         }
                     }
                 }
+            }
 
-            item(
-                key = "separator",
-                contentType = 0,
-                span = { GridItemSpan(maxLineSpan) }) {
-                ButtonsRow(
-                    chips = buttonsList,
-                    currentValue = playlistType,
-                    onValueUpdate = { playlistType = it },
-                    modifier = Modifier.padding(end = 12.dp)
+            // Sticky search bar
+            AnimatedVisibility(
+                visible = searching,
+                modifier = Modifier.padding( all = 10.dp )
+                                   .fillMaxWidth()
+            ) {
+                val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
+                val keyboardController = LocalSoftwareKeyboardController.current
+
+                LaunchedEffect(searching, isSearchInputFocused) {
+                    if( !searching ) return@LaunchedEffect
+
+                    if( isSearchInputFocused )
+                        focusRequester.requestFocus()
+                    else {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                }
+
+                var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
+                BasicTextField(
+                    value = searchInput,
+                    onValueChange = {
+                        searchInput = it.copy(
+                            selection = TextRange( it.text.length )
+                        )
+                        filter = it.text
+                    },
+                    textStyle = typography().xs.semiBold,
+                    singleLine = true,
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        searching = filter.isNotBlank()
+                        isSearchInputFocused = false
+                    }),
+                    cursorBrush = SolidColor(colorPalette().text),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 10.dp)
+                        ) {
+                            IconButton(
+                                onClick = {},
+                                icon = R.drawable.search,
+                                color = colorPalette().favoritesIcon,
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .size(16.dp)
+                            )
+                        }
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 30.dp)
+                        ) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = filter.isBlank(),
+                                enter = fadeIn(tween(100)),
+                                exit = fadeOut(tween(100)),
+                            ) {
+                                BasicText(
+                                    text = stringResource(R.string.search),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = typography().xs.semiBold.secondary.copy(
+                                        color = colorPalette().textDisabled
+                                    )
+                                )
+                            }
+
+                            innerTextField()
+                        }
+                    },
+                    modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth()
+                        .background(
+                            colorPalette().background4,
+                            shape = thumbnailRoundness.shape()
+                        )
+                        .focusRequester(focusRequester)
                 )
             }
 
-            if (playlistType == PlaylistsType.Playlist) {
-                items(items = items,
-                    /*
-                    .filter {
-                    !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                            !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+            LazyVerticalGrid(
+                state = lazyGridState,
+                columns = GridCells.Adaptive(itemSize.dp + 24.dp),
+                modifier = Modifier
+                    .background(colorPalette().background0)
+            ) {
+                item(
+                    key = "separator",
+                    contentType = 0,
+                    span = { GridItemSpan(maxLineSpan) }) {
+                    ButtonsRow(
+                        chips = buttonsList,
+                        currentValue = playlistType,
+                        onValueUpdate = { playlistType = it },
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                }
+
+                if (playlistType == PlaylistsType.Playlist) {
+                    items(items = items,
+                        /*
+                        .filter {
+                        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
+                                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                        }
+
+                         */
+                        key = { it.playlist.id }) { playlistPreview ->
+
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    onPlaylistClick(playlistPreview.playlist)
+
+                                    if (searching)
+                                        if (filter.isBlank())
+                                            searching = false
+                                        else
+                                            isSearchInputFocused = false
+                                })
+                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                                .fillMaxSize()
+                        )
+                    }
+                }
+
+                if (playlistType == PlaylistsType.PipedPlaylist)
+                    items(items = items.filter {
+                        it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
+                    }, key = { it.playlist.id }) { playlistPreview ->
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    onPlaylistClick(playlistPreview.playlist)
+
+                                    if (searching)
+                                        if (filter.isBlank())
+                                            searching = false
+                                        else
+                                            isSearchInputFocused = false
+                                })
+                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                                .fillMaxSize()
+                        )
                     }
 
-                     */
-                    key = { it.playlist.id }) { playlistPreview ->
+                if (playlistType == PlaylistsType.PinnedPlaylist)
+                    items(items = items.filter {
+                        it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                    }, key = { it.playlist.id }) { playlistPreview ->
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    onPlaylistClick(playlistPreview.playlist)
 
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                onPlaylistClick(playlistPreview.playlist)
+                                    if (searching)
+                                        if (filter.isBlank())
+                                            searching = false
+                                        else
+                                            isSearchInputFocused = false
+                                })
+                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                                .fillMaxSize()
+                        )
+                    }
 
-                                if( searching )
-                                    if( filter.isBlank() )
-                                        searching = false
-                                    else
-                                        isSearchInputFocused = false
-                            })
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                            .fillMaxSize()
-                    )
-                }
-            }
+                if (playlistType == PlaylistsType.MonthlyPlaylist)
+                    items(items = items.filter {
+                        it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
+                    }, key = { it.playlist.id }) { playlistPreview ->
+                        PlaylistItem(
+                            playlist = playlistPreview,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            alternative = true,
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    onPlaylistClick(playlistPreview.playlist)
 
-            if (playlistType == PlaylistsType.PipedPlaylist)
-                items(items = items.filter {
-                    it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
-                }, key = { it.playlist.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                onPlaylistClick(playlistPreview.playlist)
-
-                                if( searching )
-                                    if( filter.isBlank() )
-                                        searching = false
-                                    else
-                                        isSearchInputFocused = false
-                            })
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                            .fillMaxSize()
-                    )
-                }
-
-            if (playlistType == PlaylistsType.PinnedPlaylist)
-                 items(items = items.filter {
-                     it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                 }, key = { it.playlist.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                onPlaylistClick(playlistPreview.playlist)
-
-                                if( searching )
-                                    if( filter.isBlank() )
-                                        searching = false
-                                    else
-                                        isSearchInputFocused = false
-                            })
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                            .fillMaxSize()
-                    )
-                }
-
-            if (playlistType == PlaylistsType.MonthlyPlaylist)
-                items(items = items.filter {
-                    it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                }, key = { it.playlist.id }) { playlistPreview ->
-                    PlaylistItem(
-                        playlist = playlistPreview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                onPlaylistClick(playlistPreview.playlist)
-
-                                if( searching )
-                                    if( filter.isBlank() )
-                                        searching = false
-                                    else
-                                        isSearchInputFocused = false
-                            })
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                            .fillMaxSize()
-                    )
-                }
+                                    if (searching)
+                                        if (filter.isBlank())
+                                            searching = false
+                                        else
+                                            isSearchInputFocused = false
+                                })
+                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                                .fillMaxSize()
+                        )
+                    }
 
 
                 item(
@@ -806,27 +736,18 @@ fun HomeLibraryModern(
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                 }
 
+            }
         }
 
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+        if (UiType.ViMusic.isCurrent() && showFloatingIcon)
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = onSearchClick,
                 onClickSettings = onSettingsClick,
                 onClickSearch = onSearchClick
             )
-
-        /*
-    FloatingActionsContainerWithScrollToTop(
-            lazyGridState = lazyGridState,
-            iconId = R.drawable.search,
-            onClick = onSearchClick
-        )
-         */
-
-
     }
 }
