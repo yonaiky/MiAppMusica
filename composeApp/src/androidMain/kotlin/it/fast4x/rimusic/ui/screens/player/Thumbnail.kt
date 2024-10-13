@@ -60,7 +60,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.isLandscape
@@ -132,7 +132,7 @@ fun Thumbnail(
         mutableStateOf(true)
     }
 
-    val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 

@@ -51,7 +51,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -118,7 +118,7 @@ fun FullLyricsSheetModern(
      */
 
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
-    val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
 
     Box(
         modifier = Modifier

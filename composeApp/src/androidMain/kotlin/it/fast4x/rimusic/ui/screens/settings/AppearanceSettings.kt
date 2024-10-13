@@ -78,7 +78,7 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
-import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -256,7 +256,7 @@ fun DefaultAppearanceSettings() {
     showNextSongsInPlayer = false
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     showRemainingSongTime = true
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
@@ -430,7 +430,7 @@ fun AppearanceSettings(
     )
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     var searching by rememberSaveable { mutableStateOf(false) }
     var filter: String? by rememberSaveable { mutableStateOf(null) }

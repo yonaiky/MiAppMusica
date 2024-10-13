@@ -219,7 +219,7 @@ import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
-import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
@@ -1620,7 +1620,7 @@ fun PlayerModern(
         }
         val binder = LocalPlayerServiceBinder.current
         val player = binder?.player ?: return
-        val clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+        val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
         var extraspace by rememberPreference(extraspaceKey, false)
         val nextMediaItemIndex = binder.player.nextMediaItemIndex
         val prevMediaItemIndex = binder.player.previousMediaItemIndex

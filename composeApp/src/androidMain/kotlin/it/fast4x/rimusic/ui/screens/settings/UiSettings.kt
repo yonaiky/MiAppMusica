@@ -106,7 +106,7 @@ import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
-import it.fast4x.rimusic.utils.clickLyricsTextKey
+import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -481,7 +481,7 @@ fun DefaultUiSettings() {
     effectRotationEnabled = true
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
     thumbnailTapEnabled = false
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
@@ -720,7 +720,7 @@ fun UiSettings(
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, false)
-    var clickLyricsText by rememberPreference(clickLyricsTextKey, true)
+    var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
         BackgroundProgress.MiniPlayer
