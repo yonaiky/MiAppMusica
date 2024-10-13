@@ -759,7 +759,4 @@
     <string name="login_required_to_play_this_media">Cal iniciar sessió per reproduir aquests fitxers multimèdia</string>
     <string name="skip_media_on_notavailable_message">El fitxer multimèdia anterior no està disponible, s\'ha saltat al següent</string>
     <string name="search_results_for">Resultats de la cerca per a:</string>
-    <string name="login_required_to_play_this_media">Login required to play this media</string>
-    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
 </resources>

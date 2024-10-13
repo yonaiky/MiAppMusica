@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
@@ -32,8 +32,9 @@ import me.knighthat.ui.screens.settings.about.DevBoard
 
 @ExperimentalAnimationApi
 @Composable
-fun About( context: Context ) {
+fun About() {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -217,7 +218,7 @@ fun About( context: Context ) {
 
         SettingsEntryGroupText(title = "Developers / Designers")
         SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
-        DevBoard( context )
+        DevBoard()
 
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)

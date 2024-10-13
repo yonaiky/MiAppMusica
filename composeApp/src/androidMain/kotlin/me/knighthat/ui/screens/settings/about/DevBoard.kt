@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -33,13 +34,17 @@ private fun init( context: Context ) {
 
     // Convert each object of JSON array to Developer instance
     // then sort it based on their username
-    DEVS = json.map { GSON.fromJson( it, Developer::class.java ) }.sortedBy { it.username }
+    DEVS = json.map { GSON.fromJson( it, Developer::class.java ) }.sortedByDescending { it.contributions }
 }
 
 @Composable
-fun DevBoard( context: Context ) {
+fun DevBoard() {
+    val context = LocalContext.current
+
     if( !::DEVS.isInitialized )
         init( context )
+
+    if ( DEVS.isEmpty() ) return
 
     Box( Modifier.fillMaxWidth().height( 300.dp ) ) {
         // For decoration purposes only

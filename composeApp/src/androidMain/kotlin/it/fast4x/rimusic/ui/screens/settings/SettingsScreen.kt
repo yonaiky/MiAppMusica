@@ -102,7 +102,7 @@ fun SettingsScreen(
                         2 -> QuickPicsSettings()
                         3 -> DataSettings()
                         4 -> OtherSettings()
-                        5 -> About( context )
+                        5 -> About()
 
                     }
                 }
