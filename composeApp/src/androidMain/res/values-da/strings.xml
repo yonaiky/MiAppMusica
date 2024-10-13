@@ -740,10 +740,10 @@
     <string name="discord_disconnect">Afbryd</string>
     <string name="discord_connect">Forbind</string>
     <string name="discord_connected_to_discord_account">Forbundet til Discord-konto</string>
-    <string name="settings_reset">Reset</string>
-    <string name="settings_restore_default_settings">Restore default settings</string>
-    <string name="piped_custom_instance">Piped custom instance</string>
-    <string name="create_new_playlist">Create new playlist</string>
+    <string name="settings_reset">Nulstil</string>
+    <string name="settings_restore_default_settings">Gendan standardindstillinger</string>
+    <string name="piped_custom_instance">Brugerdefineret Piped-instans</string>
+    <string name="create_new_playlist">Opret ny playliste</string>
     <string name="settings_loudness_base_gain">Loudness base gain</string>
     <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
     <string name="error_media_cannot_be_played">Media cannot be played</string>
