@@ -23,10 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -239,15 +240,14 @@ fun HalfHeader(
 @Composable
 fun HeaderInfo (
     title: String,
-    icon: Painter,
-    spacer: Int = 5
+    iconId: Int,
+    spacer: Dp = 5.dp
 ) {
     Image(
-        painter = icon,
+        painter = painterResource( iconId ),
         contentDescription = null,
         colorFilter = ColorFilter.tint(colorPalette().textSecondary),
-        modifier = Modifier
-            .size(12.dp)
+        modifier = Modifier.size( 12.dp )
     )
     BasicText(
         text = title,
@@ -259,12 +259,10 @@ fun HeaderInfo (
         ),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-            .padding(start = 4.dp)
+        modifier = Modifier.padding( start = 4.dp )
     )
 
     Spacer(
-        modifier = Modifier
-            .width(spacer.dp)
+        modifier = Modifier.width( spacer )
     )
 }
