@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -88,8 +89,11 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
@@ -151,7 +155,8 @@ fun OnlineSearch(
     val rippleIndication = ripple(bounded = false)
     val timeIconPainter = painterResource(R.drawable.search_circle)
     val closeIconPainter = painterResource(R.drawable.trash)
-    val arrowForwardIconPainter = painterResource(R.drawable.arrow_forward)
+
+    val coroutineScope = rememberCoroutineScope()
 
     val focusRequester = remember {
         FocusRequester()
@@ -410,12 +415,14 @@ fun OnlineSearch(
                         modifier = Modifier
                             .clickable (
                                 onClick = {
-                                    //onSearch(query.replace("/", "", true)) }
+                                    onSearch(query.replace("/", "", true))
+                                    /*
                                     onTextFieldValueChanged(
                                         TextFieldValue(
                                             cleanString(query)
                                         )
                                     )
+                                     */
                                 }
                             )
                             .fillMaxWidth()
@@ -436,7 +443,7 @@ fun OnlineSearch(
                         )
 
                         Image(
-                            painter = arrowForwardIconPainter,
+                            painter = painterResource(R.drawable.pencil),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                             modifier = Modifier
@@ -450,9 +457,12 @@ fun OnlineSearch(
                                                 selection = TextRange(query.length)
                                             )
                                         )
+                                        coroutineScope.launch {
+                                            lazyListState.animateScrollToItem(0)
+                                        }
                                     }
                                 )
-                                .rotate(225f)
+                                //.rotate(225f)
                                 .padding(horizontal = 8.dp)
                                 .size(22.dp)
                         )
@@ -492,12 +502,14 @@ fun OnlineSearch(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .clickable(onClick = {
-                            //onSearch(searchQuery.query.replace("/", "", true))
+                            onSearch(searchQuery.query.replace("/", "", true))
+                            /*
                             onTextFieldValueChanged(
                                 TextFieldValue(
                                     cleanString(searchQuery.query)
                                 )
                             )
+                             */
                         })
                         .fillMaxWidth()
                         .padding(all = 16.dp)
@@ -547,7 +559,7 @@ fun OnlineSearch(
                     )
 
                     Image(
-                        painter = arrowForwardIconPainter,
+                        painter = painterResource(R.drawable.pencil),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                         modifier = Modifier
@@ -561,9 +573,12 @@ fun OnlineSearch(
                                             selection = TextRange(searchQuery.query.length)
                                         )
                                     )
+                                    coroutineScope.launch {
+                                        lazyListState.animateScrollToItem(0)
+                                    }
                                 }
                             )
-                            .rotate(310f)
+                            //.rotate(310f)
                             .padding(horizontal = 8.dp)
                             .size(22.dp)
                     )

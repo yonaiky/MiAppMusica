@@ -124,6 +124,7 @@ fun SearchResultScreen(
                 )
                 Title(
                     title = query,
+                    icon = R.drawable.pencil,
                     onClick = {
                         /*
                                 context.persistMap?.keys?.removeAll {
