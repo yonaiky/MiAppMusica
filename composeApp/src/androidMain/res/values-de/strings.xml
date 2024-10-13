@@ -751,8 +751,8 @@
     <string name="titleartist">Titel und Künstler</string>
     <string name="miniqueue">Mini-Warteschlange</string>
     <string name="controls">Steuerung</string>
-    <string name="add_to_favorites">Add to favorites</string>
-    <string name="import_favorites">Import favorites</string>
+    <string name="add_to_favorites">Den Favoriten hinzufügen</string>
+    <string name="import_favorites">Favoriten importieren</string>
     <string name="skip_media_on_error">Autoskip on error</string>
     <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
