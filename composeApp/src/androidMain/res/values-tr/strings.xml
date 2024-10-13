@@ -756,7 +756,7 @@
     <string name="skip_media_on_error">Hata oluştuğuna otomatik atla</string>
     <string name="skip_media_on_error_description">Bir hata oluşursa, şarkı değiştirilir</string>
     <string name="skip_media_on_error_message">Medya %1$s hata oluştu</string>
-    <string name="login_required_to_play_this_media">Login required to play this media</string>
-    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
+    <string name="login_required_to_play_this_media">Bu medyayı oynatmak için giriş gerekli</string>
+    <string name="skip_media_on_notavailable_message">Önceki medya mevcut değil, sonrakine atlandı</string>
+    <string name="search_results_for">Arama sonuçları:</string>
 </resources>

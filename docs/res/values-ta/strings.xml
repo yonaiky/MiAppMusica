@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
-    <string name="beautiful_player">A beautiful player.</string>
-    <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
-    <string name="many_effects">Many effects.</string>
-    <string name="visualizer_preview_timeline">Visualizer, preview, timeline, play button, apply the effects you prefer..</string>
-    <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic is multilingual, modern, powerful, attractive, beautiful and is translated into various languages by project collaborators.</string>
-    <string name="listen_to_your_favourite_music">Listen to your favorite music</string>
-    <string name="download_rimusic_now">Download RiMusic Now.</string>
-    <string name="repository">Repository</string>
-    <string name="releases">Releases</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="opensource_multilingual_application">திறந்த மூல மற்றும் பல மொழிகளை ஆதரிக்கும் YouTube Music-ல் இருந்து இசை ஸ்ட்ரீமிங் செய்யக்கூடிய Android செயலி</string>
+    <string name="your_library">உங்கள் இசை தொகுப்பு.</string>
+    <string name="organized_in_one_place">உங்கள் விருப்பமான பாடல்கள், பதிவிறக்கப்பட்ட பாடல்கள், கேட்ட பாடல்கள் மற்றும் அனைத்து இசைப்பட்டியல்கள் ஒரு இடத்தில் பட்டுள்ளது.</string>
+    <string name="beautiful_player">ஒரு அழகான இசைப்பான்.</string>
+    <string name="listen_songs_sing_lyrics">பாடல்களைக் கேளுங்கள், பாடலின் வரிகளுடன் பாடுங்கள், உள்ளக மொழிபெயர்ப்பாளரைப் பயன்படுத்தி வார்த்தைகளை மொழிபெயருங்கள்.</string>
+    <string name="many_effects">பல எஃபெக்ட்கள்.</string>
+    <string name="visualizer_preview_timeline">காட்சியாளர், முன்னோட்டம், காலவரிசை, இசை பொத்தான், உங்களுக்குப் பிடித்த விளைவுகளைப் பயன்படுத்து...</string>
+    <string name="modern">நவீனம்.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">ரீமியூசிக் என்பது பல மொழிகளை ஆதரிக்கும் நவீன, சக்திவாய்ந்த, ஈர்க்கும், அழகான இசையமைப்பு மென்பொருளாகும். இது திட்ட ஒத்துழைப்பாளர்களால் பல்வேறு மொழிகளில் மொழிபெயர்க்கப்படுகிறது.</string>
+    <string name="listen_to_your_favourite_music">உங்களுக்குப் பிடித்த இசையைக் கேளுங்கள்</string>
+    <string name="download_rimusic_now">ரீமியூசிக்கை பதிவிறக்கம் செய்யவும்.</string>
+    <string name="repository">களஞ்சியம்</string>
+    <string name="releases">வெளியீடுகள்</string>
+    <string name="issue_tracker">பிரச்சனை கண்காணிப்பாளர்</string>
+    <string name="custom_version">தனிப்பயனாக்கப்பட்ட பதிப்பு</string>
 </resources>
