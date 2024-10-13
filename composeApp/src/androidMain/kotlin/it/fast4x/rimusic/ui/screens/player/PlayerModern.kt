@@ -10,7 +10,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -124,7 +123,6 @@ import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -196,7 +194,6 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
 import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
@@ -279,8 +276,8 @@ fun PlayerModern(
         PlayerThumbnailSize.Biggest
     )
 
-    var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
-    var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
+    val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
+    val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     val binder = LocalPlayerServiceBinder.current
 
     binder?.player ?: return
@@ -294,7 +291,7 @@ fun PlayerModern(
         mutableStateOf(binder.player.shouldBePlaying)
     }
 
-    val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
+    //val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
 
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -321,11 +318,11 @@ fun PlayerModern(
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
-    var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
+    val showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
-    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
+    val expandedlyrics by rememberPreference(expandedlyricsKey, true)
 
     if (showBlurPlayerDialog) {
 
@@ -361,8 +358,8 @@ fun PlayerModern(
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
 
-    var queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
-    var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
+    val queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
+    val miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
 
 
     binder.player.DisposableListener {
@@ -405,7 +402,7 @@ fun PlayerModern(
         mutableStateOf(false)
     }
 
-    val sleepTimerMillisLeft by (binder?.sleepTimerMillisLeft
+    val sleepTimerMillisLeft by (binder.sleepTimerMillisLeft
         ?: flowOf(null))
         .collectAsState(initial = null)
 
@@ -440,7 +437,7 @@ fun PlayerModern(
             }
         )
     }
-    var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
+    val actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
     if (expandedlyrics && !isLandscape) {
@@ -535,14 +532,14 @@ fun PlayerModern(
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
-    var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
-    var showalbumcover by rememberPreference(showalbumcoverKey, true)
+    val showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
+    val showalbumcover by rememberPreference(showalbumcoverKey, true)
     val tapqueue by rememberPreference(tapqueueKey, true)
     val swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
-    var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
-    var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
-    var noblur by rememberPreference(noblurKey, true)
-    var fadingedge by rememberPreference(fadingedgeKey, false)
+    val playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
+    val queueType by rememberPreference(queueTypeKey, QueueType.Essential)
+    val noblur by rememberPreference(noblurKey, true)
+    val fadingedge by rememberPreference(fadingedgeKey, false)
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
 
@@ -653,7 +650,7 @@ fun PlayerModern(
                                 + formatAsDuration(timeRemaining.toLong())
                                 + " " + stringResource(R.string.end_of_song),
                         onClick = {
-                            binder?.startSleepTimer(timeRemaining.toLong())
+                            binder.startSleepTimer(timeRemaining.toLong())
                             isShowingSleepTimerDialog = false
                         }
                     )
@@ -678,7 +675,7 @@ fun PlayerModern(
                     IconButton(
                         enabled = amount > 0,
                         onClick = {
-                            binder?.startSleepTimer(amount * 5 * 60 * 1000L)
+                            binder.startSleepTimer(amount * 5 * 60 * 1000L)
                             isShowingSleepTimerDialog = false
                         },
                         icon = R.drawable.checkmark,
@@ -827,15 +824,15 @@ fun PlayerModern(
         //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
-    var blackgradient by rememberPreference(blackgradientKey, false)
-    var bottomgradient by rememberPreference(bottomgradientKey, false)
-    var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    val blackgradient by rememberPreference(blackgradientKey, false)
+    val bottomgradient by rememberPreference(bottomgradientKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var discoverIsEnabled by rememberPreference(discoverKey, false)
     val hapticFeedback = LocalHapticFeedback.current
-    var titleExpanded by rememberPreference(titleExpandedKey, true)
-    var timelineExpanded by rememberPreference(timelineExpandedKey, true)
-    var controlsExpanded by rememberPreference(controlsExpandedKey, true)
+    val titleExpanded by rememberPreference(titleExpandedKey, true)
+    val timelineExpanded by rememberPreference(timelineExpandedKey, true)
+    val controlsExpanded by rememberPreference(controlsExpandedKey, true)
 
 
 
