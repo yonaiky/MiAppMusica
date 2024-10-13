@@ -89,11 +89,13 @@ fun DesktopApp(
                 VerticalLayout(
                     navController = navController
                 ) {
+                    /*
                     QuickPicsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     )
+                     */
                 }
             }
 

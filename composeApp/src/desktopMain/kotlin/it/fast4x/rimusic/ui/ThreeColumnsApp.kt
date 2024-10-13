@@ -104,9 +104,12 @@ import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.ExpandIcon
+import it.fast4x.rimusic.ui.components.PlayerEssential
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
+import it.fast4x.rimusic.ui.screens.AlbumScreen
 import it.fast4x.rimusic.ui.screens.ArtistScreen
+import it.fast4x.rimusic.ui.screens.QuickPicsScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
@@ -139,7 +142,7 @@ fun ThreeColumnsApp(
 
     val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
     val artistId = remember { mutableStateOf("") }
-    //val body = remember { mutableStateOf<PlayerResponse?>(null) }
+    val albumId = remember { mutableStateOf("") }
 
     val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
 
@@ -189,10 +192,9 @@ fun ThreeColumnsApp(
 
     //val componentController = remember(url) { VlcjComponentController() }
     val frameController = remember(url) { VlcjFrameController() }
-    var showPlayer by remember { mutableStateOf(false) }
 
     var showPageSheet by remember { mutableStateOf(false) }
-    var showPageType by remember { mutableStateOf(PageType.EMPTY) }
+    var showPageType by remember { mutableStateOf(PageType.QUICKPICS) }
 
     MusicDatabaseDesktop.getAll()
 
@@ -212,85 +214,144 @@ fun ThreeColumnsApp(
              */
         },
         bottomBar = {
-            Column (verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                HorizontalDivider(
-                    color = Color.DarkGray,
-                    thickness = 1.dp,
-                    modifier = Modifier.fillMaxWidth().alpha(0.6f)
-                )
-                Row(
-                    Modifier.background(Color.Black).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ExpandIcon(
-                        onAction = { showPageSheet = true }
-                    )
-
-                    Row(
-                        //Modifier.border(BorderStroke(1.dp, Color.Red)),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        SongItem(
-                            thumbnailContent = {},
-                            authors = "Author",
-                            duration = "00:00",
-                            title = "Title",
-                            isDownloaded = false,
-                            onDownloadClick = {},
-                            thumbnailSizeDp = 80.dp,
-                            modifier = Modifier.fillMaxWidth(0.2f)
-                        )
-                    }
-                    FramePlayer(
-                        Modifier.fillMaxWidth(0.8f), //.border(BorderStroke(1.dp, Color.Yellow)),
-                        url ?: "",
-                        frameController.size.collectAsState(null).value?.run {
-                            IntSize(first, second)
-                        } ?: IntSize.Zero,
-                        frameController.bytes.collectAsState(null).value,
-                        frameController,
-                        true,
-                        false
-                    )
-                }
-            }
+            PlayerEssential(
+                frameController = frameController,
+                url = url,
+                onExpandAction = { showPageSheet = true }
+            )
         }
     ) { innerPadding ->
 
         ThreeColumnsLayout(
+            /*
             onSongClick = {
                 videoId.value = it
-                println("videoId clicked $it")
             },
             onArtistClick = {
                 artistId.value = it
                 showPageType = PageType.ARTIST
                 showPageSheet = true
             },
-            onAlbumClick = {},
+            onAlbumClick = {
+                albumId.value = it
+                showPageType = PageType.ALBUM
+                showPageSheet = true
+            },
             onPlaylistClick = {},
-            frameController = frameController
+             */
+            onHomeClick = { showPageType = PageType.QUICKPICS },
+            frameController = frameController,
+            centerPanelContent = {
+                when(showPageType){
+                    PageType.ALBUM -> {
+                        AlbumScreen(
+                            browseId = albumId.value,
+                            onSongClick = {
+                                videoId.value = it
+                            },
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onClosePage = { showPageSheet = false }
+                        )
+                    }
+                    PageType.ARTIST -> {
+                        ArtistScreen(
+                            browseId = artistId.value,
+                            onSongClick = {
+                                videoId.value = it
+                            },
+                            onPlaylistClick = {},
+                            onViewAllAlbumsClick = {},
+                            onViewAllSinglesClick = {},
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onClosePage = { showPageSheet = false }
+                        )
+                    }
+                    PageType.PLAYLIST -> {}
+                    PageType.MOOD -> {}
+                    PageType.QUICKPICS -> {
+                        QuickPicsScreen(
+                            onSongClick = { videoId.value = it },
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onArtistClick = {
+                                artistId.value = it
+                                showPageType = PageType.ARTIST
+                                showPageSheet = true
+                            },
+                            onPlaylistClick = {},
+                            onMoodClick = {}
+                        )
+                    }
+                    else -> {}
+                }
+            }
         )
 
+        /*
         AnimatedVisibility(
-            visible = showPlayer,
+            visible = showPageSheet,
             enter = expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart),
             exit =  shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black)
+                    .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-
+                when(showPageType){
+                    PageType.ALBUM -> {
+                        AlbumScreen(
+                            browseId = albumId.value,
+                            onSongClick = {
+                                videoId.value = it
+                            },
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onClosePage = { showPageSheet = false }
+                        )
+                    }
+                    PageType.ARTIST -> {
+                        ArtistScreen(
+                            browseId = artistId.value,
+                            onSongClick = {
+                                videoId.value = it
+                            },
+                            onPlaylistClick = {},
+                            onViewAllAlbumsClick = {},
+                            onViewAllSinglesClick = {},
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onClosePage = { showPageSheet = false }
+                        )
+                    }
+                    PageType.PLAYLIST -> {}
+                    PageType.MOOD -> {}
+                    else -> {}
+                }
             }
         }
-
+        */
+        /*
         CustomModalBottomSheet(
             showSheet = showPageSheet,
             onDismissRequest = { showPageSheet = false },
@@ -312,6 +373,9 @@ fun ThreeColumnsApp(
                 PageType.ARTIST -> {
                     ArtistScreen(
                         browseId = artistId.value,
+                        onSongClick = {
+                            videoId.value = it
+                        },
                         onPlaylistClick = {},
                         onViewAllAlbumsClick = {},
                         onViewAllSinglesClick = {},
@@ -323,20 +387,24 @@ fun ThreeColumnsApp(
                 PageType.MOOD -> {}
                 else -> {}
             }
+
         }
-
-
+         */
     }
 }
 
 @Composable
 fun ThreeColumnsLayout(
+    /*
    onSongClick: (key: String) -> Unit = {},
    onArtistClick: (key: String) -> Unit = {},
    onAlbumClick: (key: String) -> Unit = {},
    onPlaylistClick: (key: String) -> Unit = {},
    onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
-   frameController: VlcjFrameController = remember { VlcjFrameController() }
+     */
+   onHomeClick: () -> Unit = {},
+   frameController: VlcjFrameController = remember { VlcjFrameController() },
+   centerPanelContent: @Composable () -> Unit = {}
 ) {
     Row(Modifier.fillMaxSize()) {
         LeftPanelContent()
@@ -347,11 +415,10 @@ fun ThreeColumnsLayout(
             color = Color.Gray.copy(alpha = 0.6f)
         )
         CenterPanelContent(
-            onSongClick = onSongClick,
-            onArtistClick = onArtistClick,
-            onAlbumClick = onAlbumClick,
-            onPlaylistClick = onPlaylistClick,
-            onMoodClick = onMoodClick
+            onHomeClick = onHomeClick,
+            content = {
+                centerPanelContent()
+            }
         )
         VerticalDivider(
             modifier = Modifier
@@ -483,11 +550,8 @@ fun LeftPanelContent() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CenterPanelContent(
-    onSongClick: (key: String) -> Unit = {},
-    onAlbumClick: (key: String) -> Unit = {},
-    onArtistClick: (key: String) -> Unit = {},
-    onPlaylistClick: (key: String) -> Unit = {},
-    onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    content: @Composable () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -531,213 +595,13 @@ fun CenterPanelContent(
                 contentDescription = null,
                 modifier = Modifier
                     .width(100.dp)
-                    .clickable {}
+                    .clickable { onHomeClick() }
             )
         }
 
         Column(Modifier.fillMaxSize().border(1.dp, color = Color.Black)) {
 
-            Title2Actions(
-                title = "For You",
-                onClick1 = {},
-                icon2 = Res.drawable.play,
-                onClick2 = {}
-            )
-
-            val quickPicksLazyGridState = rememberLazyGridState()
-            val moodAngGenresLazyGridState = rememberLazyGridState()
-            val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
-            val related = remember { mutableStateOf<Innertube.RelatedPage?>(null) }
-            var relatedPageResult by remember { mutableStateOf<Result<Innertube.RelatedPage?>?>(null) }
-            var discoverPageResult by remember { mutableStateOf<Result<Innertube.DiscoverPage?>?>(null) }
-            var discover = remember { mutableStateOf<Innertube.DiscoverPage?>(null) }
-
-            LaunchedEffect(Unit) {
-                relatedPageResult = Innertube.relatedPage(
-                    NextBody(
-                        videoId = "HZnNt9nnEhw"
-                    )
-                )
-
-                discoverPageResult = Innertube.discoverPage()
-            }
-           relatedPageResult?.getOrNull().also { related.value = it }
-           discoverPageResult?.getOrNull().also { discover.value = it }
-
-            LazyHorizontalGrid(
-                state = quickPicksLazyGridState,
-                rows = GridCells.Fixed(if (related.value != null) 3 else 1),
-                flingBehavior = ScrollableDefaults.flingBehavior(),
-                contentPadding = endPaddingValues,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(if (related.value != null) itemsVerticalPadding * 3 * 9 else itemsVerticalPadding * 9)
-            ) {
-                if (related.value != null) {
-                    items(
-                        items = related.value!!.songs?.distinctBy { it.key }
-                            //?.dropLast(if (trending == null) 0 else 1)
-                            ?: emptyList(),
-                        key = Innertube.SongItem::key
-                    ) { song ->
-
-                        SongItem(
-                            song = song,
-                            isDownloaded = false,
-                            onDownloadClick = {},
-                            //thumbnailSizeDp = 50.dp,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {},
-                                    onClick = {
-                                        onSongClick(song.key)
-                                    }
-                                )
-                                .animateItemPlacement()
-                                .width(itemInHorizontalGridWidth)
-                        )
-                    }
-                }
-            }
-
-            discover.let { page ->
-                val showNewAlbums = true
-                if (showNewAlbums) {
-                    Title(
-                        title = stringResource(Res.string.new_albums),
-                        onClick = {},
-                        //modifier = Modifier.fillMaxWidth(0.7f)
-                    )
-
-                    LazyRow(contentPadding = endPaddingValues) {
-                        page.value?.newReleaseAlbums?.let {
-                            items(items = it.distinctBy { it.key }, key = { it.key }) {
-                                AlbumItem(
-                                    album = it,
-                                    thumbnailSizeDp = albumThumbnailSize,
-                                    alternative = true,
-                                    modifier = Modifier.clickable(onClick = {
-                                        onAlbumClick(it.key)
-                                    })
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            related.value?.albums?.let { albums ->
-                val showRelatedAlbums = true
-                if (showRelatedAlbums) {
-                    Title(
-                        title = stringResource(Res.string.related_albums),
-                        onClick = {},
-                        //modifier = Modifier.fillMaxWidth(0.7f)
-                    )
-
-                    LazyRow(contentPadding = endPaddingValues) {
-                        items(items = albums.distinctBy { it.key }, key = { it.key }) {
-                            AlbumItem(
-                                album = it,
-                                thumbnailSizeDp = albumThumbnailSize,
-                                alternative = true,
-                                modifier = Modifier.clickable(onClick = {
-                                    onAlbumClick(it.key)
-                                })
-                            )
-                        }
-                    }
-                }
-            }
-
-            related.value?.artists?.let { artists ->
-                val showSimilarArtists = true
-                if (showSimilarArtists) {
-                    Title(
-                        title = stringResource(Res.string.similar_artists),
-                        onClick = {},
-                        //modifier = Modifier.fillMaxWidth(0.7f)
-                    )
-
-                    LazyRow(contentPadding = endPaddingValues) {
-                        items(items = artists.distinctBy { it.key }, key = { it.key }) {
-                            ArtistItem(
-                                artist = it,
-                                thumbnailSizeDp = artistThumbnailSize,
-                                alternative = true,
-                                modifier = Modifier.clickable(onClick = {
-                                    onArtistClick(it.key)
-                                })
-                            )
-
-                        }
-                    }
-                }
-            }
-
-            related.value?.playlists?.let { playlists ->
-                val showPlaylistMightLike = true
-                if (showPlaylistMightLike) {
-                    Title(
-                        title = stringResource(Res.string.playlists_you_might_like),
-                        onClick = {},
-                        //modifier = Modifier.fillMaxWidth(0.7f)
-                    )
-
-                    LazyRow(contentPadding = endPaddingValues) {
-                        items(items = playlists.distinctBy { it.key }, key = { it.key }) {
-                            PlaylistItem(
-                                playlist = it,
-                                thumbnailSizeDp = playlistThumbnailSize,
-                                alternative = true,
-                                showSongsCount = false,
-                                modifier = Modifier.clickable(onClick = {
-                                    onPlaylistClick(it.key)
-                                })
-                            )
-
-                        }
-                    }
-                }
-            }
-
-            discover.let { page ->
-                val showNewAlbums = true
-                if (showNewAlbums) {
-                    Title(
-                        title = stringResource(Res.string.moods_and_genres),
-                        onClick = {},
-                        //modifier = Modifier.fillMaxWidth(0.7f)
-                    )
-
-                        LazyHorizontalGrid(
-                            state = moodAngGenresLazyGridState,
-                            rows = GridCells.Fixed(4),
-                            flingBehavior = ScrollableDefaults.flingBehavior(),
-                            contentPadding = endPaddingValues,
-                            modifier = Modifier
-                                //.fillMaxWidth()
-                                .height(itemsVerticalPadding * 4 * 8)
-                        ) {
-                            page.value?.moods?.let {
-                                items(
-                                    items = it.sortedBy { it.title },
-                                    key = { it.endpoint.params ?: it.title }
-                                ) {
-                                    MoodItemColored(
-                                        mood = it,
-                                        onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
-                                        modifier = Modifier
-                                            //.width(itemWidth)
-                                            .padding(4.dp)
-                                    )
-                                }
-                            }
-                        }
-
-                }
-            }
-
+            content()
 
             Spacer(Modifier.height(layoutColumnBottomSpacer))
 

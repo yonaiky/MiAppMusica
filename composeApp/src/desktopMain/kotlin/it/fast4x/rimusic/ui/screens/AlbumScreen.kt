@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.artistPage
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.items.AlbumItem
@@ -78,6 +79,7 @@ import me.bush.translator.Translator
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rimusic.composeapp.generated.resources.Res
+import rimusic.composeapp.generated.resources.album_alternative_versions
 import rimusic.composeapp.generated.resources.albums
 import rimusic.composeapp.generated.resources.arrow_left
 import rimusic.composeapp.generated.resources.artist_subscribers
@@ -95,25 +97,22 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ArtistScreen(
+fun AlbumScreen(
     browseId: String,
     onSongClick: (String) -> Unit,
-    onPlaylistClick: (String) -> Unit,
-    onViewAllAlbumsClick: () -> Unit,
-    onViewAllSinglesClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
     onClosePage: () -> Unit
 ) {
     //val leftScrollState = rememberScrollState()
     //val rightScrollState = rememberScrollState()
-    val artistPage = remember { mutableStateOf<Innertube.ArtistPage?>(null) }
+    val albumPage = remember { mutableStateOf<Innertube.PlaylistOrAlbumPage?>(null) }
     LaunchedEffect(browseId) {
-        Innertube.artistPage(BrowseBody(browseId = browseId))
+        Innertube.albumPage(BrowseBody(browseId = browseId))
             ?.onSuccess {
-                artistPage.value = it
+                albumPage.value = it
             }
     }
-    val artist = artistPage.value
+    val album = albumPage.value
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
     val sectionTextModifier = Modifier
@@ -153,15 +152,16 @@ fun ArtistScreen(
                 )
                  */
 
+
                 Box(
                     modifier = Modifier
                         .aspectRatio(4f / 3)
                         //.height(300.dp)
                         .fillMaxWidth()
                 ) {
-                    if (artistPage.value != null) {
+                    if (albumPage.value != null) {
                         AsyncImage(
-                            model = artistPage.value!!.thumbnail?.url?.resize(1200, 900),
+                            model = albumPage.value!!.thumbnail?.url?.resize(1200, 900),
                             contentDescription = "loading...",
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -172,9 +172,9 @@ fun ArtistScreen(
                                 )
                         )
                     }
-                    if (!artistPage.value?.name.isNullOrEmpty())
+                    if (!albumPage.value?.title.isNullOrEmpty())
                         AutoResizeText(
-                            text = artistPage.value?.name.toString(),
+                            text = albumPage.value?.title.toString(),
                             style = typography.displayLarge,
                             fontSizeRange = FontSizeRange(50.sp, 100.sp),
                             fontWeight = typography.displayLarge.fontWeight,
@@ -188,9 +188,11 @@ fun ArtistScreen(
                                 .padding(horizontal = 30.dp)
                         )
 
-                    artistPage.value?.subscriberCountText?.let {
+
                             Text(
-                                text = String.format(stringResource(Res.string.artist_subscribers), it), //stringResource(Res.string.artist_subscribers, it),
+                                text = "${albumPage.value?.year} - " + albumPage.value?.songsPage?.items?.size.toString() + " "
+                                        + stringResource(Res.string.songs),
+                                        //+ " - " + formatAsTime(totalPlayTimes),
                                 style = TextStyle(
                                     fontSize = typography.titleMedium.fontSize,
                                     fontWeight = typography.titleMedium.fontWeight,
@@ -201,12 +203,12 @@ fun ArtistScreen(
                                     .align(Alignment.BottomCenter)
 
                             )
-                    }
+
                 }
 
 
 
-                artistPage.value?.description?.let { description ->
+                albumPage.value?.description?.let { description ->
                     val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
 
                     Title(
@@ -260,7 +262,7 @@ fun ArtistScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp)
-                    ) {
+                    ){
                         Text(
                             text = "“ $translatedText „",
                             style = TextStyle(
@@ -268,10 +270,7 @@ fun ArtistScreen(
                                 //fontWeight = typography.titleSmall.fontWeight,
                                 color = Color.White,
                                 textAlign = TextAlign.Start
-                            ),
-                           // modifier = Modifier
-                           //     .padding(horizontal = 12.dp)
-                           //     .weight(1f)
+                            )
 
                         )
 
@@ -284,9 +283,9 @@ fun ArtistScreen(
                                     color = Color.White,
                                     textAlign = TextAlign.Start
                                 ),
-                               // modifier = Modifier
-                               //     .padding(horizontal = 16.dp)
-                               //     .padding(bottom = 16.dp)
+                                //modifier = Modifier
+                                    //.padding(horizontal = 16.dp)
+                                    //.padding(bottom = 16.dp)
                                 //.padding(endPaddingValues)
 
                             )
@@ -307,14 +306,14 @@ fun ArtistScreen(
                     //.verticalScroll(rightScrollState)
             ) {
 
-                if (artistPage.value != null) {
+                if (albumPage.value != null) {
 
-                    artistPage.value!!.songs?.let { allSongs ->
+                    albumPage.value!!.songsPage?.items.let { allSongs ->
 
                         val parentalControlEnabled = false
 
                         val songs = if (parentalControlEnabled)
-                            allSongs.filter { !it.explicit } else allSongs
+                            allSongs?.filter { !it.explicit } else allSongs
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -334,7 +333,7 @@ fun ArtistScreen(
 
                         }
 
-                        songs.forEachIndexed { index, song ->
+                        songs?.forEachIndexed { index, song ->
 
                             SongItem(
                                 song = song,
@@ -364,7 +363,7 @@ fun ArtistScreen(
                         }
                     }
 
-                    artistPage.value!!.playlists?.let { playlists ->
+                    albumPage.value!!.otherVersions?.let { otherVersion ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -373,7 +372,7 @@ fun ArtistScreen(
                                 .padding(endPaddingValues)
                         ) {
                             Title(
-                                title = stringResource(Res.string.playlists),
+                                title = stringResource(Res.string.album_alternative_versions),
                                 onClick = {
                                     //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
                                     //onViewAllAlbumsClick()
@@ -388,16 +387,16 @@ fun ArtistScreen(
                                 .fillMaxWidth()
                         ) {
                             items(
-                                items = playlists,
-                                key = Innertube.PlaylistItem::key
-                            ) { playlist ->
-                                PlaylistItem(
-                                    playlist = playlist,
-                                    thumbnailSizeDp = playlistThumbnailSize,
+                                items = otherVersion,
+                                key = Innertube.AlbumItem::key
+                            ) { album ->
+                                AlbumItem(
+                                    album = album,
+                                    thumbnailSizeDp = albumThumbnailSize,
                                     alternative = true,
                                     modifier = Modifier
                                         .clickable(onClick = {
-                                            onPlaylistClick(playlist.key)
+                                            onAlbumClick(album.key)
                                         }
                                         )
                                 )
@@ -405,99 +404,12 @@ fun ArtistScreen(
                         }
                     }
 
-                    artistPage.value!!.albums?.let { albums ->
-                        Row(
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(endPaddingValues)
-                        ) {
-                            Title2Actions(
-                                title = stringResource(Res.string.albums),
-                                onClick1 = {
-                                    //if (youtubeArtistPage.albumsEndpoint?.browseId != null) {
-                                    onViewAllAlbumsClick()
-                                    //} else SmartToast(context.resources.getString(R.string.info_no_albums_yet))
-                                },
-                                icon2 = Res.drawable.dice,
-                                onClick2 = {
-                                    val albumId = albums.get(
-                                        Random(System.currentTimeMillis()).nextInt(
-                                            0,
-                                            albums.size - 1
-                                        )
-                                    ).key
-                                    onAlbumClick(albumId)
-                                }
-                            )
-                        }
-
-                        LazyRow(
-                            contentPadding = endPaddingValues,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            items(
-                                items = albums,
-                                key = Innertube.AlbumItem::key
-                            ) { album ->
-                                AlbumItem(
-                                    album = album,
-                                    thumbnailSizeDp = albumThumbnailSize,
-                                    alternative = true,
-                                    modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
-                                )
-                            }
-                        }
-                    }
-
-                    artistPage.value!!.singles?.let { singles ->
-                        Row(
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(endPaddingValues)
-                        ) {
-                            Title(
-                                title = stringResource(Res.string.singles),
-                                onClick = {
-                                    //if (youtubeArtistPage.singlesEndpoint?.browseId != null) {
-                                    onViewAllSinglesClick()
-                                    //} else SmartToast(context.resources.getString(R.string.info_no_singles_yet))
-                                }
-                            )
-                        }
-
-                        LazyRow(
-                            contentPadding = endPaddingValues,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            items(
-                                items = singles,
-                                key = Innertube.AlbumItem::key
-                            ) { album ->
-                                AlbumItem(
-                                    album = album,
-                                    thumbnailSizeDp = albumThumbnailSize,
-                                    alternative = true,
-                                    modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
-                                )
-                            }
-
-                        }
-                    }
-
-
                 }
 
 
             }
         }
+
     }
 
 }
