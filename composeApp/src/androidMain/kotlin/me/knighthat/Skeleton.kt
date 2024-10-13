@@ -128,8 +128,9 @@ fun Skeleton(
                     Alignment.BottomCenter
 
             Box(
-                Modifier.padding( vertical = 30.dp )
-                        .align( playerAlignment ),
+                Modifier
+                    .padding( vertical = 4.dp )
+                    .align( playerAlignment ),
                 content = { mediaPlayer?.invoke() }
             )
         }
