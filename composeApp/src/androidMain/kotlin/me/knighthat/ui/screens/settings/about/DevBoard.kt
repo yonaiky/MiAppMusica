@@ -19,22 +19,29 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import it.fast4x.rimusic.R
 import me.knighthat.colorPalette
+import timber.log.Timber
 import java.io.InputStream
 
 private val GSON = Gson()
 private lateinit var DEVS: List<Developer>
 
 private fun init( context: Context ) {
-    // Open contributors.json file
-    val fileStream: InputStream =
-        context.resources.openRawResource( R.raw.contributors )
-    // Parse content to JSON array
-    val json: JsonArray =
-        GSON.fromJson( fileStream.bufferedReader(), JsonArray::class.java )
+    try {
+        // Open contributors.json file
+        val fileStream: InputStream =
+            context.resources.openRawResource(R.raw.contributors)
+        // Parse content to JSON array
+        val json: JsonArray =
+            GSON.fromJson(fileStream.bufferedReader(), JsonArray::class.java)
 
-    // Convert each object of JSON array to Developer instance
-    // then sort it based on their username
-    DEVS = json.map { GSON.fromJson( it, Developer::class.java ) }.sortedByDescending { it.contributions }
+        // Convert each object of JSON array to Developer instance
+        // then sort it based on their username
+        DEVS = json.map { GSON.fromJson(it, Developer::class.java) }
+            .sortedByDescending { it.contributions }
+    } catch ( e: Exception ) {
+        Timber.e( e.stackTraceToString() )
+        DEVS = emptyList()
+    }
 }
 
 @Composable
