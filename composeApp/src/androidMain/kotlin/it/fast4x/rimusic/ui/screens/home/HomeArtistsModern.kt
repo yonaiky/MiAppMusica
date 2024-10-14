@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -75,7 +73,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -386,17 +383,16 @@ fun HomeArtistsModern(
                         thumbnailSizePx = thumbnailSizePx,
                         thumbnailSizeDp = thumbnailSizeDp,
                         alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                if (searching)
-                                    if (filter.isBlank())
-                                        searching = false
-                                    else
-                                        isSearchInputFocused = false
+                        modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
+                                           .clickable(onClick = {
+                                               if (searching)
+                                                   if (filter.isBlank())
+                                                       searching = false
+                                                   else
+                                                       isSearchInputFocused = false
 
-                                onArtistClick(artist)
-                            })
-                            .animateItemPlacement()
+                                               onArtistClick(artist)
+                                           })
                     )
                 }
                 item(
@@ -419,19 +415,5 @@ fun HomeArtistsModern(
                 onClickSettings = onSettingsClick,
                 onClickSearch = onSearchClick
             )
-
-            /*
-        FloatingActionsContainerWithScrollToTop(
-                lazyGridState = lazyGridState,
-                iconId = R.drawable.search,
-                onClick = onSearchClick
-            )
-             */
-
-
-
-
-
-
     }
 }
