@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
@@ -105,7 +106,7 @@ import kotlin.random.Random
 @Composable
 fun PlaylistScreen(
     browseId: String,
-    onSongClick: (String) -> Unit,
+    onSongClick: (Song) -> Unit,
     onAlbumClick: (String) -> Unit,
     onClosePage: () -> Unit
 ) {
@@ -369,7 +370,7 @@ fun PlaylistScreen(
                                              */
                                         },
                                         onClick = {
-                                            onSongClick(song.key)
+                                            onSongClick(song.asSong)
                                         }
                                     )
                                     .padding(endPaddingValues)

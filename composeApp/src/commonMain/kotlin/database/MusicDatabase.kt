@@ -1,13 +1,17 @@
 package database
 
+import androidx.compose.ui.window.application
 import androidx.room.ConstructedBy
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.Transaction
+import androidx.room.Upsert
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import database.entities.Album
 import database.entities.Artist
@@ -21,6 +25,7 @@ import database.entities.SongAlbumMap
 import database.entities.SongArtistMap
 import database.entities.SongPlaylistMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 
 @Database(
@@ -51,8 +56,9 @@ expect object MusicDatabaseConstructor : RoomDatabaseConstructor<MusicDatabase>
 
 @Dao
 interface MusicDatabaseDao {
-    @Insert
-    suspend fun insert(item: Song)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(item: Song): Long
 
     @Delete
     suspend fun delete(item: Song)

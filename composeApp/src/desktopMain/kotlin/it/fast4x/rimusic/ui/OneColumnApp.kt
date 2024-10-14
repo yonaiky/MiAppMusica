@@ -86,7 +86,7 @@ fun OneColumnApp(
     val frameController = remember(url) { VlcjFrameController() }
     var showPlayer by remember { mutableStateOf(false) }
 
-    MusicDatabaseDesktop.getAll()
+    //MusicDatabaseDesktop.getAllSongs()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = backStackEntry?.destination?.route ?: "artists"

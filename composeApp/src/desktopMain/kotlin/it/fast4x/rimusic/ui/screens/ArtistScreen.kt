@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.artistPage
@@ -68,6 +69,7 @@ import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import it.fast4x.rimusic.ui.components.adaptiveThumbnailContent
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
@@ -99,7 +101,7 @@ import kotlin.random.Random
 @Composable
 fun ArtistScreen(
     browseId: String,
-    onSongClick: (String) -> Unit,
+    onSongClick: (Song) -> Unit,
     onPlaylistClick: (String) -> Unit,
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
@@ -361,7 +363,7 @@ fun ArtistScreen(
                                              */
                                         },
                                         onClick = {
-                                            onSongClick(song.key)
+                                            onSongClick(song.asSong)
                                         }
                                     )
                                     .padding(endPaddingValues)

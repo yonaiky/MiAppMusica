@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +40,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import database.MusicDatabaseDao
 import database.MusicDatabaseDesktop
+import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.enums.PageType
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
@@ -55,6 +59,10 @@ import it.fast4x.rimusic.ui.screens.ArtistScreen
 import it.fast4x.rimusic.ui.screens.MoodScreen
 import it.fast4x.rimusic.ui.screens.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.QuickPicsScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import player.frame.FrameContainer
 import rimusic.composeapp.generated.resources.Res
@@ -67,14 +75,15 @@ import rimusic.composeapp.generated.resources.musical_notes
 import vlcj.VlcjFrameController
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThreeColumnsApp(
-    navController: NavHostController = rememberNavController()
-) {
+fun ThreeColumnsApp() {
 
+    val database = remember { MusicDatabaseDesktop }
+
+    val coroutineScope by remember { mutableStateOf(CoroutineScope(Dispatchers.IO)) }
 
     val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
+    var nowPlayingSong by remember { mutableStateOf<Song?>(null) }
     val artistId = remember { mutableStateOf("") }
     val albumId = remember { mutableStateOf("") }
     val playlistId = remember { mutableStateOf("") }
@@ -93,6 +102,16 @@ fun ThreeColumnsApp(
             }
         }
         println("videoId  ${videoId.value} formatAudio url inside ${formatAudio.value?.url}")
+
+        //nowPlayingSong = MusicDatabaseDesktop.getSong(videoId.value)
+        //println("nowPlayingSong ${nowPlayingSong}")
+        //println("songs in db ${MusicDatabaseDesktop.countSongs()}")
+    }
+
+    coroutineScope.launch {
+        database.getAll().collect {
+            println("songs in db ${it.size}")
+        }
     }
 
     /*
@@ -130,7 +149,7 @@ fun ThreeColumnsApp(
     var showPageSheet by remember { mutableStateOf(false) }
     var showPageType by remember { mutableStateOf(PageType.QUICKPICS) }
 
-    MusicDatabaseDesktop.getAll()
+    //println("songs in db ${MusicDatabaseDesktop.getAllSongs()}")
 
     //val backStackEntry by navController.currentBackStackEntryAsState()
     //val currentScreen = backStackEntry?.destination?.route ?: "artists"
@@ -151,6 +170,7 @@ fun ThreeColumnsApp(
             PlayerEssential(
                 frameController = frameController,
                 url = url,
+                song = nowPlayingSong, //MusicDatabaseDesktop.getSong(videoId.value),
                 onExpandAction = { showPageSheet = true }
             )
         }
@@ -181,7 +201,11 @@ fun ThreeColumnsApp(
                         AlbumScreen(
                             browseId = albumId.value,
                             onSongClick = {
-                                videoId.value = it
+                                videoId.value = it.id
+                                //nowPlayingSong = it
+                                coroutineScope.launch {
+                                    database.insert(it)
+                                }
                             },
                             onAlbumClick = {
                                 albumId.value = it
@@ -195,7 +219,10 @@ fun ThreeColumnsApp(
                         ArtistScreen(
                             browseId = artistId.value,
                             onSongClick = {
-                                videoId.value = it
+                                videoId.value = it.id
+                                coroutineScope.launch {
+                                    database.insert(it)
+                                }
                             },
                             onPlaylistClick = {
                                 playlistId.value = it
@@ -216,7 +243,10 @@ fun ThreeColumnsApp(
                         PlaylistScreen(
                             browseId = playlistId.value,
                             onSongClick = {
-                                videoId.value = it
+                                videoId.value = it.id
+                                coroutineScope.launch {
+                                    database.insert(it)
+                                }
                             },
                             onAlbumClick = {
                                 albumId.value = it
@@ -250,7 +280,12 @@ fun ThreeColumnsApp(
                     }
                     PageType.QUICKPICS -> {
                         QuickPicsScreen(
-                            onSongClick = { videoId.value = it },
+                            onSongClick = {
+                                videoId.value = it.id
+                                coroutineScope.launch {
+                                    database.insert(it)
+                                }
+                            },
                             onAlbumClick = {
                                 albumId.value = it
                                 showPageType = PageType.ALBUM

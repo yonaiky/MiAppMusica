@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.NextBody
@@ -60,6 +61,7 @@ import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
+import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
@@ -85,7 +87,7 @@ import java.net.UnknownHostException
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuickPicsScreen(
-    onSongClick: (String) -> Unit,
+    onSongClick: (Song) -> Unit,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
@@ -145,7 +147,7 @@ fun QuickPicsScreen(
                         .combinedClickable(
                             onLongClick = {},
                             onClick = {
-                                onSongClick(song.key)
+                                onSongClick(song.asSong)
                             }
                         )
                         .animateItemPlacement()

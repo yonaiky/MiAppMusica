@@ -47,7 +47,7 @@ fun DesktopApp(
     navController: NavHostController = rememberNavController()
 ) {
 
-    MusicDatabaseDesktop.getAll()
+    //MusicDatabaseDesktop.getAllSongs()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = backStackEntry?.destination?.route ?: "artists"

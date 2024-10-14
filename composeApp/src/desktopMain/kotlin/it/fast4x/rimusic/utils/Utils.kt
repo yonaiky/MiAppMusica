@@ -9,6 +9,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
+import it.fast4x.rimusic.models.SongEntity
 import java.net.InetSocketAddress
 import java.net.Proxy
 
@@ -96,4 +97,17 @@ val Innertube.SongItem.asSong: Song
         artistsText = authors?.joinToString("") { it.name ?: "" },
         durationText = durationText,
         thumbnailUrl = thumbnail?.url
+    )
+
+val Innertube.SongItem.asSongEntity: SongEntity
+    get() = SongEntity (
+        song = Song (
+            id = key,
+            title = info?.name ?: "",
+            artistsText = authors?.joinToString("") { it.name ?: "" },
+            durationText = durationText,
+            thumbnailUrl = thumbnail?.url
+            ),
+        contentLength = null,
+        albumTitle = null
     )

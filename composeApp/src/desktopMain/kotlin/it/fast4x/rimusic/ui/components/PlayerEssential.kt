@@ -14,8 +14,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.enums.PageType
+import database.entities.Song
 import it.fast4x.rimusic.items.SongItem
+import it.fast4x.rimusic.utils.LoadImage
 import player.frame.FramePlayer
 import vlcj.VlcjFrameController
 
@@ -23,6 +24,7 @@ import vlcj.VlcjFrameController
 fun PlayerEssential(
     frameController: VlcjFrameController,
     url: String?,
+    song: Song?,
     onExpandAction: () -> Unit
 ){
 
@@ -39,10 +41,11 @@ fun PlayerEssential(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            /*
             ExpandIcon(
                 onAction = onExpandAction
             )
-
+             */
             Row(
                 //Modifier.border(BorderStroke(1.dp, Color.Red)),
                 horizontalArrangement = Arrangement.Start,
@@ -50,10 +53,14 @@ fun PlayerEssential(
             ) {
 
                 SongItem(
-                    thumbnailContent = {},
-                    authors = "Author",
-                    duration = "00:00",
-                    title = "Title",
+                    thumbnailContent = {
+                        song?.thumbnailUrl?.let {
+                            LoadImage(it)
+                        }
+                    },
+                    authors = song?.artistsText,
+                    duration = song?.durationText,
+                    title = song?.title,
                     isDownloaded = false,
                     onDownloadClick = {},
                     thumbnailSizeDp = 80.dp,
