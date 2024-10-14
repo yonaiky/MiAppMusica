@@ -89,17 +89,21 @@ fun ThreeColumnsApp() {
     var playlistId by remember { mutableStateOf("") }
     var mood by remember { mutableStateOf<Innertube.Mood.Item?>(null) }
 
-    val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
+    val formatAudio =
+        remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
 
     LaunchedEffect(videoId) {
         if (videoId.isEmpty()) return@LaunchedEffect
 
-            Innertube.player(PlayerBody(videoId = videoId))
+        Innertube.player(PlayerBody(videoId = videoId))
             ?.onSuccess {
-                formatAudio.value = it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }?.maxByOrNull {
-                    it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                    ) ?: -1
-                }
+                formatAudio.value =
+                    it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }
+                        ?.maxByOrNull {
+                            it.bitrate?.times(
+                                (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                            ) ?: -1
+                        }
             }
         println("videoId  ${videoId} formatAudio url inside ${formatAudio.value?.url}")
 
@@ -123,7 +127,6 @@ fun ThreeColumnsApp() {
      */
 
 
-
     /*
     val formatVideo = body.value?.streamingData?.adaptiveFormats
         ?.filter { it.isVideo }
@@ -138,7 +141,8 @@ fun ThreeColumnsApp() {
     //var url by remember { mutableStateOf("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
     //val url by remember { mutableStateOf(formatAudio.value?.url) }
 
-    val url = formatAudio.value?.url //"https://rr4---sn-hpa7znzr.googlevideo.com/videoplayback?expire=1727471735&ei=Fsz2ZoyiPO7Si9oPpreTiAI&ip=178.19.172.167&id=o-ABmCff7qCeQd05V_WN5fpAFEfxHP3kxR6G55H_QdlBsh&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=43&mm=31%2C26&mn=sn-hpa7znzr%2Csn-4g5lznez&ms=au%2Conr&mv=m&mvi=4&pl=22&gcr=it&initcwndbps=2505000&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3291443&dur=194.901&lmt=1714829870710563&mt=1727449746&fvip=4&keepalive=yes&fexp=51299152&c=ANDROID_MUSIC&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIhAP5IS0unA9IAhtAtkqY-63FGyG_eRi-FMMgNjWU1TWGzAiACd3c4niMxsPxXjp_55EylpIBysVBOpoD69oQ9xvF8bg%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABPmVW0wRAIgZBP07jXYZ5_4xSrp_hZ9jvIOMPsfOa-grREDshQvzSYCIC7ImmFVJCeLUMVASEkedlXa-R4je3RVC_fu2WH8XTvj"
+    val url =
+        formatAudio.value?.url //"https://rr4---sn-hpa7znzr.googlevideo.com/videoplayback?expire=1727471735&ei=Fsz2ZoyiPO7Si9oPpreTiAI&ip=178.19.172.167&id=o-ABmCff7qCeQd05V_WN5fpAFEfxHP3kxR6G55H_QdlBsh&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=43&mm=31%2C26&mn=sn-hpa7znzr%2Csn-4g5lznez&ms=au%2Conr&mv=m&mvi=4&pl=22&gcr=it&initcwndbps=2505000&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3291443&dur=194.901&lmt=1714829870710563&mt=1727449746&fvip=4&keepalive=yes&fexp=51299152&c=ANDROID_MUSIC&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIhAP5IS0unA9IAhtAtkqY-63FGyG_eRi-FMMgNjWU1TWGzAiACd3c4niMxsPxXjp_55EylpIBysVBOpoD69oQ9xvF8bg%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABPmVW0wRAIgZBP07jXYZ5_4xSrp_hZ9jvIOMPsfOa-grREDshQvzSYCIC7ImmFVJCeLUMVASEkedlXa-R4je3RVC_fu2WH8XTvj"
 
     //var url by remember { mutableStateOf(urlVideo) }
 
@@ -195,7 +199,7 @@ fun ThreeColumnsApp() {
             onHomeClick = { showPageType = PageType.QUICKPICS },
             frameController = frameController,
             centerPanelContent = {
-                when(showPageType){
+                when (showPageType) {
                     PageType.ALBUM -> {
                         AlbumScreen(
                             browseId = albumId,
@@ -213,6 +217,7 @@ fun ThreeColumnsApp() {
                             onClosePage = { showPageSheet = false }
                         )
                     }
+
                     PageType.ARTIST -> {
                         ArtistScreen(
                             browseId = artistId,
@@ -237,6 +242,7 @@ fun ThreeColumnsApp() {
                             onClosePage = { showPageSheet = false }
                         )
                     }
+
                     PageType.PLAYLIST -> {
                         PlaylistScreen(
                             browseId = playlistId,
@@ -254,6 +260,7 @@ fun ThreeColumnsApp() {
                             onClosePage = { showPageSheet = false }
                         )
                     }
+
                     PageType.MOOD -> {
                         mood?.let {
                             MoodScreen(
@@ -276,6 +283,7 @@ fun ThreeColumnsApp() {
                             )
                         }
                     }
+
                     PageType.QUICKPICS -> {
                         QuickPicsScreen(
                             onSongClick = {
@@ -306,6 +314,7 @@ fun ThreeColumnsApp() {
                             }
                         )
                     }
+
                     else -> {}
                 }
             }
@@ -415,9 +424,9 @@ fun ThreeColumnsLayout(
    onPlaylistClick: (key: String) -> Unit = {},
    onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
      */
-   onHomeClick: () -> Unit = {},
-   frameController: VlcjFrameController = remember { VlcjFrameController() },
-   centerPanelContent: @Composable () -> Unit = {}
+    onHomeClick: () -> Unit = {},
+    frameController: VlcjFrameController = remember { VlcjFrameController() },
+    centerPanelContent: @Composable () -> Unit = {}
 ) {
     Row(Modifier.fillMaxSize()) {
         LeftPanelContent()
@@ -449,7 +458,7 @@ fun ThreeColumnsLayout(
             ) {
                 FrameContainer(
                     Modifier.requiredHeight(200.dp),
-                        //.border(BorderStroke(1.dp, Color.Red)),
+                    //.border(BorderStroke(1.dp, Color.Red)),
                     frameController.size.collectAsState(null).value?.run {
                         IntSize(first, second)
                     } ?: IntSize.Zero,
@@ -596,7 +605,8 @@ fun CenterPanelContent(
             )
             Image(
                 painter = painterResource(Res.drawable.app_logo_text),
-                colorFilter = ColorFilter.tint( Color.White
+                colorFilter = ColorFilter.tint(
+                    Color.White
                     /*
                     when (colorPaletteMode) {
                         ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette.text
