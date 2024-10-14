@@ -78,38 +78,37 @@ import vlcj.VlcjFrameController
 @Composable
 fun ThreeColumnsApp() {
 
-    val database = remember { MusicDatabaseDesktop }
+    val db = remember { MusicDatabaseDesktop }
 
     val coroutineScope by remember { mutableStateOf(CoroutineScope(Dispatchers.IO)) }
 
-    val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
+    var videoId by remember { mutableStateOf("") }
     var nowPlayingSong by remember { mutableStateOf<Song?>(null) }
-    val artistId = remember { mutableStateOf("") }
-    val albumId = remember { mutableStateOf("") }
-    val playlistId = remember { mutableStateOf("") }
-    val mood = remember { mutableStateOf<Innertube.Mood.Item?>(null) }
+    var artistId by remember { mutableStateOf("") }
+    var albumId by remember { mutableStateOf("") }
+    var playlistId by remember { mutableStateOf("") }
+    var mood by remember { mutableStateOf<Innertube.Mood.Item?>(null) }
 
     val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
 
-    LaunchedEffect(videoId.value) {
-        //runBlocking(Dispatchers.IO) {
-            Innertube.player(PlayerBody(videoId = videoId.value))
-            ?.onSuccess {
-            //body.value = it
-            formatAudio.value = it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }?.maxByOrNull {
-                it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                ) ?: -1
-            }
-        }
-        println("videoId  ${videoId.value} formatAudio url inside ${formatAudio.value?.url}")
+    LaunchedEffect(videoId) {
+        if (videoId.isEmpty()) return@LaunchedEffect
 
-        //nowPlayingSong = MusicDatabaseDesktop.getSong(videoId.value)
-        //println("nowPlayingSong ${nowPlayingSong}")
-        //println("songs in db ${MusicDatabaseDesktop.countSongs()}")
+            Innertube.player(PlayerBody(videoId = videoId))
+            ?.onSuccess {
+                formatAudio.value = it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }?.maxByOrNull {
+                    it.bitrate?.times( (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
+                    ) ?: -1
+                }
+            }
+        println("videoId  ${videoId} formatAudio url inside ${formatAudio.value?.url}")
+
+        nowPlayingSong = db.getSong(videoId)
+        println("nowPlayingSong ${nowPlayingSong}")
     }
 
     coroutineScope.launch {
-        database.getAll().collect {
+        db.getAll().collect {
             println("songs in db ${it.size}")
         }
     }
@@ -170,7 +169,7 @@ fun ThreeColumnsApp() {
             PlayerEssential(
                 frameController = frameController,
                 url = url,
-                song = nowPlayingSong, //MusicDatabaseDesktop.getSong(videoId.value),
+                song = nowPlayingSong,
                 onExpandAction = { showPageSheet = true }
             )
         }
@@ -199,16 +198,15 @@ fun ThreeColumnsApp() {
                 when(showPageType){
                     PageType.ALBUM -> {
                         AlbumScreen(
-                            browseId = albumId.value,
+                            browseId = albumId,
                             onSongClick = {
-                                videoId.value = it.id
-                                //nowPlayingSong = it
+                                videoId = it.id
                                 coroutineScope.launch {
-                                    database.insert(it)
+                                    db.insert(it)
                                 }
                             },
                             onAlbumClick = {
-                                albumId.value = it
+                                albumId = it
                                 showPageType = PageType.ALBUM
                                 showPageSheet = true
                             },
@@ -217,22 +215,22 @@ fun ThreeColumnsApp() {
                     }
                     PageType.ARTIST -> {
                         ArtistScreen(
-                            browseId = artistId.value,
+                            browseId = artistId,
                             onSongClick = {
-                                videoId.value = it.id
+                                videoId = it.id
                                 coroutineScope.launch {
-                                    database.insert(it)
+                                    db.insert(it)
                                 }
                             },
                             onPlaylistClick = {
-                                playlistId.value = it
+                                playlistId = it
                                 showPageType = PageType.PLAYLIST
                                 showPageSheet = true
                             },
                             onViewAllAlbumsClick = {},
                             onViewAllSinglesClick = {},
                             onAlbumClick = {
-                                albumId.value = it
+                                albumId = it
                                 showPageType = PageType.ALBUM
                                 showPageSheet = true
                             },
@@ -241,15 +239,15 @@ fun ThreeColumnsApp() {
                     }
                     PageType.PLAYLIST -> {
                         PlaylistScreen(
-                            browseId = playlistId.value,
+                            browseId = playlistId,
                             onSongClick = {
-                                videoId.value = it.id
+                                videoId = it.id
                                 coroutineScope.launch {
-                                    database.insert(it)
+                                    db.insert(it)
                                 }
                             },
                             onAlbumClick = {
-                                albumId.value = it
+                                albumId = it
                                 showPageType = PageType.ALBUM
                                 showPageSheet = true
                             },
@@ -257,21 +255,21 @@ fun ThreeColumnsApp() {
                         )
                     }
                     PageType.MOOD -> {
-                        mood.value?.let {
+                        mood?.let {
                             MoodScreen(
                                 mood = it,
                                 onAlbumClick = { id ->
-                                    albumId.value = id
+                                    albumId = id
                                     showPageType = PageType.ALBUM
                                     showPageSheet = true
                                 },
                                 onArtistClick = { id ->
-                                    artistId.value = id
+                                    artistId = id
                                     showPageType = PageType.ARTIST
                                     showPageSheet = true
                                 },
                                 onPlaylistClick = { id ->
-                                    playlistId.value = id
+                                    playlistId = id
                                     showPageType = PageType.PLAYLIST
                                     showPageSheet = true
                                 }
@@ -281,31 +279,28 @@ fun ThreeColumnsApp() {
                     PageType.QUICKPICS -> {
                         QuickPicsScreen(
                             onSongClick = {
-                                videoId.value = it.id
+                                videoId = it.id
                                 coroutineScope.launch {
-                                    database.insert(it)
+                                    db.insert(it)
                                 }
                             },
                             onAlbumClick = {
-                                albumId.value = it
+                                albumId = it
                                 showPageType = PageType.ALBUM
                                 showPageSheet = true
                             },
                             onArtistClick = {
-                                artistId.value = it
+                                artistId = it
                                 showPageType = PageType.ARTIST
                                 showPageSheet = true
                             },
                             onPlaylistClick = {
-                                playlistId.value = it
+                                playlistId = it
                                 showPageType = PageType.PLAYLIST
                                 showPageSheet = true
                             },
                             onMoodClick = {
-                                println("mood clicked ${it.title}")
-                                println("mood clicked ${it.endpoint.params}")
-                                println("mood clicked ${it.endpoint.browseId}")
-                                mood.value = it
+                                mood = it
                                 showPageType = PageType.MOOD
                                 showPageSheet = true
                             }

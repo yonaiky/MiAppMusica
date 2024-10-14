@@ -65,6 +65,9 @@ interface MusicDatabaseDao {
 
     @Query("SELECT * FROM Song")
     fun getAll(): Flow<List<Song>>
+
+    @Query("SELECT * FROM Song WHERE id = :id")
+    suspend fun getSong(id: String): Song?
 }
 
 fun getRoomDatabase(
