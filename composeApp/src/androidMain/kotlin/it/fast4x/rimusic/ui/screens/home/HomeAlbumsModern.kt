@@ -1,13 +1,10 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -21,17 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,19 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
@@ -81,7 +64,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
@@ -90,7 +72,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.addNext
@@ -101,8 +82,6 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -112,8 +91,8 @@ import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.thumbnailShape
-import me.knighthat.typography
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -138,19 +117,33 @@ fun HomeAlbumsModern(
 
     var items by persist<List<Album>>(tag = "home/albums", emptyList())
 
-    var searching by rememberSaveable { mutableStateOf(false) }
-    var isSearchInputFocused by rememberSaveable { mutableStateOf( false ) }
-    var filter by rememberSaveable { mutableStateOf( "" ) }
+    // Search states
+    val visibleState = rememberSaveable { mutableStateOf(false) }
+    val focusState = rememberSaveable { mutableStateOf( false ) }
+    val inputState = rememberSaveable { mutableStateOf( "" ) }
 
-    LaunchedEffect(sortBy, sortOrder, filter) {
+    val search = remember {
+        object: Search {
+            override val visibleState = visibleState
+            override val focusState = focusState
+            override val inputState = inputState
+        }
+    }
+
+    // Mutable
+    var isSearchBarVisible by search.visibleState
+    var isSearchBarFocused by search.focusState
+    val searchInput by search.inputState
+
+    LaunchedEffect(sortBy, sortOrder, searchInput) {
         Database.albums(sortBy, sortOrder).collect { items = it }
     }
 
-    if ( filter.isNotBlank() )
+    if ( searchInput.isNotBlank() )
         items = items.filter {
-            it.title?.contains( filter, true) ?: false
-                    || it.year?.contains( filter, true) ?: false
-                    || it.authorsText?.contains( filter, true) ?: false
+            it.title?.contains( searchInput, true) ?: false
+                    || it.year?.contains( searchInput, true) ?: false
+                    || it.authorsText?.contains( searchInput, true) ?: false
         }
 
     var itemSize by rememberPreference(albumsItemSizeKey, LibraryItemSize.Small.size)
@@ -238,10 +231,7 @@ fun HomeAlbumsModern(
                     modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
                 )
 
-                TabToolBar.Icon( R.drawable.search_circle ) {
-                    searching = !searching
-                    isSearchInputFocused = searching
-                }
+                search.ToolBarButton()
 
                 TabToolBar.Icon(
                     iconId = R.drawable.dice,
@@ -306,93 +296,7 @@ fun HomeAlbumsModern(
             }
 
             // Sticky search bar
-            AnimatedVisibility(
-                visible = searching,
-                modifier = Modifier
-                    .padding(all = 10.dp)
-                    .fillMaxWidth()
-            ) {
-                val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                LaunchedEffect(searching, isSearchInputFocused) {
-                    if( !searching ) return@LaunchedEffect
-
-                    if( isSearchInputFocused )
-                        focusRequester.requestFocus()
-                    else {
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
-                    }
-                }
-
-                var searchInput by remember { mutableStateOf(TextFieldValue(filter)) }
-                BasicTextField(
-                    value = searchInput,
-                    onValueChange = {
-                        searchInput = it.copy(
-                            selection = TextRange( it.text.length )
-                        )
-                        filter = it.text
-                    },
-                    textStyle = typography().xs.semiBold,
-                    singleLine = true,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        searching = filter.isNotBlank()
-                        isSearchInputFocused = false
-                    }),
-                    cursorBrush = SolidColor(colorPalette().text),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 10.dp)
-                        ) {
-                            IconButton(
-                                onClick = {},
-                                icon = R.drawable.search,
-                                color = colorPalette().favoritesIcon,
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .size(16.dp)
-                            )
-                        }
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 30.dp)
-                        ) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = filter.isBlank(),
-                                enter = fadeIn(tween(100)),
-                                exit = fadeOut(tween(100)),
-                            ) {
-                                BasicText(
-                                    text = stringResource(R.string.search),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
-                                )
-                            }
-
-                            innerTextField()
-                        }
-                    },
-                    modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .background(
-                            colorPalette().background4,
-                            shape = thumbnailRoundness.shape()
-                        )
-                        .focusRequester(focusRequester)
-                )
-            }
+            search.SearchBar( this )
 
             LazyVerticalGrid(
                 state = lazyGridState,
@@ -529,7 +433,13 @@ fun HomeAlbumsModern(
                                     }
                                 },
                                 onClick = {
-                                    onAlbumClick(album)
+                                    if ( isSearchBarVisible )
+                                        if ( searchInput.isBlank() )
+                                            isSearchBarVisible = false
+                                        else
+                                            isSearchBarFocused = false
+
+                                    onAlbumClick( album )
                                 }
                             )
                             .clip(thumbnailShape())
