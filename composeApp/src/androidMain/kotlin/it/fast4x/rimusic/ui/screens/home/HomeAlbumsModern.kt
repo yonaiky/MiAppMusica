@@ -308,8 +308,9 @@ fun HomeAlbumsModern(
             // Sticky search bar
             AnimatedVisibility(
                 visible = searching,
-                modifier = Modifier.padding( all = 10.dp )
-                                  .fillMaxWidth()
+                modifier = Modifier
+                    .padding(all = 10.dp)
+                    .fillMaxWidth()
             ) {
                 val focusRequester = remember { FocusRequester() }
                 val focusManager = LocalFocusManager.current
@@ -420,52 +421,41 @@ fun HomeAlbumsModern(
                         mutableStateOf(false)
                     }
 
-                    if (showDialogChangeAlbumTitle)
-                        InputTextDialog(
-                            onDismiss = { showDialogChangeAlbumTitle = false },
-                            title = stringResource(R.string.update_title),
-                            value = album.title.toString(),
-                            placeholder = stringResource(R.string.title),
-                            setValue = {
-                                if (it.isNotEmpty()) {
-                                    query {
-                                        Database.updateAlbumTitle(album.id, it)
-                                    }
-                                    //context.toast("Album Saved $it")
-                                }
-                            },
-                            prefix = MODIFIED_PREFIX
-                        )
-                    if (showDialogChangeAlbumAuthors)
-                        InputTextDialog(
-                            onDismiss = { showDialogChangeAlbumAuthors = false },
-                            title = stringResource(R.string.update_authors),
-                            value = album?.authorsText.toString(),
-                            placeholder = stringResource(R.string.authors),
-                            setValue = {
-                                if (it.isNotEmpty()) {
-                                    query {
-                                        Database.updateAlbumAuthors(album.id, it)
-                                    }
-                                    //context.toast("Album Saved $it")
-                                }
-                            },
-                            prefix = MODIFIED_PREFIX
-                        )
+                    var onDismiss: () -> Unit = {}
+                    var titleId = 0
+                    var defValue = ""
+                    var placeholderTextId: Int = 0
+                    var queryBlock: (Database, String, String) -> Int = { _, _, _ -> 0}
 
-                    if (showDialogChangeAlbumCover)
+                    if( showDialogChangeAlbumCover ) {
+                        onDismiss = { showDialogChangeAlbumCover = false }
+                        titleId = R.string.update_cover
+                        defValue = album.thumbnailUrl.toString()
+                        placeholderTextId = R.string.cover
+                        queryBlock = Database::updateAlbumCover
+                    } else if( showDialogChangeAlbumTitle ) {
+                        onDismiss = { showDialogChangeAlbumTitle = false }
+                        titleId = R.string.update_title
+                        defValue = album.title.toString()
+                        placeholderTextId = R.string.title
+                        queryBlock = Database::updateAlbumTitle
+                    } else if( showDialogChangeAlbumAuthors ) {
+                        onDismiss = { showDialogChangeAlbumAuthors = false }
+                        titleId = R.string.update_authors
+                        defValue = album.authorsText.toString()
+                        placeholderTextId = R.string.authors
+                        queryBlock = Database::updateAlbumAuthors
+                    }
+
+                    if( showDialogChangeAlbumTitle || showDialogChangeAlbumAuthors || showDialogChangeAlbumCover )
                         InputTextDialog(
-                            onDismiss = { showDialogChangeAlbumCover = false },
-                            title = stringResource(R.string.update_cover),
-                            value = album?.thumbnailUrl.toString(),
-                            placeholder = stringResource(R.string.cover),
+                            onDismiss = onDismiss,
+                            title = stringResource( titleId ),
+                            value = defValue,
+                            placeholder = stringResource( placeholderTextId ),
                             setValue = {
-                                if (it.isNotEmpty()) {
-                                    query {
-                                        Database.updateAlbumCover(album.id, it)
-                                    }
-                                    //context.toast("Album Saved $it")
-                                }
+                                if (it.isNotEmpty())
+                                    query { queryBlock( Database, album.id, it ) }
                             },
                             prefix = MODIFIED_PREFIX
                         )

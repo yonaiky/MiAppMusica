@@ -48,7 +48,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -395,52 +394,14 @@ fun HomeLibraryModern(
                     onShortClick = {
                         coroutineScope.launch {
                             withContext(Dispatchers.IO) {
-                                when (playlistType) {
-                                    PlaylistsType.Playlist -> {
-                                        Database.songsInAllPlaylists()
-                                            .collect {
-                                                PlayShuffledSongs(
-                                                    songsList = it,
-                                                    binder = binder,
-                                                    context = context
-                                                )
-                                            }
-                                    }
-
-                                    PlaylistsType.PipedPlaylist -> {
-                                        Database.songsInAllPipedPlaylists()
-                                            .collect {
-                                                PlayShuffledSongs(
-                                                    songsList = it,
-                                                    binder = binder,
-                                                    context = context
-                                                )
-                                            }
-                                    }
-
-                                    PlaylistsType.PinnedPlaylist -> {
-                                        Database.songsInAllPinnedPlaylists()
-                                            .collect {
-                                                PlayShuffledSongs(
-                                                    songsList = it,
-                                                    binder = binder,
-                                                    context = context
-                                                )
-                                            }
-                                    }
-
-                                    PlaylistsType.MonthlyPlaylist -> {
-                                        Database.songsInAllMonthlyPlaylists()
-                                            .collect {
-                                                PlayShuffledSongs(
-                                                    songsList = it,
-                                                    binder = binder,
-                                                    context = context
-                                                )
-                                            }
-                                    }
+                                when( playlistType ) {
+                                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+                                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+                                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+                                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+                                }.collect {
+                                    PlayShuffledSongs( it, context, binder )
                                 }
-
                             }
                         }
 
@@ -623,110 +584,38 @@ fun HomeLibraryModern(
                     )
                 }
 
-                if (playlistType == PlaylistsType.Playlist) {
-                    items(items = items,
-                        /*
-                        .filter {
-                        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
-                                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                        }
-
-                         */
-                        key = { it.playlist.id }) { playlistPreview ->
-
-                        PlaylistItem(
-                            playlist = playlistPreview,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSizePx,
-                            alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    onPlaylistClick(playlistPreview.playlist)
-
-                                    if (searching)
-                                        if (filter.isBlank())
-                                            searching = false
-                                        else
-                                            isSearchInputFocused = false
-                                })
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .fillMaxSize()
-                        )
+                val listPrefix =
+                    when( playlistType ) {
+                        PlaylistsType.Playlist -> ""    // Matches everything
+                        PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
+                        PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
+                        PlaylistsType.PipedPlaylist -> PIPED_PREFIX
                     }
+                val condition: (PlaylistPreview) -> Boolean = {
+                    it.playlist.name.startsWith( listPrefix, true )
                 }
+                items(
+                    items = items.filter( condition ),
+                    key = { it.playlist.id }
+                ) { preview ->
+                    PlaylistItem(
+                        playlist = preview,
+                        thumbnailSizeDp = thumbnailSizeDp,
+                        thumbnailSizePx = thumbnailSizePx,
+                        alternative = true,
+                        modifier = Modifier.fillMaxSize()
+                                           .animateItem( fadeInSpec = null, fadeOutSpec = null )
+                                           .clickable(onClick = {
+                                               onPlaylistClick( preview.playlist )
 
-                if (playlistType == PlaylistsType.PipedPlaylist)
-                    items(items = items.filter {
-                        it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
-                    }, key = { it.playlist.id }) { playlistPreview ->
-                        PlaylistItem(
-                            playlist = playlistPreview,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSizePx,
-                            alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    onPlaylistClick(playlistPreview.playlist)
-
-                                    if (searching)
-                                        if (filter.isBlank())
-                                            searching = false
-                                        else
-                                            isSearchInputFocused = false
-                                })
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .fillMaxSize()
-                        )
-                    }
-
-                if (playlistType == PlaylistsType.PinnedPlaylist)
-                    items(items = items.filter {
-                        it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                    }, key = { it.playlist.id }) { playlistPreview ->
-                        PlaylistItem(
-                            playlist = playlistPreview,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSizePx,
-                            alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    onPlaylistClick(playlistPreview.playlist)
-
-                                    if (searching)
-                                        if (filter.isBlank())
-                                            searching = false
-                                        else
-                                            isSearchInputFocused = false
-                                })
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .fillMaxSize()
-                        )
-                    }
-
-                if (playlistType == PlaylistsType.MonthlyPlaylist)
-                    items(items = items.filter {
-                        it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
-                    }, key = { it.playlist.id }) { playlistPreview ->
-                        PlaylistItem(
-                            playlist = playlistPreview,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSizePx,
-                            alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    onPlaylistClick(playlistPreview.playlist)
-
-                                    if (searching)
-                                        if (filter.isBlank())
-                                            searching = false
-                                        else
-                                            isSearchInputFocused = false
-                                })
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .fillMaxSize()
-                        )
-                    }
-
+                                               if (searching)
+                                                   if (filter.isBlank())
+                                                       searching = false
+                                                   else
+                                                       isSearchInputFocused = false
+                                           })
+                    )
+                }
 
                 item(
                     key = "footer",
