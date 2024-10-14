@@ -67,6 +67,7 @@ import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.AutoResizeText
 import it.fast4x.rimusic.ui.components.ExpandIcon
 import it.fast4x.rimusic.ui.components.FontSizeRange
+import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import it.fast4x.rimusic.ui.components.adaptiveThumbnailContent
@@ -92,6 +93,7 @@ import rimusic.composeapp.generated.resources.chevron_up
 import rimusic.composeapp.generated.resources.dice
 import rimusic.composeapp.generated.resources.from_wikipedia_cca
 import rimusic.composeapp.generated.resources.information
+import rimusic.composeapp.generated.resources.loader
 import rimusic.composeapp.generated.resources.musical_notes
 import rimusic.composeapp.generated.resources.playlists
 import rimusic.composeapp.generated.resources.singles
@@ -172,7 +174,8 @@ fun PlaylistScreen(
                         //.height(300.dp)
                         .fillMaxWidth()
                 ) {
-                    if (playlistPage != null) {
+
+                    playlistPage?.let {
                         AsyncImage(
                             model = playlistPage!!.thumbnail?.url?.resize(1200, 900),
                             contentDescription = "loading...",
@@ -184,38 +187,39 @@ fun PlaylistScreen(
                                     bottom = fadeSpacingBottom
                                 )
                         )
-                    }
-                    if (!playlistPage?.title.isNullOrEmpty())
-                        AutoResizeText(
-                            text = playlistPage?.title.toString(),
-                            style = typography.displayLarge,
-                            fontSizeRange = FontSizeRange(50.sp, 100.sp),
-                            fontWeight = typography.displayLarge.fontWeight,
-                            fontFamily = typography.displayLarge.fontFamily,
-                            color = typography.displayLarge.color,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(horizontal = 30.dp)
-                        )
 
-
-                            Text(
-                                text = "${playlistPage?.year} - " + playlistPage?.songsPage?.items?.size.toString() + " "
-                                        + stringResource(Res.string.songs),
-                                        //+ " - " + formatAsTime(totalPlayTimes),
-                                style = TextStyle(
-                                    fontSize = typography.titleMedium.fontSize,
-                                    fontWeight = typography.titleMedium.fontWeight,
-                                    color = Color.White,
-                                    textAlign = TextAlign.Start
-                                ),
+                        if (!playlistPage?.title.isNullOrEmpty())
+                            AutoResizeText(
+                                text = playlistPage?.title.toString(),
+                                style = typography.displayLarge,
+                                fontSizeRange = FontSizeRange(50.sp, 100.sp),
+                                fontWeight = typography.displayLarge.fontWeight,
+                                fontFamily = typography.displayLarge.fontFamily,
+                                color = typography.displayLarge.color,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
-
+                                    .padding(horizontal = 30.dp)
                             )
+
+
+                        Text(
+                            text = "${playlistPage?.year} - " + playlistPage?.songsPage?.items?.size.toString() + " "
+                                    + stringResource(Res.string.songs),
+                            //+ " - " + formatAsTime(totalPlayTimes),
+                            style = TextStyle(
+                                fontSize = typography.titleMedium.fontSize,
+                                fontWeight = typography.titleMedium.fontWeight,
+                                color = Color.White,
+                                textAlign = TextAlign.Start
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+
+                        )
+                    } ?: Loader()
 
                 }
 

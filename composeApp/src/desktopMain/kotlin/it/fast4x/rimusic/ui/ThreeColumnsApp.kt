@@ -227,24 +227,26 @@ fun ThreeColumnsApp(
                         )
                     }
                     PageType.MOOD -> {
-                        MoodScreen(
-                            mood = null,
-                            onAlbumClick = {
-                                albumId.value = it
-                                showPageType = PageType.ALBUM
-                                showPageSheet = true
-                            },
-                            onArtistClick = {
-                                artistId.value = it
-                                showPageType = PageType.ARTIST
-                                showPageSheet = true
-                            },
-                            onPlaylistClick = {
-                                playlistId.value = it
-                                showPageType = PageType.PLAYLIST
-                                showPageSheet = true
-                            }
-                        )
+                        mood.value?.let {
+                            MoodScreen(
+                                mood = it,
+                                onAlbumClick = { id ->
+                                    albumId.value = id
+                                    showPageType = PageType.ALBUM
+                                    showPageSheet = true
+                                },
+                                onArtistClick = { id ->
+                                    artistId.value = id
+                                    showPageType = PageType.ARTIST
+                                    showPageSheet = true
+                                },
+                                onPlaylistClick = { id ->
+                                    playlistId.value = id
+                                    showPageType = PageType.PLAYLIST
+                                    showPageSheet = true
+                                }
+                            )
+                        }
                     }
                     PageType.QUICKPICS -> {
                         QuickPicsScreen(

@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import it.fast4x.innertube.Innertube
@@ -54,16 +57,19 @@ import it.fast4x.rimusic.styling.Dimensions.artistThumbnailSize
 import it.fast4x.rimusic.styling.Dimensions.itemInHorizontalGridWidth
 import it.fast4x.rimusic.styling.Dimensions.itemsVerticalPadding
 import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
+import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import player.PlayerInput
 import player.PlayerSource
 import player.component.ComponentPlayer
 import player.frame.FramePlayer
 import rimusic.composeapp.generated.resources.Res
+import rimusic.composeapp.generated.resources.loader
 import rimusic.composeapp.generated.resources.moods_and_genres
 import rimusic.composeapp.generated.resources.new_albums
 import rimusic.composeapp.generated.resources.play
@@ -122,7 +128,7 @@ fun QuickPicsScreen(
             .fillMaxWidth()
             .height(if (related.value != null) itemsVerticalPadding * 3 * 9 else itemsVerticalPadding * 9)
     ) {
-        if (related.value != null) {
+        related.value?.let{
             items(
                 items = related.value!!.songs?.distinctBy { it.key }
                 //?.dropLast(if (trending == null) 0 else 1)
@@ -146,7 +152,11 @@ fun QuickPicsScreen(
                         .width(itemInHorizontalGridWidth)
                 )
             }
+        } ?:
+        item(span = { GridItemSpan(maxLineSpan) }){
+            Loader()
         }
+
     }
 
     discover.let { page ->
