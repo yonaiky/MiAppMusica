@@ -15,9 +15,9 @@
     <string name="hide">மறை</string>
     <string name="hide_from_quick_picks">\"விரைவுத் தேர்வுகள்\"-ல் இருந்து மறை</string>
     <string name="related_albums">சம்பந்தப்பட்ட தொகுப்புகள்</string>
-    <string name="similar_artists">இதுபோன்ற கலைஞர்கள்</string>
+    <string name="similar_artists">ஒரே மாதிரியான கலைஞர்கள்</string>
     <string name="playlists_you_might_like">உங்களுக்குப் பிடிக்கும் பாடல் பட்டியல்கள்</string>
-    <string name="an_error_has_occurred">பிழை ஏற்பட்டுள்ளது</string>
+    <string name="an_error_has_occurred">ஓரு பிழை ஓரு பிழை நேர்ந்துவிட்டது</string>
     <string name="albums">தொகுப்புகள்</string>
     <string name="artists">கலைஞர்கள்</string>
     <string name="enter_the_playlist_name">இசை பட்டியலின் பெயரை உள்ளிடவும்</string>
@@ -30,9 +30,9 @@
     <string name="enqueue">வரிசையில் சேர்க்கவும்</string>
     <string name="shuffle">சீர்குலை</string>
     <string name="view_all">அனைத்தையும் காண்க</string>
-    <string name="from_wikipedia_cca">விக்கிப்பீடியாவிலிருந்து கிரியேட்டிவ் காமன்ஸ் அட்ரிபியூஷன் CC-BY-SA 3.0 உரிமத்தின் கீழ்</string>
+    <string name="from_wikipedia_cca">கிரியேட்டிவ் காமன்ஸ் அட்டிரிப்யூஷன் C-BY-SA 3.0 இன் கீழ் விக்கிபீடியாவிலிருந்து</string>
     <string name="overview">மேலோட்டம்</string>
-    <string name="singles">ஒற்றைப்பாடல்கள்</string>
+    <string name="singles">ஒற்றைகள்</string>
     <string name="library">இசை சேமிப்பு</string>
     <string name="artist_no_release_album">இந்தக் கலைஞர் எந்த ஆல்பத்தையும் வெளியிடவில்லை</string>
     <string name="artist_no_release_single">இந்தக் கலைஞர் எந்த ஒற்றையும் வெளியிடவில்லை</string>
@@ -43,7 +43,7 @@
     <string name="enter_the_lyrics">பாடல் வரிகளை உள்ளிடவும்</string>
     <string name="edit_lyrics">பாடல் வரிகளைத் திருத்து</string>
     <string name="search_lyrics_online">பாடல் வரிகளை ஆன்லைனில் தேடு</string>
-    <string name="fetch_lyrics_again">பாடல் வரிகளை மீண்டும் பெற்றுவரவும்</string>
+    <string name="fetch_lyrics_again">பாடல் வரிகளை மீண்டும் பெறு</string>
     <string name="id">ஐடி</string>
     <string name="itag">ஐ-குறி</string>
     <string name="bitrate">துகள்வீதம்</string>
