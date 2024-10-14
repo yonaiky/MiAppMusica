@@ -547,13 +547,20 @@ fun DataSettings() {
                 title = stringResource(R.string.song_cache_max_size),
                 titleSecondary = when (exoPlayerDiskCacheMaxSize) {
                     ExoPlayerDiskCacheMaxSize.Disabled -> ""
-                    ExoPlayerDiskCacheMaxSize.Custom -> stringResource(R.string.custom_cache_size) +" "+exoPlayerCustomCache+"MB"
+                    ExoPlayerDiskCacheMaxSize.Custom -> buildString {
+                        append(Formatter.formatShortFileSize(context, diskCacheSize))
+                        append("/${Formatter.formatShortFileSize(context,
+                            exoPlayerCustomCache.toLong() * 1000 * 1000
+                        )}")
+                        append(" ${stringResource(R.string.used)}")
+                    }
+                        // stringResource(R.string.custom_cache_size) +" "+exoPlayerCustomCache+"MB"
                     else -> buildString {
                         append(Formatter.formatShortFileSize(context, diskCacheSize))
                         append(" ${stringResource(R.string.used)}")
                         when (val size = exoPlayerDiskCacheMaxSize) {
                             ExoPlayerDiskCacheMaxSize.Unlimited -> {}
-                            ExoPlayerDiskCacheMaxSize.Custom -> { exoPlayerCustomCache }
+                            ExoPlayerDiskCacheMaxSize.Custom -> {} // only needed because of UNLIMITED
                             else -> append(" (${diskCacheSize * 100 / size.bytes}%)")
                         }
                     }
