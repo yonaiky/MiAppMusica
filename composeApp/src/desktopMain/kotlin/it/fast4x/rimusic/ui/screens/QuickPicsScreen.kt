@@ -275,7 +275,9 @@ fun QuickPicsScreen(
                     ) {
                         MoodItemColored(
                             mood = it,
-                            onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
+                            onClick = {
+                                it.endpoint.browseId?.let { _ -> onMoodClick(it) }
+                            },
                             modifier = Modifier
                                 //.width(itemWidth)
                                 .padding(4.dp)

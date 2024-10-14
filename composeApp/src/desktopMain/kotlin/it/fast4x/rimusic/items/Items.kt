@@ -564,14 +564,6 @@ fun MoodItemColored(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    /*
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
-
-     */
-
     val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
 
     Column (

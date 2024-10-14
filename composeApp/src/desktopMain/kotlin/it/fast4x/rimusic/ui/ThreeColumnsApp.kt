@@ -1,135 +1,69 @@
 package it.fast4x.rimusic.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.DrawerDefaults.windowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import database.MusicDatabaseDesktop
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.PlayerResponse
-import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.player
-import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.enums.PageType
-import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.items.AlbumItem
-import it.fast4x.rimusic.items.ArtistItem
-import it.fast4x.rimusic.items.MoodItemColored
-import it.fast4x.rimusic.items.PlaylistItem
-import it.fast4x.rimusic.items.SongItem
-import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
-import it.fast4x.rimusic.styling.Dimensions.artistThumbnailSize
-import it.fast4x.rimusic.styling.Dimensions.itemInHorizontalGridWidth
-import it.fast4x.rimusic.styling.Dimensions.itemsVerticalPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
-import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
-import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
-import it.fast4x.rimusic.ui.components.ExpandIcon
 import it.fast4x.rimusic.ui.components.PlayerEssential
-import it.fast4x.rimusic.ui.components.Title
-import it.fast4x.rimusic.ui.components.Title2Actions
 import it.fast4x.rimusic.ui.screens.AlbumScreen
 import it.fast4x.rimusic.ui.screens.ArtistScreen
+import it.fast4x.rimusic.ui.screens.MoodScreen
+import it.fast4x.rimusic.ui.screens.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.QuickPicsScreen
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import player.frame.FrameContainer
-import player.frame.FramePlayer
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.album
 import rimusic.composeapp.generated.resources.app_icon
 import rimusic.composeapp.generated.resources.app_logo_text
 import rimusic.composeapp.generated.resources.artists
 import rimusic.composeapp.generated.resources.library
-import rimusic.composeapp.generated.resources.moods_and_genres
 import rimusic.composeapp.generated.resources.musical_notes
-import rimusic.composeapp.generated.resources.new_albums
-import rimusic.composeapp.generated.resources.play
-import rimusic.composeapp.generated.resources.playlists_you_might_like
-import rimusic.composeapp.generated.resources.related_albums
-import rimusic.composeapp.generated.resources.similar_artists
-import vlcj.VlcjComponentController
 import vlcj.VlcjFrameController
 
 
@@ -143,6 +77,8 @@ fun ThreeColumnsApp(
     val videoId = remember { mutableStateOf("HZnNt9nnEhw") }
     val artistId = remember { mutableStateOf("") }
     val albumId = remember { mutableStateOf("") }
+    val playlistId = remember { mutableStateOf("") }
+    val mood = remember { mutableStateOf<Innertube.Mood.Item?>(null) }
 
     val formatAudio = remember { mutableStateOf<PlayerResponse.StreamingData.AdaptiveFormat?>(null) }
 
@@ -185,8 +121,6 @@ fun ThreeColumnsApp(
     //val url by remember { mutableStateOf(formatAudio.value?.url) }
 
     val url = formatAudio.value?.url //"https://rr4---sn-hpa7znzr.googlevideo.com/videoplayback?expire=1727471735&ei=Fsz2ZoyiPO7Si9oPpreTiAI&ip=178.19.172.167&id=o-ABmCff7qCeQd05V_WN5fpAFEfxHP3kxR6G55H_QdlBsh&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=43&mm=31%2C26&mn=sn-hpa7znzr%2Csn-4g5lznez&ms=au%2Conr&mv=m&mvi=4&pl=22&gcr=it&initcwndbps=2505000&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3291443&dur=194.901&lmt=1714829870710563&mt=1727449746&fvip=4&keepalive=yes&fexp=51299152&c=ANDROID_MUSIC&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIhAP5IS0unA9IAhtAtkqY-63FGyG_eRi-FMMgNjWU1TWGzAiACd3c4niMxsPxXjp_55EylpIBysVBOpoD69oQ9xvF8bg%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABPmVW0wRAIgZBP07jXYZ5_4xSrp_hZ9jvIOMPsfOa-grREDshQvzSYCIC7ImmFVJCeLUMVASEkedlXa-R4je3RVC_fu2WH8XTvj"
-
-    println("url $url")
 
     //var url by remember { mutableStateOf(urlVideo) }
 
@@ -263,7 +197,11 @@ fun ThreeColumnsApp(
                             onSongClick = {
                                 videoId.value = it
                             },
-                            onPlaylistClick = {},
+                            onPlaylistClick = {
+                                playlistId.value = it
+                                showPageType = PageType.PLAYLIST
+                                showPageSheet = true
+                            },
                             onViewAllAlbumsClick = {},
                             onViewAllSinglesClick = {},
                             onAlbumClick = {
@@ -274,8 +212,40 @@ fun ThreeColumnsApp(
                             onClosePage = { showPageSheet = false }
                         )
                     }
-                    PageType.PLAYLIST -> {}
-                    PageType.MOOD -> {}
+                    PageType.PLAYLIST -> {
+                        PlaylistScreen(
+                            browseId = playlistId.value,
+                            onSongClick = {
+                                videoId.value = it
+                            },
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onClosePage = { showPageSheet = false }
+                        )
+                    }
+                    PageType.MOOD -> {
+                        MoodScreen(
+                            mood = null,
+                            onAlbumClick = {
+                                albumId.value = it
+                                showPageType = PageType.ALBUM
+                                showPageSheet = true
+                            },
+                            onArtistClick = {
+                                artistId.value = it
+                                showPageType = PageType.ARTIST
+                                showPageSheet = true
+                            },
+                            onPlaylistClick = {
+                                playlistId.value = it
+                                showPageType = PageType.PLAYLIST
+                                showPageSheet = true
+                            }
+                        )
+                    }
                     PageType.QUICKPICS -> {
                         QuickPicsScreen(
                             onSongClick = { videoId.value = it },
@@ -289,8 +259,19 @@ fun ThreeColumnsApp(
                                 showPageType = PageType.ARTIST
                                 showPageSheet = true
                             },
-                            onPlaylistClick = {},
-                            onMoodClick = {}
+                            onPlaylistClick = {
+                                playlistId.value = it
+                                showPageType = PageType.PLAYLIST
+                                showPageSheet = true
+                            },
+                            onMoodClick = {
+                                println("mood clicked ${it.title}")
+                                println("mood clicked ${it.endpoint.params}")
+                                println("mood clicked ${it.endpoint.browseId}")
+                                mood.value = it
+                                showPageType = PageType.MOOD
+                                showPageSheet = true
+                            }
                         )
                     }
                     else -> {}

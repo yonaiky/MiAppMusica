@@ -2,8 +2,12 @@ package it.fast4x.rimusic.utils
 
 import coil3.Uri
 import coil3.toUri
+import database.entities.Song
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.UserAgent
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.ContinuationBody
+import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -52,3 +56,44 @@ fun getHttpClient() = HttpClient() {
 
     }
 }
+
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
+    maxDepth: Int =  Int.MAX_VALUE
+) = runCatching {
+    val page = getOrThrow()
+    val songs = page.songsPage?.items.orEmpty().toMutableList()
+    var continuation = page.songsPage?.continuation
+
+    var depth = 0
+    var continuationsList = arrayOf<String>()
+    //continuationsList += continuation.orEmpty()
+
+    while (continuation != null && depth++ < maxDepth) {
+        val newSongs = Innertube
+            .playlistPage(
+                body = ContinuationBody(continuation = continuation)
+            )
+            ?.getOrNull()
+            ?.takeUnless { it.items.isNullOrEmpty() } ?: break
+
+        newSongs.items?.let { songs += it.filter { it !in songs } }
+        continuation = newSongs.continuation
+
+        //println("mediaItem loop $depth continuation founded ${continuationsList.contains(continuation)} $continuation")
+        if (continuationsList.contains(continuation)) break
+
+        continuationsList += continuation.orEmpty()
+        //println("mediaItem loop continuationList size ${continuationsList.size}")
+    }
+
+    page.copy(songsPage = Innertube.ItemsPage(items = songs, continuation = null))
+}.also { it.exceptionOrNull()?.printStackTrace() }
+
+val Innertube.SongItem.asSong: Song
+    get() = Song (
+        id = key,
+        title = info?.name ?: "",
+        artistsText = authors?.joinToString("") { it.name ?: "" },
+        durationText = durationText,
+        thumbnailUrl = thumbnail?.url
+    )

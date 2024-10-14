@@ -5,6 +5,5 @@ enum class PageType {
     ALBUM,
     PLAYLIST,
     MOOD,
-    QUICKPICS,
-    EMPTY
+    QUICKPICS
 }

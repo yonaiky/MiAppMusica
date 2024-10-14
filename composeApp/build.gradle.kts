@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
-    alias(libs.plugins.conveyor)
+    //alias(libs.plugins.conveyor)
 }
 
 repositories {
@@ -51,15 +51,15 @@ kotlin {
 
             implementation(libs.coil.network.okhttp)
             runtimeOnly(libs.kotlinx.coroutines.swing)
-            
+
+
+            /*
             // Uncomment only for build jvm desktop version
             // Comment before build android version
             configurations.commonMainApi {
                 exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
             }
-
-
-
+             */
 
 
         }
