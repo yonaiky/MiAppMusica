@@ -129,7 +129,7 @@ fun Skeleton(
 
             Box(
                 Modifier
-                    .padding( vertical = 4.dp )
+                    .padding( vertical = 5.dp )
                     .align( playerAlignment ),
                 content = { mediaPlayer?.invoke() }
             )
