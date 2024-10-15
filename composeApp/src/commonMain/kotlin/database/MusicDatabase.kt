@@ -7,8 +7,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.RoomWarnings
+import androidx.room.RoomWarnings.Companion.QUERY_MISMATCH
+import androidx.room.Transaction
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import database.entities.Album
 import database.entities.Artist
@@ -20,7 +24,9 @@ import database.entities.SearchQuery
 import database.entities.Song
 import database.entities.SongAlbumMap
 import database.entities.SongArtistMap
+import database.entities.SongEntity
 import database.entities.SongPlaylistMap
+import it.fast4x.rimusic.LOCAL_KEY_PREFIX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
@@ -64,6 +70,14 @@ interface MusicDatabaseDao {
 
     @Query("SELECT * FROM Song WHERE id = :id")
     suspend fun getSong(id: String): Song?
+
+    @SuppressWarnings(QUERY_MISMATCH)
+    @Transaction
+    @Query("SELECT Song.*, Album.title as albumTitle FROM Song LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
+            "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
+            "WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.title COLLATE NOCASE ASC")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByTitleAsc(): Flow<List<SongEntity>>
 }
 
 fun getRoomDatabase(

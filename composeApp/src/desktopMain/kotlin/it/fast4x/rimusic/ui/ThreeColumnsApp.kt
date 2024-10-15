@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,9 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import database.MusicDatabaseDao
 import database.MusicDatabaseDesktop
 import database.entities.Song
 import it.fast4x.innertube.Innertube
@@ -48,12 +43,12 @@ import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.enums.PageType
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.ui.components.PlayerEssential
+import it.fast4x.rimusic.ui.pages.SongsPage
 import it.fast4x.rimusic.ui.screens.AlbumScreen
 import it.fast4x.rimusic.ui.screens.ArtistScreen
 import it.fast4x.rimusic.ui.screens.MoodScreen
@@ -61,7 +56,6 @@ import it.fast4x.rimusic.ui.screens.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.QuickPicsScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import player.frame.FrameContainer
@@ -170,12 +164,15 @@ fun ThreeColumnsApp() {
              */
         },
         bottomBar = {
-            PlayerEssential(
-                frameController = frameController,
-                url = url,
-                song = nowPlayingSong,
-                onExpandAction = { showPageSheet = true }
-            )
+            if (url != null) {
+                PlayerEssential(
+                    frameController = frameController,
+                    url = url,
+                    song = nowPlayingSong,
+                    onExpandAction = { showPageSheet = true }
+                )
+            }
+
         }
     ) { innerPadding ->
 
@@ -197,6 +194,10 @@ fun ThreeColumnsApp() {
             onPlaylistClick = {},
              */
             onHomeClick = { showPageType = PageType.QUICKPICS },
+            onSongClick = {
+                //it's just in db, no need to insert
+                videoId = it.id
+            },
             frameController = frameController,
             centerPanelContent = {
                 when (showPageType) {
@@ -418,36 +419,18 @@ fun ThreeColumnsApp() {
 @Composable
 fun ThreeColumnsLayout(
     /*
-   onSongClick: (key: String) -> Unit = {},
+
    onArtistClick: (key: String) -> Unit = {},
    onAlbumClick: (key: String) -> Unit = {},
    onPlaylistClick: (key: String) -> Unit = {},
    onMoodClick: (mood: Innertube.Mood.Item) -> Unit = {},
      */
     onHomeClick: () -> Unit = {},
+    onSongClick: (Song) -> Unit = {},
     frameController: VlcjFrameController = remember { VlcjFrameController() },
     centerPanelContent: @Composable () -> Unit = {}
 ) {
     Row(Modifier.fillMaxSize()) {
-        LeftPanelContent()
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp),
-            color = Color.Gray.copy(alpha = 0.6f)
-        )
-        CenterPanelContent(
-            onHomeClick = onHomeClick,
-            content = {
-                centerPanelContent()
-            }
-        )
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp),
-            color = Color.Gray.copy(alpha = 0.6f)
-        )
         RightPanelContent(
             onShowPlayer = {}
         ) {
@@ -469,17 +452,42 @@ fun ThreeColumnsLayout(
 
         }
 
+        VerticalDivider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp),
+            color = Color.Gray.copy(alpha = 0.6f)
+        )
+        CenterPanelContent(
+            onHomeClick = onHomeClick,
+            content = {
+                centerPanelContent()
+            }
+        )
+        VerticalDivider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp),
+            color = Color.Gray.copy(alpha = 0.6f)
+        )
+        LeftPanelContent(
+            onSongClick = onSongClick
+        )
+
     }
 }
 
 @Composable
-fun LeftPanelContent() {
+fun LeftPanelContent(
+    onSongClick: (Song) -> Unit = {},
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.23f)
+            .fillMaxSize() // right
+           // .fillMaxHeight() //left
+           // .fillMaxWidth(0.23f) //left
             .padding(horizontal = layoutColumnsHorizontalPadding)
             .padding(top = layoutColumnTopPadding)
     ) {
@@ -559,13 +567,16 @@ fun LeftPanelContent() {
             )
 
         }
-        /*
-        Column(Modifier.fillMaxSize().border(1.dp, color = Color.Black)) {
-            Text(text = "Left Panel  ", modifier = Modifier.padding(start = 8.dp, top = layoutColumnTopPadding))
+
+        when (currentTabIndex) {
+            0 -> SongsPage(
+                onSongClick = onSongClick
+            )
+            1 -> {}
+            2 -> {}
+            3 -> {}
         }
-         */
-        //Spacer(Modifier.size(100.dp))
-        //Text(text = "Left Pane bottom Text Box")
+
     }
 }
 
@@ -645,7 +656,9 @@ fun RightPanelContent(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
-            .fillMaxSize()
+            //.fillMaxSize() //right
+            .fillMaxHeight() //left
+            .fillMaxWidth(0.23f) //left
             .padding(horizontal = layoutColumnsHorizontalPadding)
             .padding(top = layoutColumnTopPadding)
     ) {

@@ -9,7 +9,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
-import it.fast4x.rimusic.models.SongEntity
+import database.entities.SongEntity
 import java.net.InetSocketAddress
 import java.net.Proxy
 

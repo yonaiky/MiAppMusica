@@ -1,8 +1,7 @@
-package it.fast4x.rimusic.models
+package database.entities
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
-import database.entities.Song
 
 @Immutable
 data class SongEntity(

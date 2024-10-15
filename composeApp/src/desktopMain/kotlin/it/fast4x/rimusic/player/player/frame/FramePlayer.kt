@@ -24,7 +24,7 @@ fun FramePlayer(
     showControls: Boolean = true,
     showFrame: Boolean = true
 ) {
-    if (url.isEmpty()) return
+    //if (url.isEmpty()) return
 
     DisposableEffect(url) {
         controller.load(url)

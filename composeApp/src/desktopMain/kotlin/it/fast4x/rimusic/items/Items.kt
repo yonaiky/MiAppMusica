@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import database.entities.SongEntity
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -186,6 +187,36 @@ fun SongItem(
         onDownloadClick = onDownloadClick
     )
 }
+
+@Composable
+fun SongItem(
+    songEntity: SongEntity,
+    isDownloaded: Boolean = false,
+    onDownloadClick: () -> Unit = {},
+    thumbnailSizeDp: Dp = 50.dp,
+    modifier: Modifier
+) {
+    SongItem(
+        title = songEntity.song.title,
+        authors = songEntity.song.artistsText,
+        duration = songEntity.song.durationText,
+        thumbnailSizeDp = thumbnailSizeDp,
+        modifier = modifier,
+        isDownloaded = isDownloaded,
+        thumbnailContent = {
+
+            songEntity.song.thumbnailUrl.let {
+                if (it != null) {
+                    LoadImage(it)
+                }
+            }
+            //onThumbnailContent?.invoke(this)
+        },
+        trailingContent = {},
+        onDownloadClick = onDownloadClick
+    )
+}
+
 
 
 @OptIn(ExperimentalFoundationApi::class)

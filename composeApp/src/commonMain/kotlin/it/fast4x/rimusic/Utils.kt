@@ -8,6 +8,7 @@ const val MODIFIED_PREFIX = "modified:"
 const val MONTHLY_PREFIX = "monthly:"
 const val PIPED_PREFIX = "piped:"
 const val EXPLICIT_PREFIX = "e:"
+const val LOCAL_KEY_PREFIX = "local:"
 
 fun cleanPrefix(text: String): String {
     var cleanText = text.substringAfter(PINNED_PREFIX)
