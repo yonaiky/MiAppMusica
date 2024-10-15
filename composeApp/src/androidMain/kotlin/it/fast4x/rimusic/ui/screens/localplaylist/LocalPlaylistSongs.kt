@@ -40,6 +40,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -116,6 +117,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -180,12 +182,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.component.tab.toolbar.DetailedSort
+import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
+import kotlin.enums.EnumEntries
 
 
 @KotlinCsvExperimental
@@ -208,19 +214,62 @@ fun LocalPlaylistSongs(
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
 
+    // Search states
+    val visibleState = rememberSaveable { mutableStateOf( false ) }
+    val focusState = rememberSaveable { mutableStateOf( false ) }
+    val inputState = rememberSaveable { mutableStateOf( "" ) }
+    // Sort states
+    val sortByState = rememberPreference( playlistSongSortByKey, PlaylistSongSortBy.Title )
+    val sortOrderState = rememberPreference( songSortOrderKey, SortOrder.Descending )
 
-    var sortBy by rememberPreference(playlistSongSortByKey, PlaylistSongSortBy.Title)
-    var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
+    val search = remember {
+        object: Search{
+            override val visibleState = visibleState
+            override val focusState = focusState
+            override val inputState = inputState
+        }
+    }
+    val sort = remember {
+        object: DetailedSort<PlaylistSongSortBy>{
+            override val menuState = menuState
+            override val sortOrderState = sortOrderState
+            override val sortByEnum = PlaylistSongSortBy.entries
+            override val sortByState = sortByState
 
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
+            @Composable
+            override fun title( currentValue: PlaylistSongSortBy ): String {
+                return when( currentValue ) {
+                    PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}"
+                    else -> stringResource( currentValue.titleId )
+                }
+            }
+        }
+    }
 
+    // Search mutable
+    var isSearchBarVisible by search.visibleState
+    var isSearchBarFocused by search.focusState
+    val searchInput by search.inputState
+    // Sort mutable
+    val sortBy by sort.sortByState
+    val sortOrder by sort.sortOrderState
+
+    // Non-vital
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
-    LaunchedEffect(Unit, filter, sortOrder, sortBy) {
+    LaunchedEffect(Unit, searchInput, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
             .collect { playlistSongs = if (parentalControlEnabled)
                 it.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else it }
     }
+
+
+    if ( searchInput.isNotBlank() )
+        playlistSongs = playlistSongs.filter { songItem ->
+            songItem.song.title.contains(searchInput, true)
+                    || songItem.song.artistsText?.contains(searchInput, true) ?: false
+                    || songItem.albumTitle?.contains(searchInput, true) ?: false
+        }
 
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview(playlistId).collect { playlistPreview = it }
@@ -261,28 +310,6 @@ fun LocalPlaylistSongs(
         //Log.d("mediaItem","positionsList "+positionsRecommendationList.toString())
         //**** SMART RECOMMENDATION
     }
-
-    var filterCharSequence: CharSequence
-    filterCharSequence = filter.toString()
-
-    if (!filter.isNullOrBlank())
-        playlistSongs =
-            playlistSongs.filter { songItem ->
-                songItem.song.title.contains(
-                    filterCharSequence,
-                    true
-                ) ?: false
-                        || songItem.song.artistsText?.contains(
-                    filterCharSequence,
-                    true
-                ) ?: false
-                        || songItem.albumTitle?.contains(
-                    filterCharSequence,
-                    true
-                ) ?: false
-            }
-
-    var searching by rememberSaveable { mutableStateOf(false) }
 
     var totalPlayTimes = 0L
     playlistSongs.forEach {
@@ -834,13 +861,7 @@ fun LocalPlaylistSongs(
                                     )
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            HeaderIconButton(
-                                modifier = Modifier.padding(horizontal = 5.dp),
-                                onClick = { searching = !searching },
-                                icon = R.drawable.search_circle,
-                                color = colorPalette().text,
-                                iconSize = 24.dp
-                            )
+                            search.ToolBarButton()
                         }
 
 
@@ -1367,62 +1388,8 @@ fun LocalPlaylistSongs(
                             .fillMaxWidth()
                     ) {
 
-                        HeaderIconButton(
-                            icon = R.drawable.arrow_up,
-                            color = colorPalette().text,
-                            onClick = { sortOrder = !sortOrder },
-                            modifier = Modifier
-                                .graphicsLayer { rotationZ = sortOrderIconRotation }
-                        )
-
-                        BasicText(
-                            text = when (sortBy) {
-                                PlaylistSongSortBy.Album -> stringResource(R.string.sort_album)
-                                PlaylistSongSortBy.AlbumYear -> stringResource(R.string.sort_album_year)
-                                PlaylistSongSortBy.Position -> stringResource(R.string.sort_position)
-                                PlaylistSongSortBy.Title -> stringResource(R.string.sort_title)
-                                PlaylistSongSortBy.DatePlayed -> stringResource(R.string.sort_date_played)
-                                PlaylistSongSortBy.DateLiked -> stringResource(R.string.sort_date_liked)
-                                PlaylistSongSortBy.Artist -> stringResource(R.string.sort_artist)
-                                PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${
-                                    stringResource(
-                                        R.string.sort_album
-                                    )
-                                }"
-
-                                PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
-                                PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
-                                PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
-                            },
-                            style = typography().xs.semiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .clickable {
-                                    menuState.display {
-                                        SortMenu(
-                                            title = stringResource(R.string.sorting_order),
-                                            onDismiss = menuState::hide,
-                                            onTitle = { sortBy = PlaylistSongSortBy.Title },
-                                            onAlbum = { sortBy = PlaylistSongSortBy.Album },
-                                            onAlbumYear = { sortBy = PlaylistSongSortBy.AlbumYear },
-                                            onDatePlayed = {
-                                                sortBy = PlaylistSongSortBy.DatePlayed
-                                            },
-                                            onDateLiked = { sortBy = PlaylistSongSortBy.DateLiked },
-                                            onPosition = { sortBy = PlaylistSongSortBy.Position },
-                                            onArtist = { sortBy = PlaylistSongSortBy.Artist },
-                                            onArtistAndAlbum = {
-                                                sortBy = PlaylistSongSortBy.ArtistAndAlbum
-                                            },
-                                            onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
-                                            onDuration = { sortBy = PlaylistSongSortBy.Duration },
-                                            onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
-                                        )
-                                    }
-
-                                }
-                        )
+                        sort.ToolBarButton()
+                        sort.SortTitle()
 
                         Row(
                             horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
@@ -1476,95 +1443,7 @@ fun LocalPlaylistSongs(
 
                     }
 
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier
-                            .padding(all = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        AnimatedVisibility(visible = searching) {
-                            val focusRequester = remember { FocusRequester() }
-                            val focusManager = LocalFocusManager.current
-                            val keyboardController = LocalSoftwareKeyboardController.current
-
-                            LaunchedEffect(searching) {
-                                focusRequester.requestFocus()
-                            }
-
-                            BasicTextField(
-                                value = filter ?: "",
-                                onValueChange = { filter = it },
-                                textStyle = typography().xs.semiBold,
-                                singleLine = true,
-                                maxLines = 1,
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(onDone = {
-                                    if (filter.isNullOrBlank()) filter = ""
-                                    focusManager.clearFocus()
-                                }),
-                                cursorBrush = SolidColor(colorPalette().text),
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 10.dp)
-                                    ) {
-                                        IconButton(
-                                            onClick = {},
-                                            icon = R.drawable.search,
-                                            color = colorPalette().favoritesIcon,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterStart)
-                                                .size(16.dp)
-                                        )
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.CenterStart,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 30.dp)
-                                    ) {
-                                        androidx.compose.animation.AnimatedVisibility(
-                                            visible = filter?.isEmpty() ?: true,
-                                            enter = fadeIn(tween(100)),
-                                            exit = fadeOut(tween(100)),
-                                        ) {
-                                            BasicText(
-                                                text = stringResource(R.string.search),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
-                                            )
-                                        }
-
-                                        innerTextField()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        colorPalette().background4,
-                                        shape = thumbnailRoundness.shape()
-                                    )
-                                    .focusRequester(focusRequester)
-                                    .onFocusChanged {
-                                        if (!it.hasFocus) {
-                                            keyboardController?.hide()
-                                            if (filter?.isBlank() == true) {
-                                                filter = null
-                                                searching = false
-                                            }
-                                        }
-                                    }
-                            )
-                        }
-                    }
-
-
+                    Column { search.SearchBar( this ) }
                 }
 
                 itemsIndexed(
@@ -1798,8 +1677,13 @@ fun LocalPlaylistSongs(
                                         },
                                         onClick = {
                                             if (!selectItems) {
-                                                searching = false
-                                                filter = null
+
+                                                if ( isSearchBarVisible )
+                                                    if ( searchInput.isBlank() )
+                                                        isSearchBarVisible = false
+                                                    else
+                                                        isSearchBarFocused = false
+
                                                 playlistSongs
                                                     .map(SongEntity::asMediaItem)
                                                     .let { mediaItems ->
