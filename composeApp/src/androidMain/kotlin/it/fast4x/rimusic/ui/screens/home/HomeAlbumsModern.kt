@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -27,7 +26,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -51,10 +48,8 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
-import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
@@ -62,41 +57,35 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
-import it.fast4x.rimusic.ui.components.themed.Menu
-import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
-import it.fast4x.rimusic.utils.albumsItemSizeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.preference.Preference
+import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import me.knighthat.thumbnailShape
-import kotlin.enums.EnumEntries
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,6 +114,8 @@ fun HomeAlbumsModern(
     // Sort states
     val sortBy = rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
+    // Size state
+    val sizeState = Preference.remember( HOME_ALBUM_ITEM_SIZE )
 
     val search = remember {
         object: Search {
@@ -139,6 +130,12 @@ fun HomeAlbumsModern(
             override val sortOrderState = sortOrder
             override val sortByEnum = AlbumSortBy.entries
             override val sortByState = sortBy
+        }
+    }
+    val itemSize = remember {
+        object: ItemSize{
+            override val menuState = menuState
+            override val sizeState = sizeState
         }
     }
 
@@ -157,10 +154,6 @@ fun HomeAlbumsModern(
                     || it.year?.contains( searchInput, true) ?: false
                     || it.authorsText?.contains( searchInput, true) ?: false
         }
-
-    var itemSize by rememberPreference(albumsItemSizeKey, LibraryItemSize.Small.size)
-    val thumbnailSizeDp = itemSize.dp + 24.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
 
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
@@ -237,36 +230,7 @@ fun HomeAlbumsModern(
                     }
                 )
 
-                TabToolBar.Icon( R.drawable.resize ) {
-                    menuState.display {
-                        Menu {
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.small),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Small.size
-                                    menuState.hide()
-                                }
-                            )
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.medium),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Medium.size
-                                    menuState.hide()
-                                }
-                            )
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.big),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Big.size
-                                    menuState.hide()
-                                }
-                            )
-                        }
-                    }
-                }
+                itemSize.ToolBarButton()
             }
 
             // Sticky search bar
@@ -274,7 +238,7 @@ fun HomeAlbumsModern(
 
             LazyVerticalGrid(
                 state = lazyGridState,
-                columns = GridCells.Adaptive(itemSize.dp + 24.dp),
+                columns = GridCells.Adaptive( itemSize.sizeState.value.dp ),
                 //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 modifier = Modifier
                     .background(colorPalette().background0)
@@ -347,8 +311,8 @@ fun HomeAlbumsModern(
                         alternative = true,
                         showAuthors = true,
                         album = album,
-                        thumbnailSizePx = thumbnailSizePx,
-                        thumbnailSizeDp = thumbnailSizeDp,
+                        thumbnailSizeDp = itemSize.sizeState.value.dp,
+                        thumbnailSizePx = itemSize.sizeState.value.px,
                         modifier = Modifier
                             .combinedClickable(
 

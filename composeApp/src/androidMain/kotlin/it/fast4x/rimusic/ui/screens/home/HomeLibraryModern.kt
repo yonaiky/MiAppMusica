@@ -47,13 +47,11 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.LibraryItemSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -66,13 +64,10 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
-import it.fast4x.rimusic.ui.components.themed.Menu
-import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.PlayShuffledSongs
@@ -81,7 +76,6 @@ import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.libraryItemSizeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
@@ -92,16 +86,17 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.preference.Preference
+import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 import timber.log.Timber
 
 
@@ -168,6 +163,8 @@ fun HomeLibraryModern(
     // Sort states
     val sortBy = rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
+    // Size state
+    val sizeState = Preference.remember( HOME_LIBRARY_ITEM_SIZE )
 
     val search = remember {
         object: Search {
@@ -182,6 +179,12 @@ fun HomeLibraryModern(
             override val sortOrderState = sortOrder
             override val sortByEnum = PlaylistSortBy.entries
             override val sortByState = sortBy
+        }
+    }
+    val itemSize = remember {
+        object: ItemSize {
+            override val menuState = menuState
+            override val sizeState = sizeState
         }
     }
 
@@ -201,10 +204,7 @@ fun HomeLibraryModern(
             it.playlist.name.contains( searchInput, true )
         }
 
-    var itemSize by rememberPreference(libraryItemSizeKey, LibraryItemSize.Small.size)
 
-    val thumbnailSizeDp = itemSize.dp + 24.dp
-    val thumbnailSizePx = thumbnailSizeDp.px
 
     var plistId by remember {
         mutableStateOf(0L)
@@ -409,36 +409,7 @@ fun HomeLibraryModern(
                     }
                 )
 
-                TabToolBar.Icon( R.drawable.resize ) {
-                    menuState.display {
-                        Menu {
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.small),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Small.size
-                                    menuState.hide()
-                                }
-                            )
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.medium),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Medium.size
-                                    menuState.hide()
-                                }
-                            )
-                            MenuEntry(
-                                icon = R.drawable.arrow_forward,
-                                text = stringResource(R.string.big),
-                                onClick = {
-                                    itemSize = LibraryItemSize.Big.size
-                                    menuState.hide()
-                                }
-                            )
-                        }
-                    }
-                }
+                itemSize.ToolBarButton()
             }
 
             // Sticky search bar
@@ -446,7 +417,7 @@ fun HomeLibraryModern(
 
             LazyVerticalGrid(
                 state = lazyGridState,
-                columns = GridCells.Adaptive(itemSize.dp + 24.dp),
+                columns = GridCells.Adaptive( itemSize.sizeState.value.dp ),
                 modifier = Modifier
                     .background(colorPalette().background0)
             ) {
@@ -478,8 +449,8 @@ fun HomeLibraryModern(
                 ) { preview ->
                     PlaylistItem(
                         playlist = preview,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSizePx,
+                        thumbnailSizeDp = itemSize.sizeState.value.dp,
+                        thumbnailSizePx = itemSize.sizeState.value.px,
                         alternative = true,
                         modifier = Modifier.fillMaxSize()
                                            .animateItem( fadeInSpec = null, fadeOutSpec = null )
