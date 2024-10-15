@@ -100,10 +100,12 @@ fun HomeAlbumsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+    // Essentials
     val menuState = LocalMenuState.current
+    val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val lazyGridState = rememberLazyGridState()
 
     var items by persist<List<Album>>(tag = "home/albums", emptyList())
 
@@ -160,7 +162,6 @@ fun HomeAlbumsModern(
         NavigationBarPosition.Bottom
     )
 
-    val lazyListState = rememberLazyListState()
 
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -168,7 +169,6 @@ fun HomeAlbumsModern(
         animationSpec = tween(durationMillis = 300), label = ""
     )
 
-    val lazyGridState = rememberLazyGridState()
     Box(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -394,7 +394,7 @@ fun HomeAlbumsModern(
             }
         }
 
-        FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
+        FloatingActionsContainerWithScrollToTop( lazyGridState )
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
         if ( UiType.ViMusic.isCurrent() && showFloatingIcon )

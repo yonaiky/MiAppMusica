@@ -88,7 +88,13 @@ fun HomeArtistsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+    // Essentials
     val menuState = LocalMenuState.current
+    val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
+    val coroutineScope = rememberCoroutineScope()
+    val lazyGridState = rememberLazyGridState()
+
     var items by persistList<Artist>("home/artists")
 
     // Search states
@@ -128,6 +134,13 @@ fun HomeArtistsModern(
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
 
+    // Non-vital
+    var isRotated by rememberSaveable { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (isRotated) 360F else 0f,
+        animationSpec = tween(durationMillis = 300), label = ""
+    )
+
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, inputState) {
         Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
@@ -137,17 +150,6 @@ fun HomeArtistsModern(
             .filter {
                 it.name?.contains( searchInput, true) ?: false
             }
-
-    val lazyGridState = rememberLazyGridState()
-    var isRotated by rememberSaveable { mutableStateOf(false) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (isRotated) 360F else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
-    )
-
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
 
     Box (
         modifier = Modifier

@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -112,49 +113,14 @@ fun HomeLibraryModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    Timber.d("HomeLibraryModern - start")
-    //val windowInsets = LocalPlayerAwareWindowInsets.current
+    // Essentials
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
-
-    var isCreatingANewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val pipedSession = getPipedSession()
+    val coroutineScope = rememberCoroutineScope()
+    val lazyGridState = rememberLazyGridState()
 
-
-    if (isCreatingANewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingANewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-
-                if (isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    createPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        name = text
-                    )
-                } else {
-                    query {
-                        Database.insert(Playlist(name = text))
-                    }
-                }
-            }
-        )
-    }
-
-    if (isPipedEnabled)
-        ImportPipedPlaylists()
-
-
+    var items by persistList<PlaylistPreview>("home/playlists")
 
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
@@ -193,7 +159,11 @@ fun HomeLibraryModern(
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
 
-    var items by persistList<PlaylistPreview>("home/playlists")
+    // Non-vital
+    val pipedSession = getPipedSession()
+    var plistId by remember { mutableLongStateOf( 0L ) }
+    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
+    var autosync by rememberPreference(autosyncKey, false)
 
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
         Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
@@ -205,11 +175,27 @@ fun HomeLibraryModern(
         }
 
 
+    val navigationBarPosition by rememberPreference(
+        navigationBarPositionKey,
+        NavigationBarPosition.Bottom
+    )
 
-    var plistId by remember {
-        mutableStateOf(0L)
-    }
 
+    // START: Additional playlists
+    val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
+    val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+
+    var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    if (showPipedPlaylists) buttonsList +=
+        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
+    if (showPinnedPlaylists) buttonsList +=
+        PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
+    if (showMonthlyPlaylists) buttonsList +=
+        PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
+    // END - Additional playlists
+
+    // START - Import playlist
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
@@ -275,34 +261,48 @@ fun HomeLibraryModern(
                     }
                 }
         }
+    // END - Import playlist
 
+    // START - Piped
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    if (isPipedEnabled)
+        ImportPipedPlaylists()
+    // END - Piped
 
-    val navigationBarPosition by rememberPreference(
-        navigationBarPositionKey,
-        NavigationBarPosition.Bottom
-    )
+    // START - New playlist
+    var isCreatingANewPlaylist by rememberSaveable {
+        mutableStateOf(false)
+    }
+    if (isCreatingANewPlaylist) {
+        InputTextDialog(
+            onDismiss = { isCreatingANewPlaylist = false },
+            title = stringResource(R.string.enter_the_playlist_name),
+            value = "",
+            placeholder = stringResource(R.string.enter_the_playlist_name),
+            setValue = { text ->
 
-    val lazyGridState = rememberLazyGridState()
+                if (isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                    createPipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        name = text
+                    )
+                } else {
+                    query {
+                        Database.insert(Playlist(name = text))
+                    }
+                }
+            }
+        )
+    }
+    // END - New playlist
 
+    // START - Monthly playlist
     val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
-
     if (enableCreateMonthlyPlaylists)
         CheckMonthlyPlaylist()
-
-    val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
-    val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
-    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
-    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
-
-    var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
-    if (showPipedPlaylists) buttonsList +=
-        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
-    if (showPinnedPlaylists) buttonsList +=
-        PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
-    if (showMonthlyPlaylists) buttonsList +=
-        PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
-
-    var autosync by rememberPreference(autosyncKey, false)
+    // END - Monthly playlist
 
     Box(
         modifier = Modifier
