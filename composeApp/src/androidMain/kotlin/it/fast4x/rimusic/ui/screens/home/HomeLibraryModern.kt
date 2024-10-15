@@ -174,13 +174,6 @@ fun HomeLibraryModern(
             it.playlist.name.contains( searchInput, true )
         }
 
-
-    val navigationBarPosition by rememberPreference(
-        navigationBarPositionKey,
-        NavigationBarPosition.Bottom
-    )
-
-
     // START: Additional playlists
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
@@ -310,11 +303,10 @@ fun HomeLibraryModern(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( NavigationBarPosition.Right.isCurrent() )
+                    Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         Column( Modifier.fillMaxSize() ) {

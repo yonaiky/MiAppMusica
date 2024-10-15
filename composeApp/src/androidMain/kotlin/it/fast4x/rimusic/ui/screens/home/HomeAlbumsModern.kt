@@ -157,12 +157,6 @@ fun HomeAlbumsModern(
                     || it.authorsText?.contains( searchInput, true) ?: false
         }
 
-    val navigationBarPosition by rememberPreference(
-        navigationBarPositionKey,
-        NavigationBarPosition.Bottom
-    )
-
-
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
@@ -174,11 +168,10 @@ fun HomeAlbumsModern(
             .background(colorPalette().background0)
             .fillMaxHeight()
             .fillMaxWidth(
-                if (navigationBarPosition == NavigationBarPosition.Left ||
-                    navigationBarPosition == NavigationBarPosition.Top ||
-                    navigationBarPosition == NavigationBarPosition.Bottom
-                ) 1f
-                else Dimensions.contentWidthRightBar
+                if( NavigationBarPosition.Right.isCurrent() )
+                    Dimensions.contentWidthRightBar
+                else
+                    1f
             )
     ) {
         Column( Modifier.fillMaxSize() ) {
