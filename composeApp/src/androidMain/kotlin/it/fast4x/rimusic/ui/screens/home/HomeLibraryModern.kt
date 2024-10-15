@@ -5,9 +5,6 @@ import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +35,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -74,7 +70,6 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
@@ -106,6 +101,7 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.Sort
 import timber.log.Timber
 
 
@@ -163,19 +159,29 @@ fun HomeLibraryModern(
     if (isPipedEnabled)
         ImportPipedPlaylists()
 
-    var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    var sortOrder by rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
+
 
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
     val inputState = rememberSaveable { mutableStateOf("") }
+    // Sort states
+    val sortBy = rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
+    val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
 
     val search = remember {
         object: Search {
             override val visibleState = visibleState
             override val focusState = focusState
             override val inputState = inputState
+        }
+    }
+    val sort = remember {
+        object: Sort<PlaylistSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrder
+            override val sortByEnum = PlaylistSortBy.entries
+            override val sortByState = sortBy
         }
     }
 
@@ -186,8 +192,8 @@ fun HomeLibraryModern(
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
-    LaunchedEffect(sortBy, sortOrder, searchInput) {
-        Database.playlistPreviews(sortBy, sortOrder).collect { items = it }
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
+        Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
 
     if ( searchInput.isNotBlank() )
@@ -195,17 +201,10 @@ fun HomeLibraryModern(
             it.playlist.name.contains( searchInput, true )
         }
 
-    val sortOrderIconRotation by animateFloatAsState(
-        targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
-    )
-
     var itemSize by rememberPreference(libraryItemSizeKey, LibraryItemSize.Small.size)
 
     val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
-
-    //val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
     var plistId by remember {
         mutableStateOf(0L)
@@ -285,11 +284,8 @@ fun HomeLibraryModern(
 
     val lazyGridState = rememberLazyGridState()
 
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
-
     val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
 
-    //println("mediaItem ${getCalculatedMonths(0)} ${getCalculatedMonths(1)}")
     if (enableCreateMonthlyPlaylists)
         CheckMonthlyPlaylist()
 
@@ -306,10 +302,6 @@ fun HomeLibraryModern(
     if (showMonthlyPlaylists) buttonsList +=
         PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
 
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
     var autosync by rememberPreference(autosyncKey, false)
 
     Box(
@@ -340,23 +332,7 @@ fun HomeLibraryModern(
                     .padding(vertical = 4.dp)
                     .fillMaxWidth()
             ) {
-                TabToolBar.Icon(
-                    iconId = R.drawable.arrow_up,
-                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
-                    onShortClick = { sortOrder = !sortOrder },
-                    onLongClick = {
-                        menuState.display {
-                            SortMenu(
-                                title = stringResource(R.string.sorting_order),
-                                onDismiss = menuState::hide,
-                                onName = { sortBy = PlaylistSortBy.Name },
-                                onSongNumber = { sortBy = PlaylistSortBy.SongCount },
-                                onDateAdded = { sortBy = PlaylistSortBy.DateAdded },
-                                onPlayTime = { sortBy = PlaylistSortBy.MostPlayed },
-                            )
-                        }
-                    }
-                )
+                sort.ToolBarButton()
 
                 TabToolBar.Icon(
                     iconId = R.drawable.sync,

@@ -36,6 +36,7 @@ import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -94,6 +95,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -164,11 +166,13 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.enums.EnumEntries
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -192,8 +196,6 @@ fun HomeSongsModern(
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSizePx = thumbnailSizeDp.px
 
-    var sortBy by rememberPreference(songSortByKey, SongSortBy.DateAdded)
-    var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var items by persistList<SongEntity>("home/songs")
@@ -216,11 +218,6 @@ fun HomeSongsModern(
     }
 
     val context = LocalContext.current
-
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
 
     var showHiddenSongs by remember {
         mutableStateOf(0)
@@ -262,14 +259,15 @@ fun HomeSongsModern(
     val backButtonFolder = Folder(stringResource(R.string.back))
     val showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
-    var sortByOnDevice by rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
-    var sortByFolderOnDevice by rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
-    var sortOrderOnDevice by rememberPreference(songSortOrderKey, SortOrder.Descending)
-
     // Search states
     val searching = rememberSaveable { mutableStateOf(false) }
     val isSearchInputFocused = rememberSaveable { mutableStateOf( false ) }
     val filter = rememberSaveable { mutableStateOf( "" ) }
+    // Sort states
+    val deviceSongSortState = rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
+    val deviceFolderSortState = rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
+    val songSortState = rememberPreference(songSortByKey, SongSortBy.DateAdded)
+    val sortOrderState = rememberPreference(songSortOrderKey, SortOrder.Descending)
 
     val search = remember {
         object: Search {
@@ -278,11 +276,39 @@ fun HomeSongsModern(
             override val inputState = filter
         }
     }
+    val songSort = remember {
+        object: Sort<SongSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrderState
+            override val sortByEnum = SongSortBy.entries
+            override val sortByState = songSortState
+        }
+    }
+    val deviceSongSort = remember {
+        object: Sort<OnDeviceSongSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrderState
+            override val sortByEnum = OnDeviceSongSortBy.entries
+            override val sortByState = deviceSongSortState
+        }
+    }
+    val deviceFolderSort = remember {
+        object: Sort<OnDeviceFolderSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrderState
+            override val sortByEnum = OnDeviceFolderSortBy.entries
+            override val sortByState = deviceFolderSortState
+        }
+    }
 
-    // Mutable
+    // Search mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     var searchInput by search.inputState
+    // Sort mutable
+    val sortOrder by sortOrderState
+    val sortBy by songSort.sortByState
+    val sortByOnDevice by deviceSongSort.sortByState
 
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
@@ -445,9 +471,9 @@ fun HomeSongsModern(
         }
         BuiltInPlaylist.OnDevice -> {
             items = emptyList()
-            LaunchedEffect(sortByOnDevice, sortOrderOnDevice) {
+            LaunchedEffect(sortByOnDevice, sortOrder) {
                 if (hasPermission)
-                    context.musicFilesAsFlow(sortByOnDevice, sortOrderOnDevice, context)
+                    context.musicFilesAsFlow(sortByOnDevice, sortOrder, context)
                         .collect { songsDevice = it.distinctBy { song -> song.id } }
             }
         }
@@ -462,7 +488,7 @@ fun HomeSongsModern(
             currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
             songs = OnDeviceOrganize.sortSongs(
                 sortOrder,
-                sortByFolderOnDevice,
+                deviceFolderSort.sortByState.value,
                 currentFolder?.songs?.map { it.toSongEntity() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
@@ -671,104 +697,27 @@ fun HomeSongsModern(
                     .fillMaxWidth()
             ) {
 
-                if (builtInPlaylist != BuiltInPlaylist.Top)
-                    TabToolBar.Icon(
-                        iconId = R.drawable.arrow_up,
-                        modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
-                        onShortClick = {
-                            if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                                sortOrder = !sortOrder
-                            else
-                                sortOrderOnDevice = !sortOrderOnDevice
-                        },
-                        onLongClick = {
+                when( builtInPlaylist ) {
+                    BuiltInPlaylist.Top -> {
+                        TabToolBar.Icon(iconId = R.drawable.stat) {
                             menuState.display {
-                                when (builtInPlaylist) {
-                                    BuiltInPlaylist.OnDevice -> {
-                                        if (!showFolders)
-                                            SortMenu(
-                                                title = stringResource(R.string.sorting_order),
-                                                onDismiss = menuState::hide,
-                                                onTitle = {
-                                                    sortByOnDevice =
-                                                        OnDeviceSongSortBy.Title
-                                                },
-                                                onDateAdded = {
-                                                    sortByOnDevice =
-                                                        OnDeviceSongSortBy.DateAdded
-                                                },
-                                                onArtist = {
-                                                    sortByOnDevice =
-                                                        OnDeviceSongSortBy.Artist
-                                                },
-                                                onAlbum = {
-                                                    sortByOnDevice =
-                                                        OnDeviceSongSortBy.Album
-                                                },
-                                            )
-                                        else
-                                            SortMenu(
-                                                title = stringResource(R.string.sorting_order),
-                                                onDismiss = menuState::hide,
-                                                onTitle = {
-                                                    sortByFolderOnDevice =
-                                                        OnDeviceFolderSortBy.Title
-                                                },
-                                                onArtist = {
-                                                    sortByFolderOnDevice =
-                                                        OnDeviceFolderSortBy.Artist
-                                                },
-                                                onDuration = {
-                                                    sortByFolderOnDevice =
-                                                        OnDeviceFolderSortBy.Duration
-                                                },
-                                            )
+                                PeriodMenu(
+                                    onDismiss = {
+                                        topPlaylistPeriod = it
+                                        menuState.hide()
                                     }
-
-                                    else -> {
-                                        SortMenu(
-                                            title = stringResource(R.string.sorting_order),
-                                            onDismiss = menuState::hide,
-                                            onTitle = { sortBy = SongSortBy.Title },
-                                            onDatePlayed = {
-                                                sortBy = SongSortBy.DatePlayed
-                                            },
-                                            onDateAdded = {
-                                                sortBy = SongSortBy.DateAdded
-                                            },
-                                            onPlayTime = {
-                                                sortBy = SongSortBy.PlayTime
-                                            },
-                                            onDateLiked = {
-                                                sortBy = SongSortBy.DateLiked
-                                            },
-                                            onArtist = {
-                                                sortBy = SongSortBy.Artist
-                                            },
-                                            onDuration = {
-                                                sortBy = SongSortBy.Duration
-                                            },
-                                            onAlbum = {
-                                                sortBy = SongSortBy.AlbumName
-                                            },
-                                        )
-                                    }
-                                }
-
+                                )
                             }
                         }
-                    )
-                else
-                    TabToolBar.Icon(iconId = R.drawable.stat) {
-                        menuState.display {
-                            PeriodMenu(
-                                onDismiss = {
-                                    topPlaylistPeriod = it
-                                    menuState.hide()
-                                }
-                            )
-                        }
                     }
+                    BuiltInPlaylist.OnDevice -> {
+                        if( showFolders )
+                            deviceFolderSort.ToolBarButton()
+                        else
+                            deviceSongSort.ToolBarButton()
+                    }
+                    else -> songSort.ToolBarButton()
+                }
 
                 search.ToolBarButton()
 

@@ -28,6 +28,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +56,7 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -80,6 +82,8 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.Sort
+import kotlin.enums.EnumEntries
 import kotlin.random.Random
 
 @ExperimentalMaterial3Api
@@ -96,15 +100,15 @@ fun HomeArtistsModern(
     onSettingsClick: () -> Unit
 ) {
     val menuState = LocalMenuState.current
-    var sortBy by rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
-    var sortOrder by rememberPreference(artistSortOrderKey, SortOrder.Descending)
-
     var items by persistList<Artist>("home/artists")
 
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
     val inputState = rememberSaveable { mutableStateOf( "" ) }
+    // Sort states
+    var sortBy = rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
+    var sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
 
     val search = remember {
         object: Search {
@@ -113,14 +117,22 @@ fun HomeArtistsModern(
             override val inputState = inputState
         }
     }
+    val sort = remember {
+        object: Sort<ArtistSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrder
+            override val sortByEnum = ArtistSortBy.entries
+            override val sortByState = sortBy
+        }
+    }
 
     // Mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
 
-    LaunchedEffect(sortBy, sortOrder, inputState) {
-        Database.artists(sortBy, sortOrder).collect { items = it }
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, inputState) {
+        Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
 
     if ( searchInput.isNotBlank() )
@@ -133,11 +145,6 @@ fun HomeArtistsModern(
     val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
-    val sortOrderIconRotation by animateFloatAsState(
-        targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
-    )
-
     val lazyGridState = rememberLazyGridState()
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     //val effectRotationEnabled by rememberPreference(effectRotationKey, true)
@@ -147,10 +154,6 @@ fun HomeArtistsModern(
         animationSpec = tween(durationMillis = 300), label = ""
     )
 
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
@@ -181,21 +184,7 @@ fun HomeArtistsModern(
                     .padding(vertical = 4.dp)
                     .fillMaxWidth()
             ){
-                TabToolBar.Icon(
-                    iconId = R.drawable.arrow_up,
-                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation },
-                    onShortClick = { sortOrder = !sortOrder },
-                    onLongClick = {
-                        menuState.display {
-                            SortMenu(
-                                title = stringResource(R.string.sorting_order),
-                                onDismiss = menuState::hide,
-                                onName = { sortBy = ArtistSortBy.Name },
-                                onDateAdded = { sortBy = ArtistSortBy.DateAdded },
-                            )
-                        }
-                    }
-                )
+                sort.ToolBarButton()
 
                 search.ToolBarButton()
 

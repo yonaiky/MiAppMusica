@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +62,7 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -92,7 +94,9 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
+import kotlin.enums.EnumEntries
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,15 +116,15 @@ fun HomeAlbumsModern(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var sortBy by rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
-    var sortOrder by rememberPreference(albumSortOrderKey, SortOrder.Descending)
-
     var items by persist<List<Album>>(tag = "home/albums", emptyList())
 
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
     val inputState = rememberSaveable { mutableStateOf( "" ) }
+    // Sort states
+    val sortBy = rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
+    val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
 
     val search = remember {
         object: Search {
@@ -129,14 +133,22 @@ fun HomeAlbumsModern(
             override val inputState = inputState
         }
     }
+    val sort = remember {
+        object: Sort<AlbumSortBy> {
+            override val menuState = menuState
+            override val sortOrderState = sortOrder
+            override val sortByEnum = AlbumSortBy.entries
+            override val sortByState = sortBy
+        }
+    }
 
     // Mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
 
-    LaunchedEffect(sortBy, sortOrder, searchInput) {
-        Database.albums(sortBy, sortOrder).collect { items = it }
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
+        Database.albums(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
 
     if ( searchInput.isNotBlank() )
@@ -150,26 +162,13 @@ fun HomeAlbumsModern(
     val thumbnailSizeDp = itemSize.dp + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
-    val sortOrderIconRotation by animateFloatAsState(
-        targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
-    )
-
     val navigationBarPosition by rememberPreference(
         navigationBarPositionKey,
         NavigationBarPosition.Bottom
     )
-    /*
-        var showSortTypeSelectDialog by remember {
-            mutableStateOf(false)
-        }
-
-     */
 
     val lazyListState = rememberLazyListState()
 
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
-    //val effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
@@ -177,16 +176,9 @@ fun HomeAlbumsModern(
     )
 
     val lazyGridState = rememberLazyGridState()
-
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
-
     Box(
         modifier = Modifier
             .background(colorPalette().background0)
-            //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
                 if (navigationBarPosition == NavigationBarPosition.Left ||
@@ -211,25 +203,7 @@ fun HomeAlbumsModern(
                     .padding(vertical = 4.dp)
                     .fillMaxWidth()
             ) {
-                TabToolBar.Icon(
-                    iconId = R.drawable.arrow_up,
-                    onShortClick = { sortOrder = !sortOrder },
-                    onLongClick = {
-                        menuState.display {
-                            SortMenu(
-                                title = stringResource(R.string.sorting_order),
-                                onDismiss = menuState::hide,
-                                onTitle = { sortBy = AlbumSortBy.Title },
-                                onYear = { sortBy = AlbumSortBy.Year },
-                                onDateAdded = { sortBy = AlbumSortBy.DateAdded },
-                                onArtist = { sortBy = AlbumSortBy.Artist },
-                                onSongNumber = { sortBy = AlbumSortBy.Songs },
-                                onDuration = { sortBy = AlbumSortBy.Duration }
-                            )
-                        }
-                    },
-                    modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
-                )
+                sort.ToolBarButton()
 
                 search.ToolBarButton()
 
