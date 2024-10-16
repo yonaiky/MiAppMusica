@@ -46,13 +46,13 @@ jobs:
       run: |
         mkdir -p app
 
-        cp composeApp/build/outputs/apk/foss/debug/app-foss-debug.apk app/${{ needs.setup.outputs.APK_FILENAME }}
+        cp composeApp/build/outputs/apk/foss/debug/app-foss-debug.apk app/
 
     - name: Upload built artifact for next job
       uses: actions/upload-artifact@v4.4.1
       with:
-        name: ${{ needs.setup.outputs.APK_FILENAME }}
-        path: app/${{ needs.setup.outputs.APK_FILENAME }}
+        name: app-foss-debug.apk
+        path: app/app-foss-debug.apk
 
 
   upload-to-release:
@@ -63,12 +63,12 @@ jobs:
     - name: Retrieve APK
       uses: actions/download-artifact@v4.1.8
       with:
-        name: ${{ needs.setup.outputs.APK_FILENAME }}
+        name: app-foss-debug.apk
 
     - name: Upload built APK to release
       uses: softprops/action-gh-release@v2
       with:
-        files: ${{ needs.setup.outputs.APK_FILENAME }}
+        files: app-foss-debug.apk
         prerelease: true
         name: RiMusic Weekly Build | Custom Version | ${{ needs.setup.outputs.BUILD_DATE }}
         tag_name: "custom-version"
@@ -86,7 +86,7 @@ jobs:
 
           > Android treats this installation as a different app and will not remove old RiMusic app.
 
-          Download [HERE](https://github.com/knighthat/RiMusic/releases/download/custom-version/${{ needs.setup.outputs.APK_FILENAME }}) or use link down below
+          Download [HERE](https://github.com/fast4x/RiMusic/releases/download/custom-version/app-foss-release.apk) or use link down below
 
         token: ${{ secrets.RELEASE_TOKEN }}
         generate_release_notes: true
