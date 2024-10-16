@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
@@ -21,6 +22,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.enums.Drawable
 import me.knighthat.enums.MenuTitle
 import me.knighthat.typography
 import kotlin.enums.EnumEntries
@@ -36,9 +38,15 @@ interface Sort<T: Enum<T>>: Button {
             actions: (T) -> Unit
         ) {
             Menu( entries ) {
+                val icon =
+                    if( it is Drawable )
+                        it.icon
+                    else
+                        painterResource( R.drawable.text )
+
                 if( it is MenuTitle )
                     MenuEntry(
-                        icon = R.drawable.text,
+                        painter = icon,
                         text = stringResource( it.titleId ),
                         onClick = {
                             onDismiss()

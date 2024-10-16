@@ -7,11 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.enums.Drawable
 import me.knighthat.typography
 
 interface DetailedSort<T: Enum<T>>: Sort<T> {
@@ -32,8 +34,14 @@ interface DetailedSort<T: Enum<T>>: Sort<T> {
                 menuState.display {
 
                     Sort.Menu( sortByEnum ) {
+                        val icon =
+                            if( it is Drawable)
+                                it.icon
+                            else
+                                painterResource( R.drawable.text )
+
                         MenuEntry(
-                            icon = R.drawable.text,
+                            painter = icon,
                             text = title( it ),
                             onClick = {
                                 // Don't pass menuState::hide, it won't work
