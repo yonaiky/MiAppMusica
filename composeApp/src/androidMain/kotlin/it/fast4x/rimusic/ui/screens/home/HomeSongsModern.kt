@@ -93,12 +93,10 @@ import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.PeriodMenu
@@ -157,6 +155,9 @@ import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.ConfirmationDialog
+import me.knighthat.component.tab.toolbar.Dialog
+import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
@@ -165,6 +166,8 @@ import me.knighthat.typography
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+import java.util.Optional
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -183,6 +186,7 @@ fun HomeSongsModern(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+    // Essentials
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val thumbnailSizeDp = Dimensions.thumbnails.song
@@ -191,6 +195,7 @@ fun HomeSongsModern(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var items by persistList<SongEntity>("home/songs")
+    var listMediaItems = remember { mutableListOf<MediaItem>() }
 
     //var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
 
@@ -257,6 +262,10 @@ fun HomeSongsModern(
     var filteredSongs = songs
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
+    // Non-vital
+    var plistName by remember { mutableStateOf( "" ) }
+    var selectItems by remember { mutableStateOf( false ) }
+
     // Search states
     val searching = rememberSaveable { mutableStateOf(false) }
     val isSearchInputFocused = rememberSaveable { mutableStateOf( false ) }
@@ -266,6 +275,12 @@ fun HomeSongsModern(
     val deviceFolderSortState = rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
     val songSortState = rememberPreference(songSortByKey, SongSortBy.DateAdded)
     val sortOrderState = rememberPreference(songSortOrderKey, SortOrder.Descending)
+    // Dialog states
+    val exportToggleState = rememberSaveable { mutableStateOf( false ) }
+    val downloadAllToggleState = rememberSaveable { mutableStateOf( false ) }
+    val deleteDownloadsToggleState = rememberSaveable { mutableStateOf( false ) }
+    val deleteSongToggleState = rememberSaveable { mutableStateOf( false ) }
+    val hideSongToggleState = rememberSaveable { mutableStateOf( false ) }
 
     val search = remember {
         object: Search {
@@ -312,36 +327,16 @@ fun HomeSongsModern(
             }
         }
     }
+    // START - Import songs
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
 
-    // Search mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    var searchInput by search.inputState
-    // Sort mutable
-    val sortOrder by sortOrderState
-    val sortBy by songSort.sortByState
-    val sortByOnDevice by deviceSongSort.sortByState
-
-    val defaultFolder by rememberPreference(defaultFolderKey, "/")
-
-    var songsDevice by remember(sortBy, sortOrder) {
-        mutableStateOf<List<OnDeviceSong>>(emptyList())
-    }
-
-    var filteredFolders = folders
-    var currentFolder: Folder? = null;
-    var currentFolderPath by remember {
-        mutableStateOf(defaultFolder)
-    }
-
-    val importLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            //requestPermission(activity, "Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED")
-
-            context.applicationContext.contentResolver.openInputStream(uri)
-                ?.use { inputStream ->
+        context.applicationContext
+               .contentResolver
+               .openInputStream(uri)
+               ?.use { inputStream ->
                     csvReader().open(inputStream) {
                         readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
                             println("mediaItem index song ${index}")
@@ -373,14 +368,284 @@ fun HomeSongsModern(
 
 
                                 }
-                                /**/
-
                             }
 
                         }
                     }
+               }
+    }
+    // END - Import songs
+    val importDialog = remember {
+        object: Dialog {
+            override val context = context
+            override val toggleState = mutableStateOf( false )
+            override val iconId = R.drawable.resource_import
+            override val titleId = -1       // Unused
+            override val messageId = R.string.import_favorites
+
+            @Composable
+            override fun Render() {}
+
+            override fun onShortClick() {
+                try {
+                    importLauncher.launch( arrayOf( "text/*" ) )
+                } catch (_: ActivityNotFoundException) {
+                    SmartMessage(
+                        context.resources.getString(R.string.info_not_find_app_open_doc),
+                        type = PopupType.Warning, context = context
+                    )
                 }
+            }
         }
+    }
+    // START - Export songs
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+
+        context.applicationContext
+               .contentResolver
+               .openOutputStream(uri)
+               ?.use { outputStream ->
+                    csvWriter().open(outputStream){
+                        writeRow("PlaylistBrowseId", "PlaylistName", "MediaId", "Title", "Artists", "Duration", "ThumbnailUrl")
+                        if (listMediaItems.isEmpty()) {
+                            items.forEach {
+                                writeRow(
+                                    "",
+                                    plistName,
+                                    it.song.id,
+                                    it.song.title,
+                                    it.song.artistsText,
+                                    it.song.durationText,
+                                    it.song.thumbnailUrl
+                                )
+                            }
+                        } else {
+                            listMediaItems.forEach {
+                                writeRow(
+                                    "",
+                                    plistName,
+                                    it.mediaId,
+                                    it.mediaMetadata.title,
+                                    it.mediaMetadata.artist,
+                                    "",
+                                    it.mediaMetadata.artworkUri
+                                )
+                            }
+                        }
+                    }
+               }
+    }
+    // END - Export songs
+    val exportDialog = remember {
+        object: InputDialog {
+            override val context = context
+            override val toggleState = exportToggleState
+            override val iconId = -1
+            override val titleId = R.string.enter_the_playlist_name
+            override val messageId = -1
+            override val defValue: String
+                get() = context.resources.getString(
+                    when( builtInPlaylist ){
+                        BuiltInPlaylist.All -> R.string.songs
+                        BuiltInPlaylist.Favorites -> R.string.favorites
+                        BuiltInPlaylist.Offline -> R.string.cached
+                        BuiltInPlaylist.Downloaded -> R.string.downloaded
+                        BuiltInPlaylist.Top -> R.string.playlist_top
+                        BuiltInPlaylist.OnDevice -> R.string.on_device
+                    }
+                )
+
+            override fun onSet(newValue: String) {
+                try {
+                    val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault() )
+                    val fullName = "RMPlaylist_${newValue.take(20)}_${dateFormat.format(Date())}"
+                    exportLauncher.launch( fullName )
+                } catch (e: ActivityNotFoundException) {
+                    SmartMessage("Couldn't find an application to create documents",
+                        type = PopupType.Warning, context = context)
+                }
+
+                onDismiss()
+            }
+        }
+    }
+    val downloadAllDialog = remember {
+        object: ConfirmationDialog {
+            override val context = context
+            override val toggleState = downloadAllToggleState
+            override val iconId = R.drawable.downloaded
+            override val titleId = R.string.do_you_really_want_to_download_all
+            override val messageId = R.string.info_download_all_songs
+
+            override fun onConfirm() {
+                downloadState = Download.STATE_DOWNLOADING
+
+                val toBeDownloaded = mutableListOf<MediaItem>()
+                if( listMediaItems.isNotEmpty() )
+                    toBeDownloaded.addAll( listMediaItems )
+                else if( items.isNotEmpty() ) {
+                    items.forEach {
+                        toBeDownloaded.add( it.asMediaItem )
+
+                        query {
+                            Database.insert(
+                                Song(
+                                    id = it.asMediaItem.mediaId,
+                                    title = it.asMediaItem.mediaMetadata.title.toString(),
+                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                    thumbnailUrl = it.song.thumbnailUrl,
+                                    durationText = null
+                                )
+                            )
+                        }
+                    }
+
+                    selectItems = false
+                }
+
+                // If no element was added because either condition above is true
+                // then the block below will not be executed
+                toBeDownloaded.forEach {
+                    binder?.cache?.removeResource(it.mediaId)
+
+                    manageDownload(
+                        context = context,
+                        songId = it.mediaId,
+                        songTitle = it.mediaMetadata.title.toString(),
+                        downloadState = true
+                    )
+                }
+
+                onDismiss()
+            }
+        }
+    }
+    val deleteDownloadsDialog = remember {
+        object: ConfirmationDialog {
+            override val context = context
+            override val toggleState = deleteDownloadsToggleState
+            override val iconId = R.drawable.download
+            override val titleId = R.string.do_you_really_want_to_delete_download
+            override val messageId = R.string.info_remove_all_downloaded_songs
+
+            override fun onConfirm() {
+                downloadState = Download.STATE_DOWNLOADING
+
+                val toBeDeleted: List<MediaItem> =
+                    if( listMediaItems.isNotEmpty() )
+                        listMediaItems
+                    else if( items.isNotEmpty() )
+                        items.map( SongEntity::asMediaItem )
+                    else
+                        emptyList()
+
+                toBeDeleted.forEach {
+                    binder?.cache?.removeResource(it.mediaId)
+
+                    manageDownload(
+                        context = context,
+                        songId = it.mediaId,
+                        songTitle = it.mediaMetadata.title.toString(),
+                        downloadState = true
+                    )
+                }
+
+                selectItems = false
+                onDismiss()
+            }
+        }
+    }
+    val deleteSongDialog = remember {
+        object: ConfirmationDialog {
+            override val context = context
+            override val toggleState = deleteSongToggleState
+            override val iconId = -1
+            override val titleId = R.string.delete_song
+            override val messageId = -1
+
+            var song: Optional<SongEntity> = Optional.empty()
+
+            override fun onDismiss() {
+                // Always override current value with empty Optional
+                // to prevent unwanted outcomes
+                song = Optional.empty()
+                super.onDismiss()
+            }
+
+            override fun onConfirm() {
+                song.ifPresent {
+                    query {
+                        menuState.hide()
+                        binder?.cache?.removeResource(it.song.id)
+                        binder?.downloadCache?.removeResource(it.song.id)
+                        Database.delete(it.song)
+                        Database.deleteSongFromPlaylists(it.song.id)
+                    }
+                    SmartMessage(context.resources.getString(R.string.deleted), context = context)
+                }
+
+                onDismiss()
+            }
+        }
+    }
+    val hideSongDialog = remember {
+        object: ConfirmationDialog {
+            override val context = context
+            override val toggleState = hideSongToggleState
+            override val iconId = -1
+            override val titleId = R.string.hidesong
+            override val messageId = -1
+
+            var song: Optional<SongEntity> = Optional.empty()
+
+            override fun onDismiss() {
+                // Always override current value with empty Optional
+                // to prevent unwanted outcomes
+                song = Optional.empty()
+                super.onDismiss()
+            }
+
+            override fun onConfirm() {
+                song.ifPresent {
+                    query {
+                        menuState.hide()
+                        binder?.cache?.removeResource(it.song.id)
+                        binder?.downloadCache?.removeResource(it.song.id)
+                        Database.incrementTotalPlayTimeMs(
+                            it.song.id,
+                            -it.song.totalPlayTimeMs
+                        )
+                    }
+                }
+
+                onDismiss()
+            }
+        }
+    }
+
+    // Search mutable
+    var isSearchBarVisible by search.visibleState
+    var isSearchBarFocused by search.focusState
+    var searchInput by search.inputState
+    // Sort mutable
+    val sortOrder by sortOrderState
+    val sortBy by songSort.sortByState
+    val sortByOnDevice by deviceSongSort.sortByState
+
+    val defaultFolder by rememberPreference(defaultFolderKey, "/")
+
+    var songsDevice by remember(sortBy, sortOrder) {
+        mutableStateOf<List<OnDeviceSong>>(emptyList())
+    }
+
+    var filteredFolders = folders
+    var currentFolder: Folder? = null;
+    var currentFolderPath by remember {
+        mutableStateOf(defaultFolder)
+    }
 
     /************ */
 
@@ -570,103 +835,17 @@ fun HomeSongsModern(
 
     val lazyListState = rememberLazyListState()
 
-    var listMediaItems = remember {
-        mutableListOf<MediaItem>()
-    }
-
-    var selectItems by remember {
-        mutableStateOf(false)
-    }
-
     var position by remember {
         mutableIntStateOf(0)
     }
 
-    var plistName by remember {
-        mutableStateOf("")
-    }
-
-    val exportLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            context.applicationContext.contentResolver.openOutputStream(uri)
-                ?.use { outputStream ->
-                    csvWriter().open(outputStream){
-                        writeRow("PlaylistBrowseId", "PlaylistName", "MediaId", "Title", "Artists", "Duration", "ThumbnailUrl")
-                        if (listMediaItems.isEmpty()) {
-                            items.forEach {
-                                writeRow(
-                                    "",
-                                    plistName,
-                                    it.song.id,
-                                    it.song.title,
-                                    it.song.artistsText,
-                                    it.song.durationText,
-                                    it.song.thumbnailUrl
-                                )
-                            }
-                        } else {
-                            listMediaItems.forEach {
-                                writeRow(
-                                    "",
-                                    plistName,
-                                    it.mediaId,
-                                    it.mediaMetadata.title,
-                                    it.mediaMetadata.artist,
-                                    "",
-                                    it.mediaMetadata.artworkUri
-                                )
-                            }
-                        }
-                    }
-                }
-
-        }
-
-    var isExporting by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (isExporting) {
-        InputTextDialog(
-            onDismiss = {
-                isExporting = false
-            },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = when (builtInPlaylist) {
-                BuiltInPlaylist.All -> context.resources.getString(R.string.songs)
-                BuiltInPlaylist.OnDevice -> context.resources.getString(R.string.on_device)
-                BuiltInPlaylist.Favorites -> context.resources.getString(R.string.favorites)
-                BuiltInPlaylist.Downloaded -> context.resources.getString(R.string.downloaded)
-                BuiltInPlaylist.Offline -> context.resources.getString(R.string.cached)
-                BuiltInPlaylist.Top -> context.resources.getString(R.string.playlist_top)
-            },
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-                plistName = text
-                try {
-                    @SuppressLint("SimpleDateFormat")
-                    val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-                    exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(
-                        Date()
-                    )}")
-                } catch (e: ActivityNotFoundException) {
-                    SmartMessage("Couldn't find an application to create documents",
-                        type = PopupType.Warning, context = context)
-                }
-            }
-        )
-    }
-
-    var showConfirmDeleteDownloadDialog by remember {
-        mutableStateOf(false)
-    }
-    var showConfirmDownloadAllDialog by remember {
-        mutableStateOf(false)
-    }
-
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
+
+    exportDialog.Render()
+    downloadAllDialog.Render()
+    deleteDownloadsDialog.Render()
+    deleteSongDialog.Render()
+    hideSongDialog.Render()
 
     Box(
         modifier = Modifier
@@ -757,103 +936,10 @@ fun HomeSongsModern(
                 }
 
                 if (builtInPlaylist == BuiltInPlaylist.Favorites)
-                    TabToolBar.Icon(
-                        iconId = R.drawable.downloaded,
-                        tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                        enabled = songs.isNotEmpty(),
-                        onShortClick ={ showConfirmDownloadAllDialog = true },
-                        onLongClick = {
-                            SmartMessage(
-                                context.resources.getString(R.string.info_download_all_songs),
-                                context = context
-                            )
-                        }
-                    )
+                    downloadAllDialog.ToolBarButton()
 
-                if (showConfirmDownloadAllDialog) {
-                    ConfirmationDialog(
-                        text = stringResource(R.string.do_you_really_want_to_download_all),
-                        onDismiss = { showConfirmDownloadAllDialog = false },
-                        onConfirm = {
-                            showConfirmDownloadAllDialog = false
-                            //isRecommendationEnabled = false
-                            downloadState = Download.STATE_DOWNLOADING
-                            if (listMediaItems.isEmpty()) {
-                                if (items.isNotEmpty() == true)
-                                    items.forEach {
-                                        binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
-                                        manageDownload(
-                                            context = context,
-                                            songId = it.song.asMediaItem.mediaId,
-                                            songTitle = it.song.asMediaItem.mediaMetadata.title.toString(),
-                                            downloadState = false
-                                        )
-                                    }
-                            } else {
-                                listMediaItems.forEach {
-                                    binder?.cache?.removeResource(it.mediaId)
-                                    manageDownload(
-                                        context = context,
-                                        songId = it.mediaId,
-                                        songTitle = it.mediaMetadata.title.toString(),
-                                        downloadState = false
-                                    )
-
-                                }
-                                selectItems = false
-                            }
-                        }
-                    )
-                }
-
-                if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded) {
-                    TabToolBar.Icon(
-                        iconId = R.drawable.download,
-                        tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                        enabled = songs.isNotEmpty(),
-                        onShortClick = { showConfirmDeleteDownloadDialog = true },
-                        onLongClick = {
-                            SmartMessage(
-                                context.resources.getString(R.string.info_remove_all_downloaded_songs),
-                                context = context
-                            )
-                        }
-                    )
-
-                    if (showConfirmDeleteDownloadDialog) {
-                        ConfirmationDialog(
-                            text = stringResource(R.string.do_you_really_want_to_delete_download),
-                            onDismiss = { showConfirmDeleteDownloadDialog = false },
-                            onConfirm = {
-                                showConfirmDeleteDownloadDialog = false
-                                downloadState = Download.STATE_DOWNLOADING
-                                if (listMediaItems.isEmpty()) {
-                                    if ( items.isNotEmpty() )
-                                        items.forEach {
-                                            binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
-                                            manageDownload(
-                                                context = context,
-                                                songId = it.song.asMediaItem.mediaId,
-                                                songTitle = it.song.asMediaItem.mediaMetadata.title.toString(),
-                                                downloadState = true
-                                            )
-                                        }
-                                } else {
-                                    listMediaItems.forEach {
-                                        binder?.cache?.removeResource(it.mediaId)
-                                        manageDownload(
-                                            context = context,
-                                            songId = it.mediaId,
-                                            songTitle = it.mediaMetadata.title.toString(),
-                                            downloadState = true
-                                        )
-                                    }
-                                    selectItems = false
-                                }
-                            }
-                        )
-                    }
-                }
+                if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded)
+                    deleteDownloadsDialog.Render()
 
                 TabToolBar.Toggleable(
                     onIconId = R.drawable.eye,
@@ -881,27 +967,7 @@ fun HomeSongsModern(
                         onLongClick = { SmartMessage( "Random sorting", context = context) }
                     )
                 else
-                    TabToolBar.Icon(
-                        iconId = R.drawable.resource_import,
-                        onShortClick = {
-                            try {
-                                importLauncher.launch(
-                                    arrayOf( "text/*" )
-                                )
-                            } catch (e: ActivityNotFoundException) {
-                                SmartMessage(
-                                    context.resources.getString(R.string.info_not_find_app_open_doc),
-                                    type = PopupType.Warning, context = context
-                                )
-                            }
-                        },
-                        onLongClick = {
-                            SmartMessage(
-                                context.resources.getString(R.string.import_favorites),
-                                context = context
-                            )
-                        }
-                    )
+                    importDialog.ToolBarButton()
 
                 TabToolBar.Icon( R.drawable.ellipsis_horizontal ) {
                     menuState.display {
@@ -995,9 +1061,7 @@ fun HomeSongsModern(
                                     )
                                 }
                             },
-                            onExport = {
-                                isExporting = true
-                            }
+                            onExport = { exportToggleState.value = true }
                         )
                     }
                 }
@@ -1243,49 +1307,6 @@ fun HomeSongsModern(
                         //contentType = { _, song -> song },
                     ) { index, song ->
 
-                        var isHiding by remember {
-                            mutableStateOf(false)
-                        }
-
-                        var isDeleting by remember {
-                            mutableStateOf(false)
-                        }
-
-                        if (isHiding) {
-                            ConfirmationDialog(
-                                text = stringResource(R.string.update_song),
-                                onDismiss = { isHiding = false },
-                                onConfirm = {
-                                    query {
-                                        menuState.hide()
-                                        binder?.cache?.removeResource(song.song.id)
-                                        binder?.downloadCache?.removeResource(song.song.id)
-                                        Database.incrementTotalPlayTimeMs(
-                                            song.song.id,
-                                            -song.song.totalPlayTimeMs
-                                        )
-                                    }
-                                }
-                            )
-                        }
-
-                        if (isDeleting) {
-                            ConfirmationDialog(
-                                text = stringResource(R.string.delete_song),
-                                onDismiss = { isDeleting = false },
-                                onConfirm = {
-                                    query {
-                                        menuState.hide()
-                                        binder?.cache?.removeResource(song.song.id)
-                                        binder?.downloadCache?.removeResource(song.song.id)
-                                        Database.delete(song.song)
-                                        Database.deleteSongFromPlaylists(song.song.id)
-                                    }
-                                    SmartMessage(context.resources.getString(R.string.deleted), context = context)
-                                }
-                            )
-                        }
-
                         SwipeablePlaylistItem(
                             mediaItem = song.song.asMediaItem,
                             onSwipeToRight = {
@@ -1397,8 +1418,14 @@ fun HomeSongsModern(
                                                     navController = navController,
                                                     song = song.song,
                                                     onDismiss = menuState::hide,
-                                                    onHideFromDatabase = { isHiding = true },
-                                                    onDeleteFromDatabase = { isDeleting = true }
+                                                    onHideFromDatabase = {
+                                                        hideSongDialog.song = Optional.of( song )
+                                                        hideSongToggleState.value = true
+                                                    },
+                                                    onDeleteFromDatabase = {
+                                                        deleteSongDialog.song = Optional.of( song )
+                                                        deleteSongToggleState.value = true
+                                                    }
                                                 )
                                             }
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)

@@ -64,7 +64,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -89,6 +88,7 @@ import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
@@ -116,6 +116,13 @@ fun HomeLibraryModern(
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
+    // Non-vital
+    val pipedSession = getPipedSession()
+    var plistId by remember { mutableLongStateOf( 0L ) }
+    var autosync by rememberPreference(autosyncKey, false)
+    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+
     var items by persistList<PlaylistPreview>("home/playlists")
 
     // Search states
@@ -127,6 +134,8 @@ fun HomeLibraryModern(
     val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
     // Size state
     val sizeState = Preference.remember( HOME_LIBRARY_ITEM_SIZE )
+    // Dialog states
+    val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
     val search = remember {
         object: Search {
@@ -149,7 +158,6 @@ fun HomeLibraryModern(
             override val sizeState = sizeState
         }
     }
-    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
     val shuffle = remember {
         object: SongsShuffle {
             override val binder = binder
@@ -164,39 +172,32 @@ fun HomeLibraryModern(
                 }
         }
     }
+    val newPlaylistDialog = remember {
+        object: InputDialog {
+            override val context = context
+            override val toggleState = newPlaylistToggleState
+            override val iconId = R.drawable.add_in_playlist
+            override val titleId: Int = R.string.enter_the_playlist_name
+            override val messageId: Int = R.string.create_new_playlist
 
-    // Mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    val searchInput by search.inputState
+            override fun onSet(newValue: String) {
 
-    // Non-vital
-    val pipedSession = getPipedSession()
-    var plistId by remember { mutableLongStateOf( 0L ) }
-    var autosync by rememberPreference(autosyncKey, false)
+                if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
+                    createPipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        name = newValue
+                    )
+                else
+                    query {
+                        Database.insert( Playlist( name = newValue ) )
+                    }
 
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
-        Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
-    }
-
-    if ( searchInput.isNotBlank() )
-        items = items.filter {
-            it.playlist.name.contains( searchInput, true )
+                onDismiss()
+            }
         }
-
-    // START: Additional playlists
-    val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
-    val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
-    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
-
-    var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
-    if (showPipedPlaylists) buttonsList +=
-        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
-    if (showPinnedPlaylists) buttonsList +=
-        PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
-    if (showMonthlyPlaylists) buttonsList +=
-        PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
-    // END - Additional playlists
+    }
 
     // START - Import playlist
     val importLauncher =
@@ -265,40 +266,64 @@ fun HomeLibraryModern(
                 }
         }
     // END - Import playlist
+    val importPlaylistDialog = remember {
+        object: InputDialog {
+            override val context = context
+            override val toggleState = mutableStateOf( false )   // Unused
+            override val iconId = R.drawable.resource_import
+            override val titleId = -1                                   // Unused
+            override val messageId = R.string.import_playlist
+
+            override fun onSet(newValue: String) {}
+
+            override fun onShortClick() {
+                try {
+                    importLauncher.launch( arrayOf( "text/*" ) )
+                } catch (e: ActivityNotFoundException) {
+                    SmartMessage(
+                        context.resources.getString(R.string.info_not_find_app_open_doc),
+                        type = PopupType.Warning, context = context
+                    )
+                }
+            }
+        }
+    }
+
+    // Mutable
+    var isSearchBarVisible by search.visibleState
+    var isSearchBarFocused by search.focusState
+    val searchInput by search.inputState
+
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
+        Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
+    }
+
+    if ( searchInput.isNotBlank() )
+        items = items.filter {
+            it.playlist.name.contains( searchInput, true )
+        }
+
+    // START: Additional playlists
+    val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
+    val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
+    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+
+    var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    if (showPipedPlaylists) buttonsList +=
+        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
+    if (showPinnedPlaylists) buttonsList +=
+        PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
+    if (showMonthlyPlaylists) buttonsList +=
+        PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
+    // END - Additional playlists
 
     // START - Piped
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     if (isPipedEnabled)
         ImportPipedPlaylists()
     // END - Piped
 
     // START - New playlist
-    var isCreatingANewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
-    if (isCreatingANewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingANewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-
-                if (isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    createPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        name = text
-                    )
-                } else {
-                    query {
-                        Database.insert(Playlist(name = text))
-                    }
-                }
-            }
-        )
-    }
+    newPlaylistDialog.Render()
     // END - New playlist
 
     // START - Monthly playlist
@@ -352,41 +377,9 @@ fun HomeLibraryModern(
 
                 shuffle.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId =  R.drawable.add_in_playlist,
-                    onShortClick = { isCreatingANewPlaylist = true },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.create_new_playlist),
-                            context = context
-                        )
-                    }
-                )
+                newPlaylistDialog.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.resource_import,
-                    size = 30.dp,
-                    onShortClick = {
-                        try {
-                            importLauncher.launch(
-                                arrayOf(
-                                    "text/*"
-                                )
-                            )
-                        } catch (e: ActivityNotFoundException) {
-                            SmartMessage(
-                                context.resources.getString(R.string.info_not_find_app_open_doc),
-                                type = PopupType.Warning, context = context
-                            )
-                        }
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.import_playlist),
-                            context = context
-                        )
-                    }
-                )
+                importPlaylistDialog.ToolBarButton()
 
                 itemSize.ToolBarButton()
             }
