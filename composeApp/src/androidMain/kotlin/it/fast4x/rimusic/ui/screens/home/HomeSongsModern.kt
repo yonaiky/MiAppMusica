@@ -36,7 +36,6 @@ import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -50,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -80,7 +78,6 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
@@ -95,7 +92,6 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -109,7 +105,6 @@ import it.fast4x.rimusic.ui.components.themed.PeriodMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
@@ -131,7 +126,6 @@ import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
-import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.includeLocalSongsKey
@@ -150,10 +144,8 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
-import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -166,13 +158,13 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.enums.EnumEntries
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -259,6 +251,12 @@ fun HomeSongsModern(
     val backButtonFolder = Folder(stringResource(R.string.back))
     val showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
+    var songs: List<SongEntity> = emptyList()
+    var folders: List<Folder> = emptyList()
+
+    var filteredSongs = songs
+    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+
     // Search states
     val searching = rememberSaveable { mutableStateOf(false) }
     val isSearchInputFocused = rememberSaveable { mutableStateOf( false ) }
@@ -300,6 +298,20 @@ fun HomeSongsModern(
             override val sortByState = deviceFolderSortState
         }
     }
+    val shuffle = remember {
+        object: SongsShuffle {
+            override val binder = binder
+            override val context = context
+            override val dispatcher = Dispatchers.Main
+
+            override fun query(): Flow<List<Song>?> {
+                if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+                    items = filteredSongs
+
+                return  flowOf(items.map(SongEntity::song))
+            }
+        }
+    }
 
     // Search mutable
     var isSearchBarVisible by search.visibleState
@@ -315,10 +327,6 @@ fun HomeSongsModern(
     var songsDevice by remember(sortBy, sortOrder) {
         mutableStateOf<List<OnDeviceSong>>(emptyList())
     }
-    var songs: List<SongEntity> = emptyList()
-    var folders: List<Folder> = emptyList()
-
-    var filteredSongs = songs
 
     var filteredFolders = folders
     var currentFolder: Folder? = null;
@@ -561,9 +569,6 @@ fun HomeSongsModern(
     )
 
     val lazyListState = rememberLazyListState()
-
-    val showSearchTab by rememberPreference(showSearchTabKey, false)
-    val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     var listMediaItems = remember {
         mutableListOf<MediaItem>()
@@ -865,33 +870,7 @@ fun HomeSongsModern(
                     }
                 )
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.shuffle,
-                    tint = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                    enabled = items.isNotEmpty(),
-                    onShortClick = {
-                        if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
-                            filteredSongs
-                        if (items.isNotEmpty()) {
-                            val itemsLimited =
-                                if (items.size > maxSongsInQueue.number) items
-                                    .shuffled()
-                                    .take(maxSongsInQueue.number.toInt()) else items
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                itemsLimited
-                                    .shuffled()
-                                    .map(SongEntity::asMediaItem)
-                            )
-                        }
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.info_shuffle),
-                            context = context
-                        )
-                    }
-                )
+                shuffle.ToolBarButton()
 
                 if (builtInPlaylist == BuiltInPlaylist.Favorites)
                     TabToolBar.Icon(

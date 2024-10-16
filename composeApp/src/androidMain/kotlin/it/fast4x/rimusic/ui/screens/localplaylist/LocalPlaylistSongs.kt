@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -114,6 +115,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
+import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -176,14 +178,17 @@ import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.toolbar.DetailedSort
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -191,6 +196,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
+import kotlin.coroutines.CoroutineContext
 import kotlin.enums.EnumEntries
 
 
@@ -208,6 +214,7 @@ fun LocalPlaylistSongs(
     playlistId: Long,
     onDelete: () -> Unit,
 ) {
+    val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
@@ -243,6 +250,15 @@ fun LocalPlaylistSongs(
                     else -> stringResource( currentValue.titleId )
                 }
             }
+        }
+    }
+    val shuffle = remember {
+        object: SongsShuffle{
+            override val binder = binder
+            override val context = context
+            override val dispatcher = Dispatchers.Main
+
+            override fun query(): Flow<List<Song>?> = flowOf( playlistSongs.map( SongEntity::song ) )
         }
     }
 
@@ -351,7 +367,6 @@ fun LocalPlaylistSongs(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
-    val context = LocalContext.current
 
 
     if (isDeleting) {
@@ -831,40 +846,10 @@ fun LocalPlaylistSongs(
                                     )
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            HeaderIconButton(
-                                icon = R.drawable.shuffle,
-                                enabled = playlistSongs.isNotEmpty() == true,
-                                color = if (playlistSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            playlistSongs.let { songs ->
-                                                if (songs.isNotEmpty()) {
-                                                    val itemsLimited =
-                                                        if (songs.size > maxSongsInQueue.number) songs.shuffled()
-                                                            .take(maxSongsInQueue.number.toInt()) else songs
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayFromBeginning(
-                                                        itemsLimited.shuffled()
-                                                            .map(SongEntity::asMediaItem)
-                                                    )
-                                                }
-                                            }
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_shuffle),
-                                                context = context
-                                            )
-                                        }
-                                    )
-                            )
+                            shuffle.ToolBarButton()
                             Spacer(modifier = Modifier.height(10.dp))
                             search.ToolBarButton()
                         }
-
-
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))

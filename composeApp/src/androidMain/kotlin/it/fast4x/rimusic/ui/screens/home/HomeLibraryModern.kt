@@ -71,13 +71,11 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistTypeKey
@@ -87,18 +85,16 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
-import timber.log.Timber
 
 
 @ExperimentalMaterial3Api
@@ -153,6 +149,21 @@ fun HomeLibraryModern(
             override val sizeState = sizeState
         }
     }
+    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
+    val shuffle = remember {
+        object: SongsShuffle {
+            override val binder = binder
+            override val context = context
+
+            override fun query(): Flow<List<Song>?> =
+                when( playlistType ) {
+                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+                }
+        }
+    }
 
     // Mutable
     var isSearchBarVisible by search.visibleState
@@ -162,7 +173,6 @@ fun HomeLibraryModern(
     // Non-vital
     val pipedSession = getPipedSession()
     var plistId by remember { mutableLongStateOf( 0L ) }
-    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
     var autosync by rememberPreference(autosyncKey, false)
 
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
@@ -340,30 +350,7 @@ fun HomeLibraryModern(
 
                 search.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.shuffle,
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.shuffle),
-                            context = context
-                        )
-                    },
-                    onShortClick = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) {
-                                when( playlistType ) {
-                                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-                                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-                                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-                                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-                                }.collect {
-                                    PlayShuffledSongs( it, context, binder )
-                                }
-                            }
-                        }
-
-                    }
-                )
+                shuffle.ToolBarButton()
 
                 TabToolBar.Icon(
                     iconId =  R.drawable.add_in_playlist,

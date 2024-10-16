@@ -22,29 +22,23 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -65,32 +59,26 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
-import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import me.knighthat.thumbnailShape
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -108,7 +96,6 @@ fun HomeAlbumsModern(
     val menuState = LocalMenuState.current
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
     // Search states
@@ -156,6 +143,14 @@ fun HomeAlbumsModern(
             override val angleState = angleState
 
             override fun onClick(item: Album) = onAlbumClick(item)
+        }
+    }
+    val shuffle = remember {
+        object: SongsShuffle{
+            override val binder = binder
+            override val context = context
+
+            override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
         }
     }
 
@@ -209,24 +204,7 @@ fun HomeAlbumsModern(
 
                 randomizer.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.shuffle,
-                    onShortClick = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) {
-                                Database.songsInAllBookmarkedAlbums()
-                                    .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                            }
-                        }
-
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.shuffle),
-                            context = context
-                        )
-                    }
-                )
+                shuffle.ToolBarButton()
 
                 itemSize.ToolBarButton()
             }

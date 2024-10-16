@@ -36,11 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -49,34 +47,28 @@ import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import it.fast4x.rimusic.utils.showSearchTabKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
-import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_ARTIST_ITEM_SIZE
-import kotlin.random.Random
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -145,6 +137,14 @@ fun HomeArtistsModern(
             override fun onClick(item: Artist) = onArtistClick(item)
         }
     }
+    val shuffle = remember {
+        object: SongsShuffle{
+            override val binder = binder
+            override val context = context
+
+            override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
+        }
+    }
 
     // Search mutable
     var isSearchBarVisible by search.visibleState
@@ -195,23 +195,7 @@ fun HomeArtistsModern(
 
                 randomizer.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.shuffle,
-                    onShortClick = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) {
-                                Database.songsInAllFollowedArtists()
-                                    .collect { PlayShuffledSongs(songsList = it, binder = binder, context = context) }
-                            }
-                        }
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.shuffle),
-                            context = context
-                        )
-                    }
-                )
+                shuffle.ToolBarButton()
 
                 itemSize.ToolBarButton()
             }
