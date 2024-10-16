@@ -37,11 +37,10 @@ fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerSe
         // Return whole list if its size is less than queue size
         val songsInQueue = songs.shuffled().take( maxSongsInQueue )
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope( Dispatchers.Main ).launch {
             binder.stopRadio()
             binder.player.forcePlayFromBeginning(
-                songsInQueue.shuffled()
-                    .map(Song::asMediaItem)
+                songsInQueue.map( Song::asMediaItem )
             )
         }
     }
