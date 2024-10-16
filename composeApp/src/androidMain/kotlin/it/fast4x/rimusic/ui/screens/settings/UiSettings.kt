@@ -3,27 +3,17 @@ package it.fast4x.rimusic.ui.screens.settings
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -31,19 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
@@ -87,15 +68,12 @@ import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
@@ -186,8 +164,6 @@ import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
-import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
@@ -230,7 +206,7 @@ import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 import me.knighthat.colorPalette
-import me.knighthat.typography
+import me.knighthat.component.tab.toolbar.Search
 
 @Composable
 fun DefaultUiSettings() {
@@ -606,14 +582,21 @@ fun UiSettings(
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    var searching by rememberSaveable { mutableStateOf(false) }
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
-   // var filterCharSequence: CharSequence
-    var filterCharSequence: CharSequence = filter.toString()
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Heavy
-    )
+    // Search states
+    val visibleState = rememberSaveable { mutableStateOf( false ) }
+    val focusState = rememberSaveable { mutableStateOf( false ) }
+    val inputState = rememberSaveable { mutableStateOf( "" ) }
+
+    val search = remember {
+        object: Search{
+            override val visibleState = visibleState
+            override val focusState = focusState
+            override val inputState = inputState
+        }
+    }
+
+    // Search mutable
+    val searchInput by search.inputState
 
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
     var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
@@ -786,102 +769,8 @@ fun UiSettings(
             onClick = {}
         )
 
-        HeaderIconButton(
-            modifier = Modifier.padding(start = 25.dp),
-            onClick = { searching = !searching },
-            icon = R.drawable.search_circle,
-            color = colorPalette().text,
-            iconSize = 24.dp
-        )
-        /*   Search   */
-        Row (
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .fillMaxWidth()
-        ) {
-            AnimatedVisibility(visible = searching) {
-                val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                LaunchedEffect(searching) {
-                    focusRequester.requestFocus()
-                }
-
-                BasicTextField(
-                    value = filter ?: "",
-                    onValueChange = { filter = it },
-                    textStyle = typography().xs.semiBold,
-                    singleLine = true,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        if (filter.isNullOrBlank()) filter = ""
-                        focusManager.clearFocus()
-                    }),
-                    cursorBrush = SolidColor(colorPalette().text),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 10.dp)
-                        ) {
-                            IconButton(
-                                onClick = {},
-                                icon = R.drawable.search,
-                                color = colorPalette().favoritesIcon,
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .size(16.dp)
-                            )
-                        }
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 30.dp)
-                        ) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = filter?.isEmpty() ?: true,
-                                enter = fadeIn(tween(100)),
-                                exit = fadeOut(tween(100)),
-                            ) {
-                                BasicText(
-                                    text = stringResource(R.string.search),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
-                                )
-                            }
-
-                            innerTextField()
-                        }
-                    },
-                    modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .background(
-                            colorPalette().background4,
-                            shape = thumbnailRoundness.shape()
-                        )
-                        .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (!it.hasFocus) {
-                                keyboardController?.hide()
-                                if (filter?.isBlank() == true) {
-                                    filter = null
-                                    searching = false
-                                }
-                            }
-                        }
-                )
-            }
-        }
-        /*  Search  */
-
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         if (resetCustomLightThemeDialog) {
             ConfirmationDialog(
@@ -930,7 +819,7 @@ fun UiSettings(
 
         SettingsDescription(text = stringResource(R.string.system_language)+": $systemLocale")
 
-        if (filter.isNullOrBlank() || stringResource(R.string.app_language).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.app_language).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.app_language),
                 selectedValue = languageApp,
@@ -945,7 +834,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.audio_quality_format).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.audio_quality_format).contains(searchInput,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
                 selectedValue = audioQualityFormat,
@@ -982,7 +871,7 @@ fun UiSettings(
             }
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_listen_history).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.player_pause_listen_history).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_listen_history),
                 text = stringResource(R.string.player_pause_listen_history_info),
@@ -1012,7 +901,7 @@ fun UiSettings(
             }
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.min_listening_time).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.min_listening_time).contains(searchInput,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.min_listening_time),
                 selectedValue = exoPlayerMinTimeForEvent,
@@ -1031,7 +920,7 @@ fun UiSettings(
             SettingsDescription(text = stringResource(R.string.is_min_list_time_for_tips_or_quick_pics))
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.min_listening_time).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.min_listening_time).contains(searchInput,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.exclude_songs_with_duration_limit),
                 selectedValue = excludeSongWithDurationLimit,
@@ -1053,7 +942,7 @@ fun UiSettings(
             SettingsDescription(text = stringResource(R.string.exclude_songs_with_duration_limit_description))
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.pause_between_songs).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.pause_between_songs).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.pause_between_songs),
                 selectedValue = pauseBetweenSongs,
@@ -1073,7 +962,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_on_volume_zero),
                 text = stringResource(R.string.info_pauses_player_when_volume_zero),
@@ -1083,7 +972,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.effect_fade_audio).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.effect_fade_audio).contains(searchInput,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_audio),
                 selectedValue = playbackFadeAudioDuration,
@@ -1126,7 +1015,7 @@ fun UiSettings(
 
 
 
-            if (filter.isNullOrBlank() || stringResource(R.string.player_keep_minimized).contains(filterCharSequence,true))
+            if (searchInput.isBlank() || stringResource(R.string.player_keep_minimized).contains(searchInput,true))
                 SwitchSettingEntry(
                     title = stringResource(R.string.player_keep_minimized),
                     text = stringResource(R.string.when_click_on_a_song_player_start_minimized),
@@ -1137,7 +1026,7 @@ fun UiSettings(
                 )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.player_collapsed_disable_swiping_down),
                 text = stringResource(R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down),
@@ -1147,7 +1036,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.max_songs_in_queue).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.max_songs_in_queue).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.max_songs_in_queue),
                 selectedValue = maxSongsInQueue,
@@ -1167,8 +1056,8 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.discover).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.discover).contains(
+                searchInput,
                 true
             )
         )
@@ -1179,7 +1068,7 @@ fun UiSettings(
                 onCheckedChange = { discoverIsEnabled = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.playlistindicator).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.playlistindicator).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.playlistindicator),
                 text = stringResource(R.string.playlistindicatorinfo),
@@ -1189,7 +1078,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.persistent_queue).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.persistent_queue).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.persistent_queue),
                 text = stringResource(R.string.save_and_restore_playing_songs),
@@ -1200,7 +1089,7 @@ fun UiSettings(
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.resume_playback).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.resume_playback).contains(searchInput,true))
             if (isAtLeastAndroid6) {
                 SwitchSettingEntry(
                     title = stringResource(R.string.resume_playback),
@@ -1212,7 +1101,7 @@ fun UiSettings(
                 )
             }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.close_app_with_back_button).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.close_app_with_back_button).contains(searchInput,true)) {
             SwitchSettingEntry(
                 isEnabled = Build.VERSION.SDK_INT >= 33,
                 title = stringResource(R.string.close_app_with_back_button),
@@ -1225,7 +1114,7 @@ fun UiSettings(
             ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.close_background_player).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.close_background_player).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.close_background_player),
                 text = stringResource(R.string.when_app_swipe_out_from_task_manager),
@@ -1235,7 +1124,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.skip_media_on_error).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.skip_media_on_error).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_media_on_error),
                 text = stringResource(R.string.skip_media_on_error_description),
@@ -1272,7 +1161,7 @@ fun UiSettings(
 
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.skip_silence).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.skip_silence).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silent_parts_during_playback),
@@ -1326,7 +1215,7 @@ fun UiSettings(
 
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.loudness_normalization).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.loudness_normalization).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.loudness_normalization),
                 text = stringResource(R.string.autoadjust_the_volume),
@@ -1360,7 +1249,7 @@ fun UiSettings(
         }
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.event_volumekeys).contains(filterCharSequence,true)) {
+        if (searchInput.isBlank() || stringResource(R.string.event_volumekeys).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_volumekeys),
                 text = stringResource(R.string.event_volumekeysinfo),
@@ -1373,7 +1262,7 @@ fun UiSettings(
         }
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.event_shake).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.event_shake).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.event_shake),
                 text = stringResource(R.string.shake_to_change_song),
@@ -1383,7 +1272,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.equalizer).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.equalizer).contains(searchInput,true))
             SettingsEntry(
                 title = stringResource(R.string.equalizer),
                 text = stringResource(R.string.interact_with_the_system_equalizer),
@@ -1409,7 +1298,7 @@ fun UiSettings(
         SettingsEntryGroupText(stringResource(R.string.user_interface))
 
         var uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
-        if (filter.isNullOrBlank() || stringResource(R.string.interface_in_use).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.interface_in_use).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.interface_in_use),
                 selectedValue = uiType,
@@ -1485,7 +1374,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.theme).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.theme).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.theme),
                 selectedValue = colorPaletteName,
@@ -1689,7 +1578,7 @@ fun UiSettings(
             }
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.theme_mode).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.theme_mode).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.theme_mode),
                 selectedValue = colorPaletteMode,
@@ -1712,7 +1601,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.navigation_bar_position).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.navigation_bar_position).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.navigation_bar_position),
                 selectedValue = navigationBarPosition,
@@ -1730,7 +1619,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.navigation_bar_type).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.navigation_bar_type).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.navigation_bar_type),
                 selectedValue = navigationBarType,
@@ -1743,7 +1632,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_position).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.player_position).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.player_position),
                 selectedValue = playerPosition,
@@ -1756,7 +1645,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.menu_style).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.menu_style).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.menu_style),
                 selectedValue = menuStyle,
@@ -1769,7 +1658,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.message_type).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.message_type).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.message_type),
                 selectedValue = messageType,
@@ -1782,7 +1671,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.default_page).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.default_page).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.default_page),
                 selectedValue = indexNavigationTab,
@@ -1800,7 +1689,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.transition_effect).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.transition_effect).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.transition_effect),
                 selectedValue = transitionEffect,
@@ -1818,8 +1707,8 @@ fun UiSettings(
             )
 
         if ( UiType.ViMusic.isCurrent() ) {
-            if (filter.isNullOrBlank() || stringResource(R.string.vimusic_show_search_button_in_navigation_bar).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.vimusic_show_search_button_in_navigation_bar).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1832,8 +1721,8 @@ fun UiSettings(
 
 
 
-            if (filter.isNullOrBlank() || stringResource(R.string.show_statistics_in_navigation_bar).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.show_statistics_in_navigation_bar).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1845,7 +1734,7 @@ fun UiSettings(
                 )
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_floating_icon).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.show_floating_icon).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.show_floating_icon),
                 text = "",
@@ -1855,7 +1744,7 @@ fun UiSettings(
 
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.settings_use_font_type).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.settings_use_font_type).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.settings_use_font_type),
                 selectedValue = fontType,
@@ -1868,7 +1757,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.use_system_font).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.use_system_font).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.use_system_font),
                 text = stringResource(R.string.use_font_by_the_system),
@@ -1876,7 +1765,7 @@ fun UiSettings(
                 onCheckedChange = { useSystemFont = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.apply_font_padding).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.apply_font_padding).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.apply_font_padding),
                 text = stringResource(R.string.add_spacing_around_texts),
@@ -1885,7 +1774,7 @@ fun UiSettings(
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.swipe_to_action).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.swipe_to_action).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.swipe_to_action),
                 text = stringResource(R.string.activate_the_action_menu_by_swiping_the_song_left_or_right),
@@ -1897,7 +1786,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}",
                 text = "",
@@ -1905,7 +1794,7 @@ fun UiSettings(
                 onCheckedChange = { showFavoritesPlaylist = it }
             )
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
                 text = "",
@@ -1913,21 +1802,21 @@ fun UiSettings(
                 onCheckedChange = { showCachedPlaylist = it }
             )
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",
                 text = "",
                 isChecked = showDownloadedPlaylist,
                 onCheckedChange = { showDownloadedPlaylist = it }
             )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top).format(maxTopPlaylistItems)}",
                 text = "",
                 isChecked = showMyTopPlaylist,
                 onCheckedChange = { showMyTopPlaylist = it }
             )
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}",
                 text = "",
@@ -1958,7 +1847,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.playlists).uppercase())
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}",
                 text = "",
@@ -1966,7 +1855,7 @@ fun UiSettings(
                 onCheckedChange = { showPipedPlaylists = it }
             )
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}",
                 text = "",
@@ -1974,7 +1863,7 @@ fun UiSettings(
                 onCheckedChange = { showPinnedPlaylists = it }
             )
 
-        if (filter.isNullOrBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}".contains(filterCharSequence,true))
+        if (searchInput.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}".contains(searchInput,true))
             SwitchSettingEntry(
                 title = "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}",
                 text = "",
@@ -1985,7 +1874,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.monthly_playlists).uppercase())
 
-        if (filter.isNullOrBlank() || stringResource(R.string.monthly_playlists).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.monthly_playlists).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.enable_monthly_playlists_creation),
                 text = "",
@@ -1998,7 +1887,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.smart_recommendations))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.statistics_max_number_of_items).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.statistics_max_number_of_items),
                 selectedValue = recommendationsNumber,
@@ -2011,7 +1900,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.statistics))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.statistics_max_number_of_items).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.statistics_max_number_of_items),
                 selectedValue = maxStatisticsItems,
@@ -2021,7 +1910,7 @@ fun UiSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.listening_time).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.listening_time).contains(searchInput,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.listening_time),
                 text = stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time),
@@ -2034,7 +1923,7 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.playlist_top))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.statistics_max_number_of_items).contains(filterCharSequence,true))
+        if (searchInput.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.statistics_max_number_of_items),
                 selectedValue = maxTopPlaylistItems,

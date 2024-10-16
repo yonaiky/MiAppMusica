@@ -2,15 +2,9 @@ package it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,37 +12,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ClickLyricsText
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -65,12 +44,9 @@ import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
@@ -111,8 +87,6 @@ import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showBackgroundLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
@@ -150,7 +124,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import me.knighthat.colorPalette
-import me.knighthat.typography
+import me.knighthat.component.tab.toolbar.Search
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -432,10 +406,23 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
-    var searching by rememberSaveable { mutableStateOf(false) }
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
-    // var filterCharSequence: CharSequence
-    var filterCharSequence: CharSequence = filter.toString()
+
+    // Search states
+    val visibleState = rememberSaveable { mutableStateOf( false ) }
+    val focusState = rememberSaveable { mutableStateOf( false ) }
+    val inputState = rememberSaveable { mutableStateOf( "" ) }
+
+    val search = remember {
+        object: Search{
+            override val visibleState = visibleState
+            override val focusState = focusState
+            override val inputState = inputState
+        }
+    }
+
+    // Search mutable
+    val searchInput by search.inputState
+
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -524,101 +511,8 @@ fun AppearanceSettings(
             onClick = {}
         )
 
-        HeaderIconButton(
-            modifier = Modifier.padding(start = 25.dp),
-            onClick = { searching = !searching },
-            icon = R.drawable.search_circle,
-            color = colorPalette().text,
-            iconSize = 24.dp
-        )
-        /*   Search   */
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .fillMaxWidth()
-        ) {
-            AnimatedVisibility(visible = searching) {
-                val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                LaunchedEffect(searching) {
-                    focusRequester.requestFocus()
-                }
-
-                BasicTextField(
-                    value = filter ?: "",
-                    onValueChange = { filter = it },
-                    textStyle = typography().xs.semiBold,
-                    singleLine = true,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        if (filter.isNullOrBlank()) filter = ""
-                        focusManager.clearFocus()
-                    }),
-                    cursorBrush = SolidColor(colorPalette().text),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 10.dp)
-                        ) {
-                            IconButton(
-                                onClick = {},
-                                icon = R.drawable.search,
-                                color = colorPalette().favoritesIcon,
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .size(16.dp)
-                            )
-                        }
-                        Box(
-                            contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 30.dp)
-                        ) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = filter?.isEmpty() ?: true,
-                                enter = fadeIn(tween(100)),
-                                exit = fadeOut(tween(100)),
-                            ) {
-                                BasicText(
-                                    text = stringResource(R.string.search),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled),
-                                )
-                            }
-
-                            innerTextField()
-                        }
-                    },
-                    modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .background(
-                            colorPalette().background4,
-                            shape = thumbnailRoundness.shape()
-                        )
-                        .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (!it.hasFocus) {
-                                keyboardController?.hide()
-                                if (filter?.isBlank() == true) {
-                                    filter = null
-                                    searching = false
-                                }
-                            }
-                        }
-                )
-            }
-        }
-        /*  Search  */
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         //SettingsEntryGroupText(stringResource(R.string.user_interface))
 
@@ -638,8 +532,8 @@ fun AppearanceSettings(
 
         if (showlyricsthumbnail) expandedlyrics = false
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
+                searchInput,
                 true
             )
         )
@@ -649,8 +543,8 @@ fun AppearanceSettings(
                 isChecked = showTopActionsBar,
                 onCheckedChange = { showTopActionsBar = it }
             )
-        if (filter.isNullOrBlank() || stringResource(R.string.playertype).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.playertype).contains(
+                searchInput,
                 true
             )
         )
@@ -668,8 +562,8 @@ fun AppearanceSettings(
                 },
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.queuetype).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.queuetype).contains(
+                searchInput,
                 true
             )
         )
@@ -688,8 +582,8 @@ fun AppearanceSettings(
             )
 
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
-            if (filter.isNullOrBlank() || stringResource(R.string.show_thumbnail).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.show_thumbnail).contains(
+                    searchInput,
                     true
                 )
             )
@@ -703,8 +597,8 @@ fun AppearanceSettings(
         AnimatedVisibility(visible = showthumbnail) {
             Column {
                 if (playerType == PlayerType.Modern) {
-                    if (filter.isNullOrBlank() || stringResource(R.string.fadingedge).contains(
-                            filterCharSequence,
+                    if (searchInput.isBlank() || stringResource(R.string.fadingedge).contains(
+                            searchInput,
                             true
                         )
                     )
@@ -718,8 +612,8 @@ fun AppearanceSettings(
                 }
 
                 if (playerType == PlayerType.Modern && !isLandscape) {
-                    if (filter.isNullOrBlank() || stringResource(R.string.carousel).contains(
-                            filterCharSequence,
+                    if (searchInput.isBlank() || stringResource(R.string.carousel).contains(
+                            searchInput,
                             true
                         )
                     )
@@ -731,8 +625,8 @@ fun AppearanceSettings(
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
                     if (carousel) {
-                        if (filter.isNullOrBlank() || stringResource(R.string.carouselsize).contains(
-                                filterCharSequence,
+                        if (searchInput.isBlank() || stringResource(R.string.carouselsize).contains(
+                                searchInput,
                                 true
                             )
                         )
@@ -754,8 +648,8 @@ fun AppearanceSettings(
                     }
                 }
                 if (playerType == PlayerType.Essential) {
-                    if (filter.isNullOrBlank() || stringResource(R.string.thumbnailpause).contains(
-                            filterCharSequence,
+                    if (searchInput.isBlank() || stringResource(R.string.thumbnailpause).contains(
+                            searchInput,
                             true
                         )
                     )
@@ -767,8 +661,8 @@ fun AppearanceSettings(
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
 
-                    if (filter.isNullOrBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
-                            filterCharSequence,
+                    if (searchInput.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
+                            searchInput,
                             true
                         )
                     )
@@ -780,8 +674,8 @@ fun AppearanceSettings(
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
                     if (visualizerEnabled) {
-                        if (filter.isNullOrBlank() || stringResource(R.string.showvisthumbnail).contains(
-                                filterCharSequence,
+                        if (searchInput.isBlank() || stringResource(R.string.showvisthumbnail).contains(
+                                searchInput,
                                 true
                             )
                         )
@@ -795,8 +689,8 @@ fun AppearanceSettings(
                     }
                 }
 
-                if (filter.isNullOrBlank() || stringResource(R.string.player_thumbnail_size).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -815,8 +709,8 @@ fun AppearanceSettings(
                         },
                         modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
-                if (filter.isNullOrBlank() || stringResource(R.string.thumbnailtype).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.thumbnailtype).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -835,8 +729,8 @@ fun AppearanceSettings(
                         modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
 
-                if (filter.isNullOrBlank() || stringResource(R.string.thumbnail_roundness).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.thumbnail_roundness).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -872,8 +766,8 @@ fun AppearanceSettings(
             }
         }
         if (!showthumbnail) {
-            if (filter.isNullOrBlank() || stringResource(R.string.noblur).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.noblur).contains(
+                    searchInput,
                     true
                 )
             )
@@ -888,8 +782,8 @@ fun AppearanceSettings(
         }
 
         if (!(showthumbnail && playerType == PlayerType.Essential)){
-            if (filter.isNullOrBlank() || stringResource(R.string.statsfornerdsplayer).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.statsfornerdsplayer).contains(
+                    searchInput,
                     true
                 )
             )
@@ -902,8 +796,8 @@ fun AppearanceSettings(
         }
 
         if (!showlyricsthumbnail && !isLandscape)
-            if (filter.isNullOrBlank() || stringResource(R.string.expandedlyrics).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.expandedlyrics).contains(
+                    searchInput,
                     true
                 )
             )
@@ -914,8 +808,8 @@ fun AppearanceSettings(
                     onCheckedChange = { expandedlyrics = it }
                 )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.timelinesize).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.timelinesize).contains(
+                searchInput,
                 true
             )
         )
@@ -934,8 +828,8 @@ fun AppearanceSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.pinfo_type).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.pinfo_type).contains(
+                searchInput,
                 true
             )
         ) {
@@ -956,8 +850,8 @@ fun AppearanceSettings(
 
             AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
                 Column {
-                    if (filter.isNullOrBlank() || stringResource(R.string.pinfo_show_icons).contains(
-                            filterCharSequence,
+                    if (searchInput.isBlank() || stringResource(R.string.pinfo_show_icons).contains(
+                            searchInput,
                             true
                         )
                     )
@@ -976,8 +870,8 @@ fun AppearanceSettings(
 
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.miniplayertype).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.miniplayertype).contains(
+                searchInput,
                 true
             )
         )
@@ -995,8 +889,8 @@ fun AppearanceSettings(
                 },
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(
+                searchInput,
                 true
             )
         )
@@ -1007,8 +901,8 @@ fun AppearanceSettings(
                 onCheckedChange = { playerSwapControlsWithTimeline = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.timeline).contains(
+                searchInput,
                 true
             )
         )
@@ -1029,8 +923,8 @@ fun AppearanceSettings(
                 }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.transparentbar).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.transparentbar).contains(
+                searchInput,
                 true
             )
         )
@@ -1041,8 +935,8 @@ fun AppearanceSettings(
                 onCheckedChange = { transparentbar = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.pcontrols_type).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.pcontrols_type).contains(
+                searchInput,
                 true
             )
         )
@@ -1061,8 +955,8 @@ fun AppearanceSettings(
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.play_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1084,8 +978,8 @@ fun AppearanceSettings(
                 },
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.buttonzoomout).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.buttonzoomout).contains(
+                searchInput,
                 true
             )
         )
@@ -1097,8 +991,8 @@ fun AppearanceSettings(
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.play_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.play_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1132,8 +1026,8 @@ fun AppearanceSettings(
             )
          */
 
-        if (filter.isNullOrBlank() || stringResource(R.string.background_colors).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.background_colors).contains(
+                searchInput,
                 true
             )
         )
@@ -1157,8 +1051,8 @@ fun AppearanceSettings(
             )
 
         if ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient))
-            if (filter.isNullOrBlank() || stringResource(R.string.blackgradient).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.blackgradient).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1169,8 +1063,8 @@ fun AppearanceSettings(
                     onCheckedChange = { blackgradient = it }
                 )
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-            if (filter.isNullOrBlank() || stringResource(R.string.bottomgradient).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.bottomgradient).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1181,8 +1075,8 @@ fun AppearanceSettings(
                     onCheckedChange = { bottomgradient = it }
                 )
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-           if (filter.isNullOrBlank() || stringResource(R.string.textoutline).contains(
-                filterCharSequence,
+           if (searchInput.isBlank() || stringResource(R.string.textoutline).contains(
+                searchInput,
                 true
                 )
            )
@@ -1192,8 +1086,8 @@ fun AppearanceSettings(
                    isChecked = textoutline,
                    onCheckedChange = { textoutline = it }
                )
-       if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
-                filterCharSequence,
+       if (searchInput.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
+                searchInput,
                 true
             )
         )
@@ -1204,8 +1098,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showTotalTimeQueue = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_remaining_song_time).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_remaining_song_time).contains(
+                searchInput,
                 true
             )
         )
@@ -1216,8 +1110,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showRemainingSongTime = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_next_songs_in_player).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_next_songs_in_player).contains(
+                searchInput,
                 true
             )
         )
@@ -1229,7 +1123,7 @@ fun AppearanceSettings(
             )
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
-              if (filter.isNullOrBlank() || stringResource(R.string.showtwosongs).contains(filterCharSequence,true))
+              if (searchInput.isBlank() || stringResource(R.string.showtwosongs).contains(searchInput,true))
                   EnumValueSelectorSettingsEntry(
                       title = stringResource(R.string.songs_number_to_show),
                       selectedValue = showsongs,
@@ -1244,8 +1138,8 @@ fun AppearanceSettings(
                   )
 
 
-            if (filter.isNullOrBlank() || stringResource(R.string.showalbumcover).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.showalbumcover).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1259,8 +1153,8 @@ fun AppearanceSettings(
           }
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.disable_scrolling_text).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.disable_scrolling_text).contains(
+                searchInput,
                 true
             )
         )
@@ -1271,8 +1165,8 @@ fun AppearanceSettings(
                 onCheckedChange = { disableScrollingText = it }
             )
         if (playerType == PlayerType.Essential) {
-            if (filter.isNullOrBlank() || stringResource(R.string.disable_horizontal_swipe).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.disable_horizontal_swipe).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1284,8 +1178,8 @@ fun AppearanceSettings(
                 )
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_rotating_buttons).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.player_rotating_buttons).contains(
+                searchInput,
                 true
             )
         )
@@ -1296,8 +1190,8 @@ fun AppearanceSettings(
                 onCheckedChange = { effectRotationEnabled = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.toggle_lyrics).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.toggle_lyrics).contains(
+                searchInput,
                 true
             )
         )
@@ -1308,8 +1202,8 @@ fun AppearanceSettings(
                 onCheckedChange = { thumbnailTapEnabled = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.click_lyrics_text).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.click_lyrics_text).contains(
+                searchInput,
                 true
             )
         )
@@ -1320,8 +1214,8 @@ fun AppearanceSettings(
                 onCheckedChange = { clickLyricsText = it }
             )
         if (showlyricsthumbnail)
-            if (filter.isNullOrBlank() || stringResource(R.string.show_background_in_lyrics).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1332,8 +1226,8 @@ fun AppearanceSettings(
                     onCheckedChange = { showBackgroundLyrics = it }
                 )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+                searchInput,
                 true
             )
         )
@@ -1344,8 +1238,8 @@ fun AppearanceSettings(
                 onCheckedChange = { playerEnableLyricsPopupMessage = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.background_progress_bar).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.background_progress_bar).contains(
+                searchInput,
                 true
             )
         )
@@ -1366,8 +1260,8 @@ fun AppearanceSettings(
             )
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.visualizer).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.visualizer).contains(
+                searchInput,
                 true
             )
         ) {
@@ -1402,8 +1296,8 @@ fun AppearanceSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_transparent_background).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_transparent_background).contains(
+                searchInput,
                 true
             )
         )
@@ -1414,8 +1308,8 @@ fun AppearanceSettings(
                 onCheckedChange = { transparentBackgroundActionBarPlayer = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.actionspacedevenly).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.actionspacedevenly).contains(
+                searchInput,
                 true
             )
         )
@@ -1426,8 +1320,8 @@ fun AppearanceSettings(
                 onCheckedChange = { actionspacedevenly = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.tapqueue).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.tapqueue).contains(
+                searchInput,
                 true
             )
         )
@@ -1438,8 +1332,8 @@ fun AppearanceSettings(
                 onCheckedChange = { tapqueue = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(
+                searchInput,
                 true
             )
         )
@@ -1450,8 +1344,8 @@ fun AppearanceSettings(
                 onCheckedChange = { swipeUpQueue = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_video_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1462,8 +1356,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerVideo = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1474,8 +1368,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerDiscover = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_download_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1486,8 +1380,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerDownload = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1498,8 +1392,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerAddToPlaylist = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_loop_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1510,8 +1404,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerLoop = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1522,8 +1416,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerShuffle = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1535,8 +1429,8 @@ fun AppearanceSettings(
             )
         if (!isLandscape || !showthumbnail) {
             if (!showlyricsthumbnail and !expandedlyrics) {
-                if (filter.isNullOrBlank() || stringResource(R.string.expandedplayer).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.expandedplayer).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -1549,8 +1443,8 @@ fun AppearanceSettings(
             }
         }
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1561,8 +1455,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerSleepTimer = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_equalizer).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_equalizer).contains(
+                searchInput,
                 true
             )
         )
@@ -1573,8 +1467,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerSystemEqualizer = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
+                searchInput,
                 true
             )
         )
@@ -1585,8 +1479,8 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerArrow = it }
             )
 
-        if (filter.isNullOrBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
+                searchInput,
                 true
             )
         )
@@ -1602,8 +1496,8 @@ fun AppearanceSettings(
             SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
 
             if (showTotalTimeQueue) {
-                if (filter.isNullOrBlank() || stringResource(R.string.show_total_time_of_queue).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -1615,8 +1509,8 @@ fun AppearanceSettings(
                     )
             }
 
-            if (filter.isNullOrBlank() || stringResource(R.string.titleartist).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.titleartist).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1627,8 +1521,8 @@ fun AppearanceSettings(
                     onCheckedChange = { titleExpanded = it }
                 )
 
-            if (filter.isNullOrBlank() || stringResource(R.string.timeline).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.timeline).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1639,8 +1533,8 @@ fun AppearanceSettings(
                     onCheckedChange = { timelineExpanded = it }
                 )
 
-            if (filter.isNullOrBlank() || stringResource(R.string.controls).contains(
-                    filterCharSequence,
+            if (searchInput.isBlank() || stringResource(R.string.controls).contains(
+                    searchInput,
                     true
                 )
             )
@@ -1652,8 +1546,8 @@ fun AppearanceSettings(
                 )
 
             if (showNextSongsInPlayer) {
-                if (filter.isNullOrBlank() || stringResource(R.string.miniqueue).contains(
-                        filterCharSequence,
+                if (searchInput.isBlank() || stringResource(R.string.miniqueue).contains(
+                        searchInput,
                         true
                     )
                 )
@@ -1668,8 +1562,8 @@ fun AppearanceSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.background_player))
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_favorite_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_favorite_button).contains(
+                searchInput,
                 true
             )
         ) {
@@ -1681,8 +1575,8 @@ fun AppearanceSettings(
             )
             ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
-        if (filter.isNullOrBlank() || stringResource(R.string.show_download_button).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_download_button).contains(
+                searchInput,
                 true
             )
         ) {
@@ -1700,8 +1594,8 @@ fun AppearanceSettings(
         //SettingsEntryGroupText(title = stringResource(R.string.text))
 
 
-        if (filter.isNullOrBlank() || stringResource(R.string.show_song_cover).contains(
-                filterCharSequence,
+        if (searchInput.isBlank() || stringResource(R.string.show_song_cover).contains(
+                searchInput,
                 true
             )
         )
