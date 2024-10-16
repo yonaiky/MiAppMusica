@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -48,6 +49,7 @@ import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -69,6 +71,7 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
+import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
@@ -95,8 +98,6 @@ fun HomeArtistsModern(
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
-    var items by persistList<Artist>("home/artists")
-
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
@@ -106,6 +107,13 @@ fun HomeArtistsModern(
     val sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
     // Size state
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
+    // Randomizer states
+    val itemsState = persistList<Artist>( "home/albums" )
+    val rotationState = rememberSaveable { mutableStateOf( false ) }
+    val angleState = animateFloatAsState(
+        targetValue = if (rotationState.value) 360F else 0f,
+        animationSpec = tween(durationMillis = 300), label = ""
+    )
 
     val search = remember {
         object: Search {
@@ -128,18 +136,22 @@ fun HomeArtistsModern(
             override val sizeState = sizeState
         }
     }
+    val randomizer = remember {
+        object: Randomizer<Artist> {
+            override val itemsState = itemsState
+            override val rotationState = rotationState
+            override val angleState = angleState
 
-    // Mutable
+            override fun onClick(item: Artist) = onArtistClick(item)
+        }
+    }
+
+    // Search mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
-
-    // Non-vital
-    var isRotated by rememberSaveable { mutableStateOf(false) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (isRotated) 360F else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
-    )
+    // Items mutable
+    var items by randomizer.itemsState
 
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, inputState) {
         Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
@@ -181,16 +193,7 @@ fun HomeArtistsModern(
 
                 search.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.dice,
-                    enabled = items.isNotEmpty(),
-                    modifier = Modifier.rotate( rotationAngle )
-                ) {
-                    isRotated = !isRotated
-
-                    val randIndex = Random( System.currentTimeMillis() ).nextInt( items.size )
-                    onArtistClick( items[randIndex] )
-                }
+                randomizer.ToolBarButton()
 
                 TabToolBar.Icon(
                     iconId = R.drawable.shuffle,

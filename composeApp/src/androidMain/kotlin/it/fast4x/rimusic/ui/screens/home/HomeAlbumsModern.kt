@@ -26,6 +26,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +45,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persist
+import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
@@ -81,6 +84,7 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
+import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
@@ -107,8 +111,6 @@ fun HomeAlbumsModern(
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
-    var items by persist<List<Album>>(tag = "home/albums", emptyList())
-
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
@@ -118,6 +120,13 @@ fun HomeAlbumsModern(
     val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
     // Size state
     val sizeState = Preference.remember( HOME_ALBUM_ITEM_SIZE )
+    // Randomizer states
+    val itemsState = persistList<Album>( "home/albums" )
+    val rotationState = rememberSaveable { mutableStateOf( false ) }
+    val angleState = animateFloatAsState(
+        targetValue = if (rotationState.value) 360F else 0f,
+        animationSpec = tween(durationMillis = 300), label = ""
+    )
 
     val search = remember {
         object: Search {
@@ -140,11 +149,22 @@ fun HomeAlbumsModern(
             override val sizeState = sizeState
         }
     }
+    val randomizer = remember {
+        object: Randomizer<Album> {
+            override val itemsState = itemsState
+            override val rotationState = rotationState
+            override val angleState = angleState
 
-    // Mutable
+            override fun onClick(item: Album) = onAlbumClick(item)
+        }
+    }
+
+    // Search mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
+    // Items mutable
+    var items by randomizer.itemsState
 
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
         Database.albums(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
@@ -156,12 +176,6 @@ fun HomeAlbumsModern(
                     || it.year?.contains( searchInput, true) ?: false
                     || it.authorsText?.contains( searchInput, true) ?: false
         }
-
-    var isRotated by rememberSaveable { mutableStateOf(false) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (isRotated) 360F else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
-    )
 
     Box(
         modifier = Modifier
@@ -193,16 +207,7 @@ fun HomeAlbumsModern(
 
                 search.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.dice,
-                    enabled = items.isNotEmpty(),
-                    modifier = Modifier.rotate( rotationAngle )
-                ) {
-                    isRotated = !isRotated
-
-                    val randIndex = Random( System.currentTimeMillis() ).nextInt( items.size )
-                    onAlbumClick( items[randIndex] )
-                }
+                randomizer.ToolBarButton()
 
                 TabToolBar.Icon(
                     iconId = R.drawable.shuffle,
