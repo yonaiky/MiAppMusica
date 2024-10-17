@@ -1,8 +1,8 @@
 package me.knighthat.component.tab.toolbar
 
-import android.content.Context
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
@@ -12,16 +12,17 @@ import it.fast4x.rimusic.utils.manageDownload
 @UnstableApi
 interface DeleteDownloadsDialog: ConfirmationDialog {
 
-    override val context: Context
     val binder: PlayerService.Binder?
-    override val toggleState: MutableState<Boolean>
     val downloadState: MutableIntState
 
     override val iconId: Int
+        @DrawableRes
         get() = R.drawable.download
     override val titleId: Int
+        @StringRes
         get() = R.string.do_you_really_want_to_delete_download
     override val messageId: Int
+        @StringRes
         get() = R.string.info_remove_all_downloaded_songs
 
     fun listToProcess(): List<MediaItem>
