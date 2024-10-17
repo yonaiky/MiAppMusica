@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.home
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -36,6 +37,8 @@ import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -88,6 +91,7 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.DownloadUtil
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
@@ -156,7 +160,9 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ConfirmationDialog
+import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.Dialog
+import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
@@ -210,9 +216,7 @@ fun HomeSongsModern(
         BuiltInPlaylist.Favorites
     )
 
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
+    val downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
 
     val context = LocalContext.current
 
@@ -473,89 +477,35 @@ fun HomeSongsModern(
         }
     }
     val downloadAllDialog = remember {
-        object: ConfirmationDialog {
+        object: DownloadAllDialog {
             override val context = context
+            override val binder = binder
             override val toggleState = downloadAllToggleState
-            override val iconId = R.drawable.downloaded
-            override val titleId = R.string.do_you_really_want_to_download_all
-            override val messageId = R.string.info_download_all_songs
+            override val downloadState = downloadState
 
-            override fun onConfirm() {
-                downloadState = Download.STATE_DOWNLOADING
-
-                val toBeDownloaded = mutableListOf<MediaItem>()
+            override fun listToProcess(): List<MediaItem> =
                 if( listMediaItems.isNotEmpty() )
-                    toBeDownloaded.addAll( listMediaItems )
-                else if( items.isNotEmpty() ) {
-                    items.forEach {
-                        toBeDownloaded.add( it.asMediaItem )
-
-                        query {
-                            Database.insert(
-                                Song(
-                                    id = it.asMediaItem.mediaId,
-                                    title = it.asMediaItem.mediaMetadata.title.toString(),
-                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                    thumbnailUrl = it.song.thumbnailUrl,
-                                    durationText = null
-                                )
-                            )
-                        }
-                    }
-
-                    selectItems = false
-                }
-
-                // If no element was added because either condition above is true
-                // then the block below will not be executed
-                toBeDownloaded.forEach {
-                    binder?.cache?.removeResource(it.mediaId)
-
-                    manageDownload(
-                        context = context,
-                        songId = it.mediaId,
-                        songTitle = it.mediaMetadata.title.toString(),
-                        downloadState = true
-                    )
-                }
-
-                onDismiss()
-            }
+                    listMediaItems
+                else if( items.isNotEmpty() )
+                    items.map( SongEntity::asMediaItem )
+                else
+                    listOf()
         }
     }
     val deleteDownloadsDialog = remember {
-        object: ConfirmationDialog {
+        object: DeleteDownloadsDialog {
             override val context = context
+            override val binder = binder
             override val toggleState = deleteDownloadsToggleState
-            override val iconId = R.drawable.download
-            override val titleId = R.string.do_you_really_want_to_delete_download
-            override val messageId = R.string.info_remove_all_downloaded_songs
+            override val downloadState = downloadState
 
-            override fun onConfirm() {
-                downloadState = Download.STATE_DOWNLOADING
-
-                val toBeDeleted: List<MediaItem> =
-                    if( listMediaItems.isNotEmpty() )
-                        listMediaItems
-                    else if( items.isNotEmpty() )
-                        items.map( SongEntity::asMediaItem )
-                    else
-                        emptyList()
-
-                toBeDeleted.forEach {
-                    binder?.cache?.removeResource(it.mediaId)
-
-                    manageDownload(
-                        context = context,
-                        songId = it.mediaId,
-                        songTitle = it.mediaMetadata.title.toString(),
-                        downloadState = true
-                    )
-                }
-
-                selectItems = false
-                onDismiss()
-            }
+            override fun listToProcess(): List<MediaItem> =
+                if( listMediaItems.isNotEmpty() )
+                    listMediaItems
+                else if( items.isNotEmpty() )
+                    items.map( SongEntity::asMediaItem )
+                else
+                    emptyList()
         }
     }
     val deleteSongDialog = remember {
@@ -1314,7 +1264,7 @@ fun HomeSongsModern(
                             }
                         ) {
                             val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
-                            downloadState = getDownloadState(song.song.asMediaItem.mediaId)
+                            downloadState.intValue = getDownloadState(song.song.asMediaItem.mediaId)
                             val isDownloaded =
                                 if (!isLocal) downloadedStateMedia(song.song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
@@ -1342,7 +1292,7 @@ fun HomeSongsModern(
                                             downloadState = isDownloaded
                                         )
                                 },
-                                downloadState = downloadState,
+                                downloadState = downloadState.intValue,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 onThumbnailContent = {
