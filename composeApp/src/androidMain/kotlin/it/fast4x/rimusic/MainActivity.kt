@@ -112,8 +112,8 @@ import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.AppNavigation
-import it.fast4x.rimusic.ui.screens.player.PlayerEssential
-import it.fast4x.rimusic.ui.screens.player.PlayerModern
+import it.fast4x.rimusic.ui.screens.player.MiniPlayer
+import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance
@@ -753,8 +753,8 @@ class MainActivity :
 
                     AppNavigation(
                         navController = navController,
-                        playerEssential = {
-                            PlayerEssential(
+                        miniPlayer = {
+                            MiniPlayer(
                                 showPlayer = { showPlayer = true },
                                 hidePlayer = { showPlayer = false },
                                 navController = navController
@@ -774,8 +774,8 @@ class MainActivity :
 
                     val isVideo = binder?.player?.currentMediaItem?.isVideo ?: false
                     val isVideoEnabled = preferences.getBoolean(showButtonPlayerVideoKey, false)
-                    val playerModern: @Composable () -> Unit = {
-                        PlayerModern(
+                    val player: @Composable () -> Unit = {
+                        Player(
                             navController = navController,
                             onDismiss = {
                                 showPlayer = false
@@ -817,7 +817,7 @@ class MainActivity :
                         },
                         shape = thumbnailRoundness.shape()
                     ) {
-                         playerModern()
+                         player()
                     }
 
                     CustomModalBottomSheet(

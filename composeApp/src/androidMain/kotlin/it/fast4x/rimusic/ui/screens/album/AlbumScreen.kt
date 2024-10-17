@@ -72,7 +72,7 @@ import me.knighthat.colorPalette
 fun AlbumScreen(
     navController: NavController,
     browseId: String,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
 
     //val uriHandler = LocalUriHandler.current
@@ -251,7 +251,7 @@ fun AlbumScreen(
 
             Scaffold(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 topIconButtonId = R.drawable.chevron_back,
                 showButton1 = UiType.RiMusic.isNotCurrent(),
                 onTopIconButtonClick = pop,

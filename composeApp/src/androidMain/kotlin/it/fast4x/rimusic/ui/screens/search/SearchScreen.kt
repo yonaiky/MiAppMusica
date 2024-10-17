@@ -49,7 +49,7 @@ import me.knighthat.typography
 @Composable
 fun SearchScreen(
     navController: NavController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
     initialTextInput: String,
     onSearch: (String) -> Unit,
     onViewPlaylist: (String) -> Unit,
@@ -153,7 +153,7 @@ fun SearchScreen(
                 navController,
                 tabIndex,
                 onTabChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.online), R.drawable.globe)
                     item(1, stringResource(R.string.library), R.drawable.library)

@@ -805,7 +805,7 @@ fun QueueModern(
                             .absoluteOffset(0.dp, -65.dp)
                             .align(Alignment.TopCenter)
                     ) {
-                        PlayerEssential(
+                        MiniPlayer(
                             showPlayer = {
                                 //navController.navigate(NavRoutes.player.name)
                             },

@@ -96,7 +96,7 @@ import me.knighthat.colorPalette
 fun ArtistScreen(
     navController: NavController,
     browseId: String,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -395,7 +395,7 @@ fun ArtistScreen(
 
             Scaffold(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = UiType.RiMusic.isNotCurrent(),

@@ -58,7 +58,7 @@ import me.knighthat.Skeleton
 fun HomeScreen(
     navController: NavController,
     onPlaylistUrl: (String) -> Unit,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
     openTabFromShortcut: Int
 ) {
     var showNewversionDialog by remember {
@@ -208,7 +208,7 @@ fun HomeScreen(
                 navController,
                 tabIndex,
                 onTabChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { Item ->
                     if (enableQuickPicksPage)
                         Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)

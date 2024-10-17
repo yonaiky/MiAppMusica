@@ -27,7 +27,7 @@ import me.knighthat.Skeleton
 fun MoodScreen(
     navController: NavController,
     mood: Mood,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -41,7 +41,7 @@ fun MoodScreen(
                 navBarContent = { item ->
                     item(0, stringResource(R.string.mood), R.drawable.album)
                 },
-                mediaPlayer = playerEssential
+                miniPlayer = miniPlayer
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                     when (currentTabIndex) {

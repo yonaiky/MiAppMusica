@@ -25,7 +25,7 @@ import me.knighthat.Skeleton
 @Composable
 fun HistoryScreen(
     navController: NavController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -37,7 +37,7 @@ fun HistoryScreen(
         host {
             Skeleton(
                 navController,
-                mediaPlayer = playerEssential,
+                miniPlayer = miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.history), R.drawable.history)
                 }

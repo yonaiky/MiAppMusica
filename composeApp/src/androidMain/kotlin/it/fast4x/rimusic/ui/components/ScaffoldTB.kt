@@ -58,7 +58,7 @@ import me.knighthat.component.nav.HorizontalNavigationBar
 @Composable
 fun ScaffoldTB(
     navController: NavController,
-    playerEssential: @Composable (() -> Unit)?,
+    miniPlayer: @Composable (() -> Unit)?,
     topIconButtonId: Int,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean,
@@ -227,7 +227,7 @@ fun ScaffoldTB(
                 .align(if (playerPosition == PlayerPosition.Top) Alignment.TopCenter
                 else Alignment.BottomCenter)
         ) {
-            playerEssential?.invoke()
+            miniPlayer?.invoke()
         }
     }
     }

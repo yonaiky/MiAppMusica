@@ -101,7 +101,7 @@ fun AlbumScreenWithoutNavBar(
     navController: NavController,
     browseId: String,
     modifier: Modifier = Modifier,
-    playerEssential: @Composable () -> Unit = {}
+    miniPlayer: @Composable () -> Unit = {}
 ) {
 
     //val uriHandler = LocalUriHandler.current
@@ -431,7 +431,7 @@ fun AlbumScreenWithoutNavBar(
                             if( playerPosition == PlayerPosition.Top ) Alignment.TopCenter else Alignment.BottomCenter
                         )
                     ) {
-                        playerEssential.invoke()
+                        miniPlayer.invoke()
                     }
                 }
             }

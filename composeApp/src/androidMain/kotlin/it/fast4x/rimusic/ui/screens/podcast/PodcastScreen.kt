@@ -28,7 +28,7 @@ fun PodcastScreen(
     browseId: String,
     params: String?,
     maxDepth: Int? = null,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
     PersistMapCleanup(tagPrefix = "podcast/$browseId")
@@ -40,7 +40,7 @@ fun PodcastScreen(
         host {
             Skeleton(
                 navController,
-                mediaPlayer = playerEssential,
+                miniPlayer = miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.podcast_episodes), R.drawable.podcast)
                 }

@@ -130,8 +130,11 @@ import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.utils.RingBufferPrevious
+import it.fast4x.rimusic.utils.UriCache
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.defaultDataSourceFactory
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.encryptedPreferences
@@ -172,6 +175,7 @@ import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
+import it.fast4x.rimusic.utils.songBundle
 import it.fast4x.rimusic.utils.startFadeAnimator
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.timer
@@ -217,6 +221,7 @@ import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.time.Clock
 import java.time.Duration
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
@@ -1841,7 +1846,25 @@ class PlayerService : InvincibleService(),
             .build()
     }
 
+    /*
+    // New
+    private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
+        createYTDataSourceResolverFactory(
+            findMediaItem = { videoId ->
+                withContext(Dispatchers.Main) {
+                    player.findNextMediaItemById(videoId)
+                }
+            }
+        ),
+        DefaultExtractorsFactory()
+    ).setLoadErrorHandlingPolicy(
+        object : DefaultLoadErrorHandlingPolicy() {
+            override fun isEligibleForFallback(exception: IOException) = true
+        }
+    )
+     */
 
+    // Previous actual
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
         createDataSourceResolverFactory(
             mediaItemToPlay = { videoId ->
@@ -1851,12 +1874,12 @@ class PlayerService : InvincibleService(),
             }
         ),
         DefaultExtractorsFactory()
-        //getExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
             override fun isEligibleForFallback(exception: IOException) = true
         }
     )
+
 
     private fun getExtractorsFactory(): ExtractorsFactory = ExtractorsFactory {
         arrayOf(
@@ -1954,12 +1977,173 @@ class PlayerService : InvincibleService(),
     }
     */
 
+        // New
+        private fun createYTDataSourceResolverFactory(
+            findMediaItem: suspend (videoId: String) -> MediaItem? = { null }
+        ): DataSource.Factory = ResolvingDataSource.Factory(
+            CacheDataSource.Factory()
+                .setCache(downloadCache)
+                .setUpstreamDataSourceFactory(
+                    CacheDataSource.Factory()
+                        .setCache(cache)
+                        .setUpstreamDataSourceFactory(
+                            /*
+                            DefaultDataSource.Factory(
+                                this,
+                                OkHttpDataSource.Factory(okHttpClient())
+                                    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
+                            )
+                             */
+                            applicationContext.defaultDataSourceFactory
+                        )
+                )
+                .setCacheWriteDataSinkFactory(null)
+                .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+        ) { dataSpec ->
+            val mediaId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
+                ?: error("No media videoId in dataSpec")
+
+            val chunkLength = 512 * 1024L
+            val uriCache: UriCache<String, Long?> = UriCache()
+
+            fun DataSpec.ranged(contentLength: Long?) = contentLength?.let {
+                val start = dataSpec.uriPositionOffset
+                val length = (contentLength - start).coerceAtMost(chunkLength)
+                val rangeText = "$start-${start + length}"
+
+                this.subrange(start, length)
+                    .withAdditionalHeaders(mapOf("Range" to "bytes=$rangeText"))
+            } ?: this
+
+            if (
+                dataSpec.isLocal
+                || (cache.isCached(mediaId, dataSpec.position, chunkLength))
+                || (downloadCache.isCached(mediaId, dataSpec.position, chunkLength))
+            ) dataSpec
+            else uriCache[mediaId]?.let { cachedUri ->
+                dataSpec
+                    .withUri(cachedUri.uri)
+                    .ranged(cachedUri.meta)
+            } ?: run {
+                val body = runBlocking(Dispatchers.IO) {
+                    Innertube.player(PlayerBody(videoId = mediaId))
+                }?.getOrThrow()
+
+                if (body?.videoDetails?.videoId != mediaId) throw VideoIdMismatchException()
+
+                val bestPlayedFormat =
+                    runBlocking(Dispatchers.IO) { Database.getBestFormat(mediaId).firstOrNull() }
+
+                /*
+                val format =
+                    if (bestPlayedFormat != null) {
+                        body.streamingData?.adaptiveFormats?.find {
+                            it.itag == bestPlayedFormat.itag
+                        }
+                    } else {
+                        body.streamingData?.adaptiveFormats
+                            ?.filter { it.isAudio }
+                            ?.maxByOrNull {
+                                (it.bitrate?.times(
+                                    when (audioQualityFormat) {
+                                        AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
+                                        AudioQualityFormat.High -> 1
+                                        AudioQualityFormat.Medium -> -1
+                                        AudioQualityFormat.Low -> -2
+                                    }
+                                ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                            }
+                    }
+                */
+
+                val format = body.streamingData?.adaptiveFormats
+                    ?.filter { it.isAudio }
+                    ?.maxByOrNull {
+                        (it.bitrate?.times(
+                            when (audioQualityFormat) {
+                                AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
+                                AudioQualityFormat.High -> 1
+                                AudioQualityFormat.Medium -> -1
+                                AudioQualityFormat.Low -> -2
+                            }
+                        ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                    }
+
+                val url = when (val status = body.playabilityStatus?.status) {
+                    "OK" -> {
+                        val mediaItem = runCatching {
+                            runBlocking(Dispatchers.IO) { findMediaItem(mediaId) }
+                        }.getOrNull()
+                        val extras = mediaItem?.mediaMetadata?.extras?.songBundle
+
+                        if (extras?.durationText == null) format?.approxDurationMs
+                            ?.div(1000)
+                            ?.let(DateUtils::formatElapsedTime)
+                            ?.removePrefix("0")
+                            ?.let { durationText ->
+                                extras?.durationText = durationText
+                                Database.updateDurationText(mediaId, durationText)
+                            }
+
+                        transaction {
+                            runCatching {
+                                mediaItem?.let(Database::insert)
+
+                                Database.insert(
+                                    Format(
+                                        songId = mediaId,
+                                        itag = format?.itag,
+                                        mimeType = format?.mimeType,
+                                        bitrate = format?.bitrate,
+                                        loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
+                                        contentLength = format?.contentLength,
+                                        lastModified = format?.lastModified
+                                    )
+                                )
+                            }
+                        }
+
+                        format?.url
+                    }
+
+                    "UNPLAYABLE" -> throw UnplayableException()
+                    "LOGIN_REQUIRED" -> throw LoginRequiredException()
+
+                    else -> throw PlaybackException(
+                        /* message = */ status,
+                        /* cause = */ null,
+                        /* errorCode = */ PlaybackException.ERROR_CODE_REMOTE_ERROR
+                    )
+                } ?: throw UnplayableException()
+
+                val uri = url.toUri()
+                uriCache.push(
+                    key = mediaId,
+                    meta = format?.contentLength,
+                    uri = uri,
+                    validUntil = body.streamingData?.expiresInSeconds?.seconds?.let {
+                        Clock.system(Clock.systemUTC().zone).instant()
+                            .plusSeconds(it.inWholeSeconds)
+                    }
+                )
+
+                dataSpec
+                    .withUri(uri)
+                    .ranged(format?.contentLength)
+
+            }
+        }.handleCatchingErrors()
+            .handleRangeErrors()
+
+
+
+    // Previous
     private fun createDataSourceResolverFactory(
         mediaItemToPlay: (videoId: String) -> MediaItem?
     ): //ResolvingDataSource.Factory { // not required for handlers
        DataSource.Factory { // required for handlers
 
-        val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+        val ringBuffer = RingBufferPrevious<Pair<String, Uri>?>(2) { null }
         val chunkLength = 512 * 1024L
 
         return ResolvingDataSource.Factory(
@@ -1969,36 +2153,32 @@ class PlayerService : InvincibleService(),
                     CacheDataSource.Factory()
                         .setCache(cache)
                         .setUpstreamDataSourceFactory(
+                            applicationContext.defaultDataSourceFactory
+                                    /*
                             DefaultDataSource.Factory(
                                 this,
                                 OkHttpDataSource.Factory(okHttpClient())
                                     .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
                             )
+                                     */
                         )
                 )
                 .setCacheWriteDataSinkFactory(null)
                 .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
-            /*
-            ConditionalCacheDataSourceFactory(
-                cacheDataSourceFactory = CacheDataSource.Factory().setCache(downloadCache)
-                    .setCacheWriteDataSinkFactory(null),
-                upstreamDataSourceFactory = CacheDataSource.Factory()
-                    .setCache(cache)
-                    .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-                    .setUpstreamDataSourceFactory(
-                        DefaultDataSource.Factory(
-                            this,
-                            OkHttpDataSource.Factory(okHttpClient())
-                                .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
-                            //.setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-                        )
-                    )
-            ) { !it.isLocal }
-            */
         ) { dataSpec ->
             Timber.i( "PlayerService createDataSourceResolverFactory dataSpec " + dataSpec.toString())
             val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
                 ?: error("No media videoId in dataSpec")
+
+            fun DataSpec.ranged(contentLength: Long?) = contentLength?.let {
+
+                val start = dataSpec.uriPositionOffset
+                val length = (contentLength - start).coerceAtMost(chunkLength)
+                val rangeText = "$start-${start + length}"
+
+                this.subrange(start, length)
+                    .withAdditionalHeaders(mapOf("Range" to "bytes=$rangeText"))
+            } ?: this
 
             Timber.i(
                 "PlayerService createDataSourceResolverFactory dataSpec isLocal ${dataSpec.isLocal} videoId $videoId all $dataSpec"
@@ -2028,7 +2208,7 @@ class PlayerService : InvincibleService(),
                 videoId == ringBuffer.getOrNull(1)?.first ->
                     dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
 
-                else -> {
+                else -> run {
                     Timber.i("PlayerService createDataSourceResolverFactory videoId $videoId")
 
                     val body = runBlocking(Dispatchers.IO) {
@@ -2040,15 +2220,25 @@ class PlayerService : InvincibleService(),
                             else -> throw UnknownException()
                         }
                     }
+                    println("PlayerService createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
 
-                    runBlocking(Dispatchers.IO) {
-                        println("PlayerService createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
-                        when (body?.playabilityStatus?.status) {
-                            "LOGIN_REQUIRED" -> throw LoginRequiredException()
-                            "UNPLAYABLE" -> throw UnplayableException()
-                            else -> {}
-                        }
-                    }
+                    /*
+                    //if (!player.isPlaying)
+                        //runBlocking(Dispatchers.IO) {
+                            when (body?.playabilityStatus?.status) {
+                                "LOGIN_REQUIRED" -> {
+                                    Timber.i( "PlayerService createDataSourceResolverFactory LoginRequiredException")
+                                    throw LoginRequiredException()
+                                }
+                                "UNPLAYABLE" -> {
+                                    Timber.i( "PlayerService createDataSourceResolverFactory UnplayableException")
+                                    throw UnplayableException()
+                                }
+                                else -> {}
+                            }
+                        //}
+
+                     */
 
 
                     //Removed temporally
@@ -2060,6 +2250,22 @@ class PlayerService : InvincibleService(),
 
                     println("PlayerService createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
 
+                    /*
+                    val format = body?.streamingData?.adaptiveFormats
+                        ?.filter { it.isAudio }
+                        ?.maxByOrNull {
+                            (it.bitrate?.times(
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
+                                    AudioQualityFormat.High -> 1
+                                    AudioQualityFormat.Medium -> -1
+                                    AudioQualityFormat.Low -> -2
+                                }
+                            ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                        }
+
+                     */
+                    /*
                     val bestPlayedFormat = runBlocking(Dispatchers.IO) { Database.getBestFormat(videoId).firstOrNull() }
 
                     val format =
@@ -2089,28 +2295,16 @@ class PlayerService : InvincibleService(),
                                 }
                                  */
                         }
-                    /*
-                    val format = body.streamingData?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        /*
-                        ?.filter {
-                            when (audioQualityFormat) {
-                                AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
-                                            it.itag == 250 || it.itag == 140 ||
-                                            it.itag == 249 || it.itag == 139 ||
-                                            it.itag == 171
-                                AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
-                                AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
-                                AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
-                            }
-                        }
+                    */
 
-                         */
-                        ?.maxByOrNull { it.bitrate?.times(
-                            (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                        ) ?: -1 }
 
-                     */
+                    val format =  when (audioQualityFormat) {
+                        AudioQualityFormat.Auto -> body?.streamingData?.highestQualityFormat  // body?.streamingData?.autoMaxQualityFormat
+                        AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
+                        AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
+                        AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
+                    }
+                    ?: throw PlayableFormatNotFoundException()
 
                     //video
                     /*
@@ -2124,11 +2318,6 @@ class PlayerService : InvincibleService(),
 
                     Timber.i("PlayerService createDataSourceResolverFactory adaptiveFormats selected $format")
                     println("mediaItem PlayerService createDataSourceResolverFactory adaptiveFormats selected $format")
-
-
-                    //if (format == null) throw PlayableFormatNotFoundException()
-
-
 
                     val url = when (val status = body?.playabilityStatus?.status) {
                         "OK" -> format.let { formatIn ->
@@ -2163,6 +2352,9 @@ class PlayerService : InvincibleService(),
                             formatIn?.url
                         } ?: throw PlayableFormatNotFoundException()
 
+                    //    "LOGIN_REQUIRED" -> throw LoginRequiredException()
+                    //    "UNPLAYABLE" -> throw UnplayableException()
+
                         else -> {
                             Timber.i("PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
                             println("mediaItem PlayerService createDataSourceResolverFactory Not playable status $status reason ${body?.playabilityStatus?.reason}")
@@ -2174,17 +2366,20 @@ class PlayerService : InvincibleService(),
                             format?.url ?: throw UnknownException()
                         }
                     }
-                    ringBuffer.append(videoId to url.toUri())
-                    //ringBuffer += videoId to url.toUri()
+
+                    val uri = url.toUri()
+                    ringBuffer.append(videoId to uri)
+
+                    /*
                     dataSpec.buildUpon()
-                        .setKey(videoId)
-                        .setUri(url.toUri())
-                        .build()
-                        .let { spec ->
-                            (chunkLength ?: format?.contentLength)?.let {
-                                spec.subrange(dataSpec.uriPositionOffset, it)
-                            } ?: spec
-                        }
+                    .setKey(videoId)
+                    .setUri(url.toUri())
+                    .build().subrange(dataSpec.uriPositionOffset, chunkLength)
+                     */
+
+                    dataSpec
+                        .withUri(uri)
+                        .ranged(format.contentLength)
                 }
             }
         }

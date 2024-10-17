@@ -41,7 +41,7 @@ import me.knighthat.Skeleton
 fun DeviceListSongsScreen(
     navController: NavController,
     deviceLists: DeviceLists,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -72,7 +72,7 @@ fun DeviceListSongsScreen(
                 navController,
                 tabIndex,
                 onTabIndexChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     if(showFavoritesPlaylist)
                         item(0, stringResource(R.string.favorites), R.drawable.heart)

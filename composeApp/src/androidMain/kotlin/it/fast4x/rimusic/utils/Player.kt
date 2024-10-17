@@ -156,6 +156,7 @@ fun Player.enqueue(mediaItems: List<MediaItem>, context: Context? = null) {
     }
 }
 
+/*
 fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
     for (i in currentMediaItemIndex until mediaItemCount) {
         if (getMediaItemAt(i).mediaId == mediaId) {
@@ -164,6 +165,14 @@ fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
     }
     return null
 }
+*/
+
+fun Player.findNextMediaItemById(mediaId: String): MediaItem? = runCatching {
+    for (i in currentMediaItemIndex until mediaItemCount) {
+        if (getMediaItemAt(i).mediaId == mediaId) return getMediaItemAt(i)
+    }
+    return null
+}.getOrNull()
 
 fun Player.findMediaItemIndexById(mediaId: String): Int {
     for (i in currentMediaItemIndex until mediaItemCount) {

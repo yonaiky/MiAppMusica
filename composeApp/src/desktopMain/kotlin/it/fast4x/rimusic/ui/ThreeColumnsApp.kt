@@ -48,7 +48,7 @@ import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
-import it.fast4x.rimusic.ui.components.PlayerEssential
+import it.fast4x.rimusic.ui.components.MiniPlayer
 import it.fast4x.rimusic.ui.pages.AlbumsPage
 import it.fast4x.rimusic.ui.pages.SongsPage
 import it.fast4x.rimusic.ui.screens.AlbumScreen
@@ -167,7 +167,7 @@ fun ThreeColumnsApp() {
         },
         bottomBar = {
             if (url != null) {
-                PlayerEssential(
+                MiniPlayer(
                     frameController = frameController,
                     url = url,
                     song = nowPlayingSong,

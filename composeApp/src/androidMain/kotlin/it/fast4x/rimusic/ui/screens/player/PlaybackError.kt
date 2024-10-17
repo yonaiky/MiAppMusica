@@ -81,7 +81,7 @@ fun PlayerError(error: PlaybackException) {
     var errorCounter = 0
     errorCounter = errorCounter.plus(1)
 
-    if (errorCounter < 3) {
+    if (errorCounter < 2) {
         Timber.e("Playback error: ${error.cause?.cause}")
         SmartMessage(
             if (binder?.player?.currentWindow?.mediaItem?.isLocal == true) localMusicFileNotFoundError
@@ -97,7 +97,7 @@ fun PlayerError(error: PlaybackException) {
                 is UnknownException -> unknownerror
                 is FakeException -> unknownerror
                 else -> unknownerror
-            }, PopupType.Error, context = context
+            }, PopupType.Warning, context = context
         )
     }
 

@@ -32,6 +32,7 @@ import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.utils.RingBuffer
+import it.fast4x.rimusic.utils.RingBufferPrevious
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
@@ -106,7 +107,7 @@ object DownloadUtil {
                 //val chunkLength = 30000 * 1024L
                 val chunkLength = 180000 * 1024L
                 //val chunkLength = if (dataSpec.length >= 0) dataSpec.length else 1
-                val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+                val ringBuffer = RingBufferPrevious<Pair<String, Uri>?>(2) { null }
                 if (
                 //cache.isCached(videoId, dataSpec.position, chunkLength)
                     dataSpec.isLocal ||

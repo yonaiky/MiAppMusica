@@ -94,7 +94,7 @@ import me.knighthat.Skeleton
 @Composable
 fun SearchResultScreen(
     navController: NavController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
     query: String, onSearchAgain: () -> Unit
 ) {
     val context = LocalContext.current
@@ -162,7 +162,7 @@ fun SearchResultScreen(
                 navController,
                 tabIndex,
                 onTabIndexChanges,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.songs), R.drawable.musical_notes)
                     item(1, stringResource(R.string.albums), R.drawable.album)

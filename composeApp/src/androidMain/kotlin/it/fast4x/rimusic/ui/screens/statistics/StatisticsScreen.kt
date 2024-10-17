@@ -29,7 +29,7 @@ import me.knighthat.Skeleton
 fun StatisticsScreen(
     navController: NavController,
     statisticsType: StatisticsType,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -54,7 +54,7 @@ fun StatisticsScreen(
                 navController,
                 tabIndex,
                 onTabIndexChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.today), R.drawable.stat_today)
                     item(1, stringResource(R.string._1_week), R.drawable.stat_week)

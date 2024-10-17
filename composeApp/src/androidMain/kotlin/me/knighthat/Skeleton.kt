@@ -44,7 +44,7 @@ fun Skeleton(
     navController: NavController,
     tabIndex: Int = 0,
     onTabChanged: (Int) -> Unit = {},
-    mediaPlayer: @Composable (() -> Unit)? = null,
+    miniPlayer: @Composable (() -> Unit)? = null,
     navBarContent: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit,
     content: @Composable AnimatedVisibilityScope.(Int) -> Unit
 ) {
@@ -131,7 +131,7 @@ fun Skeleton(
                 Modifier
                     .padding( vertical = 5.dp )
                     .align( playerAlignment ),
-                content = { mediaPlayer?.invoke() }
+                content = { miniPlayer?.invoke() }
             )
         }
     }

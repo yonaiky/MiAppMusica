@@ -62,7 +62,7 @@ fun LocalPlaylistScreenWithoutNavBar(
     navController: NavController,
     playlistId: Long,
     modifier: Modifier = Modifier,
-    playerEssential: @Composable () -> Unit = {}
+    miniPlayer: @Composable () -> Unit = {}
 ) {
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
     val playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
@@ -171,7 +171,7 @@ fun LocalPlaylistScreenWithoutNavBar(
                             .align(if (playerPosition == PlayerPosition.Top) Alignment.TopCenter
                             else Alignment.BottomCenter)
                     ) {
-                        playerEssential.invoke()
+                        miniPlayer.invoke()
                     }
                 }
             }

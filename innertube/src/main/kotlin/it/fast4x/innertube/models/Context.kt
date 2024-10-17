@@ -50,9 +50,13 @@ data class Context(
 
         private const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         private const val USER_AGENT_ANDROID = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36"
+        private const val USER_AGENT_ANDROID2 = "com.google.android.apps.youtube.music/5.28.1 (Linux; U; Android 11) gzip"
+        private const val USER_AGENT_PLAYSTATION = "Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2 (KHTML, like Gecko)"
+        private const val USER_AGENT_DESKTOP = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
 
         private const val REFERER_YOUTUBE_MUSIC = "https://music.youtube.com/"
         private const val REFERER_YOUTUBE = "https://www.youtube.com/"
+
 
         /*
         val DefaultWeb = Context(
@@ -156,6 +160,15 @@ data class Context(
                 clientVersion = "2.0",
                 api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
                 userAgent = "Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2 (KHTML, like Gecko)"
+            )
+        )
+
+        val DefaultRestrictionBypass = Context(
+            client = Client(
+                clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
+                clientVersion = "2.0",
+                api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
+                userAgent = USER_AGENT_PLAYSTATION
             )
         )
 

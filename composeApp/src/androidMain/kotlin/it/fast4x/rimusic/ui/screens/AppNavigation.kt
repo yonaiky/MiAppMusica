@@ -65,7 +65,7 @@ import it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
-import it.fast4x.rimusic.ui.screens.player.PlayerModern
+import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.QueueModern
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
@@ -89,7 +89,7 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
     openTabFromShortcut: Int
 ) {
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
@@ -195,7 +195,7 @@ fun AppNavigation(
             HomeScreen(
                 navController = navController,
                 onPlaylistUrl = navigateToPlaylist,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 openTabFromShortcut = openTabFromShortcut
             )
         }
@@ -236,7 +236,7 @@ fun AppNavigation(
             val playerState =
                 rememberModalBottomSheetState(skipPartiallyExpanded = true)
             modalBottomSheetPage {
-                PlayerModern(
+                Player(
                     navController = navController,
                     //layoutState = playerSheetState,
                     //playerState = playerState,
@@ -258,7 +258,7 @@ fun AppNavigation(
             ArtistScreen(
                 navController = navController,
                 browseId = id,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -275,7 +275,7 @@ fun AppNavigation(
             AlbumScreenWithoutNavBar(
                 navController = navController,
                 browseId = id,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -293,7 +293,7 @@ fun AppNavigation(
                 navController = navController,
                 browseId = id,
                 params = null,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -311,14 +311,14 @@ fun AppNavigation(
                 navController = navController,
                 browseId = id,
                 params = null,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
         composable(route = NavRoutes.settings.name) {
             SettingsScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 //pop = popDestination,
                 //onGoToSettingsPage = { index -> navController.navigate("settingsPage/$index") }
             )
@@ -328,14 +328,14 @@ fun AppNavigation(
             StatisticsScreen(
                 navController = navController,
                 statisticsType = StatisticsType.Today,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
         composable(route = NavRoutes.history.name) {
             HistoryScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
 
                 )
         }
@@ -378,7 +378,7 @@ fun AppNavigation(
 
             SearchScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 initialTextInput = text,
                 onViewPlaylist = {},
                 //pop = popDestination,
@@ -415,7 +415,7 @@ fun AppNavigation(
 
             SearchResultScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 query = query,
                 onSearchAgain = {}
             )
@@ -435,7 +435,7 @@ fun AppNavigation(
             BuiltInPlaylistScreen(
                 navController = navController,
                 builtInPlaylist = BuiltInPlaylist.entries[index],
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -453,7 +453,7 @@ fun AppNavigation(
             LocalPlaylistScreenWithoutNavBar(
                 navController = navController,
                 playlistId = id,
-                playerEssential = playerEssential
+                miniPlayer = miniPlayer
             )
         }
 
@@ -465,7 +465,7 @@ fun AppNavigation(
                 MoodScreen(
                     navController = navController,
                     mood = mood,
-                    playerEssential = playerEssential,
+                    miniPlayer = miniPlayer,
                 )
             }
         }
@@ -492,7 +492,7 @@ fun AppNavigation(
             DeviceListSongsScreen(
                 navController = navController,
                 deviceLists = DeviceLists.LocalSongs,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -501,7 +501,7 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             NewreleasesScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
             )
         }
 
@@ -512,7 +512,7 @@ fun AppNavigation(
             val query = backStackEntry.arguments?.getString("query")?: ""
             SearchScreen(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 initialTextInput = query ,
                 onViewPlaylist = {},
                 onSearch = { newQuery ->

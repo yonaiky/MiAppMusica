@@ -1,10 +1,13 @@
 package it.fast4x.rimusic.utils
 
+import android.content.Context
 import androidx.annotation.OptIn
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
 import androidx.media3.datasource.TransferListener
 import androidx.media3.datasource.cache.CacheDataSource
@@ -58,6 +61,15 @@ fun DataSource.Factory.handleRangeErrors(): DataSource.Factory = RangeHandlerDat
 
 @OptIn(UnstableApi::class)
 fun DataSource.Factory.handleCatchingErrors(): DataSource.Factory = CatchingDataSourceFactory(this)
+
+val Context.defaultDataSourceFactory
+    @OptIn(UnstableApi::class)
+    get() = DefaultDataSource.Factory(
+        this,
+        DefaultHttpDataSource.Factory().setConnectTimeoutMs(16000)
+            .setReadTimeoutMs(8000)
+            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
+    )
 
 /*
 @OptIn(UnstableApi::class)

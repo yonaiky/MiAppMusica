@@ -43,7 +43,7 @@ import me.knighthat.Skeleton
 fun BuiltInPlaylistScreen(
     navController: NavController,
     builtInPlaylist: BuiltInPlaylist,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -78,7 +78,7 @@ fun BuiltInPlaylistScreen(
                 navController,
                 tabIndex,
                 onTabIndexChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     if(showFavoritesPlaylist)
                         item(0, stringResource(R.string.favorites), R.drawable.heart)

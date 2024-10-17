@@ -13,33 +13,23 @@ import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 import kotlinx.serialization.Serializable
 
-suspend fun Innertube.player(body: PlayerBody) = runCatchingNonCancellable {
-    val response = client.post(player) {
-        setBody(body)
-        mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
-    }.body<PlayerResponse>()
+suspend fun Innertube.player(body: PlayerBody) =
+    runCatchingNonCancellable {
+        val response = client.post(player) {
+            setBody(body)
+            mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
+        }.body<PlayerResponse>()
 
-    println("mediaItem requests Player response $response")
+        println("PlayerService Innertube.player response $response")
 
-    when( response.playabilityStatus?.status ) {
-        "OK", "LOGIN_REQUIRED", "UNPLAYABLE" -> response
-        else -> {
-            @Serializable
-            data class AudioStream(
-                val url: String,
-                val bitrate: Long
-            )
 
-            @Serializable
-            data class PipedResponse(
-                val audioStreams: List<AudioStream>
-            )
-
+        if (response.playabilityStatus?.status == "OK") {
+            response
+        } else {
             val safePlayerResponse = client.post(player) {
                 setBody(
                     body.copy(
-                        //context = Context.DefaultAgeRestrictionBypass.copy(
-                        context = Context.DefaultWeb.copy(
+                        context = Context.DefaultAndroid.copy(
                             thirdParty = Context.ThirdParty(
                                 embedUrl = "https://www.youtube.com/watch?v=${body.videoId}"
                             )
@@ -49,23 +39,10 @@ suspend fun Innertube.player(body: PlayerBody) = runCatchingNonCancellable {
                 mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
             }.body<PlayerResponse>()
 
-            if (safePlayerResponse.playabilityStatus?.status != "OK") {
-                return@runCatchingNonCancellable response
-            }
+            println("PlayerService Innertube.player response safePlayerResponse $safePlayerResponse")
 
-            val audioStreams = client.get("https://watchapi.whatever.social/streams/${body.videoId}") {
-                contentType(ContentType.Application.Json)
-            }.body<PipedResponse>().audioStreams
+            safePlayerResponse
 
-            safePlayerResponse.copy(
-                streamingData = safePlayerResponse.streamingData?.copy(
-                    adaptiveFormats = safePlayerResponse.streamingData.adaptiveFormats?.map { adaptiveFormat ->
-                        adaptiveFormat.copy(
-                            url = audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.url
-                        )
-                    }
-                )
-            )
         }
+
     }
-}

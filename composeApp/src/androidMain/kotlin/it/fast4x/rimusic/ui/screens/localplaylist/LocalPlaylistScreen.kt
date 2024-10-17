@@ -30,7 +30,7 @@ import it.fast4x.rimusic.ui.screens.globalRoutes
 fun LocalPlaylistScreen(
     navController: NavController,
     playlistId: Long,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
     PersistMapCleanup(tagPrefix = "localPlaylist/$playlistId/")
@@ -40,7 +40,7 @@ fun LocalPlaylistScreen(
         host {
             Scaffold(
                 navController = navController,
-                playerEssential = playerEssential,
+                miniPlayer = miniPlayer,
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,
                 showButton1 = UiType.RiMusic.isNotCurrent(),

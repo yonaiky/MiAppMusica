@@ -53,7 +53,7 @@ import me.knighthat.component.nav.VerticalNavigationBar
 @Composable
 fun Scaffold(
     navController: NavController,
-    playerEssential: @Composable (() -> Unit)? = null,
+    miniPlayer: @Composable (() -> Unit)? = null,
     topIconButtonId: Int = R.drawable.chevron_back,
     onTopIconButtonClick: () -> Unit,
     showButton1: Boolean = false,
@@ -82,7 +82,6 @@ fun Scaffold(
     if ( NavigationBarPosition.Top.isCurrent() || NavigationBarPosition.Bottom.isCurrent() ) {
             ScaffoldTB(
                 navController = navController,
-                playerEssential = playerEssential,
                 topIconButtonId = topIconButtonId,
                 onTopIconButtonClick = onTopIconButtonClick,
                 showButton1 = showButton1,
@@ -102,7 +101,8 @@ fun Scaffold(
                 onStatisticsClick = onStatisticsClick,
                 onSettingsClick = onSettingsClick,
                 onHistoryClick = onHistoryClick,
-                onSearchClick = onSearchClick
+                onSearchClick = onSearchClick,
+                miniPlayer = miniPlayer
             )
     } else {
         //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -235,7 +235,7 @@ fun Scaffold(
                         .align(if (playerPosition == PlayerPosition.Top) Alignment.TopCenter
                         else Alignment.BottomCenter)
                 ) {
-                    playerEssential?.invoke()
+                    miniPlayer?.invoke()
                 }
             }
         }

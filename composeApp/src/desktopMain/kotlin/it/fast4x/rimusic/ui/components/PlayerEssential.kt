@@ -21,7 +21,7 @@ import player.frame.FramePlayer
 import vlcj.VlcjFrameController
 
 @Composable
-fun PlayerEssential(
+fun MiniPlayer(
     frameController: VlcjFrameController,
     url: String?,
     song: Song?,

@@ -29,7 +29,7 @@ import me.knighthat.Skeleton
 @Composable
 fun NewreleasesScreen(
     navController: NavController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -47,7 +47,7 @@ fun NewreleasesScreen(
                 navController,
                 tabIndex,
                 onTabChanged = { tabIndex = it },
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.new_albums), R.drawable.album)
                 }

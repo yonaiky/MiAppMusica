@@ -68,7 +68,7 @@ import me.knighthat.typography
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    playerEssential: @Composable () -> Unit = {},
+    miniPlayer: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -84,7 +84,7 @@ fun SettingsScreen(
                 navController,
                 tabIndex,
                 onTabChanged,
-                playerEssential,
+                miniPlayer,
                 navBarContent = { item ->
                     item(0, stringResource(R.string.ui_tab), R.drawable.ui)
                     item(1, stringResource(R.string.player_appearance), R.drawable.color_palette)

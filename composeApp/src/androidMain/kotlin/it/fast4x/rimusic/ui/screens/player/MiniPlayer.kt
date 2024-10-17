@@ -90,7 +90,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.flow.distinctUntilChanged
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -101,7 +100,7 @@ import kotlin.math.absoluteValue
     ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
     ExperimentalFoundationApi::class)
 @Composable
-fun PlayerEssential(
+fun MiniPlayer(
     showPlayer: () -> Unit,
     hidePlayer: () -> Unit,
     navController: NavController? = null
