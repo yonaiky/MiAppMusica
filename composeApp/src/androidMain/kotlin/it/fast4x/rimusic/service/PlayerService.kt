@@ -2039,7 +2039,6 @@ class PlayerService : InvincibleService(),
                             is SocketTimeoutException -> throw TimeoutException()
                             else -> throw UnknownException()
                         }
-
                     }
 
                     runBlocking(Dispatchers.IO) {
