@@ -95,7 +95,7 @@
     <string name="history_is_empty">Historia on tyhjä</string>
     <string name="service_lifetime">Palvelun elinikä</string>
     <string name="battery_optimizations_applied">Jos akun optimointia käytetään, soittoilmoitus voidaan yhtäkkiä poistaa, kun soitto on keskeytetty.</string>
-    <string name="is_android12">Android 12 lähtien, akun optimointien poistaminen käytöstä on tarpeen, jotta \"Invincible service\" -vaihtoehto toimii.</string>
+    <string name="is_android12">Android 12:sta lähtien, akun optimointien poistaminen käytöstä on tarpeen, jotta \"Kuolematon palvelu\" -vaihtoehto toimii.</string>
     <string name="ignore_battery_optimizations">Ohita akun optimointi</string>
     <string name="already_unrestricted">On jo rajoittamaton</string>
     <string name="disable_background_restrictions">Poista taustarajoitukset käytöstä</string>
@@ -105,7 +105,7 @@
     <string name="persistent_queue">Pysyvä jono</string>
     <string name="save_and_restore_playing_songs">Tallenna ja palauta toistettavat kappaleet</string>
     <string name="resume_playback">Jatka toistoa</string>
-    <string name="when_device_is_connected">Kun langallinen- tai bluetoothlaite on yhdistetty</string>
+    <string name="when_device_is_connected">Kun langallinen- tai Bluetooth-laite on yhdistetty</string>
     <string name="skip_silence">Ohita hiljaiset kohdat</string>
     <string name="skip_silent_parts_during_playback">Ohita hiljaiset osat toiston aikana</string>
     <string name="loudness_normalization">Normalisoi äänenvoimakkuus</string>
