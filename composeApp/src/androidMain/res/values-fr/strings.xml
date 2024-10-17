@@ -758,7 +758,7 @@
     <string name="skip_media_on_error">Ignorer automatiquement en cas d\'erreur</string>
     <string name="skip_media_on_error_description">Si une erreur survient, le média est changé</string>
     <string name="skip_media_on_error_message">Le média %1$s a mal fonctionné</string>
-    <string name="login_required_to_play_this_media">Login required to play this media</string>
-    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
+    <string name="login_required_to_play_this_media">Connexion nécessaire pour lire ce média</string>
+    <string name="skip_media_on_notavailable_message">Le média précédent n\'est pas disponible, le lecteur est passé au suivant</string>
+    <string name="search_results_for">Résultats de la recherche pour :</string>
 </resources>
