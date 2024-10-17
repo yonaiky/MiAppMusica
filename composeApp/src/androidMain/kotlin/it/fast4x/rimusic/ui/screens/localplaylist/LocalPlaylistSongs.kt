@@ -1,8 +1,6 @@
 package it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,8 +30,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -63,7 +59,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
-import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.animateItemPlacement
@@ -95,7 +90,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -162,15 +156,13 @@ import me.knighthat.component.tab.toolbar.ConfirmationDialog
 import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.DetailedSort
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
+import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.UUID
 
 
@@ -294,72 +286,22 @@ fun LocalPlaylistSongs(
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("text/csv")
     ) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-
-        context.applicationContext
-               .contentResolver
-               .openOutputStream(uri)
-               ?.use { outputStream ->
-                    csvWriter().open(outputStream) {
-                        writeRow(
-                            "PlaylistBrowseId",
-                            "PlaylistName",
-                            "MediaId",
-                            "Title",
-                            "Artists",
-                            "Duration",
-                            "ThumbnailUrl"
-                        )
-                        if (listMediaItems.isEmpty())
-                            playlistSongs.forEach {
-                                writeRow(
-                                    playlistPreview?.playlist?.browseId,
-                                    plistName,
-                                    it.song.id,
-                                    it.song.title,
-                                    it.song.artistsText,
-                                    it.song.durationText,
-                                    it.song.thumbnailUrl
-                                )
-                            }
-                        else
-                            listMediaItems.forEach {
-                                writeRow(
-                                    playlistPreview?.playlist?.browseId,
-                                    plistName,
-                                    it.mediaId,
-                                    it.mediaMetadata.title,
-                                    it.mediaMetadata.artist,
-                                    "",
-                                    it.mediaMetadata.artworkUri
-                                )
-                            }
-                    }
-               }
+        ExportSongsToCSVDialog.toFile(
+            uri ?: return@rememberLauncherForActivityResult,
+            context,
+            playlistPreview?.playlist?.browseId ?: "",
+            plistName,
+            listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
+        )
     }
     // END - Export playlist
     val exportDialog = remember {
-        object: InputDialog {
+        object: ExportSongsToCSVDialog {
             override val context = context
             override val toggleState = exportingToggleState
-            override val defValue = plistName
-            override val iconId = -1            // Unused
-            override val titleId = R.string.enter_the_playlist_name
-            override val messageId = -1         // Unused
 
             override fun onSet( newValue: String ) {
-                try {
-                    val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault() )
-                    val name = "RMPlaylist_${newValue.take( 20 )}_${dateFormat.format( Date() )}"
-                    exportLauncher.launch( name )
-                } catch (e: ActivityNotFoundException) {
-                    SmartMessage(
-                        context.resources.getString(R.string.info_not_find_app_create_doc),
-                        type = PopupType.Warning, context = context
-                    )
-                }
-
-                onDismiss()
+                exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
             }
         }
     }
