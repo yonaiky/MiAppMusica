@@ -93,13 +93,13 @@
     <string name="neither_save_new_searched_query">Ei tallenna uusia hakuja eikä näytä hakuhistoriaa</string>
     <string name="clear_search_history">Tyhjennä hakuhistoria</string>
     <string name="history_is_empty">Historia on tyhjä</string>
-    <string name="service_lifetime">SERVICE LIFETIME</string>
+    <string name="service_lifetime">Palvelun elinikä</string>
     <string name="battery_optimizations_applied">Jos akun optimointia käytetään, soittoilmoitus voidaan yhtäkkiä poistaa, kun soitto on keskeytetty.</string>
     <string name="is_android12">Android 12 lähtien, akun optimointien poistaminen käytöstä on tarpeen, jotta \"Invincible service\" -vaihtoehto toimii.</string>
     <string name="ignore_battery_optimizations">Ohita akun optimointi</string>
     <string name="already_unrestricted">On jo rajoittamaton</string>
     <string name="disable_background_restrictions">Poista taustarajoitukset käytöstä</string>
-    <string name="invincible_service">Invincible service</string>
+    <string name="invincible_service">Kuolematon palvelu</string>
     <string name="turning_off_battery_optimizations_is_not_enough">Kun akun käytön optimoinnin poisto ei riitä</string>
     <string name="player">Soitin</string>
     <string name="persistent_queue">Pysyvä jono</string>
@@ -625,7 +625,7 @@
     <string name="charts">Musiikkilista</string>
     <string name="thumbnailtype">Pienoiskuvan tyyli</string>
     <string name="showvisthumbnail">Näytä pienoiskuva visualisoijalle</string>
-    <string name="androidheadunit">Android Head unit</string>
+    <string name="androidheadunit">Android-pääyksikkö</string>
     <string name="extra_space">Ylimääräinen tila ylhäällä</string>
     <string name="game_restart">Käynnistä uudelleen</string>
     <string name="game_over">Peli päättyi!</string>
@@ -655,7 +655,7 @@
     <string name="past_month">Mennyt kuukausi</string>
     <string name="past_year">Mennyt vuosi</string>
     <string name="all_time">Koko ajan</string>
-    <string name="header_view_top_of">View top %s of …</string>
+    <string name="header_view_top_of">Näytä eniten kuunnellut %s kappaleet ajalta …</string>
     <string name="podcast_episodes">Jaksot</string>
     <string name="podcasts">Podcastit</string>
     <string name="playlistindicator">Soittolistailmaisin</string>
@@ -692,7 +692,7 @@
     <string name="autosync">Synkronoi tuodut soittolistat automaattisesti</string>
     <string name="message_type">Viestityyppi</string>
     <string name="message_type_modern">Moderni</string>
-    <string name="message_type_essential">Essential</string>
+    <string name="message_type_essential">Perus</string>
     <string name="discoverinforadio">Poistaa tykätyt ja soittolistalla olevat kappaleet Radiosta</string>
     <string name="discover_has_been_applied_to_radio">Löydä uutta -toiminto asetettu Radiolle ja poistettu kappaleet: %s</string>
     <string name="songs_number_to_show">Näytettävät kappaleet</string>
@@ -747,8 +747,8 @@
     <string name="settings_loudness_base_gain">Äänenvoimakkuuden vahvistus</string>
     <string name="settings_target_gain_loudness_info">Tavoitevahvistus äänenvoimakkuuden normalisoimiseksi</string>
     <string name="error_media_cannot_be_played">Mediaa ei voi toistaa</string>
-    <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
-    <string name="titleartist">Title and Artists</string>
+    <string name="full_screen_lyrics_components">Koko näytön sanoituksen komponentit</string>
+    <string name="titleartist">Otsikko ja artistit</string>
     <string name="miniqueue">Minijono</string>
     <string name="controls">Säätimet</string>
     <string name="add_to_favorites">Lisää suosikkeihin</string>
