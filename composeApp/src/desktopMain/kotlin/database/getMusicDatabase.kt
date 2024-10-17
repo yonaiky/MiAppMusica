@@ -13,3 +13,5 @@ fun getDesktopDatabaseBuilder(): RoomDatabase.Builder<MusicDatabase> {
 
 val MusicDatabaseDesktop: MusicDatabaseDao
     get() = getRoomDatabase(getDesktopDatabaseBuilder()).getDao()
+
+val DB = MusicDatabaseDesktop

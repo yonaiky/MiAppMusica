@@ -63,12 +63,10 @@ import it.fast4x.rimusic.styling.Dimensions.fadeSpacingTop
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.playlistThumbnailSize
 import it.fast4x.rimusic.ui.components.AutoResizeText
-import it.fast4x.rimusic.ui.components.ExpandIcon
 import it.fast4x.rimusic.ui.components.FontSizeRange
 import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
-import it.fast4x.rimusic.ui.components.adaptiveThumbnailContent
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.getHttpClient

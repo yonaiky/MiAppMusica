@@ -13,6 +13,8 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.RoomWarnings
 import androidx.room.RoomWarnings.Companion.QUERY_MISMATCH
 import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import database.entities.Album
 import database.entities.Artist
@@ -59,25 +61,45 @@ expect object MusicDatabaseConstructor : RoomDatabaseConstructor<MusicDatabase>
 @Dao
 interface MusicDatabaseDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: Song): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: Album): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: SongAlbumMap): Long
+
+    @Upsert
+    suspend fun upsert(item: Song): Long
+
+    @Upsert
+    suspend fun upsert(item: Album): Long
+
+    @Upsert
+    suspend fun upsert(item: SongAlbumMap): Long
 
     @Delete
     suspend fun delete(item: Song)
 
     @Query("SELECT * FROM Song")
-    fun getAll(): Flow<List<Song>>
+    fun getAllSongs(): Flow<List<Song>>
+
+    @Query("SELECT * FROM Album")
+    fun getAllAlbums(): Flow<List<Album>>
 
     @Query("SELECT * FROM Song WHERE id = :id")
     suspend fun getSong(id: String): Song?
 
     @SuppressWarnings(QUERY_MISMATCH)
-    @Transaction
     @Query("SELECT Song.*, Album.title as albumTitle FROM Song LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
             "LEFT JOIN Album ON Album.id = SongAlbumMap.albumId " +
             "WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY Song.title COLLATE NOCASE ASC")
     @RewriteQueriesToDropUnusedColumns
     fun songsByTitleAsc(): Flow<List<SongEntity>>
+
+    @Query("SELECT * FROM Album WHERE id = :id")
+    fun album(id: String): Flow<Album?>
 }
 
 fun getRoomDatabase(

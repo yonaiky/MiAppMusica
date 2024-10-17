@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,10 +41,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import database.DB
+import database.entities.Album
 import database.entities.Song
+import database.entities.SongAlbumMap
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.SongItem
 import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
@@ -54,13 +59,17 @@ import it.fast4x.rimusic.ui.components.AutoResizeText
 import it.fast4x.rimusic.ui.components.FontSizeRange
 import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
+import it.fast4x.rimusic.ui.components.ToolButton
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.asSongEntity
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.resize
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -68,8 +77,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.album_alternative_versions
+import rimusic.composeapp.generated.resources.bookmark
+import rimusic.composeapp.generated.resources.bookmark_outline
 import rimusic.composeapp.generated.resources.from_wikipedia_cca
 import rimusic.composeapp.generated.resources.information
+import rimusic.composeapp.generated.resources.shuffle
 import rimusic.composeapp.generated.resources.songs
 import rimusic.composeapp.generated.resources.translate
 
@@ -78,24 +90,78 @@ import rimusic.composeapp.generated.resources.translate
 fun AlbumScreen(
     browseId: String,
     onSongClick: (Song) -> Unit,
-    onAlbumClick: (String) -> Unit,
-    onClosePage: () -> Unit
+    onAlbumClick: (String) -> Unit
 ) {
+    val coroutineScope by remember { mutableStateOf(CoroutineScope(Dispatchers.IO)) }
     //val leftScrollState = rememberScrollState()
     //val rightScrollState = rememberScrollState()
+
+
+    var album by remember { mutableStateOf<Album?>(null) }
+//    LaunchedEffect(Unit) {
+//        MusicDatabaseDesktop.album(browseId).collect { album = it }
+//    }
+
+
+
     val albumPage = remember { mutableStateOf<Innertube.PlaylistOrAlbumPage?>(null) }
     LaunchedEffect(browseId) {
-        Innertube.albumPage(BrowseBody(browseId = browseId))
-            ?.onSuccess {
-                albumPage.value = it
-            }
-    }
-    val album = albumPage.value
-    val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
+        DB.album(browseId).collect { currentAlbum ->
+            album = currentAlbum
 
-    val sectionTextModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .padding(top = 24.dp, bottom = 8.dp)
+            if (albumPage.value == null)
+                Innertube.albumPage(BrowseBody(browseId = browseId))
+                    ?.onSuccess { currentAlbumPage ->
+                        albumPage.value = currentAlbumPage
+
+                        //println("browseId: $browseId album: $album")
+                        println("browseId: $browseId albumPage: ${albumPage.value}")
+
+                        coroutineScope.launch {
+                            DB.upsert(
+                                Album(
+                                    id = browseId,
+                                    title = if (currentAlbum?.title?.startsWith(MODIFIED_PREFIX) == true) currentAlbum.title else currentAlbumPage.title,
+                                    thumbnailUrl = if (currentAlbum?.thumbnailUrl?.startsWith(
+                                            MODIFIED_PREFIX
+                                        ) == true
+                                    ) currentAlbum.thumbnailUrl else currentAlbumPage.thumbnail?.url,
+                                    year = currentAlbumPage.year,
+                                    authorsText = if (currentAlbum?.authorsText?.startsWith(
+                                            MODIFIED_PREFIX
+                                        ) == true
+                                    ) currentAlbum.authorsText else currentAlbumPage.authors
+                                        ?.joinToString("") { it.name ?: "" },
+                                    shareUrl = currentAlbumPage.url,
+                                    timestamp = System.currentTimeMillis(),
+                                    bookmarkedAt = currentAlbum?.bookmarkedAt
+                                )
+                            )
+
+                            currentAlbumPage
+                                .songsPage
+                                ?.items
+                                ?.map(Innertube.SongItem::asSong)
+                                ?.onEach {
+                                    DB.upsert(it)
+                                }
+                                ?.mapIndexed { position, song ->
+                                    DB.upsert(
+                                        SongAlbumMap(
+                                            songId = song.id,
+                                            albumId = browseId,
+                                            position = position
+                                        )
+                                    )
+                                }
+                        }
+
+                    }
+        }
+
+    }
+
+    val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
     var translateEnabled by remember {
         mutableStateOf(false)
@@ -120,16 +186,7 @@ fun AlbumScreen(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(0.5f)
-                    //.verticalScroll(leftScrollState)
             ) {
-                /*
-                ExpandIcon(
-                    onAction = onClosePage,
-                    actionClose = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                 */
-
 
                 Box(
                     modifier = Modifier
@@ -153,17 +210,18 @@ fun AlbumScreen(
                         if (!albumPage.value?.title.isNullOrEmpty())
                             AutoResizeText(
                                 text = albumPage.value?.title.toString(),
-                                style = typography.displayLarge,
+                                style = typography.displayMedium,
                                 fontSizeRange = FontSizeRange(50.sp, 100.sp),
-                                fontWeight = typography.displayLarge.fontWeight,
-                                fontFamily = typography.displayLarge.fontFamily,
-                                color = typography.displayLarge.color,
+                                fontWeight = typography.displayMedium.fontWeight,
+                                fontFamily = typography.displayMedium.fontFamily,
+                                color = typography.displayMedium.color,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(horizontal = 30.dp)
+                                    .padding(bottom = 30.dp)
                             )
 
 
@@ -184,6 +242,37 @@ fun AlbumScreen(
                     } ?: Loader()
                 }
 
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp)
+                ) {
+                    ToolButton(
+                        icon = if (album?.bookmarkedAt == null) Res.drawable.bookmark_outline else Res.drawable.bookmark,
+                        onAction = {
+                            val bookmarkedAt =
+                                if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
+
+                            album.let {
+                                coroutineScope.launch {
+                                    if (it != null) {
+                                        DB.upsert(it.copy(bookmarkedAt = bookmarkedAt))
+                                    }
+                                }
+                            }
+
+
+                        }
+                    )
+                    ToolButton(
+                        icon = Res.drawable.shuffle,
+                        onAction = {}
+                    )
+
+                }
 
 
                 albumPage.value?.description?.let { description ->
@@ -210,7 +299,7 @@ fun AlbumScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .size(20.dp)
-                            .clickable{
+                            .clickable {
                                 translateEnabled = !translateEnabled
                             }
                     )
@@ -233,14 +322,14 @@ fun AlbumScreen(
                         }
                     } else translatedText = nonTranslatedText
 
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                             .padding(top = 16.dp)
-                    ){
+                    ) {
                         Text(
                             text = "“ $translatedText „",
                             style = TextStyle(
@@ -262,8 +351,8 @@ fun AlbumScreen(
                                     textAlign = TextAlign.Start
                                 ),
                                 //modifier = Modifier
-                                    //.padding(horizontal = 16.dp)
-                                    //.padding(bottom = 16.dp)
+                                //.padding(horizontal = 16.dp)
+                                //.padding(bottom = 16.dp)
                                 //.padding(endPaddingValues)
 
                             )
@@ -281,7 +370,7 @@ fun AlbumScreen(
                     .fillMaxHeight()
                     //.fillMaxWidth(0.5f)
                     .fillMaxSize()
-                    //.verticalScroll(rightScrollState)
+                //.verticalScroll(rightScrollState)
             ) {
 
                 if (albumPage.value != null) {

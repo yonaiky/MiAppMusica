@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import database.entities.Album
 import database.entities.SongEntity
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.MONTHLY_PREFIX
@@ -322,6 +323,30 @@ fun AlbumItem(
         showAuthors = showAuthors
     )
 }
+
+@Composable
+fun AlbumItem(
+    album: Album,
+    yearCentered: Boolean? = true,
+    thumbnailSizeDp: Dp,
+    modifier: Modifier = Modifier,
+    alternative: Boolean = false,
+    showAuthors: Boolean? = false
+) {
+    AlbumItem(
+        thumbnailUrl = album.thumbnailUrl,
+        title = album.title,
+        authors = album.authorsText,
+        year = album.year,
+        yearCentered = yearCentered,
+        thumbnailSizePx = null,
+        thumbnailSizeDp = thumbnailSizeDp,
+        modifier = modifier,
+        alternative = alternative,
+        showAuthors = showAuthors
+    )
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

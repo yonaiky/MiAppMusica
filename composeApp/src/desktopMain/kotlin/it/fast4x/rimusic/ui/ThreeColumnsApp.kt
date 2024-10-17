@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import database.MusicDatabaseDesktop
+import database.entities.Album
 import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
@@ -48,6 +49,7 @@ import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
 import it.fast4x.rimusic.ui.components.PlayerEssential
+import it.fast4x.rimusic.ui.pages.AlbumsPage
 import it.fast4x.rimusic.ui.pages.SongsPage
 import it.fast4x.rimusic.ui.screens.AlbumScreen
 import it.fast4x.rimusic.ui.screens.ArtistScreen
@@ -106,7 +108,7 @@ fun ThreeColumnsApp() {
     }
 
     coroutineScope.launch {
-        db.getAll().collect {
+        db.getAllSongs().collect {
             println("songs in db ${it.size}")
         }
     }
@@ -198,6 +200,11 @@ fun ThreeColumnsApp() {
                 //it's just in db, no need to insert
                 videoId = it.id
             },
+            onAlbumClick = {
+                albumId = it.id
+                showPageType = PageType.ALBUM
+                showPageSheet = true
+            },
             frameController = frameController,
             centerPanelContent = {
                 when (showPageType) {
@@ -207,15 +214,14 @@ fun ThreeColumnsApp() {
                             onSongClick = {
                                 videoId = it.id
                                 coroutineScope.launch {
-                                    db.insert(it)
+                                    db.upsert(it)
                                 }
                             },
                             onAlbumClick = {
                                 albumId = it
                                 showPageType = PageType.ALBUM
                                 showPageSheet = true
-                            },
-                            onClosePage = { showPageSheet = false }
+                            }
                         )
                     }
 
@@ -225,7 +231,7 @@ fun ThreeColumnsApp() {
                             onSongClick = {
                                 videoId = it.id
                                 coroutineScope.launch {
-                                    db.insert(it)
+                                    db.upsert(it)
                                 }
                             },
                             onPlaylistClick = {
@@ -250,7 +256,7 @@ fun ThreeColumnsApp() {
                             onSongClick = {
                                 videoId = it.id
                                 coroutineScope.launch {
-                                    db.insert(it)
+                                    db.upsert(it)
                                 }
                             },
                             onAlbumClick = {
@@ -290,7 +296,7 @@ fun ThreeColumnsApp() {
                             onSongClick = {
                                 videoId = it.id
                                 coroutineScope.launch {
-                                    db.insert(it)
+                                    db.upsert(it)
                                 }
                             },
                             onAlbumClick = {
@@ -427,6 +433,7 @@ fun ThreeColumnsLayout(
      */
     onHomeClick: () -> Unit = {},
     onSongClick: (Song) -> Unit = {},
+    onAlbumClick: (Album) -> Unit = {},
     frameController: VlcjFrameController = remember { VlcjFrameController() },
     centerPanelContent: @Composable () -> Unit = {}
 ) {
@@ -471,7 +478,8 @@ fun ThreeColumnsLayout(
             color = Color.Gray.copy(alpha = 0.6f)
         )
         LeftPanelContent(
-            onSongClick = onSongClick
+            onSongClick = onSongClick,
+            onAlbumClick = onAlbumClick
         )
 
     }
@@ -480,6 +488,7 @@ fun ThreeColumnsLayout(
 @Composable
 fun LeftPanelContent(
     onSongClick: (Song) -> Unit = {},
+    onAlbumClick: (Album) -> Unit = {}
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -573,7 +582,11 @@ fun LeftPanelContent(
                 onSongClick = onSongClick
             )
             1 -> {}
-            2 -> {}
+            2 -> {
+                AlbumsPage(
+                    onAlbumClick = onAlbumClick
+                )
+            }
             3 -> {}
         }
 

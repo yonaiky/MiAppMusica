@@ -29,25 +29,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import database.DB
 import database.MusicDatabaseDesktop
+import database.entities.Album
 import database.entities.Song
 import database.entities.SongEntity
+import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.SongItem
 import it.fast4x.rimusic.styling.Dimensions
+import it.fast4x.rimusic.styling.Dimensions.albumThumbnailSize
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnBottomSpacer
 import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.flow.asFlow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SongsPage(
-    onSongClick: (Song) -> Unit
+fun AlbumsPage(
+    onAlbumClick: (Album) -> Unit
 ) {
-    val songs = remember { SnapshotStateList<SongEntity>() }
+    val albums = remember { SnapshotStateList<Album>() }
 
     LaunchedEffect(Unit) {
-        //MusicDatabaseDesktop.songsByTitleAsc().also { songs.addAll(it) }
-        DB.songsByTitleAsc().collect {
-            songs += it
+        DB.getAllAlbums().collect {
+            albums += it
         }
     }
 
@@ -72,7 +74,7 @@ fun SongsPage(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Button row (songs in db ${songs.size})",
+                        text = "Button row (songs in db ${albums.size})",
                         style = TextStyle(
                             fontSize = typography.titleSmall.fontSize,
                             //fontWeight = typography.titleSmall.fontWeight,
@@ -84,11 +86,15 @@ fun SongsPage(
                 }
             }
             itemsIndexed(
-                items = songs,
-                key = { _, song -> song.song.id }
-            ) { index, song ->
-                SongItem(
-                    songEntity = song,
+                items = albums,
+                key = { _, album -> album.id }
+            ) { index, album ->
+                AlbumItem(
+                    album = album,
+                    alternative = false,
+                    showAuthors = true,
+                    yearCentered = false,
+                    thumbnailSizeDp = albumThumbnailSize,
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
                         .padding(vertical = 4.dp)
@@ -97,7 +103,7 @@ fun SongsPage(
 
                             },
                             onClick = {
-                                onSongClick(song.song)
+                                onAlbumClick(album)
                             }
                         )
                 )
