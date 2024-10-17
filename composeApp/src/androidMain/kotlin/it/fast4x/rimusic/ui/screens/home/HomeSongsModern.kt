@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -60,7 +59,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -156,9 +154,9 @@ import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ConfirmationDialog
 import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
-import me.knighthat.component.tab.toolbar.Dialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
+import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
@@ -327,71 +325,21 @@ fun HomeSongsModern(
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-
-        context.applicationContext
-               .contentResolver
-               .openInputStream(uri)
-               ?.use { inputStream ->
-                    csvReader().open(inputStream) {
-                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
-                            println("mediaItem index song ${index}")
-                            transaction {
-                                /**/
-                                if (row["MediaId"] != null && row["Title"] != null) {
-                                    val song =
-                                        row["MediaId"]?.let {
-                                            row["Title"]?.let { it1 ->
-                                                Song(
-                                                    id = it,
-                                                    title = it1,
-                                                    artistsText = row["Artists"],
-                                                    durationText = row["Duration"],
-                                                    thumbnailUrl = row["ThumbnailUrl"],
-                                                    totalPlayTimeMs = 1L
-                                                )
-                                            }
-                                        }
-                                    transaction {
-                                        if (song != null) {
-                                            Database.upsert(song)
-                                            Database.like(
-                                                song.id,
-                                                System.currentTimeMillis()
-                                            )
-                                        }
-                                    }
-
-
-                                }
-                            }
-
-                        }
-                    }
-               }
+        ImportSongsFromCSV.openFile(
+            uri ?: return@rememberLauncherForActivityResult,
+            context,
+            afterTransaction = { _, song ->
+                Database.upsert( song )
+                Database.like( song.id, System.currentTimeMillis() )
+            }
+        )
     }
     // END - Import songs
-    val importDialog = remember {
-        object: Dialog {
+    val import = remember {
+        object: ImportSongsFromCSV {
             override val context = context
-            override val toggleState = mutableStateOf( false )
-            override val iconId = R.drawable.resource_import
-            override val titleId = -1       // Unused
-            override val messageId = R.string.import_favorites
 
-            @Composable
-            override fun Render() {}
-
-            override fun onShortClick() {
-                try {
-                    importLauncher.launch( arrayOf( "text/*" ) )
-                } catch (_: ActivityNotFoundException) {
-                    SmartMessage(
-                        context.resources.getString(R.string.info_not_find_app_open_doc),
-                        type = PopupType.Warning, context = context
-                    )
-                }
-            }
+            override fun onShortClick() = importLauncher.launch(arrayOf("text/csv"))
         }
     }
     // START - Export songs
@@ -858,7 +806,7 @@ fun HomeSongsModern(
                         onLongClick = { SmartMessage( "Random sorting", context = context) }
                     )
                 else
-                    importDialog.ToolBarButton()
+                    import.ToolBarButton()
 
                 TabToolBar.Icon( R.drawable.ellipsis_horizontal ) {
                     menuState.display {

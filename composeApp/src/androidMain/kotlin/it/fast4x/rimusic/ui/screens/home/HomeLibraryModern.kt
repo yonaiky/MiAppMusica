@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -40,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -51,7 +49,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
@@ -59,7 +56,6 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -88,6 +84,7 @@ import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
@@ -198,94 +195,41 @@ fun HomeLibraryModern(
             }
         }
     }
-
     // START - Import playlist
-    val importLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        ImportSongsFromCSV.openFile(
+            uri ?: return@rememberLauncherForActivityResult,
+            context,
+            beforeTransaction = { _, row ->
+                plistId = row["PlaylistName"]?.let {
+                    Database.playlistExistByName( it )
+                } ?: 0L
 
-            //requestPermission(activity, "Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED")
-
-            context.applicationContext.contentResolver.openInputStream(uri)
-                ?.use { inputStream ->
-                    csvReader().open(inputStream) {
-                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
-                            println("mediaItem index song ${index}")
-                            transaction {
-                                plistId = row["PlaylistName"]?.let {
-                                    Database.playlistExistByName(
-                                        it
-                                    )
-                                } ?: 0L
-
-                                if (plistId == 0L) {
-                                    plistId = row["PlaylistName"]?.let {
-                                        Database.insert(
-                                            Playlist(
-                                                name = it,
-                                                browseId = row["PlaylistBrowseId"]
-                                            )
-                                        )
-                                    }!!
-                                }
-                                /**/
-                                if (row["MediaId"] != null && row["Title"] != null) {
-                                    val song =
-                                        row["MediaId"]?.let {
-                                            row["Title"]?.let { it1 ->
-                                                Song(
-                                                    id = it,
-                                                    title = it1,
-                                                    artistsText = row["Artists"],
-                                                    durationText = row["Duration"],
-                                                    thumbnailUrl = row["ThumbnailUrl"]
-                                                )
-                                            }
-                                        }
-                                    transaction {
-                                        if (song != null) {
-                                            Database.insert(song)
-                                            Database.insert(
-                                                SongPlaylistMap(
-                                                    songId = song.id,
-                                                    playlistId = plistId,
-                                                    position = index
-                                                )
-                                            )
-                                        }
-                                    }
-
-
-                                }
-                                /**/
-
-                            }
-
-                        }
-                    }
-                }
-        }
+                if (plistId == 0L)
+                    plistId = row["PlaylistName"]?.let {
+                        Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
+                    }!!
+            },
+            afterTransaction = { index, song ->
+                Database.insert(song)
+                Database.insert(
+                    SongPlaylistMap(
+                        songId = song.id,
+                        playlistId = plistId,
+                        position = index
+                    )
+                )
+            }
+        )
+    }
     // END - Import playlist
     val importPlaylistDialog = remember {
-        object: InputDialog {
+        object: ImportSongsFromCSV {
             override val context = context
-            override val toggleState = mutableStateOf( false )   // Unused
-            override val iconId = R.drawable.resource_import
-            override val titleId = -1                                   // Unused
-            override val messageId = R.string.import_playlist
 
-            override fun onSet(newValue: String) {}
-
-            override fun onShortClick() {
-                try {
-                    importLauncher.launch( arrayOf( "text/*" ) )
-                } catch (e: ActivityNotFoundException) {
-                    SmartMessage(
-                        context.resources.getString(R.string.info_not_find_app_open_doc),
-                        type = PopupType.Warning, context = context
-                    )
-                }
-            }
+            override fun onShortClick() = importLauncher.launch( arrayOf( "text/csv" ) )
         }
     }
 
