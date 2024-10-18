@@ -124,7 +124,7 @@ object DownloadUtil {
                         ringBuffer.getOrNull(0)?.first -> dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
                         ringBuffer.getOrNull(1)?.first -> dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
                         "initVideoId" -> dataSpec
-                        else -> {
+                        else -> run {
                             val body = runBlocking(Dispatchers.IO) {
                                 Innertube.player(
                                     body = PlayerBody(videoId = videoId),
