@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -40,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -51,7 +49,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
@@ -59,25 +56,21 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.utils.PlayShuffledSongs
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistTypeKey
@@ -87,18 +80,18 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
+import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
-import timber.log.Timber
 
 
 @ExperimentalMaterial3Api
@@ -120,6 +113,13 @@ fun HomeLibraryModern(
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
+    // Non-vital
+    val pipedSession = getPipedSession()
+    var plistId by remember { mutableLongStateOf( 0L ) }
+    var autosync by rememberPreference(autosyncKey, false)
+    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+
     var items by persistList<PlaylistPreview>("home/playlists")
 
     // Search states
@@ -131,6 +131,8 @@ fun HomeLibraryModern(
     val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
     // Size state
     val sizeState = Preference.remember( HOME_LIBRARY_ITEM_SIZE )
+    // Dialog states
+    val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
     val search = remember {
         object: Search {
@@ -153,17 +155,88 @@ fun HomeLibraryModern(
             override val sizeState = sizeState
         }
     }
+    val shuffle = remember {
+        object: SongsShuffle {
+            override val binder = binder
+            override val context = context
+
+            override fun query(): Flow<List<Song>?> =
+                when( playlistType ) {
+                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+                }
+        }
+    }
+    val newPlaylistDialog = remember {
+        object: InputDialog {
+            override val context = context
+            override val toggleState = newPlaylistToggleState
+            override val iconId = R.drawable.add_in_playlist
+            override val titleId: Int = R.string.enter_the_playlist_name
+            override val messageId: Int = R.string.create_new_playlist
+
+            override fun onSet(newValue: String) {
+
+                if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
+                    createPipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        name = newValue
+                    )
+                else
+                    query {
+                        Database.insert( Playlist( name = newValue ) )
+                    }
+
+                onDismiss()
+            }
+        }
+    }
+    // START - Import playlist
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        ImportSongsFromCSV.openFile(
+            uri ?: return@rememberLauncherForActivityResult,
+            context,
+            beforeTransaction = { _, row ->
+                plistId = row["PlaylistName"]?.let {
+                    Database.playlistExistByName( it )
+                } ?: 0L
+
+                if (plistId == 0L)
+                    plistId = row["PlaylistName"]?.let {
+                        Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
+                    }!!
+            },
+            afterTransaction = { index, song ->
+                Database.insert(song)
+                Database.insert(
+                    SongPlaylistMap(
+                        songId = song.id,
+                        playlistId = plistId,
+                        position = index
+                    )
+                )
+            }
+        )
+    }
+    // END - Import playlist
+    val importPlaylistDialog = remember {
+        object: ImportSongsFromCSV {
+            override val context = context
+
+            override fun onShortClick() = importLauncher.launch( arrayOf( "text/csv" ) )
+        }
+    }
 
     // Mutable
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
-
-    // Non-vital
-    val pipedSession = getPipedSession()
-    var plistId by remember { mutableLongStateOf( 0L ) }
-    var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
-    var autosync by rememberPreference(autosyncKey, false)
 
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
         Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
@@ -188,107 +261,13 @@ fun HomeLibraryModern(
         PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
     // END - Additional playlists
 
-    // START - Import playlist
-    val importLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            //requestPermission(activity, "Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED")
-
-            context.applicationContext.contentResolver.openInputStream(uri)
-                ?.use { inputStream ->
-                    csvReader().open(inputStream) {
-                        readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
-                            println("mediaItem index song ${index}")
-                            transaction {
-                                plistId = row["PlaylistName"]?.let {
-                                    Database.playlistExistByName(
-                                        it
-                                    )
-                                } ?: 0L
-
-                                if (plistId == 0L) {
-                                    plistId = row["PlaylistName"]?.let {
-                                        Database.insert(
-                                            Playlist(
-                                                name = it,
-                                                browseId = row["PlaylistBrowseId"]
-                                            )
-                                        )
-                                    }!!
-                                }
-                                /**/
-                                if (row["MediaId"] != null && row["Title"] != null) {
-                                    val song =
-                                        row["MediaId"]?.let {
-                                            row["Title"]?.let { it1 ->
-                                                Song(
-                                                    id = it,
-                                                    title = it1,
-                                                    artistsText = row["Artists"],
-                                                    durationText = row["Duration"],
-                                                    thumbnailUrl = row["ThumbnailUrl"]
-                                                )
-                                            }
-                                        }
-                                    transaction {
-                                        if (song != null) {
-                                            Database.insert(song)
-                                            Database.insert(
-                                                SongPlaylistMap(
-                                                    songId = song.id,
-                                                    playlistId = plistId,
-                                                    position = index
-                                                )
-                                            )
-                                        }
-                                    }
-
-
-                                }
-                                /**/
-
-                            }
-
-                        }
-                    }
-                }
-        }
-    // END - Import playlist
-
     // START - Piped
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     if (isPipedEnabled)
         ImportPipedPlaylists()
     // END - Piped
 
     // START - New playlist
-    var isCreatingANewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
-    if (isCreatingANewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingANewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-
-                if (isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    createPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        name = text
-                    )
-                } else {
-                    query {
-                        Database.insert(Playlist(name = text))
-                    }
-                }
-            }
-        )
-    }
+    newPlaylistDialog.Render()
     // END - New playlist
 
     // START - Monthly playlist
@@ -340,66 +319,11 @@ fun HomeLibraryModern(
 
                 search.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.shuffle,
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.shuffle),
-                            context = context
-                        )
-                    },
-                    onShortClick = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) {
-                                when( playlistType ) {
-                                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-                                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-                                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-                                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-                                }.collect {
-                                    PlayShuffledSongs( it, context, binder )
-                                }
-                            }
-                        }
+                shuffle.ToolBarButton()
 
-                    }
-                )
+                newPlaylistDialog.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId =  R.drawable.add_in_playlist,
-                    onShortClick = { isCreatingANewPlaylist = true },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.create_new_playlist),
-                            context = context
-                        )
-                    }
-                )
-
-                TabToolBar.Icon(
-                    iconId = R.drawable.resource_import,
-                    size = 30.dp,
-                    onShortClick = {
-                        try {
-                            importLauncher.launch(
-                                arrayOf(
-                                    "text/*"
-                                )
-                            )
-                        } catch (e: ActivityNotFoundException) {
-                            SmartMessage(
-                                context.resources.getString(R.string.info_not_find_app_open_doc),
-                                type = PopupType.Warning, context = context
-                            )
-                        }
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.import_playlist),
-                            context = context
-                        )
-                    }
-                )
+                importPlaylistDialog.ToolBarButton()
 
                 itemSize.ToolBarButton()
             }

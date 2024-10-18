@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.utils.medium
@@ -47,7 +48,7 @@ inline fun Menu(
 
 @Composable
 fun MenuEntry(
-    @DrawableRes icon: Int,
+    painter: Painter,
     text: String,
     onClick: () -> Unit,
     secondaryText: String? = null,
@@ -64,7 +65,7 @@ fun MenuEntry(
             .padding(horizontal = 24.dp)
     ) {
         Image(
-            painter = painterResource(icon),
+            painter = painter,
             contentDescription = null,
             colorFilter = ColorFilter.tint(colorPalette().text),
             modifier = Modifier
@@ -91,4 +92,23 @@ fun MenuEntry(
 
         trailingContent?.invoke()
     }
+}
+
+@Composable
+fun MenuEntry(
+    @DrawableRes icon: Int,
+    text: String,
+    onClick: () -> Unit,
+    secondaryText: String? = null,
+    enabled: Boolean = true,
+    trailingContent: (@Composable () -> Unit)? = null
+) {
+    MenuEntry(
+        painterResource( icon ),
+        text,
+        onClick,
+        secondaryText,
+        enabled,
+        trailingContent
+    )
 }

@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.utils
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -198,6 +199,30 @@ fun getTitleMonthlyPlaylist(playlist: String): String {
         10 -> stringResource(R.string.month_october_s).format(y)
         11 -> stringResource(R.string.month_november_s).format(y)
         12 -> stringResource(R.string.month_december_s).format(y)
+        else -> playlist
+    }
+}
+
+fun getTitleMonthlyPlaylist( context: Context, playlist: String ): String {
+    
+    fun getMonthString( @DrawableRes monthId: Int, year: String ) =
+        context.resources.getString( monthId ).format( year )
+
+    val y = playlist.substring(0,4)
+    val m = playlist.substring(5,7).toInt()
+    return when( m ) {
+        1 -> getMonthString( R.string.month_january_s, y )
+        2 -> getMonthString( R.string.month_february_s, y )
+        3 -> getMonthString( R.string.month_march_s, y )
+        4 -> getMonthString( R.string.month_april_s, y )
+        5 -> getMonthString( R.string.month_may_s, y )
+        6 -> getMonthString( R.string.month_june_s, y )
+        7 -> getMonthString( R.string.month_july_s, y )
+        8 -> getMonthString( R.string.month_august_s, y )
+        9 -> getMonthString( R.string.month_september_s, y )
+        10 -> getMonthString( R.string.month_october_s, y )
+        11 -> getMonthString( R.string.month_november_s, y )
+        12 -> getMonthString( R.string.month_december_s, y )
         else -> playlist
     }
 }

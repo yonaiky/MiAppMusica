@@ -7,9 +7,9 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.px
 
 enum class HomeItemSize ( val textId: Int, val size: Int ) {
-    Small( R.string.small, 104 ),
-    Medium( R.string.medium,132 ),
-    Big( R.string.big, 162 );
+    SMALL( R.string.small, 104 ),
+    MEDIUM( R.string.medium,132 ),
+    BIG( R.string.big, 162 );
 
     val iconId = R.drawable.arrow_forward
 
