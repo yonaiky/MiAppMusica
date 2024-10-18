@@ -72,10 +72,6 @@ class MainApplication : Application(), ImageLoaderFactory {
                             CoilDiskCacheMaxSize.Custom -> coilCustomDiskCache
                             else -> size.bytes
                         }
-//                        preferences.getEnum(
-//                            coilDiskCacheMaxSizeKey,
-//                            CoilDiskCacheMaxSize.`128MB`
-//                        ).bytes
                     )
                     .build()
             )

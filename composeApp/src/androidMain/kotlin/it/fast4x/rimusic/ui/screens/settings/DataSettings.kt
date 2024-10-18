@@ -360,12 +360,6 @@ fun DataSettings() {
 
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.image_cache_max_size),
-//                titleSecondary = "${
-//                    Formatter.formatShortFileSize(
-//                        context,
-//                        diskCacheSize
-//                    )
-//                } ${stringResource(R.string.used)} (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes.coerceAtLeast(1)}%)",
                 titleSecondary = when (coilDiskCacheMaxSize) {
                     CoilDiskCacheMaxSize.Custom -> buildString {
                             append(Formatter.formatShortFileSize(context, diskCacheSize))
