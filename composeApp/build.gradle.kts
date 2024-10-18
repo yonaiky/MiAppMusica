@@ -78,6 +78,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
+            implementation(projects.piped)
 
             implementation(libs.room)
             implementation(libs.room.runtime)

@@ -2202,7 +2202,7 @@ class PlayerService : InvincibleService(),
 
                     val body = runBlocking(Dispatchers.IO) {
                         Innertube.player(
-                            PlayerBody(videoId = videoId),
+                            body = PlayerBody(videoId = videoId),
                             pipedSession = getPipedSession().toApiSession()
                         )
                     }?.getOrElse { throwable ->

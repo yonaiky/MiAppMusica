@@ -38,6 +38,7 @@ import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnTopPadding
 import it.fast4x.rimusic.styling.Dimensions.layoutColumnsHorizontalPadding
+import it.fast4x.rimusic.utils.getPipedSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import player.frame.FrameContainer
@@ -53,7 +54,10 @@ fun OneColumnApp(
 
     val body = remember { mutableStateOf<PlayerResponse?>(null) }
     runBlocking(Dispatchers.IO) {
-        Innertube.player(PlayerBody(videoId = "TVlyvIP_y1Y"))
+        Innertube.player(
+            body = PlayerBody(videoId = "TVlyvIP_y1Y"),
+            pipedSession = getPipedSession().toApiSession()
+        )
     }?.onSuccess {
         body.value = it
     }

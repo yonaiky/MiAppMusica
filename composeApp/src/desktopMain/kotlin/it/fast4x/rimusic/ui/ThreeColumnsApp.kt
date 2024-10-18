@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.screens.ArtistScreen
 import it.fast4x.rimusic.ui.screens.MoodScreen
 import it.fast4x.rimusic.ui.screens.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.QuickPicsScreen
+import it.fast4x.rimusic.utils.getPipedSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,7 +92,10 @@ fun ThreeColumnsApp() {
     LaunchedEffect(videoId) {
         if (videoId.isEmpty()) return@LaunchedEffect
 
-        Innertube.player(PlayerBody(videoId = videoId))
+        Innertube.player(
+            body = PlayerBody(videoId = videoId),
+            pipedSession = getPipedSession().toApiSession()
+        )
             ?.onSuccess {
                 formatAudio.value =
                     it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }
