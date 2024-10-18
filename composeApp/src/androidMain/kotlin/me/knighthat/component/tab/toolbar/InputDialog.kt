@@ -2,6 +2,8 @@ package me.knighthat.component.tab.toolbar
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 
@@ -10,8 +12,8 @@ interface InputDialog: Dialog {
     val placeHolder: Int
         @StringRes
         get() = titleId
-    val defValue: String
-        get() = ""
+    val valueState: MutableState<String>
+        get() = mutableStateOf( "" )
 
     /**
      * What happens when user hits "Confirm" button
@@ -33,7 +35,7 @@ interface InputDialog: Dialog {
         InputTextDialog(
             onDismiss = ::onDismiss,
             title = stringResource( this.titleId ),
-            value = this.defValue,
+            value = valueState.value,
             placeholder = stringResource( this.placeHolder ),
             setValue = ::onSet
         )

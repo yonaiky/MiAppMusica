@@ -257,8 +257,21 @@ fun HomeSongsModern(
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     // Non-vital
-    var plistName by remember { mutableStateOf( "" ) }
+    val playlistNameState = remember { mutableStateOf( "" ) }
     var selectItems by remember { mutableStateOf( false ) }
+
+    // Update playlistNameState's value based on current builtInPlaylist
+    LaunchedEffect( builtInPlaylist ) {
+        playlistNameState.value =
+            when (builtInPlaylist) {
+                BuiltInPlaylist.All -> context.resources.getString(R.string.songs)
+                BuiltInPlaylist.OnDevice -> context.resources.getString(R.string.on_device)
+                BuiltInPlaylist.Favorites -> context.resources.getString(R.string.favorites)
+                BuiltInPlaylist.Downloaded -> context.resources.getString(R.string.downloaded)
+                BuiltInPlaylist.Offline -> context.resources.getString(R.string.cached)
+                BuiltInPlaylist.Top -> context.resources.getString(R.string.playlist_top)
+            }
+    }
 
     // Search states
     val searching = rememberSaveable { mutableStateOf(false) }
@@ -350,7 +363,7 @@ fun HomeSongsModern(
             uri ?: return@rememberLauncherForActivityResult,
             context,
             "",
-            plistName,
+            playlistNameState.value,
             listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
         )
     }
@@ -359,6 +372,7 @@ fun HomeSongsModern(
         object: ExportSongsToCSVDialog {
             override val context = context
             override val toggleState = exportToggleState
+            override val valueState = playlistNameState
 
             override fun onSet(newValue: String) {
                 exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )

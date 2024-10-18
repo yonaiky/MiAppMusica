@@ -83,7 +83,7 @@ interface ExportSongsToCSVDialog: InputDialog {
         InputTextDialog(
             onDismiss = ::onDismiss,
             title = stringResource( this.titleId ),
-            value = this.defValue,
+            value = valueState.value,
             placeholder = stringResource( this.placeHolder ),
             setValue = {
                 try {

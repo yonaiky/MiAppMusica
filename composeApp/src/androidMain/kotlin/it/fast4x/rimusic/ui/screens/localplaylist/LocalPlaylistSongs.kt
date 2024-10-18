@@ -197,7 +197,7 @@ fun LocalPlaylistSongs(
     var downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
     var selectItems by remember { mutableStateOf( false ) }
     // Playlist non-vital
-    var plistName by remember { mutableStateOf(playlistPreview?.playlist?.name ?: "") }
+    val playlistName = remember { mutableStateOf( "" ) }
     var listMediaItems = remember { mutableListOf<MediaItem>() }
 
     // Search states
@@ -251,16 +251,16 @@ fun LocalPlaylistSongs(
         object: InputDialog {
             override val context = context
             override val toggleState = renamingToggleState
-            override val defValue
-                get() = plistName
             override val iconId = -1            // Unused
             override val titleId = R.string.enter_the_playlist_name
             override val messageId = -1         // Unused
+            override val valueState = playlistName
 
             override fun onSet(newValue: String) {
                 val isPipedPlaylist =
                     playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
-                            && isPipedEnabled && pipedSession.token.isNotEmpty()
+                            && isPipedEnabled
+                            && pipedSession.token.isNotEmpty()
                 val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
 
                 query {
@@ -275,9 +275,6 @@ fun LocalPlaylistSongs(
                         id = UUID.fromString(playlistPreview?.playlist?.browseId),
                         name = "$PIPED_PREFIX$newValue"
                     )
-
-                plistName = newValue
-
                 onDismiss()
             }
         }
@@ -290,7 +287,7 @@ fun LocalPlaylistSongs(
             uri ?: return@rememberLauncherForActivityResult,
             context,
             playlistPreview?.playlist?.browseId ?: "",
-            plistName,
+            playlistName.value,
             listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
         )
     }
@@ -299,6 +296,7 @@ fun LocalPlaylistSongs(
         object: ExportSongsToCSVDialog {
             override val context = context
             override val toggleState = exportingToggleState
+            override val valueState = playlistName
 
             override fun onSet( newValue: String ) {
                 exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
@@ -428,6 +426,17 @@ fun LocalPlaylistSongs(
 
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview(playlistId).collect { playlistPreview = it }
+
+        playlistName.value =
+            playlistPreview?.playlist
+                           ?.name
+                           ?.let { name ->
+                               if( name.startsWith( MONTHLY_PREFIX, true ) )
+                                   getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
+                               else
+                                   name.substringAfter( PINNED_PREFIX )
+                                       .substringAfter( PIPED_PREFIX )
+                           } ?: "Unknown"
     }
 
     //**** SMART RECOMMENDATION
@@ -580,7 +589,7 @@ fun LocalPlaylistSongs(
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
-                if( NavigationBarPosition.Right.isCurrent() )
+                if (NavigationBarPosition.Right.isCurrent())
                     Dimensions.contentWidthRightBar
                 else
                     1f
@@ -609,16 +618,7 @@ fun LocalPlaylistSongs(
 
                         HeaderWithIcon(
                             //title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
-                            title = playlistPreview?.playlist?.name?.let { name ->
-                                if (name.startsWith(PINNED_PREFIX, 0, true))
-                                    name.substringAfter(PINNED_PREFIX) else
-                                    if (name.startsWith(MONTHLY_PREFIX, 0, true))
-                                        getTitleMonthlyPlaylist(name.substringAfter(MONTHLY_PREFIX)) else
-                                        if (name.startsWith(PIPED_PREFIX, 0, true))
-                                            name.substringAfter(PIPED_PREFIX) else name
-                                //if (playlistNotMonthlyType) cleanPrefix(it)
-                                //else getTitleMonthlyPlaylist(cleanPrefix(it))
-                            } ?: "Unknown",
+                            title = playlistName.value,
                             iconId = R.drawable.playlist,
                             enabled = true,
                             showIcon = false,
