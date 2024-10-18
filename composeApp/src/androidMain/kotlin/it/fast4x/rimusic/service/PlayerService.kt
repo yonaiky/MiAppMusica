@@ -1848,7 +1848,6 @@ class PlayerService : InvincibleService(),
     }
 
     /*
-    // New
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
         createYTDataSourceResolverFactory(
             findMediaItem = { videoId ->
@@ -1865,7 +1864,7 @@ class PlayerService : InvincibleService(),
     )
      */
 
-    // Previous actual
+
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
         createDataSourceResolverFactory(
             mediaItemToPlay = { videoId ->
@@ -1978,7 +1977,7 @@ class PlayerService : InvincibleService(),
     }
     */
 
-        // New
+    /*
         private fun createYTDataSourceResolverFactory(
             findMediaItem: suspend (videoId: String) -> MediaItem? = { null }
         ): DataSource.Factory = ResolvingDataSource.Factory(
@@ -2138,10 +2137,10 @@ class PlayerService : InvincibleService(),
             }
         }.handleCatchingErrors()
             .handleRangeErrors()
+*/
 
 
-
-    // Previous
+    // Improved
     private fun createDataSourceResolverFactory(
         mediaItemToPlay: (videoId: String) -> MediaItem?
     ): //ResolvingDataSource.Factory { // not required for handlers
