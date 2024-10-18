@@ -11,19 +11,16 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.platform.LocalContext
 
-import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalDownloader
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Format
-import it.fast4x.rimusic.service.DownloadUtil
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -32,8 +29,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun InitDownloader () {
     val context = LocalContext.current
-    DownloadUtil.getDownloadManager(context)
-    DownloadUtil.getDownloads()
+    MyDownloadHelper.getDownloadManager(context)
+    MyDownloadHelper.getDownloads()
 
 /*
     //val idVideo="initVideoId"
@@ -86,7 +83,7 @@ fun downloadedStateMedia ( mediaId: String ): Boolean {
 
     val downloadCache: SimpleCache
     try {
-        downloadCache = DownloadUtil.getDownloadSimpleCache(context) as SimpleCache
+        downloadCache = MyDownloadHelper.getDownloadSimpleCache(context) as SimpleCache
     } catch (e: Exception) {
         //context.toast(e.toString())
         return false
@@ -155,7 +152,7 @@ fun manageDownload (
             else {
                 if (isNetworkAvailable(context)) {
 
-                    DownloadUtil.scheduleDownload(context = context, mediaItem = mediaItem)
+                    MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)
 
                     /*
                     val contentUri =

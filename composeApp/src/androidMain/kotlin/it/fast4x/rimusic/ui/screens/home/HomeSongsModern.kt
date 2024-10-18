@@ -83,7 +83,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.DownloadUtil
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
@@ -557,7 +557,7 @@ fun HomeSongsModern(
                     }
                     BuiltInPlaylist.Downloaded -> {
 
-                        val downloads = DownloadUtil.downloads.value
+                        val downloads = MyDownloadHelper.downloads.value
 
                         songFlow = Database.listAllSongsAsFlow()
                         dispatcher = Dispatchers.IO

@@ -462,7 +462,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .first()
 
                     MediaId.downloaded -> {
-                        val downloads = DownloadUtil.downloads.value
+                        val downloads = MyDownloadHelper.downloads.value
                         Database.listAllSongs()
                              .filter {
                                     downloads[it.id]?.state == Download.STATE_COMPLETED

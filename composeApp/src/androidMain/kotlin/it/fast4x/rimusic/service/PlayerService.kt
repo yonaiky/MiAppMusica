@@ -21,7 +21,6 @@ import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -56,7 +55,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
-import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -64,7 +62,6 @@ import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERR
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -397,7 +394,7 @@ class PlayerService : InvincibleService(),
     private val isDownloadedState = mediaItemState
         .flatMapMerge { item ->
             item?.mediaId?.let {
-                val downloads = DownloadUtil.downloads.value
+                val downloads = MyDownloadHelper.downloads.value
                 flowOf(downloads[item.mediaId]?.state == Download.STATE_COMPLETED)
                 //flowOf(downloadCache.isCached(it, 0, Database.formatContentLength(it)))
             } ?: flowOf(false)
@@ -542,7 +539,7 @@ class PlayerService : InvincibleService(),
         */
 
         cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
-        downloadCache = DownloadUtil.getDownloadSimpleCache(applicationContext) as SimpleCache
+        downloadCache = MyDownloadHelper.getDownloadSimpleCache(applicationContext) as SimpleCache
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
             //.setRenderersFactory(DefaultRenderersFactory(this).setEnableDecoderFallback(true))
@@ -2625,7 +2622,7 @@ class PlayerService : InvincibleService(),
         @ExperimentalCoroutinesApi
         @FlowPreview
         fun toggleDownload() = mediaItemState.value?.let { mediaItem ->
-            val downloads = DownloadUtil.downloads.value
+            val downloads = MyDownloadHelper.downloads.value
             manageDownload(
                 context = this@PlayerService,
                 mediaItem = mediaItem,

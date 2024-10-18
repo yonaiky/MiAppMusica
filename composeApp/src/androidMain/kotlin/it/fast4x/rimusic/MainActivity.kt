@@ -106,7 +106,7 @@ import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.service.DownloadUtil
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -220,7 +220,7 @@ class MainActivity :
     //,PersistMapOwner
 {
 
-    var downloadUtil = DownloadUtil
+    var downloadUtil = MyDownloadHelper
 
     var client = OkHttpClient()
     var request = OkHttpRequest(client)
@@ -1107,7 +1107,7 @@ val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerService.Binder?> {
 
 val LocalPlayerAwareWindowInsets = staticCompositionLocalOf<WindowInsets> { TODO() }
 
-val LocalDownloader = staticCompositionLocalOf<DownloadUtil> { error("No Downloader provided") }
+val LocalDownloader = staticCompositionLocalOf<MyDownloadHelper> { error("No Downloader provided") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalPlayerSheetState = staticCompositionLocalOf<SheetState> { error("No player sheet state provided") }

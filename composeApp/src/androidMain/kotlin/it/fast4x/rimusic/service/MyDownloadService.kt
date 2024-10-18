@@ -11,8 +11,7 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.PlatformScheduler
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.service.DownloadUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
-import kotlinx.coroutines.flow.update
+import it.fast4x.rimusic.service.MyDownloadHelper.DOWNLOAD_NOTIFICATION_CHANNEL_ID
 
 private const val JOB_ID = 8888
 private const val FOREGROUND_NOTIFICATION_ID = 8989
@@ -29,9 +28,9 @@ class MyDownloadService : DownloadService(
 
         // This will only happen once, because getDownloadManager is guaranteed to be called only once
         // in the life cycle of the process.
-        val downloadManager: DownloadManager = DownloadUtil.getDownloadManager(this)
+        val downloadManager: DownloadManager = MyDownloadHelper.getDownloadManager(this)
         val downloadNotificationHelper: DownloadNotificationHelper =
-            DownloadUtil.getDownloadNotificationHelper(this)
+            MyDownloadHelper.getDownloadNotificationHelper(this)
         downloadManager.addListener(
             TerminalStateNotificationHelper(
                 this,
@@ -50,7 +49,7 @@ class MyDownloadService : DownloadService(
         downloads: MutableList<Download>,
         notMetRequirements: Int
     ): Notification {
-        return DownloadUtil.getDownloadNotificationHelper(this)
+        return MyDownloadHelper.getDownloadNotificationHelper(this)
             .buildProgressNotification(
                 this,
                 R.drawable.download,
@@ -81,12 +80,12 @@ class MyDownloadService : DownloadService(
             downloadManager: DownloadManager,
             download: Download,
             finalException: Exception?) {
-            DownloadUtil.downloads.update { map ->
+            MyDownloadHelper.downloads.update { map ->
                 map.toMutableMap().apply {
                     set(download.request.id, download)
                 }
             }
-            DownloadUtil.getDownloads()
+            MyDownloadHelper.getDownloads()
         }
         */
 
@@ -116,15 +115,6 @@ class MyDownloadService : DownloadService(
                 else -> return
             }
             NotificationUtil.setNotification(context, nextNotificationId++, notification)
-
-            /*
-            DownloadUtil.downloads.update { map ->
-                map.toMutableMap().apply {
-                    set(download.request.id, download)
-                }
-            }
-            DownloadUtil.getDownloads()
-            */
 
         }
 

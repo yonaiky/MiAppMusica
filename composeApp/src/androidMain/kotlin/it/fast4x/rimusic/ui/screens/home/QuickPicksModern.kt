@@ -81,7 +81,7 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.DownloadUtil
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
@@ -301,7 +301,7 @@ fun QuickPicksModern(
     //val showActionsBar by rememberPreference(showActionsBarKey, true)
 
     val downloadedSongs = remember {
-        DownloadUtil.downloads.value.filter {
+        MyDownloadHelper.downloads.value.filter {
             it.value.state == Download.STATE_COMPLETED
         }.keys.toList()
     }

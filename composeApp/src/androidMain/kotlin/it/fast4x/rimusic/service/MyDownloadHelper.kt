@@ -3,23 +3,19 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.ConnectivityManager
 import android.net.Uri
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DataSpec
 //import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
@@ -52,7 +48,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -69,7 +64,7 @@ import java.time.Duration
 import java.util.concurrent.Executors
 
 @UnstableApi
-object DownloadUtil {
+object MyDownloadHelper {
     private val executor = Executors.newCachedThreadPool()
     private val coroutineScope = CoroutineScope(
         executor.asCoroutineDispatcher() +
@@ -161,7 +156,7 @@ object DownloadUtil {
                                     else -> throw UnknownException()
                                 }
                             }
-                            println("DownloadUtil createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
+                            println("MyDownloadHelper createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
 
                             val format = when (audioQualityFormat) {
                                 AudioQualityFormat.Auto -> body?.streamingData?.highestQualityFormat
@@ -170,8 +165,8 @@ object DownloadUtil {
                                 AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
                             } ?: error("No format found") //throw PlayableFormatNotFoundException()
 
-                            println("DownloadUtil createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
-                            println("DownloadUtil createDataSourceResolverFactory adaptiveFormats selected $format")
+                            println("MyDownloadHelper createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
+                            println("MyDownloadHelper createDataSourceResolverFactory adaptiveFormats selected $format")
 
                             val url = when (body?.playabilityStatus?.status) {
                                     "OK" -> {
@@ -257,7 +252,7 @@ object DownloadUtil {
 
     @Synchronized
     fun getDownloadNotificationHelper(context: Context?): DownloadNotificationHelper {
-        if (!DownloadUtil::downloadNotificationHelper.isInitialized) {
+        if (!MyDownloadHelper::downloadNotificationHelper.isInitialized) {
             downloadNotificationHelper =
                 DownloadNotificationHelper(context!!, DOWNLOAD_NOTIFICATION_CHANNEL_ID)
         }
@@ -308,7 +303,7 @@ object DownloadUtil {
 
     @Synchronized
     private fun getDownloadCache(context: Context): Cache {
-        if (!DownloadUtil::downloadCache.isInitialized) {
+        if (!MyDownloadHelper::downloadCache.isInitialized) {
             val downloadContentDirectory =
                 File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
             downloadCache = SimpleCache(
@@ -322,7 +317,7 @@ object DownloadUtil {
 
     @Synchronized
     fun getDownloadSimpleCache(context: Context): Cache {
-        if (!DownloadUtil::downloadCache.isInitialized) {
+        if (!MyDownloadHelper::downloadCache.isInitialized) {
             val downloadContentDirectory =
                 File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
             downloadCache = SimpleCache(
@@ -336,7 +331,7 @@ object DownloadUtil {
 
     @Synchronized
     private fun ensureDownloadManagerInitialized(context: Context) {
-        if (!DownloadUtil::downloadManager.isInitialized) {
+        if (!MyDownloadHelper::downloadManager.isInitialized) {
             downloadManager = DownloadManager(
                 context,
                 getDatabaseProvider(context),
@@ -359,12 +354,7 @@ object DownloadUtil {
                             finalException: Exception?
                         ) = run {
                             downloadQueue.trySend(downloadManager).let { }
-                            downloads.update { map ->
-                                map.toMutableMap().apply {
-                                    set(download.request.id, download)
-                                }
-                            }
-                            getDownloads()
+                            syncDownloads(download)
                         }
 
                         override fun onDownloadRemoved(
@@ -372,12 +362,7 @@ object DownloadUtil {
                             download: Download
                         ) = run {
                             downloadQueue.trySend(downloadManager).let { }
-                            downloads.update { map ->
-                                map.toMutableMap().apply {
-                                    set(download.request.id, download)
-                                }
-                            }
-                            getDownloads()
+                            syncDownloads(download)
                         }
                     }
                 )
@@ -389,15 +374,25 @@ object DownloadUtil {
     }
 
     @Synchronized
+    private fun syncDownloads(download: Download) {
+        downloads.update { map ->
+            map.toMutableMap().apply {
+                set(download.request.id, download)
+            }
+        }
+        getDownloads()
+    }
+
+    @Synchronized
     private fun getDatabaseProvider(context: Context): DatabaseProvider {
-        if (!DownloadUtil::databaseProvider.isInitialized) databaseProvider =
+        if (!MyDownloadHelper::databaseProvider.isInitialized) databaseProvider =
             StandaloneDatabaseProvider(context)
         return databaseProvider
     }
 
     @Synchronized
     fun getDownloadDirectory(context: Context): File {
-        if (!DownloadUtil::downloadDirectory.isInitialized) {
+        if (!MyDownloadHelper::downloadDirectory.isInitialized) {
             downloadDirectory = context.getExternalFilesDir(null) ?: context.filesDir
             downloadDirectory.resolve(DOWNLOAD_CONTENT_DIRECTORY).also { directory ->
                 if (directory.exists()) return@also
@@ -433,7 +428,7 @@ object DownloadUtil {
                         if (it is CancellationException) throw it
 
                         Timber.e(it.stackTraceToString())
-                        println("DownloadUtil scheduleDownload exception ${it.stackTraceToString()}")
+                        println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                     }
                 }
             }
