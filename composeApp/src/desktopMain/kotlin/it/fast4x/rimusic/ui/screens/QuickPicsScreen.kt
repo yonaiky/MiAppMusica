@@ -1,19 +1,11 @@
 package it.fast4x.rimusic.ui.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -29,24 +21,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerDefaults.windowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import database.entities.Song
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.discoverPage
-import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.ArtistItem
@@ -62,27 +46,14 @@ import it.fast4x.rimusic.ui.components.Loader
 import it.fast4x.rimusic.ui.components.Title
 import it.fast4x.rimusic.ui.components.Title2Actions
 import it.fast4x.rimusic.utils.asSong
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import player.PlayerInput
-import player.PlayerSource
-import player.component.ComponentPlayer
-import player.frame.FramePlayer
 import rimusic.composeapp.generated.resources.Res
-import rimusic.composeapp.generated.resources.loader
 import rimusic.composeapp.generated.resources.moods_and_genres
 import rimusic.composeapp.generated.resources.new_albums
 import rimusic.composeapp.generated.resources.play
 import rimusic.composeapp.generated.resources.playlists_you_might_like
 import rimusic.composeapp.generated.resources.related_albums
 import rimusic.composeapp.generated.resources.similar_artists
-import vlcj.VlcjComponentController
-import vlcj.VlcjFrameController
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

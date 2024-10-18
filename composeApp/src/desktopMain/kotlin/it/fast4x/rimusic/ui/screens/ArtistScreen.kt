@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,17 +16,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerDefaults.windowInsets
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -42,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,7 +44,6 @@ import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.artistPage
-import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.items.AlbumItem
 import it.fast4x.rimusic.items.PlaylistItem
 import it.fast4x.rimusic.items.SongItem
@@ -80,15 +70,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rimusic.composeapp.generated.resources.Res
 import rimusic.composeapp.generated.resources.albums
-import rimusic.composeapp.generated.resources.arrow_left
 import rimusic.composeapp.generated.resources.artist_subscribers
-import rimusic.composeapp.generated.resources.chevron_down
-import rimusic.composeapp.generated.resources.chevron_up
 import rimusic.composeapp.generated.resources.dice
 import rimusic.composeapp.generated.resources.from_wikipedia_cca
 import rimusic.composeapp.generated.resources.information
-import rimusic.composeapp.generated.resources.loader
-import rimusic.composeapp.generated.resources.musical_notes
 import rimusic.composeapp.generated.resources.playlists
 import rimusic.composeapp.generated.resources.singles
 import rimusic.composeapp.generated.resources.songs

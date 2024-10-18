@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
@@ -31,7 +30,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.utils.RingBuffer
 import it.fast4x.rimusic.utils.RingBufferPrevious
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.getEnum
