@@ -33,6 +33,7 @@ import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.TimeoutException
 import it.fast4x.rimusic.service.UnknownException
+import it.fast4x.rimusic.utils.getPipedSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.net.ConnectException
@@ -142,7 +143,10 @@ fun VideoPlayer(videoId: String) {
 @OptIn(UnstableApi::class)
 fun getBetterVideoUrl(videoId: String): String? {
     val body = runBlocking(Dispatchers.IO) {
-        Innertube.player(PlayerBody(videoId = videoId))
+        Innertube.player(
+            PlayerBody(videoId = videoId),
+            pipedSession = getPipedSession().toApiSession()
+        )
     }?.getOrElse { throwable ->
         when (throwable) {
             is ConnectException, is UnknownHostException -> throw NoInternetException()

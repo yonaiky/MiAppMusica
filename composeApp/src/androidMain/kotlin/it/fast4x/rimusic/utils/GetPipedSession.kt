@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import io.ktor.http.Url
 import it.fast4x.rimusic.models.PipedSession
+import me.knighthat.appContext
 import timber.log.Timber
 
 /*
@@ -22,9 +23,9 @@ fun getPipedSession(): PipedSession {
 }
 */
 
-@Composable
+
 fun getPipedSession(): PipedSession {
-    val context = LocalContext.current
+    val context = appContext()
     val pipedSession = PipedSession(
         instanceName = "",
         apiBaseUrl = Url(""),

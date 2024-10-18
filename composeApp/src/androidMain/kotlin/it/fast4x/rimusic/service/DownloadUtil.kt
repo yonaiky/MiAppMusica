@@ -35,6 +35,7 @@ import it.fast4x.rimusic.utils.RingBuffer
 import it.fast4x.rimusic.utils.RingBufferPrevious
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -125,7 +126,10 @@ object DownloadUtil {
                         "initVideoId" -> dataSpec
                         else -> {
                             val urlResult = runBlocking(Dispatchers.IO) {
-                                Innertube.player(PlayerBody(videoId = videoId))
+                                Innertube.player(
+                                    PlayerBody(videoId = videoId),
+                                    pipedSession = getPipedSession().toApiSession()
+                                )
                             }?.mapCatching { body ->
                                 if (body.videoDetails?.videoId != videoId) {
                                     throw VideoIdMismatchException()

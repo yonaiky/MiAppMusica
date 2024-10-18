@@ -147,6 +147,7 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.handleCatchingErrors
 import it.fast4x.rimusic.utils.handleRangeErrors
 import it.fast4x.rimusic.utils.intent
@@ -2026,7 +2027,10 @@ class PlayerService : InvincibleService(),
                     .ranged(cachedUri.meta)
             } ?: run {
                 val body = runBlocking(Dispatchers.IO) {
-                    Innertube.player(PlayerBody(videoId = mediaId))
+                    Innertube.player(
+                        PlayerBody(videoId = mediaId),
+                        pipedSession = getPipedSession().toApiSession()
+                    )
                 }?.getOrThrow()
 
                 if (body?.videoDetails?.videoId != mediaId) throw VideoIdMismatchException()
@@ -2212,7 +2216,10 @@ class PlayerService : InvincibleService(),
                     Timber.i("PlayerService createDataSourceResolverFactory videoId $videoId")
 
                     val body = runBlocking(Dispatchers.IO) {
-                        Innertube.player(PlayerBody(videoId = videoId))
+                        Innertube.player(
+                            PlayerBody(videoId = videoId),
+                            pipedSession = getPipedSession().toApiSession()
+                        )
                     }?.getOrElse { throwable ->
                         when (throwable) {
                             is ConnectException, is UnknownHostException -> throw NoInternetException()

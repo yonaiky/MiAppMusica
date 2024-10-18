@@ -24,6 +24,7 @@ import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import it.fast4x.piped.models.CreatedPlaylist
 import it.fast4x.piped.models.Instance
+import it.fast4x.piped.models.PipedResponse
 import it.fast4x.piped.models.Playlist
 import it.fast4x.piped.models.PlaylistPreview
 import it.fast4x.piped.models.Session
@@ -157,6 +158,7 @@ object Piped {
         }
 
     val playlist = Playlists()
+    val media = Media()
 
     @Serializable
     data class Message(
@@ -241,6 +243,12 @@ object Piped {
             println("pipedInfo piped.playlists.songs: failed ${it.message}")
         }
 
+    }
+
+    class Media internal constructor() {
+        suspend fun audioStreams(session: Session, videoId: String) = runCatchingCancellable {
+            request(session, "/streams/$videoId").body<PipedResponse>().audioStreams
+        }
     }
 
 
