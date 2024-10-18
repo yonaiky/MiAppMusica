@@ -330,6 +330,7 @@ fun AlbumSongs(
                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                         manageDownload(
                             context = context,
+                            mediaItem = it.asMediaItem,
                             songId = it.asMediaItem.mediaId,
                             songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                             downloadState = true
@@ -362,6 +363,7 @@ fun AlbumSongs(
                         }
                         manageDownload(
                             context = context,
+                            mediaItem = it.asMediaItem,
                             songId = it.asMediaItem.mediaId,
                             songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                             downloadState = false
@@ -715,6 +717,7 @@ fun AlbumSongs(
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
+                                                mediaItem = song.asMediaItem,
                                                 songId = song.asMediaItem.mediaId,
                                                 songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                                 downloadState = isDownloaded

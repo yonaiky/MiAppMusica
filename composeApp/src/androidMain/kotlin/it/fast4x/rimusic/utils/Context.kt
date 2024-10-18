@@ -10,9 +10,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import it.fast4x.rimusic.BuildConfig
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.offline.DownloadRequest
+import androidx.media3.exoplayer.offline.DownloadService
+import androidx.media3.exoplayer.offline.DownloadService.sendAddDownload
 
 inline fun <reified T> Context.intent(): Intent =
     Intent(this@Context, T::class.java)
@@ -50,6 +54,7 @@ fun Context.hasPermission(permission: String) = ContextCompat.checkSelfPermissio
     permission
 ) == PackageManager.PERMISSION_GRANTED
 
+/*
 fun launchYouTubeMusic(
     context: Context,
     endpoint: String,
@@ -80,4 +85,22 @@ fun launchYouTubeMusic(
             tryWithoutBrowser = false
         ) else false
     }
+}
+ */
+
+@OptIn(UnstableApi::class)
+inline fun <reified T : DownloadService> Context.download(request: DownloadRequest) = runCatching {
+    sendAddDownload(
+        /* context         = */ this,
+        /* clazz           = */ T::class.java,
+        /* downloadRequest = */ request,
+        /* foreground      = */ true
+    )
+}.recoverCatching {
+    sendAddDownload(
+        /* context         = */ this,
+        /* clazz           = */ T::class.java,
+        /* downloadRequest = */ request,
+        /* foreground      = */ false
+    )
 }

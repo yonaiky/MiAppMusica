@@ -240,7 +240,7 @@ class PlayerService : InvincibleService(),
     private lateinit var player: ExoPlayer
     private lateinit var downloadCache: SimpleCache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
-    private lateinit var connectivityManager: ConnectivityManager
+    //private lateinit var connectivityManager: ConnectivityManager
 
     private val actions = PlaybackStateCompat.ACTION_PLAY or
             PlaybackStateCompat.ACTION_PAUSE or
@@ -589,7 +589,7 @@ class PlayerService : InvincibleService(),
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
 
-        connectivityManager = getSystemService()!!
+        //connectivityManager = getSystemService()!!
 
         if (showLikeButton && showDownloadButton)
             mediaSession.setPlaybackState(stateBuilder.build())
@@ -2628,6 +2628,7 @@ class PlayerService : InvincibleService(),
             val downloads = DownloadUtil.downloads.value
             manageDownload(
                 context = this@PlayerService,
+                mediaItem = mediaItem,
                 songId = mediaItem.mediaId,
                 songTitle = cleanPrefix(mediaItem.mediaMetadata.title.toString()),
                 downloadState = downloads[mediaItem.mediaId]?.state == Download.STATE_COMPLETED

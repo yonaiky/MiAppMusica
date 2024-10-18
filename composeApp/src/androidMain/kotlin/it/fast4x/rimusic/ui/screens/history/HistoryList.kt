@@ -237,6 +237,7 @@ fun HistoryList(
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,
+                                            mediaItem = event.song.asMediaItem,
                                             songId = event.song.asMediaItem.mediaId,
                                             songTitle = event.song.asMediaItem.mediaMetadata.title.toString(),
                                             downloadState = isDownloaded

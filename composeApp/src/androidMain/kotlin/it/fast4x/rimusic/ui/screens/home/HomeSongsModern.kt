@@ -1190,6 +1190,7 @@ fun HomeSongsModern(
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,
+                                            mediaItem = song.song.asMediaItem,
                                             songId = song.song.id,
                                             songTitle = song.song.title,
                                             downloadState = isDownloaded

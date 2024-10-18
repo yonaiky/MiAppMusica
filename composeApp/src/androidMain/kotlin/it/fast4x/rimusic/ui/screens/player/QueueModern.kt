@@ -588,6 +588,7 @@ fun QueueModern(
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
+                                                mediaItem = window.mediaItem,
                                                 songId = window.mediaItem.mediaId,
                                                 songTitle = window.mediaItem.mediaMetadata.title.toString(),
                                                 downloadState = isDownloaded
@@ -682,6 +683,7 @@ fun QueueModern(
                                                         onDownload = {
                                                             manageDownload(
                                                                 context = context,
+                                                                mediaItem = window.mediaItem,
                                                                 songId = window.mediaItem.mediaId,
                                                                 songTitle = window.mediaItem.mediaMetadata.title.toString(),
                                                                 downloadState = isDownloaded

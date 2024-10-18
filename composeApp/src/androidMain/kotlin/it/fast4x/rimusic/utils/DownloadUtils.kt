@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -135,6 +136,7 @@ fun downloadedStateMedia ( mediaId: String ): Boolean {
 @UnstableApi
 fun manageDownload (
     context: android.content.Context,
+    mediaItem: MediaItem,
     songId: String,
     songTitle: String,
     downloadState: Boolean = false
@@ -152,6 +154,10 @@ fun manageDownload (
                 )
             else {
                 if (isNetworkAvailable(context)) {
+
+                    DownloadUtil.scheduleDownload(context = context, mediaItem = mediaItem)
+
+                    /*
                     val contentUri =
                         "https://www.youtube.com/watch?v=${songId}".toUri()
                     val downloadRequest = DownloadRequest
@@ -169,6 +175,8 @@ fun manageDownload (
                         downloadRequest,
                         false
                     )
+
+                     */
                 }
             }
         //} catch (e: Exception) {

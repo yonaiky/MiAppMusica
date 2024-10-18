@@ -598,12 +598,14 @@ fun SongItem(
 
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
 
+                //println("downloadutil $mediaId $downloadState: $downloadState")
+
                 if ((downloadState == Download.STATE_DOWNLOADING
                             || downloadState == Download.STATE_QUEUED
                             || downloadState == Download.STATE_RESTARTING
                             )
                     && !isDownloaded) {
-                    val context = LocalContext.current
+                    //val context = LocalContext.current
                     IconButton(
                         onClick = {
                             DownloadService.sendRemoveDownload(

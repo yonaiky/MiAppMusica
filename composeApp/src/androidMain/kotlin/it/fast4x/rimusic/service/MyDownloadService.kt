@@ -2,6 +2,7 @@ package it.fast4x.rimusic.service
 
 import android.app.Notification
 import android.content.Context
+import androidx.media3.common.util.NotificationUtil
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.offline.Download
@@ -75,7 +76,7 @@ class MyDownloadService : DownloadService(
         private val context: Context = context.applicationContext
         private var nextNotificationId: Int = firstNotificationId
 
-
+        /*
         override fun onDownloadChanged(
             downloadManager: DownloadManager,
             download: Download,
@@ -87,8 +88,9 @@ class MyDownloadService : DownloadService(
             }
             DownloadUtil.getDownloads()
         }
+        */
 
-/*
+
         override fun onDownloadChanged(
             downloadManager: DownloadManager,
             download: Download,
@@ -98,7 +100,7 @@ class MyDownloadService : DownloadService(
                 Download.STATE_COMPLETED -> {
                     notificationHelper.buildDownloadCompletedNotification(
                         context,
-                        R.drawable.downloaded,  /* contentIntent = */
+                        R.drawable.downloaded,
                         null,
                         Util.fromUtf8Bytes(download.request.data)
                     )
@@ -106,7 +108,7 @@ class MyDownloadService : DownloadService(
                 Download.STATE_FAILED -> {
                     notificationHelper.buildDownloadFailedNotification(
                         context,
-                        R.drawable.downloaded,  /* contentIntent = */
+                        R.drawable.alert_circle_not_filled,
                         null,
                         Util.fromUtf8Bytes(download.request.data)
                     )
@@ -115,9 +117,17 @@ class MyDownloadService : DownloadService(
             }
             NotificationUtil.setNotification(context, nextNotificationId++, notification)
 
+            /*
+            DownloadUtil.downloads.update { map ->
+                map.toMutableMap().apply {
+                    set(download.request.id, download)
+                }
+            }
+            DownloadUtil.getDownloads()
+            */
 
         }
-        */
+
 
     }
 

@@ -314,6 +314,7 @@ fun StatisticsPage(
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
                                 manageDownload(
                                     context = context,
+                                    mediaItem = songs.get(it).asMediaItem,
                                     songId = songs.get(it).asMediaItem.mediaId,
                                     songTitle = songs.get(it).asMediaItem.mediaMetadata.title.toString(),
                                     downloadState = isDownloaded

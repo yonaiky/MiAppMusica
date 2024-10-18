@@ -328,6 +328,7 @@ fun AlbumDetailsModern(
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             manageDownload(
                                 context = context,
+                                mediaItem = it.asMediaItem,
                                 songId = it.asMediaItem.mediaId,
                                 songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                                 downloadState = true
@@ -339,6 +340,7 @@ fun AlbumDetailsModern(
                             binder?.cache?.removeResource(it.mediaId)
                             manageDownload(
                                 context = context,
+                                mediaItem = it,
                                 songId = it.mediaId,
                                 songTitle = it.mediaMetadata.title.toString(),
                                 downloadState = true
@@ -378,6 +380,7 @@ fun AlbumDetailsModern(
                             }
                             manageDownload(
                                 context = context,
+                                mediaItem = it.asMediaItem,
                                 songId = it.asMediaItem.mediaId,
                                 songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                                 downloadState = false
@@ -400,6 +403,7 @@ fun AlbumDetailsModern(
                             }
                             manageDownload(
                                 context = context,
+                                mediaItem = it,
                                 songId = it.mediaId,
                                 songTitle = it.mediaMetadata.title.toString(),
                                 downloadState = false
@@ -941,6 +945,7 @@ fun AlbumDetailsModern(
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,
+                                        mediaItem = song.asMediaItem,
                                         songId = song.asMediaItem.mediaId,
                                         songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                         downloadState = isDownloaded

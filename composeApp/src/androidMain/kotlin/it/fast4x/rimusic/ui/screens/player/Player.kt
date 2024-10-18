@@ -1383,6 +1383,7 @@ fun Player(
                                 onClick = {
                                     manageDownload(
                                         context = context,
+                                        mediaItem = mediaItem,
                                         songId = mediaItem.mediaId,
                                         songTitle = mediaItem.mediaMetadata.title.toString(),
                                         downloadState = isDownloaded
