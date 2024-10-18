@@ -66,8 +66,10 @@ suspend fun Innertube.player(
                 }.body<PipedResponse>().audioStreams
                  */
 
+                safePlayerResponse // temporaly used
 
-
+                /*
+                    // TODO() Piped api streams not working, improve with other service
                     val audioStreams = Piped.media.audioStreams(
                         session = pipedSession,
                         videoId = body.videoId
@@ -85,6 +87,7 @@ suspend fun Innertube.player(
                         )
                     )
 
+                 */
 
 
             }
