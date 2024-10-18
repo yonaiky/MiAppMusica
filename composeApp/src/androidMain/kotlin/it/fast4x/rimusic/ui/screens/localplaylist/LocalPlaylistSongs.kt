@@ -200,6 +200,19 @@ fun LocalPlaylistSongs(
     val playlistName = remember { mutableStateOf( "" ) }
     var listMediaItems = remember { mutableListOf<MediaItem>() }
 
+    LaunchedEffect( playlistPreview?.playlist?.name ) {
+        playlistName.value =
+            playlistPreview?.playlist
+                ?.name
+                ?.let { name ->
+                    if( name.startsWith( MONTHLY_PREFIX, true ) )
+                        getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
+                    else
+                        name.substringAfter( PINNED_PREFIX )
+                            .substringAfter( PIPED_PREFIX )
+                } ?: "Unknown"
+    }
+
     // Search states
     val visibleState = rememberSaveable { mutableStateOf( false ) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
@@ -426,17 +439,6 @@ fun LocalPlaylistSongs(
 
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview(playlistId).collect { playlistPreview = it }
-
-        playlistName.value =
-            playlistPreview?.playlist
-                           ?.name
-                           ?.let { name ->
-                               if( name.startsWith( MONTHLY_PREFIX, true ) )
-                                   getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
-                               else
-                                   name.substringAfter( PINNED_PREFIX )
-                                       .substringAfter( PIPED_PREFIX )
-                           } ?: "Unknown"
     }
 
     //**** SMART RECOMMENDATION
