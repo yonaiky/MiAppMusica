@@ -35,25 +35,21 @@ interface ImportSongsFromCSV: Button {
                                 transaction {
                                     beforeTransaction( index, row )
                                     /**/
-                                    if (row["MediaId"] != null && row["Title"] != null) {
-                                        val song =
-                                            row["MediaId"]?.let {
-                                                row["Title"]?.let { it1 ->
-                                                    Song(
-                                                        id = it,
-                                                        title = it1,
-                                                        artistsText = row["Artists"],
-                                                        durationText = row["Duration"],
-                                                        thumbnailUrl = row["ThumbnailUrl"],
-                                                        totalPlayTimeMs = 1L
-                                                    )
-                                                }
-                                            }
-                                        if( song == null ) return@transaction
-                                        transaction {
-                                            afterTransaction( index, song )
-                                        }
-                                    }
+                                    val mediaId = row["MediaId"]
+                                    val title = row["Title"]
+
+                                    if( mediaId == null || title == null)
+                                        return@transaction
+
+                                    val song = Song (
+                                        id = mediaId,
+                                        title = title,
+                                        artistsText = row["Artists"],
+                                        durationText = row["Duration"],
+                                        thumbnailUrl = row["ThumbnailUrl"],
+                                        totalPlayTimeMs = 1L
+                                    )
+                                    afterTransaction( index, song )
                                 }
                             }
                         }
