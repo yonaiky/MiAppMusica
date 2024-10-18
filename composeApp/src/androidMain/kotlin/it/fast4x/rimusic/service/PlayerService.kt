@@ -56,6 +56,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
@@ -63,6 +64,7 @@ import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERR
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -2143,13 +2145,13 @@ class PlayerService : InvincibleService(),
                         .setCache(cache)
                         .setUpstreamDataSourceFactory(
                             applicationContext.defaultDataSourceFactory
-                                    /*
+                            /*
                             DefaultDataSource.Factory(
                                 this,
                                 OkHttpDataSource.Factory(okHttpClient())
                                     .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
                             )
-                                     */
+                            */
                         )
                 )
                 .setCacheWriteDataSinkFactory(null)

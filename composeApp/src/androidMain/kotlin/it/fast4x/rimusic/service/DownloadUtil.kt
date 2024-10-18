@@ -11,6 +11,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DataSpec
 //import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
@@ -32,6 +33,7 @@ import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.utils.RingBufferPrevious
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.defaultDataSourceFactory
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.preferences
@@ -43,19 +45,24 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import java.io.File
+import java.net.ConnectException
 import java.net.InetSocketAddress
 import java.net.Proxy
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.time.Duration
 import java.util.concurrent.Executors
 
 @UnstableApi
 object DownloadUtil {
     const val DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel"
+
     //private const val TAG = "DownloadUtil"
     private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
 
     private lateinit var databaseProvider: DatabaseProvider
     private lateinit var downloadCache: Cache
+
     //private lateinit var dataSourceFactory: DataSource.Factory
     //private lateinit var httpDataSourceFactory: HttpDataSource.Factory
     //private lateinit var ResolvingDataSourceFactory: ResolvingDataSource.Factory
@@ -89,32 +96,27 @@ object DownloadUtil {
     @SuppressLint("SuspiciousIndentation")
     @Synchronized
     fun getResolvingDataSourceFactory(context: Context): ResolvingDataSource.Factory {
-        //val cache = getDownloadCache(context)
         audioQualityFormat =
             context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
-        connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
+        //connectivityManager =
+        //    getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
 
         val dataSourceFactory =
             ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
-                val videoId = dataSpec.key ?: error("A key must be set")
-                //val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
-                //    ?: error("A key must be set")
+                val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
+                    ?: error("A key must be set")
+
                 //val chunkLength = 512 * 1024L
                 //val chunkLength = 1024 * 1024L
                 //val chunkLength = 10000 * 1024L
                 //val chunkLength = 30000 * 1024L
                 val chunkLength = 180000 * 1024L
-                //val chunkLength = if (dataSpec.length >= 0) dataSpec.length else 1
                 val ringBuffer = RingBufferPrevious<Pair<String, Uri>?>(2) { null }
+
                 if (
-                //cache.isCached(videoId, dataSpec.position, chunkLength)
                     dataSpec.isLocal ||
-                    downloadCache.isCached(
-                        videoId,
-                        dataSpec.position,
-                        if (dataSpec.length >= 0) dataSpec.length else 1
-                    )
+                    downloadCache.isCached(videoId, dataSpec.position, chunkLength)
                 ) {
                     dataSpec
                 } else {
@@ -123,94 +125,65 @@ object DownloadUtil {
                         ringBuffer.getOrNull(1)?.first -> dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
                         "initVideoId" -> dataSpec
                         else -> {
-                            val urlResult = runBlocking(Dispatchers.IO) {
+                            val body = runBlocking(Dispatchers.IO) {
                                 Innertube.player(
-                                    PlayerBody(videoId = videoId),
+                                    body = PlayerBody(videoId = videoId),
                                     pipedSession = getPipedSession().toApiSession()
                                 )
-                            }?.mapCatching { body ->
-                                if (body.videoDetails?.videoId != videoId) {
-                                    throw VideoIdMismatchException()
+                            }?.getOrElse { throwable ->
+                                when (throwable) {
+                                    is ConnectException, is UnknownHostException -> throw NoInternetException()
+                                    is SocketTimeoutException -> throw TimeoutException()
+                                    else -> throw UnknownException()
                                 }
+                            }
+                            println("DownloadUtil createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
 
-                                val bestPlayedFormat = runBlocking(Dispatchers.IO) {
-                                    Database.getBestFormat(videoId).firstOrNull()
-                                }
+                            val format = when (audioQualityFormat) {
+                                AudioQualityFormat.Auto -> body?.streamingData?.highestQualityFormat
+                                AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
+                                AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
+                                AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
+                            } ?: throw PlayableFormatNotFoundException()
 
-                                when (body.playabilityStatus?.status) {
-                                    "OK" -> if (bestPlayedFormat != null) {
-                                        body.streamingData?.adaptiveFormats?.find {
-                                            it.itag == bestPlayedFormat.itag
-                                        }
-                                    } else {
-                                        body.streamingData?.adaptiveFormats
-                                            ?.filter { it.isAudio }
-                                            ?.maxByOrNull {
-                                                (it.bitrate?.times(
-                                                    when (audioQualityFormat) {
-                                                        AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -2 else 1
-                                                        AudioQualityFormat.High -> 1
-                                                        AudioQualityFormat.Medium -> -1
-                                                        AudioQualityFormat.Low -> -2
-                                                    }
-                                                ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-                                            }
-                                            /*
-                                            ?.maxByOrNull {
-                                                it.bitrate?.times(
-                                                    (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                                                ) ?: -1
-                                            }
-                                             */
-                                    }
-                                        ?.let { format ->
+                            println("DownloadUtil createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
+                            println("DownloadUtil createDataSourceResolverFactory adaptiveFormats selected $format")
 
+                            val url = when (body?.playabilityStatus?.status) {
+                                    "OK" -> {
+                                        format.let { formatIn ->
                                             query {
                                                 if (Database.songExist(videoId) == 1) {
                                                     Database.upsert(
                                                         Format(
                                                             songId = videoId,
-                                                            itag = format.itag,
-                                                            mimeType = format.mimeType,
-                                                            bitrate = format.bitrate,
+                                                            itag = formatIn.itag,
+                                                            mimeType = formatIn.mimeType,
+                                                            bitrate = formatIn.bitrate,
                                                             loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                                            contentLength = format.contentLength,
-                                                            lastModified = format.lastModified
+                                                            contentLength = formatIn.contentLength,
+                                                            lastModified = formatIn.lastModified
                                                         )
                                                     )
                                                 }
-                                                /* else {
-                                            Database.insert(mediaItem as Song)
-                                            if (Database.songExist(videoId) == 1) {
-                                                Database.insert(
-                                                    Format(
-                                                        songId = videoId,
-                                                        itag = format.itag,
-                                                        mimeType = format.mimeType,
-                                                        bitrate = format.bitrate,
-                                                        loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                                        contentLength = format.contentLength,
-                                                        lastModified = format.lastModified
-                                                    )
-                                                )
-                                            }
-                                        }*/
                                             }
 
-                                            format.url
+                                            formatIn.url
                                         } ?: throw PlayableFormatNotFoundException()
+                                    }
 
                                     "UNPLAYABLE" -> throw UnplayableException()
                                     "LOGIN_REQUIRED" -> throw LoginRequiredException()
                                     else -> throw UnknownException()
                                 }
-                            }
 
-                            urlResult?.getOrNull()?.let { url ->
-                                ringBuffer.append(videoId to url.toUri())
-                                dataSpec.withUri(url.toUri())
-                                    .subrange(dataSpec.uriPositionOffset, chunkLength)
-                            } ?: throw UnknownException()
+
+                            val uri = url.toUri()
+                            ringBuffer.append(videoId to uri)
+
+                            dataSpec
+                                .withUri(uri)
+
                         }
                     }
                 }
@@ -242,8 +215,9 @@ object DownloadUtil {
     private fun createCacheDataSource(context: Context): DataSource.Factory {
         return CacheDataSource.Factory().setCache(getDownloadCache(context)).apply {
             setUpstreamDataSourceFactory(
-                OkHttpDataSource.Factory(okHttpClient())
-                    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
+                context.defaultDataSourceFactory
+                //OkHttpDataSource.Factory(okHttpClient())
+                //    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
                 /*
                 DefaultHttpDataSource.Factory()
                     .setConnectTimeoutMs(16000)
