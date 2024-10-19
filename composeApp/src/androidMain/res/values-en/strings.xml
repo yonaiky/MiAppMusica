@@ -69,7 +69,7 @@
     <string name="add_spacing_around_texts">Add spacing around texts</string>
     <string name="lockscreen">LOCKSCREEN</string>
     <string name="show_song_cover">Show song cover</string>
-    <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
+    <string name="use_song_cover_on_lockscreen">Set currently playing song cover as lockscreen wallpaper</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>
     <string name="image_cache">IMAGE CACHE</string>
@@ -358,7 +358,7 @@
     <string name="but_these_updates_would_not_go_through">But these updates would not go through the additional screening performed at e.g. IzzyOnDroid or F-Droid.</string>
     <string name="sleeptimer_stop">stop</string>
     <string name="player_keep_minimized">Keep minimized</string>
-    <string name="when_click_on_a_song_player_start_minimized">When click on a song, player start minimized</string>
+    <string name="when_click_on_a_song_player_start_minimized">When clicking on a song, player start minimized</string>
     <string name="settings_use_font_type">Font type</string>
     <string name="enabled">Enabled</string>
     <string name="ask">Ask</string>
@@ -366,7 +366,7 @@
     <string name="blacklisted_folders">Blacklisted folders</string>
     <string name="edit_blacklist_for_on_device_songs">Edit blacklist for on device songs</string>
     <string name="add_folder">Add folder</string>
-    <string name="this_folder_already_exists">This folder already exists.</string>
+    <string name="this_folder_already_exists">This folder already exists</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
     <string name="player_appearance">Player Appearance</string>
     <string name="player_action_bar">PLAYER ACTION BAR</string>
@@ -664,7 +664,7 @@
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Stats for Nerds</string>
     <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes liked and playlist songs from queue</string>
+    <string name="discoverinfo">Remove songs from the queue if included in favorites or playlists</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
