@@ -54,7 +54,11 @@ val Context.encryptedPreferences: SharedPreferences
              * (maybe this bug is only present on devices with high API levels anyway).
              */
             if (isAtLeastAndroid7) {
-                deleteSharedPreferences("secure_preferences")
+                runCatching {
+                    deleteSharedPreferences("secure_preferences")
+                }.onFailure {
+                    Timber.e(it, "Error while deleting encrypted preferences")
+                }
             }
             return getEncryptedSharedPreferencesResult().getOrThrow()
         }

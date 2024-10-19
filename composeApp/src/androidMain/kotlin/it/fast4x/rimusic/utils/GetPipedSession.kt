@@ -25,6 +25,7 @@ fun getPipedSession(): PipedSession {
 
 
 fun getPipedSession(): PipedSession {
+
     val context = appContext()
     val pipedSession = PipedSession(
         instanceName = "",
@@ -32,7 +33,7 @@ fun getPipedSession(): PipedSession {
         token = "",
         username = ""
     )
-    if (context.preferences.getBoolean(isPipedEnabledKey, false)) {
+    if (context.preferences.getBoolean(isPipedEnabledKey, false) && isAtLeastAndroid7) {
         runCatching {
             with(context.encryptedPreferences) {
                 pipedSession.username = getString(pipedUsernameKey, "").toString()
