@@ -9,6 +9,7 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import it.fast4x.rimusic.utils.defaultDataSourceFactory
 import it.fast4x.rimusic.utils.isConnectionMetered
+import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.runBlocking
 import me.knighthat.appContext
 import java.io.IOException
@@ -22,14 +23,8 @@ internal fun PlayerService.createDataSourceFactory(): DataSource.Factory {
                 CacheDataSource.Factory()
                     .setCache(cache)
                     .setUpstreamDataSourceFactory(
-                        applicationContext.defaultDataSourceFactory
-                        /*
-                        DefaultDataSource.Factory(
-                            this,
-                            OkHttpDataSource.Factory(okHttpClient())
-                                .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
-                        )
-                        */
+                        //appContext().defaultDataSourceFactory
+                        appContext().okHttpDataSourceFactory
                     )
             )
             .setCacheWriteDataSinkFactory(null)
@@ -59,16 +54,8 @@ internal fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
         CacheDataSource.Factory()
             .setCache(getDownloadCache(appContext())).apply {
                 setUpstreamDataSourceFactory(
-                    appContext().defaultDataSourceFactory
-                    //OkHttpDataSource.Factory(okHttpClient())
-                    //    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
-                    /*
-                    DefaultHttpDataSource.Factory()
-                        .setConnectTimeoutMs(16000)
-                        .setReadTimeoutMs(8000)
-                        .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-
-                     */
+                    //appContext().defaultDataSourceFactory
+                    appContext().okHttpDataSourceFactory
                 )
                 setCacheWriteDataSinkFactory(null)
             }

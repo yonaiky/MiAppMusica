@@ -49,17 +49,49 @@ class MyDownloadService : DownloadService(
     override fun getForegroundNotification(
         downloads: MutableList<Download>,
         notMetRequirements: Int
+    ) = NotificationCompat
+        .Builder(
+            /* context = */ this,
+            /* notification = */ MyDownloadHelper
+                .getDownloadNotificationHelper(this)
+                .buildProgressNotification(
+                /* context            = */ this,
+                /* smallIcon          = */ R.drawable.download_progress,
+                /* contentIntent      = */ null,
+                /* message            = */ "${downloads.size} in progress",
+                /* downloads          = */ downloads,
+                /* notMetRequirements = */ notMetRequirements
+            )
+        )
+        .setChannelId(DOWNLOAD_NOTIFICATION_CHANNEL_ID)
+        /*
+        // Add action in notification
+        .addAction(
+            NotificationCompat.Action.Builder(
+                /* icon = */ R.drawable.close,
+                /* title = */ getString(R.string.cancel),
+                /* intent = */ null //TODO notificationActionReceiver.cancel.pendingIntent
+            ).build()
+        )
+        */
+        .build()
+
+    /*
+    override fun getForegroundNotification(
+        downloads: MutableList<Download>,
+        notMetRequirements: Int
     ): Notification {
         return MyDownloadHelper.getDownloadNotificationHelper(this)
             .buildProgressNotification(
                 this,
                 R.drawable.download,
                 null,
-                null,
+                "My Music",
                 downloads,
                 notMetRequirements
             )
     }
+     */
 
     /**
      * Creates and displays notifications for downloads when they complete or fail.

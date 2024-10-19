@@ -1384,9 +1384,14 @@ fun Player(
                                     manageDownload(
                                         context = context,
                                         mediaItem = mediaItem,
-                                        songId = mediaItem.mediaId,
-                                        songTitle = mediaItem.mediaMetadata.title.toString(),
                                         downloadState = isDownloaded
+                                    )
+                                },
+                                onCancelButtonClicked = {
+                                    manageDownload(
+                                        context = context,
+                                        mediaItem = mediaItem,
+                                        downloadState = true // this will cancel the download
                                     )
                                 },
                                 modifier = Modifier

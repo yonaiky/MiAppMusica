@@ -27,49 +27,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @UnstableApi
 @Composable
-fun InitDownloader () {
+fun InitDownloader() {
     val context = LocalContext.current
     MyDownloadHelper.getDownloadManager(context)
     MyDownloadHelper.getDownloads()
-
-/*
-    //val idVideo="initVideoId"
-    val idVideo="8n4S1-ctsZw"
-    //val contentUri = "https://$idVideo".toUri()
-    val contentUri = "https://www.youtube.com/watch?v=8n4S1-ctsZw".toUri()
-
-    //val idVideo="8n4S1-ctsZw"
-    //val contentUri = "https://www.youtube.com/watch?v=$idVideo".toUri()
-
-    val downloadRequest = DownloadRequest
-        .Builder(
-            idVideo,
-            contentUri
-        )
-        .setCustomCacheKey(idVideo)
-        .setData(idVideo.toByteArray())
-        .build()
-
-
-    runCatching {
-            DownloadService.sendAddDownload(
-                context,
-                MyDownloadService::class.java,
-                downloadRequest,
-                false
-            )
-        }.onFailure {
-        Log.d("downloadInit","Downloader initialized $it" )
-    }
-*/
 }
 
 
 @UnstableApi
 @Composable
-fun downloadedStateMedia ( mediaId: String ): Boolean {
+fun downloadedStateMedia(mediaId: String): Boolean {
     val context = LocalContext.current
-   // if (!checkInternetConnection()) return false
+    // if (!checkInternetConnection()) return false
     /*
     if (!isNetworkAvailableComposable()) {
         //context.toast("No connection")
@@ -131,57 +100,29 @@ fun downloadedStateMedia ( mediaId: String ): Boolean {
 
 
 @UnstableApi
-fun manageDownload (
+fun manageDownload(
     context: android.content.Context,
     mediaItem: MediaItem,
-    songId: String,
-    songTitle: String,
     downloadState: Boolean = false
 ) {
-//Log.d("mediaItem","managedownload checkinternet ${isNetworkAvailable(context)}")
 
-    //if (isNetworkAvailable(context)) {
-        //try {
-            if (downloadState)
-                DownloadService.sendRemoveDownload(
-                    context,
-                    MyDownloadService::class.java,
-                    songId,
-                    false
-                )
-            else {
-                if (isNetworkAvailable(context)) {
+    if (downloadState)
+        DownloadService.sendRemoveDownload(
+            context,
+            MyDownloadService::class.java,
+            mediaItem.mediaId,
+            false
+        )
+    else {
+        if (isNetworkAvailable(context)) {
 
-                    MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)
+            MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)
 
-                    /*
-                    val contentUri =
-                        "https://www.youtube.com/watch?v=${songId}".toUri()
-                    val downloadRequest = DownloadRequest
-                        .Builder(
-                            songId,
-                            contentUri
-                        )
-                        .setCustomCacheKey(songId)
-                        .setData(cleanPrefix(songTitle).toByteArray())
-                        .build()
 
-                    DownloadService.sendAddDownload(
-                        context,
-                        MyDownloadService::class.java,
-                        downloadRequest,
-                        false
-                    )
+        }
+    }
 
-                     */
-                }
-            }
-        //} catch (e: Exception) {
-        //    e.printStackTrace()
-        //}
-    //}
 }
-
 
 
 @UnstableApi

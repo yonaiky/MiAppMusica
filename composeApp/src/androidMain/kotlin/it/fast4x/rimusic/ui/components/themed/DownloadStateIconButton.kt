@@ -17,12 +17,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
+import it.fast4x.rimusic.R
 import me.knighthat.colorPalette
 
 @UnstableApi
 @Composable
 fun DownloadStateIconButton(
     onClick: () -> Unit,
+    onCancelButtonClicked: () -> Unit,
     @DrawableRes icon: Int,
     color: Color,
     modifier: Modifier = Modifier,
@@ -35,6 +37,20 @@ fun DownloadStateIconButton(
                 || downloadState == Download.STATE_QUEUED
                 || downloadState == Download.STATE_RESTARTING
                 ){
+        Image(
+            painter = painterResource(R.drawable.download_progress),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(color),
+            modifier = Modifier
+                .clickable(
+                    indication = indication ?: ripple(bounded = false),
+                    interactionSource = remember { MutableInteractionSource() },
+                    enabled = enabled,
+                    onClick = onCancelButtonClicked
+                )
+                .then(modifier)
+        )
+        /*
         CircularProgressIndicator(
             strokeWidth = 2.dp,
             color = colorPalette().text,
@@ -42,6 +58,8 @@ fun DownloadStateIconButton(
                 .size(16.dp)
 
         )
+
+         */
     } else {
         Image(
             painter = painterResource(icon),

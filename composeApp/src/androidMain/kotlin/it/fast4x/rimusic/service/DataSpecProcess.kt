@@ -10,7 +10,6 @@ import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.enums.AudioQualityFormat
-import it.fast4x.rimusic.service.MyDownloadHelper.audioQualityFormat
 import it.fast4x.rimusic.utils.getPipedSession
 
 @OptIn(UnstableApi::class)
@@ -28,28 +27,6 @@ internal suspend fun PlayerService.dataSpecProcess(dataSpec: DataSpec, context: 
     }
 
     val format = getMediaFormat(videoId, audioQualityFormat)
-
-    /*
-    val format = Innertube.player(
-        body = PlayerBody(videoId = videoId),
-        pipedSession = getPipedSession().toApiSession()
-    )?.fold(
-        { playerResponse ->
-            when (audioQualityFormat) {
-                AudioQualityFormat.Auto -> playerResponse.streamingData?.autoMaxQualityFormat
-                AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
-                AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
-                AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
-            }
-        },
-        {
-            //return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
-
-            println("PlayerService DataSpecProcess Error: ${it.message}")
-            throw it
-        }
-    )
-    */
 
     println("PlayerService DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
     return dataSpec.withUri(Uri.parse(format?.url))
@@ -69,28 +46,6 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(dataSpec: DataSpec, contex
     }
 
     val format = getMediaFormat(videoId, audioQualityFormat)
-
-    /*
-    val format = Innertube.player(
-        body = PlayerBody(videoId = videoId),
-        pipedSession = getPipedSession().toApiSession()
-    )?.fold(
-        { playerResponse ->
-            when (audioQualityFormat) {
-                AudioQualityFormat.Auto -> playerResponse.streamingData?.autoMaxQualityFormat
-                AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
-                AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
-                AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
-            }
-        },
-        {
-            //return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
-
-            println("MyDownloadHelper DataSpecProcess Error: ${it.message}")
-            throw it
-        }
-    )
-     */
 
     println("MyDownloadHelper DataSpecProcess Playing song $videoId from format $format from url=${format?.url}")
     return dataSpec.withUri(Uri.parse(format?.url))

@@ -471,8 +471,6 @@ fun PlaylistSongListModern(
                                                     manageDownload(
                                                         context = context,
                                                         mediaItem = it.asMediaItem,
-                                                        songId = it.asMediaItem.mediaId,
-                                                        songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                                                         downloadState = false
                                                     )
                                                 }
@@ -498,8 +496,6 @@ fun PlaylistSongListModern(
                                                     manageDownload(
                                                         context = context,
                                                         mediaItem = it.asMediaItem,
-                                                        songId = it.asMediaItem.mediaId,
-                                                        songTitle = it.asMediaItem.mediaMetadata.title.toString(),
                                                         downloadState = true
                                                     )
                                                 }
@@ -788,8 +784,6 @@ fun PlaylistSongListModern(
                                     manageDownload(
                                         context = context,
                                         mediaItem = song.asMediaItem,
-                                        songId = song.asMediaItem.mediaId,
-                                        songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                         downloadState = isDownloaded
                                     )
                             },

@@ -9,8 +9,12 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
-import androidx.media3.datasource.TransferListener
-import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
+import it.fast4x.innertube.utils.ProxyPreferences
+import okhttp3.OkHttpClient
+import java.net.InetSocketAddress
+import java.net.Proxy
+import java.time.Duration
 
 
 @UnstableApi
@@ -71,49 +75,29 @@ val Context.defaultDataSourceFactory
             .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
     )
 
-/*
-@OptIn(UnstableApi::class)
-class ConditionalCacheDataSourceFactory(
-    private val cacheDataSourceFactory: CacheDataSource.Factory,
-    private val upstreamDataSourceFactory: DataSource.Factory,
-    private val shouldCache: (DataSpec) -> Boolean
-) : DataSource.Factory {
-    init {
-        cacheDataSourceFactory.setUpstreamDataSourceFactory(upstreamDataSourceFactory)
+val Context.okHttpDataSourceFactory
+    @OptIn(UnstableApi::class)
+    get() = DefaultDataSource.Factory(
+        this,
+        OkHttpDataSource.Factory(okHttpClient())
+            .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
+    )
+
+private fun okHttpClient(): OkHttpClient {
+    ProxyPreferences.preference?.let {
+        return OkHttpClient.Builder()
+            .proxy(
+                Proxy(
+                    it.proxyMode,
+                    InetSocketAddress(it.proxyHost, it.proxyPort)
+                )
+            )
+            .connectTimeout(Duration.ofSeconds(16))
+            .readTimeout(Duration.ofSeconds(8))
+            .build()
     }
-
-    override fun createDataSource() = object : DataSource {
-        private lateinit var selectedFactory: DataSource.Factory
-        private val transferListeners = mutableListOf<TransferListener>()
-
-        private val source by lazy {
-            selectedFactory.createDataSource().apply {
-                transferListeners.forEach { addTransferListener(it) }
-                transferListeners.clear()
-            }
-        }
-
-        override fun read(buffer: ByteArray, offset: Int, length: Int) =
-            source.read(buffer, offset, length)
-
-        override fun addTransferListener(transferListener: TransferListener) {
-            if (::selectedFactory.isInitialized) source.addTransferListener(transferListener)
-            else transferListeners += transferListener
-        }
-
-        override fun open(dataSpec: DataSpec): Long {
-            selectedFactory =
-                if (shouldCache(dataSpec)) cacheDataSourceFactory else upstreamDataSourceFactory
-            return try {
-                source.open(dataSpec)
-            } catch (e: Exception) {
-                source.close()
-                0
-            }
-        }
-
-        override fun getUri() = source.uri
-        override fun close() = source.close()
-    }
+    return OkHttpClient.Builder()
+        .connectTimeout(Duration.ofSeconds(16))
+        .readTimeout(Duration.ofSeconds(8))
+        .build()
 }
-*/

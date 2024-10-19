@@ -464,8 +464,6 @@ fun QuickPicksModern(
                                             manageDownload(
                                                 context = context,
                                                 mediaItem = song.asMediaItem,
-                                                songId = song.id,
-                                                songTitle = song.title,
                                                 downloadState = isDownloaded
                                             )
 
@@ -512,8 +510,6 @@ fun QuickPicksModern(
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
-                                                                songId = song.id,
-                                                                songTitle = song.title,
                                                                 downloadState = isDownloaded
                                                             )
                                                         }
@@ -576,8 +572,6 @@ fun QuickPicksModern(
                                             manageDownload(
                                                 context = context,
                                                 mediaItem = song.asMediaItem,
-                                                songId = song.asMediaItem.mediaId,
-                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                                 downloadState = isDownloaded
                                             )
 
@@ -609,8 +603,6 @@ fun QuickPicksModern(
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
-                                                                songId = song.asMediaItem.mediaId,
-                                                                songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                                                 downloadState = isDownloaded
                                                             )
                                                         },

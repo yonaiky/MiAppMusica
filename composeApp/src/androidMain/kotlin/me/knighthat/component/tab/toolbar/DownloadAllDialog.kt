@@ -37,8 +37,6 @@ interface DownloadAllDialog: ConfirmationDialog {
             manageDownload(
                 context = context,
                 mediaItem = it,
-                songId = it.mediaId,
-                songTitle = it.mediaMetadata.title.toString(),
                 downloadState = false
             )
         }

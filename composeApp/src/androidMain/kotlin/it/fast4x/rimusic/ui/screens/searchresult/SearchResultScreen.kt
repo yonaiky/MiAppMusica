@@ -235,8 +235,6 @@ fun SearchResultScreen(
                                                 manageDownload(
                                                     context = context,
                                                     mediaItem = song.asMediaItem,
-                                                    songId = song.asMediaItem.mediaId,
-                                                    songTitle = song.asMediaItem.mediaMetadata.title.toString(),
                                                     downloadState = isDownloaded
                                                 )
                                             },
