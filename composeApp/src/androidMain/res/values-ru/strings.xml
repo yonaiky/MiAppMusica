@@ -755,10 +755,10 @@
     <string name="controls">Управление</string>
     <string name="add_to_favorites">Добавить в Избранное</string>
     <string name="import_favorites">Импортировать Избранное</string>
-    <string name="skip_media_on_error">Пропукс медиа при ошибке</string>
-    <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
-    <string name="skip_media_on_error_message">The media %1$s went wrong</string>
-    <string name="login_required_to_play_this_media">Login required to play this media</string>
-    <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
+    <string name="skip_media_on_error">Пропуск медиа при ошибке</string>
+    <string name="skip_media_on_error_description">При возникновении ошибки медиа файл пропускается</string>
+    <string name="skip_media_on_error_message">Что-то не так с медиафайлом %1$s</string>
+    <string name="login_required_to_play_this_media">Необходимо войти для воспроизведения этого медиа</string>
+    <string name="skip_media_on_notavailable_message">Предыдущий файл недоступен, переход к следующему</string>
+    <string name="search_results_for">Результаты поиска для:</string>
 </resources>
