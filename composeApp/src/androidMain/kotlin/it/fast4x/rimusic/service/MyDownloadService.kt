@@ -2,6 +2,7 @@ package it.fast4x.rimusic.service
 
 import android.app.Notification
 import android.content.Context
+import androidx.core.app.NotificationCompat
 import androidx.media3.common.util.NotificationUtil
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util

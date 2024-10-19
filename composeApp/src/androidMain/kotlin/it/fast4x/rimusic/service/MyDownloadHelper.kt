@@ -83,12 +83,12 @@ object MyDownloadHelper {
     private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
 
     private lateinit var databaseProvider: DatabaseProvider
-    private lateinit var downloadCache: Cache
+    lateinit var downloadCache: Cache
 
     private lateinit var downloadNotificationHelper: DownloadNotificationHelper
     private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
-    private lateinit var audioQualityFormat: AudioQualityFormat
+    lateinit var audioQualityFormat: AudioQualityFormat
     //private lateinit var connectivityManager: ConnectivityManager
 
 
@@ -232,7 +232,8 @@ object MyDownloadHelper {
     }
 
     private fun createCacheDataSource(context: Context): DataSource.Factory {
-        return CacheDataSource.Factory().setCache(getDownloadCache(context)).apply {
+        return CacheDataSource.Factory()
+            .setCache(getDownloadCache(context)).apply {
             setUpstreamDataSourceFactory(
                 context.defaultDataSourceFactory
                 //OkHttpDataSource.Factory(okHttpClient())
@@ -302,7 +303,7 @@ object MyDownloadHelper {
     */
 
     @Synchronized
-    private fun getDownloadCache(context: Context): Cache {
+    fun getDownloadCache(context: Context): Cache {
         if (!MyDownloadHelper::downloadCache.isInitialized) {
             val downloadContentDirectory =
                 File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
@@ -331,12 +332,16 @@ object MyDownloadHelper {
 
     @Synchronized
     private fun ensureDownloadManagerInitialized(context: Context) {
+        audioQualityFormat =
+            context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
+
         if (!MyDownloadHelper::downloadManager.isInitialized) {
             downloadManager = DownloadManager(
                 context,
                 getDatabaseProvider(context),
                 getDownloadCache(context),
-                getResolvingDataSourceFactory(context),
+                //getResolvingDataSourceFactory(context),
+                createDataSourceFactory(),
                 executor
             ).apply {
                 maxParallelDownloads = 3

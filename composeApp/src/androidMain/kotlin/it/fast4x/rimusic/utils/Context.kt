@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.PowerManager
 import android.widget.Toast
@@ -103,4 +104,9 @@ inline fun <reified T : DownloadService> Context.download(request: DownloadReque
         /* downloadRequest = */ request,
         /* foreground      = */ false
     )
+}
+
+fun Context.isConnectionMetered(): Boolean {
+    val manager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return manager.isActiveNetworkMetered
 }

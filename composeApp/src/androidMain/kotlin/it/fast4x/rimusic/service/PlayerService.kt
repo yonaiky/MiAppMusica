@@ -131,7 +131,6 @@ import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
-import it.fast4x.rimusic.utils.findNextMediaItemById
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -233,9 +232,9 @@ class PlayerService : InvincibleService(),
     OnAudioVolumeChangedListener {
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var cache: SimpleCache
     private lateinit var player: ExoPlayer
-    private lateinit var downloadCache: SimpleCache
+    lateinit var cache: SimpleCache
+    lateinit var downloadCache: SimpleCache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
     //private lateinit var connectivityManager: ConnectivityManager
 
@@ -341,7 +340,7 @@ class PlayerService : InvincibleService(),
     private var audioManager: AudioManager? = null
     private var audioDeviceCallback: AudioDeviceCallback? = null
 
-    private var loudnessEnhancer: LoudnessEnhancer? = null
+    var loudnessEnhancer: LoudnessEnhancer? = null
 
     private val binder = Binder()
 
@@ -353,7 +352,7 @@ class PlayerService : InvincibleService(),
         get() = NotificationId
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
-    private lateinit var audioQualityFormat: AudioQualityFormat
+    lateinit var audioQualityFormat: AudioQualityFormat
     private val playerVerticalWidget = PlayerVerticalWidget()
     private val playerHorizontalWidget = PlayerHorizontalWidget()
 
@@ -1851,13 +1850,18 @@ class PlayerService : InvincibleService(),
 
 
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
+        //New way
+        createDataSourceFactory()
+        /*
         createDataSourceResolverFactory(
             mediaItemToPlay = { videoId ->
                 runBlocking(Dispatchers.Main) {
                     player.findNextMediaItemById(videoId)
                 }
             }
-        ),
+        )
+         */
+        ,
         DefaultExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
