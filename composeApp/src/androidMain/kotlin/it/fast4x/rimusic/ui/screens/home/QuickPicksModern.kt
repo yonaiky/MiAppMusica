@@ -86,6 +86,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.Loader
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -628,21 +629,7 @@ fun QuickPicksModern(
                     }
 
                     if (related == null) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                //.background(colorPalette().background0)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.loader),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette().text),
-                                modifier = Modifier
-                                    .padding(all = 5.dp)
-                                    .align(Alignment.Center)
-                                    .size(32.dp)
-                            )
-                        }
+                        Loader()
                         /*
                         BasicText(
                             text = stringResource(R.string.sorry_tips_are_not_available),

@@ -106,9 +106,12 @@ fun Controls(
     binder?.player ?: return
 
 
+    /*
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
+
+     */
 
     //val onGoToArtist = artistRoute::global
     //val onGoToAlbum = albumRoute::global
