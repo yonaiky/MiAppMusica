@@ -103,7 +103,7 @@
     <string name="turning_off_battery_optimizations_is_not_enough">Aktifkan jika menonaktifkan pengoptimalan baterai masih tidak cukup</string>
     <string name="player">Pemutar</string>
     <string name="persistent_queue">Antrean tetap</string>
-    <string name="save_and_restore_playing_songs">Simpan dan pulihkan lagu-lagu yang sedang diputar</string>
+    <string name="save_and_restore_playing_songs">Simpan dan pulihkan antrean yang terakhir kali diputar</string>
     <string name="resume_playback">Lanjutkan pemutaran</string>
     <string name="when_device_is_connected">Saat perangkat audio terhubung</string>
     <string name="skip_silence">Lompati keheningan</string>
@@ -454,7 +454,7 @@
     <string name="info_remove_all_downloaded_songs">Hapus semua lagu yang telah terunduh</string>
     <string name="info_start_radio">Mulai radio</string>
     <string name="info_translation">Terjemahan</string>
-    <string name="info_find_the_song_that_is_playing">Cari lagu yang sedang diputar</string>
+    <string name="info_find_the_song_that_is_playing">Tampilkan lagu yang sedang diputar</string>
     <string name="info_smart_recommendation">Rekomendasi pintar</string>
     <string name="info_clean_cached_congs">Hapus lagu yang disimpan (cache)</string>
     <string name="info_pin_unpin_playlist">Sematkan daftar putar</string>
