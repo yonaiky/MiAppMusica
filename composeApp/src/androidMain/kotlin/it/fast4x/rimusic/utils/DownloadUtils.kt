@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 
 import it.fast4x.rimusic.Database
@@ -22,8 +23,11 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @UnstableApi
 @Composable
@@ -37,27 +41,7 @@ fun InitDownloader() {
 @UnstableApi
 @Composable
 fun downloadedStateMedia(mediaId: String): Boolean {
-    val context = LocalContext.current
-    // if (!checkInternetConnection()) return false
-    /*
-    if (!isNetworkAvailableComposable()) {
-        //context.toast("No connection")
-        return false
-    }
-     */
-
     val binder = LocalPlayerServiceBinder.current
-    //val downloader = LocalDownloader.current
-
-
-    val downloadCache: SimpleCache
-    try {
-        downloadCache = MyDownloadHelper.getDownloadSimpleCache(context) as SimpleCache
-    } catch (e: Exception) {
-        //context.toast(e.toString())
-        return false
-    }
-
 
     val cachedBytes by remember(mediaId) {
         mutableStateOf(binder?.cache?.getCachedBytes(mediaId, 0, -1))
@@ -67,12 +51,12 @@ fun downloadedStateMedia(mediaId: String): Boolean {
         mutableStateOf<Format?>(null)
     }
 
-    var isDownloaded by remember {
-        mutableStateOf(false)
+    var isDownloaded by remember { mutableStateOf(false) }
+    LaunchedEffect(mediaId) {
+        MyDownloadHelper.getDownload(mediaId).collect { download ->
+            isDownloaded = download?.state == Download.STATE_COMPLETED
+        }
     }
-
-    //val download by downloader.getDownload(mediaId).collectAsState(initial = null)
-
 
     LaunchedEffect(mediaId) {
         Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
@@ -80,22 +64,7 @@ fun downloadedStateMedia(mediaId: String): Boolean {
         }
     }
 
-    val download = format?.contentLength?.let {
-        try {
-            downloadCache.isCached(mediaId, 0, it)
-        } catch (e: Exception) {
-            //context.toast(e.toString())
-            false
-        }
-    }
-
-    //isDownloaded = (format?.contentLength == cachedBytes) || (download?.state == Download.STATE_COMPLETED)
-    isDownloaded = (format?.contentLength == cachedBytes) || download == true
-
-//    Log.d("mediaItem", "cachedBytes ${cachedBytes} contentLength ${format?.contentLength} downloadState ${isDownloaded}")
-
-    return isDownloaded
-
+    return (format?.contentLength == cachedBytes) || isDownloaded
 }
 
 

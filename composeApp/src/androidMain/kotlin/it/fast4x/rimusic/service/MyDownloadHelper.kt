@@ -69,7 +69,7 @@ object MyDownloadHelper {
     private val coroutineScope = CoroutineScope(
         executor.asCoroutineDispatcher() +
                 SupervisorJob() +
-                CoroutineName("MyDownloadService-Worker-Scope")
+                CoroutineName("MyDownloadService-Executor-Scope")
     )
 
     // While the class is not a singleton (lifecycle), there should only be one download state at a time
@@ -112,145 +112,6 @@ object MyDownloadHelper {
     }
 
 
-    @SuppressLint("SuspiciousIndentation")
-    @Synchronized
-    fun getResolvingDataSourceFactory(context: Context): ResolvingDataSource.Factory {
-        audioQualityFormat =
-            context.preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
-
-        //connectivityManager =
-        //    getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
-
-        val dataSourceFactory =
-            ResolvingDataSource.Factory(createCacheDataSource(context)) { dataSpec ->
-                val videoId = dataSpec.key?.removePrefix("https://youtube.com/watch?v=")
-                    ?: error("A key must be set")
-
-                //val chunkLength = 512 * 1024L
-                //val chunkLength = 1024 * 1024L
-                //val chunkLength = 10000 * 1024L
-                //val chunkLength = 30000 * 1024L
-                val chunkLength = 180000 * 1024L
-                val ringBuffer = RingBufferPrevious<Pair<String, Uri>?>(2) { null }
-
-                if (
-                    dataSpec.isLocal ||
-                    downloadCache.isCached(videoId, dataSpec.position, chunkLength)
-                ) {
-                    dataSpec
-                } else {
-                    when (videoId) {
-                        ringBuffer.getOrNull(0)?.first -> dataSpec.withUri(ringBuffer.getOrNull(0)!!.second)
-                        ringBuffer.getOrNull(1)?.first -> dataSpec.withUri(ringBuffer.getOrNull(1)!!.second)
-                        "initVideoId" -> dataSpec
-                        else -> run {
-                            val body = runBlocking(Dispatchers.IO) {
-                                Innertube.player(
-                                    body = PlayerBody(videoId = videoId),
-                                    pipedSession = getPipedSession().toApiSession()
-                                )
-                            }?.getOrElse { throwable ->
-                                when (throwable) {
-                                    is ConnectException, is UnknownHostException -> throw NoInternetException()
-                                    is SocketTimeoutException -> throw TimeoutException()
-                                    else -> throw UnknownException()
-                                }
-                            }
-                            println("MyDownloadHelper createDataSourceResolverFactory body playabilityStatus ${body?.playabilityStatus?.status}")
-
-                            val format = when (audioQualityFormat) {
-                                AudioQualityFormat.Auto -> body?.streamingData?.highestQualityFormat
-                                AudioQualityFormat.High -> body?.streamingData?.highestQualityFormat
-                                AudioQualityFormat.Medium -> body?.streamingData?.mediumQualityFormat
-                                AudioQualityFormat.Low -> body?.streamingData?.lowestQualityFormat
-                            } ?: error("No format found") //throw PlayableFormatNotFoundException()
-
-                            println("MyDownloadHelper createDataSourceResolverFactory adaptiveFormats available bitrate ${body?.streamingData?.adaptiveFormats?.map { it.mimeType }}")
-                            println("MyDownloadHelper createDataSourceResolverFactory adaptiveFormats selected $format")
-
-                            val url = when (body?.playabilityStatus?.status) {
-                                    "OK" -> {
-                                        format.let { formatIn ->
-                                            query {
-                                                if (Database.songExist(videoId) == 1) {
-                                                    Database.upsert(
-                                                        Format(
-                                                            songId = videoId,
-                                                            itag = formatIn.itag,
-                                                            mimeType = formatIn.mimeType,
-                                                            bitrate = formatIn.bitrate,
-                                                            loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                                            contentLength = formatIn.contentLength,
-                                                            lastModified = formatIn.lastModified
-                                                        )
-                                                    )
-                                                }
-                                            }
-
-                                            formatIn.url
-                                        } ?: throw PlayableFormatNotFoundException()
-                                    }
-
-                                    "UNPLAYABLE" -> throw UnplayableException()
-                                    "LOGIN_REQUIRED" -> throw LoginRequiredException()
-                                    else -> throw UnknownException()
-                                }
-
-
-                            val uri = url.toUri()
-                            ringBuffer.append(videoId to uri)
-
-                            dataSpec
-                                .withUri(uri)
-
-                        }
-                    }
-                }
-
-
-            }
-        return dataSourceFactory
-    }
-
-    private fun okHttpClient(): OkHttpClient {
-        ProxyPreferences.preference?.let {
-            return OkHttpClient.Builder()
-                .proxy(
-                    Proxy(
-                        it.proxyMode,
-                        InetSocketAddress(it.proxyHost, it.proxyPort)
-                    )
-                )
-                .connectTimeout(Duration.ofSeconds(16))
-                .readTimeout(Duration.ofSeconds(8))
-                .build()
-        }
-        return OkHttpClient.Builder()
-            .connectTimeout(Duration.ofSeconds(16))
-            .readTimeout(Duration.ofSeconds(8))
-            .build()
-    }
-
-    private fun createCacheDataSource(context: Context): DataSource.Factory {
-        return CacheDataSource.Factory()
-            .setCache(getDownloadCache(context)).apply {
-            setUpstreamDataSourceFactory(
-                context.defaultDataSourceFactory
-                //OkHttpDataSource.Factory(okHttpClient())
-                //    .setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
-                /*
-                DefaultHttpDataSource.Factory()
-                    .setConnectTimeoutMs(16000)
-                    .setReadTimeoutMs(8000)
-                    .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-
-                 */
-            )
-            setCacheWriteDataSinkFactory(null)
-        }
-    }
-
-
     @Synchronized
     fun getDownloadNotificationHelper(context: Context?): DownloadNotificationHelper {
         if (!MyDownloadHelper::downloadNotificationHelper.isInitialized) {
@@ -274,33 +135,6 @@ object MyDownloadHelper {
         }
 
      */
-
-
-    /*
-    fun getDownloadString(context: Context, @Download.State downloadState: Int): String {
-        return when (downloadState) {
-            /*
-            Download.STATE_COMPLETED -> context.resources.getString(R.string.exo_download_completed)
-            Download.STATE_DOWNLOADING -> context.resources.getString(R.string.exo_download_downloading)
-            Download.STATE_FAILED -> context.resources.getString(R.string.exo_download_failed)
-            Download.STATE_QUEUED -> context.resources.getString(R.string.exo_download_queued)
-            Download.STATE_REMOVING -> context.resources.getString(R.string.exo_download_removing)
-            Download.STATE_RESTARTING -> context.resources.getString(R.string.exo_download_restarting)
-            Download.STATE_STOPPED -> context.resources.getString(R.string.exo_download_stopped)
-            else -> throw IllegalArgumentException()
-             */
-            Download.STATE_COMPLETED -> "Completed"
-            Download.STATE_DOWNLOADING -> "Downloading"
-            Download.STATE_FAILED -> "Failed"
-            Download.STATE_QUEUED -> "Queued"
-            Download.STATE_REMOVING -> "Removing"
-            Download.STATE_RESTARTING -> "Restarting"
-            Download.STATE_STOPPED -> "Stopped"
-            else -> throw IllegalArgumentException()
-
-        }
-    }
-    */
 
     @Synchronized
     fun getDownloadCache(context: Context): Cache {
@@ -340,12 +174,11 @@ object MyDownloadHelper {
                 context,
                 getDatabaseProvider(context),
                 getDownloadCache(context),
-                //getResolvingDataSourceFactory(context),
                 createDataSourceFactory(),
                 executor
             ).apply {
-                maxParallelDownloads = 3
-                minRetryCount = 1
+                maxParallelDownloads = 6
+                minRetryCount = 2
                 requirements = Requirements(Requirements.NETWORK)
 
                 addListener(

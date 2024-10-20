@@ -23,8 +23,8 @@ internal fun PlayerService.createDataSourceFactory(): DataSource.Factory {
                 CacheDataSource.Factory()
                     .setCache(cache)
                     .setUpstreamDataSourceFactory(
-                        //appContext().defaultDataSourceFactory
-                        appContext().okHttpDataSourceFactory
+                        appContext().defaultDataSourceFactory
+                        //appContext().okHttpDataSourceFactory
                     )
             )
             .setCacheWriteDataSinkFactory(null)
