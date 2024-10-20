@@ -69,7 +69,7 @@
     <string name="add_spacing_around_texts">Add spacing around texts</string>
     <string name="lockscreen">LOCKSCREEN</string>
     <string name="show_song_cover">Show song cover</string>
-    <string name="use_song_cover_on_lockscreen">Use the playing song cover as the lockscreen wallpaper</string>
+    <string name="use_song_cover_on_lockscreen">Set currently playing song cover as lockscreen wallpaper</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>
     <string name="image_cache">IMAGE CACHE</string>
@@ -103,7 +103,7 @@
     <string name="turning_off_battery_optimizations_is_not_enough">When turning off battery optimizations is not enough</string>
     <string name="player">Player</string>
     <string name="persistent_queue">Persistent queue</string>
-    <string name="save_and_restore_playing_songs">Save and restore playing songs</string>
+    <string name="save_and_restore_playing_songs">Save and restore last played queue</string>
     <string name="resume_playback">Resume playback</string>
     <string name="when_device_is_connected">When a wired or bluetooth device is connected</string>
     <string name="skip_silence">Skip silence</string>
@@ -358,15 +358,15 @@
     <string name="but_these_updates_would_not_go_through">But these updates would not go through the additional screening performed at e.g. IzzyOnDroid or F-Droid.</string>
     <string name="sleeptimer_stop">stop</string>
     <string name="player_keep_minimized">Keep minimized</string>
-    <string name="when_click_on_a_song_player_start_minimized">When click on a song, player start minimized</string>
+    <string name="when_click_on_a_song_player_start_minimized">When clicking on a song, player start minimized</string>
     <string name="settings_use_font_type">Font type</string>
     <string name="enabled">Enabled</string>
     <string name="ask">Ask</string>
     <string name="item_select">Select</string>
     <string name="blacklisted_folders">Blacklisted folders</string>
-    <string name="edit_blacklist_for_on_device_songs">Edit blacklist for on device songs.</string>
+    <string name="edit_blacklist_for_on_device_songs">Edit blacklist for on device songs</string>
     <string name="add_folder">Add folder</string>
-    <string name="this_folder_already_exists">This folder already exists.</string>
+    <string name="this_folder_already_exists">This folder already exists</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
     <string name="player_appearance">Player Appearance</string>
     <string name="player_action_bar">PLAYER ACTION BAR</string>
@@ -423,7 +423,7 @@
     <string name="show_remaining_song_time">Show remaining song duration</string>
     <string name="full_screen">Full screen</string>
     <string name="click_lyrics_text">Jump to lyrics by pressing the line</string>
-    <string name="folder_that_will_show_when_you_open_on_device_page">Folder that will show when you open \"On Device\" page.</string>
+    <string name="folder_that_will_show_when_you_open_on_device_page">Folder shown for on device songs</string>
     <string name="folder_was_not_found">Folder was not found</string>
     <string name="direction_top">Top</string>
     <string name="pick_from">Pick from</string>
@@ -454,7 +454,7 @@
     <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
     <string name="info_start_radio">Start radio</string>
     <string name="info_translation">Translation</string>
-    <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
+    <string name="info_find_the_song_that_is_playing">Show currently playing song</string>
     <string name="info_smart_recommendation">Smart recommendations</string>
     <string name="info_clean_cached_congs">Clean cached songs</string>
     <string name="info_pin_unpin_playlist">Pin/Unpin playlist</string>
@@ -664,7 +664,7 @@
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Stats for Nerds</string>
     <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes liked and playlist songs from queue</string>
+    <string name="discoverinfo">Remove songs from the queue if included in favorites or playlists</string>
     <string name="controls_header_customize">Customize</string>
     <string name="controls_title_blur_effect">Blur effect</string>
     <string name="controls_title_medley_duration">Medley duration</string>
@@ -690,7 +690,7 @@
     <string name="effect_fade_audio">Fade audio effect</string>
     <string name="effect_fade_audio_description">Fade audio when song is paused or played</string>
     <string name="autosync">Auto Sync Imported Playlists</string>
-    <string name="message_type">Message type</string>
+    <string name="message_type">Popup message style</string>
     <string name="message_type_modern">Modern</string>
     <string name="message_type_essential">Essential</string>
     <string name="discoverinforadio">Removes liked and playlist songs from radio</string>
@@ -747,16 +747,16 @@
     <string name="settings_loudness_base_gain">Loudness base gain</string>
     <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
     <string name="error_media_cannot_be_played">Song cannot be played</string>
-    <string name="full_screen_lyrics_components">Full screen lyrics components</string>
-    <string name="titleartist">Title and artists</string>
-    <string name="miniqueue">Mini queue</string>
+    <string name="full_screen_lyrics_components">Fullscreen lyrics components</string>
+    <string name="titleartist">Title and Artists</string>
+    <string name="miniqueue">Next song queue</string>
     <string name="controls">Controls</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="import_favorites">Import favorites</string>
-    <string name="skip_media_on_error">Auto-skip on error</string>
+    <string name="skip_media_on_error">Skip song on error</string>
     <string name="skip_media_on_error_description">If an error occurs, skip to the next song</string>
     <string name="skip_media_on_error_message">An error occurred while playing the song %1$s</string>
     <string name="login_required_to_play_this_media">Logging in is required to play this song</string>
-    <string name="skip_media_on_notavailable_message">The previous song is not available, skipping to the next song</string>
+    <string name="skip_media_on_notavailable_message">Previous song is not available, skipping to the next song</string>
     <string name="search_results_for">Search results for:</string>
 </resources>
