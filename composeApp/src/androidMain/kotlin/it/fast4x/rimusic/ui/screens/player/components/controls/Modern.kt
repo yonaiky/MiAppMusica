@@ -71,9 +71,7 @@ import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.getDislikedIcon
 import it.fast4x.rimusic.utils.getLikeState
-import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
@@ -213,13 +211,11 @@ fun InfoAlbumAndArtistModern(
              IconButton(
                  color = colorPalette().favoritesIcon,
                  icon = getLikeState(mediaId),
-                 //if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
                  onClick = {
                      val currentMediaItem = binder.player.currentMediaItem
                      query {
                          if (Database.like(
                                  mediaId,
-                                 //if (likedAt == null) System.currentTimeMillis() else null
                                  setLikeState(likedAt)
                              ) == 0
                          ) {

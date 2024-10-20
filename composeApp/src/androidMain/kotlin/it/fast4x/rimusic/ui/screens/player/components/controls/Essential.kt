@@ -71,19 +71,20 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.getLikeState
-import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
-import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setLikeState
-import it.fast4x.rimusic.utils.trackLoopEnabledKey
+import it.fast4x.rimusic.utils.setQueueLoopState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import me.knighthat.colorPalette
@@ -342,25 +343,25 @@ fun ControlsEssential(
         targetValueByState = { if (it) 32.dp else 16.dp }
     )
 
-    var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-    var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
+    var queueLoopType by rememberPreference(queueLoopTypeKey, defaultValue = QueueLoopType.Default)
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
     Box {
         IconButton(
             color = colorPalette().favoritesIcon,
-            icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+            icon = getLikeState(mediaId),
             onClick = {
                 val currentMediaItem = binder.player.currentMediaItem
                 query {
                     if (Database.like(
                             mediaId,
-                            if (likedAt == null) System.currentTimeMillis() else null
+                            setLikeState(likedAt)
                         ) == 0
                     ) {
                         currentMediaItem
                             ?.takeIf { it.mediaId == mediaId }
                             ?.let {
                                 Database.insert(currentMediaItem, Song::toggleLike)
+
                             }
                     }
                 }
@@ -534,11 +535,10 @@ fun ControlsEssential(
 
 
     IconButton(
-        icon = R.drawable.repeat,
-        color = if (trackLoopEnabled) colorPalette().iconButtonPlayer else colorPalette().textDisabled,
+        icon = getIconQueueLoopState(queueLoopType),
+        color = colorPalette().text,
         onClick = {
-            trackLoopEnabled = !trackLoopEnabled
-            if (trackLoopEnabled) queueLoopEnabled = false
+            queueLoopType = setQueueLoopState(queueLoopType)
         },
         modifier = Modifier
             //.padding(10.dp)

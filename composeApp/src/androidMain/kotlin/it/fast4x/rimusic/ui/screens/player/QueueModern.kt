@@ -92,6 +92,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -119,22 +120,23 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setQueueLoopState
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
@@ -152,7 +154,7 @@ import java.util.Date
 @Composable
 fun QueueModern(
     navController: NavController,
-    onDismiss: () -> Unit
+    onDismiss: (QueueLoopType) -> Unit
 ) {
     //val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val windowInsets = WindowInsets.systemBars
@@ -179,8 +181,7 @@ fun QueueModern(
 
         val player = binder.player
 
-        var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
-        var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
+        var queueLoopType by rememberPreference(queueLoopTypeKey, defaultValue = QueueLoopType.Default)
 
         val menuState = LocalMenuState.current
 
@@ -774,7 +775,7 @@ fun QueueModern(
             Box(
                 modifier = Modifier
                     //.clip(shape)
-                    .clickable(onClick = onDismiss)
+                    .clickable(onClick = { onDismiss(queueLoopType) })
                     .background(colorPalette().background1)
                     .fillMaxWidth()
                     //.padding(horizontal = 8.dp)
@@ -910,11 +911,10 @@ fun QueueModern(
                             .width(12.dp)
                     )
                     IconButton(
-                        icon = R.drawable.repeat,
-                        color = if (queueLoopEnabled) colorPalette().text else colorPalette().textDisabled,
+                        icon = getIconQueueLoopState(queueLoopType),
+                        color = colorPalette().text,
                         onClick = {
-                            queueLoopEnabled = !queueLoopEnabled
-                            if (queueLoopEnabled) trackLoopEnabled = false
+                            queueLoopType = setQueueLoopState(queueLoopType)
                         },
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -1048,7 +1048,7 @@ fun QueueModern(
                         IconButton(
                             icon = R.drawable.chevron_down,
                             color = colorPalette().text,
-                            onClick = onDismiss,
+                            onClick = { onDismiss(queueLoopType) },
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
                                 .size(24.dp)

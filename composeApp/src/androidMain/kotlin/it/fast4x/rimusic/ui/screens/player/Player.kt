@@ -167,7 +167,6 @@ import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailTapEnabledKey
-import it.fast4x.rimusic.utils.trackLoopEnabledKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -214,6 +213,7 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
@@ -232,9 +232,10 @@ import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playerTypeKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.queueDurationExpandedKey
-import it.fast4x.rimusic.utils.queueLoopEnabledKey
+import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.setQueueLoopState
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
@@ -250,6 +251,7 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.timelineExpandedKey
 import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
+import it.fast4x.rimusic.utils.getIconQueueLoopState
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -525,10 +527,7 @@ fun Player(
         BackgroundProgress.MiniPlayer
     )
 
-    var trackLoopEnabled by rememberPreference(trackLoopEnabledKey, defaultValue = false)
-    if (!showButtonPlayerLoop) trackLoopEnabled = false
-    var queueLoopEnabled by rememberPreference(queueLoopEnabledKey, defaultValue = false)
-
+    var queueLoopType by rememberPreference(queueLoopTypeKey, defaultValue = QueueLoopType.Default)
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
@@ -1442,11 +1441,10 @@ fun Player(
 
                         if (showButtonPlayerLoop)
                             IconButton(
-                                icon = R.drawable.repeat,
-                                color = if (trackLoopEnabled) colorPalette().accent else Color.Gray,
+                                icon = getIconQueueLoopState(queueLoopType),
+                                color = colorPalette().accent,
                                 onClick = {
-                                    trackLoopEnabled = !trackLoopEnabled
-                                    if (trackLoopEnabled) queueLoopEnabled = false
+                                    queueLoopType = setQueueLoopState(queueLoopType)
                                     if (effectRotationEnabled) isRotated = !isRotated
                                 },
                                 modifier = Modifier
@@ -2637,7 +2635,10 @@ fun Player(
         ) {
             QueueModern(
                 navController = navController,
-                onDismiss = { showQueue = false },
+                onDismiss = {
+                    queueLoopType = it
+                    showQueue = false
+                },
             )
         }
 
