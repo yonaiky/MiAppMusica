@@ -7,7 +7,6 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-import it.fast4x.rimusic.utils.defaultDataSourceFactory
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.runBlocking
@@ -23,8 +22,7 @@ internal fun PlayerService.createDataSourceFactory(): DataSource.Factory {
                 CacheDataSource.Factory()
                     .setCache(cache)
                     .setUpstreamDataSourceFactory(
-                        appContext().defaultDataSourceFactory
-                        //appContext().okHttpDataSourceFactory
+                        appContext().okHttpDataSourceFactory
                     )
             )
             .setCacheWriteDataSinkFactory(null)
@@ -54,7 +52,6 @@ internal fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
         CacheDataSource.Factory()
             .setCache(getDownloadCache(appContext())).apply {
                 setUpstreamDataSourceFactory(
-                    //appContext().defaultDataSourceFactory
                     appContext().okHttpDataSourceFactory
                 )
                 setCacheWriteDataSinkFactory(null)
