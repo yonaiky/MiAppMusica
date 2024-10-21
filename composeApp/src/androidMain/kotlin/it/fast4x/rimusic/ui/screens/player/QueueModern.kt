@@ -118,9 +118,9 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.discoverKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getIconQueueLoopState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -533,7 +533,7 @@ fun QueueModern(
                         val isLocal by remember { derivedStateOf { window.mediaItem.isLocal } }
                         downloadState = getDownloadState(window.mediaItem.mediaId)
                         val isDownloaded =
-                            if (!isLocal) downloadedStateMedia(window.mediaItem.mediaId) else true
+                            if (!isLocal) isDownloadedSong(window.mediaItem.mediaId) else true
 
                         Box(
                             modifier = Modifier
@@ -583,7 +583,6 @@ fun QueueModern(
                             ) {
                                 SongItem(
                                     song = window.mediaItem,
-                                    isDownloaded = isDownloaded,
                                     onDownloadClick = {
                                         binder.cache.removeResource(window.mediaItem.mediaId)
                                         if (!isLocal)

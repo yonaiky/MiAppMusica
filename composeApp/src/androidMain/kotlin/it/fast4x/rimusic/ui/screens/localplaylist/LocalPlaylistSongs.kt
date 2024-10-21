@@ -117,7 +117,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deletePipedPlaylist
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -127,6 +126,7 @@ import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -1069,15 +1069,12 @@ fun LocalPlaylistSongs(
                         val songRecommended =
                             relatedSongsRecommendationResult?.getOrNull()?.songs?.shuffled()
                                 ?.lastOrNull()
-                        val duration = songRecommended?.durationText
                         songRecommended?.asMediaItem?.let {
                             SongItem(
                                 song = it,
-                                duration = duration,
                                 isRecommended = true,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 thumbnailSizePx = thumbnailSizePx,
-                                isDownloaded = false,
                                 onDownloadClick = {},
                                 downloadState = Download.STATE_STOPPED,
                                 trailingContent = {},
@@ -1106,7 +1103,7 @@ fun LocalPlaylistSongs(
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState.intValue = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded =
-                            if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                            if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         val positionInPlaylist: Int = index
 
@@ -1175,7 +1172,6 @@ fun LocalPlaylistSongs(
                         ) {
                             SongItem(
                                 song = song.song,
-                                isDownloaded = isDownloaded,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                     query {

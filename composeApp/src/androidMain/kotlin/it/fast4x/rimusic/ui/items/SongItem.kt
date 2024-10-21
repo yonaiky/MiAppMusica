@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,7 +47,11 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.DownloadedStateMedia
+import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistindicatorKey
@@ -71,19 +76,14 @@ fun SongItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int,
     thumbnailContent: (@Composable BoxScope.() -> Unit)? = null
 ) {
     SongItem(
         thumbnailUrl = song.thumbnail?.size(thumbnailSizePx),
-        title = song.info?.name,
-        authors = song.authors?.joinToString("") { it.name ?: "" },
-        duration = song.durationText,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
-        isDownloaded = isDownloaded,
         onDownloadClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Database.upsert(song.asSong)
@@ -91,8 +91,7 @@ fun SongItem(
             onDownloadClick()
         },
         downloadState = downloadState,
-        isExplicit = song.explicit,
-        mediaId = song.key,
+        mediaItem = song.asMediaItem,
         onThumbnailContent = thumbnailContent
     )
 }
@@ -106,22 +105,16 @@ fun SongItem(
     modifier: Modifier = Modifier,
     onThumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    duration: String? = ""
 ) {
     SongItem(
         thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)?.toString(),
-        title = song.mediaMetadata.title.toString(),
-        authors = song.mediaMetadata.artist.toString(),
-        duration = duration?.ifBlank { song.mediaMetadata.extras?.getString("durationText") },
         thumbnailSizeDp = thumbnailSizeDp,
         onThumbnailContent = onThumbnailContent,
         trailingContent = trailingContent,
         modifier = modifier,
-        isDownloaded = isDownloaded,
         onDownloadClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Database.upsert(song.asSong)
@@ -130,7 +123,7 @@ fun SongItem(
         },
         downloadState = downloadState,
         isRecommended = isRecommended,
-        mediaId = song.mediaId
+        mediaItem = song
     )
 }
 
@@ -143,21 +136,15 @@ fun SongItem(
     modifier: Modifier = Modifier,
     onThumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int
 ) {
     SongItem(
         thumbnailUrl = song.thumbnailUrl?.thumbnail(thumbnailSizePx),
-        totalPlayTimeMs = song.totalPlayTimeMs,
-        title = song.title,
-        authors = song.artistsText,
-        duration = song.durationText,
         thumbnailSizeDp = thumbnailSizeDp,
         onThumbnailContent = onThumbnailContent,
         trailingContent = trailingContent,
         modifier = modifier,
-        isDownloaded = isDownloaded,
         onDownloadClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Database.upsert(song)
@@ -165,7 +152,7 @@ fun SongItem(
             onDownloadClick()
         },
         downloadState = downloadState,
-        mediaId = song.id
+        mediaItem = song.asMediaItem
     )
 }
 
@@ -173,26 +160,16 @@ fun SongItem(
 @Composable
 fun SongItem(
     thumbnailUrl: String?,
-    totalPlayTimeMs: Long? = 0,
-    title: String?,
-    authors: String?,
-    duration: String?,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     onThumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    isExplicit: Boolean = false,
-    mediaId: String
+    mediaItem: MediaItem
 ) {
     SongItem(
-        title = title,
-        totalPlayTimeMs = totalPlayTimeMs,
-        authors = authors,
-        duration = duration,
         thumbnailSizeDp = thumbnailSizeDp,
         thumbnailContent = {
             AsyncImage(
@@ -208,15 +185,14 @@ fun SongItem(
         },
         modifier = modifier,
         trailingContent = trailingContent,
-        isDownloaded = isDownloaded,
         onDownloadClick = onDownloadClick,
         downloadState = downloadState,
         isRecommended = isRecommended,
-        isExplicit = isExplicit,
-        mediaId = mediaId
+        mediaItem = mediaItem
     )
 }
 
+/*
 @Composable
 fun SongItem(
     thumbnailContent: @Composable BoxScope.() -> Unit,
@@ -302,36 +278,43 @@ fun SongItem(
         }
     }
 }
+*/
 
 @OptIn(ExperimentalFoundationApi::class)
 @UnstableApi
 @Composable
 fun SongItem(
     thumbnailContent: @Composable BoxScope.() -> Unit,
-    totalPlayTimeMs: Long? = 0,
-    title: String?,
-    authors: String?,
-    duration: String?,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     trailingContent: @Composable (() -> Unit)? = null,
-    isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    isExplicit: Boolean = false,
-    mediaId: String
+    mediaItem: MediaItem
 ) {
-    var songPlaylist by remember {
-        mutableStateOf(0)
-    }
-    LaunchedEffect(Unit, mediaId) {
-        withContext(Dispatchers.IO) {
-            songPlaylist = Database.songUsedInPlaylists(mediaId)
-        }
-    }
 
-    var playlistindicator by rememberPreference(playlistindicatorKey,false)
+    var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
+    downloadedStateMedia = if (!mediaItem.isLocal) downloadedStateMedia(mediaItem.mediaId)
+    else DownloadedStateMedia.DOWNLOADED
+
+    val isExplicit = mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX) == true
+    val title = mediaItem.mediaMetadata.title.toString()
+    val authors = mediaItem.mediaMetadata.artist.toString()
+    val duration = mediaItem.mediaMetadata.extras?.getString("durationText")
+
+    val playlistindicator by rememberPreference(playlistindicatorKey,false)
+    var songPlaylist by remember {
+        mutableIntStateOf(0)
+    }
+    if (playlistindicator)
+        LaunchedEffect(Unit, mediaItem.mediaId) {
+            withContext(Dispatchers.IO) {
+                songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
+            }
+        }
+
+
     val context = LocalContext.current
 
     ItemContainer(
@@ -349,13 +332,13 @@ fun SongItem(
             var likedAt by remember {
                 mutableStateOf<Long?>(null)
             }
-            LaunchedEffect(Unit, mediaId) {
-                Database.likedAt(mediaId).collect { likedAt = it }
+            LaunchedEffect(Unit, mediaItem.mediaId) {
+                Database.likedAt(mediaItem.mediaId).collect { likedAt = it }
             }
             if (likedAt != null)
                 HeaderIconButton(
                     onClick = {},
-                    icon = getLikeState(mediaId),
+                    icon = getLikeState(mediaItem.mediaId),
                     color = colorPalette().favoritesIcon,
                     iconSize = 12.dp,
                     modifier = Modifier
@@ -424,7 +407,7 @@ fun SongItem(
                         Spacer(modifier = Modifier.padding(horizontal = 3.dp))
                     }
 
-                    if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
+                    if (isExplicit)
                         IconButton(
                             icon = R.drawable.explicit,
                             color = colorPalette().text,
@@ -435,7 +418,7 @@ fun SongItem(
                         )
 
                     BasicText(
-                        text = cleanPrefix(title ?: ""),
+                        text = cleanPrefix(title),
                         style = typography().xs.semiBold,
                         /*
                         style = TextStyle(
@@ -482,7 +465,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
 
-                    if (isExplicit || title?.startsWith(EXPLICIT_PREFIX) == true)
+                    if (isExplicit)
                         IconButton(
                             icon = R.drawable.explicit,
                             color = colorPalette().text,
@@ -492,7 +475,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
                     BasicText(
-                        text = cleanPrefix(title ?: ""),
+                        text = cleanPrefix(title),
                         style = typography().xs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -576,7 +559,7 @@ fun SongItem(
                 */
 
                 BasicText(
-                    text = authors ?: "",
+                    text = authors,
                     style = typography().xs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
@@ -604,14 +587,14 @@ fun SongItem(
                             || downloadState == Download.STATE_QUEUED
                             || downloadState == Download.STATE_RESTARTING
                             )
-                    && !isDownloaded) {
+                    && downloadedStateMedia == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
                     //val context = LocalContext.current
                     IconButton(
                         onClick = {
                             DownloadService.sendRemoveDownload(
                                 context,
                                 MyDownloadService::class.java,
-                                mediaId,
+                                mediaItem.mediaId,
                                 false
                             )
                         },
@@ -623,8 +606,11 @@ fun SongItem(
                 } else {
                     IconButton(
                         onClick = onDownloadClick,
-                        icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                        color = if (isDownloaded) colorPalette().text else colorPalette().textDisabled,
+                        icon = downloadedStateMedia.icon,
+                        color = when(downloadedStateMedia) {
+                            DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> colorPalette().textDisabled
+                            else -> colorPalette().text
+                        },
                         modifier = Modifier
                             .size(20.dp)
                     )

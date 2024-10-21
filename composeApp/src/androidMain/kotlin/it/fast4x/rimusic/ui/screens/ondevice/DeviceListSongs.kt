@@ -889,7 +889,6 @@ fun DeviceListSongs(
             ) { index, song ->
                 SongItem(
                     song = song.song,
-                    isDownloaded = true,
                     onDownloadClick = {
                         // not necessary
                     },

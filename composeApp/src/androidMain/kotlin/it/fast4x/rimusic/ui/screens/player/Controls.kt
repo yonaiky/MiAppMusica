@@ -53,9 +53,9 @@ import it.fast4x.rimusic.utils.GetSeekBar
 import it.fast4x.rimusic.utils.buttonzoomoutKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
@@ -162,10 +162,10 @@ fun Controls(
     }
 
     var isDownloaded by rememberSaveable {
-        mutableStateOf<Boolean>(false)
+        mutableStateOf(false)
     }
 
-    isDownloaded = downloadedStateMedia(mediaId)
+    isDownloaded = isDownloadedSong(mediaId)
 
     //val menuState = LocalMenuState.current
 

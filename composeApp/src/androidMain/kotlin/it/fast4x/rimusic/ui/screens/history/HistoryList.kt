@@ -54,9 +54,9 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -215,11 +215,10 @@ fun HistoryList(
                             val isLocal by remember { derivedStateOf { event.song.asMediaItem.isLocal } }
                             downloadState = getDownloadState(event.song.asMediaItem.mediaId)
                             val isDownloaded =
-                                if (!isLocal) downloadedStateMedia(event.song.asMediaItem.mediaId) else true
+                                if (!isLocal) isDownloadedSong(event.song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
                             SongItem(
                                 song = event.song,
-                                isDownloaded = isDownloaded,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
                                     query {

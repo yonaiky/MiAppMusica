@@ -90,13 +90,13 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -579,7 +579,7 @@ fun BaseMediaItemMenu(
             if (onClosePlayer != null) {
                 onClosePlayer()
             }
-        }, //artistRoute::global,
+        },
         onShare = {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -791,7 +791,7 @@ fun MediaItemMenu(
     }
 
     downloadState = getDownloadState(mediaItem.mediaId)
-    val isDownloaded = if (!isLocal) downloadedStateMedia(mediaItem.mediaId) else true
+    val isDownloaded = if (!isLocal) isDownloadedSong(mediaItem.mediaId) else true
 
     var artistsList by persistList<Artist?>("home/artists")
     var artistIds = remember { mutableListOf("") }
@@ -1077,9 +1077,9 @@ fun MediaItemMenu(
                         .padding(end = 12.dp)
                 ) {
                     SongItem(
+                        mediaItem = mediaItem,
                         thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)
                             ?.toString(),
-                        isDownloaded = isDownloaded,
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
                             query {
@@ -1103,13 +1103,9 @@ fun MediaItemMenu(
                                 )
                         },
                         downloadState = downloadState,
-                        title = mediaItem.mediaMetadata.title.toString(),
-                        authors = mediaItem.mediaMetadata.artist.toString(),
-                        duration = null,
                         thumbnailSizeDp = thumbnailSizeDp,
                         modifier = Modifier
                             .weight(1f),
-                        mediaId = mediaItem.mediaId
                     )
 
 

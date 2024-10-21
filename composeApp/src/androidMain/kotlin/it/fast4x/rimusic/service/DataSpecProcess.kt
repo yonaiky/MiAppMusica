@@ -9,7 +9,10 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.models.Format
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.getPipedSession
 
 @OptIn(UnstableApi::class)
@@ -70,6 +73,20 @@ suspend fun getMediaFormat(
             }.let {
                 // Specify range to avoid YouTube's throttling
                 it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+            }.also {
+                transaction {
+                    Database.upsert(
+                        Format(
+                            songId = videoId,
+                            itag = it?.itag,
+                            mimeType = it?.mimeType,
+                            contentLength = it?.contentLength,
+                            bitrate = it?.bitrate,
+                            lastModified = it?.lastModified,
+                            loudnessDb = it?.loudnessDb?.toFloat(),
+                        )
+                    )
+                }
             }
         },
         {

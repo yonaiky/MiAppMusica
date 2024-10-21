@@ -55,9 +55,9 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.rememberPreference
@@ -251,10 +251,9 @@ fun LocalSongSearch(
             ) { song ->
                 val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                 downloadState = getDownloadState(song.asMediaItem.mediaId)
-                val isDownloaded = if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                 SongItem(
                     song = song,
-                    isDownloaded = isDownloaded,
                     onDownloadClick = {
                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                         query {

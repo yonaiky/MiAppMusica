@@ -135,7 +135,6 @@ import it.fast4x.rimusic.utils.blurStrengthKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
@@ -252,6 +251,7 @@ import it.fast4x.rimusic.utils.timelineExpandedKey
 import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import it.fast4x.rimusic.utils.getIconQueueLoopState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -503,7 +503,7 @@ fun Player(
     downloadState = getDownloadState(mediaItem.mediaId)
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
-    isDownloaded = downloadedStateMedia(mediaItem.mediaId)
+    isDownloaded = isDownloadedSong(mediaItem.mediaId)
     var showthumbnail by rememberPreference(showthumbnailKey, false)
 
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
@@ -1390,7 +1390,7 @@ fun Player(
                                     manageDownload(
                                         context = context,
                                         mediaItem = mediaItem,
-                                        downloadState = true // this will cancel the download
+                                        downloadState = true
                                     )
                                 },
                                 modifier = Modifier
@@ -2068,12 +2068,6 @@ fun Player(
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
                                     title = mediaItem.mediaMetadata.title?.toString(),
-                                    /*
-                                    title = binder.player.getMediaItemAt(index).mediaMetadata.title?.toString()
-                                        ?: "",
-
-                                     */
-                                    //artist = binder.player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artist = mediaItem.mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,

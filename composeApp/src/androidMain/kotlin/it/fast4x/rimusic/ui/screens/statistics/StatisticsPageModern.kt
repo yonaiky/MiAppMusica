@@ -81,11 +81,11 @@ import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -119,17 +119,12 @@ fun StatisticsPageModern(
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
-    val songThumbnailSizeDp = Dimensions.thumbnails.song
-    //val songThumbnailSizePx = songThumbnailSizeDp.px
     val albumThumbnailSizeDp = 108.dp
     val albumThumbnailSizePx = albumThumbnailSizeDp.px
     val artistThumbnailSizeDp = 92.dp
     val artistThumbnailSizePx = artistThumbnailSizeDp.px
     val playlistThumbnailSizeDp = 108.dp
     val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
-
-    //val scrollState = rememberScrollState()
-    //val quickPicksLazyGridState = rememberLazyGridState()
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
@@ -337,10 +332,9 @@ fun StatisticsPageModern(
                     ) {
 
                         downloadState = getDownloadState(songs.get(it).asMediaItem.mediaId)
-                        val isDownloaded = downloadedStateMedia(songs.get(it).asMediaItem.mediaId)
+                        val isDownloaded = isDownloadedSong(songs.get(it).asMediaItem.mediaId)
                         SongItem(
                             song = songs.get(it).asMediaItem,
-                            isDownloaded = isDownloaded,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
                                 manageDownload(
@@ -519,176 +513,7 @@ fun StatisticsPageModern(
 
             }
 
-            /*
-            LazyHorizontalGrid(
-                state = quickPicksLazyGridState,
-                rows = GridCells.Fixed(2),
-                flingBehavior = ScrollableDefaults.flingBehavior(),
-                contentPadding = endPaddingValues,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height((songThumbnailSizeDp + Dimensions.itemsVerticalPadding * 2) * 2)
-            ) {
-
-                items(
-                    count = songs.count(),
-                ) {
-                    downloadState = getDownloadState(songs.get(it).asMediaItem.mediaId)
-                    val isDownloaded = downloadedStateMedia(songs.get(it).asMediaItem.mediaId)
-                    SongItem(
-                        song = songs.get(it).asMediaItem,
-                        isDownloaded = isDownloaded,
-                        onDownloadClick = {
-                            binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
-                            manageDownload(
-                                context = context,
-                                songId = songs.get(it).asMediaItem.mediaId,
-                                songTitle = songs.get(it).asMediaItem.mediaMetadata.title.toString(),
-                                downloadState = isDownloaded
-                            )
-                        },
-                        downloadState = downloadState,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        thumbnailSizePx = thumbnailSize,
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-
-                                        //when (builtInPlaylist) {
-                                        NonQueuedMediaItemMenu(
-                                            navController = navController,
-                                            mediaItem = songs.get(it).asMediaItem,
-                                            onDismiss = menuState::hide
-                                        )
-                                        /*
-                                            BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
-                                                song = song,
-                                                onDismiss = menuState::hide
-                                            )
-                                            */
-                                        //}
-
-                                    }
-                                },
-                                onClick = {
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlayAtIndex(
-                                        songs.map(Song::asMediaItem),
-                                        it
-                                    )
-                                }
-                            )
-                            .animateItemPlacement()
-                            .width(itemInHorizontalGridWidth)
-                    )
-
-                }
-
-            }
-            */
-/*
-            if (artists.isNotEmpty())
-                BasicText(
-                    text = "${maxStatisticsItems} ${stringResource(R.string.most_listened_artists)}",
-                    style = typography().m.semiBold,
-                    modifier = sectionTextModifier
-                )
-
-            LazyRow(contentPadding = endPaddingValues) {
-                items(
-                    count = artists.count()
-                ) {
-
-                    if (artists[it].thumbnailUrl.toString() == "null")
-                        UpdateYoutubeArtist(artists[it].id)
-
-                    ArtistItem(
-                        artist = artists[it],
-                        thumbnailSizePx = artistThumbnailSizePx,
-                        thumbnailSizeDp = artistThumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                if (artists[it].id != "") {
-                                    //onGoToArtist(artists[it].id)
-                                    navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
-                                }
-                            })
-                    )
-                }
-            }
-
-
-            if (albums.isNotEmpty())
-                BasicText(
-                    text = "${maxStatisticsItems} ${stringResource(R.string.most_albums_listened)}",
-                    style = typography().m.semiBold,
-                    modifier = sectionTextModifier
-                )
-
-            LazyRow(contentPadding = endPaddingValues) {
-                items(
-                    count = albums.count()
-                ) {
-
-                    if (albums[it].thumbnailUrl.toString() == "null")
-                        UpdateYoutubeAlbum(albums[it].id)
-
-                    AlbumItem(
-                        album = albums[it],
-                        thumbnailSizePx = albumThumbnailSizePx,
-                        thumbnailSizeDp = albumThumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                if (albums[it].id != "")
-                                //onGoToAlbum(albums[it].id)
-                                    navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
-                            })
-                    )
-                }
-            }
-
-
-            if (playlists.isNotEmpty())
-                BasicText(
-                    text = "${maxStatisticsItems} ${stringResource(R.string.most_played_playlists)}",
-                    style = typography().m.semiBold,
-                    modifier = sectionTextModifier
-                )
-
-            LazyRow(contentPadding = endPaddingValues) {
-                items(
-                    count = playlists.count()
-                ) {
-
-                    PlaylistItem(
-                        playlist = playlists[it],
-                        thumbnailSizePx = playlistThumbnailSizePx,
-                        thumbnailSizeDp = playlistThumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier
-                            .clickable(onClick = {
-
-                                // if (playlists[it].playlist.browseId != "" )
-                                //onGoToPlaylist(playlists[it].playlist.id)
-                                navController.navigate("${NavRoutes.playlist.name}/${playlists[it].playlist.id}")
-                                //   onGoToPlaylist(
-                                //       playlists[it].playlist.browseId,
-                                //       null
-                                //   )
-
-                            })
-                    )
-                }
-
-
-            }
-*/
-
             Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
         }
-    //}
 }

@@ -156,7 +156,6 @@ fun MoodList(
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                //artistRoute.global(it)
                                                 navController.navigate(route = "${NavRoutes.artist.name}/$it")
                                             }
                                         }

@@ -105,7 +105,6 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
@@ -114,6 +113,7 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
@@ -914,12 +914,10 @@ fun AlbumDetailsModern(
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded =
-                            if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                            if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         SongItem(
-                            title = song.title,
-                            totalPlayTimeMs = 1,
-                            isDownloaded = isDownloaded,
+                            mediaItem = song.asMediaItem,
                             downloadState = downloadState,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
@@ -941,8 +939,6 @@ fun AlbumDetailsModern(
                                         downloadState = isDownloaded
                                     )
                             },
-                            authors = song.artistsText,
-                            duration = song.durationText,
                             thumbnailSizeDp = thumbnailSizeDp,
                             thumbnailContent = {
                                 /*
@@ -1011,7 +1007,7 @@ fun AlbumDetailsModern(
                                     )
                                 else checkedState.value = false
                             },
-                            mediaId = song.asMediaItem.mediaId
+                            //mediaId = song.asMediaItem.mediaId
                         )
                     }
                 }

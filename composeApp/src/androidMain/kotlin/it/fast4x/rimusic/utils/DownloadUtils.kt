@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.utils
 
 
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,14 +21,17 @@ import androidx.media3.exoplayer.offline.DownloadService
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalDownloader
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.models.Format
+import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.service.isLocal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.knighthat.appContext
 
 @UnstableApi
 @Composable
@@ -40,15 +44,11 @@ fun InitDownloader() {
 
 @UnstableApi
 @Composable
-fun downloadedStateMedia(mediaId: String): Boolean {
+fun downloadedStateMedia(mediaId: String): DownloadedStateMedia {
     val binder = LocalPlayerServiceBinder.current
 
     val cachedBytes by remember(mediaId) {
         mutableStateOf(binder?.cache?.getCachedBytes(mediaId, 0, -1))
-    }
-
-    var format by remember {
-        mutableStateOf<Format?>(null)
     }
 
     var isDownloaded by remember { mutableStateOf(false) }
@@ -57,14 +57,19 @@ fun downloadedStateMedia(mediaId: String): Boolean {
             isDownloaded = download?.state == Download.STATE_COMPLETED
         }
     }
-
+    var isCached by remember { mutableStateOf(false) }
     LaunchedEffect(mediaId) {
-        Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
-            format = currentFormat
+        Database.format(mediaId).distinctUntilChanged().collectLatest { format ->
+           isCached = format?.contentLength == cachedBytes
         }
     }
 
-    return (format?.contentLength == cachedBytes) || isDownloaded
+    return when {
+        isDownloaded && isCached -> DownloadedStateMedia.CACHED_AND_DOWNLOADED
+        isDownloaded && !isCached -> DownloadedStateMedia.DOWNLOADED
+        !isDownloaded && isCached -> DownloadedStateMedia.CACHED
+        else -> DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
+    }
 }
 
 
@@ -75,6 +80,8 @@ fun manageDownload(
     downloadState: Boolean = false
 ) {
 
+    if (mediaItem.isLocal) return
+
     if (downloadState)
         DownloadService.sendRemoveDownload(
             context,
@@ -84,10 +91,7 @@ fun manageDownload(
         )
     else {
         if (isNetworkAvailable(context)) {
-
             MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)
-
-
         }
     }
 
@@ -98,10 +102,18 @@ fun manageDownload(
 @Composable
 fun getDownloadState(mediaId: String): Int {
     val downloader = LocalDownloader.current
-    //if (!checkInternetConnection()) return 3
     if (!isNetworkAvailableComposable()) return 3
 
     return downloader.getDownload(mediaId).collectAsState(initial = null).value?.state
         ?: 3
 }
 
+@OptIn(UnstableApi::class)
+@Composable
+fun isDownloadedSong(mediaId: String): Boolean {
+    return when (downloadedStateMedia(mediaId)) {
+        DownloadedStateMedia.CACHED -> false
+        DownloadedStateMedia.CACHED_AND_DOWNLOADED, DownloadedStateMedia.DOWNLOADED -> true
+        else -> false
+    }
+}

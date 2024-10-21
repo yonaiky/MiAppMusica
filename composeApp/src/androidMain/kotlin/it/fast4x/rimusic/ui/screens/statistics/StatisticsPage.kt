@@ -72,11 +72,11 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxStatisticsItemsKey
@@ -306,10 +306,9 @@ fun StatisticsPage(
                         count = songs.count(),
                         ) {
                         downloadState = getDownloadState(songs.get(it).asMediaItem.mediaId)
-                        val isDownloaded = downloadedStateMedia(songs.get(it).asMediaItem.mediaId)
+                        val isDownloaded = isDownloadedSong(songs.get(it).asMediaItem.mediaId)
                         SongItem(
                             song = songs.get(it).asMediaItem,
-                            isDownloaded = isDownloaded,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
                                 manageDownload(

@@ -66,10 +66,10 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playVideo
@@ -214,10 +214,9 @@ fun SearchResultScreen(
                                     ) {
                                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                                         val isDownloaded =
-                                            downloadedStateMedia(song.asMediaItem.mediaId)
+                                            isDownloadedSong(song.asMediaItem.mediaId)
                                         SongItem(
                                             song = song,
-                                            isDownloaded = isDownloaded,
                                             onDownloadClick = {
                                                 localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                 query {
@@ -466,7 +465,6 @@ fun SearchResultScreen(
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         modifier = Modifier
                                             .clickable(onClick = {
-                                                //artistRoute(artist.key)
                                                 navController.navigate("${NavRoutes.artist.name}/${artist.key}")
                                             })
                                     )

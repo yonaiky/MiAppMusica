@@ -104,9 +104,9 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -442,11 +442,10 @@ fun QuickPicksModern(
                                 val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                                 downloadState = getDownloadState(song.asMediaItem.mediaId)
                                 val isDownloaded =
-                                    if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                                    if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
 
                                 SongItem(
                                     song = song,
-                                    isDownloaded = isDownloaded,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         query {
@@ -551,11 +550,10 @@ fun QuickPicksModern(
                                 val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                                 downloadState = getDownloadState(song.asMediaItem.mediaId)
                                 val isDownloaded =
-                                    if (!isLocal) downloadedStateMedia(song.asMediaItem.mediaId) else true
+                                    if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
 
                                 SongItem(
                                     song = song,
-                                    isDownloaded = isDownloaded,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         query {
@@ -942,7 +940,6 @@ fun QuickPicksModern(
                                             )
                                             SongItem(
                                                 song = song,
-                                                isDownloaded = false,
                                                 onDownloadClick = {},
                                                 downloadState = Download.STATE_STOPPED,
                                                 thumbnailSizePx = songThumbnailSizePx,

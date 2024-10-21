@@ -71,10 +71,10 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -489,10 +489,9 @@ fun ArtistScreen(
                                     ) {
                                         listMediaItems.add(song.asMediaItem)
                                         downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                        val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
+                                        val isDownloaded = isDownloadedSong(song.asMediaItem.mediaId)
                                         SongItem(
                                             song = song,
-                                            isDownloaded = isDownloaded,
                                             onDownloadClick = {
                                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                 query {

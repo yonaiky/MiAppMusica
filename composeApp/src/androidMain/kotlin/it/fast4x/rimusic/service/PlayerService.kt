@@ -365,8 +365,6 @@ class PlayerService : InvincibleService(),
         .map { it != null }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    //private val mediaDownloadedItemState = MutableStateFlow<MediaItem?>(null)
-
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val isDownloadedState = mediaItemState
@@ -379,8 +377,6 @@ class PlayerService : InvincibleService(),
         }
         //.map { true }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
-
-    //private val mediaCachedItemState = MutableStateFlow<MediaItem?>(null)
 
     @ExperimentalCoroutinesApi
     @FlowPreview

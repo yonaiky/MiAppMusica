@@ -348,7 +348,6 @@ fun OnlineSearch(
                                 song = mediaItem,
                                 thumbnailSizePx = songThumbnailSizePx,
                                 thumbnailSizeDp = songThumbnailSizeDp,
-                                isDownloaded = false,
                                 onDownloadClick = {},
                                 downloadState = downloadState,
                                 modifier = Modifier

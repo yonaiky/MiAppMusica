@@ -116,7 +116,6 @@ import it.fast4x.rimusic.utils.builtInPlaylistKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.defaultFolderKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
@@ -125,6 +124,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
@@ -192,14 +192,6 @@ fun HomeSongsModern(
 
     var items by persistList<SongEntity>("home/songs")
     var listMediaItems = remember { mutableListOf<MediaItem>() }
-
-    //var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
-
-    /*
-    var filterDownloaded by remember {
-        mutableStateOf(false)
-    }
-     */
 
     var builtInPlaylist by rememberPreference(
         builtInPlaylistKey,
@@ -1081,7 +1073,6 @@ fun HomeSongsModern(
                             ) {
                                 SongItem(
                                     song = song.song,
-                                    isDownloaded = true,
                                     onDownloadClick = {
                                         // not necessary
                                     },
@@ -1169,11 +1160,10 @@ fun HomeSongsModern(
                             val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
                             downloadState.intValue = getDownloadState(song.song.asMediaItem.mediaId)
                             val isDownloaded =
-                                if (!isLocal) downloadedStateMedia(song.song.asMediaItem.mediaId) else true
+                                if (!isLocal) isDownloadedSong(song.song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
                             SongItem(
                                 song = song.song,
-                                isDownloaded = isDownloaded,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                     query {

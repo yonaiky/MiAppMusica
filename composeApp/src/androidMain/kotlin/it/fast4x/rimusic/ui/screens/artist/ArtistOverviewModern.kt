@@ -93,12 +93,12 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
@@ -532,10 +532,9 @@ fun ArtistOverviewModern(
                             ) {
                                 listMediaItems.add(song.asMediaItem)
                                 downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                val isDownloaded = downloadedStateMedia(song.asMediaItem.mediaId)
+                                val isDownloaded = isDownloadedSong(song.asMediaItem.mediaId)
                                 SongItem(
                                     song = song,
-                                    isDownloaded = isDownloaded,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         query {

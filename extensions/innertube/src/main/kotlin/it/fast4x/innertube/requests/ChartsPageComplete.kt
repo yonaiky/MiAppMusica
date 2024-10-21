@@ -265,7 +265,6 @@ fun parseSongChart(contents: List<MusicCarouselShelfRenderer.Content>): ArrayLis
                                 )
                             } else {
                                 artists.add(
-                                    //Artist(name = name, id = id)
                                     Innertube.ArtistItem(
                                         info = Innertube.Info(
                                             name = name,
