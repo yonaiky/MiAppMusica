@@ -23,6 +23,7 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -35,7 +36,8 @@ fun VideoItem(
     video: Innertube.VideoItem,
     thumbnailHeightDp: Dp,
     thumbnailWidthDp: Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    disableScrollingText: Boolean
 ) {
     VideoItem(
         thumbnailUrl = video.thumbnail?.url,
@@ -45,7 +47,8 @@ fun VideoItem(
         views = video.viewsText,
         thumbnailHeightDp = thumbnailHeightDp,
         thumbnailWidthDp = thumbnailWidthDp,
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -58,7 +61,8 @@ fun VideoItem(
     views: String?,
     thumbnailHeightDp: Dp,
     thumbnailWidthDp: Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = false,
@@ -83,7 +87,10 @@ fun VideoItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(all = 4.dp)
-                        .background(color = colorPalette().overlay, shape = RoundedCornerShape(2.dp))
+                        .background(
+                            color = colorPalette().overlay,
+                            shape = RoundedCornerShape(2.dp)
+                        )
                         .padding(horizontal = 4.dp, vertical = 2.dp)
                         .align(Alignment.BottomEnd)
                 )
@@ -97,7 +104,7 @@ fun VideoItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .basicMarquee(iterations = Int.MAX_VALUE)
+                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
 
             BasicText(
@@ -106,7 +113,7 @@ fun VideoItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .basicMarquee(iterations = Int.MAX_VALUE)
+                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
 
             views?.let {
@@ -117,7 +124,7 @@ fun VideoItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
         }

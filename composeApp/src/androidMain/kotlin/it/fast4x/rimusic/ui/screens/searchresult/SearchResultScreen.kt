@@ -544,7 +544,8 @@ fun SearchResultScreen(
                                                             localBinder?.player?.forcePlay(video.asMediaItem)
                                                         //binder?.setupRadio(video.info?.endpoint)
                                                     }
-                                                )
+                                                ),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },

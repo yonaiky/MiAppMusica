@@ -127,7 +127,8 @@ fun SearchYoutubeEntity (
                                         //binder?.setupRadio(video.info?.endpoint)
                                         onDismiss()
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 },
