@@ -90,6 +90,7 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -662,6 +663,7 @@ fun FolderItemMenu(
     thumbnailSizeDp: Dp,
     onDismiss: () -> Unit,
     onEnqueue: () -> Unit,
+    disableScrollingText: Boolean
 ) {
     val density = LocalDensity.current
 
@@ -691,7 +693,7 @@ fun FolderItemMenu(
             modifier = Modifier
                 .padding(end = 12.dp)
         ) {
-            FolderItem(folder, thumbnailSizeDp)
+            FolderItem(folder, thumbnailSizeDp, disableScrollingText = disableScrollingText)
 
         }
 
