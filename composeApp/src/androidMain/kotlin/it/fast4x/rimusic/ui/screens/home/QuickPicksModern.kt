@@ -753,7 +753,8 @@ fun QuickPicksModern(
                                         thumbnailSizeDp = artistThumbnailSizeDp,
                                         alternative = true,
                                         modifier = Modifier
-                                            .clickable(onClick = { onArtistClick(artist.key) })
+                                            .clickable(onClick = { onArtistClick(artist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -1007,7 +1008,8 @@ fun QuickPicksModern(
                                                 alternative = false,
                                                 modifier = Modifier
                                                     .width(200.dp)
-                                                    .clickable(onClick = { onArtistClick(artist.key) })
+                                                    .clickable(onClick = { onArtistClick(artist.key) }),
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }

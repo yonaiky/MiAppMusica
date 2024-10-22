@@ -386,7 +386,8 @@ fun StatisticsPage(
                                     //onGoToArtist(artists[it].id)
                                     navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
                                 }
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
             }

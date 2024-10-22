@@ -401,8 +401,8 @@ fun OnlineSearch(
                                 modifier = Modifier
                                     .clickable {
                                         navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
-                                    }
-
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

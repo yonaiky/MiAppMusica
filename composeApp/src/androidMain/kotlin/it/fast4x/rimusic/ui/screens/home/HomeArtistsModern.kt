@@ -57,6 +57,7 @@ import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.flow.Flow
@@ -97,6 +98,9 @@ fun HomeArtistsModern(
     // Sort states
     val sortBy = rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
     val sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+
     // Size state
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
     // Randomizer states
@@ -226,7 +230,8 @@ fun HomeArtistsModern(
                                                        isSearchBarFocused = false
 
                                                onArtistClick( artist )
-                                           })
+                                           }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
                 item(

@@ -472,7 +472,8 @@ fun SearchResultScreen(
                                             .clickable(onClick = {
                                                 //artistRoute(artist.key)
                                                 navController.navigate("${NavRoutes.artist.name}/${artist.key}")
-                                            })
+                                            }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {

@@ -164,7 +164,8 @@ fun MoodList(
                                                 //artistRoute.global(it)
                                                 navController.navigate(route = "${NavRoutes.artist.name}/$it")
                                             }
-                                        }
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
 
                                     is Innertube.PlaylistItem -> PlaylistItem(
