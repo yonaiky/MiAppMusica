@@ -185,56 +185,57 @@ fun AlbumScreen(
                         Header(
                             //title = album?.title ?: "Unknown"
                             title = "",
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        ) {
-                            textButton?.invoke()
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            actionsContent = {
+                                textButton?.invoke()
 
+                                Spacer(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                )
 
-                            Spacer(
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
+                                HeaderIconButton(
+                                    icon = if (album?.bookmarkedAt == null) {
+                                        R.drawable.bookmark_outline
+                                    } else {
+                                        R.drawable.bookmark
+                                    },
+                                    color = colorPalette().accent,
+                                    onClick = {
+                                        val bookmarkedAt =
+                                            if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
 
-                            HeaderIconButton(
-                                icon = if (album?.bookmarkedAt == null) {
-                                    R.drawable.bookmark_outline
-                                } else {
-                                    R.drawable.bookmark
-                                },
-                                color = colorPalette().accent,
-                                onClick = {
-                                    val bookmarkedAt =
-                                        if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                    query {
-                                        album
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
-                                    }
-                                }
-                            )
-
-                            HeaderIconButton(
-                                icon = R.drawable.share_social,
-                                color = colorPalette().text,
-                                onClick = {
-                                    album?.shareUrl?.let { url ->
-                                        val sendIntent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            type = "text/plain"
-                                            putExtra(Intent.EXTRA_TEXT, url)
+                                        query {
+                                            album
+                                                ?.copy(bookmarkedAt = bookmarkedAt)
+                                                ?.let(Database::update)
                                         }
-
-                                        context.startActivity(
-                                            Intent.createChooser(
-                                                sendIntent,
-                                                null
-                                            )
-                                        )
                                     }
-                                }
-                            )
-                        }
+                                )
+
+                                HeaderIconButton(
+                                    icon = R.drawable.share_social,
+                                    color = colorPalette().text,
+                                    onClick = {
+                                        album?.shareUrl?.let { url ->
+                                            val sendIntent = Intent().apply {
+                                                action = Intent.ACTION_SEND
+                                                type = "text/plain"
+                                                putExtra(Intent.EXTRA_TEXT, url)
+                                            }
+
+                                            context.startActivity(
+                                                Intent.createChooser(
+                                                    sendIntent,
+                                                    null
+                                                )
+                                            )
+                                        }
+                                    }
+                                )
+                            },
+                            disableScrollingText = disableScrollingText
+                        )
                     }
                 }
 

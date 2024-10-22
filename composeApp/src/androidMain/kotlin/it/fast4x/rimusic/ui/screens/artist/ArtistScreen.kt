@@ -221,26 +221,46 @@ fun ArtistScreen(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = artist?.name ?: "Unknown") {
-
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(top = 50.dp)
-                                    .padding(horizontal = 12.dp)
-                            ) {
-                                textButton?.invoke()
-
-                                Spacer(
+                        Header(title = artist?.name ?: "Unknown", actionsContent = {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .weight(0.2f)
-                                )
+                                        .padding(top = 50.dp)
+                                        .padding(horizontal = 12.dp)
+                                ) {
+                                    textButton?.invoke()
 
-                                SecondaryTextButton(
-                                    text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
-                                        R.string.following
-                                    ),
+                                    Spacer(
+                                        modifier = Modifier
+                                            .weight(0.2f)
+                                    )
+
+                                    SecondaryTextButton(
+                                        text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
+                                            R.string.following
+                                        ),
+                                        onClick = {
+                                            val bookmarkedAt =
+                                                if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+
+                                            query {
+                                                artist
+                                                    ?.copy(bookmarkedAt = bookmarkedAt)
+                                                    ?.let(Database::update)
+                                            }
+                                        },
+                                        alternative = artist?.bookmarkedAt == null
+                                    )
+
+                                    /*
+                                HeaderIconButton(
+                                    icon = if (artist?.bookmarkedAt == null) {
+                                        R.drawable.bookmark_outline
+                                    } else {
+                                        R.drawable.bookmark
+                                    },
+                                    color = colorPalette.accent,
                                     onClick = {
                                         val bookmarkedAt =
                                             if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -250,54 +270,34 @@ fun ArtistScreen(
                                                 ?.copy(bookmarkedAt = bookmarkedAt)
                                                 ?.let(Database::update)
                                         }
-                                    },
-                                    alternative = artist?.bookmarkedAt == null
-                                )
-
-                                /*
-                            HeaderIconButton(
-                                icon = if (artist?.bookmarkedAt == null) {
-                                    R.drawable.bookmark_outline
-                                } else {
-                                    R.drawable.bookmark
-                                },
-                                color = colorPalette.accent,
-                                onClick = {
-                                    val bookmarkedAt =
-                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                    query {
-                                        artist
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
                                     }
-                                }
-                            )
-                             */
+                                )
+                                 */
 
-                                HeaderIconButton(
-                                    icon = R.drawable.share_social,
-                                    color = colorPalette().text,
-                                    onClick = {
-                                        val sendIntent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            type = "text/plain"
-                                            putExtra(
-                                                Intent.EXTRA_TEXT,
-                                                "https://music.youtube.com/channel/$browseId"
+                                    HeaderIconButton(
+                                        icon = R.drawable.share_social,
+                                        color = colorPalette().text,
+                                        onClick = {
+                                            val sendIntent = Intent().apply {
+                                                action = Intent.ACTION_SEND
+                                                type = "text/plain"
+                                                putExtra(
+                                                    Intent.EXTRA_TEXT,
+                                                    "https://music.youtube.com/channel/$browseId"
+                                                )
+                                            }
+
+                                            context.startActivity(
+                                                Intent.createChooser(
+                                                    sendIntent,
+                                                    null
+                                                )
                                             )
                                         }
-
-                                        context.startActivity(
-                                            Intent.createChooser(
-                                                sendIntent,
-                                                null
-                                            )
-                                        )
-                                    }
-                                )
-                            }
-                        }
+                                    )
+                                }
+                            },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 
@@ -311,7 +311,8 @@ fun ArtistScreen(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = artist?.name ?: "Unknown") {
+                        Header(title = artist?.name ?: "Unknown",
+                            actionsContent = {
                             textButton?.invoke()
 
 
@@ -392,7 +393,8 @@ fun ArtistScreen(
                                     context.startActivity(Intent.createChooser(sendIntent, null))
                                 }
                             )
-                        }
+                        },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 

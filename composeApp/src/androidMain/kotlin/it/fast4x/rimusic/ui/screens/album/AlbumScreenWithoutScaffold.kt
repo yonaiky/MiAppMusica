@@ -221,7 +221,8 @@ fun AlbumScreenWithoutScaffold(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = album?.title ?: "Unknown") {
+                        Header(title = album?.title ?: "Unknown",
+                            actionsContent = {
 
                             if ( NavigationBarPosition.Left.isCurrent() || NavigationBarPosition.Top.isCurrent() ) {
                                 IconButton(
@@ -242,17 +243,17 @@ fun AlbumScreenWithoutScaffold(
                                 modifier = Modifier
                                     .weight(1f)
                             )
-/*
-                            HeaderIconButton(
-                                icon = R.drawable.image,
-                                enabled = album?.thumbnailUrl?.isNotEmpty() == true,
-                                color = if (album?.thumbnailUrl?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                                onClick = {
-                                    if (album?.thumbnailUrl?.isNotEmpty() == true)
-                                        uriHandler.openUri(album?.thumbnailUrl.toString())
-                                    }
-                            )
- */
+                            /*
+                                                        HeaderIconButton(
+                                                            icon = R.drawable.image,
+                                                            enabled = album?.thumbnailUrl?.isNotEmpty() == true,
+                                                            color = if (album?.thumbnailUrl?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                                            onClick = {
+                                                                if (album?.thumbnailUrl?.isNotEmpty() == true)
+                                                                    uriHandler.openUri(album?.thumbnailUrl.toString())
+                                                                }
+                                                        )
+                             */
 
 
 
@@ -306,7 +307,8 @@ fun AlbumScreenWithoutScaffold(
                                         .size(24.dp)
                                 )
                             }
-                        }
+                        },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 
