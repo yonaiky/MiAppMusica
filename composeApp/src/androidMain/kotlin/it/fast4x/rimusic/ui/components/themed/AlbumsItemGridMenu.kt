@@ -74,7 +74,7 @@ fun AlbumsItemGridMenu(
     onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
-
+    disableScrollingText: Boolean
 ) {
     val density = LocalDensity.current
 
@@ -260,7 +260,8 @@ fun AlbumsItemGridMenu(
                             album = album,
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
-                            yearCentered = false
+                            yearCentered = false,
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 ) {

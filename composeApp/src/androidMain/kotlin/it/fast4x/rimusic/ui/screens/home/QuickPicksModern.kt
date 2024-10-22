@@ -104,6 +104,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
@@ -315,6 +316,8 @@ fun QuickPicksModern(
     //val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
     //if (enableCreateMonthlyPlaylists)
     //    CheckMonthlyPlaylist()
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     PullToRefreshBox(
         refreshing = refreshing,
@@ -673,7 +676,8 @@ fun QuickPicksModern(
                                             alternative = true,
                                             modifier = Modifier.clickable(onClick = {
                                                 onAlbumClick(it.key)
-                                            })
+                                            }),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -696,7 +700,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         modifier = Modifier.clickable(onClick = {
                                             onAlbumClick(it.key)
-                                        })
+                                        }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -722,7 +727,8 @@ fun QuickPicksModern(
                                         thumbnailSizeDp = albumThumbnailSizeDp,
                                         alternative = true,
                                         modifier = Modifier
-                                            .clickable(onClick = { onAlbumClick(album.key) })
+                                            .clickable(onClick = { onAlbumClick(album.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }

@@ -71,6 +71,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -128,6 +129,8 @@ fun ArtistScreen(
     }
     val hapticFeedback = LocalHapticFeedback.current
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database
@@ -438,7 +441,8 @@ fun ArtistScreen(
                                 },
                                 onSettingsClick = {
                                     navController.navigate(NavRoutes.settings.name)
-                                }
+                                },
+                                disableScrollingText = disableScrollingText
                             )
                         }
 
@@ -598,7 +602,8 @@ fun ArtistScreen(
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             }),
-                                        yearCentered = false
+                                        yearCentered = false,
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -652,7 +657,8 @@ fun ArtistScreen(
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             }),
-                                        yearCentered = false
+                                        yearCentered = false,
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {

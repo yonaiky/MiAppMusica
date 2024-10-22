@@ -105,6 +105,7 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -155,6 +156,7 @@ fun AlbumDetailsModern(
     var album by persist<Album?>("album/$browseId")
     //val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect {
@@ -880,6 +882,7 @@ fun AlbumDetailsModern(
                                                     selectItems = false
                                                 }
                                             },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -1055,7 +1058,8 @@ fun AlbumDetailsModern(
                                     .clickable {
                                         //albumRoute(album.key)
                                         navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                    }
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         },
                         itemPlaceholderContent = {

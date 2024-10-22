@@ -70,6 +70,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
@@ -121,6 +122,8 @@ fun HomeDiscovery(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
     //Log.d("mediaItemArtists",preferitesArtists.toString())
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     BoxWithConstraints {
 
@@ -193,7 +196,8 @@ fun HomeDiscovery(
                                                 onNewReleaseAlbumClick(
                                                     it.key
                                                 )
-                                            })
+                                            }),
+                                            disableScrollingText = disableScrollingText
                                         )
                                // }
 
@@ -216,7 +220,8 @@ fun HomeDiscovery(
                                 thumbnailSizePx = thumbnailPx,
                                 thumbnailSizeDp = thumbnailDp,
                                 alternative = true,
-                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) })
+                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) }),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

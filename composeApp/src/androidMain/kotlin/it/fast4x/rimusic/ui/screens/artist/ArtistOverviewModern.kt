@@ -137,6 +137,7 @@ fun ArtistOverviewModern(
     onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
+    disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -690,7 +691,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
+                                        .clickable(onClick = { onAlbumClick(album.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -745,7 +747,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
+                                        .clickable(onClick = { onAlbumClick(album.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
 

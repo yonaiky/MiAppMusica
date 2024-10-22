@@ -72,6 +72,7 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -129,6 +130,7 @@ fun StatisticsPage(
     )
 
     val showStatsListeningTime by rememberPreference(showStatsListeningTimeKey,   true)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val context = LocalContext.current
 
@@ -415,7 +417,8 @@ fun StatisticsPage(
                                 if (albums[it].id != "" )
                                 //onGoToAlbum(albums[it].id)
                                     navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
             }

@@ -78,6 +78,7 @@ import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -121,6 +122,7 @@ fun AlbumScreenWithoutNavBar(
     var album by persist<Album?>("album/$browseId/album")
     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
 
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
@@ -412,7 +414,8 @@ fun AlbumScreenWithoutNavBar(
                                                         .clickable {
                                                             //albumRoute(album.key)
                                                             navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                                        }
+                                                        },
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             },
                                             itemPlaceholderContent = {

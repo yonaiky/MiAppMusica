@@ -66,6 +66,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -110,6 +111,8 @@ fun SearchResultScreen(
 
     val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
@@ -425,7 +428,8 @@ fun SearchResultScreen(
                                                     },
                                                     onLongClick = {}
 
-                                                )
+                                                ),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
