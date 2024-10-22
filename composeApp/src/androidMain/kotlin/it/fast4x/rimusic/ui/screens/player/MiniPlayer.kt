@@ -278,7 +278,10 @@ fun MiniPlayer(
                                     binder.player.clearMediaItems()
                                     hidePlayer()
                                 } else
-                                    SmartMessage(context.resources.getString(R.string.player_swiping_down_is_disabled), context = context)
+                                    SmartMessage(
+                                        context.resources.getString(R.string.player_swiping_down_is_disabled),
+                                        context = context
+                                    )
                             }
                         }
                     )
@@ -355,7 +358,7 @@ fun MiniPlayer(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
 
