@@ -75,6 +75,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
@@ -398,17 +399,7 @@ fun MediaItemGridMenu (
                 onDownloadClick = {
                     binder?.cache?.removeResource(mediaItem.mediaId)
                     query {
-                        Database.insert(
-                            Song(
-                                id = mediaItem.mediaId,
-                                title = mediaItem.mediaMetadata.title.toString(),
-                                artistsText = mediaItem.mediaMetadata.artist.toString(),
-                                thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(
-                                    thumbnailSizePx
-                                ).toString(),
-                                durationText = null
-                            )
-                        )
+                        Database.resetFormatContentLength(mediaItem.mediaId)
                     }
                     if (!isLocal)
                         manageDownload(

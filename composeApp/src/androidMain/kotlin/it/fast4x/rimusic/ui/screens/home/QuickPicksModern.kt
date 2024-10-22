@@ -449,15 +449,7 @@ fun QuickPicksModern(
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         query {
-                                            Database.insert(
-                                                Song(
-                                                    id = song.asMediaItem.mediaId,
-                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                    thumbnailUrl = song.thumbnailUrl,
-                                                    durationText = null
-                                                )
-                                            )
+                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                         }
 
                                         if (!isLocal)
@@ -497,15 +489,7 @@ fun QuickPicksModern(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             query {
-                                                                Database.insert(
-                                                                    Song(
-                                                                        id = song.asMediaItem.mediaId,
-                                                                        title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                                        thumbnailUrl = song.thumbnailUrl,
-                                                                        durationText = null
-                                                                    )
-                                                                )
+                                                                Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -557,15 +541,7 @@ fun QuickPicksModern(
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         query {
-                                            Database.insert(
-                                                Song(
-                                                    id = song.asMediaItem.mediaId,
-                                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                    thumbnailUrl = song.thumbnail?.url,
-                                                    durationText = null
-                                                )
-                                            )
+                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                         }
                                         if (!isLocal)
                                             manageDownload(
@@ -589,15 +565,7 @@ fun QuickPicksModern(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             query {
-                                                                Database.insert(
-                                                                    Song(
-                                                                        id = song.asMediaItem.mediaId,
-                                                                        title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                                        thumbnailUrl = song.thumbnail?.url,
-                                                                        durationText = null
-                                                                    )
-                                                                )
+                                                                Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,

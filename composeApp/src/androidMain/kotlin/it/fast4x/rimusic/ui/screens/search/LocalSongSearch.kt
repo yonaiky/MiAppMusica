@@ -257,15 +257,7 @@ fun LocalSongSearch(
                     onDownloadClick = {
                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                         query {
-                            Database.insert(
-                                Song(
-                                    id = song.asMediaItem.mediaId,
-                                    title = song.asMediaItem.mediaMetadata.title.toString(),
-                                    artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                    thumbnailUrl = song.thumbnailUrl,
-                                    durationText = null
-                                )
-                            )
+                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
                         }
 
                         if (!isLocal)

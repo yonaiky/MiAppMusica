@@ -220,15 +220,7 @@ fun SearchResultScreen(
                                             onDownloadClick = {
                                                 localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                 query {
-                                                    Database.insert(
-                                                        Song(
-                                                            id = song.asMediaItem.mediaId,
-                                                            title = song.asMediaItem.mediaMetadata.title.toString(),
-                                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                                            thumbnailUrl = song.thumbnail?.url,
-                                                            durationText = null
-                                                        )
-                                                    )
+                                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                                 }
 
                                                 manageDownload(

@@ -5,8 +5,10 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableIntState
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.utils.manageDownload
 
 @UnstableApi
@@ -30,12 +32,14 @@ interface DeleteDownloadsDialog: ConfirmationDialog {
     override fun onConfirm() {
         listToProcess().forEach {
             binder?.cache?.removeResource(it.mediaId)
+            Database.resetFormatContentLength(it.mediaId)
 
-            manageDownload(
-                context = context,
-                mediaItem = it,
-                downloadState = true
-            )
+            if (!it.isLocal)
+                manageDownload(
+                    context = context,
+                    mediaItem = it,
+                    downloadState = true
+                )
         }
 
         onDismiss()

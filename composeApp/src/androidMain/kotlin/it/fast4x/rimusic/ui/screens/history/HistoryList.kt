@@ -222,15 +222,7 @@ fun HistoryList(
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
                                     query {
-                                        Database.insert(
-                                            Song(
-                                                id = event.song.asMediaItem.mediaId,
-                                                title = event.song.asMediaItem.mediaMetadata.title.toString(),
-                                                artistsText = event.song.asMediaItem.mediaMetadata.artist.toString(),
-                                                thumbnailUrl = event.song.thumbnailUrl,
-                                                durationText = null
-                                            )
-                                        )
+                                        Database.resetFormatContentLength(event.song.asMediaItem.mediaId)
                                     }
 
                                     if (!isLocal)

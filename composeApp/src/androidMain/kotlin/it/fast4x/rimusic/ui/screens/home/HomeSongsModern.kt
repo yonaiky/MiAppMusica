@@ -428,6 +428,7 @@ fun HomeSongsModern(
                         binder?.downloadCache?.removeResource(it.song.id)
                         Database.delete(it.song)
                         Database.deleteSongFromPlaylists(it.song.id)
+                        Database.deleteFormat(it.song.id)
                     }
                     SmartMessage(context.resources.getString(R.string.deleted), context = context)
                 }
@@ -459,6 +460,8 @@ fun HomeSongsModern(
                         menuState.hide()
                         binder?.cache?.removeResource(it.song.id)
                         binder?.downloadCache?.removeResource(it.song.id)
+                        Database.resetFormatContentLength(it.song.id)
+                        Database.deleteFormat(it.song.id)
                         Database.incrementTotalPlayTimeMs(
                             it.song.id,
                             -it.song.totalPlayTimeMs
@@ -786,20 +789,21 @@ fun HomeSongsModern(
                 if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded)
                     deleteDownloadsDialog.Render()
 
-                TabToolBar.Toggleable(
-                    onIconId = R.drawable.eye,
-                    offIconId = R.drawable.eye_off,
-                    toggleCondition = showHiddenSongs != 0,
-                    onShortClick = {
-                        showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.info_show_hide_hidden_songs),
-                            context = context
-                        )
-                    }
-                )
+                if (builtInPlaylist == BuiltInPlaylist.All)
+                    TabToolBar.Toggleable(
+                        onIconId = R.drawable.eye,
+                        offIconId = R.drawable.eye_off,
+                        toggleCondition = showHiddenSongs != 0,
+                        onShortClick = {
+                            showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
+                        },
+                        onLongClick = {
+                            SmartMessage(
+                                context.resources.getString(R.string.info_show_hide_hidden_songs),
+                                context = context
+                            )
+                        }
+                    )
 
                 shuffle.ToolBarButton()
 
@@ -912,30 +916,31 @@ fun HomeSongsModern(
                 }
             }
 
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    //.padding(vertical = 4.dp)
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth()
+            ) {
+                ButtonsRow(
+                    chips = buttonsList,
+                    currentValue = builtInPlaylist,
+                    onValueUpdate = { builtInPlaylist = it },
+                    modifier = Modifier.padding(end = 12.dp)
+                )
+            }
+
+
             // Sticky search bar
             search.SearchBar( this )
 
             LazyColumn(
                 state = lazyListState,
             ) {
-                item {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .padding(vertical = 4.dp)
-                            .fillMaxWidth()
-                    ) {
-                        ButtonsRow(
-                            chips = buttonsList,
-                            currentValue = builtInPlaylist,
-                            onValueUpdate = { builtInPlaylist = it },
-                            modifier = Modifier.padding(end = 12.dp)
-                        )
-                    }
-                }
-
                 if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
                     if (!hasPermission) {
                         item(
@@ -1148,7 +1153,6 @@ fun HomeSongsModern(
                             items.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) }.distinctBy { it.song.id }
                         else items.distinctBy { it.song.id },
                         key = { _, song -> song.song.id },
-                        //contentType = { _, song -> song },
                     ) { index, song ->
 
                         SwipeablePlaylistItem(
@@ -1167,15 +1171,7 @@ fun HomeSongsModern(
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                     query {
-                                        Database.insert(
-                                            Song(
-                                                id = song.song.asMediaItem.mediaId,
-                                                title = song.song.asMediaItem.mediaMetadata.title.toString(),
-                                                artistsText = song.song.asMediaItem.mediaMetadata.artist.toString(),
-                                                thumbnailUrl = song.song.thumbnailUrl,
-                                                durationText = null
-                                            )
-                                        )
+                                        Database.resetFormatContentLength(song.song.asMediaItem.mediaId)
                                     }
                                     if (!isLocal)
                                         manageDownload(

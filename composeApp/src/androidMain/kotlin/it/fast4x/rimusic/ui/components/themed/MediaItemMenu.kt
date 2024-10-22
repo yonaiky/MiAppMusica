@@ -1083,17 +1083,7 @@ fun MediaItemMenu(
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
                             query {
-                                Database.insert(
-                                    Song(
-                                        id = mediaItem.mediaId,
-                                        title = mediaItem.mediaMetadata.title.toString(),
-                                        artistsText = mediaItem.mediaMetadata.artist.toString(),
-                                        thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(
-                                            thumbnailSizePx
-                                        ).toString(),
-                                        durationText = null
-                                    )
-                                )
+                                Database.resetFormatContentLength(mediaItem.mediaId)
                             }
                             if (!isLocal)
                                 manageDownload(

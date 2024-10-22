@@ -722,6 +722,9 @@ fun BuiltInPlaylistSongs(
                                 if (songs.isNotEmpty() == true)
                                     songs.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                        query {
+                                            Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                        }
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -759,6 +762,9 @@ fun BuiltInPlaylistSongs(
                                     if (songs.isNotEmpty() == true)
                                         songs.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            query {
+                                                Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                            }
                                             manageDownload(
                                                 context = context,
                                                 mediaItem = it.asMediaItem,
@@ -1169,15 +1175,7 @@ fun BuiltInPlaylistSongs(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 query {
-                                    Database.insert(
-                                        Song(
-                                            id = song.asMediaItem.mediaId,
-                                            title = song.asMediaItem.mediaMetadata.title.toString(),
-                                            artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = song.thumbnailUrl,
-                                            durationText = null
-                                        )
-                                    )
+                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                 }
 
                                 if (!isLocal)
