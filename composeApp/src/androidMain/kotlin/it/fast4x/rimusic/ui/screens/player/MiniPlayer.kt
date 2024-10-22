@@ -84,6 +84,8 @@ import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
@@ -371,7 +373,7 @@ fun MiniPlayer(
                     icon = R.drawable.play_skip_back,
                     color = colorPalette().iconButtonPlayer,
                     onClick = {
-                        binder.player.forceSeekToPrevious()
+                        binder.player.playPrevious()
                         if (effectRotationEnabled) isRotated = !isRotated
                     },
                     modifier = Modifier
@@ -413,7 +415,7 @@ fun MiniPlayer(
                     icon = R.drawable.play_skip_forward,
                     color = colorPalette().iconButtonPlayer,
                     onClick = {
-                        binder.player.forceSeekToNext()
+                        binder.player.playNext()
                         if (effectRotationEnabled) isRotated = !isRotated
                     },
                     modifier = Modifier

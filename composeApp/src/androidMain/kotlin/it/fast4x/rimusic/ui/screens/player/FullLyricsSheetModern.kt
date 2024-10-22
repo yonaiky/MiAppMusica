@@ -57,6 +57,8 @@ import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.shouldBePlaying
@@ -222,7 +224,7 @@ fun FullLyricsSheetModern(
                                             icon = R.drawable.play_skip_back,
                                             color = colorPalette().collapsedPlayerProgressBar,
                                             onClick = {
-                                                binder.player.forceSeekToPrevious()
+                                                binder.player.playPrevious()
                                                 onRefresh()
                                             },
                                             modifier = Modifier
@@ -277,7 +279,7 @@ fun FullLyricsSheetModern(
                                             icon = R.drawable.play_skip_forward,
                                             color = colorPalette().collapsedPlayerProgressBar,
                                             onClick = {
-                                                binder.player.forceSeekToNext()
+                                                binder.player.playNext()
                                                 onRefresh()
                                             },
                                             modifier = Modifier

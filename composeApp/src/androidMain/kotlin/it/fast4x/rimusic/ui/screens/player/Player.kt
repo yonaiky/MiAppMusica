@@ -252,6 +252,8 @@ import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -888,10 +890,10 @@ fun Player(
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
-                                    binder.player.forceSeekToPrevious()
+                                    binder.player.playPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
-                                    binder.player.forceSeekToNext()
+                                    binder.player.playNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -991,10 +993,10 @@ fun Player(
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
-                                    binder.player.forceSeekToPrevious()
+                                    binder.player.playPrevious()
                                     //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
-                                    binder.player.forceSeekToNext()
+                                    binder.player.playNext()
                                     //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
@@ -1458,8 +1460,7 @@ fun Player(
                                 color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
-                                    binder.player?.shuffleQueue()
-                                    //binder.player.forceSeekToNext()
+                                    binder.player.shuffleQueue()
                                 },
                                 modifier = Modifier
                                     .size(24.dp),
@@ -1820,9 +1821,9 @@ fun Player(
                                         onDragEnd = {
                                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                 if (deltaX > 5) {
-                                                    binder.player.forceSeekToPrevious()
+                                                    binder.player.playPrevious()
                                                 } else if (deltaX < -5) {
-                                                    binder.player.forceSeekToNext()
+                                                    binder.player.playNext()
                                                 }
 
                                             }
@@ -1853,9 +1854,9 @@ fun Player(
                                     onDragEnd = {
                                         if (!disablePlayerHorizontalSwipe) {
                                             if (deltaX > 5) {
-                                                binder.player.forceSeekToPrevious()
+                                                binder.player.playPrevious()
                                             } else if (deltaX < -5) {
-                                                binder.player.forceSeekToNext()
+                                                binder.player.playNext()
                                             }
 
                                         }
@@ -2028,9 +2029,9 @@ fun Player(
                                                 onDragEnd = {
                                                     if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                                         if (deltaX > 5) {
-                                                            binder.player.forceSeekToPrevious()
+                                                            binder.player.playPrevious()
                                                         } else if (deltaX < -5) {
-                                                            binder.player.forceSeekToNext()
+                                                            binder.player.playNext()
                                                         }
 
                                                     }
@@ -2450,9 +2451,9 @@ fun Player(
                                     onDragEnd = {
                                         if (!disablePlayerHorizontalSwipe) {
                                             if (deltaX > 5) {
-                                                binder.player.forceSeekToPrevious()
+                                                binder.player.playPrevious()
                                             } else if (deltaX <-5){
-                                                binder.player.forceSeekToNext()
+                                                binder.player.playNext()
                                             }
 
                                         }

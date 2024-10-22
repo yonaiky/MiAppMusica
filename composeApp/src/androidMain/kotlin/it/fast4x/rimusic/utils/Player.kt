@@ -98,6 +98,18 @@ fun Player.forceSeekToPrevious() {
 fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
+fun Player.playNext() {
+    seekToNext()
+    prepare()
+    playWhenReady = true
+}
+
+fun Player.playPrevious() {
+    seekToPrevious()
+    prepare()
+    playWhenReady = true
+}
+
 @UnstableApi
 fun Player.addNext(mediaItem: MediaItem, context: Context? = null) {
     if (context != null && excludeMediaItem(mediaItem, context)) return

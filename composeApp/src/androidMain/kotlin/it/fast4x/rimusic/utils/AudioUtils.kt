@@ -101,7 +101,7 @@ fun MedleyMode(binder: PlayerService.Binder?, seconds: Int) {
                     delay(1.seconds * seconds)
                     withContext(Dispatchers.Main) {
                         if (binder.player.isPlaying)
-                            binder.player.forceSeekToNext()
+                            binder.player.playNext()
                     }
                 }
             }

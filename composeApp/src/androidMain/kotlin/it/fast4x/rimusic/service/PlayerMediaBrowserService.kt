@@ -41,6 +41,8 @@ import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylistFromContext
 import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -383,8 +385,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         MediaSessionCompat.Callback() {
         override fun onPlay() = binder.player.play()
         override fun onPause() = binder.player.pause()
-        override fun onSkipToPrevious() = binder.player.forceSeekToPrevious()
-        override fun onSkipToNext() = binder.player.forceSeekToNext()
+        override fun onSkipToPrevious() = binder.player.playPrevious()
+        override fun onSkipToNext() = binder.player.playNext()
         override fun onSeekTo(pos: Long) = binder.player.seekTo(pos)
         override fun onSkipToQueueItem(id: Long) = binder.player.seekToDefaultPosition(id.toInt())
         @OptIn(UnstableApi::class)

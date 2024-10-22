@@ -78,6 +78,7 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
@@ -519,7 +520,7 @@ fun ControlsEssential(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
                     //binder.player.forceSeekToNext()
-                    binder.player.seekToNext()
+                    binder.player.playNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {

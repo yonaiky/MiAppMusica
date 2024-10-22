@@ -21,7 +21,6 @@ import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.media.session.PlaybackState
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
@@ -29,7 +28,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.text.format.DateUtils
 import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
@@ -134,9 +132,6 @@ import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
-import it.fast4x.rimusic.utils.getPipedSession
-import it.fast4x.rimusic.utils.handleCatchingErrors
-import it.fast4x.rimusic.utils.handleRangeErrors
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
@@ -154,6 +149,8 @@ import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopTypeKey
@@ -715,7 +712,7 @@ class PlayerService : InvincibleService(),
                         // Up = 1, Down = -1, Release = 0
                         if (direction == VOLUME_UP) {
                             if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
-                                binder.player.forceSeekToNext()
+                                binder.player.playNext()
                             } else {
                                 audio?.adjustStreamVolume(
                                     STREAM_TYPE,
@@ -727,7 +724,7 @@ class PlayerService : InvincibleService(),
                             }
                         } else if (direction == VOLUME_DOWN) {
                             if (binder.player.isPlaying && useVolumeKeysToChangeSong) {
-                                binder.player.forceSeekToPrevious()
+                                binder.player.playPrevious()
                             } else {
                                 audio?.adjustStreamVolume(
                                     STREAM_TYPE,
@@ -1482,7 +1479,7 @@ class PlayerService : InvincibleService(),
 
         val prev = player.currentMediaItem ?: return
         //player.seekToNextMediaItem()
-        player.forceSeekToNext()
+        player.playNext()
 
         showSmartMessage(
             message = getString(
@@ -2104,8 +2101,8 @@ class PlayerService : InvincibleService(),
         override fun onPlay() = player.play()
         //override fun onPause() = player.pause()
         override fun onPause() = binder.callPause({})
-        override fun onSkipToPrevious() = runCatching(player::forceSeekToPrevious).let { }
-        override fun onSkipToNext() = runCatching(player::forceSeekToNext).let { }
+        override fun onSkipToPrevious() = runCatching(player::playPrevious).let { }
+        override fun onSkipToNext() = runCatching(player::playNext).let { }
         override fun onSeekTo(pos: Long) = player.seekTo(pos)
         //override fun onStop() = player.pause()
         override fun onStop() = binder.callPause({} )
@@ -2216,8 +2213,8 @@ class PlayerService : InvincibleService(),
                 //Action.pause.value -> player.pause()
                 Action.pause.value -> binder.callPause({ player.pause() } )
                 Action.play.value -> player.play()
-                Action.next.value -> player.forceSeekToNext()
-                Action.previous.value -> player.forceSeekToPrevious()
+                Action.next.value -> player.playNext()
+                Action.previous.value -> player.playPrevious()
                 Action.like.value -> {
                     binder.toggleLike()
                     refreshPlayer()

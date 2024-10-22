@@ -73,6 +73,8 @@ import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoShowIconsKey
@@ -383,7 +385,7 @@ fun ControlsModern(
                   interactionSource = remember { MutableInteractionSource() },
                   onClick = {
                       //binder.player.forceSeekToPrevious()
-                      binder.player.seekToPrevious()
+                      binder.player.playPrevious()
                       if (effectRotationEnabled) isRotated = !isRotated
                   },
                   onLongClick = {
@@ -560,7 +562,7 @@ fun ControlsModern(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
                     //binder.player.forceSeekToNext()
-                    binder.player.seekToNext()
+                    binder.player.playNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {
@@ -616,7 +618,7 @@ fun ControlsModern(
                           indication = null,
                           onClick = {
                               //binder.player.forceSeekToPrevious()
-                              binder.player.seekToPrevious()
+                              binder.player.playPrevious()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
                           onLongClick = {
@@ -696,7 +698,7 @@ fun ControlsModern(
                           indication = null,
                           onClick = {
                               //binder.player.forceSeekToNext()
-                              binder.player.seekToNext()
+                              binder.player.playNext()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
                           onLongClick = {
