@@ -916,7 +916,8 @@ fun HomeSongsModern(
                                     )
                                 }
                             },
-                            onExport = { exportToggleState.value = true }
+                            onExport = { exportToggleState.value = true },
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

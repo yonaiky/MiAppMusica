@@ -390,7 +390,8 @@ fun DeviceListSongs(
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             alternative = false,
                             modifier = Modifier
-                                .padding(top = 14.dp)
+                                .padding(top = 14.dp),
+                            disableScrollingText = disableScrollingText
                         )
 
                     if (filteredSongs.isNotEmpty())
@@ -433,7 +434,8 @@ fun DeviceListSongs(
                             alternative = true,
                             showName = false,
                             modifier = Modifier
-                                .padding(top = 14.dp)
+                                .padding(top = 14.dp),
+                            disableScrollingText = disableScrollingText
                         )
 
 
@@ -730,7 +732,8 @@ fun DeviceListSongs(
                                     },
                                     onGoToPlaylist = {
                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                    }
+                                    },
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

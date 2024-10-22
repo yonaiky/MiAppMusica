@@ -629,7 +629,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

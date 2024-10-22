@@ -597,7 +597,8 @@ fun SearchResultScreen(
                                             .clickable(onClick = {
                                                 //playlistRoute(playlist.key)
                                                 navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
-                                            })
+                                            }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -642,7 +643,8 @@ fun SearchResultScreen(
                                                 //playlistRoute(playlist.key)
                                                 println("mediaItem searchResultScreen playlist key ${playlist.key}")
                                                 navController.navigate("${NavRoutes.podcast.name}/${playlist.key}")
-                                            })
+                                            }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {

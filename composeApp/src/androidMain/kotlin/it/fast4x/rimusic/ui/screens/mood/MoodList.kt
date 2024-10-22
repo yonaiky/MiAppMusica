@@ -193,7 +193,8 @@ fun MoodList(
                                                 )
                                             }
                                              */
-                                        }
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
 
                                     else -> {}

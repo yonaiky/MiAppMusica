@@ -453,7 +453,8 @@ fun StatisticsPage(
                                  //       null
                                  //   )
 
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
 

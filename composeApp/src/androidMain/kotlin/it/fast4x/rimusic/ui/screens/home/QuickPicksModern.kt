@@ -782,7 +782,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -854,7 +855,8 @@ fun QuickPicksModern(
                                             fadeOutSpec = null
                                         )
                                             .fillMaxSize()
-                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
+                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -907,7 +909,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }

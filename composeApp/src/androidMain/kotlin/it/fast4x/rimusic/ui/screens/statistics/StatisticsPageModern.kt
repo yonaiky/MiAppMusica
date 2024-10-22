@@ -515,7 +515,8 @@ fun StatisticsPageModern(
                                             "${NavRoutes.localPlaylist.name}/$playlistId"
 
                                     navController.navigate(route = route)
-                                })
+                                }),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
