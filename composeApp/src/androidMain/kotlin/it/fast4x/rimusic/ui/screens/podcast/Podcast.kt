@@ -757,6 +757,7 @@ fun Podcast(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -770,7 +771,8 @@ fun Podcast(
                                                 binder?.player?.forcePlayAtIndex(mediaItems, index)
                                             }
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

@@ -47,6 +47,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistindicatorKey
@@ -74,7 +75,8 @@ fun SongItem(
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     downloadState: Int,
-    thumbnailContent: (@Composable BoxScope.() -> Unit)? = null
+    thumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
+    disableScrollingText: Boolean
 ) {
     SongItem(
         thumbnailUrl = song.thumbnail?.size(thumbnailSizePx),
@@ -93,7 +95,8 @@ fun SongItem(
         downloadState = downloadState,
         isExplicit = song.explicit,
         mediaId = song.key,
-        onThumbnailContent = thumbnailContent
+        onThumbnailContent = thumbnailContent,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -110,7 +113,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    duration: String? = ""
+    duration: String? = "",
+    disableScrollingText: Boolean
 ) {
     SongItem(
         thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)?.toString(),
@@ -130,7 +134,8 @@ fun SongItem(
         },
         downloadState = downloadState,
         isRecommended = isRecommended,
-        mediaId = song.mediaId
+        mediaId = song.mediaId,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -145,7 +150,8 @@ fun SongItem(
     trailingContent: (@Composable () -> Unit)? = null,
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
-    downloadState: Int
+    downloadState: Int,
+    disableScrollingText: Boolean
 ) {
     SongItem(
         thumbnailUrl = song.thumbnailUrl?.thumbnail(thumbnailSizePx),
@@ -165,7 +171,8 @@ fun SongItem(
             onDownloadClick()
         },
         downloadState = downloadState,
-        mediaId = song.id
+        mediaId = song.id,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -186,7 +193,8 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     isExplicit: Boolean = false,
-    mediaId: String
+    mediaId: String,
+    disableScrollingText: Boolean
 ) {
     SongItem(
         title = title,
@@ -213,7 +221,8 @@ fun SongItem(
         downloadState = downloadState,
         isRecommended = isRecommended,
         isExplicit = isExplicit,
-        mediaId = mediaId
+        mediaId = mediaId,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -227,7 +236,8 @@ fun SongItem(
     modifier: Modifier = Modifier,
     trailingContent: @Composable (() -> Unit)? = null,
     isDownloaded: Boolean,
-    onDownloadClick: () -> Unit
+    onDownloadClick: () -> Unit,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = false,
@@ -251,7 +261,7 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
 
                     it()
@@ -262,7 +272,7 @@ fun SongItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .basicMarquee(iterations = Int.MAX_VALUE)
+                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
 
 
@@ -285,7 +295,7 @@ fun SongItem(
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .weight(1f)
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
 
                 duration?.let {
@@ -320,7 +330,8 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     isExplicit: Boolean = false,
-    mediaId: String
+    mediaId: String,
+    disableScrollingText: Boolean
 ) {
     var songPlaylist by remember {
         mutableStateOf(0)
@@ -448,7 +459,7 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
 
                     /*
@@ -497,7 +508,7 @@ fun SongItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             .weight(1f)
                     )
                 if (playlistindicator && (songPlaylist > 0)) {
@@ -582,7 +593,7 @@ fun SongItem(
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .weight(1f)
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
 
                 duration?.let {

@@ -252,6 +252,7 @@ fun SearchResultScreen(
                                                                 navController = navController,
                                                                 onDismiss = menuState::hide,
                                                                 mediaItem = song.asMediaItem,
+                                                                disableScrollingText = disableScrollingText
                                                             )
                                                         };
                                                         hapticFeedback.performHapticFeedback(
@@ -263,7 +264,8 @@ fun SearchResultScreen(
                                                         localBinder?.player?.forcePlay(song.asMediaItem)
                                                         localBinder?.setupRadio(song.info?.endpoint)
                                                     }
-                                                )
+                                                ),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -526,7 +528,8 @@ fun SearchResultScreen(
                                                             NonQueuedMediaItemMenu(
                                                                 navController = navController,
                                                                 mediaItem = video.asMediaItem,
-                                                                onDismiss = menuState::hide
+                                                                onDismiss = menuState::hide,
+                                                                disableScrollingText = disableScrollingText
                                                             )
                                                         };
                                                         hapticFeedback.performHapticFeedback(

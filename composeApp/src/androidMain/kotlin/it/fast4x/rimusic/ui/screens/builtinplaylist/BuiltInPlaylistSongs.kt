@@ -1159,8 +1159,8 @@ fun BuiltInPlaylistSongs(
                                 .clickable {
                                     binder?.stopRadio()
                                     binder?.player?.forcePlay(it)
-                                }
-
+                                },
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -1273,13 +1273,15 @@ fun BuiltInPlaylistSongs(
                                                 BuiltInPlaylist.Top -> NonQueuedMediaItemMenuLibrary(
                                                     navController = navController,
                                                     mediaItem = song.asMediaItem,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
 
                                                 BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
                                                     navController = navController,
                                                     song = song,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
 
                                                 BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> {}
@@ -1303,7 +1305,8 @@ fun BuiltInPlaylistSongs(
                                     }
                                 )
                                 .background(color = colorPalette().background0)
-                                .animateItemPlacement()
+                                .animateItemPlacement(),
+                            disableScrollingText = disableScrollingText
                         )
                     /*
                     },

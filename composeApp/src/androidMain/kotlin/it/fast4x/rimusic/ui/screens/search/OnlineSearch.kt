@@ -362,6 +362,7 @@ fun OnlineSearch(
                                                     navController = navController,
                                                     onDismiss = menuState::hide,
                                                     mediaItem = mediaItem,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             };
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -369,7 +370,8 @@ fun OnlineSearch(
                                         onClick = {
                                             binder?.player?.forcePlay(mediaItem)
                                         }
-                                    )
+                                    ),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

@@ -1124,7 +1124,8 @@ fun HomeSongsModern(
                                                     InHistoryMediaItemMenu(
                                                         navController = navController,
                                                         song = song.song,
-                                                        onDismiss = menuState::hide
+                                                        onDismiss = menuState::hide,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                                 hapticFeedback.performHapticFeedback(
@@ -1150,7 +1151,8 @@ fun HomeSongsModern(
                                         .animateItem(
                                             fadeInSpec = null,
                                             fadeOutSpec = null
-                                        )
+                                        ),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -1283,7 +1285,8 @@ fun HomeSongsModern(
                                                     onDeleteFromDatabase = {
                                                         deleteSongDialog.song = Optional.of( song )
                                                         deleteSongToggleState.value = true
-                                                    }
+                                                    },
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1357,7 +1360,8 @@ fun HomeSongsModern(
                                             )
                                         }
                                     )
-                                    .animateItemPlacement()
+                                    .animateItemPlacement(),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

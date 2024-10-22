@@ -938,7 +938,8 @@ fun DeviceListSongs(
                                         DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
                                             navController = navController,
                                             song = song.song,
-                                            onDismiss = menuState::hide
+                                            onDismiss = menuState::hide,
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -955,7 +956,8 @@ fun DeviceListSongs(
                                 }
                             }
                         )
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
         }

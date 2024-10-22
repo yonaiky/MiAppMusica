@@ -55,6 +55,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
@@ -107,6 +108,8 @@ fun LocalSongSearch(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val focusRequester = remember {
         FocusRequester()
@@ -286,7 +289,8 @@ fun LocalSongSearch(
                                     InHistoryMediaItemMenu(
                                         navController = navController,
                                         song = song,
-                                        onDismiss = menuState::hide
+                                        onDismiss = menuState::hide,
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             },
@@ -299,7 +303,8 @@ fun LocalSongSearch(
                                 )
                             }
                         )
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
         }

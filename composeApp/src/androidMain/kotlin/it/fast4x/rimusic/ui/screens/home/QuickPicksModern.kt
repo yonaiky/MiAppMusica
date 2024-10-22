@@ -516,8 +516,8 @@ fun QuickPicksModern(
                                                                 mediaItem = song.asMediaItem,
                                                                 downloadState = isDownloaded
                                                             )
-                                                        }
-
+                                                        },
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 };
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -535,7 +535,8 @@ fun QuickPicksModern(
                                         fadeInSpec = null,
                                         fadeOutSpec = null
                                         )
-                                        .width(itemInHorizontalGridWidth)
+                                        .width(itemInHorizontalGridWidth),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -610,7 +611,7 @@ fun QuickPicksModern(
                                                                 downloadState = isDownloaded
                                                             )
                                                         },
-
+                                                        disableScrollingText = disableScrollingText
                                                         )
                                                 }
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -625,7 +626,8 @@ fun QuickPicksModern(
                                             }
                                         )
                                         .animateItemPlacement()
-                                        .width(itemInHorizontalGridWidth)
+                                        .width(itemInHorizontalGridWidth),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -964,7 +966,8 @@ fun QuickPicksModern(
                                                         binder?.player?.forcePlay(mediaItem)
                                                         binder?.player?.addMediaItems(songs.map { it.asMediaItem })
                                                     })
-                                                    .width(itemWidth)
+                                                    .width(itemWidth),
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }

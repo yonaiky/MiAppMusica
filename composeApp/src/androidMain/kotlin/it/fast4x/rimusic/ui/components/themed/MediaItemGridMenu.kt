@@ -105,6 +105,7 @@ fun NonQueuedMediaItemGridMenu(
     onHideFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
+    disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -129,7 +130,8 @@ fun NonQueuedMediaItemGridMenu(
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -153,6 +155,7 @@ fun BaseMediaItemGridMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
+    disableScrollingText: Boolean
 ) {
     //val context = LocalContext.current
 
@@ -213,7 +216,8 @@ fun BaseMediaItemGridMenu(
         onGoToPlaylist = {
             navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
         },
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -224,8 +228,8 @@ fun MiniMediaItemGridMenu(
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
-
     modifier: Modifier = Modifier,
+    disableScrollingText: Boolean
 ) {
 
     MediaItemGridMenu(
@@ -252,7 +256,8 @@ fun MiniMediaItemGridMenu(
             }
         },
         onAddToPreferites = onAddToPreferites,
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -279,7 +284,8 @@ fun MediaItemGridMenu (
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)?
+    onGoToPlaylist: ((Long) -> Unit)?,
+    disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
     val uriHandler = LocalUriHandler.current
@@ -424,7 +430,8 @@ fun MediaItemGridMenu (
                 thumbnailSizeDp = thumbnailSizeDp,
                 modifier = Modifier
                     .weight(1f),
-                mediaId = mediaItem.mediaId
+                mediaId = mediaItem.mediaId,
+                disableScrollingText = disableScrollingText
             )
 
 

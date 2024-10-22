@@ -332,7 +332,8 @@ fun StatisticsPage(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = menuState::hide
+                                                onDismiss = menuState::hide,
+                                                disableScrollingText = disableScrollingText
                                             )
                                             /*
                                                 BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
@@ -353,7 +354,8 @@ fun StatisticsPage(
                                     }
                                 )
                                 .animateItemPlacement()
-                                .width(itemInHorizontalGridWidth)
+                                .width(itemInHorizontalGridWidth),
+                            disableScrollingText = disableScrollingText
                         )
 
                     }

@@ -980,6 +980,7 @@ fun AlbumDetailsModern(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1014,7 +1015,8 @@ fun AlbumDetailsModern(
                                     )
                                 else checkedState.value = false
                             },
-                            mediaId = song.asMediaItem.mediaId
+                            mediaId = song.asMediaItem.mediaId,
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

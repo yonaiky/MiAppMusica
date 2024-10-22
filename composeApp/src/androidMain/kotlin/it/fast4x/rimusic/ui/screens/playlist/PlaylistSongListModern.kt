@@ -799,6 +799,7 @@ fun PlaylistSongListModern(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -812,7 +813,8 @@ fun PlaylistSongListModern(
                                                 binder?.player?.forcePlayAtIndex(mediaItems, index)
                                             }
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

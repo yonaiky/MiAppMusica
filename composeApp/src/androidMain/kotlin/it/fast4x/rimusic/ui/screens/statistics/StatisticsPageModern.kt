@@ -372,7 +372,8 @@ fun StatisticsPageModern(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = menuState::hide
+                                                onDismiss = menuState::hide,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     },
@@ -384,7 +385,8 @@ fun StatisticsPageModern(
                                         )
                                     }
                                 )
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

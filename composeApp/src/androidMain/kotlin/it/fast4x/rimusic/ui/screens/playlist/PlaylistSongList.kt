@@ -729,6 +729,7 @@ fun PlaylistSongList(
                                             navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = song.asMediaItem,
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -740,7 +741,8 @@ fun PlaylistSongList(
                                         binder?.player?.forcePlayAtIndex(mediaItems, index)
                                     }
                                 }
-                            )
+                            ),
+                        disableScrollingText = disableScrollingText
                     )
                 }
 

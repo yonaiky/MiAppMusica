@@ -568,6 +568,7 @@ fun ArtistOverviewModern(
                                                         navController = navController,
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 };
                                                 hapticFeedback.performHapticFeedback(
@@ -590,7 +591,8 @@ fun ArtistOverviewModern(
                                              */
                                             }
                                         )
-                                        .padding(endPaddingValues)
+                                        .padding(endPaddingValues),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

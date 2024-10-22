@@ -1419,7 +1419,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -1584,8 +1585,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
-
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -1608,7 +1609,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -2273,7 +2275,8 @@ fun Player(
                                                 binder = binder,
                                                 onClosePlayer = {
                                                     onDismiss()
-                                                }
+                                                },
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }
@@ -2685,7 +2688,8 @@ fun Player(
             SearchYoutubeEntity(
                 navController = navController,
                 onDismiss = { showSearchEntity = false },
-                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}"
+                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}",
+                disableScrollingText = disableScrollingText
             )
         }
 

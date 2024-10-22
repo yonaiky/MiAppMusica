@@ -1090,8 +1090,8 @@ fun LocalPlaylistSongs(
                                     .clickable {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlay(it)
-                                    }
-
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }
@@ -1286,7 +1286,8 @@ fun LocalPlaylistSongs(
                                                     playlistId = playlistId,
                                                     positionInPlaylist = index,
                                                     song = song.song,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1321,7 +1322,8 @@ fun LocalPlaylistSongs(
 
  */
                                     .background(color = colorPalette().background0)
-                                    .zIndex(2f)
+                                    .zIndex(2f),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

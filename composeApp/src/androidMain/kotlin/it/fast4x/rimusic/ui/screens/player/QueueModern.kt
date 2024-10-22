@@ -687,8 +687,8 @@ fun QueueModern(
                                                                 mediaItem = window.mediaItem,
                                                                 downloadState = isDownloaded
                                                             )
-                                                        }
-
+                                                        },
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                                 hapticFeedback.performHapticFeedback(
@@ -718,8 +718,8 @@ fun QueueModern(
 
                                          */
                                         .animateItemPlacement(reorderingState)
-                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0)
-
+                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

@@ -756,6 +756,7 @@ fun AlbumSongs(
                                                         navController = navController,
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                             },
@@ -787,7 +788,8 @@ fun AlbumSongs(
                                             )
                                         else checkedState.value = false
                                     },
-                                    mediaId = song.asMediaItem.mediaId
+                                    mediaId = song.asMediaItem.mediaId,
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

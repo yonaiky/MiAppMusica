@@ -528,6 +528,7 @@ fun ArtistScreen(
                                                                 navController = navController,
                                                                 onDismiss = menuState::hide,
                                                                 mediaItem = song.asMediaItem,
+                                                                disableScrollingText = disableScrollingText
                                                             )
                                                         };
                                                         hapticFeedback.performHapticFeedback(
@@ -547,7 +548,8 @@ fun ArtistScreen(
                                                     binder?.setupRadio(song.info?.endpoint)
                                                      */
                                                     }
-                                                )
+                                                ),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
