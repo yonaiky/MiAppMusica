@@ -49,6 +49,8 @@ import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
@@ -83,6 +85,8 @@ fun ArtistLocalSongs(
     }
 
     val context = LocalContext.current
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database.artistSongs(browseId).collect { songs = it }
@@ -301,6 +305,7 @@ fun ArtistLocalSongs(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     },
@@ -311,7 +316,8 @@ fun ArtistLocalSongs(
                                             index
                                         )
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 } ?: item(key = "loading") {

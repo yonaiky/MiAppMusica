@@ -65,6 +65,7 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumSortByKey
 import it.fast4x.rimusic.utils.albumSortOrderKey
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
@@ -97,6 +98,8 @@ fun HomeAlbumsModern(
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
@@ -342,7 +345,8 @@ fun HomeAlbumsModern(
                                                     //Log.d("mediaItemPos", "added position ${position + index}")
                                                 }
                                                 //}
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -356,7 +360,8 @@ fun HomeAlbumsModern(
                                     onAlbumClick( album )
                                 }
                             )
-                            .clip(thumbnailShape())
+                            .clip(thumbnailShape()),
+                        disableScrollingText = disableScrollingText
                     )
                 }
 

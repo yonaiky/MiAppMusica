@@ -117,6 +117,7 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getIconQueueLoopState
@@ -170,6 +171,8 @@ fun QueueModern(
     val context = LocalContext.current
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
     var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     Box(
         modifier = Modifier
@@ -684,8 +687,8 @@ fun QueueModern(
                                                                 mediaItem = window.mediaItem,
                                                                 downloadState = isDownloaded
                                                             )
-                                                        }
-
+                                                        },
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                                 hapticFeedback.performHapticFeedback(
@@ -715,8 +718,8 @@ fun QueueModern(
 
                                          */
                                         .animateItemPlacement(reorderingState)
-                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0)
-
+                                        .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -1032,7 +1035,8 @@ fun QueueModern(
                                     },
                                     onGoToPlaylist = {
                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                    }
+                                    },
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

@@ -69,7 +69,7 @@
     <string name="add_spacing_around_texts">Menambah jarak ketinggian antar baris kalimat</string>
     <string name="lockscreen">LAYAR KUNCI</string>
     <string name="show_song_cover">Tampilkan gambar sampul lagu</string>
-    <string name="use_song_cover_on_lockscreen">Gunakan gambar sampul lagu yang sedang diputar sebagai wallpaper layar kunci</string>
+    <string name="use_song_cover_on_lockscreen">Gunakan sampul lagu yang sedang diputar sebagai wallpaper layar kunci</string>
     <string name="cache">Cache</string>
     <string name="cache_cleared">Cache adalah penyimpanan sementara.\nSaat cache kehabisan ruang kosong, lagu dan gambar yang sudah lama tidak diakses akan dihapus</string>
     <string name="image_cache">CACHE GAMBAR</string>
@@ -103,7 +103,7 @@
     <string name="turning_off_battery_optimizations_is_not_enough">Aktifkan jika menonaktifkan pengoptimalan baterai masih tidak cukup</string>
     <string name="player">Pemutar</string>
     <string name="persistent_queue">Antrean tetap</string>
-    <string name="save_and_restore_playing_songs">Simpan dan pulihkan lagu-lagu yang sedang diputar</string>
+    <string name="save_and_restore_playing_songs">Simpan dan pulihkan antrean yang terakhir kali diputar</string>
     <string name="resume_playback">Lanjutkan pemutaran</string>
     <string name="when_device_is_connected">Saat perangkat audio terhubung</string>
     <string name="skip_silence">Lompati keheningan</string>
@@ -122,7 +122,7 @@
     <string name="provided_by">Diambil dari situs</string>
     <string name="delete_playback_events">Hapus %1$s saran lagu dari Pilihan cepat</string>
     <string name="existing_data_will_be_overwritten">Data saat ini akan ditimpa. %1$s akan ditutup secara otomatis setelah memulihkan basis data.</string>
-    <string name="folder_cache">FOLDER CACHE</string>
+    <string name="folder_cache">CACHE</string>
     <string name="cache_reset_by_clicking_button">Perhatian! Dengan menekan tombol dibawah ini, lokasi folder cache akan diatur ulang ke setelan awal</string>
     <string name="cache_location_folder">Lokasi folder</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Sejak Android 10 keatas, fitur ini mungkin tidak tersedia.</string>
@@ -249,7 +249,7 @@
     <string name="indonesian">Indonesia</string>
     <string name="odia">ଓଡ଼ିଆ</string>
     <string name="bashkir">Bashkir (Башҡурт)</string>
-    <string name="esperanto">Esperanto</string>
+    <string name="esperanto">Esperanto (Esperanto)</string>
     <string name="close_app_with_back_button">Tutup aplikasi dengan tombol kembali</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Saat Anda menekan tombol kembali dari halaman utama</string>
     <string name="audio_quality_format_high">Tinggi</string>
@@ -384,7 +384,7 @@
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Hindari menutup pemutar dan membersihkan antrean dengan mengusap ke bawah saat di minimalkan</string>
     <string name="sort_date_liked">Tanggal di sukai</string>
     <string name="export_playlist">Ekspor daftar putar</string>
-    <string name="lang_afrikaans">Afrikaans</string>
+    <string name="lang_afrikaans">Afrikaans (Afrikaans)</string>
     <string name="playlist_top">Daftar putar Teratas</string>
     <string name="my_playlist_top">%s Teratas</string>
     <string name="navigation_bar_position">Posisi bilah navigasi</string>
@@ -454,7 +454,7 @@
     <string name="info_remove_all_downloaded_songs">Hapus semua lagu yang telah terunduh</string>
     <string name="info_start_radio">Mulai radio</string>
     <string name="info_translation">Terjemahan</string>
-    <string name="info_find_the_song_that_is_playing">Cari lagu yang sedang diputar</string>
+    <string name="info_find_the_song_that_is_playing">Tampilkan lagu yang sedang diputar</string>
     <string name="info_smart_recommendation">Rekomendasi pintar</string>
     <string name="info_clean_cached_congs">Hapus lagu yang disimpan (cache)</string>
     <string name="info_pin_unpin_playlist">Sematkan daftar putar</string>
@@ -646,7 +646,7 @@
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
     <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">One Song</string>
-    <string name="twosongs">Two Songs</string>
+    <string name="twosongs">Dua lagu</string>
     <string name="info_debug_mode_enabled">Mode debug diaktifkan</string>
     <string name="info_debug_mode_is_enabled">Mode debug diaktifkan, buka pengaturan untuk menonaktifkannya</string>
     <string name="tapqueue">Ketuk untuk membuka Antrean</string>
@@ -663,9 +663,9 @@
     <string name="deleted">Terhapus</string>
     <string name="playlistindicatorinfo2">Lagu ini ada dalam daftar putar anda</string>
     <string name="statsfornerdsplayer">Informasi statistik</string>
-    <string name="discover">Discover</string>
-    <string name="discoverinfo">Removes Liked and Playlist songs from queue</string>
-    <string name="controls_header_customize">Customize</string>
+    <string name="discover">Jelajah</string>
+    <string name="discoverinfo">Menghapus lagu dari antrean jika termasuk dalam favorit atau daftar putar</string>
+    <string name="controls_header_customize">Kustomisasi</string>
     <string name="controls_title_blur_effect">Efek mengabur</string>
     <string name="controls_title_medley_duration">Durasi medley</string>
     <string name="controls_title_playback_speed">Kecepatan pemutaran</string>
@@ -730,8 +730,8 @@
     <string name="update">Perbarui</string>
     <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Jangan simpan riwayat pemutaran</string>
-    <string name="vertical_widget">Vertical widget</string>
-    <string name="horizontal_widget">Horizontal widget</string>
+    <string name="vertical_widget">Widget vertikal</string>
+    <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Bergabung dalam komunitas Reddit</string>
     <string name="sleep_timer_ended">Sleep timer ended</string>
@@ -758,5 +758,5 @@
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
     <string name="login_required_to_play_this_media">Login required to play this media</string>
     <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
+    <string name="search_results_for">Hasil penelusuran untuk:</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -93,6 +94,8 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -137,6 +140,7 @@ fun ArtistOverviewModern(
     onSettingsClick: () -> Unit,
     thumbnailContent: @Composable () -> Unit,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
+    disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -251,6 +255,7 @@ fun ArtistOverviewModern(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .padding(horizontal = 30.dp)
+                                .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE)}
                                 //.padding(bottom = 5.dp)
                         )
 
@@ -553,6 +558,7 @@ fun ArtistOverviewModern(
                                                         navController = navController,
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 };
                                                 hapticFeedback.performHapticFeedback(
@@ -575,7 +581,8 @@ fun ArtistOverviewModern(
                                              */
                                             }
                                         )
-                                        .padding(endPaddingValues)
+                                        .padding(endPaddingValues),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -614,7 +621,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -676,7 +684,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
+                                        .clickable(onClick = { onAlbumClick(album.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -731,7 +740,8 @@ fun ArtistOverviewModern(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) })
+                                        .clickable(onClick = { onAlbumClick(album.key) }),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
 

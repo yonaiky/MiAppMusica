@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
@@ -45,6 +47,7 @@ fun Header(
     title: String,
     modifier: Modifier = Modifier,
     actionsContent: @Composable RowScope.() -> Unit = {},
+    disableScrollingText: Boolean
 ) {
     Header(
         modifier = modifier,
@@ -53,7 +56,8 @@ fun Header(
                 text = title,
                 style = typography().xxl.medium,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
         },
         actionsContent = actionsContent

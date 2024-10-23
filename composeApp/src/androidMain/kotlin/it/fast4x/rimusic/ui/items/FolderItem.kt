@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Folder
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
 import me.knighthat.typography
@@ -28,7 +29,8 @@ fun FolderItem(
     folder: Folder,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    icon: Int = R.drawable.folder
+    icon: Int = R.drawable.folder,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = false,
@@ -58,7 +60,7 @@ fun FolderItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText){ basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
 

@@ -116,6 +116,8 @@ import it.fast4x.rimusic.utils.builtInPlaylistKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
@@ -189,6 +191,7 @@ fun HomeSongsModern(
     val thumbnailSizePx = thumbnailSizeDp.px
 
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var items by persistList<SongEntity>("home/songs")
     var listMediaItems = remember { mutableListOf<MediaItem>() }
@@ -910,7 +913,8 @@ fun HomeSongsModern(
                                     )
                                 }
                             },
-                            onExport = { exportToggleState.value = true }
+                            onExport = { exportToggleState.value = true },
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -1012,6 +1016,7 @@ fun HomeSongsModern(
                                                     currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
                                                 }
                                             ),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -1036,7 +1041,8 @@ fun HomeSongsModern(
                                                                     .map { it.toSong().asMediaItem }
                                                                 binder?.player?.enqueue(allSongs, context)
                                                             },
-                                                            thumbnailSizeDp = thumbnailSizeDp
+                                                            thumbnailSizeDp = thumbnailSizeDp,
+                                                            disableScrollingText = disableScrollingText
                                                         )
                                                     };
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1051,6 +1057,7 @@ fun HomeSongsModern(
                                                             isSearchBarFocused = false
                                                 }
                                             ),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             } else {
@@ -1114,7 +1121,8 @@ fun HomeSongsModern(
                                                     InHistoryMediaItemMenu(
                                                         navController = navController,
                                                         song = song.song,
-                                                        onDismiss = menuState::hide
+                                                        onDismiss = menuState::hide,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                                 hapticFeedback.performHapticFeedback(
@@ -1140,7 +1148,8 @@ fun HomeSongsModern(
                                         .animateItem(
                                             fadeInSpec = null,
                                             fadeOutSpec = null
-                                        )
+                                        ),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -1263,7 +1272,8 @@ fun HomeSongsModern(
                                                     onDeleteFromDatabase = {
                                                         deleteSongDialog.song = Optional.of( song )
                                                         deleteSongToggleState.value = true
-                                                    }
+                                                    },
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1337,7 +1347,8 @@ fun HomeSongsModern(
                                             )
                                         }
                                     )
-                                    .animateItemPlacement()
+                                    .animateItemPlacement(),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

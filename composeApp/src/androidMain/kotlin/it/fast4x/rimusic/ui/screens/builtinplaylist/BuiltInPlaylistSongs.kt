@@ -122,6 +122,8 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -171,6 +173,8 @@ fun BuiltInPlaylistSongs(
     var sortBy by rememberPreference(songSortByKey, SongSortBy.DateAdded)
     var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
     var autoShuffle by rememberPreference(autoShuffleKey, false)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
@@ -553,7 +557,8 @@ fun BuiltInPlaylistSongs(
                         thumbnailSizeDp = playlistThumbnailSizeDp,
                         alternative = false,
                         modifier = Modifier
-                            .padding(top = 14.dp)
+                            .padding(top = 14.dp),
+                        disableScrollingText = disableScrollingText
                     )
 
                     if (songs.isNotEmpty())
@@ -596,7 +601,8 @@ fun BuiltInPlaylistSongs(
                         alternative = true,
                         showName = false,
                         modifier = Modifier
-                            .padding(top = 14.dp)
+                            .padding(top = 14.dp),
+                        disableScrollingText = disableScrollingText
                     )
 
 
@@ -970,7 +976,8 @@ fun BuiltInPlaylistSongs(
                                     },
                                     onGoToPlaylist = {
                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                    }
+                                    },
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -1157,8 +1164,8 @@ fun BuiltInPlaylistSongs(
                                 .clickable {
                                     binder?.stopRadio()
                                     binder?.player?.forcePlay(it)
-                                }
-
+                                },
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -1262,13 +1269,15 @@ fun BuiltInPlaylistSongs(
                                                 BuiltInPlaylist.Top -> NonQueuedMediaItemMenuLibrary(
                                                     navController = navController,
                                                     mediaItem = song.asMediaItem,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
 
                                                 BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
                                                     navController = navController,
                                                     song = song,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
 
                                                 BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> {}
@@ -1292,7 +1301,8 @@ fun BuiltInPlaylistSongs(
                                     }
                                 )
                                 .background(color = colorPalette().background0)
-                                .animateItemPlacement()
+                                .animateItemPlacement(),
+                            disableScrollingText = disableScrollingText
                         )
                     /*
                     },

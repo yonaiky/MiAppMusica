@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
+import io.ktor.util.valuesOf
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.routing.RouteHandler
@@ -61,6 +62,7 @@ import it.fast4x.rimusic.ui.screens.settingsRoute
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
@@ -104,6 +106,8 @@ fun AlbumScreenWithoutScaffold(
     var changeShape by remember {
         mutableStateOf(false)
     }
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
@@ -217,7 +221,8 @@ fun AlbumScreenWithoutScaffold(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = album?.title ?: "Unknown") {
+                        Header(title = album?.title ?: "Unknown",
+                            actionsContent = {
 
                             if ( NavigationBarPosition.Left.isCurrent() || NavigationBarPosition.Top.isCurrent() ) {
                                 IconButton(
@@ -238,17 +243,17 @@ fun AlbumScreenWithoutScaffold(
                                 modifier = Modifier
                                     .weight(1f)
                             )
-/*
-                            HeaderIconButton(
-                                icon = R.drawable.image,
-                                enabled = album?.thumbnailUrl?.isNotEmpty() == true,
-                                color = if (album?.thumbnailUrl?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
-                                onClick = {
-                                    if (album?.thumbnailUrl?.isNotEmpty() == true)
-                                        uriHandler.openUri(album?.thumbnailUrl.toString())
-                                    }
-                            )
- */
+                            /*
+                                                        HeaderIconButton(
+                                                            icon = R.drawable.image,
+                                                            enabled = album?.thumbnailUrl?.isNotEmpty() == true,
+                                                            color = if (album?.thumbnailUrl?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                                                            onClick = {
+                                                                if (album?.thumbnailUrl?.isNotEmpty() == true)
+                                                                    uriHandler.openUri(album?.thumbnailUrl.toString())
+                                                                }
+                                                        )
+                             */
 
 
 
@@ -302,7 +307,8 @@ fun AlbumScreenWithoutScaffold(
                                         .size(24.dp)
                                 )
                             }
-                        }
+                        },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 
@@ -355,7 +361,8 @@ fun AlbumScreenWithoutScaffold(
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 modifier = Modifier
-                                    .clickable { albumRoute(album.key) }
+                                    .clickable { albumRoute(album.key) },
+                                disableScrollingText = disableScrollingText
                             )
                         },
                         itemPlaceholderContent = {

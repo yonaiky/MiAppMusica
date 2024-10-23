@@ -115,6 +115,7 @@ import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -219,7 +220,8 @@ fun DeviceListSongs(
 
         }
 
-    } else {
+    }
+    else {
 
         val backButtonFolder = Folder(stringResource(R.string.back))
         val binder = LocalPlayerServiceBinder.current
@@ -231,6 +233,8 @@ fun DeviceListSongs(
         var sortOrder by rememberPreference(songSortOrderKey, SortOrder.Descending)
 
         val defaultFolder by rememberPreference(defaultFolderKey, "/")
+
+        val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
         var songsDevice by remember(sortBy, sortOrder) {
             mutableStateOf<List<OnDeviceSong>>(emptyList())
@@ -386,7 +390,8 @@ fun DeviceListSongs(
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             alternative = false,
                             modifier = Modifier
-                                .padding(top = 14.dp)
+                                .padding(top = 14.dp),
+                            disableScrollingText = disableScrollingText
                         )
 
                     if (filteredSongs.isNotEmpty())
@@ -429,7 +434,8 @@ fun DeviceListSongs(
                             alternative = true,
                             showName = false,
                             modifier = Modifier
-                                .padding(top = 14.dp)
+                                .padding(top = 14.dp),
+                            disableScrollingText = disableScrollingText
                         )
 
 
@@ -726,7 +732,8 @@ fun DeviceListSongs(
                                     },
                                     onGoToPlaylist = {
                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                    }
+                                    },
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -836,6 +843,7 @@ fun DeviceListSongs(
                                         currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
                                     }
                                 ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -861,7 +869,8 @@ fun DeviceListSongs(
                                                             .map { it.toSong().asMediaItem }
                                                         binder?.player?.enqueue(allSongs, context)
                                                     },
-                                                    thumbnailSizeDp = thumbnailSizeDp
+                                                    thumbnailSizeDp = thumbnailSizeDp,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                         }
@@ -870,6 +879,7 @@ fun DeviceListSongs(
                                         currentFolderPath += folder.name + "/"
                                     }
                                 ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 } else {
@@ -927,7 +937,8 @@ fun DeviceListSongs(
                                         DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
                                             navController = navController,
                                             song = song.song,
-                                            onDismiss = menuState::hide
+                                            onDismiss = menuState::hide,
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -944,7 +955,8 @@ fun DeviceListSongs(
                                 }
                             }
                         )
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
         }

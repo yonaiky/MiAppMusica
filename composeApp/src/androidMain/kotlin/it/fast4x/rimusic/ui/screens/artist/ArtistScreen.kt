@@ -71,6 +71,8 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
@@ -128,6 +130,8 @@ fun ArtistScreen(
     }
     val hapticFeedback = LocalHapticFeedback.current
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database
@@ -218,26 +222,46 @@ fun ArtistScreen(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = artist?.name ?: "Unknown") {
-
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(top = 50.dp)
-                                    .padding(horizontal = 12.dp)
-                            ) {
-                                textButton?.invoke()
-
-                                Spacer(
+                        Header(title = artist?.name ?: "Unknown", actionsContent = {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .weight(0.2f)
-                                )
+                                        .padding(top = 50.dp)
+                                        .padding(horizontal = 12.dp)
+                                ) {
+                                    textButton?.invoke()
 
-                                SecondaryTextButton(
-                                    text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
-                                        R.string.following
-                                    ),
+                                    Spacer(
+                                        modifier = Modifier
+                                            .weight(0.2f)
+                                    )
+
+                                    SecondaryTextButton(
+                                        text = if (artist?.bookmarkedAt == null) stringResource(R.string.follow) else stringResource(
+                                            R.string.following
+                                        ),
+                                        onClick = {
+                                            val bookmarkedAt =
+                                                if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+
+                                            query {
+                                                artist
+                                                    ?.copy(bookmarkedAt = bookmarkedAt)
+                                                    ?.let(Database::update)
+                                            }
+                                        },
+                                        alternative = artist?.bookmarkedAt == null
+                                    )
+
+                                    /*
+                                HeaderIconButton(
+                                    icon = if (artist?.bookmarkedAt == null) {
+                                        R.drawable.bookmark_outline
+                                    } else {
+                                        R.drawable.bookmark
+                                    },
+                                    color = colorPalette.accent,
                                     onClick = {
                                         val bookmarkedAt =
                                             if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -247,54 +271,34 @@ fun ArtistScreen(
                                                 ?.copy(bookmarkedAt = bookmarkedAt)
                                                 ?.let(Database::update)
                                         }
-                                    },
-                                    alternative = artist?.bookmarkedAt == null
-                                )
-
-                                /*
-                            HeaderIconButton(
-                                icon = if (artist?.bookmarkedAt == null) {
-                                    R.drawable.bookmark_outline
-                                } else {
-                                    R.drawable.bookmark
-                                },
-                                color = colorPalette.accent,
-                                onClick = {
-                                    val bookmarkedAt =
-                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                    query {
-                                        artist
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
                                     }
-                                }
-                            )
-                             */
+                                )
+                                 */
 
-                                HeaderIconButton(
-                                    icon = R.drawable.share_social,
-                                    color = colorPalette().text,
-                                    onClick = {
-                                        val sendIntent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            type = "text/plain"
-                                            putExtra(
-                                                Intent.EXTRA_TEXT,
-                                                "https://music.youtube.com/channel/$browseId"
+                                    HeaderIconButton(
+                                        icon = R.drawable.share_social,
+                                        color = colorPalette().text,
+                                        onClick = {
+                                            val sendIntent = Intent().apply {
+                                                action = Intent.ACTION_SEND
+                                                type = "text/plain"
+                                                putExtra(
+                                                    Intent.EXTRA_TEXT,
+                                                    "https://music.youtube.com/channel/$browseId"
+                                                )
+                                            }
+
+                                            context.startActivity(
+                                                Intent.createChooser(
+                                                    sendIntent,
+                                                    null
+                                                )
                                             )
                                         }
-
-                                        context.startActivity(
-                                            Intent.createChooser(
-                                                sendIntent,
-                                                null
-                                            )
-                                        )
-                                    }
-                                )
-                            }
-                        }
+                                    )
+                                }
+                            },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 
@@ -308,7 +312,8 @@ fun ArtistScreen(
                     } else {
                         val context = LocalContext.current
 
-                        Header(title = artist?.name ?: "Unknown") {
+                        Header(title = artist?.name ?: "Unknown",
+                            actionsContent = {
                             textButton?.invoke()
 
 
@@ -389,7 +394,8 @@ fun ArtistScreen(
                                     context.startActivity(Intent.createChooser(sendIntent, null))
                                 }
                             )
-                        }
+                        },
+                            disableScrollingText = disableScrollingText)
                     }
                 }
 
@@ -438,7 +444,8 @@ fun ArtistScreen(
                                 },
                                 onSettingsClick = {
                                     navController.navigate(NavRoutes.settings.name)
-                                }
+                                },
+                                disableScrollingText = disableScrollingText
                             )
                         }
 
@@ -515,6 +522,7 @@ fun ArtistScreen(
                                                                 navController = navController,
                                                                 onDismiss = menuState::hide,
                                                                 mediaItem = song.asMediaItem,
+                                                                disableScrollingText = disableScrollingText
                                                             )
                                                         };
                                                         hapticFeedback.performHapticFeedback(
@@ -534,7 +542,8 @@ fun ArtistScreen(
                                                     binder?.setupRadio(song.info?.endpoint)
                                                      */
                                                     }
-                                                )
+                                                ),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -589,7 +598,8 @@ fun ArtistScreen(
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             }),
-                                        yearCentered = false
+                                        yearCentered = false,
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {
@@ -643,7 +653,8 @@ fun ArtistScreen(
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             }),
-                                        yearCentered = false
+                                        yearCentered = false,
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {

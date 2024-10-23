@@ -26,7 +26,8 @@ fun Playlist(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showName: Boolean = true
+    showName: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     var songs by persistList<Song>("playlist${playlist.playlist.id}/songsThumbnails")
     LaunchedEffect(playlist.playlist.id) {
@@ -76,6 +77,7 @@ fun Playlist(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        showName = showName
+        showName = showName,
+        disableScrollingText = disableScrollingText
     )
 }

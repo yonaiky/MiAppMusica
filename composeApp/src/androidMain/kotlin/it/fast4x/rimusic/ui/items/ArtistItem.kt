@@ -20,6 +20,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
@@ -34,7 +35,8 @@ fun ArtistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showName: Boolean = true
+    showName: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     ArtistItem(
         thumbnailUrl = artist.thumbnailUrl,
@@ -44,7 +46,8 @@ fun ArtistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        showName = showName
+        showName = showName,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -55,6 +58,7 @@ fun ArtistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
+    disableScrollingText: Boolean
 ) {
     ArtistItem(
         thumbnailUrl = artist.thumbnail?.url,
@@ -63,7 +67,8 @@ fun ArtistItem(
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
-        alternative = alternative
+        alternative = alternative,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -76,7 +81,8 @@ fun ArtistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showName: Boolean = true
+    showName: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = alternative,
@@ -103,7 +109,7 @@ fun ArtistItem(
                 maxLines = 1, //if (alternative) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .basicMarquee(iterations = Int.MAX_VALUE)
+                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
 
             subscribersCount?.let {
@@ -114,7 +120,7 @@ fun ArtistItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
         }

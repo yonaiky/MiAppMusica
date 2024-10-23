@@ -89,7 +89,8 @@ fun PlaylistsItemGridMenu(
     onListenToYT: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)? = null
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+    disableScrollingText: Boolean
     ) {
     var isViewingPlaylists by remember {
         mutableStateOf(false)
@@ -316,7 +317,8 @@ fun PlaylistsItemGridMenu(
                             playlist = playlist,
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
-                            modifier = Modifier.height(90.dp)
+                            modifier = Modifier.height(90.dp),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

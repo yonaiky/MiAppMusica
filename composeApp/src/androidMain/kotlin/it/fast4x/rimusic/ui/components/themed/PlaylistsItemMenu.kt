@@ -86,7 +86,8 @@ fun PlaylistsItemMenu(
     onListenToYT: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)? = null
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+    disableScrollingText: Boolean
 ) {
     var isViewingPlaylists by remember {
         mutableStateOf(false)
@@ -122,7 +123,8 @@ fun PlaylistsItemMenu(
             onListenToYT = onListenToYT,
             onExport = onExport,
             onImport = onImport,
-            onGoToPlaylist = onGoToPlaylist
+            onGoToPlaylist = onGoToPlaylist,
+            disableScrollingText = disableScrollingText
         )
     } else {
 
@@ -339,7 +341,8 @@ fun PlaylistsItemMenu(
                             PlaylistItem(
                                 playlist = playlist,
                                 thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                disableScrollingText = disableScrollingText
                             )
                         }
 

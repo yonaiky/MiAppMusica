@@ -53,6 +53,7 @@ import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
@@ -92,6 +93,7 @@ fun AlbumScreen(
     var album by persist<Album?>("album/$browseId/album")
     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
 
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     PersistMapCleanup(tagPrefix = "album/$browseId/")
 
@@ -183,56 +185,57 @@ fun AlbumScreen(
                         Header(
                             //title = album?.title ?: "Unknown"
                             title = "",
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        ) {
-                            textButton?.invoke()
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            actionsContent = {
+                                textButton?.invoke()
 
+                                Spacer(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                )
 
-                            Spacer(
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
+                                HeaderIconButton(
+                                    icon = if (album?.bookmarkedAt == null) {
+                                        R.drawable.bookmark_outline
+                                    } else {
+                                        R.drawable.bookmark
+                                    },
+                                    color = colorPalette().accent,
+                                    onClick = {
+                                        val bookmarkedAt =
+                                            if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
 
-                            HeaderIconButton(
-                                icon = if (album?.bookmarkedAt == null) {
-                                    R.drawable.bookmark_outline
-                                } else {
-                                    R.drawable.bookmark
-                                },
-                                color = colorPalette().accent,
-                                onClick = {
-                                    val bookmarkedAt =
-                                        if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                    query {
-                                        album
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
-                                    }
-                                }
-                            )
-
-                            HeaderIconButton(
-                                icon = R.drawable.share_social,
-                                color = colorPalette().text,
-                                onClick = {
-                                    album?.shareUrl?.let { url ->
-                                        val sendIntent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            type = "text/plain"
-                                            putExtra(Intent.EXTRA_TEXT, url)
+                                        query {
+                                            album
+                                                ?.copy(bookmarkedAt = bookmarkedAt)
+                                                ?.let(Database::update)
                                         }
-
-                                        context.startActivity(
-                                            Intent.createChooser(
-                                                sendIntent,
-                                                null
-                                            )
-                                        )
                                     }
-                                }
-                            )
-                        }
+                                )
+
+                                HeaderIconButton(
+                                    icon = R.drawable.share_social,
+                                    color = colorPalette().text,
+                                    onClick = {
+                                        album?.shareUrl?.let { url ->
+                                            val sendIntent = Intent().apply {
+                                                action = Intent.ACTION_SEND
+                                                type = "text/plain"
+                                                putExtra(Intent.EXTRA_TEXT, url)
+                                            }
+
+                                            context.startActivity(
+                                                Intent.createChooser(
+                                                    sendIntent,
+                                                    null
+                                                )
+                                            )
+                                        }
+                                    }
+                                )
+                            },
+                            disableScrollingText = disableScrollingText
+                        )
                     }
                 }
 
@@ -317,7 +320,8 @@ fun AlbumScreen(
                                             .clickable {
                                                 //albumRoute(album.key)
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                            }
+                                            },
+                                        disableScrollingText = disableScrollingText
                                     )
                                 },
                                 itemPlaceholderContent = {

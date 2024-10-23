@@ -76,7 +76,9 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -105,7 +107,7 @@ import kotlin.math.absoluteValue
 fun MiniPlayer(
     showPlayer: () -> Unit,
     hidePlayer: () -> Unit,
-    navController: NavController? = null
+    navController: NavController? = null,
 ) {
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
@@ -201,6 +203,8 @@ fun MiniPlayer(
     )
     val disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, true)
 
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+
     SwipeToDismissBox(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -276,7 +280,10 @@ fun MiniPlayer(
                                     binder.player.clearMediaItems()
                                     hidePlayer()
                                 } else
-                                    SmartMessage(context.resources.getString(R.string.player_swiping_down_is_disabled), context = context)
+                                    SmartMessage(
+                                        context.resources.getString(R.string.player_swiping_down_is_disabled),
+                                        context = context
+                                    )
                             }
                         }
                     )
@@ -343,7 +350,7 @@ fun MiniPlayer(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
                 }
 
@@ -353,7 +360,7 @@ fun MiniPlayer(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
 

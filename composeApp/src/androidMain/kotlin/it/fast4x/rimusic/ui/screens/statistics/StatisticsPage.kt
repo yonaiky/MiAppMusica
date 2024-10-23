@@ -73,6 +73,7 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
@@ -130,6 +131,7 @@ fun StatisticsPage(
     )
 
     val showStatsListeningTime by rememberPreference(showStatsListeningTimeKey,   true)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val context = LocalContext.current
 
@@ -333,7 +335,8 @@ fun StatisticsPage(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = menuState::hide
+                                                onDismiss = menuState::hide,
+                                                disableScrollingText = disableScrollingText
                                             )
                                             /*
                                                 BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
@@ -354,7 +357,8 @@ fun StatisticsPage(
                                     }
                                 )
                                 .animateItemPlacement()
-                                .width(itemInHorizontalGridWidth)
+                                .width(itemInHorizontalGridWidth),
+                            disableScrollingText = disableScrollingText
                         )
 
                     }
@@ -387,7 +391,8 @@ fun StatisticsPage(
                                     //onGoToArtist(artists[it].id)
                                     navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
                                 }
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
             }
@@ -418,7 +423,8 @@ fun StatisticsPage(
                                 if (albums[it].id != "" )
                                 //onGoToAlbum(albums[it].id)
                                     navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
             }
@@ -452,7 +458,8 @@ fun StatisticsPage(
                                  //       null
                                  //   )
 
-                            })
+                            }),
+                        disableScrollingText = disableScrollingText
                     )
                 }
 

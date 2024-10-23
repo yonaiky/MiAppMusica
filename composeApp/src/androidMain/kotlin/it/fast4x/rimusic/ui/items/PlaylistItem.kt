@@ -42,6 +42,7 @@ import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
@@ -65,7 +66,8 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    iconSize: Dp = 34.dp
+    iconSize: Dp = 34.dp,
+    disableScrollingText: Boolean
 ) {
     PlaylistItem(
         thumbnailContent = {
@@ -84,7 +86,8 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        showName = showName
+        showName = showName,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -95,7 +98,8 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showName: Boolean = true
+    showName: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     val thumbnails by remember {
         Database.playlistThumbnailUrls(playlist.playlist.id).distinctUntilChanged().map {
@@ -157,7 +161,8 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        showName = showName
+        showName = showName,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -168,7 +173,8 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showSongsCount: Boolean = true
+    showSongsCount: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     PlaylistItem(
         thumbnailUrl = playlist.thumbnail?.url,
@@ -179,7 +185,8 @@ fun PlaylistItem(
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
-        alternative = alternative
+        alternative = alternative,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -193,7 +200,8 @@ fun PlaylistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showSongsCount: Boolean = true
+    showSongsCount: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     PlaylistItem(
         thumbnailContent = {
@@ -210,6 +218,7 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -225,7 +234,8 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    showSongsCount: Boolean = true
+    showSongsCount: Boolean = true,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = alternative,
@@ -320,7 +330,7 @@ fun PlaylistItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
                 }
 
@@ -331,7 +341,7 @@ fun PlaylistItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .basicMarquee(iterations = Int.MAX_VALUE)
+                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                 )
             }
         }

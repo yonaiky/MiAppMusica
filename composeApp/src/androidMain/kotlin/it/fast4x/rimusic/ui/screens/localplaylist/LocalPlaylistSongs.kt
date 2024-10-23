@@ -117,6 +117,8 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deletePipedPlaylist
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -192,6 +194,7 @@ fun LocalPlaylistSongs(
     // Non-vital
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     val pipedSession = getPipedSession()
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
     var downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
@@ -651,7 +654,8 @@ fun LocalPlaylistSongs(
                                 alternative = true,
                                 showName = false,
                                 modifier = Modifier
-                                    .padding(top = 14.dp)
+                                    .padding(top = 14.dp),
+                                disableScrollingText = disableScrollingText
                             )
                         }
 
@@ -985,7 +989,8 @@ fun LocalPlaylistSongs(
                                             },
                                             onGoToPlaylist = {
                                                 navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
 
@@ -1083,8 +1088,8 @@ fun LocalPlaylistSongs(
                                     .clickable {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlay(it)
-                                    }
-
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }
@@ -1270,7 +1275,8 @@ fun LocalPlaylistSongs(
                                                     playlistId = playlistId,
                                                     positionInPlaylist = index,
                                                     song = song.song,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1305,7 +1311,8 @@ fun LocalPlaylistSongs(
 
  */
                                     .background(color = colorPalette().background0)
-                                    .zIndex(2f)
+                                    .zIndex(2f),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

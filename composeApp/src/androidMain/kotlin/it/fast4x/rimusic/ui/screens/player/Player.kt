@@ -216,6 +216,7 @@ import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
@@ -1419,7 +1420,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -1582,8 +1584,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
-
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -1606,7 +1608,8 @@ fun Player(
                                             binder = binder,
                                             onClosePlayer = {
                                                 onDismiss()
-                                            }
+                                            },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -2265,7 +2268,8 @@ fun Player(
                                                 binder = binder,
                                                 onClosePlayer = {
                                                     onDismiss()
-                                                }
+                                                },
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }
@@ -2680,7 +2684,8 @@ fun Player(
             SearchYoutubeEntity(
                 navController = navController,
                 onDismiss = { showSearchEntity = false },
-                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}"
+                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}",
+                disableScrollingText = disableScrollingText
             )
         }
 
