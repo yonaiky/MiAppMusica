@@ -79,6 +79,7 @@ kotlin {
 
             implementation(projects.innertube)
             implementation(projects.piped)
+            implementation(projects.invidious)
 
             implementation(libs.room)
             implementation(libs.room.runtime)

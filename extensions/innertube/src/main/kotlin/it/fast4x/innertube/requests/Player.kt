@@ -8,6 +8,7 @@ import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.utils.runCatchingNonCancellable
+import it.fast4x.invidious.Invidious
 import it.fast4x.piped.models.Session
 
 suspend fun Innertube.player(
@@ -15,6 +16,7 @@ suspend fun Innertube.player(
     //pipedApiInstance: String = "pipedapi.adminforge.de",
     pipedSession: Session
     ) = runCatchingNonCancellable {
+
         val response = client.post(player) {
             setBody(body)
             mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
@@ -44,6 +46,25 @@ suspend fun Innertube.player(
             if (safePlayerResponse.playabilityStatus?.status == "OK") {
                 safePlayerResponse
             } else {
+
+                /**** INVIDIOUS ****/
+                println("PlayerService Innertube.player Invidious.api.videos ${body.videoId}")
+                val safeResponse = Invidious.api.videos(body.videoId)?.getOrNull()
+
+                if (safeResponse != null) {
+                    safePlayerResponse.copy(
+                        streamingData = safePlayerResponse.streamingData?.copy(
+                            adaptiveFormats = safePlayerResponse.streamingData.adaptiveFormats?.map { adaptiveFormat ->
+                                adaptiveFormat.copy(
+                                    url = safeResponse.find { it.bitrate == adaptiveFormat.bitrate }?.url
+                                )
+                            }
+
+                        )
+                    )
+                } else safePlayerResponse
+                /**** INVIDIOUS ****/
+
                 /*
                 @Serializable
                 data class AudioStream(
@@ -61,7 +82,7 @@ suspend fun Innertube.player(
                 }.body<PipedResponse>().audioStreams
                  */
 
-                safePlayerResponse // temporaly used
+                //safePlayerResponse // temporaly used
 
                 /*
                     // TODO() Piped api streams not working, improve with other service
