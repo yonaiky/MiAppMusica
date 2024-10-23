@@ -49,7 +49,6 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.screens.player.conditional
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.conditional
