@@ -81,6 +81,7 @@ import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -144,6 +145,7 @@ fun StatisticsPageModern(
     )
 
     val showStatsListeningTime by rememberPreference(showStatsListeningTimeKey, true)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val context = LocalContext.current
 
@@ -370,7 +372,8 @@ fun StatisticsPageModern(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = menuState::hide
+                                                onDismiss = menuState::hide,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     },
@@ -382,7 +385,8 @@ fun StatisticsPageModern(
                                         )
                                     }
                                 )
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -408,7 +412,8 @@ fun StatisticsPageModern(
                                     if (artists[it].id != "") {
                                         navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
                                     }
-                                })
+                                }),
+                            disableScrollingText = disableScrollingText
                         )
                     }
 
@@ -432,7 +437,8 @@ fun StatisticsPageModern(
                                 .clickable(onClick = {
                                     if (albums[it].id != "")
                                         navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
-                                })
+                                }),
+                            disableScrollingText = disableScrollingText
                         )
                     }
 
@@ -511,7 +517,8 @@ fun StatisticsPageModern(
                                             "${NavRoutes.localPlaylist.name}/$playlistId"
 
                                     navController.navigate(route = route)
-                                })
+                                }),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

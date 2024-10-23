@@ -90,6 +90,7 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -130,6 +131,7 @@ fun AlbumSongs(
     var album by persist<Album?>("album/$browseId")
 
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect {
@@ -635,6 +637,7 @@ fun AlbumSongs(
                                                             selectItems = false
                                                         }
                                                     },
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                         }
@@ -753,6 +756,7 @@ fun AlbumSongs(
                                                         navController = navController,
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 }
                                             },
@@ -784,7 +788,8 @@ fun AlbumSongs(
                                             )
                                         else checkedState.value = false
                                     },
-                                    mediaId = song.asMediaItem.mediaId
+                                    mediaId = song.asMediaItem.mediaId,
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }

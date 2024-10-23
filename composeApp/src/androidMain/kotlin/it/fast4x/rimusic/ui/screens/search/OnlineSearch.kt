@@ -80,6 +80,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
@@ -175,6 +176,8 @@ fun OnlineSearch(
     val menuState = LocalMenuState.current
     val hapticFeedback = LocalHapticFeedback.current
     val binder = LocalPlayerServiceBinder.current
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     Box(
         modifier = Modifier
@@ -359,6 +362,7 @@ fun OnlineSearch(
                                                     navController = navController,
                                                     onDismiss = menuState::hide,
                                                     mediaItem = mediaItem,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             };
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -366,7 +370,8 @@ fun OnlineSearch(
                                         onClick = {
                                             binder?.player?.forcePlay(mediaItem)
                                         }
-                                    )
+                                    ),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }
@@ -382,8 +387,8 @@ fun OnlineSearch(
                                 modifier = Modifier
                                     .clickable {
                                         navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                    }
-
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }
@@ -398,8 +403,8 @@ fun OnlineSearch(
                                 modifier = Modifier
                                     .clickable {
                                         navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
-                                    }
-
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         }
                     }

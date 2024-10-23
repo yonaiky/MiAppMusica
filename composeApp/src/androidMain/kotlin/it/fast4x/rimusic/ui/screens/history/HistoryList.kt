@@ -54,6 +54,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
@@ -91,6 +92,7 @@ fun HistoryList(
     val thisMonday = today.with(DayOfWeek.MONDAY)
     val lastMonday = thisMonday.minusDays(7)
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val events = Database.events()
         .map { events ->
@@ -273,7 +275,8 @@ fun HistoryList(
                                                 NonQueuedMediaItemMenuLibrary(
                                                     navController = navController,
                                                     mediaItem = event.song.asMediaItem,
-                                                    onDismiss = menuState::hide
+                                                    onDismiss = menuState::hide,
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                         },
@@ -282,7 +285,8 @@ fun HistoryList(
                                         }
                                     )
                                     .background(color = colorPalette().background0)
-                                    .animateItemPlacement()
+                                    .animateItemPlacement(),
+                                disableScrollingText = disableScrollingText
                             )
                         /*
                         },

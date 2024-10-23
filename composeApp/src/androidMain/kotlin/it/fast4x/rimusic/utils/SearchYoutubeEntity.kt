@@ -44,7 +44,8 @@ fun SearchYoutubeEntity (
     navController: NavController,
     onDismiss: () -> Unit,
     query: String,
-    filter: Innertube.SearchFilter = Innertube.SearchFilter.Video
+    filter: Innertube.SearchFilter = Innertube.SearchFilter.Video,
+    disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -109,7 +110,8 @@ fun SearchYoutubeEntity (
                                             NonQueuedMediaItemMenu(
                                                 navController = rememberNavController(),
                                                 mediaItem = video.asMediaItem,
-                                                onDismiss = menuState::hide
+                                                onDismiss = menuState::hide,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(
@@ -125,7 +127,8 @@ fun SearchYoutubeEntity (
                                         //binder?.setupRadio(video.info?.endpoint)
                                         onDismiss()
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 },

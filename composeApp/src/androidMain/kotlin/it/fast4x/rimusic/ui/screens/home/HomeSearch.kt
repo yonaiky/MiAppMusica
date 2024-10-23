@@ -38,7 +38,8 @@ import me.knighthat.thumbnailShape
 @ExperimentalFoundationApi
 @Composable
 fun HomeSearch(
-    onSearchType: (SearchType) -> Unit
+    onSearchType: (SearchType) -> Unit,
+    disableScrollingText: Boolean
 ) {
     val thumbnailSizeDp = 108.dp
     val thumbnailSizePx = thumbnailSizeDp.px
@@ -93,8 +94,8 @@ fun HomeSearch(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onSearchType(SearchType.Online) })
-                        .animateItemPlacement()
-
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -109,8 +110,8 @@ fun HomeSearch(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onSearchType(SearchType.Library) })
-                        .animateItemPlacement()
-
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -125,7 +126,8 @@ fun HomeSearch(
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                    disableScrollingText = disableScrollingText
                 )
             }
 

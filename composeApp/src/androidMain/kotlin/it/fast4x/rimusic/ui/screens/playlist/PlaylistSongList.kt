@@ -93,6 +93,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.completed
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -197,6 +198,8 @@ fun PlaylistSongList(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 /*
     var showAddPlaylistSelectDialog by remember {
         mutableStateOf(false)
@@ -450,9 +453,8 @@ fun PlaylistSongList(
                                         },
                                         onGoToPlaylist = {
                                             navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                        }
-
-
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             },
@@ -727,6 +729,7 @@ fun PlaylistSongList(
                                             navController = navController,
                                             onDismiss = menuState::hide,
                                             mediaItem = song.asMediaItem,
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },
@@ -738,7 +741,8 @@ fun PlaylistSongList(
                                         binder?.player?.forcePlayAtIndex(mediaItems, index)
                                     }
                                 }
-                            )
+                            ),
+                        disableScrollingText = disableScrollingText
                     )
                 }
 

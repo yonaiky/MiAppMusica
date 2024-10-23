@@ -51,6 +51,8 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.colorPalette
@@ -85,6 +87,8 @@ fun MoodList(
         .padding(horizontal = 16.dp)
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     Column (
         modifier = Modifier
@@ -146,7 +150,8 @@ fun MoodList(
                                                 //albumRoute.global(it)
                                                 navController.navigate(route = "${NavRoutes.album.name}/$it")
                                             }
-                                        }
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
 
                                     is Innertube.ArtistItem -> ArtistItem(
@@ -159,7 +164,8 @@ fun MoodList(
                                                 //artistRoute.global(it)
                                                 navController.navigate(route = "${NavRoutes.artist.name}/$it")
                                             }
-                                        }
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
 
                                     is Innertube.PlaylistItem -> PlaylistItem(
@@ -187,7 +193,8 @@ fun MoodList(
                                                 )
                                             }
                                              */
-                                        }
+                                        },
+                                        disableScrollingText = disableScrollingText
                                     )
 
                                     else -> {}

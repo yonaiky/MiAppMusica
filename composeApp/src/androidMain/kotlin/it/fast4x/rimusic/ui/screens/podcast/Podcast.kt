@@ -105,6 +105,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -198,6 +199,8 @@ fun Podcast(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var totalPlayTimes = 0L
     podcastPage?.listEpisode?.forEach {
@@ -569,9 +572,8 @@ fun Podcast(
                                                     },
                                                     onGoToPlaylist = {
                                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
-                                                    }
-
-
+                                                    },
+                                                    disableScrollingText = disableScrollingText
                                                 )
                                             }
                                         },
@@ -755,6 +757,7 @@ fun Podcast(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -768,7 +771,8 @@ fun Podcast(
                                                 binder?.player?.forcePlayAtIndex(mediaItems, index)
                                             }
                                     }
-                                )
+                                ),
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }

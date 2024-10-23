@@ -20,6 +20,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
@@ -35,7 +36,8 @@ fun AlbumItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     yearCentered: Boolean = true,
-    showAuthors: Boolean = false
+    showAuthors: Boolean = false,
+    disableScrollingText: Boolean
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
@@ -47,7 +49,8 @@ fun AlbumItem(
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
         showAuthors = showAuthors,
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -59,7 +62,8 @@ fun AlbumItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     yearCentered: Boolean? = true,
-    showAuthors: Boolean? = false
+    showAuthors: Boolean? = false,
+    disableScrollingText: Boolean
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
@@ -70,7 +74,8 @@ fun AlbumItem(
         thumbnailSizePx = thumbnailSizePx,
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
-        modifier = modifier
+        modifier = modifier,
+        disableScrollingText = disableScrollingText
     )
 }
 
@@ -85,7 +90,8 @@ fun AlbumItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    showAuthors: Boolean? = false
+    showAuthors: Boolean? = false,
+    disableScrollingText: Boolean
 ) {
     ItemContainer(
         alternative = alternative,
@@ -109,7 +115,7 @@ fun AlbumItem(
                 maxLines = 1, //if (alternative) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .basicMarquee(iterations = Int.MAX_VALUE)
+                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
             )
 
             if (!alternative || showAuthors == true) {
@@ -120,7 +126,7 @@ fun AlbumItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .basicMarquee(iterations = Int.MAX_VALUE)
+                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             .align(
                                 if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
                     )

@@ -104,6 +104,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
@@ -316,6 +317,8 @@ fun QuickPicksModern(
     //if (enableCreateMonthlyPlaylists)
     //    CheckMonthlyPlaylist()
 
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+
     PullToRefreshBox(
         refreshing = refreshing,
         onRefresh = { refresh() }
@@ -513,8 +516,8 @@ fun QuickPicksModern(
                                                                 mediaItem = song.asMediaItem,
                                                                 downloadState = isDownloaded
                                                             )
-                                                        }
-
+                                                        },
+                                                        disableScrollingText = disableScrollingText
                                                     )
                                                 };
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -532,7 +535,8 @@ fun QuickPicksModern(
                                         fadeInSpec = null,
                                         fadeOutSpec = null
                                         )
-                                        .width(itemInHorizontalGridWidth)
+                                        .width(itemInHorizontalGridWidth),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -607,7 +611,7 @@ fun QuickPicksModern(
                                                                 downloadState = isDownloaded
                                                             )
                                                         },
-
+                                                        disableScrollingText = disableScrollingText
                                                         )
                                                 }
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -622,7 +626,8 @@ fun QuickPicksModern(
                                             }
                                         )
                                         .animateItemPlacement()
-                                        .width(itemInHorizontalGridWidth)
+                                        .width(itemInHorizontalGridWidth),
+                                    disableScrollingText = disableScrollingText
                                 )
                             }
                         }
@@ -673,7 +678,8 @@ fun QuickPicksModern(
                                             alternative = true,
                                             modifier = Modifier.clickable(onClick = {
                                                 onAlbumClick(it.key)
-                                            })
+                                            }),
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -696,7 +702,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         modifier = Modifier.clickable(onClick = {
                                             onAlbumClick(it.key)
-                                        })
+                                        }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -722,7 +729,8 @@ fun QuickPicksModern(
                                         thumbnailSizeDp = albumThumbnailSizeDp,
                                         alternative = true,
                                         modifier = Modifier
-                                            .clickable(onClick = { onAlbumClick(album.key) })
+                                            .clickable(onClick = { onAlbumClick(album.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -747,7 +755,8 @@ fun QuickPicksModern(
                                         thumbnailSizeDp = artistThumbnailSizeDp,
                                         alternative = true,
                                         modifier = Modifier
-                                            .clickable(onClick = { onArtistClick(artist.key) })
+                                            .clickable(onClick = { onArtistClick(artist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -775,7 +784,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -847,7 +857,8 @@ fun QuickPicksModern(
                                             fadeOutSpec = null
                                         )
                                             .fillMaxSize()
-                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") })
+                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -900,7 +911,8 @@ fun QuickPicksModern(
                                         alternative = true,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                        disableScrollingText = disableScrollingText
                                     )
                                 }
                             }
@@ -954,7 +966,8 @@ fun QuickPicksModern(
                                                         binder?.player?.forcePlay(mediaItem)
                                                         binder?.player?.addMediaItems(songs.map { it.asMediaItem })
                                                     })
-                                                    .width(itemWidth)
+                                                    .width(itemWidth),
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }
@@ -1001,7 +1014,8 @@ fun QuickPicksModern(
                                                 alternative = false,
                                                 modifier = Modifier
                                                     .width(200.dp)
-                                                    .clickable(onClick = { onArtistClick(artist.key) })
+                                                    .clickable(onClick = { onArtistClick(artist.key) }),
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
                                     }

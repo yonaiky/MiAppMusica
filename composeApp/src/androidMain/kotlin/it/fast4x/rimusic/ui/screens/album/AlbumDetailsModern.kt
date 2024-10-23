@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -105,6 +106,8 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -155,6 +158,7 @@ fun AlbumDetailsModern(
     var album by persist<Album?>("album/$browseId")
     //val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect {
@@ -506,6 +510,7 @@ fun AlbumDetailsModern(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(horizontal = 30.dp)
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                                 //.padding(bottom = 20.dp)
                             )
 
@@ -880,6 +885,7 @@ fun AlbumDetailsModern(
                                                     selectItems = false
                                                 }
                                             },
+                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 }
@@ -977,6 +983,7 @@ fun AlbumDetailsModern(
                                                 navController = navController,
                                                 onDismiss = menuState::hide,
                                                 mediaItem = song.asMediaItem,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -1011,7 +1018,8 @@ fun AlbumDetailsModern(
                                     )
                                 else checkedState.value = false
                             },
-                            mediaId = song.asMediaItem.mediaId
+                            mediaId = song.asMediaItem.mediaId,
+                            disableScrollingText = disableScrollingText
                         )
                     }
                 }
@@ -1055,7 +1063,8 @@ fun AlbumDetailsModern(
                                     .clickable {
                                         //albumRoute(album.key)
                                         navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
-                                    }
+                                    },
+                                disableScrollingText = disableScrollingText
                             )
                         },
                         itemPlaceholderContent = {

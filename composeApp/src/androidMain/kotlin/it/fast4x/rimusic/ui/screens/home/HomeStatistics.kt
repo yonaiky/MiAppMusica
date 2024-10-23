@@ -47,6 +47,7 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -97,6 +98,8 @@ fun HomeStatistics(
 
     var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     var sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
@@ -163,8 +166,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.Today) })
-                        .animateItemPlacement()
-
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -179,8 +182,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
-                        .animateItemPlacement()
-
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -195,7 +198,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -210,7 +214,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -225,7 +230,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -240,7 +246,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 
@@ -255,7 +262,8 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.All) })
-                        .animateItemPlacement()
+                        .animateItemPlacement(),
+                    disableScrollingText = disableScrollingText
                 )
             }
 

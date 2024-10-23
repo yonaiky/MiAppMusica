@@ -35,6 +35,7 @@ fun PlayerMenu(
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
+    disableScrollingText: Boolean
     ) {
 
     val menuStyle by rememberPreference(
@@ -106,7 +107,8 @@ fun PlayerMenu(
             },
              */
             onHideFromDatabase = { isHiding = true },
-            onClosePlayer = onClosePlayer
+            onClosePlayer = onClosePlayer,
+            disableScrollingText = disableScrollingText
         )
     } else {
         BaseMediaItemMenu(
@@ -129,7 +131,8 @@ fun PlayerMenu(
                     )
                 }
             },
-            onClosePlayer = onClosePlayer
+            onClosePlayer = onClosePlayer,
+            disableScrollingText = disableScrollingText
         )
     }
 
@@ -146,6 +149,7 @@ fun MiniPlayerMenu(
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
+    disableScrollingText: Boolean
 ) {
 
     val menuStyle by rememberPreference(
@@ -168,7 +172,8 @@ fun MiniPlayerMenu(
                     )
                 }
             },
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
+            disableScrollingText = disableScrollingText
         )
     } else {
         MiniMediaItemMenu(
@@ -185,7 +190,8 @@ fun MiniPlayerMenu(
                     )
                 }
             },
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
+            disableScrollingText = disableScrollingText
         )
     }
 
