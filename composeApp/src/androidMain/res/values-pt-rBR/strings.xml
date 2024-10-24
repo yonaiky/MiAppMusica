@@ -746,17 +746,17 @@
     <string name="create_new_playlist">Criar uma seleção musical</string>
     <string name="settings_loudness_base_gain">Estrutura de ganho</string>
     <string name="settings_target_gain_loudness_info">Alvo ganho para a normalização do ruído</string>
-    <string name="error_media_cannot_be_played">Media cannot be played</string>
-    <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
-    <string name="titleartist">Title and Artists</string>
-    <string name="miniqueue">Mini Queue</string>
-    <string name="controls">Controls</string>
-    <string name="add_to_favorites">Add to favorites</string>
-    <string name="import_favorites">Import favorites</string>
-    <string name="skip_media_on_error">Autoskip on error</string>
+    <string name="error_media_cannot_be_played">Mídia incapaz de reproduzir</string>
+    <string name="full_screen_lyrics_components">Componentes das Letras em Tela Cheia</string>
+    <string name="titleartist">Título e Artistas</string>
+    <string name="miniqueue">Mini Fila</string>
+    <string name="controls">Controles</string>
+    <string name="add_to_favorites">Adicionar aos favoritos</string>
+    <string name="import_favorites">Importar favoritos</string>
+    <string name="skip_media_on_error">Pular imediatamente em caso de erro</string>
     <string name="skip_media_on_error_description">If an error occurs, the media is changed</string>
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
-    <string name="login_required_to_play_this_media">Login required to play this media</string>
+    <string name="login_required_to_play_this_media">É necessário fazer login para reproduzir esta mídia</string>
     <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
     <string name="search_results_for">Search results for:</string>
 </resources>
