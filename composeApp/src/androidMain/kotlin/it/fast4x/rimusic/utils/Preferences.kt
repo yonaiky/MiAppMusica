@@ -270,6 +270,8 @@ const val timelineExpandedKey = "timelineExpanded"
 const val controlsExpandedKey = "controlsExpanded"
 const val miniQueueExpandedKey = "miniQueueExpanded"
 
+const val restartActivityKey = "restartActivity"
+
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
     defaultValue: T

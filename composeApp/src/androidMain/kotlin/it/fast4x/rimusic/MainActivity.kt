@@ -129,8 +129,8 @@ import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.YTcookieKey
-import it.fast4x.rimusic.utils.YTvisitorDataKey
+import it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -190,6 +190,7 @@ import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
@@ -421,7 +422,7 @@ class MainActivity :
                     //gl = "US" // US IMPORTANT
                 )
 
-            var visitorData by rememberEncryptedPreference(key = YTvisitorDataKey, defaultValue = "")
+            var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
 
             if (visitorData.isEmpty())  runBlocking {
                 Innertube.visitorData().getOrNull()?.also {
@@ -431,7 +432,7 @@ class MainActivity :
 
             YoutubePreferences.preference =
                 YoutubePreferenceItem(
-                    cookie = encryptedPreferences.getString(YTcookieKey, ""),
+                    cookie = encryptedPreferences.getString(ytCookieKey, ""),
                     visitordata = visitorData
                 )
 
@@ -561,7 +562,8 @@ class MainActivity :
                             transitionEffectKey,
                             playerBackgroundColorsKey,
                             miniPlayerTypeKey,
-                            thumbnailRoundnessKey
+                            thumbnailRoundnessKey,
+                            restartActivityKey
                             -> {
                                 this@MainActivity.recreate()
                             }

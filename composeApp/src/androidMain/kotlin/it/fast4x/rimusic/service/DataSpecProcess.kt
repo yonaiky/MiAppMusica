@@ -3,6 +3,7 @@ package it.fast4x.rimusic.service
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
@@ -16,6 +17,9 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.getPipedSession
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 @OptIn(UnstableApi::class)
 internal suspend fun PlayerService.dataSpecProcess(dataSpec: DataSpec, context: Context, metered: Boolean): DataSpec {
@@ -57,6 +61,7 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(dataSpec: DataSpec, contex
 
 }
 
+@OptIn(UnstableApi::class)
 suspend fun getMediaFormat(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
@@ -67,38 +72,61 @@ suspend fun getMediaFormat(
         //pipedSession = getPipedSession().toApiSession()
     ).fold(
         { playerResponse ->
-            when (audioQualityFormat) {
-                AudioQualityFormat.Auto -> playerResponse.streamingData?.autoMaxQualityFormat
-                AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
-                AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
-                AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
-            }.let {
-                // Specify range to avoid YouTube's throttling
-                it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
-            }.also {
-                //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
-                    query {
-                        if (Database.songExist(videoId) > 0)
-                            Database.upsert(
-                                Format(
-                                    songId = videoId,
-                                    itag = it?.itag,
-                                    mimeType = it?.mimeType,
-                                    contentLength = it?.contentLength,
-                                    bitrate = it?.bitrate,
-                                    lastModified = it?.lastModified,
-                                    loudnessDb = it?.loudnessDb?.toFloat(),
-                                )
-                            )
-                    }
-                //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
-            }
-        },
-        {
-            //return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
 
-            println("PlayerService MyDownloadHelper DataSpecProcess Error: ${it.message}")
-            throw it
+            when(playerResponse.playabilityStatus?.status) {
+                "OK" -> {
+                    when (audioQualityFormat) {
+                        AudioQualityFormat.Auto -> playerResponse.streamingData?.autoMaxQualityFormat
+                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
+                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
+                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
+                    }.let {
+                        // Specify range to avoid YouTube's throttling
+                        it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+                    }.also {
+                        //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
+                        query {
+                            if (Database.songExist(videoId) > 0)
+                                Database.upsert(
+                                    Format(
+                                        songId = videoId,
+                                        itag = it?.itag,
+                                        mimeType = it?.mimeType,
+                                        contentLength = it?.contentLength,
+                                        bitrate = it?.bitrate,
+                                        lastModified = it?.lastModified,
+                                        loudnessDb = it?.loudnessDb?.toFloat(),
+                                    )
+                                )
+                        }
+                        //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
+                    }
+                }
+                "LOGIN_REQUIRED" -> throw LoginRequiredException()
+                "UNPLAYABLE" -> throw UnplayableException()
+                else -> throw LoginRequiredException()
+            }
+
+
+
+
+        },
+        { throwable ->
+            when (throwable) {
+                is ConnectException, is UnknownHostException -> {
+                    throw NoInternetException()
+                }
+
+                is SocketTimeoutException -> {
+                    throw TimeoutException()
+                }
+
+                else -> {
+                    println("PlayerService MyDownloadHelper DataSpecProcess Error: ${throwable.stackTraceToString()}")
+                    throw throwable
+                }
+            }
+
         }
     )
 }

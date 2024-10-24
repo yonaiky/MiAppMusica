@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.models.Instance
 import it.fast4x.piped.Piped
 
@@ -55,6 +56,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
+import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -97,9 +99,17 @@ import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
+import it.fast4x.rimusic.utils.ytAccountEmailKey
+import it.fast4x.rimusic.utils.ytAccountNameKey
+import it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.launch
+import me.knighthat.colorPalette
+import me.knighthat.thumbnailShape
 import timber.log.Timber
 import java.io.File
 import java.net.Proxy
@@ -174,7 +184,7 @@ fun OtherSettings() {
     var parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     var logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
 
-
+    var restartActivity by rememberPreference(restartActivityKey, false)
 
     Column(
         modifier = Modifier
@@ -250,6 +260,93 @@ fun OtherSettings() {
                 )
             }
         }
+
+
+        // rememberEncryptedPreference only works correct with API 24 and up
+
+        /****** YOUTUBE LOGIN ******/
+
+        var loginYouTube by remember { mutableStateOf(false) }
+        var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
+        var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
+        var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
+        var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+        var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
+        val isLoggedIn = remember(cookie) {
+            "SAPISID" in parseCookieString(cookie)
+        }
+
+        if(isAtLeastAndroid7){
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = "YOUTUBE MUSIC")
+
+            //loginYouTube = true
+
+            Column {
+                ButtonBarSettingEntry(
+                    isEnabled = true,
+                    title = if (isLoggedIn) "Disconnect" else "Connect to YouTube Music",
+                    text = if (isLoggedIn) "$accountName (${accountChannelHandle})" else "",
+                    icon = R.drawable.logo_youtube,
+                    iconColor = colorPalette().text,
+                    onClick = {
+                        if (isLoggedIn) {
+                            cookie = ""
+                            accountName = ""
+                            accountChannelHandle = ""
+                            accountEmail = ""
+                            visitorData = ""
+                            loginYouTube = false
+                        } else
+                            loginYouTube = true
+                    }
+                )
+                ImportantSettingsDescription(
+                    text = "You need to log in to listen the songs online"
+                )
+                SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+
+                CustomModalBottomSheet(
+                    showSheet = loginYouTube,
+                    onDismissRequest = {
+                        loginYouTube = false
+                    },
+                    containerColor = colorPalette().background0,
+                    contentColor = colorPalette().background0,
+                    modifier = Modifier.fillMaxWidth(),
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                    dragHandle = {
+                        Surface(
+                            modifier = Modifier.padding(vertical = 0.dp),
+                            color = colorPalette().background0,
+                            shape = thumbnailShape()
+                        ) {}
+                    },
+                    shape = thumbnailRoundness.shape()
+                ) {
+                    YouTubeLogin(
+                        rememberNavController(),
+                        onLogin = { success ->
+                            if (success) {
+                                loginYouTube = false
+                                SmartMessage(
+                                    accountName,
+                                    type = PopupType.Info,
+                                    context = context
+                                )
+                                restartActivity = !restartActivity
+                            }
+                        }
+                    )
+                }
+            }
+
+        }
+
+        /****** YOUTUBE LOGIN ******/
+
+        SettingsGroupSpacer()
+
 
         var extraspace by rememberPreference(extraspaceKey, false)
 

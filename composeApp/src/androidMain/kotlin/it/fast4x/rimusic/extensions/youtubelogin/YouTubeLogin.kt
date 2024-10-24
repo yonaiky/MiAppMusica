@@ -3,6 +3,7 @@ package it.fast4x.rimusic.extensions.youtubelogin
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +24,13 @@ import androidx.navigation.NavController
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.themed.IconButton
-import it.fast4x.rimusic.utils.YTvisitorDataKey
-import it.fast4x.rimusic.utils.YTcookieKey
-import it.fast4x.rimusic.utils.YTaccountNameKey
-import it.fast4x.rimusic.utils.YTaccountEmailKey
-import it.fast4x.rimusic.utils.YTaccountChannelHandleKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
+import it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.rimusic.utils.ytAccountNameKey
+import it.fast4x.rimusic.utils.ytAccountEmailKey
+import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -42,11 +45,13 @@ fun YouTubeLogin(
     onLogin: (Boolean) -> Unit
 ) {
 
-    var visitorData by rememberEncryptedPreference(key = YTvisitorDataKey, defaultValue = "")
-    var cookie by rememberEncryptedPreference(key = YTcookieKey, defaultValue = "")
-    var accountName by rememberEncryptedPreference(key = YTaccountNameKey, defaultValue = "")
-    var accountEmail by rememberEncryptedPreference(key = YTaccountEmailKey, defaultValue = "")
-    var accountChannelHandle by rememberEncryptedPreference(key = YTaccountChannelHandleKey, defaultValue = "")
+    val scope = rememberCoroutineScope()
+
+    var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
+    var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
+    var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
+    var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+    var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
 
 
     var webView: WebView? = null
@@ -60,15 +65,20 @@ fun YouTubeLogin(
                 webViewClient = object : WebViewClient() {
                     override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
                         if (url.startsWith("https://music.youtube.com")) {
-                            cookie = CookieManager.getInstance().getCookie(url)
-                            GlobalScope.launch {
+                            val cookieManager = CookieManager.getInstance()
+                            cookie = cookieManager.getCookie(url)
+                            //cookieManager.removeAllCookies(null)
+                            //cookieManager.flush()
+                            //WebStorage.getInstance().deleteAllData()
+                            println("YoutubeLogin Cookie: $cookie")
+                            scope.launch {
                                 Innertube.accountInfo().onSuccess {
                                     accountName = it.name
                                     accountEmail = it.email.orEmpty()
                                     accountChannelHandle = it.channelHandle.orEmpty()
+                                    println("YoutubeLogin AccountInfo: $it")
                                     onLogin(true)
                                 }.onFailure {
-                                    onLogin(false)
                                     Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
                                     println("Error YoutubeLogin: ${it.stackTraceToString()}")
                                 }
