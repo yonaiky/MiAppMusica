@@ -104,7 +104,7 @@ suspend fun getMediaFormat(
                 }
                 "LOGIN_REQUIRED" -> throw LoginRequiredException()
                 "UNPLAYABLE" -> throw UnplayableException()
-                else -> throw LoginRequiredException()
+                else -> throw UnknownException()
             }
 
 
