@@ -1,6 +1,7 @@
 package it.fast4x.innertube.models
 
 import io.ktor.http.headers
+import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.utils.LocalePreferences
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -23,10 +24,10 @@ data class Context(
         //val hl: String = Locale.getDefault().toLanguageTag(), //"en",
         //val hl: String = Innertube.localeHl,
         val visitorData: String = "CgtEUlRINDFjdm1YayjX1pSaBg%3D%3D",
-        val androidSdkVersion: Int? = null,
-        val userAgent: String? = null,
-        val referer: String? = null,
-        val api_key: String,
+        val androidSdkVersion: Int? = 30,
+        val userAgent: String = USER_AGENT_WEB,
+        val referer: String? = REFERER_YOUTUBE_MUSIC,
+        val api_key: String? = null,
     )
 
     @Serializable
@@ -86,6 +87,7 @@ data class Context(
                 clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
+                visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
@@ -104,6 +106,7 @@ data class Context(
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 hl = hl,
+                visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
@@ -112,12 +115,13 @@ data class Context(
         val DefaultAndroid = Context(
             client = Client(
                 clientName = "ANDROID_MUSIC",
-                //clientVersion = "6.33.52",
-                clientVersion = "5.28.1",
-                androidSdkVersion = 31,
-                //userAgent = USER_AGENT_ANDROID,
-                userAgent = USER_AGENT_ANDROID2,
+                clientVersion = "6.33.52",
+                //clientVersion = "5.28.1",
+                androidSdkVersion = 30,
+                userAgent = USER_AGENT_ANDROID,
+                //userAgent = USER_AGENT_ANDROID2,
                 referer = REFERER_YOUTUBE_MUSIC,
+                visitorData = Innertube.visitorData,
                 api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI"
             )
         )
@@ -127,7 +131,9 @@ data class Context(
                 clientName = "ANDROID",
                 clientVersion = "17.13.3",
                 api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
-                userAgent = USER_AGENT_ANDROID
+                userAgent = USER_AGENT_ANDROID,
+                referer = REFERER_YOUTUBE_MUSIC,
+                visitorData = Innertube.visitorData,
             )
         )
 
@@ -136,7 +142,8 @@ data class Context(
                 clientName = "WEB",
                 clientVersion = "2.2021111",
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX3",
-                userAgent = USER_AGENT_WEB
+                userAgent = USER_AGENT_WEB,
+                referer = REFERER_YOUTUBE_MUSIC
             )
         )
 
@@ -145,7 +152,8 @@ data class Context(
                 clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
                 clientVersion = "2.0",
                 api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
-                userAgent = "Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2 (KHTML, like Gecko)"
+                userAgent = "Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2 (KHTML, like Gecko)",
+                referer = REFERER_YOUTUBE_MUSIC
             )
         )
 
@@ -154,7 +162,8 @@ data class Context(
                 clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
                 clientVersion = "2.0",
                 api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
-                userAgent = USER_AGENT_PLAYSTATION
+                userAgent = USER_AGENT_PLAYSTATION,
+                referer = REFERER_YOUTUBE_MUSIC
             )
         )
 

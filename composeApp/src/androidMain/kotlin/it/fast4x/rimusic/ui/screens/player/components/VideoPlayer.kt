@@ -40,6 +40,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+/*
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(videoId: String) {
@@ -140,6 +141,7 @@ fun VideoPlayer(videoId: String) {
         */
 }
 
+
 @OptIn(UnstableApi::class)
 fun getBetterVideoUrl(videoId: String): String? {
     val body = runBlocking(Dispatchers.IO) {
@@ -156,6 +158,7 @@ fun getBetterVideoUrl(videoId: String): String? {
 
     }
 
+
     val format = body?.streamingData?.adaptiveFormats
         ?.filter { it.isVideo }
         ?.maxByOrNull { it.bitrate?.times(
@@ -169,3 +172,4 @@ fun getBetterVideoUrl(videoId: String): String? {
 
 
 }
+*/

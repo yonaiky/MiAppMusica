@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
@@ -51,6 +52,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
+import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -61,6 +63,11 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.TextCopyToClipboard
+import it.fast4x.rimusic.utils.YTaccountChannelHandleKey
+import it.fast4x.rimusic.utils.YTaccountEmailKey
+import it.fast4x.rimusic.utils.YTaccountNameKey
+import it.fast4x.rimusic.utils.YTcookieKey
+import it.fast4x.rimusic.utils.YTvisitorDataKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.extraspaceKey
@@ -214,6 +221,83 @@ fun OtherSettings() {
          */
 
         var extraspace by rememberPreference(extraspaceKey, false)
+
+
+        /****** YOUTUBE LOGIN ******/
+
+        var loginYouTube by remember { mutableStateOf(false) }
+        var visitorData by rememberEncryptedPreference(key = YTvisitorDataKey, defaultValue = "")
+        var cookie by rememberEncryptedPreference(key = YTcookieKey, defaultValue = "")
+        var accountName by rememberEncryptedPreference(key = YTaccountNameKey, defaultValue = "")
+        var accountEmail by rememberEncryptedPreference(key = YTaccountEmailKey, defaultValue = "")
+        var accountChannelHandle by rememberEncryptedPreference(key = YTaccountChannelHandleKey, defaultValue = "")
+        val isLoggedIn = remember(cookie) {
+            "SAPISID" in parseCookieString(cookie)
+        }
+
+        // rememberEncryptedPreference only works correct with API 24 and up
+        if(isAtLeastAndroid7){
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = "YOUTUBE")
+
+            //loginYouTube = true
+
+                Column {
+                    ButtonBarSettingEntry(
+                        isEnabled = true,
+                        title = if (isLoggedIn) stringResource(R.string.discord_disconnect) else stringResource(
+                            R.string.discord_connect
+                        ),
+                        text = accountName, //if (isLoggedIn) cookie else "",
+                        icon = R.drawable.logo_youtube,
+                        iconColor = colorPalette().text,
+                        onClick = {
+                            if (!isLoggedIn) {
+                                cookie = ""
+                                loginYouTube = true
+                            }
+                            else
+                                loginYouTube = false
+                        }
+                    )
+
+                    CustomModalBottomSheet(
+                        showSheet = loginYouTube,
+                        onDismissRequest = {
+                            loginYouTube = false
+                        },
+                        containerColor = colorPalette().background0,
+                        contentColor = colorPalette().background0,
+                        modifier = Modifier.fillMaxWidth(),
+                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                        dragHandle = {
+                            Surface(
+                                modifier = Modifier.padding(vertical = 0.dp),
+                                color = colorPalette().background0,
+                                shape = thumbnailShape()
+                            ) {}
+                        },
+                        shape = thumbnailRoundness.shape()
+                    ) {
+                        YouTubeLogin(
+                            rememberNavController(),
+                            onLogin = { success ->
+                                if (success) {
+                                    loginYouTube = false
+                                    SmartMessage(
+                                        accountName,
+                                        type = PopupType.Info,
+                                        context = context
+                                    )
+                                }                            }
+                        )
+                    }
+                }
+
+        }
+
+        /****** YOUTUBE LOGIN ******/
+
 
         /****** PIPED ******/
 

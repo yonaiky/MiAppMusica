@@ -227,7 +227,7 @@ class PlayerService : InvincibleService(),
     OnAudioVolumeChangedListener {
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var player: ExoPlayer
+    lateinit var player: ExoPlayer
     lateinit var cache: SimpleCache
     lateinit var downloadCache: SimpleCache
     private lateinit var audioVolumeObserver: AudioVolumeObserver

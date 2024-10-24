@@ -6,11 +6,50 @@ import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
+import it.fast4x.innertube.models.YouTubeClient
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 import it.fast4x.invidious.Invidious
 import it.fast4x.piped.models.Session
 
+suspend fun Innertube.player(body: PlayerBody): Result<PlayerResponse> = runCatching {
+
+    val response = client.post(player) {
+        ytClient(YouTubeClient.ANDROID_MUSIC, setLogin = true)
+        setBody(body)
+        mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
+    }.body<PlayerResponse>()
+
+    println("PlayerService NEW Innertube.player response $response")
+
+    response
+
+    /*
+    val playerResponse = newPlayer(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
+    if (playerResponse.playabilityStatus.status == "OK") {
+        return@runCatching playerResponse
+    }
+    val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
+    if (safePlayerResponse.playabilityStatus.status != "OK") {
+        return@runCatching playerResponse
+    }
+    val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
+    safePlayerResponse.copy(
+        streamingData = safePlayerResponse.streamingData?.copy(
+            adaptiveFormats = safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
+                audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
+                    adaptiveFormat.copy(
+                        url = it.url
+                    )
+                }
+            }
+        )
+    )
+    */
+}.onFailure {
+    println("YoutubeLogin PlayerService NEW Innertube.player error ${it.stackTraceToString()}")
+}
+/*
 suspend fun Innertube.player(
     body: PlayerBody,
     //pipedApiInstance: String = "pipedapi.adminforge.de",
@@ -116,3 +155,4 @@ suspend fun Innertube.player(
 
     }
 
+*/

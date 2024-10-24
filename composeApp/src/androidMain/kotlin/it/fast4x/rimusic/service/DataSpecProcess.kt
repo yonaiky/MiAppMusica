@@ -12,8 +12,10 @@ import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
+import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.getPipedSession
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(UnstableApi::class)
 internal suspend fun PlayerService.dataSpecProcess(dataSpec: DataSpec, context: Context, metered: Boolean): DataSpec {
@@ -59,11 +61,11 @@ suspend fun getMediaFormat(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
 ): PlayerResponse.StreamingData.AdaptiveFormat? {
-    println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
+    //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
-        pipedSession = getPipedSession().toApiSession()
-    )?.fold(
+        //pipedSession = getPipedSession().toApiSession()
+    ).fold(
         { playerResponse ->
             when (audioQualityFormat) {
                 AudioQualityFormat.Auto -> playerResponse.streamingData?.autoMaxQualityFormat
@@ -74,20 +76,22 @@ suspend fun getMediaFormat(
                 // Specify range to avoid YouTube's throttling
                 it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
             }.also {
-                if (it != null)
-                    transaction {
-                        Database.upsert(
-                            Format(
-                                songId = videoId,
-                                itag = it?.itag,
-                                mimeType = it?.mimeType,
-                                contentLength = it?.contentLength,
-                                bitrate = it?.bitrate,
-                                lastModified = it?.lastModified,
-                                loudnessDb = it?.loudnessDb?.toFloat(),
+                //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
+                    query {
+                        if (Database.songExist(videoId) > 0)
+                            Database.upsert(
+                                Format(
+                                    songId = videoId,
+                                    itag = it?.itag,
+                                    mimeType = it?.mimeType,
+                                    contentLength = it?.contentLength,
+                                    bitrate = it?.bitrate,
+                                    lastModified = it?.lastModified,
+                                    loudnessDb = it?.loudnessDb?.toFloat(),
+                                )
                             )
-                        )
                     }
+                //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
             }
         },
         {

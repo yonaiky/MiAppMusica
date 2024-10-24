@@ -10,13 +10,16 @@ data class YouTubeClient(
     val userAgent: String,
     val referer: String? = null,
 ) {
-    fun toContext(locale: YouTubeLocale, visitorData: String?) = YouTubeContext(
-        client = YouTubeContext.Client(
+    fun toContext(locale: YouTubeLocale, visitorData: String) = Context(
+        client = Context.Client(
             clientName = clientName,
             clientVersion = clientVersion,
-            gl = locale.gl,
+            //gl = locale.gl,
             hl = locale.hl,
-            visitorData = visitorData
+            visitorData = visitorData,
+            referer = referer,
+            api_key = api_key,
+            userAgent = userAgent,
         )
     )
 

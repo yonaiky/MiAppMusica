@@ -96,6 +96,8 @@ import it.fast4x.innertube.utils.LocalePreferenceItem
 import it.fast4x.innertube.utils.LocalePreferences
 import it.fast4x.innertube.utils.ProxyPreferenceItem
 import it.fast4x.innertube.utils.ProxyPreferences
+import it.fast4x.innertube.utils.YoutubePreferenceItem
+import it.fast4x.innertube.utils.YoutubePreferences
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -127,6 +129,8 @@ import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.YTcookieKey
+import it.fast4x.rimusic.utils.YTvisitorDataKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -158,9 +162,9 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.invokeOnReady
@@ -184,6 +188,7 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
@@ -195,9 +200,11 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
@@ -365,13 +372,6 @@ class MainActivity :
                 }
             }
             //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
-                LocalePreferences.preference =
-                    LocalePreferenceItem(
-                        hl = Locale.getDefault().toLanguageTag(),
-                        //Locale.getDefault().country
-                        gl = ""
-                        //gl = "US" // US IMPORTANT
-                    )
         }
 
 
@@ -412,6 +412,28 @@ class MainActivity :
             val navController = rememberNavController()
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
+
+            LocalePreferences.preference =
+                LocalePreferenceItem(
+                    hl = Locale.getDefault().toLanguageTag(),
+                    //Locale.getDefault().country
+                    gl = ""
+                    //gl = "US" // US IMPORTANT
+                )
+
+            var visitorData by rememberEncryptedPreference(key = YTvisitorDataKey, defaultValue = "")
+
+            if (visitorData.isEmpty())  runBlocking {
+                Innertube.visitorData().getOrNull()?.also {
+                    visitorData = it
+                }
+            }
+
+            YoutubePreferences.preference =
+                YoutubePreferenceItem(
+                    cookie = encryptedPreferences.getString(YTcookieKey, ""),
+                    visitordata = visitorData
+                )
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 

@@ -7,9 +7,18 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.query
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.findMediaItemIndexById
+import it.fast4x.rimusic.utils.findNextMediaItemById
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import java.io.IOException
 
@@ -29,6 +38,24 @@ internal fun PlayerService.createDataSourceFactory(): DataSource.Factory {
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
     ) { dataSpec: DataSpec ->
         try {
+
+            // Get song from player
+             val mediaItem = runBlocking {
+                 withContext(Dispatchers.Main) {
+                     player.currentMediaItem
+                 }
+            }
+            // Ensure that the song is in database
+            query {
+                if (mediaItem != null) {
+                    Database.upsert(mediaItem.asSong)
+                }
+            }
+
+
+            //println("PlayerService DataSourcefactory currentMediaItem: ${mediaItem?.mediaId}")
+            //dataSpec.key?.let { player.findNextMediaItemById(it)?.mediaMetadata }
+
             return@Factory runBlocking {
                 dataSpecProcess(dataSpec, applicationContext, applicationContext.isConnectionMetered())
                     /*

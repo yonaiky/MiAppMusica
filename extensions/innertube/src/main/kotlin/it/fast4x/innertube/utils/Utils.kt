@@ -3,6 +3,7 @@ package it.fast4x.innertube.utils
 import io.ktor.utils.io.CancellationException
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.SectionListRenderer
+import java.security.MessageDigest
 
 internal fun SectionListRenderer.findSectionByTitle(text: String): SectionListRenderer.Content? {
     return contents?.find { content ->
@@ -51,3 +52,14 @@ infix operator fun <T : Innertube.Item> Innertube.ItemsPage<T>?.plus(other: Inne
         items = (this?.items?.plus(other.items ?: emptyList())
             ?: other.items)?.distinctBy(Innertube.Item::key)
     )
+
+fun parseCookieString(cookie: String): Map<String, String> =
+    cookie.split("; ")
+        .filter { it.isNotEmpty() }
+        .associate {
+            val (key, value) = it.split("=")
+            key to value
+        }
+
+fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
+fun sha1(str: String): String = MessageDigest.getInstance("SHA-1").digest(str.toByteArray()).toHex()
