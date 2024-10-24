@@ -74,19 +74,20 @@ suspend fun getMediaFormat(
                 // Specify range to avoid YouTube's throttling
                 it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
             }.also {
-                transaction {
-                    Database.upsert(
-                        Format(
-                            songId = videoId,
-                            itag = it?.itag,
-                            mimeType = it?.mimeType,
-                            contentLength = it?.contentLength,
-                            bitrate = it?.bitrate,
-                            lastModified = it?.lastModified,
-                            loudnessDb = it?.loudnessDb?.toFloat(),
+                if (it != null)
+                    transaction {
+                        Database.upsert(
+                            Format(
+                                songId = videoId,
+                                itag = it?.itag,
+                                mimeType = it?.mimeType,
+                                contentLength = it?.contentLength,
+                                bitrate = it?.bitrate,
+                                lastModified = it?.lastModified,
+                                loudnessDb = it?.loudnessDb?.toFloat(),
+                            )
                         )
-                    )
-                }
+                    }
             }
         },
         {

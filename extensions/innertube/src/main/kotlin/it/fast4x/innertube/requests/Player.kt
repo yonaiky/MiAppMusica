@@ -47,7 +47,8 @@ suspend fun Innertube.player(
                 safePlayerResponse
             } else {
 
-                /**** INVIDIOUS ****/
+
+                /**** INVIDIOUS TEST AS BACKUP LINE ****/
                 println("PlayerService Innertube.player Invidious.api.videos ${body.videoId}")
                 val safeResponse = Invidious.api.videos(body.videoId)?.getOrNull()
 
@@ -64,6 +65,7 @@ suspend fun Innertube.player(
                     )
                 } else safePlayerResponse
                 /**** INVIDIOUS ****/
+
 
                 /*
                 @Serializable

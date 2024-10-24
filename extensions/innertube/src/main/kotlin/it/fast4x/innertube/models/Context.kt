@@ -84,17 +84,9 @@ data class Context(
                 clientName = "WEB_REMIX",
                 //clientVersion = "1.20220606.03.00",
                 clientVersion = "1.20230731.00.00",
-                //platform = "DESKTOP",
-                //userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
-                //visitorData = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-
-                //Locale is managed with DefaultWebWithLocale
-                //hl = LocalePreferences.preference?.hl,
-                //gl = LocalePreferences.preference?.gl
-
+                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
 
@@ -109,14 +101,9 @@ data class Context(
                 clientName = "WEB_REMIX",
                 //clientVersion = "1.20220606.03.00",
                 clientVersion = "1.20230731.00.00",
-                //platform = "DESKTOP",
-                //userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
-                //visitorData = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-                //hl = Locale.getDefault().toLanguageTag()
                 hl = hl,
-                //gl = gl,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
@@ -125,13 +112,12 @@ data class Context(
         val DefaultAndroid = Context(
             client = Client(
                 clientName = "ANDROID_MUSIC",
-                //clientVersion = "5.01",
-                clientVersion = "6.33.52",
-                //platform = "MOBILE",
-                //visitorData = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
-                //androidSdkVersion = 30,
-                //userAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36"
-                userAgent = USER_AGENT_ANDROID,
+                //clientVersion = "6.33.52",
+                clientVersion = "5.28.1",
+                androidSdkVersion = 31,
+                //userAgent = USER_AGENT_ANDROID,
+                userAgent = USER_AGENT_ANDROID2,
+                referer = REFERER_YOUTUBE_MUSIC,
                 api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI"
             )
         )
