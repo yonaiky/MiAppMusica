@@ -138,6 +138,7 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -728,9 +729,12 @@ fun BuiltInPlaylistSongs(
                                 if (songs.isNotEmpty() == true)
                                     songs.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                        resetFormatContentLength(it.asMediaItem.mediaId)
+                                        /*
                                         query {
                                             Database.resetFormatContentLength(it.asMediaItem.mediaId)
                                         }
+                                         */
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -768,9 +772,12 @@ fun BuiltInPlaylistSongs(
                                     if (songs.isNotEmpty() == true)
                                         songs.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                            resetFormatContentLength(it.asMediaItem.mediaId)
+                                            /*
                                             query {
                                                 Database.resetFormatContentLength(it.asMediaItem.mediaId)
                                             }
+                                             */
                                             manageDownload(
                                                 context = context,
                                                 mediaItem = it.asMediaItem,
@@ -1181,9 +1188,13 @@ fun BuiltInPlaylistSongs(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                resetFormatContentLength(song.asMediaItem.mediaId)
+                                /*
                                 query {
                                     Database.resetFormatContentLength(song.asMediaItem.mediaId)
                                 }
+
+                                 */
 
                                 if (!isLocal)
                                     manageDownload(
