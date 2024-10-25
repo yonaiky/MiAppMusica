@@ -20,9 +20,34 @@ import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.appContext
+import me.knighthat.piped.Piped
+import me.knighthat.piped.request.player
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+
+private suspend fun getPipedFormatUrl(
+    videoId: String,
+    audioQualityFormat: AudioQualityFormat
+): Uri {
+    val format = Piped.player( videoId )?.fold(
+        {
+            when (audioQualityFormat) {
+                AudioQualityFormat.Auto -> it?.autoMaxQualityFormat
+                AudioQualityFormat.High -> it?.highestQualityFormat
+                AudioQualityFormat.Medium -> it?.mediumQualityFormat
+                AudioQualityFormat.Low -> it?.lowestQualityFormat
+            }
+        },
+        {
+            println("PlayerService MyDownloadHelper DataSpecProcess Error: ${it.stackTraceToString()}")
+            throw it
+        }
+    )
+
+    // Return parsed URL to play song or throw error if none of the responses is valid
+    return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Piped ($videoId)" )
+}
 
 @OptIn(UnstableApi::class)
 internal suspend fun PlayerService.dataSpecProcess(
@@ -42,11 +67,24 @@ internal suspend fun PlayerService.dataSpecProcess(
         return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
     }
 
-    val format = getMediaFormat(videoId, audioQualityFormat)
+    try {
 
-    println("PlayerService DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
-    return dataSpec.withUri(Uri.parse(format?.url))
+        val format = getInnerTubeFormatUrl(videoId, audioQualityFormat)
 
+        println("PlayerService DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
+        return dataSpec.withUri(Uri.parse(format?.url))
+
+    } catch ( e: LoginRequiredException ) {
+        // Switch to Piped
+        val formatUrl = getPipedFormatUrl( videoId, audioQualityFormat )
+
+        println("PlayerService DataSpecProcess Playing song $videoId from url $formatUrl")
+        return dataSpec.withUri( formatUrl )
+
+    } catch ( e: Exception ) {
+        // Rethrow exception if it's not handled
+        throw e
+    }
 }
 
 @OptIn(UnstableApi::class)
@@ -65,7 +103,7 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(
         return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
     }
 
-    val format = getMediaFormat(videoId, audioQualityFormat)
+    val format = getInnerTubeFormatUrl(videoId, audioQualityFormat)
 
     println("MyDownloadHelper DataSpecProcess Playing song $videoId from format $format from url=${format?.url}")
     return dataSpec.withUri(Uri.parse(format?.url))
@@ -73,7 +111,7 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(
 }
 
 @OptIn(UnstableApi::class)
-suspend fun getMediaFormat(
+suspend fun getInnerTubeFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat
 ): PlayerResponse.StreamingData.AdaptiveFormat? {
