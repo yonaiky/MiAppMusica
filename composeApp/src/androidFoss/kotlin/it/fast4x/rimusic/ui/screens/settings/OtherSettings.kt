@@ -304,7 +304,7 @@ fun OtherSettings() {
                 ImportantSettingsDescription(
                     text = "You need to log in to listen the songs online"
                 )
-                //SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+                SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
 
                 CustomModalBottomSheet(
                     showSheet = loginYouTube,
@@ -330,7 +330,7 @@ fun OtherSettings() {
                             if (success) {
                                 loginYouTube = false
                                 SmartMessage(
-                                    "Login successful",
+                                    "Login successful, restart RiMusic",
                                     type = PopupType.Info,
                                     context = context
                                 )
