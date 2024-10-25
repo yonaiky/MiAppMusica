@@ -8,6 +8,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.utils.asMediaItem
@@ -36,7 +37,9 @@ interface DownloadAllDialog: ConfirmationDialog {
 
         listToProcess().forEach {
             binder?.cache?.removeResource(it.mediaId)
-            Database.resetFormatContentLength(it.mediaId)
+            query {
+                Database.resetFormatContentLength(it.mediaId)
+            }
 
             if (!it.isLocal)
                 manageDownload(

@@ -140,6 +140,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
+import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
@@ -1179,9 +1180,11 @@ fun LocalPlaylistSongs(
                                 song = song.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    query {
-                                        Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                    }
+
+                                    //query {
+                                    //    Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                    //}
+                                    resetFormatContentLength(song.asMediaItem.mediaId)
 
                                     if (!isLocal) {
                                         manageDownload(
