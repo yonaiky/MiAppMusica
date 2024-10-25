@@ -59,11 +59,12 @@ fun YouTubeLogin(
     AndroidView(
         modifier = Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .fillMaxSize(),
+            .fillMaxSize(0.8f),
         factory = { context ->
             WebView(context).apply {
                 webViewClient = object : WebViewClient() {
                     override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
+
                         if (url.startsWith("https://music.youtube.com")) {
                             val cookieManager = CookieManager.getInstance()
                             cookie = cookieManager.getCookie(url)
@@ -76,7 +77,7 @@ fun YouTubeLogin(
                                     accountName = it.name
                                     accountEmail = it.email.orEmpty()
                                     accountChannelHandle = it.channelHandle.orEmpty()
-                                    println("YoutubeLogin AccountInfo: $it")
+                                    println("YoutubeLogin webClient AccountInfo: $it")
                                     onLogin(true)
                                 }.onFailure {
                                     Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
@@ -84,9 +85,34 @@ fun YouTubeLogin(
                                 }
                             }
                         }
+
                     }
 
                     override fun onPageFinished(view: WebView, url: String?) {
+                        if (url != null) {
+                            if (url.startsWith("https://music.youtube.com")) {
+                                println("YoutubeLogin webClient onPageFinished inside: $url")
+                                val cookieManager = CookieManager.getInstance()
+                                cookie = cookieManager.getCookie(url)
+                                //cookieManager.removeAllCookies(null)
+                                //cookieManager.flush()
+                                //WebStorage.getInstance().deleteAllData()
+                                println("YoutubeLogin Cookie: $cookie")
+                                scope.launch {
+                                    Innertube.accountInfo().onSuccess {
+                                        accountName = it.name
+                                        accountEmail = it.email.orEmpty()
+                                        accountChannelHandle = it.channelHandle.orEmpty()
+                                        println("YoutubeLogin webClient AccountInfo: $it")
+                                        onLogin(true)
+                                    }.onFailure {
+                                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
+                                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
+                                    }
+                                }
+                            }
+                        }
+                        println("YoutubeLogin webClient onPageFinished: $url")
                         loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
                     }
                 }
