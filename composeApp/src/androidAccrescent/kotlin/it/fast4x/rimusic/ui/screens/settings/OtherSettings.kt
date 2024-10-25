@@ -272,6 +272,11 @@ fun OtherSettings() {
                 CustomModalBottomSheet(
                     showSheet = loginYouTube,
                     onDismissRequest = {
+                        SmartMessage(
+                            "Restart RiMusic, please",
+                            type = PopupType.Info,
+                            context = context
+                        )
                         loginYouTube = false
                         restartActivity = !restartActivity
                     },
