@@ -168,7 +168,10 @@ fun OtherSettings() {
 
     var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
 
-    val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.Bottom)
+    val navigationBarPosition by rememberPreference(
+        navigationBarPositionKey,
+        NavigationBarPosition.Bottom
+    )
 
     var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
@@ -186,6 +189,8 @@ fun OtherSettings() {
 
     var restartActivity by rememberPreference(restartActivityKey, false)
 
+    var extraspace by rememberPreference(extraspaceKey, false)
+
     Column(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -199,14 +204,14 @@ fun OtherSettings() {
                 else Dimensions.contentWidthRightBar
             )
             .verticalScroll(rememberScrollState())
-            /*
-            .padding(
-                LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
-                    .asPaddingValues()
-            )
+        /*
+        .padding(
+            LocalPlayerAwareWindowInsets.current
+                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
+                .asPaddingValues()
+        )
 
-             */
+         */
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.tab_miscellaneous),
@@ -225,7 +230,11 @@ fun OtherSettings() {
                 onDismiss = { checkUpdateNow = false },
                 updateAvailable = {
                     if (!it)
-                        SmartMessage(context.resources.getString(R.string.info_no_update_available), type = PopupType.Info, context = context)
+                        SmartMessage(
+                            context.resources.getString(R.string.info_no_update_available),
+                            type = PopupType.Info,
+                            context = context
+                        )
                 }
             )
 
@@ -234,7 +243,7 @@ fun OtherSettings() {
             selectedValue = checkUpdateState,
             onValueSelected = { checkUpdateState = it },
             valueText = {
-                when(it) {
+                when (it) {
                     CheckUpdateState.Disabled -> stringResource(R.string.vt_disabled)
                     CheckUpdateState.Enabled -> stringResource(R.string.enabled)
                     CheckUpdateState.Ask -> stringResource(R.string.ask)
@@ -271,12 +280,15 @@ fun OtherSettings() {
         var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
         var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
         var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
-        var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
+        var accountChannelHandle by rememberEncryptedPreference(
+            key = ytAccountChannelHandleKey,
+            defaultValue = ""
+        )
         val isLoggedIn = remember(cookie) {
             "SAPISID" in parseCookieString(cookie)
         }
 
-        if(isAtLeastAndroid7){
+        if (isAtLeastAndroid7) {
             SettingsGroupSpacer()
             SettingsEntryGroupText(title = "YOUTUBE MUSIC")
 
@@ -352,13 +364,10 @@ fun OtherSettings() {
 
         SettingsGroupSpacer()
 
-
-        var extraspace by rememberPreference(extraspaceKey, false)
-
         /****** PIPED ******/
 
         // rememberEncryptedPreference only works correct with API 24 and up
-        if(isAtLeastAndroid7){
+        if (isAtLeastAndroid7) {
             var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
             var isPipedCustomEnabled by rememberPreference(isPipedCustomEnabledKey, false)
             var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
@@ -373,7 +382,11 @@ fun OtherSettings() {
             var noInstances by rememberSaveable { mutableStateOf(false) }
             var executeLogin by rememberSaveable { mutableStateOf(false) }
             var showInstances by rememberSaveable { mutableStateOf(false) }
-            var session by rememberSaveable { mutableStateOf<Result<it.fast4x.piped.models.Session>?>(null) }
+            var session by rememberSaveable {
+                mutableStateOf<Result<it.fast4x.piped.models.Session>?>(
+                    null
+                )
+            }
 
             val menuState = LocalMenuState.current
             val coroutineScope = rememberCoroutineScope()
@@ -413,7 +426,11 @@ fun OtherSettings() {
                         )?.onFailure {
                             Timber.e("Failed piped login ${it.stackTraceToString()}")
                             isLoading = false
-                            SmartMessage("Piped login failed", type = PopupType.Error, context = context)
+                            SmartMessage(
+                                "Piped login failed",
+                                type = PopupType.Error,
+                                context = context
+                            )
                             loadInstances = false
                             session = null
                             executeLogin = false
@@ -421,7 +438,11 @@ fun OtherSettings() {
                         if (session?.isSuccess == false)
                             return@launch
 
-                        SmartMessage("Piped login successful", type = PopupType.Success, context = context)
+                        SmartMessage(
+                            "Piped login successful",
+                            type = PopupType.Success,
+                            context = context
+                        )
                         Timber.i("Piped login successful")
 
                         session.let {
@@ -553,7 +574,9 @@ fun OtherSettings() {
                         title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
                             R.string.piped_connect
                         ),
-                        text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(pipedInstanceName) else "",
+                        text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(
+                            pipedInstanceName
+                        ) else "",
                         icon = R.drawable.piped_logo,
                         iconColor = colorPalette.red,
                         onClick = {
@@ -573,10 +596,13 @@ fun OtherSettings() {
         /****** DISCORD ******/
 
         // rememberEncryptedPreference only works correct with API 24 and up
-        if(isAtLeastAndroid7){
+        if (isAtLeastAndroid7) {
             var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
             var loginDiscord by remember { mutableStateOf(false) }
-            var discordPersonalAccessToken by rememberEncryptedPreference(key = discordPersonalAccessTokenKey, defaultValue = "")
+            var discordPersonalAccessToken by rememberEncryptedPreference(
+                key = discordPersonalAccessTokenKey,
+                defaultValue = ""
+            )
             SettingsGroupSpacer()
             SettingsEntryGroupText(title = stringResource(R.string.social_discord))
             SwitchSettingEntry(
@@ -747,7 +773,11 @@ fun OtherSettings() {
                             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
                         )
                     } catch (e: ActivityNotFoundException) {
-                        SmartMessage("$msgNoBatteryOptim RiMusic", type = PopupType.Info, context = context)
+                        SmartMessage(
+                            "$msgNoBatteryOptim RiMusic",
+                            type = PopupType.Info,
+                            context = context
+                        )
                     }
                 }
             }
@@ -828,11 +858,11 @@ fun OtherSettings() {
             onCheckedChange = {
                 logDebugEnabled = it
                 if (!it) {
-                    val file = File(context.filesDir.resolve("logs"),"RiMusic_log.txt")
+                    val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
                     if (file.exists())
                         file.delete()
 
-                    val filec = File(context.filesDir.resolve("logs"),"RiMusic_crash_log.txt")
+                    val filec = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
                     if (filec.exists())
                         filec.delete()
 
@@ -851,7 +881,7 @@ fun OtherSettings() {
             text = "",
             icon = R.drawable.copy,
             onClick = {
-                val file = File(context.filesDir.resolve("logs"),"RiMusic_log.txt")
+                val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
                 if (file.exists()) {
                     text = file.readText()
                     copyToClipboard = true
@@ -865,7 +895,7 @@ fun OtherSettings() {
             text = "",
             icon = R.drawable.copy,
             onClick = {
-                val file = File(context.filesDir.resolve("logs"),"RiMusic_crash_log.txt")
+                val file = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
                 if (file.exists()) {
                     text = file.readText()
                     copyToClipboard = true

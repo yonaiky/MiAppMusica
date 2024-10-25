@@ -95,6 +95,7 @@ import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.launch
@@ -170,7 +171,9 @@ fun OtherSettings() {
     var parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     var logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
 
+    var restartActivity by rememberPreference(restartActivityKey, false)
 
+    var extraspace by rememberPreference(extraspaceKey, false)
 
     Column(
         modifier = Modifier
@@ -220,7 +223,7 @@ fun OtherSettings() {
         SettingsDescription(text = stringResource(R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup))
          */
 
-        var extraspace by rememberPreference(extraspaceKey, false)
+
 
 
         /****** YOUTUBE LOGIN ******/
@@ -305,12 +308,13 @@ fun OtherSettings() {
                                 restartActivity = !restartActivity
                             }
                         }
-                    }
-                )
+                    )
+                }
+
             }
         }
 
-    }
+
 
     /****** YOUTUBE LOGIN ******/
 
@@ -853,5 +857,7 @@ fun OtherSettings() {
 
     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
+    }
 }
-}
+
+
