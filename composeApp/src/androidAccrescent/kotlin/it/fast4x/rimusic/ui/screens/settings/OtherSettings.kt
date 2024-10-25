@@ -249,7 +249,7 @@ fun OtherSettings() {
                 ButtonBarSettingEntry(
                     isEnabled = true,
                     title = if (isLoggedIn) "Disconnect" else "Connect to YouTube Music",
-                    text = if (isLoggedIn) "$accountName (${accountChannelHandle})" else "",
+                    text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
                     icon = R.drawable.logo_youtube,
                     iconColor = colorPalette().text,
                     onClick = {
@@ -267,12 +267,13 @@ fun OtherSettings() {
                 ImportantSettingsDescription(
                     text = "You need to log in to listen the songs online"
                 )
-                SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+                //SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
 
                 CustomModalBottomSheet(
                     showSheet = loginYouTube,
                     onDismissRequest = {
                         loginYouTube = false
+                        restartActivity = !restartActivity
                     },
                     containerColor = colorPalette().background0,
                     contentColor = colorPalette().background0,
@@ -288,15 +289,15 @@ fun OtherSettings() {
                     shape = thumbnailRoundness.shape()
                 ) {
                     YouTubeLogin(
-                        rememberNavController(),
                         onLogin = { success ->
                             if (success) {
                                 loginYouTube = false
                                 SmartMessage(
-                                    accountName,
+                                    "Login successful",
                                     type = PopupType.Info,
                                     context = context
                                 )
+                                restartActivity = !restartActivity
                             }
                         }
                     }
