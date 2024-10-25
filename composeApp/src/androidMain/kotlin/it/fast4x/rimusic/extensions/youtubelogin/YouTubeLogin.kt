@@ -45,7 +45,6 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @SuppressLint("SetJavaScriptEnabled")
-@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun YouTubeLogin(
     onLogin: (Boolean) -> Unit
