@@ -12,40 +12,46 @@ import it.fast4x.innertube.utils.runCatchingNonCancellable
 import it.fast4x.invidious.Invidious
 import it.fast4x.piped.models.Session
 
-suspend fun Innertube.player(body: PlayerBody): Result<PlayerResponse> = runCatching {
+suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Result<PlayerResponse> = runCatching {
 
     val response = client.post(player) {
-        ytClient(YouTubeClient.ANDROID_MUSIC, setLogin = true)
-        setBody(body)
+        if (withLogin) {
+            ytClient(YouTubeClient.ANDROID_MUSIC, setLogin = true)
+            setBody(body)
+        } else {
+            setBody(body.copy(context = Context.DefaultIOS))
+        }
         mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
     }.body<PlayerResponse>()
 
-    println("PlayerService NEW Innertube.player response $response")
+    println("PlayerService DownloadHelper Innertube.player withLogin $withLogin response $response")
+
+    if (response.playabilityStatus?.status == "OK") {
+        return@runCatching response
+    }
+
+    val context = if (withLogin) Context.DefaultRestrictionBypass else Context.DefaultIOS
+    val safePlayerResponse = client.post(player) {
+        setBody(
+            body.copy(
+                context = context.copy(
+                    thirdParty = Context.ThirdParty(
+                        embedUrl = "https://www.youtube.com/watch?v=${body.videoId}"
+                    )
+                ),
+            )
+        )
+        mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
+    }.body<PlayerResponse>()
+
+    println("PlayerService DownloadHelper Innertube.player withLogin $withLogin safePlayerResponse $safePlayerResponse")
+
+    if (safePlayerResponse.playabilityStatus?.status == "OK") {
+        return@runCatching safePlayerResponse
+    }
 
     response
 
-    /*
-    val playerResponse = newPlayer(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
-    if (playerResponse.playabilityStatus.status == "OK") {
-        return@runCatching playerResponse
-    }
-    val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
-    if (safePlayerResponse.playabilityStatus.status != "OK") {
-        return@runCatching playerResponse
-    }
-    val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-    safePlayerResponse.copy(
-        streamingData = safePlayerResponse.streamingData?.copy(
-            adaptiveFormats = safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
-                audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
-                    adaptiveFormat.copy(
-                        url = it.url
-                    )
-                }
-            }
-        )
-    )
-    */
 }.onFailure {
     println("YoutubeLogin PlayerService NEW Innertube.player error ${it.stackTraceToString()}")
 }

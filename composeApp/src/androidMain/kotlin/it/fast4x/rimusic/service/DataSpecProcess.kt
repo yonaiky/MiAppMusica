@@ -15,14 +15,21 @@ import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
+import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.flow.distinctUntilChanged
+import me.knighthat.appContext
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 @OptIn(UnstableApi::class)
-internal suspend fun PlayerService.dataSpecProcess(dataSpec: DataSpec, context: Context, metered: Boolean): DataSpec {
+internal suspend fun PlayerService.dataSpecProcess(
+    dataSpec: DataSpec,
+    context: Context,
+    metered: Boolean
+): DataSpec {
     val songUri = dataSpec.uri.toString()
     val videoId = songUri.substringAfter("watch?v=")
     val chunkLength = 512 * 1024L
@@ -43,7 +50,11 @@ internal suspend fun PlayerService.dataSpecProcess(dataSpec: DataSpec, context: 
 }
 
 @OptIn(UnstableApi::class)
-internal suspend fun MyDownloadHelper.dataSpecProcess(dataSpec: DataSpec, context: Context, metered: Boolean): DataSpec {
+internal suspend fun MyDownloadHelper.dataSpecProcess(
+    dataSpec: DataSpec,
+    context: Context,
+    metered: Boolean
+): DataSpec {
     val songUri = dataSpec.uri.toString()
     val videoId = songUri.substringAfter("watch?v=")
 
@@ -64,11 +75,12 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(dataSpec: DataSpec, contex
 @OptIn(UnstableApi::class)
 suspend fun getMediaFormat(
     videoId: String,
-    audioQualityFormat: AudioQualityFormat,
+    audioQualityFormat: AudioQualityFormat
 ): PlayerResponse.StreamingData.AdaptiveFormat? {
     //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
+        withLogin = appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
         //pipedSession = getPipedSession().toApiSession()
     ).fold(
         { playerResponse ->

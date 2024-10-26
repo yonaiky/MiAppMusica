@@ -226,8 +226,11 @@ fun OtherSettings() {
 
 
 
+        // rememberEncryptedPreference only works correct with API 24 and up
+
         /****** YOUTUBE LOGIN ******/
 
+        var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
         var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
@@ -241,82 +244,93 @@ fun OtherSettings() {
             "SAPISID" in parseCookieString(cookie)
         }
 
-        // rememberEncryptedPreference only works correct with API 24 and up
-        if (isAtLeastAndroid7) {
-            SettingsGroupSpacer()
-            SettingsEntryGroupText(title = "YOUTUBE MUSIC")
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = "YOUTUBE MUSIC")
 
-            //loginYouTube = true
+        SwitchSettingEntry(
+            title = "Enable YouTube Music Login",
+            text = "",
+            isChecked = isYouTubeLoginEnabled,
+            onCheckedChange = { isYouTubeLoginEnabled = it }
+        )
 
-            Column {
-                ButtonBarSettingEntry(
-                    isEnabled = true,
-                    title = if (isLoggedIn) "Disconnect" else "Connect to YouTube Music",
-                    text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
-                    icon = R.drawable.logo_youtube,
-                    iconColor = colorPalette().text,
-                    onClick = {
-                        if (isLoggedIn) {
-                            cookie = ""
-                            accountName = ""
-                            accountChannelHandle = ""
-                            accountEmail = ""
-                            visitorData = ""
-                            loginYouTube = false
-                        } else
-                            loginYouTube = true
-                    }
-                )
-                ImportantSettingsDescription(
-                    text = "You need to log in to listen the songs online"
-                )
-                SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        AnimatedVisibility(visible = isYouTubeLoginEnabled) {
+            Column(
+                modifier = Modifier.padding(start = 25.dp)
+            ) {
+                if (isAtLeastAndroid7) {
 
-                CustomModalBottomSheet(
-                    showSheet = loginYouTube,
-                    onDismissRequest = {
-                        SmartMessage(
-                            "Restart RiMusic, please",
-                            type = PopupType.Info,
-                            context = context
+                    Column {
+                        ButtonBarSettingEntry(
+                            isEnabled = true,
+                            title = if (isLoggedIn) "Disconnect" else "Connect",
+                            text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
+                            icon = R.drawable.logo_youtube,
+                            iconColor = colorPalette().text,
+                            onClick = {
+                                if (isLoggedIn) {
+                                    cookie = ""
+                                    accountName = ""
+                                    accountChannelHandle = ""
+                                    accountEmail = ""
+                                    visitorData = ""
+                                    loginYouTube = false
+                                } else
+                                    loginYouTube = true
+                            }
                         )
-                        loginYouTube = false
-                        restartActivity = !restartActivity
-                    },
-                    containerColor = colorPalette().background0,
-                    contentColor = colorPalette().background0,
-                    modifier = Modifier.fillMaxWidth(),
-                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                    dragHandle = {
-                        Surface(
-                            modifier = Modifier.padding(vertical = 0.dp),
-                            color = colorPalette().background0,
-                            shape = thumbnailShape()
-                        ) {}
-                    },
-                    shape = thumbnailRoundness.shape()
-                ) {
-                    YouTubeLogin(
-                        onLogin = { success ->
-                            if (success) {
-                                loginYouTube = false
+                        /*
+                        ImportantSettingsDescription(
+                            text = "You need to log in to listen the songs online"
+                        )
+                         */
+                        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+
+                        CustomModalBottomSheet(
+                            showSheet = loginYouTube,
+                            onDismissRequest = {
                                 SmartMessage(
-                                    "Login successful, restart RiMusic",
+                                    "Restart RiMusic, please",
                                     type = PopupType.Info,
                                     context = context
                                 )
+                                loginYouTube = false
                                 restartActivity = !restartActivity
-                            }
+                            },
+                            containerColor = colorPalette().background0,
+                            contentColor = colorPalette().background0,
+                            modifier = Modifier.fillMaxWidth(),
+                            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                            dragHandle = {
+                                Surface(
+                                    modifier = Modifier.padding(vertical = 0.dp),
+                                    color = colorPalette().background0,
+                                    shape = thumbnailShape()
+                                ) {}
+                            },
+                            shape = thumbnailRoundness.shape()
+                        ) {
+                            YouTubeLogin(
+                                onLogin = { success ->
+                                    if (success) {
+                                        loginYouTube = false
+                                        SmartMessage(
+                                            "Login successful, restart RiMusic",
+                                            type = PopupType.Info,
+                                            context = context
+                                        )
+                                        restartActivity = !restartActivity
+                                    }
+                                }
+                            )
                         }
-                    )
-                }
+                    }
 
+                }
             }
         }
 
-
-
-    /****** YOUTUBE LOGIN ******/
+        /****** YOUTUBE LOGIN ******/
 
 
     /****** PIPED ******/
