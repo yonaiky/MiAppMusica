@@ -231,7 +231,7 @@ fun HomeLibraryModern(
         object: ImportSongsFromCSV {
             override val context = context
 
-            override fun onShortClick() = importLauncher.launch( arrayOf( "text/csv" ) )
+            override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
         }
     }
 
