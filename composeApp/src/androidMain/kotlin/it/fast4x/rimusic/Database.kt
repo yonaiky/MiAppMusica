@@ -1238,7 +1238,7 @@ interface Database {
     @Query("SELECT contentLength FROM Format WHERE songId = :songId")
     fun formatContentLength(songId: String): Long
 
-    @Query("UPDATE Format SET contentLength = null WHERE songId = :songId")
+    @Query("UPDATE Format SET contentLength = 0 WHERE songId = :songId")
     fun resetFormatContentLength(songId: String)
 
     @Query("DELETE FROM Format WHERE songId = :songId")
