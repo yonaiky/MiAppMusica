@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">A Open source and multilingual Android application for streaming music from YouTube Music</string>
-    <string name="your_library">Your library.</string>
-    <string name="organized_in_one_place">All organized in one place, favorite songs, downloaded songs, listened songs and all your playlists.</string>
-    <string name="beautiful_player">A beautiful player.</string>
-    <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
-    <string name="many_effects">Many effects.</string>
-    <string name="visualizer_preview_timeline">Visualizer, preview, timeline, play button, apply the effects you prefer..</string>
-    <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic is multilingual, modern, powerful, attractive, beautiful and is translated into various languages by project collaborators.</string>
-    <string name="listen_to_your_favourite_music">Listen to your favorite music</string>
-    <string name="download_rimusic_now">Download RiMusic Now.</string>
-    <string name="repository">Repository</string>
-    <string name="releases">Releases</string>
-    <string name="issue_tracker">Issue tracker</string>
-    <string name="custom_version">Custom version</string>
+    <string name="opensource_multilingual_application">YouTube Music-dən musiqi yayımı üçün açıq mənbə və çoxdilli Android tətbiqi</string>
+    <string name="your_library">Kitabxananız.</string>
+    <string name="organized_in_one_place">Sevimli mahnılar, yüklənilmiş mahnılar, dinlənilmiş mahnılar və bütün səsləndirmə siyahılarınız, hamısı bir yerdə təşkil edilib.</string>
+    <string name="beautiful_player">Gözəl səsləndirici.</string>
+    <string name="listen_songs_sing_lyrics">Mahnıları dinlə, lirika ilə oxu, qurulan tərcüməçi ilə sözləri tərcümə et.</string>
+    <string name="many_effects">Çoxlu effektlər.</string>
+    <string name="visualizer_preview_timeline">İstədiyiniz effektləri tətbiq edin, təsviredici, önizləmə, vaxt cizgisi, oynatma düyməsi..</string>
+    <string name="modern">Müasir.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">RiMusic çoxdilli, müasir, güclü, cəzbedici, gözəldir və layihə əməkdaşları tərəfindən bir çox dilə tərcümə olunur.</string>
+    <string name="listen_to_your_favourite_music">Sevdiyiniz musiqini dinləyin</string>
+    <string name="download_rimusic_now">İndi RiMusic-i yükləyin.</string>
+    <string name="repository">Depo</string>
+    <string name="releases">Buraxılışlar</string>
+    <string name="issue_tracker">Problem izləyici</string>
+    <string name="custom_version">Fərdi versiya</string>
 </resources>
