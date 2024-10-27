@@ -76,6 +76,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -84,6 +85,7 @@ import it.fast4x.rimusic.utils.forceSeekToNext
 import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.playNext
@@ -279,6 +281,10 @@ fun MiniPlayer(
                                     binder.stopRadio()
                                     binder.player.clearMediaItems()
                                     hidePlayer()
+                                    runCatching {
+                                        context.stopService(context.intent<PlayerService>())
+                                    }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else
                                     SmartMessage(
                                         context.resources.getString(R.string.player_swiping_down_is_disabled),
