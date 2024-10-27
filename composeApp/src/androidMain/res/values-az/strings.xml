@@ -71,10 +71,10 @@
     <string name="show_song_cover">Mahnı örtüyün göstər</string>
     <string name="use_song_cover_on_lockscreen">Səsləndirilən mahnı örtüyün kilid ekranı divar kağızı kimi istifadə et</string>
     <string name="cache">Qalıq</string>
-    <string name="cache_cleared">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>
-    <string name="image_cache">IMAGE CACHE</string>
-    <string name="max_size">Max size</string>
-    <string name="database">Database</string>
+    <string name="cache_cleared">Qalıq boşluğu bitdikdə, ən uzun müddət üçün giriş olunmayan ehtiyatlar silinir</string>
+    <string name="image_cache">ŞƏKİL QALIĞI</string>
+    <string name="max_size">Maks həcm</string>
+    <string name="database">Məlumat bazası</string>
     <string name="reset_quick_picks">Reset quick picks</string>
     <string name="quick_picks_are_cleared">Quick picks are cleared</string>
     <string name="backup">BACKUP</string>
