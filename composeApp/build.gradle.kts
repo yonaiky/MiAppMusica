@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
+    alias(libs.plugins.hilt)
     //alias(libs.plugins.conveyor)
 }
 
@@ -68,6 +69,8 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.navigation)
+            implementation(libs.media3.session)
+            implementation(libs.kotlin.coroutines.guava)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -327,6 +330,9 @@ dependencies {
 
     implementation(libs.room)
     ksp(libs.room.compiler)
+
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
 
     implementation(projects.innertube)
     implementation(projects.kugou)
