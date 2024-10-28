@@ -47,7 +47,7 @@
     <string name="id">Id</string>
     <string name="itag">Itag</string>
     <string name="bitrate">Bit sürəti</string>
-    <string name="size">Həcm</string>
+    <string name="size">Ölçü</string>
     <string name="cached">Toplanan</string>
     <string name="loudness">Səs ucalığı</string>
     <string name="clear">Təmizlə</string>
