@@ -48,6 +48,10 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.knighthat.Skeleton
 import kotlin.system.exitProcess
 
@@ -253,6 +257,12 @@ fun HomeScreen(
                 context = context
             )
             confirmCount++
+
+            // Reset confirmCount after 5s
+            CoroutineScope( Dispatchers.Default ).launch {
+                delay( 5000L )
+                confirmCount = 0
+            }
         } else {
             val activity = context as? Activity
             activity?.finishAffinity()
