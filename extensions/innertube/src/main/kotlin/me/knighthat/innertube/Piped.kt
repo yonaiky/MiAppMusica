@@ -12,6 +12,7 @@ import io.ktor.http.URLProtocol
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import me.knighthat.common.HttpFetcher
+import me.knighthat.common.HttpFetcher.genMatchAllTld
 import okio.IOException
 
 object Piped {
@@ -27,44 +28,6 @@ object Piped {
 
     private lateinit var API_INSTANCES: Array<String>
     private lateinit var UNREACHABLE_INSTANCES: MutableList<Regex>
-
-    /**
-     * Extract domain name from a full length URL.
-     *
-     * For example, url **https://sub1.example.org/path/to/file** will
-     * return **sub1.example.org**
-     *
-     * If the provided is not a url, it will return the url
-     *
-     * @param url to extract domain name from
-     */
-    private fun getDomainName( url: String ) =
-        CAPTURE_DOMAIN_REGEX.find(url)?.groups?.get(1)?.value ?: url
-
-    /**
-     * Extract top-level domain name from a URL.
-     *
-     * For example, **sub1.example.org** will become **example.org**
-     *
-     * If the provided is not a url, it will return the url
-     *
-     * @param url to extract top-level domain name
-     */
-    private fun getTld( url: String ): String {
-        val domain = getDomainName( url )
-        return TLD_REGEX.find( domain )?.value ?: domain
-    }
-
-    /**
-     * This pattern is design to match all sub domains (whether it's there or not) of a domain.
-     *
-     * I.E. **_(?:[a-zA-Z0-9-]+\.)*example.org_** matches:
-     * - example.org
-     * - sub1.example.org
-     * - extra.sub1.example.org
-     */
-    private fun genMatchAllTld( url: String ) =
-        Regex( "(?:[a-zA-Z0-9-]+\\.)*${getTld(url)}" )
 
     fun blacklistUrl( url: String ) {
         if( !::UNREACHABLE_INSTANCES.isInitialized )
