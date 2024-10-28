@@ -3,7 +3,6 @@ package it.fast4x.rimusic.service
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
@@ -14,6 +13,8 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.query
+import me.knighthat.piped.Piped
+import me.knighthat.piped.request.player
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.getPipedSession
@@ -156,10 +157,6 @@ suspend fun getInnerTubeFormatUrl(
                 "UNPLAYABLE" -> throw UnplayableException()
                 else -> throw UnknownException()
             }
-
-
-
-
         },
         { throwable ->
             when (throwable) {
