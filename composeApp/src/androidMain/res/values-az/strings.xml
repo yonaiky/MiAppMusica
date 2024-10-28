@@ -75,10 +75,10 @@
     <string name="image_cache">ŞƏKİL QALIĞI</string>
     <string name="max_size">Maks həcm</string>
     <string name="database">Məlumat bazası</string>
-    <string name="reset_quick_picks">Reset quick picks</string>
-    <string name="quick_picks_are_cleared">Quick picks are cleared</string>
-    <string name="backup">BACKUP</string>
-    <string name="personal_preference">Personal preferences (i.e. the theme mode) and the cache are excluded.</string>
+    <string name="reset_quick_picks">Cəld seçimləri sıfırla</string>
+    <string name="quick_picks_are_cleared">Cəld seçimlər təmizlənir</string>
+    <string name="backup">NÜSXƏLƏ</string>
+    <string name="personal_preference">Şəxsi seçimlər (yəni tema rejimi) və qalıq istisnadır.</string>
     <string name="backup_1">Backup</string>
     <string name="export_the_database">Export the database to the external storage</string>
     <string name="restore">RESTORE</string>
