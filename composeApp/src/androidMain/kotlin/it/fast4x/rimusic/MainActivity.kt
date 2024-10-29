@@ -129,8 +129,6 @@ import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.UiTypeKey
-import it.fast4x.rimusic.utils.ytCookieKey
-import it.fast4x.rimusic.utils.ytVisitorDataKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -199,15 +197,18 @@ import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
+import it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.invidious.Invidious
+import me.knighthat.piped.Piped
 import me.knighthat.thumbnailShape
 import okhttp3.Call
 import okhttp3.Callback
@@ -318,6 +319,11 @@ class MainActivity :
 
         checkIfAppIsRunningInBackground()
 
+        // Fetch Piped & Invidious instances
+        lifecycleScope.launch( Dispatchers.IO ) {
+            Piped.fetchPipedInstances()
+            Invidious.fetchInvidiousInstances( true )
+        }
     }
 
     private fun checkIfAppIsRunningInBackground(){
