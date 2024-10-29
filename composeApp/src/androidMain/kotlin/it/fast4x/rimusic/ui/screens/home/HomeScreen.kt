@@ -17,6 +17,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
@@ -250,6 +251,14 @@ fun HomeScreen(
     val context = LocalContext.current
     var confirmCount by remember { mutableIntStateOf( 0 ) }
     BackHandler {
+        // Prevent this from being applied when user is not on HomeScreen
+        if( NavRoutes.home.isNotHere( navController ) )  {
+            if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED )
+                navController.popBackStack()
+
+            return@BackHandler
+        }
+
         if( confirmCount == 0 ) {
             SmartMessage(
                 // TODO: add this string to xml
