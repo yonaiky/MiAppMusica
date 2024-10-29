@@ -2,16 +2,16 @@
 <resources>
     <string name="cancel">Ləğv et</string>
     <string name="done">Bitdi</string>
-    <string name="hidesong">Həqiqətən bu mahnını gizlətmək istəyirsiz? Onun dinlənmə vaxtı və qalığı silinəcək. Bu tələb geri dönməzdir.</string>
-    <string name="new_playlist">Yeni dinləmə siyahısı</string>
+    <string name="hidesong">Həqiqətən bu mahnını gizlətmək istəyirsiz? Onun oynatma vaxtı və qalığı silinəcək. Bu tələb geri dönməzdir.</string>
+    <string name="new_playlist">Yeni oynatma siyahısı</string>
     <string name="start_radio">Radioya başla</string>
     <string name="equalizer">Tarazlayıcı</string>
     <string name="stop_sleep_timer">Yuxu taymerin dayandırmaq istəyirsiniz?</string>
     <string name="set_sleep_timer">Yuxu taymerin tənzimlə</string>
-    <string name="add_to_playlist">Dinləmə siyahısına əlavə et</string>
+    <string name="add_to_playlist">Oynatma siyahısına əlavə et</string>
     <string name="go_to_album">Alboma keç</string>
     <string name="remove_from_queue">Növbədən təmizlə</string>
-    <string name="remove_from_playlist">Dinləmə siyahısından sil</string>
+    <string name="remove_from_playlist">Pleylistdən sil</string>
     <string name="hide">Gizlət</string>
     <string name="hide_from_quick_picks">\"Cəld seçimlər\"-dən gizlət</string>
     <string name="related_albums">Əlaqəli albomlar</string>
@@ -21,7 +21,7 @@
     <string name="albums">Albomlar</string>
     <string name="artists">Sənətkarlar</string>
     <string name="enter_the_playlist_name">Pleylist adın qeyd et</string>
-    <string name="playlists">Dinləmə siyahıları</string>
+    <string name="playlists">Pleylistlər</string>
     <string name="favorites">Sevimlilər</string>
     <string name="quick_picks">Cəld seçimlər</string>
     <string name="songs">Mahnılar</string>
@@ -94,7 +94,7 @@
     <string name="clear_search_history">Axtarış tarixçəsin təmizlə</string>
     <string name="history_is_empty">Tarixçə boşdur</string>
     <string name="service_lifetime">XİDMƏT ÖMRÜ</string>
-    <string name="battery_optimizations_applied">Batareya optimallaşması istifadə edilərsə, dinləmə bildirişi, dayandırıldıqda ansız itə bilər.</string>
+    <string name="battery_optimizations_applied">Batareya optimallaşması istifadə edilərsə, oynatma bildirişi, dayandırıldıqda ansız itə bilər.</string>
     <string name="is_android12">Android 12-dən bəri \"Yenilməz xidmət\" seçiminin təsirli olması üçün batareya optimallaşmasın qapatmaq tələb olunur.</string>
     <string name="ignore_battery_optimizations">Batareya optimallaşmasına məhəl qoyma</string>
     <string name="already_unrestricted">Daha məhdudiyyətsiz</string>
@@ -138,7 +138,7 @@
     <string name="error_the_original_video_source_of_this_song_has_been_deleted">Bu mahnının əsil video mənbəyi silindi</string>
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">Bu mahnı server məhdudiyyətlərinə görə səsləndirilə bilməz</string>
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">Qaytarılan video id tələb olunan ilə uyğunlaşmır</string>
-    <string name="error_an_unknown_playback_error_has_occurred">Naməlum səsləndirmə xətası baş verdi</string>
+    <string name="error_an_unknown_playback_error_has_occurred">Naməlum səslənmə xətası baş verdi</string>
     <string name="tips">Tövsiyələr</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">Bu, mahnını mümkün Tövsiyələr və ya Cəld Seçimlər kimi daxil etmək üçün ən az dinləmə vaxtıdır</string>
     <string name="min_listening_time">Min dinləmə vaxtı</string>
