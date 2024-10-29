@@ -269,6 +269,7 @@ const val titleExpandedKey = "titleExpanded"
 const val timelineExpandedKey = "timelineExpanded"
 const val controlsExpandedKey = "controlsExpanded"
 const val miniQueueExpandedKey = "miniQueueExpanded"
+const val statsExpandedKey = "statsExpanded"
 
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
