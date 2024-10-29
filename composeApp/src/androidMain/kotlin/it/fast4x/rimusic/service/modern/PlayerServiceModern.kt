@@ -98,6 +98,7 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
+import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipSilenceKey
@@ -160,19 +161,6 @@ class PlayerServiceModern : MediaLibraryService(),
     private var showLikeButton = true
     private var showDownloadButton = true
 
-
-    private val actions = PlaybackStateCompat.ACTION_PLAY or
-            PlaybackStateCompat.ACTION_PAUSE or
-            PlaybackStateCompat.ACTION_PLAY_PAUSE or
-            PlaybackStateCompat.ACTION_STOP or
-            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-            PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
-            PlaybackStateCompat.ACTION_SEEK_TO or
-            PlaybackStateCompat.ACTION_REWIND or
-            PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-
-
     lateinit var audioQualityFormat: AudioQualityFormat
     lateinit var sleepTimer: SleepTimer
 
@@ -195,14 +183,6 @@ class PlayerServiceModern : MediaLibraryService(),
                 flowOf(downloads[item.mediaId]?.state == Download.STATE_COMPLETED)
             } ?: flowOf(false)
         }
-        .stateIn(coroutineScope, SharingStarted.Lazily, null)
-
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    private val currentSongIsLiked = currentMediaItem
-        .flatMapMerge { item ->
-            item?.mediaId?.let { Database.likedAt(it).distinctUntilChanged() } ?: flowOf(null)
-        }
-        .map { it != null }
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     private lateinit var connectivityManager: ConnectivityManager
@@ -372,21 +352,21 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     fun toggleLike() {
-        /*
         transaction {
-            Database.like(
-                player.currentMediaItem.mediaId,
-                if (isLikedState.value) null else System.currentTimeMillis()
-            )
+            currentSong.value?.let {
+                Database.like(
+                    it.id,
+                    setLikeState(it.likedAt)
+                )
+            }
         }
-         */
     }
 
     fun toggleDownload() {
         manageDownload(
             context = this,
             mediaItem = currentMediaItem.value ?: return,
-            downloadState = if (currentSongIsDownloaded.value == true) true else false
+            downloadState = currentSongIsDownloaded.value == true
         )
     }
 
@@ -617,8 +597,8 @@ class PlayerServiceModern : MediaLibraryService(),
                     .setEnabled(currentSong.value != null)
                     .build(),
                 CommandButton.Builder()
-                    .setDisplayName(getString(if (currentSongIsLiked.value == true) R.string.favorites else R.string.favorites))
-                    .setIconResId(if (currentSongIsLiked.value == true) R.drawable.heart else R.drawable.heart_outline)
+                    //.setDisplayName(getString(if (currentSongIsLiked.value == true) R.string.favorites else R.string.favorites))
+                    //.setIconResId(if (currentSongIsLiked.value == true) R.drawable.heart else R.drawable.heart_outline)
                     .setSessionCommand(CommandToggleLike)
                     .setEnabled(currentSong.value != null)
                     .build(),
