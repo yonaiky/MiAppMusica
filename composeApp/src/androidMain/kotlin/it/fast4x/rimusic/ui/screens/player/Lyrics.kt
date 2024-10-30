@@ -113,6 +113,7 @@ import it.fast4x.rimusic.utils.SynchronizedLyrics
 import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.LyricsAlignment
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.expandedplayerKey
@@ -148,6 +149,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
+import it.fast4x.rimusic.utils.lyricsAlignmentKey
 
 
 @UnstableApi
@@ -320,6 +322,7 @@ fun Lyrics(
             mutableStateOf(false)
         }
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
+        var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
             withContext(Dispatchers.IO) {
@@ -819,7 +822,7 @@ fun Lyrics(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                contentAlignment = Alignment.Center
+                                contentAlignment = if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(
@@ -1321,7 +1324,7 @@ fun Lyrics(
                                 .verticalScroll(rememberScrollState())
                                 .fillMaxWidth()
                                 .padding(vertical = size / 4, horizontal = 32.dp),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                         ) {
                             //Rainbow Shimmer
                             val infiniteTransition = rememberInfiniteTransition()
@@ -1757,6 +1760,45 @@ fun Lyrics(
                             onClick = {
                                 menuState.display {
                                     Menu {
+                                        MenuEntry(
+                                            icon = R.drawable.text,
+                                            enabled = true,
+                                            text = stringResource(R.string.lyricsalignment),
+                                            onClick = {
+                                                menuState.display {
+                                                    Menu {
+                                                        MenuEntry(
+                                                            icon = R.drawable.arrow_left,
+                                                            text = stringResource(R.string.direction_left),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                lyricsAlignment = LyricsAlignment.Left
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = R.drawable.arrow_down,
+                                                            text = stringResource(R.string.center),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                lyricsAlignment = LyricsAlignment.Center
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = R.drawable.arrow_right,
+                                                            text = stringResource(R.string.direction_right),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                lyricsAlignment = LyricsAlignment.Right
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        )
+
                                         if (!showlyricsthumbnail)
                                             MenuEntry(
                                                 icon = R.drawable.text,

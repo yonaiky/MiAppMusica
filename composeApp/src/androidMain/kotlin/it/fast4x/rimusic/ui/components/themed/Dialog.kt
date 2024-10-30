@@ -116,6 +116,7 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
+import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
@@ -1275,16 +1276,20 @@ fun BlurParamsDialog(
         onDismiss: () -> Unit,
         scaleValue: (Float) -> Unit,
         spacingValue: (Float) -> Unit,
+        fadeValue: (Float) -> Unit,
     ) {
+        val defaultFade = 5f
         val defaultOffset = 10f
         val defaultSpacing = 0f
         var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)
         var thumbnailSpacing by rememberPreference(thumbnailSpacingKey, defaultOffset)
+        var thumbnailFade by rememberPreference(thumbnailFadeKey, defaultFade)
 
         DefaultDialog(
             onDismiss = {
                 scaleValue(thumbnailOffset)
                 spacingValue(thumbnailSpacing)
+                fadeValue(thumbnailFade)
                 onDismiss()
             }
         ) {
@@ -1312,6 +1317,25 @@ fun BlurParamsDialog(
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
                     range = 0f..50f
+                )
+
+                IconButton(
+                    onClick = {
+                        thumbnailFade = defaultFade
+                    },
+                    icon = R.drawable.droplet,
+                    color = colorPalette().favoritesIcon,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .rotate(if (isLandscape) 45f else 135f)
+                )
+
+                SliderControl(
+                    state = thumbnailFade,
+                    onSlide = { thumbnailFade = it },
+                    onSlideComplete = {},
+                    toDisplay = { "%.0f".format(it) },
+                    range = 0f..15f
                 )
 
                 /*

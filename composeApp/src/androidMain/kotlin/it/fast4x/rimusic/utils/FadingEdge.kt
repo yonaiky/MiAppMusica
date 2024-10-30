@@ -102,7 +102,7 @@ fun Modifier.fadingEdge(
         }
     }
 
-fun Modifier.fadingEdge(
+fun Modifier.fadingEdge2(
     horizontal: Dp? = null,
     vertical: Dp? = null,
 ) = fadingEdge(

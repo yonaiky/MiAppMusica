@@ -47,6 +47,7 @@ import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
@@ -481,6 +482,7 @@ fun AppearanceSettings(
     var controlsExpanded by rememberPreference(controlsExpandedKey, true)
     var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
     var statsExpanded by rememberPreference(statsExpandedKey, true)
+    var actionExpanded by rememberPreference(actionExpandedKey, true)
 
     Column(
         modifier = Modifier
@@ -1546,6 +1548,20 @@ fun AppearanceSettings(
                     onCheckedChange = { controlsExpanded = it }
                 )
 
+            if (statsfornerds){
+                if (searchInput.isBlank() || stringResource(R.string.statsfornerds).contains(
+                        searchInput,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.statsfornerds),
+                        text = "",
+                        isChecked = statsExpanded,
+                        onCheckedChange = { statsExpanded = it }
+                    )
+            }
+
             if (showNextSongsInPlayer) {
                 if (searchInput.isBlank() || stringResource(R.string.miniqueue).contains(
                         searchInput,
@@ -1560,19 +1576,33 @@ fun AppearanceSettings(
                     )
             }
 
-            if (statsfornerds){
-                if (searchInput.isBlank() || stringResource(R.string.statsfornerds).contains(
+            if (
+                showButtonPlayerDownload ||
+                showButtonPlayerAddToPlaylist ||
+                showButtonPlayerLoop ||
+                showButtonPlayerShuffle ||
+                showButtonPlayerLyrics ||
+                showButtonPlayerSleepTimer ||
+                showButtonPlayerSystemEqualizer ||
+                showButtonPlayerArrow ||
+                showButtonPlayerMenu ||
+                expandedplayertoggle ||
+                showButtonPlayerDiscover ||
+                showButtonPlayerVideo
+            ){
+                if (searchInput.isBlank() || stringResource(R.string.actionbar).contains(
                         searchInput,
                         true
                     )
                 )
                     SwitchSettingEntry(
-                        title = stringResource(R.string.statsfornerds),
+                        title = stringResource(R.string.actionbar),
                         text = "",
-                        isChecked = statsExpanded,
-                        onCheckedChange = { statsExpanded = it }
+                        isChecked = actionExpanded,
+                        onCheckedChange = { actionExpanded = it }
                     )
             }
+
         }
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.background_player))

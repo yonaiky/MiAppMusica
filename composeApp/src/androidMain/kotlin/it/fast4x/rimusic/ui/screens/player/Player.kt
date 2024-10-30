@@ -213,6 +213,7 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
@@ -223,6 +224,7 @@ import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.fadingEdge2
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forceSeekToPrevious
@@ -256,6 +258,7 @@ import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.statsExpandedKey
+import it.fast4x.rimusic.utils.thumbnailFadeKey
 import me.knighthat.colorPalette
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -311,9 +314,11 @@ fun Player(
     val defaultDarkenFactor = 0.2f
     val defaultOffset = 0f
     val defaultSpacing = 0f
+    val defaultFade = 10f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
+    var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
         mutableStateOf(false)
@@ -345,7 +350,8 @@ fun Player(
         ThumbnailOffsetDialog(
             onDismiss = { showThumbnailOffsetDialog = false},
             scaleValue = { thumbnailOffset = it },
-            spacingValue = { thumbnailSpacing = it }
+            spacingValue = { thumbnailSpacing = it },
+            fadeValue = { thumbnailFade = it }
         )
     }
 
@@ -367,7 +373,7 @@ fun Player(
     val queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
     val miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
     val statsExpanded by rememberPreference(statsExpandedKey, true)
-
+    val actionExpanded by rememberPreference(actionExpandedKey, true)
 
     binder.player.DisposableListener {
         object : Player.Listener {
@@ -1075,8 +1081,7 @@ fun Player(
             .fillMaxSize()
     ) {
         val actionsBarContent: @Composable () -> Unit = {
-            if (
-                !showButtonPlayerDownload &&
+            if ((!showButtonPlayerDownload &&
                 !showButtonPlayerAddToPlaylist &&
                 !showButtonPlayerLoop &&
                 !showButtonPlayerShuffle &&
@@ -1084,7 +1089,11 @@ fun Player(
                 !showButtonPlayerSleepTimer &&
                 !showButtonPlayerSystemEqualizer &&
                 !showButtonPlayerArrow &&
-                !showButtonPlayerMenu
+                !showButtonPlayerMenu &&
+                !expandedplayertoggle &&
+                !showButtonPlayerDiscover &&
+                !showButtonPlayerVideo) &&
+                (!expandedplayer || !isShowingLyrics || actionExpanded)
             ) {
                 Row(
                 ) {
@@ -1933,7 +1942,12 @@ fun Player(
                                                      0.dp
                                                  )
                                              )
-                                             .conditional(fadingedge) { horizontalFadingEdge() }
+                                             .conditional(fadingedge) {
+                                                 fadingEdge2(
+                                                 horizontal = thumbnailFade.dp,
+                                                 vertical = 0.dp,
+                                                 )
+                                             }
                                          ) { it ->
 
                                          AsyncImage(
@@ -2329,7 +2343,12 @@ fun Player(
                                                  0.dp
                                              )
                                          )
-                                         .conditional(fadingedge) { verticalFadingEdge() }
+                                         .conditional(fadingedge) {
+                                             fadingEdge2(
+                                                 horizontal = 0.dp,
+                                                 vertical = thumbnailFade.dp,
+                                             )
+                                         }
                                  ){ it ->
                                      Box(
                                          modifier = modifier
