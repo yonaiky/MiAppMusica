@@ -1279,7 +1279,7 @@ fun BlurParamsDialog(
         spacingValue: (Float) -> Unit,
         fadeValue: (Float) -> Unit,
     ) {
-        val defaultFade = 10f
+        val defaultFade = 5f
         val defaultOffset = 10f
         val defaultSpacing = 0f
         var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)

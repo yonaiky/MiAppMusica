@@ -314,7 +314,7 @@ fun Player(
     val defaultDarkenFactor = 0.2f
     val defaultOffset = 0f
     val defaultSpacing = 0f
-    val defaultFade = 10f
+    val defaultFade = 5f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
@@ -2333,11 +2333,17 @@ fun Player(
                                      beyondViewportPageCount = 2,
                                      flingBehavior = fling,
                                      modifier = modifier
+                                         .padding(top = if (expandedplayer) 0.dp else 8.dp)
                                          .padding(
                                              all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
                                                  0.dp
                                              )
                                          )
+                                         .conditional(fadingedge && !expandedplayer) {
+                                             padding(
+                                                 vertical = 2.5.dp
+                                             )
+                                         }
                                          .conditional(fadingedge) {
                                              VerticalfadingEdge2(fade = thumbnailFade*0.05f)
                                          }
@@ -2351,7 +2357,7 @@ fun Player(
                                          contentScale = ContentScale.Fit,
                                          modifier = Modifier
                                              .fillMaxWidth()
-                                             .padding(all = if (carousel && expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
+                                             .padding(all = if (expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
                                              .zIndex(
                                                  if (it == pagerState.currentPage) 1f
                                                  else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
