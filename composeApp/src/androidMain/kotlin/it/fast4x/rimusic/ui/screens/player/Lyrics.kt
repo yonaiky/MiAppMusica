@@ -822,7 +822,7 @@ fun Lyrics(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                contentAlignment = Alignment.Center
+                                contentAlignment = Alignment.CenterStart
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(

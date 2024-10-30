@@ -102,6 +102,7 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.drawCircle
+import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.getDeviceVolume
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isValidIP
@@ -1278,13 +1279,13 @@ fun BlurParamsDialog(
         spacingValue: (Float) -> Unit,
         fadeValue: (Float) -> Unit,
     ) {
-        val defaultFade = 5f
+        val defaultFade = 10f
         val defaultOffset = 10f
         val defaultSpacing = 0f
         var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)
         var thumbnailSpacing by rememberPreference(thumbnailSpacingKey, defaultOffset)
         var thumbnailFade by rememberPreference(thumbnailFadeKey, defaultFade)
-
+        var fadingedge by rememberPreference(fadingedgeKey, false)
         DefaultDialog(
             onDismiss = {
                 scaleValue(thumbnailOffset)
@@ -1318,27 +1319,35 @@ fun BlurParamsDialog(
                     toDisplay = { "%.0f".format(it) },
                     range = 0f..50f
                 )
+            }
 
-                IconButton(
-                    onClick = {
-                        thumbnailFade = defaultFade
-                    },
-                    icon = R.drawable.droplet,
-                    color = colorPalette().favoritesIcon,
+            if(fadingedge && !isLandscape) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(24.dp)
-                        .rotate(if (isLandscape) 45f else 135f)
-                )
+                        .fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = {
+                            thumbnailFade = defaultFade
+                        },
+                        icon = R.drawable.droplet,
+                        color = colorPalette().favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
 
-                SliderControl(
-                    state = thumbnailFade,
-                    onSlide = { thumbnailFade = it },
-                    onSlideComplete = {},
-                    toDisplay = { "%.0f".format(it) },
-                    range = 0f..15f
-                )
+                    SliderControl(
+                        state = thumbnailFade,
+                        onSlide = { thumbnailFade = it },
+                        onSlideComplete = {},
+                        toDisplay = { "%.0f".format(it) },
+                        steps = 10,
+                        range = 0f..10f
+                    )
 
-                /*
+                    /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1395,6 +1404,7 @@ fun BlurParamsDialog(
                     }
                 )
                 */
+                }
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
