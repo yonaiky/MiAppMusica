@@ -2354,6 +2354,15 @@ fun Player(
                                          modifier = modifier
                                              .align(Alignment.Center)
                                              .matchParentSize()
+                                             .zIndex(
+                                                 if (it == pagerState.currentPage) 1f
+                                                 else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                 else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                 else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                 else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                 else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                 else 0.57f
+                                             )
                                      ) {
                                          AsyncImage(
                                              model = ImageRequest.Builder(LocalContext.current)
@@ -2367,15 +2376,6 @@ fun Player(
                                              modifier = Modifier
                                                  .fillMaxWidth()
                                                  .padding(all = if (expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp)
-                                                 .zIndex(
-                                                     if (it == pagerState.currentPage) 1f
-                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f
-                                                 )
                                                  .conditional(carousel)
                                                  {
                                                      graphicsLayer {
