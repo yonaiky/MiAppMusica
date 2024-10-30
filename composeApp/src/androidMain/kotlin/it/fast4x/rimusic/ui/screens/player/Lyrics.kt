@@ -822,7 +822,7 @@ fun Lyrics(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                contentAlignment = if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
+                                contentAlignment = Alignment.Center
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(
@@ -1324,7 +1324,7 @@ fun Lyrics(
                                 .verticalScroll(rememberScrollState())
                                 .fillMaxWidth()
                                 .padding(vertical = size / 4, horizontal = 32.dp),
-                            contentAlignment = if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
+                            contentAlignment = Alignment.Center
                         ) {
                             //Rainbow Shimmer
                             val infiniteTransition = rememberInfiniteTransition()

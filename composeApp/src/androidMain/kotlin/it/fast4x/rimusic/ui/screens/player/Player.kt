@@ -1092,8 +1092,8 @@ fun Player(
                 !showButtonPlayerMenu &&
                 !expandedplayertoggle &&
                 !showButtonPlayerDiscover &&
-                !showButtonPlayerVideo) &&
-                (!expandedplayer || !isShowingLyrics || actionExpanded)
+                !showButtonPlayerVideo) ||
+                (expandedplayer && isShowingLyrics && !actionExpanded)
             ) {
                 Row(
                 ) {
