@@ -94,7 +94,7 @@
     <string name="clear_search_history">Axtarış tarixçəsin təmizlə</string>
     <string name="history_is_empty">Tarixçə boşdur</string>
     <string name="service_lifetime">XİDMƏT ÖMRÜ</string>
-    <string name="battery_optimizations_applied">Batareya optimallaşması istifadə edilərsə, oynatma bildirişi, dayandırıldıqda ansız itə bilər.</string>
+    <string name="battery_optimizations_applied">Batareya optimallaşması istifadə edilərsə, dinləmə bildirişi, dayandırıldıqda ansız itə bilər.</string>
     <string name="is_android12">Android 12-dən bəri \"Yenilməz xidmət\" seçiminin təsirli olması üçün batareya optimallaşmasın qapatmaq tələb olunur.</string>
     <string name="ignore_battery_optimizations">Batareya optimallaşmasına məhəl qoyma</string>
     <string name="already_unrestricted">Daha məhdudiyyətsiz</string>
@@ -459,7 +459,7 @@
     <string name="info_clean_cached_congs">Toplanan mahnıları təmizlə</string>
     <string name="info_pin_unpin_playlist">Pleylisti sabitlə/sabitləmə</string>
     <string name="info_lock_unlock_reorder_songs">Mahnıları yenidən düzməyi kilidlə/kilidi aç</string>
-    <string name="info_add_in_playlist">Dinləmə siyahısına əlavə et</string>
+    <string name="info_add_in_playlist">Oynatma siyahısına əlavə et</string>
     <string name="info_not_find_application_audio">Səsi tarazlamaq üçün tətbiq tapılmadı</string>
     <string name="info_error">Xəta</string>
     <string name="info_not_find_app_open_doc">Sənədləri açmaq üçün tətbiq tapmaq olmadı</string>
@@ -759,4 +759,8 @@
     <string name="login_required_to_play_this_media">Login required to play this media</string>
     <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
     <string name="search_results_for">Search results for:</string>
+    <string name="statsfornerds">Stats for Nerds</string>
+    <string name="actionbar">Action Bar</string>
+    <string name="center">Center</string>
+    <string name="lyricsalignment">Lyrics Alignment</string>
 </resources>
