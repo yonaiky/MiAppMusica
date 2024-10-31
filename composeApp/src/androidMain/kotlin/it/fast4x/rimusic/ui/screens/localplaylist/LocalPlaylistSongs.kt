@@ -373,47 +373,50 @@ fun LocalPlaylistSongs(
             }
         }
     }
-    val downloadAllDialog = object: DownloadAllDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = downloadAllToggleState
-        override val downloadState = downloadState
+    val downloadAllDialog = remember {
+        object: DownloadAllDialog {
+            override val context = context
+            override val binder = binder
+            override val toggleState = downloadAllToggleState
+            override val downloadState = downloadState
 
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( playlistSongs.isNotEmpty() ) {
-                playlistSongs.map {
-                    query {
-                        Database.insert(
-                            Song(
-                                id = it.asMediaItem.mediaId,
-                                title = it.asMediaItem.mediaMetadata.title.toString(),
-                                artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                thumbnailUrl = it.song.thumbnailUrl,
-                                durationText = null
+            override fun listToProcess(): List<MediaItem> =
+                if( listMediaItems.isNotEmpty() )
+                    listMediaItems
+                else if( playlistSongs.isNotEmpty() ) {
+                    playlistSongs.map {
+                        query {
+                            Database.insert(
+                                Song(
+                                    id = it.asMediaItem.mediaId,
+                                    title = it.asMediaItem.mediaMetadata.title.toString(),
+                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                                    thumbnailUrl = it.song.thumbnailUrl,
+                                    durationText = null
+                                )
                             )
-                        )
+                        }
+
+                        it.asMediaItem
                     }
-
-                    it.asMediaItem
-                }
-            } else listOf()
+                } else listOf()
+        }
     }
+    val deleteDownloadsDialog = remember {
+        object: DeleteDownloadsDialog {
+            override val context = context
+            override val binder = binder
+            override val toggleState = deleteDownloadsToggleState
+            override val downloadState = downloadState
 
-    val deleteDownloadsDialog = object: DeleteDownloadsDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = deleteDownloadsToggleState
-        override val downloadState = downloadState
-
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( playlistSongs.isNotEmpty() )
-                playlistSongs.map( SongEntity::asMediaItem )
-            else
-                emptyList()
+            override fun listToProcess(): List<MediaItem> =
+                if( listMediaItems.isNotEmpty() )
+                    listMediaItems
+                else if( playlistSongs.isNotEmpty() )
+                    playlistSongs.map( SongEntity::asMediaItem )
+                else
+                    emptyList()
+        }
     }
 
     // Search mutable

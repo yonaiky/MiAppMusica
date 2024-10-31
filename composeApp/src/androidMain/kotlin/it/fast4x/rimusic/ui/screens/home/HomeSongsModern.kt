@@ -315,16 +315,18 @@ fun HomeSongsModern(
             override val sortByState = deviceFolderSortState
         }
     }
-    val shuffle = object: SongsShuffle {
-        override val binder = binder
-        override val context = context
-        override val dispatcher = Dispatchers.Main
+    val shuffle = remember {
+        object: SongsShuffle {
+            override val binder = binder
+            override val context = context
+            override val dispatcher = Dispatchers.Main
 
-        override fun query(): Flow<List<Song>?> {
-            if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-                items = filteredSongs
+            override fun query(): Flow<List<Song>?> {
+                if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+                    items = filteredSongs
 
-            return  flowOf(items.map(SongEntity::song))
+                return  flowOf(items.map(SongEntity::song))
+            }
         }
     }
     // START - Import songs
@@ -372,33 +374,37 @@ fun HomeSongsModern(
             }
         }
     }
-    val downloadAllDialog = object: DownloadAllDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = downloadAllToggleState
-        override val downloadState = downloadState
+    val downloadAllDialog = remember {
+        object: DownloadAllDialog {
+            override val context = context
+            override val binder = binder
+            override val toggleState = downloadAllToggleState
+            override val downloadState = downloadState
 
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( items.isNotEmpty() )
-                items.map( SongEntity::asMediaItem )
-            else
-                listOf()
+            override fun listToProcess(): List<MediaItem> =
+                if( listMediaItems.isNotEmpty() )
+                    listMediaItems
+                else if( items.isNotEmpty() )
+                    items.map( SongEntity::asMediaItem )
+                else
+                    listOf()
+        }
     }
-    val deleteDownloadsDialog = object: DeleteDownloadsDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = deleteDownloadsToggleState
-        override val downloadState = downloadState
+    val deleteDownloadsDialog = remember {
+        object: DeleteDownloadsDialog {
+            override val context = context
+            override val binder = binder
+            override val toggleState = deleteDownloadsToggleState
+            override val downloadState = downloadState
 
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( items.isNotEmpty() )
-                items.map( SongEntity::asMediaItem )
-            else
-                emptyList()
+            override fun listToProcess(): List<MediaItem> =
+                if( listMediaItems.isNotEmpty() )
+                    listMediaItems
+                else if( items.isNotEmpty() )
+                    items.map( SongEntity::asMediaItem )
+                else
+                    emptyList()
+        }
     }
     val deleteSongDialog = remember {
         object: ConfirmationDialog {
