@@ -72,6 +72,7 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.effectRotationKey
@@ -95,7 +96,7 @@ import me.knighthat.typography
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun InfoAlbumAndArtistEssential(
-    binder: PlayerService.Binder,
+    binder: PlayerServiceModern.Binder,
     navController: NavController,
     albumId: String?,
     media: UiMedia,
@@ -323,7 +324,7 @@ fun InfoAlbumAndArtistEssential(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ControlsEssential(
-    binder: PlayerService.Binder,
+    binder: PlayerServiceModern.Binder,
     position: Long,
     playbackSpeed: Float,
     shouldBePlaying: Boolean,

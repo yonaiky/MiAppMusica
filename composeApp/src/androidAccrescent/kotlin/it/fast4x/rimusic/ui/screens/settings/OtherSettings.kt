@@ -54,6 +54,7 @@ import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.service.PlayerMediaBrowserService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -117,7 +118,7 @@ fun OtherSettings() {
         ThumbnailRoundness.Heavy
     )
     var isAndroidAutoEnabled by remember {
-        val component = ComponentName(context, PlayerMediaBrowserService::class.java)
+        val component = ComponentName(context, PlayerServiceModern::class.java)
         val disabledFlag = PackageManager.COMPONENT_ENABLED_STATE_DISABLED
         val enabledFlag = PackageManager.COMPONENT_ENABLED_STATE_ENABLED
 

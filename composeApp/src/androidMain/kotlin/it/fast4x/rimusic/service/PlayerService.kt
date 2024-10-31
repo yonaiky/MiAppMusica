@@ -2137,11 +2137,13 @@ class PlayerService : InvincibleService(),
             updatePlaybackState()
         }
 
+        /* MIGRATE TO NEW SERVICE */
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             if (query.isNullOrBlank()) return
             binder.playFromSearch(query)
         }
 
+        /* MIGRATE TO NEW SERVICE */
         override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
             if (Intent.ACTION_MEDIA_BUTTON == mediaButtonIntent.action) {
                 val event = mediaButtonIntent.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
@@ -2267,6 +2269,7 @@ class PlayerService : InvincibleService(),
     }
 
 
+    /* MIGRATE TO NEW SERVICE */
     class NotificationDismissReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             kotlin.runCatching {

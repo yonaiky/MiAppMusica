@@ -6,6 +6,7 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 
 @OptIn(UnstableApi::class)
-fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerService.Binder?) {
+fun PlayShuffledSongs(songsList: List<Song>?, context: Context, binder: PlayerServiceModern.Binder?) {
 
     if (songsList == null || binder == null) return
 

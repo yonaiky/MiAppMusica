@@ -110,6 +110,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -237,7 +238,7 @@ class MainActivity :
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service is PlayerService.Binder) {
+            if (service is PlayerServiceModern.Binder) {
                 this@MainActivity.binder = service
             }
         }
@@ -248,7 +249,7 @@ class MainActivity :
 
     }
 
-    private var binder by mutableStateOf<PlayerService.Binder?>(null)
+    private var binder by mutableStateOf<PlayerServiceModern.Binder?>(null)
     private var intentUriData by mutableStateOf<Uri?>(null)
 
     //override lateinit var persistMap: PersistMap
@@ -267,7 +268,7 @@ class MainActivity :
         super.onStart()
 
         runCatching {
-            bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
+            bindService(intent<PlayerServiceModern>(), serviceConnection, Context.BIND_AUTO_CREATE)
         }.onFailure {
             Timber.e("MainActivity.onStart bindService ${it.stackTraceToString()}")
         }
@@ -321,8 +322,12 @@ class MainActivity :
 
         // Fetch Piped & Invidious instances
         lifecycleScope.launch( Dispatchers.IO ) {
-            Piped.fetchPipedInstances()
-            Invidious.fetchInvidiousInstances( true )
+            try {
+                Piped.fetchPipedInstances()
+                Invidious.fetchInvidiousInstances( true )
+            } catch( e: Exception ) {
+                Timber.e( e, "MainActivity Error fetching Piped & Invidious instances" )
+            }
         }
     }
 
@@ -1134,7 +1139,7 @@ class MainActivity :
 
 }
 
-val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerService.Binder?> { null }
+val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerServiceModern.Binder?> { null }
 
 val LocalPlayerAwareWindowInsets = staticCompositionLocalOf<WindowInsets> { TODO() }
 

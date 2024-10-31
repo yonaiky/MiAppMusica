@@ -22,13 +22,18 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
-import it.fast4x.rimusic.utils.toggleRepeatMode
-
+import it.fast4x.rimusic.service.MyDownloadHelper
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_FAVORITES
+import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,6 +42,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @UnstableApi
@@ -48,6 +54,10 @@ class MediaLibrarySessionCallback @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.Main) + Job()
     var toggleLike: () -> Unit = {}
     var toggleDownload: () -> Unit = {}
+    var toggleRepeat: () -> Unit = {}
+    var toggleShuffle: () -> Unit = {}
+    var callPause: () -> Unit = {}
+    var searchedSongs: List<Song> = emptyList()
 
     override fun onConnect(
         session: MediaSession,
@@ -65,6 +75,50 @@ class MediaLibrarySessionCallback @Inject constructor(
         )
     }
 
+    override fun onSearch(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        params: MediaLibraryService.LibraryParams?
+    ): ListenableFuture<LibraryResult<Void>> {
+        println("PlayerServiceModern MediaLibrarySessionCallback.onSearch: $query")
+        session.notifySearchResultChanged(browser, query, 0, params)
+        return Futures.immediateFuture(LibraryResult.ofVoid(params))
+    }
+
+    override fun onGetSearchResult(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        page: Int,
+        pageSize: Int,
+        params: MediaLibraryService.LibraryParams?
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        println("PlayerServiceModern MediaLibrarySessionCallback.onGetSearchResult: $query")
+        runBlocking(Dispatchers.IO) {
+            searchedSongs = Innertube.searchPage(
+                body = SearchBody(
+                    query = query,
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+            )?.map {
+                it?.items?.map { it.asSong }
+            }?.getOrNull() ?: emptyList()
+
+            val resultList = searchedSongs.map {
+                it.toMediaItem(PlayerServiceModern.SEARCHED)
+            }
+            return@runBlocking Futures.immediateFuture(LibraryResult.ofItemList(resultList, params))
+        }
+
+        return Futures.immediateFuture(LibraryResult.ofItemList(searchedSongs.map {
+            it.toMediaItem(
+                PlayerServiceModern.SEARCHED
+            )
+        }, params))
+    }
+
     override fun onCustomCommand(
         session: MediaSession,
         controller: MediaSession.ControllerInfo,
@@ -74,10 +128,8 @@ class MediaLibrarySessionCallback @Inject constructor(
         when (customCommand.customAction) {
             MediaSessionConstants.ACTION_TOGGLE_LIKE -> toggleLike()
             MediaSessionConstants.ACTION_TOGGLE_DOWNLOAD -> toggleDownload()
-            MediaSessionConstants.ACTION_TOGGLE_SHUFFLE -> session.player.shuffleModeEnabled =
-                !session.player.shuffleModeEnabled
-
-            MediaSessionConstants.ACTION_TOGGLE_REPEAT_MODE -> session.player.toggleRepeatMode()
+            MediaSessionConstants.ACTION_TOGGLE_SHUFFLE -> toggleShuffle()
+            MediaSessionConstants.ACTION_TOGGLE_REPEAT_MODE -> toggleRepeat() //session.player.toggleRepeatMode()
         }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
     }
@@ -126,7 +178,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                         PlayerServiceModern.ARTIST,
                         context.getString(R.string.artists),
                         null,
-                        drawableUri(R.drawable.artist),
+                        drawableUri(R.drawable.artists),
                         MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS
                     ),
                     browsableMediaItem(
@@ -140,7 +192,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                         PlayerServiceModern.PLAYLIST,
                         context.getString(R.string.playlists),
                         null,
-                        drawableUri(R.drawable.playlist),
+                        drawableUri(R.drawable.library),
                         MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
                     )
                 )
@@ -175,14 +227,14 @@ class MediaLibrarySessionCallback @Inject constructor(
                     val playlists = database.playlistPreviewsByDateSongCountAsc().first()
                     listOf(
                         browsableMediaItem(
-                            "${PlayerServiceModern.PLAYLIST}/PREFERITES",
+                            "${PlayerServiceModern.PLAYLIST}/${ID_FAVORITES}",
                             context.getString(R.string.favorites),
                             likedSongCount.toString(),
                             drawableUri(R.drawable.heart),
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         ),
                         browsableMediaItem(
-                            "${PlayerServiceModern.PLAYLIST}/DOWNLOADED",
+                            "${PlayerServiceModern.PLAYLIST}/$ID_DOWNLOADED",
                             context.getString(R.string.downloaded),
                             downloadedSongCount.toString(),
                             drawableUri(R.drawable.download),
@@ -206,42 +258,47 @@ class MediaLibrarySessionCallback @Inject constructor(
                     parentId.startsWith("${PlayerServiceModern.ARTIST}/") ->
                         database.artistSongs(parentId.removePrefix("${PlayerServiceModern.ARTIST}/"))
                             .first().map {
-                            it.toMediaItem(parentId)
-                        }
+                                it.toMediaItem(parentId)
+                            }
 
                     parentId.startsWith("${PlayerServiceModern.ALBUM}/") ->
                         database.albumSongs(parentId.removePrefix("${PlayerServiceModern.ALBUM}/"))
                             .first().map {
+                                it.toMediaItem(parentId)
+                            }
+
+                    parentId.startsWith("${PlayerServiceModern.PLAYLIST}/") -> {
+
+                        when (val playlistId =
+                            parentId.removePrefix("${PlayerServiceModern.PLAYLIST}/")) {
+                            ID_FAVORITES -> database.songsFavoritesByRowIdAsc().map { list ->
+                                list.map { it.song }
+                            }
+
+                            ID_DOWNLOADED -> {
+                                val downloads = downloadHelper.downloads.value
+                                database.listAllSongsAsFlow()
+                                    .flowOn(Dispatchers.IO)
+                                    .map { list ->
+                                        list.map { it.song }
+                                            .filter {
+                                                downloads[it.id]?.state == Download.STATE_COMPLETED
+                                            }
+                                    }
+                            }
+
+                            else -> database.songsPlaylistByRowIdAsc(playlistId.toLong())
+                                .map { list ->
+                                    list.map { it.song }
+                                }
+                        }.first().map {
                             it.toMediaItem(parentId)
                         }
-                    /*
-                                        parentId.startsWith("${PlayerServiceModern.PLAYLIST}/") ->
-                                            when (val playlistId = parentId.removePrefix("${PlayerServiceModern.PLAYLIST}/")) {
-                                                "PREFERITES" -> database.songsFavoritesByRowIdAsc()
-
-                                                "DOWNLOADED" -> {
-                                                    val downloads = downloadHelper.downloads.value
-                                                    database.listAllSongsAsFlow()
-                                                        .flowOn(Dispatchers.IO)
-                                                        .map { songs ->
-                                                            songs.filter {
-                                                                downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                                                            }
-                                                        }
 
 
-                                                }
+                    }
 
-                                                else -> database.songsPlaylistByRowIdAsc(playlistId.toLong()).map { list ->
-                                                    list.map { it.song }
-                                                }
-                                            }.first().map {
-                                                it.toMediaItem(parentId)
-                                            }
-                    */
                     else -> emptyList()
-
-
                 }
 
             },
@@ -255,7 +312,8 @@ class MediaLibrarySessionCallback @Inject constructor(
         browser: MediaSession.ControllerInfo,
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> = scope.future(Dispatchers.IO) {
-        database.song(mediaId).first()?.toMediaItem("")?.let {
+        println("PlayerServiceModern MediaLibrarySessionCallback.onGetItem: $mediaId")
+        database.song(mediaId).first()?.toMediaItem()?.let {
             LibraryResult.ofItem(it, null)
         } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
     }
@@ -269,15 +327,29 @@ class MediaLibrarySessionCallback @Inject constructor(
     ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> = scope.future {
         // Play from Android Auto
         val defaultResult =
-            MediaSession.MediaItemsWithStartPosition(emptyList(), startIndex, startPositionMs)
+            MediaSession.MediaItemsWithStartPosition(
+                emptyList(),
+                startIndex,
+                startPositionMs
+            )
         val path = mediaItems.firstOrNull()?.mediaId?.split("/")
             ?: return@future defaultResult
         when (path.firstOrNull()) {
+
+            PlayerServiceModern.SEARCHED -> {
+                val songId = path.getOrNull(1) ?: return@future defaultResult
+                MediaSession.MediaItemsWithStartPosition(
+                    searchedSongs.map { it.toMediaItem() },
+                    searchedSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                    startPositionMs
+                )
+            }
+
             PlayerServiceModern.SONG -> {
                 val songId = path.getOrNull(1) ?: return@future defaultResult
                 val allSongs = database.listAllSongsAsFlow().first()
                 MediaSession.MediaItemsWithStartPosition(
-                    allSongs.map { it.song.toMediaItem("") },
+                    allSongs.map { it.song.toMediaItem() },
                     allSongs.indexOfFirst { it.song.id == songId }.takeIf { it != -1 } ?: 0,
                     startPositionMs
                 )
@@ -288,7 +360,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val artistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = database.artistSongs(artistId).first()
                 MediaSession.MediaItemsWithStartPosition(
-                    songs.map { it.toMediaItem("") },
+                    songs.map { it.toMediaItem() },
                     songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                     startPositionMs
                 )
@@ -300,8 +372,9 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val albumWithSongs =
                     database.albumSongs(albumId).first() ?: return@future defaultResult
                 MediaSession.MediaItemsWithStartPosition(
-                    albumWithSongs.map { it.toMediaItem("") },
-                    albumWithSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                    albumWithSongs.map { it.toMediaItem() },
+                    albumWithSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 }
+                        ?: 0,
                     startPositionMs
                 )
             }
@@ -310,8 +383,8 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
-                    "PREFERITES" -> database.songsFavoritesByRowIdDesc()
-                    "DOWNLOADED" -> {
+                    ID_FAVORITES -> database.songsFavoritesByRowIdDesc()
+                    ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
                         database.listAllSongsAsFlow()
                             .flowOn(Dispatchers.IO)
@@ -327,13 +400,14 @@ class MediaLibrarySessionCallback @Inject constructor(
                             }
                     }
 
-                    else -> database.songsPlaylistByRowIdAsc(playlistId.toLong()).map { list ->
-                        list.map { it }
-                    }
+                    else -> database.songsPlaylistByRowIdAsc(playlistId.toLong())
+                        .map { list ->
+                            list.map { it }
+                        }
                 }.first()
 
                 MediaSession.MediaItemsWithStartPosition(
-                    songs.map { it.song.toMediaItem("") },
+                    songs.map { it.song.toMediaItem() },
                     songs.indexOfFirst { it.song.id == songId }.takeIf { it != -1 } ?: 0,
                     startPositionMs
                 )
@@ -361,7 +435,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             .setMediaId(id)
             .setMediaMetadata(
                 MediaMetadata.Builder()
-                    .setTitle(title)
+                    .setTitle(cleanPrefix(title))
                     .setSubtitle(subtitle)
                     .setArtist(subtitle)
                     .setArtworkUri(iconUri)
@@ -374,10 +448,10 @@ class MediaLibrarySessionCallback @Inject constructor(
 
     private fun Song.toMediaItem(path: String) =
         MediaItem.Builder()
-            .setMediaId("$path/${id}")
+            .setMediaId("$path/$id")
             .setMediaMetadata(
                 MediaMetadata.Builder()
-                    .setTitle(title)
+                    .setTitle(cleanPrefix(title))
                     .setSubtitle(artistsText)
                     .setArtist(artistsText)
                     .setArtworkUri(thumbnailUrl?.toUri())
@@ -387,9 +461,27 @@ class MediaLibrarySessionCallback @Inject constructor(
                     .build()
             )
             .build()
+
+    private fun Song.toMediaItem() =
+        MediaItem.Builder()
+            .setMediaId(id)
+            .setUri(id)
+            .setCustomCacheKey(id)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(cleanPrefix(title))
+                    .setSubtitle(artistsText)
+                    .setArtist(artistsText)
+                    .setArtworkUri(thumbnailUrl?.toUri())
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                    .build()
+            )
+            .build()
 }
 
 object MediaSessionConstants {
+    const val ID_FAVORITES = "FAVORITES"
+    const val ID_DOWNLOADED = "DOWNLOADED"
     const val ACTION_TOGGLE_DOWNLOAD = "TOGGLE_DOWNLOAD"
     const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
     const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"

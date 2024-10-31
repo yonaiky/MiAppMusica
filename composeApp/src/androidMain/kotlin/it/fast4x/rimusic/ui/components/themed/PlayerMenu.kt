@@ -19,6 +19,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
@@ -31,7 +32,7 @@ import it.fast4x.rimusic.utils.seamlessPlay
 @Composable
 fun PlayerMenu(
     navController: NavController,
-    binder: PlayerService.Binder,
+    binder: PlayerServiceModern.Binder,
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
@@ -145,7 +146,7 @@ fun PlayerMenu(
 @Composable
 fun MiniPlayerMenu(
     navController: NavController,
-    binder: PlayerService.Binder,
+    binder: PlayerServiceModern.Binder,
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
