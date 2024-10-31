@@ -157,19 +157,17 @@ fun HomeLibraryModern(
             override val sizeState = sizeState
         }
     }
-    val shuffle = remember {
-        object: SongsShuffle {
-            override val binder = binder
-            override val context = context
+    val shuffle = object: SongsShuffle {
+        override val binder = binder
+        override val context = context
 
-            override fun query(): Flow<List<Song>?> =
-                when( playlistType ) {
-                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-                }
-        }
+        override fun query(): Flow<List<Song>?> =
+            when( playlistType ) {
+                PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+                PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+                PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+                PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+            }
     }
     val newPlaylistDialog = remember {
         object: InputDialog {

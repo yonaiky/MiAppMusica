@@ -141,14 +141,13 @@ fun HomeArtistsModern(
             override fun onClick(item: Artist) = onArtistClick(item)
         }
     }
-    val shuffle = remember {
-        object: SongsShuffle{
-            override val binder = binder
-            override val context = context
+    val shuffle = object: SongsShuffle{
+        override val binder = binder
+        override val context = context
 
-            override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
-        }
+        override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
     }
+
 
     // Search mutable
     var isSearchBarVisible by search.visibleState

@@ -148,14 +148,13 @@ fun HomeAlbumsModern(
             override fun onClick(item: Album) = onAlbumClick(item)
         }
     }
-    val shuffle = remember {
-        object: SongsShuffle{
-            override val binder = binder
-            override val context = context
+    val shuffle = object: SongsShuffle{
+        override val binder = binder
+        override val context = context
 
-            override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
-        }
+        override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
     }
+
 
     // Search mutable
     var isSearchBarVisible by search.visibleState
