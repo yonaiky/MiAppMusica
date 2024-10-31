@@ -756,7 +756,7 @@ fun HomeSongsModern(
 
                 search.ToolBarButton()
 
-                /*
+
                 // TODO: Move to three dots menu
                 TabToolBar.Icon(
                     iconId = R.drawable.locate,
@@ -782,18 +782,17 @@ fun HomeSongsModern(
                     }
                 )
 
+
                 LaunchedEffect(scrollToNowPlaying) {
                     if (scrollToNowPlaying)
                         lazyListState.scrollToItem(nowPlayingItem, 1)
                     scrollToNowPlaying = false
                 }
-                */
 
-                //if (builtInPlaylist == BuiltInPlaylist.Favorites)
-                    downloadAllDialog.ToolBarButton()
 
-                //if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded)
-                    deleteDownloadsDialog.ToolBarButton()
+                downloadAllDialog.ToolBarButton()
+
+                deleteDownloadsDialog.ToolBarButton()
 
                 if (builtInPlaylist == BuiltInPlaylist.All)
                     TabToolBar.Toggleable(
