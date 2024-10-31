@@ -525,7 +525,7 @@ fun HomeSongsModern(
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
 
-            LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, searchInput, topPlaylistPeriod) {
+            LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, searchInput, topPlaylistPeriod, binder) {
 
                 var songFlow: Flow<List<SongEntity>> = flowOf()
                 var dispatcher = Dispatchers.Default
