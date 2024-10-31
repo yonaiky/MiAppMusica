@@ -473,7 +473,7 @@
     <string name="show_actions_bar">Fəaliyyət cizgisin göstər</string>
     <string name="transition_effect">Keçid effekti</string>
     <string name="te_expand">Genişləndir</string>
-    <string name="te_fade">Qısdır</string>
+    <string name="te_fade">Soldur</string>
     <string name="te_scale">Miqyas</string>
     <string name="te_slide_vertical">Şaquli Sürüşdür</string>
     <string name="te_slide_horizontal">Üfüqi Sürüşdür</string>
