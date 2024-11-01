@@ -20,6 +20,7 @@ fun languageDestination (
     return when (language ?: otherLanguageApp) {
         Languages.Afrikaans -> Language.AFRIKAANS
         Languages.Arabic -> Language.ARABIC
+        Languages.Azerbaijani -> Language.AZERBAIJANI
         Languages.Bashkir -> Language.BASQUE
         Languages.Bengali -> Language.BENGALI
         Languages.Catalan -> Language.CATALAN
@@ -79,6 +80,7 @@ fun languageDestinationName (
         Languages.System -> stringResource(R.string.system_language)
         Languages.Afrikaans -> stringResource(R.string.lang_afrikaans)
         Languages.Arabic -> stringResource(R.string.arabic)
+        Languages.Azerbaijani -> stringResource(R.string.lang_azerbaijani)
         Languages.Bashkir -> stringResource(R.string.bashkir)
         Languages.Bengali -> stringResource(R.string.lang_bengali)
         Languages.Catalan -> stringResource(R.string.catalan)

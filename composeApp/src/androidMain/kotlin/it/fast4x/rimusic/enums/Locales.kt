@@ -4,6 +4,7 @@ enum class Languages {
     System,
     Afrikaans,
     Arabic,
+    Azerbaijani,
     Bashkir,
     Bengali,
     Catalan,
@@ -54,6 +55,7 @@ enum class Languages {
         get() = when (this) {
             System -> "system"
             Afrikaans -> "af"
+            Azerbaijani -> "az"
             Arabic -> "ar"
             Bashkir -> "ba"
             Bengali -> "bn"
