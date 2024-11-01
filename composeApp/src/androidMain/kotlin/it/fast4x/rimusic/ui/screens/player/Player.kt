@@ -1191,7 +1191,7 @@ fun Player(
                                     pageSpacing = 10.dp,
                                     flingBehavior = fling,
                                     modifier = Modifier.weight(1f)
-                                ) {
+                                ) { index ->
                                     Row(
                                         horizontalArrangement = Arrangement.Center,
                                         modifier = Modifier
@@ -1199,13 +1199,14 @@ fun Player(
                                                 onClick = {
                                                     binder.player.forcePlayAtIndex(
                                                         mediaItems,
-                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        index
                                                     )
                                                 },
                                                 onLongClick = {
-                                                    if (it < mediaItems.size) {
+                                                    if (index < mediaItems.size) {
                                                         binder.player.addNext(
-                                                            binder.player.getMediaItemAt(it + 1)
+                                                            binder.player.getMediaItemAt(index + 1)
                                                         )
                                                         SmartMessage(
                                                             context.resources.getString(R.string.addednext),
@@ -1227,7 +1228,8 @@ fun Player(
                                             ) {
                                                 AsyncImage(
                                                     model = binder.player.getMediaItemAt(
-                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        index
+                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
                                                     ).mediaMetadata.artworkUri.thumbnail(
                                                         Dimensions.thumbnails.song.px / 2
                                                     ),
@@ -1252,7 +1254,8 @@ fun Player(
                                                 BasicText(
                                                     text = cleanPrefix(
                                                         binder.player.getMediaItemAt(
-                                                            if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                            index
+                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
                                                         ).mediaMetadata.title?.toString()
                                                             ?: ""
                                                     ),
@@ -1267,7 +1270,8 @@ fun Player(
                                                 BasicText(
                                                     text = cleanPrefix(
                                                         binder.player.getMediaItemAt(
-                                                            if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                            index
+                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
                                                         ).mediaMetadata.title?.toString()
                                                             ?: ""
                                                     ),
@@ -1294,7 +1298,8 @@ fun Player(
                                             ) {
                                                 BasicText(
                                                     text = binder.player.getMediaItemAt(
-                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        index
+                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
                                                     ).mediaMetadata.artist?.toString()
                                                         ?: "",
                                                     style = TextStyle(
@@ -1307,7 +1312,8 @@ fun Player(
                                                 )
                                                 BasicText(
                                                     text = binder.player.getMediaItemAt(
-                                                        if (it + 1 <= mediaItems.size - 1) it + 1 else it
+                                                        index
+                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
                                                     ).mediaMetadata.artist?.toString()
                                                         ?: "",
                                                     style = TextStyle(

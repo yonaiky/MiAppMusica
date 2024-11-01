@@ -81,8 +81,6 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.forceSeekToNext
-import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.intent
@@ -146,7 +144,6 @@ fun MiniPlayer(
 
             override fun onPlayerError(playbackException: PlaybackException) {
                 playerError = playbackException
-                //binder.stopRadio()
             }
         }
     }

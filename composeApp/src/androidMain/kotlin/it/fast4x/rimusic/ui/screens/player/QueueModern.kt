@@ -210,13 +210,11 @@ fun QueueModern(
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     mediaItemIndex = player.currentMediaItemIndex
-                    //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     windows = timeline.windows
                     mediaItemIndex = player.currentMediaItemIndex
-                    //if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
                 }
 
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -257,12 +255,6 @@ fun QueueModern(
             mutableStateOf(false)
         }
 
-        /*
-        var showSelectTypeClearQueue by remember {
-            mutableStateOf(false)
-        }
-
-         */
         var position by remember {
             mutableIntStateOf(0)
         }
@@ -371,11 +363,10 @@ fun QueueModern(
             )
         }
 
-        //val isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
         val hapticFeedback = LocalHapticFeedback.current
         val showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
         var discoverIsEnabled by rememberPreference(discoverKey, false)
-        //if (discoverIsEnabled) ApplyDiscoverToQueue()
+
         var searching by rememberSaveable { mutableStateOf(false) }
         var filter: String? by rememberSaveable { mutableStateOf(null) }
         val thumbnailRoundness by rememberPreference(

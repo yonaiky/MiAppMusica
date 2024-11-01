@@ -63,14 +63,15 @@ fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
 
     Log.d("mediaItem-playAtMedia",itemIndex.toString())
     setMediaItems(mediaItems, itemIndex, C.TIME_UNSET)
-    playWhenReady = true
     prepare()
+    playWhenReady = true
+
 }
 
 fun Player.forcePlay(mediaItem: MediaItem) {
     setMediaItem(mediaItem, true)
-    playWhenReady = true
     prepare()
+    playWhenReady = true
 }
 
 fun Player.playVideo(mediaItem: MediaItem) {
@@ -84,8 +85,8 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
     if (mediaItems.isEmpty()) return
 
     setMediaItems(mediaItems, mediaItemIndex, C.TIME_UNSET)
-    playWhenReady = true
     prepare()
+    playWhenReady = true
 }
 @UnstableApi
 fun Player.forcePlayFromBeginning(mediaItems: List<MediaItem>) =

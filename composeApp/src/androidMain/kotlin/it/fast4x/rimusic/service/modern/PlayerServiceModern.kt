@@ -1421,6 +1421,14 @@ class PlayerServiceModern : MediaLibraryService(),
 
     }
 
+    /**
+     * This method should ONLY be called when the application (sc. activity) is in the foreground!
+     */
+    fun restartForegroundOrStop() {
+        player.pause()
+        stopSelf()
+    }
+
     class NotificationDismissReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             kotlin.runCatching {
