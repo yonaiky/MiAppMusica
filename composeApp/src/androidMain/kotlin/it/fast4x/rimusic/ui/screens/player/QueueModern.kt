@@ -480,17 +480,7 @@ fun QueueModern(
                                         }
                                 )
                             }
-                            /*
-                            else {
-                                HeaderIconButton(
-                                    onClick = { searching = true },
-                                    icon = R.drawable.search_circle,
-                                    color = colorPalette().text,
-                                    iconSize = 24.dp
-                                )
-                            }
 
-                             */
                         }
                         /*        */
 
@@ -645,23 +635,6 @@ fun QueueModern(
                                             )
                                         else checkedState.value = false
 
-                                        /*
-                                        if (!isReorderDisabled) {
-                                            IconButton(
-                                                icon = R.drawable.reorder,
-                                                color = colorPalette().textDisabled,
-                                                indication = rippleIndication,
-                                                onClick = {},
-                                                modifier = Modifier
-                                                    .reorder(
-                                                        reorderingState = reorderingState,
-                                                        index = window.firstPeriodIndex
-                                                    )
-                                                    .size(18.dp)
-                                            )
-                                        }
-
-                                         */
                                     },
                                     modifier = Modifier
                                         .combinedClickable(
@@ -696,18 +669,12 @@ fun QueueModern(
                                                         }
                                                     } else {
                                                         player.seekToDefaultPosition(window.firstPeriodIndex)
+                                                        player.prepare()
                                                         player.playWhenReady = true
                                                     }
                                                 } else checkedState.value = !checkedState.value
                                             }
                                         )
-                                        /*
-                                        .draggedItem(
-                                            reorderingState = reorderingState,
-                                            index = window.firstPeriodIndex
-                                        )
-
-                                         */
                                         .animateItemPlacement(reorderingState)
                                         .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0),
                                     disableScrollingText = disableScrollingText

@@ -29,11 +29,18 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_FAVORITES
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_ONDEVICE
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_TOP
+import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -223,7 +230,9 @@ class MediaLibrarySessionCallback @Inject constructor(
 
                 PlayerServiceModern.PLAYLIST -> {
                     val likedSongCount = database.likedSongsCount().first()
+                    val cachedSongCount = database.cachedSongsCount().first()
                     val downloadedSongCount = downloadHelper.downloads.value.size
+                    val onDeviceSongCount = database.onDeviceSongsCount().first()
                     val playlists = database.playlistPreviewsByDateSongCountAsc().first()
                     listOf(
                         browsableMediaItem(
@@ -234,18 +243,42 @@ class MediaLibrarySessionCallback @Inject constructor(
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         ),
                         browsableMediaItem(
+                            "${PlayerServiceModern.PLAYLIST}/${ID_CACHED}",
+                            context.getString(R.string.cached),
+                            cachedSongCount.toString(),
+                            drawableUri(R.drawable.download),
+                            MediaMetadata.MEDIA_TYPE_PLAYLIST
+                        ),
+                        browsableMediaItem(
                             "${PlayerServiceModern.PLAYLIST}/$ID_DOWNLOADED",
                             context.getString(R.string.downloaded),
                             downloadedSongCount.toString(),
-                            drawableUri(R.drawable.download),
+                            drawableUri(R.drawable.downloaded),
+                            MediaMetadata.MEDIA_TYPE_PLAYLIST
+                        ),
+                        browsableMediaItem(
+                            "${PlayerServiceModern.PLAYLIST}/$ID_TOP",
+                            context.getString(R.string.playlist_top),
+                            context.preferences.getEnum(
+                                MaxTopPlaylistItemsKey,
+                                MaxTopPlaylistItems.`10`).number.toString(),
+                            drawableUri(R.drawable.trending),
+                            MediaMetadata.MEDIA_TYPE_PLAYLIST
+                        ),
+                        browsableMediaItem(
+                            "${PlayerServiceModern.PLAYLIST}/$ID_ONDEVICE",
+                            context.getString(R.string.on_device),
+                            onDeviceSongCount.toString(),
+                            drawableUri(R.drawable.devices),
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         )
+
                     ) + playlists.map { playlist ->
                         browsableMediaItem(
                             "${PlayerServiceModern.PLAYLIST}/${playlist.playlist.id}",
                             playlist.playlist.name,
                             playlist.songCount.toString(),
-                            null,
+                            drawableUri(R.drawable.playlist),
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         )
                     }
@@ -274,7 +307,16 @@ class MediaLibrarySessionCallback @Inject constructor(
                             ID_FAVORITES -> database.songsFavoritesByRowIdAsc().map { list ->
                                 list.map { it.song }
                             }
-
+                            ID_CACHED -> database.songsOfflineByPlayTimeDesc().map { list ->
+                                list.map { it.song }
+                            }
+                            ID_TOP -> database.trending(
+                                context.preferences.getEnum(MaxTopPlaylistItemsKey,
+                                    MaxTopPlaylistItems.`10`).number.toInt()
+                            )
+                            ID_ONDEVICE -> database.songsEntityOnDevice().map { list ->
+                                list.map { it.song }
+                            }
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
                                 database.listAllSongsAsFlow()
@@ -384,6 +426,12 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
                     ID_FAVORITES -> database.songsFavoritesByRowIdDesc()
+                    ID_CACHED -> database.songsOfflineByPlayTimeDesc()
+                    ID_TOP -> database.trendingSongEntity(
+                        context.preferences.getEnum(MaxTopPlaylistItemsKey,
+                            MaxTopPlaylistItems.`10`).number.toInt()
+                    )
+                    ID_ONDEVICE -> database.songsEntityOnDevice()
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
                         database.listAllSongsAsFlow()
@@ -481,7 +529,10 @@ class MediaLibrarySessionCallback @Inject constructor(
 
 object MediaSessionConstants {
     const val ID_FAVORITES = "FAVORITES"
+    const val ID_CACHED = "CACHED"
     const val ID_DOWNLOADED = "DOWNLOADED"
+    const val ID_TOP = "TOP"
+    const val ID_ONDEVICE = "ONDEVICE"
     const val ACTION_TOGGLE_DOWNLOAD = "TOGGLE_DOWNLOAD"
     const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
     const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"

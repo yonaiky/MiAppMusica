@@ -58,7 +58,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
-import it.fast4x.rimusic.service.PlayerMediaBrowserService
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState

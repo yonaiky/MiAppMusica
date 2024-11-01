@@ -119,6 +119,12 @@ interface Database {
     @Query("SELECT COUNT(1) FROM Song WHERE likedAt IS NOT NULL")
     fun likedSongsCount(): Flow<Int>
 
+    @Query("SELECT COUNT(1) FROM Song INNER JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0")
+    fun cachedSongsCount(): Flow<Int>
+
+    @Query("SELECT COUNT(1) FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
+    fun onDeviceSongsCount(): Flow<Int>
+
     @Transaction
     @Query("SELECT * FROM Song WHERE artistsText = :name ")
     fun artistSongsByname(name: String): Flow<List<Song>>
@@ -231,6 +237,11 @@ interface Database {
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
     @RewriteQueriesToDropUnusedColumns
     fun songsOnDevice(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
+    @RewriteQueriesToDropUnusedColumns
+    fun songsEntityOnDevice(): Flow<List<SongEntity>>
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
@@ -1318,6 +1329,11 @@ interface Database {
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun trending(limit: Int = 3): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
+    @RewriteQueriesToDropUnusedColumns
+    fun trendingSongEntity(limit: Int = 3): Flow<List<SongEntity>>
 
     @Transaction
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE (:now - Event.timestamp) <= :period AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
