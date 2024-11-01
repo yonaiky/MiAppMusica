@@ -131,7 +131,7 @@ fun About() {
 
         HeaderWithIcon(
             title = stringResource(R.string.contributors),
-            iconId = 0,
+            iconId = R.drawable.artists,
             enabled = false,
             showIcon = true,
             modifier = Modifier,
