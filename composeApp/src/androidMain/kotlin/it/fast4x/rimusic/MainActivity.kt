@@ -428,8 +428,7 @@ class MainActivity :
             val navController = rememberNavController()
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
-            val colorPaletteMode =
-                preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
+
 
             LocalePreferences.preference =
                 LocalePreferenceItem(
@@ -792,7 +791,8 @@ class MainActivity :
             }
 
 
-
+            val colorPaletteMode =
+                preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
             if (colorPaletteMode == ColorPaletteMode.PitchBlack)
                 appearance = appearance.copy(
                     colorPalette = appearance.colorPalette.copy(
