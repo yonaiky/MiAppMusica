@@ -528,12 +528,15 @@ class PlayerServiceModern : MediaLibraryService(),
         val service: PlayerServiceModern
             get() = this@PlayerServiceModern
 
+        /*
         fun setBitmapListener(listener: ((Bitmap?) -> Unit)?) {
             bitmapProvider.listener = listener
         }
 
+        */
         val bitmap: Bitmap
             get() = bitmapProvider.bitmap
+
 
         val player: ExoPlayer
             get() = this@PlayerServiceModern.player

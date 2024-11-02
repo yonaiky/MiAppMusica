@@ -697,7 +697,7 @@ fun Player(
     }
 
     val color = colorPalette()
-    //var dynamicColorPalette by remember { mutableStateOf( color ) }
+    var dynamicColorPalette by remember { mutableStateOf( color ) }
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
@@ -709,7 +709,7 @@ fun Player(
                 playerBackgroundColors == PlayerBackgroundColors.FluidThemeColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
 
-    /*
+
     if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
         playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
@@ -721,16 +721,18 @@ fun Player(
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             try {
+                /*
                 val bitmap = getBitmapFromUrl(
                     context,
                     binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
                 )
+                 */
+                val bitmap = binder.bitmap
 
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
                     isSystemDarkMode,
-                    false
-                    //colorPaletteMode == ColorPaletteMode.PitchBlack
+                    true, //colorPaletteMode == ColorPaletteMode.PitchBlack
                 ) ?: color
                 println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
             } catch (e: Exception) {
@@ -741,7 +743,7 @@ fun Player(
         }
         println("Player after getting dynamic color ${dynamicColorPalette}")
     }
-    */
+
 
     /*  */
     var sizeShader by remember { mutableStateOf(Size.Zero) }
@@ -750,7 +752,7 @@ fun Player(
         Offset(sizeShader.width / 2f, 0f),
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
-            colorPalette().background1,
+            dynamicColorPalette.background2,
             colorPalette().background2,
         ),
         listOf(0f, 1f)
@@ -761,7 +763,7 @@ fun Player(
         Offset(sizeShader.width / 2f, sizeShader.height),
         listOf(
             colorPalette().background1,
-            colorPalette().accent,
+            dynamicColorPalette.accent,
         ),
         listOf(0f, 1f)
     )
@@ -859,7 +861,7 @@ fun Player(
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || showthumbnail)) {
             containerModifier = containerModifier
-                .background(color.background1)
+                .background(dynamicColorPalette.background1)
                 .paint(
                     painter = painter,
                     contentScale = ContentScale.Crop,
@@ -951,8 +953,8 @@ fun Player(
                 containerModifier = containerModifier
                     .background(
                         Brush.verticalGradient(
-                            0.5f to if (colorPaletteMode == ColorPaletteMode.PitchBlack) Color.Black else color.background3,
-                            1.0f to if (blackgradient || colorPaletteMode == ColorPaletteMode.PitchBlack) Color.Black else color.background2,
+                            0.5f to dynamicColorPalette.background2,
+                            1.0f to if (blackgradient) Color.Black else colorPalette().background2,
                             //0.0f to colorPalette().background0,
                             //1.0f to colorPalette().background2,
                             startY = 0.0f,

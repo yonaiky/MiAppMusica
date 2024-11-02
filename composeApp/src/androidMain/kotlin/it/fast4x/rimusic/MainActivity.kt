@@ -547,11 +547,9 @@ class MainActivity :
 
 
             DisposableEffect(binder, isSystemInDarkTheme) {
+                /*
                 var bitmapListenerJob: Job? = null
 
-
-
-                /*
                 fun setDynamicPalette(colorPaletteMode: ColorPaletteMode) {
                     val isDark =
                         colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
@@ -671,8 +669,8 @@ class MainActivity :
                                         (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri ?: "").toString()
                                     )
                                 } else {
-                                    bitmapListenerJob?.cancel()
-                                    binder?.setBitmapListener(null)
+                                    //bitmapListenerJob?.cancel()
+                                    //binder?.setBitmapListener(null)
 
                                     var colorPalette = colorPaletteOf(
                                         colorPaletteName,
@@ -741,8 +739,8 @@ class MainActivity :
                     }
 
                     onDispose {
-                        bitmapListenerJob?.cancel()
-                        binder?.setBitmapListener(null)
+                        //bitmapListenerJob?.cancel()
+                        //binder?.setBitmapListener(null)
                         unregisterOnSharedPreferenceChangeListener(listener)
                     }
                 }
