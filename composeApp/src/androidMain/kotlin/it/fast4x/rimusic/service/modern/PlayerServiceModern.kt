@@ -233,9 +233,8 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     var currentSongStateDownload = MutableStateFlow(Download.STATE_STOPPED)
-    //var currentSongStateLike = MutableStateFlow(currentSong.value?.likedAt)
 
-    private lateinit var connectivityManager: ConnectivityManager
+    //private lateinit var connectivityManager: ConnectivityManager
     private var notificationManager: NotificationManager? = null
     private val playerVerticalWidget = PlayerVerticalWidget()
     private val playerHorizontalWidget = PlayerHorizontalWidget()
@@ -389,7 +388,7 @@ class PlayerServiceModern : MediaLibraryService(),
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
 
-        connectivityManager = getSystemService()!!
+        //connectivityManager = getSystemService()!!
 
         maybeRestorePlayerQueue()
 
@@ -442,7 +441,7 @@ class PlayerServiceModern : MediaLibraryService(),
         if (isPersistentQueueEnabled) {
             coroutineScope.launch {
                 while (isActive) {
-                    delay(20.seconds)
+                    delay(30.seconds)
                     withContext(Dispatchers.Main) {
                         maybeSavePlayerQueue()
                         //maybeSaveToDiskPlayerQueue()
@@ -736,7 +735,6 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
             //if (!player.shouldBePlaying) {

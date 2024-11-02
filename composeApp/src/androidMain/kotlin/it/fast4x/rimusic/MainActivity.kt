@@ -72,6 +72,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -289,9 +290,6 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         MonetCompat.enablePaletteCompat()
 
-        //@Suppress("DEPRECATION", "UNCHECKED_CAST")
-        //persistMap = lastCustomNonConfigurationInstance as? PersistMap ?: PersistMap()
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         var splashScreenStays = true
@@ -430,6 +428,8 @@ class MainActivity :
             val navController = rememberNavController()
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
+            val colorPaletteMode =
+                preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
 
             LocalePreferences.preference =
                 LocalePreferenceItem(
@@ -624,7 +624,6 @@ class MainActivity :
                             transitionEffectKey,
                             playerBackgroundColorsKey,
                             miniPlayerTypeKey,
-                            thumbnailRoundnessKey,
                             restartActivityKey
                             -> {
                                 this@MainActivity.recreate()
@@ -664,19 +663,32 @@ class MainActivity :
                                         ColorPaletteMode.System
                                     )
 
+                                var colorPalette = colorPaletteOf(
+                                    colorPaletteName,
+                                    colorPaletteMode,
+                                    isSystemInDarkTheme
+                                )
+
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
-                                    setDynamicPalette(
-                                        (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri ?: "").toString()
-                                    )
+                                    val artworkUri = (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri ?: "").toString()
+                                    artworkUri.let {
+                                        if (it.isNotEmpty())
+                                            setDynamicPalette(it)
+                                        else {
+
+                                            setSystemBarAppearance(colorPalette.isDark)
+
+                                            appearance = appearance.copy(
+                                                colorPalette = colorPalette,
+                                                typography = appearance.typography.copy(colorPalette.text),
+                                            )
+                                        }
+
+                                    }
+
                                 } else {
                                     //bitmapListenerJob?.cancel()
                                     //binder?.setBitmapListener(null)
-
-                                    var colorPalette = colorPaletteOf(
-                                        colorPaletteName,
-                                        colorPaletteMode,
-                                        isSystemInDarkTheme
-                                    )
 
                                     if (colorPaletteName == ColorPaletteName.MaterialYou) {
                                         colorPalette = dynamicColorPaletteOf(
@@ -778,6 +790,23 @@ class MainActivity :
                     )
                 }
             }
+
+
+
+            if (colorPaletteMode == ColorPaletteMode.PitchBlack)
+                appearance = appearance.copy(
+                    colorPalette = appearance.colorPalette.copy(
+                        isDark = true,
+                        background0 = Color.Black,
+                        background1 = Color.Black,
+                        background2 = Color.Black,
+                        background3 = Color.Black,
+                        background4 = Color.Black,
+                    )
+                )
+
+
+
 
             BoxWithConstraints(
                 modifier = Modifier
