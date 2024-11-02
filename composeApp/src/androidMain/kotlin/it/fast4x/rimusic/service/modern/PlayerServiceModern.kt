@@ -532,6 +532,9 @@ class PlayerServiceModern : MediaLibraryService(),
             bitmapProvider.listener = listener
         }
 
+        val bitmap: Bitmap
+            get() = bitmapProvider.bitmap
+
         val player: ExoPlayer
             get() = this@PlayerServiceModern.player
 

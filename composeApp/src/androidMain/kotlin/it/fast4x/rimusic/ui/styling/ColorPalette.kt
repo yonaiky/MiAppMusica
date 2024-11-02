@@ -129,6 +129,8 @@ fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean, isPitchBlack: Boolean
         .addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
         .generate()
 
+
+
     val hsl = if (isDark || isPitchBlack) {
         palette.dominantSwatch ?: Palette
             .from(bitmap)

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -82,6 +83,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
+import androidx.palette.graphics.Palette
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
 import com.kieronquinn.monetcompat.interfaces.MonetColorsChangedListener
@@ -119,6 +123,8 @@ import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance
+import it.fast4x.rimusic.ui.styling.ColorPalette
+import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
@@ -929,7 +935,42 @@ class MainActivity :
                                     else showPlayer = true
                                 }
                             }
+
+                            if (mediaItem != null) {
+                                coroutineScope.launch(Dispatchers.Main) {
+                                    val result = imageLoader.execute(
+                                        ImageRequest.Builder(this@MainActivity)
+                                            .data(mediaItem.mediaMetadata.artworkUri)
+                                            .allowHardware(false)
+                                            .build()
+                                    )
+                                    val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
+                                    if (bitmap != null) {
+                                        val palette = Palette
+                                            .from(bitmap)
+                                            .maximumColorCount(8)
+                                            //.addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
+                                            .generate()
+                                        println("Mainactivity onmediaItemTRansition palette dominantSwatch: ${palette.dominantSwatch}")
+
+                                        dynamicColorPaletteOf(bitmap, true, false)?.let {
+                                            withContext(Dispatchers.Main) {
+                                                setSystemBarAppearance(it.isDark)
+                                            }
+                                            appearance = appearance.copy(
+                                                colorPalette = it,
+                                                typography = appearance.typography.copy(it.text)
+                                            )
+                                            println("Mainactivity onmediaItemTRansition appearance inside: ${appearance.colorPalette}")
+                                        }
+                                    }
+                                }
+                                println("Mainactivity onmediaItemTRansition appearance outside: ${appearance.colorPalette}")
+                            }
                         }
+
+
+
                     }
 
                     player.addListener(listener)
