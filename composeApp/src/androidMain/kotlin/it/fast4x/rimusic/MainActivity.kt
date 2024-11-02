@@ -500,11 +500,48 @@ class MainActivity :
 
             }
 
+            fun setDynamicPalette(url: String) {
+                val colorPaletteMode = preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
+                coroutineScope.launch(Dispatchers.Main) {
+                    val result = imageLoader.execute(
+                        ImageRequest.Builder(this@MainActivity)
+                            .data(url)
+                            .allowHardware(false)
+                            .build()
+                    )
+                    val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
+                    if (bitmap != null) {
+                        val palette = Palette
+                            .from(bitmap)
+                            .maximumColorCount(8)
+                            //.addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
+                            .generate()
+                        println("Mainactivity onmediaItemTransition palette dominantSwatch: ${palette.dominantSwatch}")
+                        val isDark =
+                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                        val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
+                        dynamicColorPaletteOf(bitmap, isDark, isPicthBlack)?.let {
+                            withContext(Dispatchers.Main) {
+                                setSystemBarAppearance(it.isDark)
+                            }
+                            appearance = appearance.copy(
+                                colorPalette = it,
+                                typography = appearance.typography.copy(it.text)
+                            )
+                            println("Mainactivity onmediaItemTransition appearance inside: ${appearance.colorPalette}")
+                        }
+                    }
+                }
+                println("Mainactivity onmediaItemTransition appearance outside: ${appearance.colorPalette}")
+            }
 
 
             DisposableEffect(binder, isSystemInDarkTheme) {
                 var bitmapListenerJob: Job? = null
 
+
+
+                /*
                 fun setDynamicPalette(colorPaletteMode: ColorPaletteMode) {
                     val isDark =
                         colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
@@ -542,6 +579,7 @@ class MainActivity :
                         }
                     }
                 }
+                */
 
                 val listener =
                     SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -619,7 +657,9 @@ class MainActivity :
                                     )
 
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
-                                    setDynamicPalette(colorPaletteMode)
+                                    setDynamicPalette(
+                                        (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri ?: "").toString()
+                                    )
                                 } else {
                                     bitmapListenerJob?.cancel()
                                     binder?.setBitmapListener(null)
@@ -686,7 +726,8 @@ class MainActivity :
                     val colorPaletteName =
                         getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     if (colorPaletteName == ColorPaletteName.Dynamic) {
-                        setDynamicPalette(getEnum(colorPaletteModeKey, ColorPaletteMode.Dark))
+                        setDynamicPalette(
+                            (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri ?: "").toString())
                     }
 
                     onDispose {
@@ -936,6 +977,9 @@ class MainActivity :
                                 }
                             }
 
+                            setDynamicPalette(mediaItem?.mediaMetadata?.artworkUri.toString())
+                            /**** NEW CODE ******/
+                            /*
                             if (mediaItem != null) {
                                 coroutineScope.launch(Dispatchers.Main) {
                                     val result = imageLoader.execute(
@@ -952,8 +996,10 @@ class MainActivity :
                                             //.addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
                                             .generate()
                                         println("Mainactivity onmediaItemTRansition palette dominantSwatch: ${palette.dominantSwatch}")
-
-                                        dynamicColorPaletteOf(bitmap, true, false)?.let {
+                                        val isDark =
+                                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                                        val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
+                                        dynamicColorPaletteOf(bitmap, isDark, isPicthBlack)?.let {
                                             withContext(Dispatchers.Main) {
                                                 setSystemBarAppearance(it.isDark)
                                             }
@@ -967,6 +1013,8 @@ class MainActivity :
                                 }
                                 println("Mainactivity onmediaItemTRansition appearance outside: ${appearance.colorPalette}")
                             }
+                             */
+                            /*********/
                         }
 
 
