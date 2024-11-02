@@ -110,6 +110,7 @@ import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -501,6 +502,15 @@ class MainActivity :
             }
 
             fun setDynamicPalette(url: String) {
+                val playerBackgroundColors = preferences.getEnum(playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor)
+                val colorPaletteName = preferences.getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
+                val isDynamicPalette = colorPaletteName == ColorPaletteName.Dynamic
+                val isCoverColor = playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+                        playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
+                        playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
+
+                if (!isDynamicPalette && !isCoverColor) return
+
                 val colorPaletteMode = preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
                 coroutineScope.launch(Dispatchers.Main) {
                     val result = imageLoader.execute(
