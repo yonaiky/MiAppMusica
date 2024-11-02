@@ -48,7 +48,7 @@ import it.fast4x.rimusic.internal
 import it.fast4x.rimusic.path
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -170,7 +170,7 @@ fun DataSettings() {
                             inputStream.copyTo(outputStream)
                         }
                     }
-                context.stopService(context.intent<PlayerService>())
+                context.stopService(context.intent<PlayerServiceModern>())
                 context.stopService(context.intent<MyDownloadService>())
 
                 exitAfterRestore = true

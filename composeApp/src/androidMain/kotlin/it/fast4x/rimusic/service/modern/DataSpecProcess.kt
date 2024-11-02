@@ -17,16 +17,12 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.NoInternetException
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.TimeoutException
 import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
-import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.preferences
-import kotlinx.coroutines.flow.distinctUntilChanged
 import me.knighthat.appContext
 import me.knighthat.invidious.Invidious
 import me.knighthat.invidious.request.player

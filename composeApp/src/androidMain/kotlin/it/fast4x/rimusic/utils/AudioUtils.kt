@@ -13,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.animation.doOnEnd
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

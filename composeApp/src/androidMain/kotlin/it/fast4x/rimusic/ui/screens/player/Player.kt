@@ -714,23 +714,31 @@ fun Player(
         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
     ) {
         //val context = LocalContext.current
+        println("Player before getting dynamic color ${dynamicColorPalette}")
+        println("Player url mediaitem ${mediaItem.mediaMetadata.artworkUri}")
+        println("Player url binder ${binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri}")
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             try {
+                val bitmap = getBitmapFromUrl(
+                    context,
+                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                )
+
                 dynamicColorPalette = dynamicColorPaletteOf(
-                    getBitmapFromUrl(
-                        context,
-                        binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                    ),
+                    bitmap,
                     isSystemDarkMode,
-                    colorPaletteMode == ColorPaletteMode.PitchBlack
+                    false
+                    //colorPaletteMode == ColorPaletteMode.PitchBlack
                 ) ?: color
+                println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
             } catch (e: Exception) {
                 dynamicColorPalette = color
-                e.printStackTrace()
+                println("Player Error getting dynamic color ${e.printStackTrace()}")
             }
 
         }
+        println("Player after getting dynamic color ${dynamicColorPalette}")
     }
 
     /*  */

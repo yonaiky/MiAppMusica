@@ -76,7 +76,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.service.PlayerService
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -279,7 +279,7 @@ fun MiniPlayer(
                                     binder.player.clearMediaItems()
                                     hidePlayer()
                                     runCatching {
-                                        context.stopService(context.intent<PlayerService>())
+                                        context.stopService(context.intent<PlayerServiceModern>())
                                     }
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else

@@ -96,7 +96,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.service.PlayerService.NotificationDismissReceiver
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleDownload
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleLike
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleRepeatMode

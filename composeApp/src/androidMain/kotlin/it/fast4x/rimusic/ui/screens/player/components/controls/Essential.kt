@@ -62,7 +62,6 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.EXPLICIT_PREFIX
