@@ -428,7 +428,6 @@ class PlayerServiceModern : MediaLibraryService(),
                     delay(30.seconds)
                     withContext(Dispatchers.Main) {
                         maybeSavePlayerQueue()
-                        //maybeSaveToDiskPlayerQueue()
                     }
                 }
             }
