@@ -58,7 +58,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.RiMusic.SplashScreen"
+            android:theme="@style/Theme.App.Starting"
             android:windowSoftInputMode="adjustResize">
 
             <!-- NEW PLAYER SERVICE -->
