@@ -14,10 +14,10 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">#000000</item>
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
         <!-- Use windowSplashScreenAnimatedIcon to add a drawable or an animated
              drawable. One of these is required. -->
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
         <!-- Required for animated icons. -->
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <!-- Ready to future version
