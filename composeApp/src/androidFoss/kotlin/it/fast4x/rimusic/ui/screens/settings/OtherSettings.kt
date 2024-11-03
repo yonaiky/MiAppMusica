@@ -149,7 +149,7 @@ fun OtherSettings() {
         )
     }
 
-    var isInvincibilityEnabled by rememberPreference(isInvincibilityEnabledKey, false)
+    //var isInvincibilityEnabled by rememberPreference(isInvincibilityEnabledKey, false)
 
     var isIgnoringBatteryOptimizations by remember {
         mutableStateOf(context.isIgnoringBatteryOptimizations)
@@ -798,12 +798,14 @@ fun OtherSettings() {
             }
         )
 
+        /*
         SwitchSettingEntry(
             title = stringResource(R.string.invincible_service),
             text = stringResource(R.string.turning_off_battery_optimizations_is_not_enough),
             isChecked = isInvincibilityEnabled,
             onCheckedChange = { isInvincibilityEnabled = it }
         )
+         */
 
         SettingsGroupSpacer()
 

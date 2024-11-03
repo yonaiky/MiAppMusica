@@ -731,8 +731,7 @@ fun Player(
 
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
-                    isSystemDarkMode,
-                    true, //colorPaletteMode == ColorPaletteMode.PitchBlack
+                    isSystemDarkMode
                 ) ?: color
                 println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
             } catch (e: Exception) {

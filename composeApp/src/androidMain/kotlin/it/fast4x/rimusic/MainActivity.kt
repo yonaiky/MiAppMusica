@@ -129,6 +129,7 @@ import it.fast4x.rimusic.ui.styling.ColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.applyPitchBlack
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
 import it.fast4x.rimusic.ui.styling.customColorPalette
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
@@ -475,8 +476,7 @@ class MainActivity :
                     if (colorPaletteName == ColorPaletteName.MaterialYou) {
                         colorPalette = dynamicColorPaletteOf(
                             Color(monet.getAccentColor(this@MainActivity)),
-                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme),
-                            colorPaletteMode == ColorPaletteMode.PitchBlack
+                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
                         )
                     }
 
@@ -529,7 +529,7 @@ class MainActivity :
                         val isDark =
                             colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
                         val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
-                        dynamicColorPaletteOf(bitmap, isDark, isPicthBlack)?.let {
+                        dynamicColorPaletteOf(bitmap, isDark)?.let {
                             withContext(Dispatchers.Main) {
                                 setSystemBarAppearance(it.isDark)
                             }
@@ -692,8 +692,7 @@ class MainActivity :
                                     if (colorPaletteName == ColorPaletteName.MaterialYou) {
                                         colorPalette = dynamicColorPaletteOf(
                                             Color(monet.getAccentColor(this@MainActivity)),
-                                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme),
-                                            colorPaletteMode == ColorPaletteMode.PitchBlack
+                                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
                                         )
                                     }
 
@@ -795,14 +794,7 @@ class MainActivity :
                 preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
             if (colorPaletteMode == ColorPaletteMode.PitchBlack)
                 appearance = appearance.copy(
-                    colorPalette = appearance.colorPalette.copy(
-                        isDark = true,
-                        background0 = Color.Black,
-                        background1 = Color.Black,
-                        background2 = Color.Black,
-                        background3 = Color.Black,
-                        background4 = Color.Black,
-                    )
+                    colorPalette = appearance.colorPalette.applyPitchBlack
                 )
 
 
