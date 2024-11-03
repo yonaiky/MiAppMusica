@@ -427,7 +427,7 @@ class PlayerServiceModern : MediaLibraryService(),
         if (isPersistentQueueEnabled) {
             val scheduler = Executors.newScheduledThreadPool(1)
             scheduler.scheduleWithFixedDelay({
-                println("Complex task completed!")
+                println("PlayerServiceModern onCreate savePersistentQueue")
                 CoroutineScope(Dispatchers.Main).launch {
                     maybeSavePlayerQueue()
                 }
