@@ -172,6 +172,8 @@ import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
@@ -423,6 +425,14 @@ class PlayerServiceModern : MediaLibraryService(),
 
         // Save persistent queue periodically
         if (isPersistentQueueEnabled) {
+            val scheduler = Executors.newScheduledThreadPool(1)
+            scheduler.scheduleWithFixedDelay({
+                println("Complex task completed!")
+                CoroutineScope(Dispatchers.Main).launch {
+                    maybeSavePlayerQueue()
+                }
+            }, 0, 30, TimeUnit.SECONDS)
+            /*
             coroutineScope.launch {
                 while (isActive) {
                     delay(30.seconds)
@@ -431,6 +441,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     }
                 }
             }
+             */
         }
 
         maybeResumePlaybackWhenDeviceConnected()
