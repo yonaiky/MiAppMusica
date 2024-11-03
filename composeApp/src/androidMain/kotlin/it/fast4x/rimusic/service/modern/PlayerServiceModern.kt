@@ -405,22 +405,6 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
         MyDownloadHelper.getDownloadManager(this).addListener(downloadListener)
-        /*
-        MyDownloadHelper.getDownloadManager(this).addListener(
-            object : DownloadManager.Listener {
-                override fun onDownloadChanged(
-                    downloadManager: DownloadManager,
-                    download: Download,
-                    finalException: Exception?
-                ) = run {
-                    if (download.request.id != currentMediaItem.value?.mediaId) return@run
-                    println("PlayerServiceModern onDownloadChanged current song ${currentMediaItem.value?.mediaId} state ${download.state} key ${download.request.id}")
-                    updateDownloadedState()
-                }
-            }
-        )
-         */
-
 
         // Ensure that song is updated
         currentSong.debounce(1000).collect(coroutineScope) { song ->
