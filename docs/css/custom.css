@@ -40,12 +40,24 @@
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+
   position: relative;
   bottom:0
 }
-.footer-links > li > a {
+
+.footer-links {
+  display: unset;
+
+text-align:right;
+li {
+  
+  margin: 0 8px 0 8px !important;
+  display: inline-flex;
+
+}
+ a {
   white-space: nowrap;
+}
 }
 #globe{
   margin-left: 8px;
@@ -65,7 +77,6 @@ ul {
   padding-left: 25px; 
   width: fit-content;
   z-index:5000;
-  margin-right: 8px;
   background-image:url(../images/lang.svg) !important;
   background-position: 0px 0px;
   background-repeat: no-repeat;
@@ -141,9 +152,12 @@ body.visible #langBorder {
   .footer-links {
     flex-direction: column;
     text-align: right;
+    display: inline-flex;
+    padding: 0 8px 0 8px;
   }
   .footer-links > li {
     margin: 2px !important;
+    display:block
   }
 }
 @media (max-width: 640px) {
