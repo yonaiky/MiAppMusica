@@ -291,10 +291,10 @@ a > img:hover {
   opacity: 1;
 }
 .device-mockup {
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .hero-inner .device-mockup {
-  border-radius: 12px;
+  border-radius: 15px;
 }
 .footer-copyright {
   width: fit-content;
