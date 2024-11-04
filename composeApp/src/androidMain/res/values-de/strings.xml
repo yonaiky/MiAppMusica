@@ -684,7 +684,7 @@
     <string name="noblur">Keine Unschärfe, wenn Liedtexte deaktiviert sind</string>
     <string name="fadingedge">Kanten verblassen</string>
     <string name="carousel">Karussellansicht</string>
-    <string name="carouselsize">Miniaturansicht Größe im erweiterten Modus</string>
+    <string name="carouselsize">Größe der Miniaturansicht im erweiterten Modus</string>
     <string name="addednext">Hinzugefügt, um als nächstes abzuspielen</string>
     <string name="info_paused_with_volume_zero">Pausiert mit Lautstärke Null</string>
     <string name="effect_fade_audio">Audio ein-/ausblenden</string>
