@@ -323,8 +323,8 @@ a > img:hover {
 .feature-extended-image img,.feature-extended-image svg{
   overflow:hidden
 }
-body.no-js {
-  .mockup-bg{
+:root.no-js {
+  .mockup-bg, .hero-paragraph{
     opacity:1 !important
   }
   .hero-particles-container{
