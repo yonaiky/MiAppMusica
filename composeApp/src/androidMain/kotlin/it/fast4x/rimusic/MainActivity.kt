@@ -328,8 +328,8 @@ class MainActivity :
         // Fetch Piped & Invidious instances
         lifecycleScope.launch( Dispatchers.IO ) {
             try {
-                Piped.fetchPipedInstances()
-                Invidious.fetchInvidiousInstances( true )
+                Piped.fetchInstances()
+                Invidious.fetchInstances()
             } catch( e: Exception ) {
                 Timber.e( e, "MainActivity Error fetching Piped & Invidious instances" )
             }

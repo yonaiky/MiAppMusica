@@ -373,7 +373,7 @@ class PlayerServiceModern : MediaLibraryService(),
                         PendingIntent.FLAG_IMMUTABLE
                     )
                 )
-                .setBitmapLoader(CoilBitmapLoader(this, coroutineScope))
+                //.setBitmapLoader(CoilBitmapLoader(this, coroutineScope))
                 .build()
 
         player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
