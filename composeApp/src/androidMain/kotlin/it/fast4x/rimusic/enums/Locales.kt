@@ -34,7 +34,7 @@ enum class Languages {
     Malayalam,
     Norwegian,
     Odia,
-    Persian,
+    //Persian,
     Polish,
     PortugueseBrazilian,
     Portuguese,
@@ -46,6 +46,7 @@ enum class Languages {
     Sinhala,
     Spanish,
     Swedish,
+    Tamil,
     Telugu,
     Turkish,
     Ukrainian,
@@ -87,7 +88,7 @@ enum class Languages {
             Malayalam -> "ml"
             Norwegian -> "no"
             Odia -> "or"
-            Persian -> "fa"
+            //Persian -> "fa"
             Polish -> "pl"
             Portuguese -> "pt"
             PortugueseBrazilian -> "pt-BR"
@@ -98,6 +99,7 @@ enum class Languages {
             SerbianLatin -> "sr-CS"
             Sinhala -> "si"
             Swedish -> "sv"
+            Tamil -> "ta"
             Telugu -> "te"
             Turkish -> "tr"
             Ukrainian -> "uk"
