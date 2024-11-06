@@ -47,6 +47,7 @@ import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -483,6 +484,7 @@ fun AppearanceSettings(
     var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
     var statsExpanded by rememberPreference(statsExpandedKey, true)
     var actionExpanded by rememberPreference(actionExpandedKey, true)
+    var restartService by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -1604,6 +1606,9 @@ fun AppearanceSettings(
             }
 
         }
+
+        /*
+        TODO add settings for buttons in the background player
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.background_player))
 
@@ -1616,9 +1621,12 @@ fun AppearanceSettings(
                 title = stringResource(R.string.show_favorite_button),
                 text = stringResource(R.string.show_favorite_button_in_lock_screen_and_notification_area),
                 isChecked = showLikeButtonBackgroundPlayer,
-                onCheckedChange = { showLikeButtonBackgroundPlayer = it }
+                onCheckedChange = {
+                    showLikeButtonBackgroundPlayer = it
+                    restartService = true
+                }
             )
-            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
         if (searchInput.isBlank() || stringResource(R.string.show_download_button).contains(
                 searchInput,
@@ -1629,15 +1637,18 @@ fun AppearanceSettings(
                 title = stringResource(R.string.show_download_button),
                 text = stringResource(R.string.show_download_button_in_lock_screen_and_notification_area),
                 isChecked = showDownloadButtonBackgroundPlayer,
-                onCheckedChange = { showDownloadButtonBackgroundPlayer = it }
+                onCheckedChange = {
+                    showDownloadButtonBackgroundPlayer = it
+                    restartService = true
+                }
             )
 
-            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
         //SettingsGroupSpacer()
         //SettingsEntryGroupText(title = stringResource(R.string.text))
-
+        */
 
         if (searchInput.isBlank() || stringResource(R.string.show_song_cover).contains(
                 searchInput,

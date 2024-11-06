@@ -75,6 +75,7 @@ import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
@@ -851,24 +852,9 @@ fun UiSettings(
                     }
                 }
             )
-            AnimatedVisibility(visible = restartService) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SettingsDescription(
-                        text = stringResource(R.string.minimum_silence_length_warning),
-                        important = true,
-                        modifier = Modifier.weight(2f)
-                    )
-                    SecondaryTextButton(
-                        text = stringResource(R.string.restart_service),
-                        onClick = {
-                            binder?.restartForegroundOrStop()?.let { restartService = false }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 24.dp)
-                    )
-                }
-            }
+
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
+
         }
 
         if (searchInput.isBlank() || stringResource(R.string.player_pause_listen_history).contains(searchInput,true)) {
@@ -881,24 +867,7 @@ fun UiSettings(
                     restartService = true
                 }
             )
-            AnimatedVisibility(visible = restartService) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SettingsDescription(
-                        text = stringResource(R.string.minimum_silence_length_warning),
-                        important = true,
-                        modifier = Modifier.weight(2f)
-                    )
-                    SecondaryTextButton(
-                        text = stringResource(R.string.restart_service),
-                        onClick = {
-                            binder?.restartForegroundOrStop()?.let { restartService = false }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 24.dp)
-                    )
-                }
-            }
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
         if (searchInput.isBlank() || stringResource(R.string.min_listening_time).contains(searchInput,true)) {
@@ -1135,29 +1104,7 @@ fun UiSettings(
                 }
             )
 
-            AnimatedVisibility(visible = restartService) {
-                Column(
-                    modifier = Modifier.padding(start = 25.dp)
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        SettingsDescription(
-                            text = stringResource(R.string.minimum_silence_length_warning),
-                            important = true,
-                            modifier = Modifier.weight(2f)
-                        )
-                        SecondaryTextButton(
-                            text = stringResource(R.string.restart_service),
-                            onClick = {
-                                binder?.restartForegroundOrStop()?.let { restartService = false }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 24.dp)
-                        )
-                    }
-
-                }
-            }
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
 
         }
 
@@ -1192,24 +1139,7 @@ fun UiSettings(
                         range = 1.00f..2000.000f
                     )
 
-                    AnimatedVisibility(visible = restartService) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            SettingsDescription(
-                                text = stringResource(R.string.minimum_silence_length_warning),
-                                important = true,
-                                modifier = Modifier.weight(2f)
-                            )
-                            SecondaryTextButton(
-                                text = stringResource(R.string.restart_service),
-                                onClick = {
-                                    binder?.restartForegroundOrStop()?.let { restartService = false }
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 24.dp)
-                            )
-                        }
-                    }
+                    RestartPlayerService(restartService, onRestart = { restartService = false } )
                 }
             }
 
@@ -1239,7 +1169,6 @@ fun UiSettings(
                         onSlide = { newValue = it },
                         onSlideComplete = {
                             loudnessBaseGain = newValue
-                            restartService = true
                         },
                         toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
                         range = -20f..20f
@@ -1256,21 +1185,25 @@ fun UiSettings(
                 isChecked = useVolumeKeysToChangeSong,
                 onCheckedChange = {
                     useVolumeKeysToChangeSong = it
+                    restartService = true
                 }
             )
-            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
 
-        if (searchInput.isBlank() || stringResource(R.string.event_shake).contains(searchInput,true))
+        if (searchInput.isBlank() || stringResource(R.string.event_shake).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_shake),
                 text = stringResource(R.string.shake_to_change_song),
                 isChecked = shakeEventEnabled,
                 onCheckedChange = {
                     shakeEventEnabled = it
+                    restartService = true
                 }
             )
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
 
         if (searchInput.isBlank() || stringResource(R.string.equalizer).contains(searchInput,true))
             SettingsEntry(
