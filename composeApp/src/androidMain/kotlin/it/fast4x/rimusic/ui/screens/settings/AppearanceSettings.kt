@@ -1564,20 +1564,6 @@ fun AppearanceSettings(
                     )
             }
 
-            if (showNextSongsInPlayer) {
-                if (searchInput.isBlank() || stringResource(R.string.miniqueue).contains(
-                        searchInput,
-                        true
-                    )
-                )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.miniqueue),
-                        text = "",
-                        isChecked = miniQueueExpanded,
-                        onCheckedChange = { miniQueueExpanded = it }
-                    )
-            }
-
             if (
                 showButtonPlayerDownload ||
                 showButtonPlayerAddToPlaylist ||
@@ -1601,7 +1587,22 @@ fun AppearanceSettings(
                         title = stringResource(R.string.actionbar),
                         text = "",
                         isChecked = actionExpanded,
-                        onCheckedChange = { actionExpanded = it }
+                        onCheckedChange = {
+                            actionExpanded = it
+                        }
+                    )
+            }
+            if (showNextSongsInPlayer && actionExpanded) {
+                if (searchInput.isBlank() || stringResource(R.string.miniqueue).contains(
+                        searchInput,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.miniqueue),
+                        text = "",
+                        isChecked = miniQueueExpanded,
+                        onCheckedChange = { miniQueueExpanded = it }
                     )
             }
 

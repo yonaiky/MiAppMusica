@@ -1783,6 +1783,7 @@ fun Player(
                              )
                      )
                  }
+
                  Column(modifier = Modifier
                      .matchParentSize()
                      .background(
