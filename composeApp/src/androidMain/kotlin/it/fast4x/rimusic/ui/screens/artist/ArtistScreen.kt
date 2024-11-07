@@ -41,6 +41,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.requests.artistPage
 import it.fast4x.innertube.requests.itemsPage
+import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -71,6 +72,8 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
@@ -459,31 +462,28 @@ fun ArtistScreen(
                                 tag = "artist/$browseId/songs",
                                 headerContent = headerContent,
                                 itemsPageProvider = artistPage?.let {
-                                    ({ continuation ->
-                                        continuation?.let {
-                                            Innertube.itemsPage(
-                                                body = ContinuationBody(continuation = continuation),
-                                                fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
-                                            )
-                                        } ?: artistPage
+                                    {
+                                        artistPage
                                             ?.songsEndpoint
                                             ?.takeIf { it.browseId != null }
                                             ?.let { endpoint ->
-                                                Innertube.itemsPage(
-                                                    body = BrowseBody(
-                                                        browseId = endpoint.browseId!!,
-                                                        params = endpoint.params,
-                                                    ),
-                                                    fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
-                                                )
+                                                runCatching {
+                                                    val resultPlayListOrAlbumPage = Innertube.playlistPage(
+                                                        BrowseBody(
+                                                            browseId = endpoint.browseId!!
+                                                        )
+                                                    ) ?.completed()
+                                                    val playListOrAlbumPage = resultPlayListOrAlbumPage?.getOrThrow()
+                                                    playListOrAlbumPage!!.songsPage // still a nullable value
+                                                }
                                             }
-                                        ?: Result.success(
+                                        ?: Result.success( // is this section ever reached now?
                                             Innertube.ItemsPage(
                                                 items = artistPage?.songs,
                                                 continuation = null
                                             )
                                         )
-                                    })
+                                    }
                                 },
                                 itemContent = { song ->
                                     if (parentalControlEnabled && song.explicit) return@ItemsPage
