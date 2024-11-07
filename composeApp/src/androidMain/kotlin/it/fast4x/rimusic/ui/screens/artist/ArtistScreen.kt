@@ -466,16 +466,13 @@ fun ArtistScreen(
                                             ?.songsEndpoint
                                             ?.takeIf { it.browseId != null }
                                             ?.let { endpoint ->
-                                                runCatching {
-                                                    val resultPlayListOrAlbumPage = Innertube.playlistPage(
-                                                        BrowseBody(
+                                                    Innertube.itemsPage(
+                                                        body = BrowseBody(
                                                             browseId = endpoint.browseId!!,
                                                             params = endpoint.params
-                                                        )
-                                                    ) ?.completed()
-                                                    val playListOrAlbumPage = resultPlayListOrAlbumPage?.getOrThrow()
-                                                    playListOrAlbumPage!!.songsPage // still a nullable value
-                                                }
+                                                        ),
+                                                        fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
+                                                    )?.completed()
                                             }
                                         ?: Result.success( // is this section ever reached now?
                                             Innertube.ItemsPage(
