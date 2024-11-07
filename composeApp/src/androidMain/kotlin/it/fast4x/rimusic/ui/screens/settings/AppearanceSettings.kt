@@ -614,7 +614,8 @@ fun AppearanceSettings(
                         title = stringResource(R.string.show_vinyl_thumbnail_animation),
                         text = "",
                         isChecked = showVinylThumbnailAnimation,
-                        onCheckedChange = { showVinylThumbnailAnimation = it }
+                        onCheckedChange = { showVinylThumbnailAnimation = it },
+                        Modifier.padding(start = 25.dp)
                     )
 
                 if (playerType == PlayerType.Modern) {
