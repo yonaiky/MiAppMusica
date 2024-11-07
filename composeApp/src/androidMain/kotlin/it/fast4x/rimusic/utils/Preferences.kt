@@ -273,6 +273,7 @@ const val controlsExpandedKey = "controlsExpanded"
 const val miniQueueExpandedKey = "miniQueueExpanded"
 const val statsExpandedKey = "statsExpanded"
 const val actionExpandedKey = "actionExpanded"
+const val showVinylThumbnailAnimationKey = "showVinylThumbnailAnimation"
 
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"

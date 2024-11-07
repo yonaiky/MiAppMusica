@@ -107,6 +107,7 @@ import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showsongsKey
@@ -485,6 +486,7 @@ fun AppearanceSettings(
     var statsExpanded by rememberPreference(statsExpandedKey, true)
     var actionExpanded by rememberPreference(actionExpandedKey, true)
     var restartService by rememberSaveable { mutableStateOf(false) }
+    var showVinylThumbnailAnimation by rememberPreference(showVinylThumbnailAnimationKey, false)
 
     Column(
         modifier = Modifier
@@ -602,6 +604,19 @@ fun AppearanceSettings(
         }
         AnimatedVisibility(visible = showthumbnail) {
             Column {
+
+                if (searchInput.isBlank() || stringResource(R.string.show_vinyl_thumbnail_animation).contains(
+                        searchInput,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.show_vinyl_thumbnail_animation),
+                        text = "",
+                        isChecked = showVinylThumbnailAnimation,
+                        onCheckedChange = { showVinylThumbnailAnimation = it }
+                    )
+
                 if (playerType == PlayerType.Modern) {
                     if (searchInput.isBlank() || stringResource(R.string.fadingedge).contains(
                             searchInput,
@@ -653,6 +668,7 @@ fun AppearanceSettings(
                         )
                 }
                 if (playerType == PlayerType.Essential) {
+
                     if (searchInput.isBlank() || stringResource(R.string.thumbnailpause).contains(
                             searchInput,
                             true

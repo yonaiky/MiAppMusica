@@ -219,7 +219,7 @@ fun HomeSongsModern(
     )
     var topPlaylistPeriod by rememberPreference(topPlaylistPeriodKey, TopPlaylistPeriod.PastWeek)
 
-    /*
+
     var scrollToNowPlaying by remember {
         mutableStateOf(false)
     }
@@ -227,7 +227,7 @@ fun HomeSongsModern(
     var nowPlayingItem by remember {
         mutableStateOf(-1)
     }
-     */
+
 
     /************ OnDeviceDev */
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
@@ -759,8 +759,6 @@ fun HomeSongsModern(
 
                 search.ToolBarButton()
 
-                /*
-                // TODO: Move to three dots menu
                 TabToolBar.Icon(
                     iconId = R.drawable.locate,
                     tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
@@ -791,7 +789,7 @@ fun HomeSongsModern(
                         lazyListState.scrollToItem(nowPlayingItem, 1)
                     scrollToNowPlaying = false
                 }
-                 */
+
 
 
                 downloadAllDialog.ToolBarButton()
@@ -824,8 +822,7 @@ fun HomeSongsModern(
                         // TODO: Add string to language pack
                         onLongClick = { SmartMessage( "Random sorting", context = context) }
                     )
-                else
-                    import.ToolBarButton()
+
 
                 TabToolBar.Icon( R.drawable.ellipsis_horizontal ) {
                     menuState.display {
@@ -920,6 +917,7 @@ fun HomeSongsModern(
                                 }
                             },
                             onExport = { exportToggleState.value = true },
+                            onImportFavorites = { import.onShortClick() },
                             disableScrollingText = disableScrollingText
                         )
                     }
@@ -1098,12 +1096,10 @@ fun HomeSongsModern(
                                     downloadState = Download.STATE_COMPLETED,
                                     thumbnailSizeDp = thumbnailSizeDp,
                                     thumbnailSizePx = thumbnailSizePx,
-                                    /*
                                     onThumbnailContent = {
                                         if (nowPlayingItem > -1)
                                             NowPlayingShow(song.asMediaItem.mediaId)
                                     },
-                                     */
                                     trailingContent = {
                                         val checkedState = rememberSaveable { mutableStateOf(false) }
                                         if (selectItems)
@@ -1224,8 +1220,8 @@ fun HomeSongsModern(
                                         )
                                     }
 
-                                    //if (nowPlayingItem > -1)
-                                    //    NowPlayingShow(song.song.asMediaItem.mediaId)
+                                    if (nowPlayingItem > -1)
+                                        NowPlayingShow(song.song.asMediaItem.mediaId)
 
                                     if (builtInPlaylist == BuiltInPlaylist.Top)
                                         BasicText(
