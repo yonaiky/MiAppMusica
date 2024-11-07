@@ -157,6 +157,7 @@ WARNING, the custom version is not an official release, download only if invited
 - **RiMusic New player and lyrics layouts** [aneesh1122](https://github.com/aneesh1122)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
+- [**FlatIcon.com**](https://www.flaticon.com/): Download Free Icons and Stickers for your projects. Resources made by and for designers.
 - [**Translator**](https://github.com/therealbush/translator): A simple and free Google Translate library for Kotlin/JVM and Java.
 - [**KuGou**](https://www.kugou.com): Lyrics provider
 - [**LrcLib**](https://lrclib.net): Lyrics provider
