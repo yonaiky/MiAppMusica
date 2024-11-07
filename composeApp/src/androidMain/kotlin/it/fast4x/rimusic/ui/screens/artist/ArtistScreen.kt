@@ -470,7 +470,8 @@ fun ArtistScreen(
                                                 runCatching {
                                                     val resultPlayListOrAlbumPage = Innertube.playlistPage(
                                                         BrowseBody(
-                                                            browseId = endpoint.browseId!!
+                                                            browseId = endpoint.browseId!!,
+                                                            params = endpoint.params
                                                         )
                                                     ) ?.completed()
                                                     val playListOrAlbumPage = resultPlayListOrAlbumPage?.getOrThrow()
