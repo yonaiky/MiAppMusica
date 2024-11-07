@@ -80,6 +80,7 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.buttonzoomoutKey
@@ -739,6 +740,7 @@ fun UiSettings(
     /*  ViMusic Mode Settings  */
 
     var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
+    var autoLoadSongsInQueue by rememberPreference(autoLoadSongsInQueueKey, true)
 
     Column(
         modifier = Modifier
@@ -1004,6 +1006,19 @@ fun UiSettings(
                     disableClosingPlayerSwipingDown = it
                 }
             )
+
+        if (searchInput.isBlank() || stringResource(R.string.player_auto_load_songs_in_queue).contains(searchInput,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_auto_load_songs_in_queue),
+                text = stringResource(R.string.player_auto_load_songs_in_queue_description),
+                isChecked = autoLoadSongsInQueue,
+                onCheckedChange = {
+                    autoLoadSongsInQueue = it
+                    restartService = true
+                }
+            )
+            RestartPlayerService(restartService, onRestart = { restartService = false })
+        }
 
         if (searchInput.isBlank() || stringResource(R.string.max_songs_in_queue).contains(searchInput,true))
             EnumValueSelectorSettingsEntry(

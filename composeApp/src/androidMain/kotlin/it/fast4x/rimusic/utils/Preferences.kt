@@ -277,6 +277,8 @@ const val actionExpandedKey = "actionExpanded"
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
 
+const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
+
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
     defaultValue: T

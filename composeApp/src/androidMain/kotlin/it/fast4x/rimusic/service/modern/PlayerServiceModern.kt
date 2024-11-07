@@ -25,17 +25,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.content.getSystemService
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
+import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
+import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
@@ -59,6 +64,7 @@ import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.CommandButton
@@ -67,6 +73,8 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
+import androidx.media3.session.legacy.MediaDescriptionCompat
+import androidx.media3.session.legacy.MediaSessionCompat
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -76,6 +84,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
@@ -108,6 +117,7 @@ import it.fast4x.rimusic.utils.CoilBitmapLoader
 import it.fast4x.rimusic.utils.TimerJob
 import it.fast4x.rimusic.utils.YouTubeRadio
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.collect
@@ -135,6 +145,7 @@ import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setLikeState
@@ -453,6 +464,17 @@ class PlayerServiceModern : MediaLibraryService(),
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
         mediaSession
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        maybeSavePlayerQueue()
+    }
+
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        updateNotification()
+        preferences.edit {
+            putEnum(queueLoopTypeKey, QueueLoopType.from(repeatMode))
+        }
+    }
 
     private fun updateDiscordPresence() {
         val isDiscordPresenceEnabled = preferences.getBoolean(isDiscordPresenceEnabledKey, false)
@@ -821,61 +843,28 @@ class PlayerServiceModern : MediaLibraryService(),
         currentMediaItem.update { mediaItem }
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
-        maybeProcessRadio()
-        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            //updateMediaSessionQueue(player.currentTimeline)
-        }
+
+        loadFromRadio(reason)
 
         updateNotification()
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
         if (reason == Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED) {
-            //updateMediaSessionQueue(timeline)
+            maybeSavePlayerQueue()
         }
     }
 
-    /*
-    private fun updateMediaSessionQueue(timeline: Timeline) {
-        val builder = MediaDescriptionCompat.Builder()
-
-        val currentMediaItemIndex = player.currentMediaItemIndex
-        val lastIndex = timeline.windowCount - 1
-        var startIndex = currentMediaItemIndex - 7
-        var endIndex = currentMediaItemIndex + 7
-
-        if (startIndex < 0) {
-            endIndex -= startIndex
+    override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+        updateNotification()
+        if (shuffleModeEnabled) {
+            val shuffledIndices = IntArray(player.mediaItemCount) { it }
+            shuffledIndices.shuffle()
+            shuffledIndices[shuffledIndices.indexOf(player.currentMediaItemIndex)] = shuffledIndices[0]
+            shuffledIndices[0] = player.currentMediaItemIndex
+            player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
         }
-
-        if (endIndex > lastIndex) {
-            startIndex -= (endIndex - lastIndex)
-            endIndex = lastIndex
-        }
-
-        startIndex = startIndex.coerceAtLeast(0)
-
-        player.addMediaItems(
-            List(endIndex - startIndex + 1) { index ->
-                val mediaItem = timeline.getWindow(index + startIndex, Timeline.Window()).mediaItem
-                MediaSessionCompat.QueueItem(
-                    builder
-                        .setMediaId(mediaItem.mediaId)
-                        .setTitle(cleanPrefix(mediaItem.mediaMetadata.title.toString()))
-                        .setSubtitle(
-                            if (mediaItem.mediaMetadata.albumTitle != null)
-                                "${mediaItem.mediaMetadata.artist} | ${mediaItem.mediaMetadata.albumTitle}"
-                            else mediaItem.mediaMetadata.artist
-                        )
-                        .setIconUri(mediaItem.mediaMetadata.artworkUri)
-                        .setExtras(mediaItem.mediaMetadata.extras)
-                        .build(),
-                    (index + startIndex).toLong()
-                )
-            }
-        )
     }
-     */
 
     private fun maybeRecoverPlaybackError() {
         if (player.playerError != null) {
@@ -883,7 +872,9 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
-    private fun maybeProcessRadio() {
+    private fun loadFromRadio(reason: Int) {
+        if (!preferences.getBoolean(autoLoadSongsInQueueKey, true)) return
+        /*
         // Old feature add songs only if radio is started by user and when last song in player is played
         radio?.let { radio ->
             if (player.mediaItemCount - player.currentMediaItemIndex == 1) {
@@ -893,23 +884,28 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
 
-        /* // New feature auto start radio in queue
-        if (radio == null) {
-            binder.setupRadio(
-                NavigationEndpoint.Endpoint.Watch(
-                    videoId = player.currentMediaItem?.mediaId
+         */
+
+        if (reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+            player.mediaItemCount - player.currentMediaItemIndex <= 3
+        ) {
+            if (radio == null) {
+                binder.setupRadio(
+                    NavigationEndpoint.Endpoint.Watch(
+                        videoId = player.currentMediaItem?.mediaId
+                    )
                 )
-            )
-        } else {
-            radio?.let { radio ->
-                if (player.mediaItemCount - player.currentMediaItemIndex <= 3) {
+            } else {
+                radio?.let { radio ->
+                    //if (player.mediaItemCount - player.currentMediaItemIndex <= 3) {
                     coroutineScope.launch(Dispatchers.Main) {
-                        player.addMediaItems(radio.process())
+                        if (player.playbackState != STATE_IDLE)
+                            player.addMediaItems(radio.process())
                     }
+                    //}
                 }
             }
         }
-        */
     }
 
     @UnstableApi
@@ -1191,6 +1187,27 @@ class PlayerServiceModern : MediaLibraryService(),
             )
         )
 
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        if (playbackState == STATE_IDLE) {
+            player.shuffleModeEnabled = false
+            player.clearMediaItems()
+        }
+    }
+
+    override fun onEvents(player: Player, events: Player.Events) {
+        if (events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
+            val isBufferingOrReady = player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
+            if (isBufferingOrReady && player.playWhenReady) {
+                sendOpenEqualizerIntent()
+            } else {
+                sendCloseEqualizerIntent()
+            }
+        }
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+            currentMediaItem.value = player.currentMediaItem
+        }
     }
 
     private fun showSmartMessage(message: String) {
