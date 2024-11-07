@@ -76,6 +76,7 @@ import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
@@ -527,17 +528,20 @@ fun ArtistScreen(
                                                         )
                                                     },
                                                     onClick = {
+                                                    /*
                                                         binder?.stopRadio()
                                                         binder?.player?.forcePlayAtIndex(
                                                             listMediaItems.distinct(),
                                                             listMediaItems.distinct()
                                                                 .indexOf(song.asMediaItem)
                                                         )
-                                                        /*
+
+                                                     */
+
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
-                                                     */
+
                                                     }
                                                 ),
                                             disableScrollingText = disableScrollingText

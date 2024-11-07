@@ -603,7 +603,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
 
         @UnstableApi
-        private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean) {
+        private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean, filterArtist: String = "") {
             radioJob?.cancel()
             radio = null
             val isDiscoverEnabled = applicationContext.preferences.getBoolean(discoverKey, false)
@@ -618,7 +618,8 @@ class PlayerServiceModern : MediaLibraryService(),
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
 
-                    val songs = it.process()
+                    val songs = if (filterArtist.isEmpty()) it.process()
+                    else it.process().filter { song -> song.mediaMetadata.artist == filterArtist }
 
                     songs.forEach {
                         transaction {
@@ -656,8 +657,8 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         @UnstableApi
-        fun setupRadio(endpoint: NavigationEndpoint.Endpoint.Watch?) =
-            startRadio(endpoint = endpoint, justAdd = true)
+        fun setupRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, filterArtist: String = "") =
+            startRadio(endpoint = endpoint, justAdd = true, filterArtist = filterArtist)
 
         @UnstableApi
         fun playRadio(endpoint: NavigationEndpoint.Endpoint.Watch?) =
