@@ -766,4 +766,6 @@
     <string name="lang_azerbaijani">Azerbaijani</string>
     <string name="translators">Translators</string>
     <string name="lang_tamil">Tamil</string>
+    <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
+    <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
 </resources>
