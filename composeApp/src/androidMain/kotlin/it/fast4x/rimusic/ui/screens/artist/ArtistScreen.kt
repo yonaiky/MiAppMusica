@@ -466,13 +466,13 @@ fun ArtistScreen(
                                             ?.songsEndpoint
                                             ?.takeIf { it.browseId != null }
                                             ?.let { endpoint ->
-                                                    Innertube.itemsPage(
-                                                        body = BrowseBody(
-                                                            browseId = endpoint.browseId!!,
-                                                            params = endpoint.params
-                                                        ),
-                                                        fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
-                                                    )?.completed()
+                                                Innertube.itemsPage(
+                                                    body = BrowseBody(
+                                                        browseId = endpoint.browseId!!,
+                                                        params = endpoint.params
+                                                    ),
+                                                    fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
+                                                )?.completed()
                                             }
                                         ?: Result.success( // is this section ever reached now?
                                             Innertube.ItemsPage(
