@@ -626,6 +626,7 @@ class MainActivity :
                             restartActivityKey
                             -> {
                                 this@MainActivity.recreate()
+                                println("MainActivity.recreate()")
                             }
 
                             colorPaletteNameKey, colorPaletteModeKey,

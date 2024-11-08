@@ -216,7 +216,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private lateinit var audioVolumeObserver: AudioVolumeObserver
     private lateinit var bitmapProvider: BitmapProvider
     private var volumeNormalizationJob: Job? = null
-    private var isPersistentQueueEnabled = false
+    private var isPersistentQueueEnabled: Boolean = false
     private var isclosebackgroundPlayerEnabled = false
     private var audioManager: AudioManager? = null
     private var audioDeviceCallback: AudioDeviceCallback? = null
@@ -403,8 +403,6 @@ class PlayerServiceModern : MediaLibraryService(),
 
         //connectivityManager = getSystemService()!!
 
-        maybeRestorePlayerQueue()
-
         // Download listener help to notify download change to UI
         downloadListener = object : DownloadManager.Listener {
             override fun onDownloadChanged(
@@ -434,29 +432,34 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
 
-        // Save persistent queue periodically
+        maybeResumePlaybackWhenDeviceConnected()
+
+        // Load persistent queue when start activity and save periodically in background
         if (isPersistentQueueEnabled) {
+            maybeRestorePlayerQueue()
+
             val scheduler = Executors.newScheduledThreadPool(1)
             scheduler.scheduleWithFixedDelay({
                 println("PlayerServiceModern onCreate savePersistentQueue")
-                CoroutineScope(Dispatchers.Main).launch {
-                    maybeSavePlayerQueue()
+                maybeSavePlayerQueue()
+                coroutineScope.launch {
+                    delay(1000)
                 }
             }, 0, 30, TimeUnit.SECONDS)
+
             /*
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.Main) {
                 while (isActive) {
                     delay(30.seconds)
-                    withContext(Dispatchers.Main) {
+                    //withContext(Dispatchers.Main) {
+                    println("PlayerServiceModern onCreate savePersistentQueue")
                         maybeSavePlayerQueue()
-                    }
+                    //}
                 }
             }
+
              */
         }
-
-        maybeResumePlaybackWhenDeviceConnected()
-
 
     }
 
@@ -1272,7 +1275,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun maybeSavePlayerQueue() {
-        if (!isPersistentQueueEnabled) return
+        //if (!isPersistentQueueEnabled) return
         /*
         if (player.playbackState == Player.STATE_IDLE) {
             Log.d("mediaItem", "QueuePersistentEnabled playbackstate idle return")
@@ -1282,28 +1285,36 @@ class PlayerServiceModern : MediaLibraryService(),
         //Log.d("mediaItem", "QueuePersistentEnabled Save ${player.currentTimeline.mediaItems.size}")
         //Log.d("mediaItem", "QueuePersistentEnabled Save initial")
 
-        val mediaItems = player.currentTimeline.mediaItems
-        val mediaItemIndex = player.currentMediaItemIndex
-        val mediaItemPosition = player.currentPosition
+        CoroutineScope(Dispatchers.Main).launch {
+            val mediaItems = player.currentTimeline.mediaItems
+            val mediaItemIndex = player.currentMediaItemIndex
+            val mediaItemPosition = player.currentPosition
 
-        mediaItems.mapIndexed { index, mediaItem ->
-            QueuedMediaItem(
-                mediaItem = mediaItem,
-                position = if (index == mediaItemIndex) mediaItemPosition else null
-            )
-        }.let { queuedMediaItems ->
-            query {
-                Database.clearQueue()
-                Database.insert(queuedMediaItems)
+
+
+            mediaItems.mapIndexed { index, mediaItem ->
+                QueuedMediaItem(
+                    mediaItem = mediaItem,
+                    position = if (index == mediaItemIndex) mediaItemPosition else null
+                )
+            }.let { queuedMediaItems ->
+                withContext(Dispatchers.IO) {
+                    transaction {
+                        Database.clearQueue()
+                        Database.insert(queuedMediaItems)
+                    }
+                }
             }
+
         }
     }
+
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     @UnstableApi
     private fun maybeRestorePlayerQueue() {
-        if (!isPersistentQueueEnabled) return
+        //if (!isPersistentQueueEnabled) return
 
         query {
             val queuedSong = Database.queue()
@@ -1345,7 +1356,7 @@ class PlayerServiceModern : MediaLibraryService(),
     @FlowPreview
     @UnstableApi
     private fun maybeRestoreFromDiskPlayerQueue() {
-        if (!isPersistentQueueEnabled) return
+        //if (!isPersistentQueueEnabled) return
         //Log.d("mediaItem", "QueuePersistentEnabled Restore Initial")
 
         runCatching {
@@ -1386,7 +1397,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun maybeSaveToDiskPlayerQueue() {
 
-        if (!isPersistentQueueEnabled) return
+        //if (!isPersistentQueueEnabled) return
         //Log.d("mediaItem", "QueuePersistentEnabled Save ${player.currentTimeline.mediaItems.size}")
 
         val persistentQueue = PersistentQueue(

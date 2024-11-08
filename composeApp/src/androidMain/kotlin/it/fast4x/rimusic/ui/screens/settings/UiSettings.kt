@@ -75,6 +75,7 @@ import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.RestartActivity
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
@@ -658,6 +659,7 @@ fun UiSettings(
 
     var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
     var restartService by rememberSaveable { mutableStateOf(false) }
+    var restartActivity by rememberSaveable { mutableStateOf(false) }
 
     /*  ViMusic Mode Settings  */
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
@@ -1062,18 +1064,21 @@ fun UiSettings(
                 }
             )
 
-        if (searchInput.isBlank() || stringResource(R.string.persistent_queue).contains(searchInput,true))
+        if (searchInput.isBlank() || stringResource(R.string.persistent_queue).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.persistent_queue),
                 text = stringResource(R.string.save_and_restore_playing_songs),
                 isChecked = persistentQueue,
                 onCheckedChange = {
                     persistentQueue = it
+                    restartService = true
                 }
             )
+            RestartPlayerService(restartService, onRestart = { restartService = false })
+        }
 
 
-        if (searchInput.isBlank() || stringResource(R.string.resume_playback).contains(searchInput,true))
+        if (searchInput.isBlank() || stringResource(R.string.resume_playback).contains(searchInput,true)) {
             if (isAtLeastAndroid6) {
                 SwitchSettingEntry(
                     title = stringResource(R.string.resume_playback),
@@ -1081,9 +1086,12 @@ fun UiSettings(
                     isChecked = resumePlaybackWhenDeviceConnected,
                     onCheckedChange = {
                         resumePlaybackWhenDeviceConnected = it
+                        restartService = true
                     }
                 )
+                RestartPlayerService(restartService, onRestart = { restartService = false })
             }
+        }
 
         if (searchInput.isBlank() || stringResource(R.string.close_app_with_back_button).contains(searchInput,true)) {
             SwitchSettingEntry(
@@ -1093,20 +1101,25 @@ fun UiSettings(
                 isChecked = closeWithBackButton,
                 onCheckedChange = {
                     closeWithBackButton = it
+                    restartActivity = true
                 }
             )
-            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            //ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+            RestartActivity(restartActivity, onRestart = { restartActivity = false })
         }
 
-        if (searchInput.isBlank() || stringResource(R.string.close_background_player).contains(searchInput,true))
+        if (searchInput.isBlank() || stringResource(R.string.close_background_player).contains(searchInput,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.close_background_player),
                 text = stringResource(R.string.when_app_swipe_out_from_task_manager),
                 isChecked = closebackgroundPlayer,
                 onCheckedChange = {
                     closebackgroundPlayer = it
+                    restartService = true
                 }
             )
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
 
         if (searchInput.isBlank() || stringResource(R.string.skip_media_on_error).contains(searchInput,true)) {
             SwitchSettingEntry(
