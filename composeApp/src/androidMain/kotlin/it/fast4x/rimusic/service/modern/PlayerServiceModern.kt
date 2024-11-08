@@ -442,9 +442,6 @@ class PlayerServiceModern : MediaLibraryService(),
             scheduler.scheduleWithFixedDelay({
                 println("PlayerServiceModern onCreate savePersistentQueue")
                 maybeSavePlayerQueue()
-                coroutineScope.launch {
-                    delay(1000)
-                }
             }, 0, 30, TimeUnit.SECONDS)
 
             /*
