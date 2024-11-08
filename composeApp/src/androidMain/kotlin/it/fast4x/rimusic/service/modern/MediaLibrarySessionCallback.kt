@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
@@ -21,6 +22,7 @@ import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.SettableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -31,6 +33,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
@@ -40,6 +43,7 @@ import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_TOP
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +52,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.guava.future
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -465,6 +470,38 @@ class MediaLibrarySessionCallback @Inject constructor(
         }
     }
 
+    override fun onPlaybackResumption(
+        mediaSession: MediaSession,
+        controller: MediaSession.ControllerInfo
+    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+        val settablePlaylist = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
+        val defaultResult =
+            MediaSession.MediaItemsWithStartPosition(
+                emptyList(),
+                0,
+                0
+            )
+        if(!context.preferences.getBoolean(persistentQueueKey, false))
+            return Futures.immediateFuture(defaultResult)
+
+        scope.future {
+                val queuedSong = database.queue()
+                if (queuedSong.isEmpty()) return@future Futures.immediateFuture(defaultResult)
+
+            val startIndex = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
+            val startPositionMs = queuedSong[startIndex].position ?: C.TIME_UNSET
+            val mediaItems = queuedSong.map { it.mediaItem.asSong.toMediaItem(isFromPersistentQueue = true) }
+
+            val resumptionPlaylist = MediaSession.MediaItemsWithStartPosition(
+                mediaItems,
+                startIndex,
+                startPositionMs
+            )
+            settablePlaylist.set(resumptionPlaylist)
+        }
+        return settablePlaylist
+    }
+
     private fun drawableUri(@DrawableRes id: Int) = Uri.Builder()
         .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
         .authority(context.resources.getResourcePackageName(id))
@@ -510,7 +547,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             )
             .build()
 
-    private fun Song.toMediaItem() =
+    private fun Song.toMediaItem(isFromPersistentQueue: Boolean = false) =
         MediaItem.Builder()
             .setMediaId(id)
             .setUri(id)
@@ -522,6 +559,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                     .setArtist(artistsText)
                     .setArtworkUri(thumbnailUrl?.toUri())
                     .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                    .setExtras(
+                        Bundle().apply {
+                            putBoolean(persistentQueueKey, isFromPersistentQueue)
+                        }
+                    )
                     .build()
             )
             .build()

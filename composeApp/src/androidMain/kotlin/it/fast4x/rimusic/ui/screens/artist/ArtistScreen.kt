@@ -78,16 +78,19 @@ import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 
@@ -528,6 +531,30 @@ fun ArtistScreen(
                                                         )
                                                     },
                                                     onClick = {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            artistPage
+                                                                ?.songsEndpoint
+                                                                ?.takeIf { it.browseId != null }
+                                                                ?.let { endpoint ->
+                                                                    Innertube.itemsPage(
+                                                                        body = BrowseBody(
+                                                                            browseId = endpoint.browseId!!,
+                                                                            params = endpoint.params,
+                                                                        ),
+                                                                        fromMusicResponsiveListItemRenderer = Innertube.SongItem::from,
+                                                                    )
+                                                                }
+                                                                ?.getOrNull()
+                                                                ?.items
+                                                                ?.map { it.asMediaItem }
+                                                                ?.let {
+                                                                    withContext(Dispatchers.Main) {
+                                                                        binder?.player?.forcePlayFromBeginning(
+                                                                            it
+                                                                        )
+                                                                    }
+                                                                }
+                                                        }
                                                     /*
                                                         binder?.stopRadio()
                                                         binder?.player?.forcePlayAtIndex(
@@ -538,9 +565,11 @@ fun ArtistScreen(
 
                                                      */
 
+                                                        /*
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlay(song.asMediaItem)
                                                     binder?.setupRadio(song.info?.endpoint)
+                                                         */
 
                                                     }
                                                 ),
