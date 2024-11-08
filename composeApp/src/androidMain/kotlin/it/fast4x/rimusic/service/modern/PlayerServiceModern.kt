@@ -1272,7 +1272,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun maybeSavePlayerQueue() {
-        //if (!isPersistentQueueEnabled) return
+        if (!isPersistentQueueEnabled) return
         /*
         if (player.playbackState == Player.STATE_IDLE) {
             Log.d("mediaItem", "QueuePersistentEnabled playbackstate idle return")
@@ -1311,7 +1311,7 @@ class PlayerServiceModern : MediaLibraryService(),
     @FlowPreview
     @UnstableApi
     private fun maybeRestorePlayerQueue() {
-        //if (!isPersistentQueueEnabled) return
+        if (!isPersistentQueueEnabled) return
 
         query {
             val queuedSong = Database.queue()
