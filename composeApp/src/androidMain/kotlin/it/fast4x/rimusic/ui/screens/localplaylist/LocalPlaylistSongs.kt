@@ -435,13 +435,9 @@ fun LocalPlaylistSongs(
         // Callback is invoked after the user selects a media item or closes the
         // photo picker.
         if (uri != null) {
-            Log.d("PhotoPicker", "Selected URI: $uri")
-
             val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
             val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
             thumbnailUrl.value = permaUri.toString()
-
-            Log.d("PhotoPicker", "Perma Uri: $permaUri")
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
