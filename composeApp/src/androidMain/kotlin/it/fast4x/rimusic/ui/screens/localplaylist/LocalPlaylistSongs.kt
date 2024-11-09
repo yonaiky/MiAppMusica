@@ -143,6 +143,7 @@ import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.resetFormatContentLength
+import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
@@ -429,7 +430,12 @@ fun LocalPlaylistSongs(
         // photo picker.
         if (uri != null) {
             Log.d("PhotoPicker", "Selected URI: $uri")
-            tempThumbnail.value = uri.toString()
+
+            val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
+            val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
+            tempThumbnail.value = permaUri.toString()
+
+            Log.d("PhotoPicker", "Perma Uri: $permaUri")
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
