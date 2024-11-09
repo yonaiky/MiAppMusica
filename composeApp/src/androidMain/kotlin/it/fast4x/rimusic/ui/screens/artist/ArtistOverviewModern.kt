@@ -610,8 +610,10 @@ fun ArtistOverviewModern(
                                                         ?.map { it.asMediaItem }
                                                         ?.let {
                                                             withContext(Dispatchers.Main) {
-                                                                binder?.player?.forcePlayFromBeginning(
-                                                                    it
+                                                                binder?.stopRadio()
+                                                                binder?.player?.forcePlay(song.asMediaItem)
+                                                                binder?.player?.addMediaItems(
+                                                                    it.filterNot { it.mediaId == song.key }
                                                                 )
                                                             }
                                                         }
