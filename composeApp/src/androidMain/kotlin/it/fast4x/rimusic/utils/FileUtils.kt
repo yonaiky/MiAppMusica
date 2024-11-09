@@ -74,6 +74,16 @@ fun checkFileExists(context: Context, filePath: String): String? {
     }
 }
 
+fun deleteFileIfExists(context: Context, filePath: String): Boolean {
+    val file = File(context.filesDir, filePath)
+
+    return if (file.exists()) {
+        file.delete()
+    } else {
+        false
+    }
+}
+
 /*
 fun tryMoveDir() {
     val from = File("/path/to/src")

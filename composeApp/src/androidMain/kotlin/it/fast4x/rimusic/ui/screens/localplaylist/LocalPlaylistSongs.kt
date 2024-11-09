@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -119,6 +118,7 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
+import it.fast4x.rimusic.utils.deleteFileIfExists
 import it.fast4x.rimusic.utils.deletePipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -439,11 +439,26 @@ fun LocalPlaylistSongs(
             val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
             thumbnailUrl.value = permaUri.toString()
         } else {
-            Log.d("PhotoPicker", "No media selected")
+            SmartMessage(context.resources.getString(R.string.thumbnail_not_selected), context = context)
         }
     }
     fun openEditThumbnailPicker() {
         editThumbnailLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    fun resetThumbnail() {
+        if(thumbnailUrl.value == ""){
+            SmartMessage(context.resources.getString(R.string.no_thumbnail_present), context = context)
+            return
+        }
+        val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
+        val retVal = deleteFileIfExists(context, thumbnailName)
+        if(retVal == true){
+            SmartMessage(context.resources.getString(R.string.removed_thumbnail), context = context)
+            thumbnailUrl.value = ""
+        } else {
+            SmartMessage(context.resources.getString(R.string.failed_to_remove_thumbnail), context = context)
+        }
     }
 
     // Search mutable
@@ -1004,6 +1019,9 @@ fun LocalPlaylistSongs(
                                             },
                                             onEditThumbnail = {
                                                 openEditThumbnailPicker()
+                                            },
+                                            onResetThumbnail = {
+                                                resetThumbnail()
                                             },
                                             showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                             onListenToYT = {
