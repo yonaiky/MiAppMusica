@@ -41,6 +41,7 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -150,6 +151,8 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
+import it.fast4x.rimusic.utils.romanizationEnabeledKey
+import me.bush.translator.Translation
 
 
 @UnstableApi
@@ -230,6 +233,8 @@ fun Lyrics(
         var translateEnabled by remember {
             mutableStateOf(false)
         }
+
+        var romanizationEnabeled by rememberPreference(romanizationEnabeledKey, false)
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
@@ -323,6 +328,46 @@ fun Lyrics(
         }
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
+
+        fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
+            LaunchedEffect(romanizationEnabeled, textToTranslate, destinationLanguage){
+                var destLanguage = destinationLanguage
+                val result = withContext(Dispatchers.IO) {
+                    try {
+                        var translation: Translation?
+                        if(destinationLanguage == Language.AUTO){
+                            translation = translator.translate(
+                                textToTranslate,
+                                Language.ENGLISH,
+                                Language.AUTO
+                            )
+                            destLanguage = translation.sourceLanguage
+                        }
+                        translation = translator.translate(
+                            textToTranslate,
+                            destLanguage,
+                            Language.AUTO
+                        )
+                        val outputText = if(romanizationEnabeled){
+                            translation.pronunciation ?: translation.translatedText
+                        }else{
+                            translation.translatedText
+                        }
+                        outputText.replace("\\r","\r")
+                    } catch (e: Exception) {
+                        if(isSync){
+                            Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
+                        } else {
+                            Timber.e("Lyrics not sync translation ${e.stackTraceToString()}")
+                        }
+                    }
+                }
+                val translatedText =
+                    if (result.toString() == "kotlin.Unit") "" else result.toString()
+                showPlaceholder = false
+                output.value = translatedText
+            }
+        }
 
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
@@ -691,23 +736,18 @@ fun Lyrics(
                         ) { index, sentence ->
                             var translatedText by remember { mutableStateOf("") }
                             if (translateEnabled) {
-                                LaunchedEffect(Unit) {
-                                    val result = withContext(Dispatchers.IO) {
-                                        try {
-                                            translator.translate(
-                                                sentence.second,
-                                                languageDestination,
-                                                Language.AUTO
-                                            ).translatedText
-                                        } catch (e: Exception) {
-                                            Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
-                                        }
-                                    }
-                                    translatedText =
-                                        if (result.toString() == "kotlin.Unit") "" else result.toString()
-                                    showPlaceholder = false
+                                val mutState = remember { mutableStateOf("") }
+                                translateLyricsWithRomanization(mutState, sentence.second, true, languageDestination)()
+                                translatedText = mutState.value
+                            } else {
+                                if (romanizationEnabeled) {
+                                    val mutState = remember { mutableStateOf("") }
+                                    translateLyricsWithRomanization(mutState, sentence.second, true)()
+                                    translatedText = mutState.value
+                                } else {
+                                    translatedText = sentence.second
                                 }
-                            } else translatedText = sentence.second
+                            }
 
                             //Rainbow Shimmer
                             val infiniteTransition = rememberInfiniteTransition()
@@ -1300,23 +1340,18 @@ fun Lyrics(
                 } else {
                     var translatedText by remember { mutableStateOf("") }
                     if (translateEnabled) {
-                        LaunchedEffect(Unit) {
-                            val result = withContext(Dispatchers.IO) {
-                                try {
-                                    translator.translate(
-                                        text,
-                                        languageDestination,
-                                        Language.AUTO
-                                    ).translatedText
-                                } catch (e: Exception) {
-                                    Timber.e("Lyrics not sync translation ${e.stackTraceToString()}")
-                                }
-                            }
-                            translatedText =
-                                if (result.toString() == "kotlin.Unit") "" else result.toString()
-                            showPlaceholder = false
+                        val mutState = remember { mutableStateOf("") }
+                        translateLyricsWithRomanization(mutState, text, false, languageDestination)()
+                        translatedText = mutState.value
+                    } else {
+                        if(romanizationEnabeled) {
+                            val mutState = remember { mutableStateOf("") }
+                            translateLyricsWithRomanization(mutState, text, false)()
+                            translatedText = mutState.value
+                        } else {
+                            translatedText = text
                         }
-                    } else translatedText = text
+                    }
 
                     Column(
                         modifier = Modifier
@@ -2029,6 +2064,16 @@ fun Lyrics(
                                             onClick = {
                                                 menuState.hide()
                                                 showLanguagesList = true
+                                            }
+                                        )
+
+                                        MenuEntry(
+                                            icon = R.drawable.translate,
+                                            text = stringResource(R.string.toggle_romanization),
+                                            enabled = true,
+                                            onClick = {
+                                                menuState.hide()
+                                                romanizationEnabeled = !romanizationEnabeled
                                             }
                                         )
 
