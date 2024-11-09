@@ -170,6 +170,7 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
@@ -444,19 +445,26 @@ class MainActivity :
                     //gl = "US" // US IMPORTANT
                 )
 
-            var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
+            if ( preferences.getBoolean(enableYouTubeLoginKey, false)
+                && encryptedPreferences.getString(ytCookieKey, "") != "" ) {
 
-            if (visitorData.isEmpty())  runBlocking {
-                Innertube.visitorData().getOrNull()?.also {
-                    visitorData = it
-                }
-            }
-
-            YoutubePreferences.preference =
-                YoutubePreferenceItem(
-                    cookie = encryptedPreferences.getString(ytCookieKey, ""),
-                    visitordata = visitorData
+                var visitorData by rememberEncryptedPreference(
+                    key = ytVisitorDataKey,
+                    defaultValue = Innertube.DEFAULT_VISITOR_DATA
                 )
+
+                if (visitorData.isEmpty()) runBlocking {
+                    Innertube.visitorData().getOrNull()?.also {
+                        visitorData = it
+                    }
+                }
+
+                YoutubePreferences.preference =
+                    YoutubePreferenceItem(
+                        cookie = encryptedPreferences.getString(ytCookieKey, ""),
+                        visitordata = visitorData
+                    )
+            }
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
