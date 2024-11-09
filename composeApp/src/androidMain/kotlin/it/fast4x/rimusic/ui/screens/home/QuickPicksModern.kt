@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -164,7 +162,7 @@ fun QuickPicksModern(
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
-    var playEventType  by rememberPreference(playEventsTypeKey, PlayEventsType.MostPlayed)
+    var playEventType by rememberPreference(playEventsTypeKey, PlayEventsType.MostPlayed)
 
     var trending by persist<Song?>("home/trending")
 
@@ -184,7 +182,7 @@ fun QuickPicksModern(
 
     var localMonthlyPlaylists by persistList<PlaylistPreview>("home/monthlyPlaylists")
     LaunchedEffect(Unit) {
-        Database.monthlyPlaylistsPreview("").collect{ localMonthlyPlaylists = it }
+        Database.monthlyPlaylistsPreview("").collect { localMonthlyPlaylists = it }
     }
 
     var downloadState by remember {
@@ -200,7 +198,10 @@ fun QuickPicksModern(
     val showPlaylistMightLike by rememberPreference(showPlaylistMightLikeKey, true)
     val showMoodsAndGenres by rememberPreference(showMoodsAndGenresKey, true)
     val showNewAlbums by rememberPreference(showNewAlbumsKey, true)
-    val showMonthlyPlaylistInQuickPicks by rememberPreference(showMonthlyPlaylistInQuickPicksKey, true)
+    val showMonthlyPlaylistInQuickPicks by rememberPreference(
+        showMonthlyPlaylistInQuickPicksKey,
+        true
+    )
     val showTips by rememberPreference(showTipsKey, true)
     val showCharts by rememberPreference(showChartsKey, true)
 
@@ -223,23 +224,25 @@ fun QuickPicksModern(
             refreshScope.launch(Dispatchers.IO) {
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
-                        Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged().collect { songs ->
-                            val song = songs.firstOrNull()
-                            if (relatedPageResult == null || trending?.id != song?.id) {
-                                relatedPageResult = Innertube.relatedPage(
-                                    NextBody(
-                                        videoId = (song?.id ?: "HZnNt9nnEhw")
+                        Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged()
+                            .collect { songs ->
+                                val song = songs.firstOrNull()
+                                if (relatedPageResult == null || trending?.id != song?.id) {
+                                    relatedPageResult = Innertube.relatedPage(
+                                        NextBody(
+                                            videoId = (song?.id ?: "HZnNt9nnEhw")
+                                        )
                                     )
-                                )
+                                }
+                                trending = song
                             }
-                            trending = song
-                        }
 
                     PlayEventsType.LastPlayed, PlayEventsType.CasualPlayed -> {
                         val numSongs = if (playEventType == PlayEventsType.LastPlayed) 3 else 100
                         Database.lastPlayed(numSongs).distinctUntilChanged().collect { songs ->
-                            val song = if (playEventType == PlayEventsType.LastPlayed) songs.firstOrNull()
-                            else songs.shuffled().firstOrNull()
+                            val song =
+                                if (playEventType == PlayEventsType.LastPlayed) songs.firstOrNull()
+                                else songs.shuffled().firstOrNull()
                             if (relatedPageResult == null || trending?.id != song?.id) {
                                 relatedPageResult =
                                     Innertube.relatedPage(
@@ -261,7 +264,8 @@ fun QuickPicksModern(
 
 
             if (showCharts)
-                chartsPageResult = Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
+                chartsPageResult =
+                    Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -346,7 +350,7 @@ fun QuickPicksModern(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth(
-                    if( NavigationBarPosition.Right.isCurrent() )
+                    if (NavigationBarPosition.Right.isCurrent())
                         Dimensions.contentWidthRightBar
                     else
                         1f
@@ -370,21 +374,20 @@ fun QuickPicksModern(
                     .background(colorPalette().background0)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
-                    /*
-                    .padding(
-                        windowInsets
-                            .only(WindowInsetsSides.Vertical)
-                            .asPaddingValues()
-                    )
-                     */
+                /*
+                .padding(
+                    windowInsets
+                        .only(WindowInsetsSides.Vertical)
+                        .asPaddingValues()
+                )
+                 */
             ) {
 
                 /*   Load data from url or from saved preference   */
                 if (relatedPreference != null && loadedData) {
                     relatedPageResult = Result.success(relatedPreference)
                     relatedInit = relatedPageResult?.getOrNull()
-                }
-                else {
+                } else {
                     relatedInit = relatedPageResult?.getOrNull()
                     relatedPreference = relatedInit
                 }
@@ -407,7 +410,7 @@ fun QuickPicksModern(
                 /*   Load data from url or from saved preference   */
 
 
-                if ( UiType.ViMusic.isCurrent() )
+                if (UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
                         title = stringResource(R.string.quick_picks),
                         iconId = R.drawable.search,
@@ -454,7 +457,8 @@ fun QuickPicksModern(
                         onClick2 = {
                             binder?.stopRadio()
                             trending?.let { binder?.player?.forcePlay(it.asMediaItem) }
-                            binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
+                            binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem }
+                                ?: emptyList())
                         }
 
                         //modifier = Modifier.fillMaxWidth(0.7f)
@@ -537,7 +541,9 @@ fun QuickPicksModern(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             query {
-                                                                Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                                                Database.resetFormatContentLength(
+                                                                    song.asMediaItem.mediaId
+                                                                )
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -548,7 +554,9 @@ fun QuickPicksModern(
                                                         disableScrollingText = disableScrollingText
                                                     )
                                                 };
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                hapticFeedback.performHapticFeedback(
+                                                    HapticFeedbackType.LongPress
+                                                )
                                             },
                                             onClick = {
                                                 val mediaItem = song.asMediaItem
@@ -560,8 +568,8 @@ fun QuickPicksModern(
                                             }
                                         )
                                         .animateItem(
-                                        fadeInSpec = null,
-                                        fadeOutSpec = null
+                                            fadeInSpec = null,
+                                            fadeOutSpec = null
                                         )
                                         .width(itemInHorizontalGridWidth),
                                     disableScrollingText = disableScrollingText
@@ -585,39 +593,6 @@ fun QuickPicksModern(
                                 val isDownloaded =
                                     if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
 
-                                Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = song.asMediaItem,
-                                                    onDownload = {
-                                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                        query {
-                                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                                        }
-                                                        manageDownload(
-                                                            context = context,
-                                                            mediaItem = song.asMediaItem,
-                                                            downloadState = isDownloaded
-                                                        )
-                                                    },
-                                                    disableScrollingText = disableScrollingText
-                                                    )
-                                            }
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        },
-                                        onClick = {
-                                            val mediaItem = song.asMediaItem
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlay(mediaItem)
-                                            binder?.setupRadio(
-                                                NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                            )
-                                        }
-                                    )
                                 SongItem(
                                     song = song,
                                     onDownloadClick = {
@@ -636,11 +611,48 @@ fun QuickPicksModern(
                                     downloadState = downloadState,
                                     thumbnailSizePx = songThumbnailSizePx,
                                     thumbnailSizeDp = songThumbnailSizeDp,
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = null,
-                                        fadeOutSpec = null
-                                    )
-                                        .width(itemInHorizontalGridWidth),
+                                    modifier = Modifier
+                                        .animateItem(
+                                            fadeInSpec = null,
+                                            fadeOutSpec = null
+                                        )
+                                        .width(itemInHorizontalGridWidth)
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                menuState.display {
+                                                    NonQueuedMediaItemMenu(
+                                                        navController = navController,
+                                                        onDismiss = menuState::hide,
+                                                        mediaItem = song.asMediaItem,
+                                                        onDownload = {
+                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                            query {
+                                                                Database.resetFormatContentLength(
+                                                                    song.asMediaItem.mediaId
+                                                                )
+                                                            }
+                                                            manageDownload(
+                                                                context = context,
+                                                                mediaItem = song.asMediaItem,
+                                                                downloadState = isDownloaded
+                                                            )
+                                                        },
+                                                        disableScrollingText = disableScrollingText
+                                                    )
+                                                }
+                                                hapticFeedback.performHapticFeedback(
+                                                    HapticFeedbackType.LongPress
+                                                )
+                                            },
+                                            onClick = {
+                                                val mediaItem = song.asMediaItem
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(mediaItem)
+                                                binder?.setupRadio(
+                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                                )
+                                            }
+                                        ),
                                     disableScrollingText = disableScrollingText
                                 )
                             }
@@ -652,54 +664,30 @@ fun QuickPicksModern(
                 }
 
 
-                    discoverPageInit?.let { page ->
+                discoverPageInit?.let { page ->
 
-                        var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
-                        page.newReleaseAlbums.forEach { album ->
-                            preferitesArtists.forEach { artist ->
-                                if (artist.name == album.authors?.first()?.name) {
-                                    newReleaseAlbumsFiltered += album
-                                }
+                    var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
+                    page.newReleaseAlbums.forEach { album ->
+                        preferitesArtists.forEach { artist ->
+                            if (artist.name == album.authors?.first()?.name) {
+                                newReleaseAlbumsFiltered += album
                             }
                         }
+                    }
 
-                        if (showNewAlbumsArtists)
-                            if (newReleaseAlbumsFiltered.isNotEmpty() && preferitesArtists.isNotEmpty()) {
+                    if (showNewAlbumsArtists)
+                        if (newReleaseAlbumsFiltered.isNotEmpty() && preferitesArtists.isNotEmpty()) {
 
-                                BasicText(
-                                    text = stringResource(R.string.new_albums_of_your_artists),
-                                    style = typography().l.semiBold,
-                                    modifier = sectionTextModifier
-                                )
-
-                                LazyRow(contentPadding = endPaddingValues) {
-                                    items(
-                                        items = newReleaseAlbumsFiltered.distinctBy { it.key },
-                                        key = { it.key }) {
-                                        AlbumItem(
-                                            album = it,
-                                            thumbnailSizePx = albumThumbnailSizePx,
-                                            thumbnailSizeDp = albumThumbnailSizeDp,
-                                            alternative = true,
-                                            modifier = Modifier.clickable(onClick = {
-                                                onAlbumClick(it.key)
-                                            }),
-                                            disableScrollingText = disableScrollingText
-                                        )
-                                    }
-                                }
-
-                            }
-
-                        if (showNewAlbums) {
-                            Title(
-                                title = stringResource(R.string.new_albums),
-                                onClick = { navController.navigate(NavRoutes.newAlbums.name) },
-                                //modifier = Modifier.fillMaxWidth(0.7f)
+                            BasicText(
+                                text = stringResource(R.string.new_albums_of_your_artists),
+                                style = typography().l.semiBold,
+                                modifier = sectionTextModifier
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {
-                                items(items = page.newReleaseAlbums.distinctBy { it.key }, key = { it.key }) {
+                                items(
+                                    items = newReleaseAlbumsFiltered.distinctBy { it.key },
+                                    key = { it.key }) {
                                     AlbumItem(
                                         album = it,
                                         thumbnailSizePx = albumThumbnailSizePx,
@@ -712,89 +700,115 @@ fun QuickPicksModern(
                                     )
                                 }
                             }
+
+                        }
+
+                    if (showNewAlbums) {
+                        Title(
+                            title = stringResource(R.string.new_albums),
+                            onClick = { navController.navigate(NavRoutes.newAlbums.name) },
+                            //modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = page.newReleaseAlbums.distinctBy { it.key },
+                                key = { it.key }) {
+                                AlbumItem(
+                                    album = it,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier.clickable(onClick = {
+                                        onAlbumClick(it.key)
+                                    }),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (showRelatedAlbums)
+                    relatedInit?.albums?.let { albums ->
+                        BasicText(
+                            text = stringResource(R.string.related_albums),
+                            style = typography().l.semiBold,
+                            modifier = sectionTextModifier
+                        )
+
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = albums.distinctBy { it.key },
+                                key = Innertube.AlbumItem::key
+                            ) { album ->
+                                AlbumItem(
+                                    album = album,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onAlbumClick(album.key) }),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
                         }
                     }
 
-                    if (showRelatedAlbums)
-                        relatedInit?.albums?.let { albums ->
-                            BasicText(
-                                text = stringResource(R.string.related_albums),
-                                style = typography().l.semiBold,
-                                modifier = sectionTextModifier
-                            )
+                if (showSimilarArtists)
+                    relatedInit?.artists?.let { artists ->
+                        BasicText(
+                            text = stringResource(R.string.similar_artists),
+                            style = typography().l.semiBold,
+                            modifier = sectionTextModifier
+                        )
 
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(
-                                    items = albums.distinctBy { it.key },
-                                    key = Innertube.AlbumItem::key
-                                ) { album ->
-                                    AlbumItem(
-                                        album = album,
-                                        thumbnailSizePx = albumThumbnailSizePx,
-                                        thumbnailSizeDp = albumThumbnailSizeDp,
-                                        alternative = true,
-                                        modifier = Modifier
-                                            .clickable(onClick = { onAlbumClick(album.key) }),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = artists.distinctBy { it.key },
+                                key = Innertube.ArtistItem::key,
+                            ) { artist ->
+                                ArtistItem(
+                                    artist = artist,
+                                    thumbnailSizePx = artistThumbnailSizePx,
+                                    thumbnailSizeDp = artistThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onArtistClick(artist.key) }),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
+                    }
 
-                    if (showSimilarArtists)
-                        relatedInit?.artists?.let { artists ->
-                            BasicText(
-                                text = stringResource(R.string.similar_artists),
-                                style = typography().l.semiBold,
-                                modifier = sectionTextModifier
-                            )
+                if (showPlaylistMightLike)
+                    relatedInit?.playlists?.let { playlists ->
+                        BasicText(
+                            text = stringResource(R.string.playlists_you_might_like),
+                            style = typography().l.semiBold,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 24.dp, bottom = 8.dp)
+                        )
 
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(
-                                    items = artists.distinctBy { it.key },
-                                    key = Innertube.ArtistItem::key,
-                                ) { artist ->
-                                    ArtistItem(
-                                        artist = artist,
-                                        thumbnailSizePx = artistThumbnailSizePx,
-                                        thumbnailSizeDp = artistThumbnailSizeDp,
-                                        alternative = true,
-                                        modifier = Modifier
-                                            .clickable(onClick = { onArtistClick(artist.key) }),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = playlists.distinctBy { it.key },
+                                key = Innertube.PlaylistItem::key,
+                            ) { playlist ->
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = playlistThumbnailSizePx,
+                                    thumbnailSizeDp = playlistThumbnailSizeDp,
+                                    alternative = true,
+                                    showSongsCount = false,
+                                    modifier = Modifier
+                                        .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
-
-                    if (showPlaylistMightLike)
-                        relatedInit?.playlists?.let { playlists ->
-                            BasicText(
-                                text = stringResource(R.string.playlists_you_might_like),
-                                style = typography().l.semiBold,
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .padding(top = 24.dp, bottom = 8.dp)
-                            )
-
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(
-                                    items = playlists.distinctBy { it.key },
-                                    key = Innertube.PlaylistItem::key,
-                                ) { playlist ->
-                                    PlaylistItem(
-                                        playlist = playlist,
-                                        thumbnailSizePx = playlistThumbnailSizePx,
-                                        thumbnailSizeDp = playlistThumbnailSizeDp,
-                                        alternative = true,
-                                        showSongsCount = false,
-                                        modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
-                            }
-                        }
+                    }
 
 
 
@@ -858,10 +872,11 @@ fun QuickPicksModern(
                                         thumbnailSizeDp = playlistThumbnailSizeDp,
                                         thumbnailSizePx = playlistThumbnailSizePx,
                                         alternative = true,
-                                        modifier = Modifier.animateItem(
-                                            fadeInSpec = null,
-                                            fadeOutSpec = null
-                                        )
+                                        modifier = Modifier
+                                            .animateItem(
+                                                fadeInSpec = null,
+                                                fadeOutSpec = null
+                                            )
                                             .fillMaxSize()
                                             .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
                                         disableScrollingText = disableScrollingText
@@ -938,7 +953,9 @@ fun QuickPicksModern(
 
                                 LazyHorizontalGrid(
                                     rows = GridCells.Fixed(2),
-                                    modifier = Modifier.height(130.dp).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .height(130.dp)
+                                        .fillMaxWidth(),
                                     state = chartsPageSongLazyGridState,
                                     flingBehavior = ScrollableDefaults.flingBehavior(),
                                 ) {
@@ -1000,7 +1017,9 @@ fun QuickPicksModern(
 
                                 LazyHorizontalGrid(
                                     rows = GridCells.Fixed(2),
-                                    modifier = Modifier.height(130.dp).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .height(130.dp)
+                                        .fillMaxWidth(),
                                     state = chartsPageArtistLazyGridState,
                                     flingBehavior = ScrollableDefaults.flingBehavior(),
                                 ) {
@@ -1039,7 +1058,7 @@ fun QuickPicksModern(
                     }
                 }
 
-                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
 
                 //} ?:
@@ -1099,13 +1118,11 @@ fun QuickPicksModern(
                  */
 
 
-
-
             }
 
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+            if (UiType.ViMusic.isCurrent() && showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,
@@ -1113,13 +1130,13 @@ fun QuickPicksModern(
                     onClickSearch = onSearchClick
                 )
 
-                /*
-                FloatingActionsContainerWithScrollToTop(
-                    scrollState = scrollState,
-                    iconId = R.drawable.search,
-                    onClick = onSearchClick
-                )
-                 */
+            /*
+            FloatingActionsContainerWithScrollToTop(
+                scrollState = scrollState,
+                iconId = R.drawable.search,
+                onClick = onSearchClick
+            )
+             */
 
         }
 
