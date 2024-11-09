@@ -64,6 +64,16 @@ fun saveImageToInternalStorage(context: Context, imageUri: Uri, thumbnailName: S
     }
 }
 
+fun checkFileExists(context: Context, filePath: String): String? {
+    val file = File(context.filesDir, filePath)
+
+    return if (file.exists()) {
+        file.toURI().toString()
+    } else {
+        null
+    }
+}
+
 /*
 fun tryMoveDir() {
     val from = File("/path/to/src")

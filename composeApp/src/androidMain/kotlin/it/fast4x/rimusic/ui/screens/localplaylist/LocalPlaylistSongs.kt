@@ -116,6 +116,7 @@ import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deletePipedPlaylist
@@ -206,8 +207,7 @@ fun LocalPlaylistSongs(
     // Playlist non-vital
     val playlistName = remember { mutableStateOf( "" ) }
     var listMediaItems = remember { mutableListOf<MediaItem>() }
-
-    var tempThumbnail = remember { mutableStateOf("") }
+    val thumbnailUrl = remember { mutableStateOf("") }
 
     LaunchedEffect( playlistPreview?.playlist?.name ) {
         playlistName.value =
@@ -220,6 +220,12 @@ fun LocalPlaylistSongs(
                         name.substringAfter( PINNED_PREFIX )
                             .substringAfter( PIPED_PREFIX )
                 } ?: "Unknown"
+
+        val thumbnailName = "thumbnail_${playlistId}"
+        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
+        if (presentThumbnailUrl != null) {
+            thumbnailUrl.value = presentThumbnailUrl
+        }
     }
 
     // Search states
@@ -433,7 +439,7 @@ fun LocalPlaylistSongs(
 
             val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
             val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
-            tempThumbnail.value = permaUri.toString()
+            thumbnailUrl.value = permaUri.toString()
 
             Log.d("PhotoPicker", "Perma Uri: $permaUri")
         } else {
@@ -682,7 +688,7 @@ fun LocalPlaylistSongs(
                                 modifier = Modifier
                                     .padding(top = 14.dp),
                                 disableScrollingText = disableScrollingText,
-                                thumbnailUrl = if (tempThumbnail.value == "") null else tempThumbnail.value
+                                thumbnailUrl = if (thumbnailUrl.value == "") null else thumbnailUrl.value
                             )
                         }
 
