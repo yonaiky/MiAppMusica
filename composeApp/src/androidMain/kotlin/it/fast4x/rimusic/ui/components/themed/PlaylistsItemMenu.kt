@@ -86,6 +86,7 @@ fun PlaylistsItemMenu(
     onListenToYT: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null,
+    onEditThumbnail: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
@@ -123,6 +124,7 @@ fun PlaylistsItemMenu(
             onListenToYT = onListenToYT,
             onExport = onExport,
             onImport = onImport,
+            onEditThumbnail = onEditThumbnail,
             onGoToPlaylist = onGoToPlaylist,
             disableScrollingText = disableScrollingText
         )
@@ -551,6 +553,17 @@ fun PlaylistsItemMenu(
                             onClick = {
                                 onDismiss()
                                 onImport()
+                            }
+                        )
+                    }
+
+                    onEditThumbnail?.let {
+                        MenuEntry(
+                            icon = R.drawable.image,
+                            text = stringResource(R.string.edit_thumbnail),
+                            onClick = {
+                                onDismiss()
+                                onEditThumbnail()
                             }
                         )
                     }

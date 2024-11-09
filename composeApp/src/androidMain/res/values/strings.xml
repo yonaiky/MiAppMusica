@@ -763,4 +763,5 @@
     <string name="actionbar">Action Bar</string>
     <string name="center">Center</string>
     <string name="lyricsalignment">Lyrics Alignment</string>
+    <string name="edit_thumbnail">Edit Thumbnail</string>
 </resources>
