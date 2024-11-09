@@ -1,7 +1,9 @@
 package it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -114,6 +116,7 @@ import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deletePipedPlaylist
@@ -141,6 +144,7 @@ import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.resetFormatContentLength
+import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
@@ -203,6 +207,7 @@ fun LocalPlaylistSongs(
     // Playlist non-vital
     val playlistName = remember { mutableStateOf( "" ) }
     var listMediaItems = remember { mutableListOf<MediaItem>() }
+    val thumbnailUrl = remember { mutableStateOf("") }
 
     LaunchedEffect( playlistPreview?.playlist?.name ) {
         playlistName.value =
@@ -215,6 +220,12 @@ fun LocalPlaylistSongs(
                         name.substringAfter( PINNED_PREFIX )
                             .substringAfter( PIPED_PREFIX )
                 } ?: "Unknown"
+
+        val thumbnailName = "thumbnail_${playlistId}"
+        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
+        if (presentThumbnailUrl != null) {
+            thumbnailUrl.value = presentThumbnailUrl
+        }
     }
 
     // Search states
@@ -417,6 +428,26 @@ fun LocalPlaylistSongs(
                 else
                     emptyList()
         }
+    }
+    val editThumbnailLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
+
+            val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
+            val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
+            thumbnailUrl.value = permaUri.toString()
+
+            Log.d("PhotoPicker", "Perma Uri: $permaUri")
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
+    fun openEditThumbnailPicker() {
+        editThumbnailLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     // Search mutable
@@ -656,7 +687,8 @@ fun LocalPlaylistSongs(
                                 showName = false,
                                 modifier = Modifier
                                     .padding(top = 14.dp),
-                                disableScrollingText = disableScrollingText
+                                disableScrollingText = disableScrollingText,
+                                thumbnailUrl = if (thumbnailUrl.value == "") null else thumbnailUrl.value
                             )
                         }
 
@@ -973,6 +1005,9 @@ fun LocalPlaylistSongs(
                                                 SmartToast(context.resources.getString(R.string.info_cannot_delete_a_monthly_playlist))
 
                                              */
+                                            },
+                                            onEditThumbnail = {
+                                                openEditThumbnailPicker()
                                             },
                                             showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
                                             onListenToYT = {

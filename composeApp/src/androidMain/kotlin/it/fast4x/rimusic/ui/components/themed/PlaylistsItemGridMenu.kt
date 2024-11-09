@@ -90,6 +90,7 @@ fun PlaylistsItemGridMenu(
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null,
     onImportFavorites: (() -> Unit)? = null,
+    onEditThumbnail: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     disableScrollingText: Boolean
     ) {
@@ -503,6 +504,18 @@ fun PlaylistsItemGridMenu(
                     )
                 }
 
+                onEditThumbnail?.let { onEditThumbnail ->
+                    GridMenuItem(
+                        icon = R.drawable.image,
+                        title = R.string.edit_thumbnail,
+                        colorIcon = colorPalette.text,
+                        colorText = colorPalette.text,
+                        onClick = {
+                            onDismiss()
+                            onEditThumbnail()
+                        }
+                    )
+                }
             }
 
         }
