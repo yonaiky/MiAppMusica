@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.service.modern
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -17,9 +18,11 @@ import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -432,8 +435,11 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
 
+        maybeRestorePlayerQueue()
+
         maybeResumePlaybackWhenDeviceConnected()
 
+        /* Queue is saved in events without scheduling it (remove this in future)*/
         // Load persistent queue when start activity and save periodically in background
         if (isPersistentQueueEnabled) {
             maybeRestorePlayerQueue()
@@ -457,6 +463,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
              */
         }
+
 
     }
 
@@ -1272,6 +1279,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun maybeSavePlayerQueue() {
+        println("PlayerServiceModern onCreate savePersistentQueue")
         if (!isPersistentQueueEnabled) return
         /*
         if (player.playbackState == Player.STATE_IDLE) {
@@ -1335,14 +1343,25 @@ class PlayerServiceModern : MediaLibraryService(),
                 )
                 player.prepare()
 
+                /*
                 runCatching {
                     ContextCompat.startForegroundService(
                         this@PlayerServiceModern,
                         intent<PlayerServiceModern>()
                     )
+                    startForeground(
+                        NotificationId,
+                        Notification.Builder(this@PlayerServiceModern, NotificationChannelId)
+                            .setSmallIcon(R.drawable.app_icon)
+                            .setContentTitle("RiMusic")
+                            .setContentText("Loading...")
+                            .build()
+                    )
+                    updateNotification()
                 }.onFailure {
-                    Timber.e("maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
+                    Timber.e("PlayerServiceModern maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
                 }
+                */
 
             }
         }
