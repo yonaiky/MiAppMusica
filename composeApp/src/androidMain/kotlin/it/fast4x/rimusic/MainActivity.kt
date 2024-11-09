@@ -73,6 +73,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -183,6 +184,7 @@ import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.loadedDataKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
@@ -348,6 +350,9 @@ class MainActivity :
         ExperimentalMaterial3Api::class
     )
     fun startApp() {
+
+        // Used in QuickPics for load data from remote instead of last saved in SharedPreferences
+        preferences.edit(commit = true) { putBoolean(loadedDataKey, false) }
 
         if (!preferences.getBoolean(closeWithBackButtonKey, false))
             if (Build.VERSION.SDK_INT >= 33) {

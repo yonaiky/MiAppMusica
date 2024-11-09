@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -109,9 +110,13 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.loadedDataKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
+import it.fast4x.rimusic.utils.quickPicsChartsPageKey
+import it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
+import it.fast4x.rimusic.utils.quickPicsRelatedPageKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.selectedCountryCodeKey
@@ -164,11 +169,16 @@ fun QuickPicksModern(
     var trending by persist<Song?>("home/trending")
 
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
-    var related by persist<Innertube.RelatedPage?>(tag = "home/relatedPage")
+    var relatedInit by persist<Innertube.RelatedPage?>(tag = "home/relatedPage")
+    var relatedPreference by rememberPreference(quickPicsRelatedPageKey, relatedInit)
 
-    var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discoveryAlbums")
+    var discoverPageResult by persist<Result<Innertube.DiscoverPage?>>("home/discoveryAlbums")
+    var discoverPageInit by persist<Innertube.DiscoverPage>("home/discoveryAlbums")
+    var discoverPagePreference by rememberPreference(quickPicsDiscoverPageKey, discoverPageInit)
 
-    var chartsPage by persist<Result<Innertube.ChartsPage>?>("home/chartsPage")
+    var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
+    var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
+    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
 
     var preferitesArtists by persistList<Artist>("home/artists")
 
@@ -203,7 +213,12 @@ fun QuickPicksModern(
 
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
+    //var loadedData by rememberSaveable { mutableStateOf(false) }
+    var loadedData by rememberPreference(loadedDataKey, false)
+
     suspend fun loadData() {
+        if (loadedData) return
+
         runCatching {
             refreshScope.launch(Dispatchers.IO) {
                 when (playEventType) {
@@ -240,15 +255,19 @@ fun QuickPicksModern(
                 }
             }
 
-            if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres)
-                discoverPage = Innertube.discoverPage()
+            if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
+                discoverPageResult = Innertube.discoverPage()
+            }
 
 
             if (showCharts)
-                chartsPage = Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
+                chartsPageResult = Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
+            loadedData = false
+        }.onSuccess {
+            loadedData = true
         }
     }
 
@@ -260,6 +279,10 @@ fun QuickPicksModern(
 
     fun refresh() {
         if (refreshing) return
+        loadedData = false
+        relatedPageResult = null
+        relatedInit = null
+        trending = null
         refreshScope.launch(Dispatchers.IO) {
             refreshing = true
             loadData()
@@ -304,7 +327,7 @@ fun QuickPicksModern(
             it.value.state == Download.STATE_COMPLETED
         }.keys.toList()
     }
-    var cachedSongs = remember {
+    val cachedSongs = remember {
         binder?.cache?.keys?.toMutableList()
     }
     cachedSongs?.addAll(downloadedSongs)
@@ -356,8 +379,33 @@ fun QuickPicksModern(
                      */
             ) {
 
-                //relatedPageResult?.getOrNull()?.let { related ->
-                related = relatedPageResult?.getOrNull()
+                /*   Load data from url or from saved preference   */
+                if (relatedPreference != null && loadedData) {
+                    relatedPageResult = Result.success(relatedPreference)
+                    relatedInit = relatedPageResult?.getOrNull()
+                }
+                else {
+                    relatedInit = relatedPageResult?.getOrNull()
+                    relatedPreference = relatedInit
+                }
+
+                if (discoverPagePreference != null && loadedData) {
+                    discoverPageResult = Result.success(discoverPagePreference)
+                    discoverPageInit = discoverPageResult?.getOrNull()
+                } else {
+                    discoverPageInit = discoverPageResult?.getOrNull()
+                    discoverPagePreference = discoverPageInit
+                }
+
+                if (chartsPagePreference != null && loadedData) {
+                    chartsPageResult = Result.success(chartsPagePreference)
+                    chartsPageInit = chartsPageResult?.getOrNull()
+                } else {
+                    chartsPageInit = chartsPageResult?.getOrNull()
+                    chartsPagePreference = chartsPageInit
+                }
+                /*   Load data from url or from saved preference   */
+
 
                 if ( UiType.ViMusic.isCurrent() )
                     HeaderWithIcon(
@@ -406,7 +454,7 @@ fun QuickPicksModern(
                         onClick2 = {
                             binder?.stopRadio()
                             trending?.let { binder?.player?.forcePlay(it.asMediaItem) }
-                            binder?.player?.addMediaItems(related?.songs?.map { it.asMediaItem } ?: emptyList())
+                            binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
                         }
 
                         //modifier = Modifier.fillMaxWidth(0.7f)
@@ -429,12 +477,12 @@ fun QuickPicksModern(
 
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
-                        rows = GridCells.Fixed(if (related != null) 3 else 1),
+                        rows = GridCells.Fixed(if (relatedInit != null) 3 else 1),
                         flingBehavior = ScrollableDefaults.flingBehavior(),
                         contentPadding = endPaddingValues,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(if (related != null) Dimensions.itemsVerticalPadding * 3 * 9 else Dimensions.itemsVerticalPadding * 9)
+                            .height(if (relatedInit != null) Dimensions.itemsVerticalPadding * 3 * 9 else Dimensions.itemsVerticalPadding * 9)
                         //.height((songThumbnailSizeDp + Dimensions.itemsVerticalPadding * 2) * 4)
                     ) {
                         trending?.let { song ->
@@ -521,9 +569,9 @@ fun QuickPicksModern(
                             }
                         }
 
-                        if (related != null) {
+                        if (relatedInit != null) {
                             items(
-                                items = related?.songs?.distinctBy { it.key }?.filter {
+                                items = relatedInit?.songs?.distinctBy { it.key }?.filter {
                                     if (cachedSongs != null) {
                                         cachedSongs.indexOf(it.asMediaItem.mediaId) < 0
                                     } else true
@@ -537,6 +585,39 @@ fun QuickPicksModern(
                                 val isDownloaded =
                                     if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
 
+                                Modifier
+                                    .combinedClickable(
+                                        onLongClick = {
+                                            menuState.display {
+                                                NonQueuedMediaItemMenu(
+                                                    navController = navController,
+                                                    onDismiss = menuState::hide,
+                                                    mediaItem = song.asMediaItem,
+                                                    onDownload = {
+                                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                                        query {
+                                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                                        }
+                                                        manageDownload(
+                                                            context = context,
+                                                            mediaItem = song.asMediaItem,
+                                                            downloadState = isDownloaded
+                                                        )
+                                                    },
+                                                    disableScrollingText = disableScrollingText
+                                                    )
+                                            }
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        },
+                                        onClick = {
+                                            val mediaItem = song.asMediaItem
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(mediaItem)
+                                            binder?.setupRadio(
+                                                NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                            )
+                                        }
+                                    )
                                 SongItem(
                                     song = song,
                                     onDownloadClick = {
@@ -555,40 +636,10 @@ fun QuickPicksModern(
                                     downloadState = downloadState,
                                     thumbnailSizePx = songThumbnailSizePx,
                                     thumbnailSizeDp = songThumbnailSizeDp,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    NonQueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        onDismiss = menuState::hide,
-                                                        mediaItem = song.asMediaItem,
-                                                        onDownload = {
-                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            query {
-                                                                Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                                            }
-                                                            manageDownload(
-                                                                context = context,
-                                                                mediaItem = song.asMediaItem,
-                                                                downloadState = isDownloaded
-                                                            )
-                                                        },
-                                                        disableScrollingText = disableScrollingText
-                                                        )
-                                                }
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            },
-                                            onClick = {
-                                                val mediaItem = song.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.setupRadio(
-                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                                )
-                                            }
-                                        )
-                                        .animateItemPlacement()
+                                    modifier = Modifier.animateItem(
+                                        fadeInSpec = null,
+                                        fadeOutSpec = null
+                                    )
                                         .width(itemInHorizontalGridWidth),
                                     disableScrollingText = disableScrollingText
                                 )
@@ -596,22 +647,13 @@ fun QuickPicksModern(
                         }
                     }
 
-                    if (related == null) {
-                        Loader()
-                        /*
-                        BasicText(
-                            text = stringResource(R.string.sorry_tips_are_not_available),
-                            style = typography().xs.semiBold.center,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(all = 16.dp)
-                        )
+                    if (relatedInit == null) Loader()
 
-                         */
-                    }
                 }
 
-                    discoverPage?.getOrNull()?.let { page ->
+
+                    discoverPageInit?.let { page ->
+
                         var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
                         page.newReleaseAlbums.forEach { album ->
                             preferitesArtists.forEach { artist ->
@@ -674,7 +716,7 @@ fun QuickPicksModern(
                     }
 
                     if (showRelatedAlbums)
-                        related?.albums?.let { albums ->
+                        relatedInit?.albums?.let { albums ->
                             BasicText(
                                 text = stringResource(R.string.related_albums),
                                 style = typography().l.semiBold,
@@ -700,7 +742,7 @@ fun QuickPicksModern(
                         }
 
                     if (showSimilarArtists)
-                        related?.artists?.let { artists ->
+                        relatedInit?.artists?.let { artists ->
                             BasicText(
                                 text = stringResource(R.string.similar_artists),
                                 style = typography().l.semiBold,
@@ -726,7 +768,7 @@ fun QuickPicksModern(
                         }
 
                     if (showPlaylistMightLike)
-                        related?.playlists?.let { playlists ->
+                        relatedInit?.playlists?.let { playlists ->
                             BasicText(
                                 text = stringResource(R.string.playlists_you_might_like),
                                 style = typography().l.semiBold,
@@ -757,7 +799,8 @@ fun QuickPicksModern(
 
 
                 if (showMoodsAndGenres)
-                    discoverPage?.getOrNull()?.let { page ->
+                    discoverPageInit?.let { page ->
+
                         if (page.moods.isNotEmpty()) {
 
                             Title(
@@ -828,8 +871,10 @@ fun QuickPicksModern(
                         }
                     }
 
-                if (showCharts)
-                    chartsPage?.getOrNull()?.let { page ->
+                if (showCharts) {
+
+                    chartsPageInit?.let { page ->
+
                         Title(
                             title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
                             onClick = {
@@ -841,7 +886,6 @@ fun QuickPicksModern(
                                                 text = country.countryName,
                                                 onClick = {
                                                     selectedCountryCode = country
-                                                    chartsPage = null
                                                     menuState.hide()
                                                 }
                                             )
@@ -900,7 +944,11 @@ fun QuickPicksModern(
                                 ) {
                                     itemsIndexed(
                                         items = if (parentalControlEnabled)
-                                            songs.filter { !it.asSong.title.startsWith(EXPLICIT_PREFIX) }.distinctBy { it.key }
+                                            songs.filter {
+                                                !it.asSong.title.startsWith(
+                                                    EXPLICIT_PREFIX
+                                                )
+                                            }.distinctBy { it.key }
                                         else songs.distinctBy { it.key },
                                         key = { _, song -> song.key }
                                     ) { index, song ->
@@ -911,7 +959,9 @@ fun QuickPicksModern(
                                         ) {
                                             BasicText(
                                                 text = "${index + 1}",
-                                                style = typography().l.bold.center.color(colorPalette().text),
+                                                style = typography().l.bold.center.color(
+                                                    colorPalette().text
+                                                ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -965,7 +1015,9 @@ fun QuickPicksModern(
                                         ) {
                                             BasicText(
                                                 text = "${index + 1}",
-                                                style = typography().l.bold.center.color(colorPalette().text),
+                                                style = typography().l.bold.center.color(
+                                                    colorPalette().text
+                                                ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -985,6 +1037,7 @@ fun QuickPicksModern(
                             }
                         }
                     }
+                }
 
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 

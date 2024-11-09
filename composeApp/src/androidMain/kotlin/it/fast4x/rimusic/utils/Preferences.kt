@@ -9,6 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
+import com.google.gson.Gson
+import it.fast4x.innertube.Innertube
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
@@ -283,7 +285,12 @@ const val enableYouTubeLoginKey = "enableYoutubeLogin"
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 
+const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
+const val quickPicsChartsPageKey = "quickPicsChartsPage"
+const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
+const val loadedDataKey = "loadedData"
 
+/*
 @PublishedApi
 internal val defaultJson = Json {
     isLenient = true
@@ -321,7 +328,7 @@ inline fun <reified T : Json> SharedPreferences.getJson(
             null
         }
     } ?: defaultValue
-
+*/
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,
@@ -344,12 +351,65 @@ inline fun <reified T : Enum<T>> SharedPreferences.Editor.putEnum(
 val Context.preferences: SharedPreferences
     get() = getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
+/*
 @Composable
 inline fun <reified T : Json> rememberPreference(key: String, defaultValue: T, json: Json = defaultJson): MutableState<T> {
     val context = LocalContext.current
     return remember {
         mutableStatePreferenceOf(context.preferences.getJson(key, defaultValue)) {
             context.preferences.edit { putJson(key, it) }
+        }
+    }
+}
+*/
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Innertube.DiscoverPage?): MutableState<Innertube.DiscoverPage?> {
+    val context = LocalContext.current
+    val gson = Gson()
+    val json = gson.toJson(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            gson.fromJson(
+                context.preferences.getString(key, json),
+                Innertube.DiscoverPage::class.java
+            )
+        ) {
+            context.preferences.edit { putString(key, gson.toJson(it)) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Innertube.ChartsPage?): MutableState<Innertube.ChartsPage?> {
+    val context = LocalContext.current
+    val gson = Gson()
+    val json = gson.toJson(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            gson.fromJson(
+                context.preferences.getString(key, json),
+                Innertube.ChartsPage::class.java
+            )
+        ) {
+            context.preferences.edit { putString(key, gson.toJson(it)) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Innertube.RelatedPage?): MutableState<Innertube.RelatedPage?> {
+    val context = LocalContext.current
+    val gson = Gson()
+    val json = gson.toJson(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            gson.fromJson(
+                context.preferences.getString(key, json),
+                Innertube.RelatedPage::class.java
+            )
+        ) {
+            context.preferences.edit { putString(key, gson.toJson(it)) }
         }
     }
 }
