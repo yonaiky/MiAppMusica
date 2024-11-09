@@ -265,9 +265,9 @@ class PlayerServiceModern : MediaLibraryService(),
                 NotificationChannelId,
                 R.string.player
             )
-                .apply {
-                    setSmallIcon(R.drawable.app_icon)
-                }
+            .apply {
+                setSmallIcon(R.drawable.app_icon)
+            }
         )
 
         runCatching {
