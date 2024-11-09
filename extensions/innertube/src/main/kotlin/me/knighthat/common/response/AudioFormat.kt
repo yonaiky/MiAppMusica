@@ -2,10 +2,10 @@ package me.knighthat.common.response
 
 interface AudioFormat: Comparable<AudioFormat> {
 
-    val itag: UByte
-    val url: String
-    val mimeType: String
-    val codec: String
+    val itag: UByte?
+    val url: String?
+    val mimeType: String?
+    val codec: String?
     val bitrate: Int
 
     /**
