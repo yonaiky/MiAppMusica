@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Oynatma sırasındaki şarkıları otomatik yükle</string>
     <string name="player_auto_load_songs_in_queue_description">Oynatma sırası bitmeye yaklaştığında yeni şarkılar ekle</string>
     <string name="show_vinyl_thumbnail_animation">Kapak resmi olarak plak animasyonu göster</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
