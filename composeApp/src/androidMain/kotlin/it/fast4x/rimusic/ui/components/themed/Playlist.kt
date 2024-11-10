@@ -46,6 +46,8 @@ fun Playlist(
                 AsyncImage(
                     model = thumbnailUrl.thumbnail(thumbnailSizePx),
                     contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop,
                 )
             } else if (thumbnails.toSet().size == 1) {
