@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Aggiunta automatica brani nella coda</string>
     <string name="player_auto_load_songs_in_queue_description">Aggiunge brani quando la coda sta per terminare</string>
     <string name="show_vinyl_thumbnail_animation">Mostra animazione vinile come miniatura</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
