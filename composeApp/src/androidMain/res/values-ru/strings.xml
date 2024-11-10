@@ -765,11 +765,17 @@
     <string name="actionbar">Панель действий</string>
     <string name="center">По центру</string>
     <string name="lyricsalignment">Выравнивание текста песен</string>
-    <string name="lang_azerbaijani">Азербайджанский (Azərbaycan)</string>
+    <string name="lang_azerbaijani">Азербайджанский</string>
     <string name="translators">Переводчики</string>
-    <string name="lang_tamil">Тамильский (Tamil)</string>
+    <string name="lang_tamil">Тамильский</string>
     <string name="player_auto_load_songs_in_queue">Автоматическая загрузка песен в очередь</string>
     <string name="player_auto_load_songs_in_queue_description">Добавляет треки, когда очередь подходит к концу</string>
     <string name="show_vinyl_thumbnail_animation"> Показать анимацию винила в виде миниатюры</string>
     <string name="toggle_romanization">Переключить романизацию</string>
+    <string name="edit_thumbnail">Редактировать миниатюру</string>
+    <string name="thumbnail_not_selected">Миниатюра не выбрана</string>
+    <string name="reset_thumbnail">Сброс миниатюры</string>
+    <string name="no_thumbnail_present">Миниатюра отсутствует</string>
+    <string name="removed_thumbnail">Миниатюра удалена</string>
+    <string name="failed_to_remove_thumbnail">Не удалось удалить миниатюру</string>
 </resources>
