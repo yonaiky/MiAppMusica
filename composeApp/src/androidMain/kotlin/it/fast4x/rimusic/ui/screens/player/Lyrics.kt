@@ -874,7 +874,7 @@ fun Lyrics(
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -908,7 +908,7 @@ fun Lyrics(
                                     )
                                 else if ((lyricsColor == LyricsColor.White) || (lyricsColor == LyricsColor.Black) || (lyricsColor == LyricsColor.Accent) || (lyricsColor == LyricsColor.Thememode))
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -1007,7 +1007,7 @@ fun Lyrics(
                                     )
                                 else
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle(
                                             textAlign = lyricsAlignment.selected,
                                             brush = if (colorPaletteMode == ColorPaletteMode.Light) brushrainbow else brushrainbowdark
@@ -1086,7 +1086,7 @@ fun Lyrics(
 
                                     } else if ((lyricsOutline == LyricsOutline.White) || (lyricsOutline == LyricsOutline.Black) || (lyricsOutline == LyricsOutline.Thememode))
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 drawStyle = Stroke(
@@ -1224,7 +1224,7 @@ fun Lyrics(
                                         )
                                     else if (lyricsOutline == LyricsOutline.Rainbow)
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 brush = brushrainbowdark,
@@ -1271,7 +1271,7 @@ fun Lyrics(
                                         )
                                     else //For Glow Outline//
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 shadow = Shadow(
