@@ -220,7 +220,7 @@ fun LocalPlaylistSongs(
                             .substringAfter( PIPED_PREFIX )
                 } ?: "Unknown"
 
-        val thumbnailName = "thumbnail_${playlistId}"
+        val thumbnailName = "thumbnail/playlist_${playlistId}"
         val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
         if (presentThumbnailUrl != null) {
             thumbnailUrl.value = presentThumbnailUrl
@@ -434,8 +434,8 @@ fun LocalPlaylistSongs(
         // Callback is invoked after the user selects a media item or closes the
         // photo picker.
         if (uri != null) {
-            val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
-            val permaUri = saveImageToInternalStorage(context, uri, thumbnailName)
+            val thumbnailName = "playlist_${playlistPreview?.playlist?.id}"
+            val permaUri = saveImageToInternalStorage(context, uri, "thumbnail", thumbnailName)
             thumbnailUrl.value = permaUri.toString()
         } else {
             SmartMessage(context.resources.getString(R.string.thumbnail_not_selected), context = context)
@@ -450,7 +450,7 @@ fun LocalPlaylistSongs(
             SmartMessage(context.resources.getString(R.string.no_thumbnail_present), context = context)
             return
         }
-        val thumbnailName = "thumbnail_${playlistPreview?.playlist?.id}"
+        val thumbnailName = "thumbnail/playlist_${playlistPreview?.playlist?.id}"
         val retVal = deleteFileIfExists(context, thumbnailName)
         if(retVal == true){
             SmartMessage(context.resources.getString(R.string.removed_thumbnail), context = context)

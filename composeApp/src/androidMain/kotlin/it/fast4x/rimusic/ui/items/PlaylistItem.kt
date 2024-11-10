@@ -108,7 +108,7 @@ fun PlaylistItem(
     val playlistThumbnailUrl = remember { mutableStateOf("") }
 
     fun initialisePlaylistThumbnail (){
-        val thumbnailName = "thumbnail_${playlist.playlist.id}"
+        val thumbnailName = "thumbnail/playlist_${playlist.playlist.id}"
         val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
         if (presentThumbnailUrl != null) {
             playlistThumbnailUrl.value = presentThumbnailUrl

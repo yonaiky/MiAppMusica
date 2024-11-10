@@ -39,13 +39,18 @@ fun copyDir(src: Path, dest: Path) {
     }
 }
 
-fun saveImageToInternalStorage(context: Context, imageUri: Uri, thumbnailName: String): Uri? {
+fun saveImageToInternalStorage(context: Context, imageUri: Uri, dirPath: String, thumbnailName: String): Uri? {
     try {
         // Open input stream from the URI
         val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
 
         // Create a new file in the app's internal storage
-        val outputFile = File(context.filesDir, thumbnailName)
+        if ( !createDirIfNotExists(context, dirPath)) {
+            Timber.e("Failed to create directory: $dirPath")
+            return null
+        }
+        val outputFile = File(context.filesDir, "$dirPath/$thumbnailName")
+
         val outputStream = FileOutputStream(outputFile)
 
         // Copy the data from the input stream to the output stream (internal storage)
@@ -81,6 +86,16 @@ fun deleteFileIfExists(context: Context, filePath: String): Boolean {
         file.delete()
     } else {
         false
+    }
+}
+
+fun createDirIfNotExists(context: Context, dirPath: String): Boolean {
+    val directory = File(context.filesDir, dirPath)
+
+    return if (!directory.exists()) {
+        directory.mkdirs()
+    } else {
+        true
     }
 }
 
