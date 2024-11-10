@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Lisää kappaleita automaattisesti jonoon</string>
     <string name="player_auto_load_songs_in_queue_description">Lisää jonoon kappaleita, kun jono loppuu</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
