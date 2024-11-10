@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Carrega automàtica de cançons a la cua</string>
     <string name="player_auto_load_songs_in_queue_description">Afegeix cançons quan la cua està a punt d\'acabar</string>
     <string name="show_vinyl_thumbnail_animation">Mostra l\'animació de vinil com a miniatura</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
