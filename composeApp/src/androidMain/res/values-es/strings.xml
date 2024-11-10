@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Cargar canciones automáticamente en cola</string>
     <string name="player_auto_load_songs_in_queue_description">Añadir canciones cuando la cola esté a punto de terminar</string>
     <string name="show_vinyl_thumbnail_animation">Mostrar animación de vinil como miniatura</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
