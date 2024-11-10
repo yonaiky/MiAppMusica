@@ -684,7 +684,7 @@
     <string name="noblur">Žádné rozostření, pokud je písňový text zakázán</string>
     <string name="fadingedge">Blednoucí okraj</string>
     <string name="carousel">Zobrazit karusel</string>
-    <string name="carouselsize">Velikost karuselu</string>
+    <string name="carouselsize">Thumbnail Size in Expanded Mode</string>
     <string name="addednext">Přidáno do dalšího přehrávání</string>
     <string name="info_paused_with_volume_zero">Pozastaveno kvůli nulové hlasitosti</string>
     <string name="effect_fade_audio">Prolínání zvuku</string>
@@ -759,4 +759,15 @@
     <string name="login_required_to_play_this_media">Pro přehrání tohoto média je vyžadováno přihlášení</string>
     <string name="skip_media_on_notavailable_message">Předchozí média nejsou k dispozici, přeskočeno na další</string>
     <string name="search_results_for">Vyhledat výsledky pro:</string>
+    <string name="statsfornerds">Stats for Nerds</string>
+    <string name="actionbar">Action Bar</string>
+    <string name="center">Center</string>
+    <string name="lyricsalignment">Lyrics Alignment</string>
+    <string name="lang_azerbaijani">Azerbaijani</string>
+    <string name="translators">Translators</string>
+    <string name="lang_tamil">Tamil</string>
+    <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
+    <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
+    <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>

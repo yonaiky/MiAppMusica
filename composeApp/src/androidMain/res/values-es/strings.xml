@@ -684,7 +684,7 @@
     <string name="noblur">No desenfocar cuando la letra está desactivada</string>
     <string name="fadingedge">Borde difuminado</string>
     <string name="carousel">Vista de carrusel</string>
-    <string name="carouselsize">Tamaño del carrusel</string>
+    <string name="carouselsize">Tamaño de miniaturas en modo expandido</string>
     <string name="addednext">Añadido al siguiente</string>
     <string name="info_paused_with_volume_zero">Pausado con el volumen cero</string>
     <string name="effect_fade_audio">Atenuar audio</string>
@@ -759,4 +759,15 @@
     <string name="login_required_to_play_this_media">Se necesita iniciar sesión para reproducir este contenido</string>
     <string name="skip_media_on_notavailable_message">Contenido previo no disponible, saltado al siguiente</string>
     <string name="search_results_for">Resultados de búsqueda para:</string>
+    <string name="statsfornerds">Estadísticas para nerds</string>
+    <string name="actionbar">Barra de acciones</string>
+    <string name="center">Centro</string>
+    <string name="lyricsalignment">Alineación de letras</string>
+    <string name="lang_azerbaijani">Azerí</string>
+    <string name="translators">Traductores</string>
+    <string name="lang_tamil">Tamil</string>
+    <string name="player_auto_load_songs_in_queue">Cargar canciones automáticamente en cola</string>
+    <string name="player_auto_load_songs_in_queue_description">Añadir canciones cuando la cola esté a punto de terminar</string>
+    <string name="show_vinyl_thumbnail_animation">Mostrar animación de vinil como miniatura</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>

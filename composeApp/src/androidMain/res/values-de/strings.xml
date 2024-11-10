@@ -347,7 +347,7 @@
     <string name="sort_date_played">Wiedergabedatum</string>
     <string name="sort_artist">Künstler</string>
     <string name="sort_listening_time">Wiedergabedauer</string>
-    <string name="sort_date_added">Hinzufügedatum</string>
+    <string name="sort_date_added">Hinzufüge Datum</string>
     <string name="sorting_order">Sortierreihenfolge</string>
     <string name="sort_year">Jahr</string>
     <string name="sort_name">Namen</string>
@@ -684,7 +684,7 @@
     <string name="noblur">Keine Unschärfe, wenn Liedtexte deaktiviert sind</string>
     <string name="fadingedge">Kanten verblassen</string>
     <string name="carousel">Karussellansicht</string>
-    <string name="carouselsize">Größe des Karussells</string>
+    <string name="carouselsize">Größe der Miniaturansicht im erweiterten Modus</string>
     <string name="addednext">Hinzugefügt, um als nächstes abzuspielen</string>
     <string name="info_paused_with_volume_zero">Pausiert mit Lautstärke Null</string>
     <string name="effect_fade_audio">Audio ein-/ausblenden</string>
@@ -759,4 +759,15 @@
     <string name="login_required_to_play_this_media">Anmeldung erforderlich, um dieses Medium abzuspielen</string>
     <string name="skip_media_on_notavailable_message">Da nicht verfügbar, wurde der vorherige Titel übersprungen</string>
     <string name="search_results_for">Suchergebnisse für:</string>
+    <string name="statsfornerds">Statistiken für Nerds</string>
+    <string name="actionbar">Aktionsleiste</string>
+    <string name="center">Zentrieren</string>
+    <string name="lyricsalignment">Songtext-Ausrichtung</string>
+    <string name="lang_azerbaijani">Azerbaijani</string>
+    <string name="translators">Translators</string>
+    <string name="lang_tamil">Tamil</string>
+    <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
+    <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
+    <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>

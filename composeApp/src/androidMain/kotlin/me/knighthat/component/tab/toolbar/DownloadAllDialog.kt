@@ -9,15 +9,14 @@ import androidx.media3.exoplayer.offline.Download
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.PlayerService
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.manageDownload
 
 @UnstableApi
 interface DownloadAllDialog: ConfirmationDialog {
 
-    val binder: PlayerService.Binder?
+    val binder: PlayerServiceModern.Binder?
     val downloadState: MutableIntState
 
     override val iconId: Int
@@ -36,6 +35,9 @@ interface DownloadAllDialog: ConfirmationDialog {
         downloadState.intValue = Download.STATE_DOWNLOADING
 
         listToProcess().forEach {
+            if(binder == null){ // binder has to be non-null for remove from cache to work
+                return
+            }
             binder?.cache?.removeResource(it.mediaId)
             query {
                 Database.resetFormatContentLength(it.mediaId)

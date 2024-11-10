@@ -686,7 +686,7 @@
     <string name="noblur">Pas de flou quand les paroles sont désactivées</string>
     <string name="fadingedge">Bord en dégradé</string>
     <string name="carousel">Vue Carrousel</string>
-    <string name="carouselsize">Taille du Carrousel</string>
+    <string name="carouselsize">Taille de la miniature en mode étendu</string>
     <string name="addednext">Ajouté à la lecture suivante</string>
     <string name="info_paused_with_volume_zero">Mettre en pause quand le volume est à 0</string>
     <string name="effect_fade_audio">Fondu audio</string>
@@ -761,4 +761,15 @@
     <string name="login_required_to_play_this_media">Connexion nécessaire pour lire ce média</string>
     <string name="skip_media_on_notavailable_message">Le média précédent n\'est pas disponible, le lecteur est passé au suivant</string>
     <string name="search_results_for">Résultats de la recherche pour :</string>
+    <string name="statsfornerds">Statistiques de la semaine</string>
+    <string name="actionbar">Barre d\'action</string>
+    <string name="center">Centre</string>
+    <string name="lyricsalignment">Alignement des paroles</string>
+    <string name="lang_azerbaijani">Azerbaijani</string>
+    <string name="translators">Translators</string>
+    <string name="lang_tamil">Tamil</string>
+    <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
+    <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
+    <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
