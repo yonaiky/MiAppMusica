@@ -852,6 +852,7 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         //super.onMediaItemTransition(mediaItem, reason)
         println("PlayerServiceModern onMediaItemTransition mediaItem $mediaItem reason $reason")
+
         currentMediaItem.update { mediaItem }
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
