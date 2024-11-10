@@ -769,4 +769,5 @@
     <string name="player_auto_load_songs_in_queue">Növbədəki mahnıları avtomatik yüklə</string>
     <string name="player_auto_load_songs_in_queue_description">Növbə bitmək üzrə olanda mahnılar əlavə edir</string>
     <string name="show_vinyl_thumbnail_animation">Disk animasiyanı miniatür kimi göstər</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
 </resources>
