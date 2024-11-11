@@ -120,7 +120,7 @@
     <string name="unsynchronized_lyrics">sinxronlaşdırılmayan lirikalar</string>
     <string name="synchronized_lyrics">sinxronlaşan lirikalar</string>
     <string name="provided_by">Tərəfindən təmin edilib</string>
-    <string name="delete_playback_events">%1$s səsləndirmə problemin sil</string>
+    <string name="delete_playback_events">%1$s səsləndirmə fəaliyyətin sil</string>
     <string name="existing_data_will_be_overwritten">Mövcud məlumat üzərinə yazılacaq.%1$s məlumat bazasını bərpa etdikdən sonra özü avtomatik bağlanacaq.</string>
     <string name="folder_cache">QALIQ QOVLUĞU</string>
     <string name="cache_reset_by_clicking_button">Aşağıdakı düyməyə klikləyənə kimi diqqət et, qalıq qovluq yeri standarta sıfırlanacaq</string>
@@ -193,7 +193,7 @@
     <string name="mood">Əhvali-ruhiyyə</string>
     <string name="new_albums">Yeni albomlar</string>
     <string name="moods_and_genres">Əhvali-ruhiyyə və janrlar</string>
-    <string name="search_queries">" axtarış sorğuları"</string>
+    <string name="search_queries">" axtarış sorğusu"</string>
     <string name="not_find_battery_optimization_settings">Batareya optimallaşması seçimlərini tapmaq olmadı, lütfən, əl ilə ağ siyahıya salın</string>
     <string name="search">Axtarış</string>
     <string name="no">Xeyr</string>
@@ -776,5 +776,5 @@
     <string name="no_thumbnail_present">Hazırda Miniatür Yoxdur</string>
     <string name="removed_thumbnail">Miniatür Silindi</string>
     <string name="failed_to_remove_thumbnail">Miniatürü Silmək Olmadı</string>
-    <string name="showsecondline">Show Translation in the Second Line</string>
+    <string name="showsecondline">İkinci Cərgədə Tərcüməni Göstər</string>
 </resources>
