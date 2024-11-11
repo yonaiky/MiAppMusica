@@ -333,7 +333,7 @@ fun Lyrics(
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
 
         fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
-            LaunchedEffect(romanizationEnabeled, textToTranslate, destinationLanguage){
+            LaunchedEffect(showSecondLine, romanizationEnabeled, textToTranslate, destinationLanguage){
                 var destLanguage = destinationLanguage
                 val result = withContext(Dispatchers.IO) {
                     try {
