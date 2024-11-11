@@ -338,6 +338,7 @@ fun Lyrics(
                     try {
                         var translation: Translation?
                         var translation2: Translation?
+                        val regex = "\\s+".toRegex()
                         if(destinationLanguage == Language.AUTO){
                             translation = translator.translate(
                                 textToTranslate,
@@ -357,9 +358,9 @@ fun Lyrics(
                             translation.sourceLanguage
                         )
                         val outputText = if(romanizationEnabeled){
-                            if (showSecondLine && isSync) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
+                            if (showSecondLine && isSync && textToTranslate != "" && !regex.matches(textToTranslate)) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
                         }else{
-                            if (showSecondLine && isSync) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
+                            if (showSecondLine && isSync && textToTranslate != "" && !regex.matches(textToTranslate)) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
                         }
                         outputText.replace("\\r","\r").replace("\\n","\n")
                     } catch (e: Exception) {
