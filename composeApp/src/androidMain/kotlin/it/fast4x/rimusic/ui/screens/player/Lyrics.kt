@@ -337,6 +337,7 @@ fun Lyrics(
                 val result = withContext(Dispatchers.IO) {
                     try {
                         var translation: Translation?
+                        var translation2: Translation?
                         if(destinationLanguage == Language.AUTO){
                             translation = translator.translate(
                                 textToTranslate,
@@ -350,12 +351,17 @@ fun Lyrics(
                             destLanguage,
                             Language.AUTO
                         )
+                        translation2 = translator.translate(
+                            textToTranslate,
+                            translation.sourceLanguage,
+                            translation.sourceLanguage
+                        )
                         val outputText = if(romanizationEnabeled){
-                            translation.pronunciation ?: translation.translatedText
+                            if (showSecondLine) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
                         }else{
-                            translation.translatedText
+                            if (showSecondLine) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
                         }
-                        outputText.replace("\\r","\r")
+                        outputText.replace("\\r","\r").replace("\\n","\n")
                     } catch (e: Exception) {
                         if(isSync){
                             Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
@@ -737,7 +743,7 @@ fun Lyrics(
                             items = synchronizedLyrics.sentences
                         ) { index, sentence ->
                             var translatedText by remember { mutableStateOf("") }
-                            if (translateEnabled && !showSecondLine) {
+                            if (translateEnabled) {
                                 val mutState = remember { mutableStateOf("") }
                                 translateLyricsWithRomanization(mutState, sentence.second, true, languageDestination)()
                                 translatedText = mutState.value
@@ -750,11 +756,6 @@ fun Lyrics(
                                     translatedText = sentence.second
                                 }
                             }
-
-                            val mutState1 = remember { mutableStateOf("") }
-                            var translatedText2 by remember { mutableStateOf("") }
-                            translateLyricsWithRomanization(mutState1, sentence.second, true, languageDestination)()
-                            translatedText2 = mutState1.value
 
                             //Rainbow Shimmer
                             val infiniteTransition = rememberInfiniteTransition()
@@ -874,7 +875,7 @@ fun Lyrics(
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = translatedText,
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -908,7 +909,7 @@ fun Lyrics(
                                     )
                                 else if ((lyricsColor == LyricsColor.White) || (lyricsColor == LyricsColor.Black) || (lyricsColor == LyricsColor.Accent) || (lyricsColor == LyricsColor.Thememode))
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = translatedText,
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -1007,7 +1008,7 @@ fun Lyrics(
                                     )
                                 else
                                     BasicText(
-                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                        text = translatedText,
                                         style = TextStyle(
                                             textAlign = lyricsAlignment.selected,
                                             brush = if (colorPaletteMode == ColorPaletteMode.Light) brushrainbow else brushrainbowdark
@@ -1086,7 +1087,7 @@ fun Lyrics(
 
                                     } else if ((lyricsOutline == LyricsOutline.White) || (lyricsOutline == LyricsOutline.Black) || (lyricsOutline == LyricsOutline.Thememode))
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = translatedText,
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 drawStyle = Stroke(
@@ -1224,7 +1225,7 @@ fun Lyrics(
                                         )
                                     else if (lyricsOutline == LyricsOutline.Rainbow)
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = translatedText,
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 brush = brushrainbowdark,
@@ -1271,7 +1272,7 @@ fun Lyrics(
                                         )
                                     else //For Glow Outline//
                                         BasicText(
-                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
+                                            text = translatedText,
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 shadow = Shadow(
