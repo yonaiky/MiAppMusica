@@ -776,4 +776,5 @@
     <string name="no_thumbnail_present">无缩略图</string>
     <string name="removed_thumbnail">删除缩略图</string>
     <string name="failed_to_remove_thumbnail">删除缩略图失败</string>
+    <string name="showsecondline">Show Translation in the Second Line</string>
 </resources>
