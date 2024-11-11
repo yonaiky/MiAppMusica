@@ -780,4 +780,5 @@
     <string name="settings_enable_pip_auto">Enable Automatic Picture in Picture</string>
     <string name="pipmodule_cover">Cover</string>
     <string name="settings_pip_module">Pip module</string>
+    <string name="menu_go_to_picture_in_picture">PIP</string>
 </resources>
