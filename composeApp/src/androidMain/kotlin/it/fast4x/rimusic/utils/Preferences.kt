@@ -291,6 +291,10 @@ const val quickPicsChartsPageKey = "quickPicsChartsPage"
 const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
 const val loadedDataKey = "loadedData"
 
+const val enablePictureInPictureKey = "enablePicturInPicture"
+const val enablePictureInPictureAutoKey = "enablePicturInPictureAuto"
+const val pipModuleKey = "pipModule"
+
 /*
 @PublishedApi
 internal val defaultJson = Json {

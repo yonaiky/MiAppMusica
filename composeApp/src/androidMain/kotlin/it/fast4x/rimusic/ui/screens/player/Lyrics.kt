@@ -150,6 +150,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
+import it.fast4x.rimusic.extensions.pip.isInPip
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
 import it.fast4x.rimusic.utils.romanizationEnabeledKey
 import me.bush.translator.Translation
@@ -238,6 +239,8 @@ fun Lyrics(
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
+
+        val pip = isInPip()
 
         if (showLanguagesList) {
             translateEnabled = false

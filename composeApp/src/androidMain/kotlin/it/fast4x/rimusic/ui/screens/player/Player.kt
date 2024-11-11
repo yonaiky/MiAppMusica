@@ -214,6 +214,7 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.extensions.pip.rememberPipHandler
 import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimation
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.actionExpandedKey
@@ -257,6 +258,8 @@ import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.pinchToToggle
+import it.fast4x.rimusic.utils.PinchDirection
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
@@ -972,73 +975,75 @@ fun Player(
 
     val thumbnailContent: @Composable (
         //modifier: Modifier
-    ) -> Unit = { //modifier ->
+    ) -> Unit = { //innerModifier ->
         var deltaX by remember { mutableStateOf(0f) }
         //var direction by remember { mutableIntStateOf(-1)}
-        Thumbnail(
-            thumbnailTapEnabledKey = thumbnailTapEnabled,
-            isShowingLyrics = isShowingLyrics,
-            onShowLyrics = { isShowingLyrics = it },
-            isShowingStatsForNerds = isShowingStatsForNerds,
-            onShowStatsForNerds = { isShowingStatsForNerds = it },
-            isShowingVisualizer = isShowingVisualizer,
-            onShowEqualizer = { isShowingVisualizer = it },
-            showthumbnail = showthumbnail,
-            onMaximize = {
-                showFullLyrics = true
-            },
-            onDoubleTap = {
-                val currentMediaItem = binder.player.currentMediaItem
-                query {
-                    if (Database.like(
-                            mediaItem.mediaId,
-                            if (likedAt == null) System.currentTimeMillis() else null
-                        ) == 0
-                    ) {
-                        currentMediaItem
-                            ?.takeIf { it.mediaId == mediaItem.mediaId }
-                            ?.let {
-                                Database.insert(currentMediaItem, Song::toggleLike)
-                            }
+
+            Thumbnail(
+                thumbnailTapEnabledKey = thumbnailTapEnabled,
+                isShowingLyrics = isShowingLyrics,
+                onShowLyrics = { isShowingLyrics = it },
+                isShowingStatsForNerds = isShowingStatsForNerds,
+                onShowStatsForNerds = { isShowingStatsForNerds = it },
+                isShowingVisualizer = isShowingVisualizer,
+                onShowEqualizer = { isShowingVisualizer = it },
+                showthumbnail = showthumbnail,
+                onMaximize = {
+                    showFullLyrics = true
+                },
+                onDoubleTap = {
+                    val currentMediaItem = binder.player.currentMediaItem
+                    query {
+                        if (Database.like(
+                                mediaItem.mediaId,
+                                if (likedAt == null) System.currentTimeMillis() else null
+                            ) == 0
+                        ) {
+                            currentMediaItem
+                                ?.takeIf { it.mediaId == mediaItem.mediaId }
+                                ?.let {
+                                    Database.insert(currentMediaItem, Song::toggleLike)
+                                }
+                        }
                     }
-                }
-                if (effectRotationEnabled) isRotated = !isRotated
-            },
-            modifier = modifier
-                //.nestedScroll( connection = scrollConnection )
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onHorizontalDrag = { change, dragAmount ->
-                            deltaX = dragAmount
-                        },
-                        onDragStart = {
-                            //Log.d("mediaItemGesture","ondragStart offset ${it}")
-                        },
-                        onDragEnd = {
-                            if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
-                                if (deltaX > 5) {
-                                    binder.player.playPrevious()
-                                    //Log.d("mediaItem","Swipe to LEFT")
-                                } else if (deltaX < -5) {
-                                    binder.player.playNext()
-                                    //Log.d("mediaItem","Swipe to RIGHT")
+                    if (effectRotationEnabled) isRotated = !isRotated
+                },
+                modifier = modifier
+                    //.nestedScroll( connection = scrollConnection )
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                deltaX = dragAmount
+                            },
+                            onDragStart = {
+                                //Log.d("mediaItemGesture","ondragStart offset ${it}")
+                            },
+                            onDragEnd = {
+                                if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
+                                    if (deltaX > 5) {
+                                        binder.player.playPrevious()
+                                        //Log.d("mediaItem","Swipe to LEFT")
+                                    } else if (deltaX < -5) {
+                                        binder.player.playNext()
+                                        //Log.d("mediaItem","Swipe to RIGHT")
+                                    }
+
                                 }
 
                             }
 
-                        }
-
+                        )
+                    }
+                    .padding(
+                        vertical = playerThumbnailSize.size.dp,
+                        horizontal = playerThumbnailSize.size.dp
                     )
-                }
-                .padding(
-                    vertical = playerThumbnailSize.size.dp,
-                    horizontal = playerThumbnailSize.size.dp
-                )
-                .thumbnailpause(
-                    shouldBePlaying = shouldBePlaying
-                )
+                    .thumbnailpause(
+                        shouldBePlaying = shouldBePlaying
+                    )
 
-        )
+            )
+
     }
 
 

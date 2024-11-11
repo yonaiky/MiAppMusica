@@ -52,6 +52,7 @@ import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
+import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
@@ -119,6 +120,8 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
+import it.fast4x.rimusic.utils.enablePictureInPictureKey
+import it.fast4x.rimusic.utils.enablePictureInPictureAutoKey
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
@@ -127,6 +130,7 @@ import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.indexNavigationTabKey
+import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
@@ -148,6 +152,7 @@ import it.fast4x.rimusic.utils.navigationBarTypeKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.pipModuleKey
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
@@ -744,6 +749,10 @@ fun UiSettings(
     var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
     var autoLoadSongsInQueue by rememberPreference(autoLoadSongsInQueueKey, true)
 
+    var enablePictureInPicture by rememberPreference(enablePictureInPictureKey, false)
+    var enablePictureInPictureAuto by rememberPreference(enablePictureInPictureAutoKey, false)
+    var pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
+
     Column(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -1231,6 +1240,52 @@ fun UiSettings(
                 }
             )
             RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
+
+        if (searchInput.isBlank() || stringResource(R.string.settings_enable_pip).contains(searchInput,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.settings_enable_pip),
+                text = "",
+                isChecked = enablePictureInPicture,
+                onCheckedChange = {
+                    enablePictureInPicture = it
+                    restartActivity = true
+                }
+            )
+            RestartActivity(restartActivity, onRestart = { restartActivity = false })
+            AnimatedVisibility(visible = enablePictureInPicture) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.settings_pip_module),
+                        selectedValue = pipModule,
+                        onValueSelected = {
+                            pipModule = it
+                            restartActivity = true
+                        },
+                        valueText = {
+                            when (it) {
+                                PipModule.Cover -> stringResource(R.string.pipmodule_cover)
+                            }
+                        }
+                    )
+
+                    if (isAtLeastAndroid12)
+                        SwitchSettingEntry(
+                            title = stringResource(R.string.settings_enable_pip_auto),
+                            text = "From Android 12 pip can be automatically enabled",
+                            isChecked = enablePictureInPictureAuto,
+                            onCheckedChange = {
+                                enablePictureInPictureAuto = it
+                                restartActivity = true
+                            }
+                        )
+                    RestartActivity(restartActivity, onRestart = { restartActivity = false })
+                }
+
+            }
         }
 
         if (searchInput.isBlank() || stringResource(R.string.equalizer).contains(searchInput,true))
