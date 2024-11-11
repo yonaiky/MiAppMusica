@@ -769,4 +769,11 @@
     <string name="player_auto_load_songs_in_queue">Cargar canciones automáticamente en cola</string>
     <string name="player_auto_load_songs_in_queue_description">Añadir canciones cuando la cola esté a punto de terminar</string>
     <string name="show_vinyl_thumbnail_animation">Mostrar animación de vinil como miniatura</string>
+    <string name="toggle_romanization">Toggle Romanization</string>
+    <string name="edit_thumbnail">Edit Thumbnail</string>
+    <string name="thumbnail_not_selected">Thumbnail Not Selected</string>
+    <string name="reset_thumbnail">Reset Thumbnail</string>
+    <string name="no_thumbnail_present">No Thumbnail Present</string>
+    <string name="removed_thumbnail">Removed Thumbnail</string>
+    <string name="failed_to_remove_thumbnail">Failed to Remove Thumbnail</string>
 </resources>
