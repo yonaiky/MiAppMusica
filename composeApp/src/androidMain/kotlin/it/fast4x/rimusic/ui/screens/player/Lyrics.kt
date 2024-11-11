@@ -152,6 +152,7 @@ import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
 import it.fast4x.rimusic.utils.romanizationEnabeledKey
+import it.fast4x.rimusic.utils.showSecondLineKey
 import me.bush.translator.Translation
 
 
@@ -235,6 +236,7 @@ fun Lyrics(
         }
 
         var romanizationEnabeled by rememberPreference(romanizationEnabeledKey, false)
+        var showSecondLine by rememberPreference(showSecondLineKey, false)
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
@@ -735,7 +737,7 @@ fun Lyrics(
                             items = synchronizedLyrics.sentences
                         ) { index, sentence ->
                             var translatedText by remember { mutableStateOf("") }
-                            if (translateEnabled) {
+                            if (translateEnabled && !showSecondLine) {
                                 val mutState = remember { mutableStateOf("") }
                                 translateLyricsWithRomanization(mutState, sentence.second, true, languageDestination)()
                                 translatedText = mutState.value
@@ -748,6 +750,11 @@ fun Lyrics(
                                     translatedText = sentence.second
                                 }
                             }
+
+                            val mutState1 = remember { mutableStateOf("") }
+                            var translatedText2 by remember { mutableStateOf("") }
+                            translateLyricsWithRomanization(mutState1, sentence.second, true, languageDestination)()
+                            translatedText2 = mutState1.value
 
                             //Rainbow Shimmer
                             val infiniteTransition = rememberInfiniteTransition()
@@ -867,7 +874,7 @@ fun Lyrics(
                             ) {
                                 if (showlyricsthumbnail)
                                     BasicText(
-                                        text = translatedText,
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -901,7 +908,7 @@ fun Lyrics(
                                     )
                                 else if ((lyricsColor == LyricsColor.White) || (lyricsColor == LyricsColor.Black) || (lyricsColor == LyricsColor.Accent) || (lyricsColor == LyricsColor.Thememode))
                                     BasicText(
-                                        text = translatedText,
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle (
                                             textAlign = lyricsAlignment.selected,
                                         ).merge(
@@ -1000,7 +1007,7 @@ fun Lyrics(
                                     )
                                 else
                                     BasicText(
-                                        text = translatedText,
+                                        text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                         style = TextStyle(
                                             textAlign = lyricsAlignment.selected,
                                             brush = if (colorPaletteMode == ColorPaletteMode.Light) brushrainbow else brushrainbowdark
@@ -1079,7 +1086,7 @@ fun Lyrics(
 
                                     } else if ((lyricsOutline == LyricsOutline.White) || (lyricsOutline == LyricsOutline.Black) || (lyricsOutline == LyricsOutline.Thememode))
                                         BasicText(
-                                            text = translatedText,
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 drawStyle = Stroke(
@@ -1217,7 +1224,7 @@ fun Lyrics(
                                         )
                                     else if (lyricsOutline == LyricsOutline.Rainbow)
                                         BasicText(
-                                            text = translatedText,
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 brush = brushrainbowdark,
@@ -1264,7 +1271,7 @@ fun Lyrics(
                                         )
                                     else //For Glow Outline//
                                         BasicText(
-                                            text = translatedText,
+                                            text = (translatedText + if (showSecondLine && translateEnabled && translatedText != "") {"\\n[$translatedText2]"} else "").replace("\\n","\n"),
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 shadow = Shadow(
@@ -2068,12 +2075,21 @@ fun Lyrics(
                                         )
 
                                         MenuEntry(
-                                            icon = R.drawable.translate,
+                                            icon = if (romanizationEnabeled) R.drawable.checkmark else R.drawable.close,
                                             text = stringResource(R.string.toggle_romanization),
                                             enabled = true,
                                             onClick = {
                                                 menuState.hide()
                                                 romanizationEnabeled = !romanizationEnabeled
+                                            }
+                                        )
+                                        MenuEntry(
+                                            icon = if (showSecondLine) R.drawable.checkmark else R.drawable.close,
+                                            text = stringResource(R.string.showsecondline),
+                                            enabled = true,
+                                            onClick = {
+                                                menuState.hide()
+                                                showSecondLine = !showSecondLine
                                             }
                                         )
 
