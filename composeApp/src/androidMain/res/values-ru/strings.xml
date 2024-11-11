@@ -778,4 +778,5 @@
     <string name="no_thumbnail_present">Миниатюра отсутствует</string>
     <string name="removed_thumbnail">Миниатюра удалена</string>
     <string name="failed_to_remove_thumbnail">Не удалось удалить миниатюру</string>
+    <string name="showsecondline">Show Translation in the Second Line</string>
 </resources>
