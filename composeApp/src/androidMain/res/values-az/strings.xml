@@ -321,7 +321,7 @@
     <string name="lang_dutch">Hollandca (Dutch)</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Həqiqətən bu pleylistdəki mövqeləri yenidən nömrələmək istəyirsiniz?</string>
     <string name="renumber_songs_positions">Mövqeləri yenidən nömrələ</string>
-    <string name="do_you_really_want_to_delete_all_playback_events">Bütün səsləndirmə problemlərin silmək istəyirsiniz?</string>
+    <string name="do_you_really_want_to_delete_all_playback_events">Bütün səsləndirmə fəaliyyətlərin silmək istəyirsiniz?</string>
     <string name="lang_sinhala">Sinhala dili</string>
     <string name="update_available">Yeniləmə əlçatandır</string>
     <string name="actions_you_can_do">Edə biləcəyiniz fəaliyyətlər:</string>
@@ -729,7 +729,7 @@
     <string name="social_github">GitHub</string>
     <string name="update">Yenilə</string>
     <string name="update_song">Həqiqətən bu mahnını təkrar almaq istəyirsiz? Dinləmə vaxtı və toplanmış məlumatlar silinəcək. Bu proses geri dönməzdir.</string>
-    <string name="player_pause_listen_history_info">Sürətli seçimlərdə statistika, tarixçə və təkliflər üçün işlədilən dinləmə proseslərini saxlamır</string>
+    <string name="player_pause_listen_history_info">Cəld seçimlərdə statistika, tarixçə və təkliflər üçün işlədilən dinləmə proseslərini saxlamır</string>
     <string name="vertical_widget">Şaquli widget</string>
     <string name="horizontal_widget">Üfüqi widget</string>
     <string name="social_reddit">Reddit</string>
@@ -763,7 +763,7 @@
     <string name="actionbar">Fəaliyyət Cizgisi</string>
     <string name="center">Mərkəz</string>
     <string name="lyricsalignment">Lirikaların Uyğunlaşdırılması</string>
-    <string name="lang_azerbaijani">Azərbaycanca</string>
+    <string name="lang_azerbaijani">Azərbaycanca (Azerbaijani)</string>
     <string name="translators">Tərcüməçilər</string>
     <string name="lang_tamil">Tamilcə (Tamil)</string>
     <string name="player_auto_load_songs_in_queue">Növbədəki mahnıları avtomatik yüklə</string>
