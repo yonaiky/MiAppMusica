@@ -150,7 +150,6 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
-import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
 import it.fast4x.rimusic.utils.romanizationEnabeledKey
 import it.fast4x.rimusic.utils.showSecondLineKey
