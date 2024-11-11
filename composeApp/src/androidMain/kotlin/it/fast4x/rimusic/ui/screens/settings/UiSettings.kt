@@ -1275,7 +1275,7 @@ fun UiSettings(
                     SwitchSettingEntry(
                         isEnabled = isAtLeastAndroid12,
                         title = stringResource(R.string.settings_enable_pip_auto),
-                        text = "From Android 12 pip can be automatically enabled",
+                        text = stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled),
                         isChecked = enablePictureInPictureAuto,
                         onCheckedChange = {
                             enablePictureInPictureAuto = it

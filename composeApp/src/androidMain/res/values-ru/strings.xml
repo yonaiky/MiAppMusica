@@ -772,4 +772,16 @@
     <string name="player_auto_load_songs_in_queue_description">Добавляет треки, когда очередь подходит к концу</string>
     <string name="show_vinyl_thumbnail_animation"> Показать анимацию винила в виде миниатюры</string>
     <string name="toggle_romanization">Переключить романизацию</string>
+    <string name="edit_thumbnail">Edit Thumbnail</string>
+    <string name="thumbnail_not_selected">Thumbnail Not Selected</string>
+    <string name="reset_thumbnail">Reset Thumbnail</string>
+    <string name="no_thumbnail_present">No Thumbnail Present</string>
+    <string name="removed_thumbnail">Removed Thumbnail</string>
+    <string name="failed_to_remove_thumbnail">Failed to Remove Thumbnail</string>
+    <string name="settings_enable_pip">Enable Picture in Picture</string>
+    <string name="settings_enable_pip_auto">Enable Automatic Picture in Picture</string>
+    <string name="pipmodule_cover">Cover</string>
+    <string name="settings_pip_module">Pip module</string>
+    <string name="menu_go_to_picture_in_picture">PIP</string>
+    <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">From Android 12 pip can be automatically enabled</string>
 </resources>
