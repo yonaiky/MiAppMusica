@@ -216,22 +216,4 @@ fun Pip(
     )
 }
 
-@Composable
-fun <T : Any> CrossfadeContainer(
-    state: T,
-    modifier: Modifier = Modifier,
-    content: @Composable (T) -> Unit
-) {
-    val saveableStateHolder = rememberSaveableStateHolder()
 
-    AnimatedContent(
-        targetState = state,
-        transitionSpec = { fadeIn() togetherWith fadeOut() },
-        label = "",
-        modifier = modifier
-    ) { currentState ->
-        saveableStateHolder.SaveableStateProvider(key = currentState) {
-            content(currentState)
-        }
-    }
-}

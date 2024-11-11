@@ -1,18 +1,13 @@
 package it.fast4x.rimusic.extensions.pip
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import it.fast4x.rimusic.utils.PinchDirection
-import it.fast4x.rimusic.utils.enablePictureInPictureKey
 import it.fast4x.rimusic.utils.pinchToToggle
-import it.fast4x.rimusic.utils.rememberPreference
 
 @Composable
-fun PipContainer(
+fun PipEventContainer(
     modifier: Modifier = Modifier,
     enable: Boolean = true,
     onPipOutAction: () -> Unit = {},

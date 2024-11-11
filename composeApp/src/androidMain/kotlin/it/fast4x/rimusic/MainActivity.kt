@@ -134,23 +134,21 @@ import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.extensions.pip.CrossfadeContainer
-import it.fast4x.rimusic.extensions.pip.PipContainer
-import it.fast4x.rimusic.extensions.pip.isInPip
+import it.fast4x.rimusic.extensions.pip.PipEventContainer
+import it.fast4x.rimusic.extensions.pip.PipModuleContainer
+import it.fast4x.rimusic.extensions.pip.PipModuleCover
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.CrossfadeContainer
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.player.MiniPlayer
 import it.fast4x.rimusic.ui.screens.player.Player
-import it.fast4x.rimusic.ui.screens.player.Thumbnail
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance
-import it.fast4x.rimusic.ui.styling.ColorPalette
-import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.applyPitchBlack
@@ -193,7 +191,6 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.enablePictureInPictureKey
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.fontTypeKey
@@ -204,7 +201,6 @@ import it.fast4x.rimusic.utils.invokeOnReady
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
-import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isProxyEnabledKey
 import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
@@ -230,7 +226,6 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.setDefaultPalette
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
-import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
@@ -240,7 +235,6 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.ytCookieKey
 import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -938,15 +932,12 @@ class MainActivity :
                         ) {
                             when (pipModule) {
                                 PipModule.Cover -> {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri.toString().resize(1200, 1200))
-                                            .build(),
-                                        contentDescription = "",
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .align(Alignment.Center)
-                                    )
+                                    PipModuleContainer {
+                                        PipModuleCover(
+                                            url = binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri.toString()
+                                                .resize(1200, 1200)
+                                        )
+                                    }
                                 }
 
                             }
@@ -1015,7 +1006,7 @@ class MainActivity :
                                 }
                             }
 
-                            PipContainer(
+                            PipEventContainer (
                                 enable = true,
                                 onPipOutAction = {
                                     showPlayer = false
